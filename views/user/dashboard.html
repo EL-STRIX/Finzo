@@ -92,6 +92,7 @@
     
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<script src="../../assets/js/theme.js"></script>
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -121,8 +122,13 @@
 <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
-<div class="h-8 w-[1px] bg-slate-200 :bg-slate-700"></div>
-<button class="text-indigo-900 :text-indigo-400 font-semibold text-sm hover:opacity-80">
+<div class="flex items-center gap-4">
+<button data-toggle-theme class="user-theme-toggle">
+  <span class="material-symbols-outlined" style="font-size:18px;" data-theme-icon>dark_mode</span>
+  <span data-theme-label>Dark</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200"></div>
+<button class="text-indigo-900 font-semibold text-sm hover:opacity-80">
                         Secure Logout
                     </button>
 </div>
