@@ -214,18 +214,54 @@
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-<!-- Feature 1: Online Banking -->
+<!-- Feature 1: Online Banking (Grouped Bar Redesign) -->
 <div class="md:col-span-8 group relative bg-white p-12 rounded-[2rem] overflow-hidden border border-outline-variant/10">
-<div class="relative z-10">
+<div class="relative z-20 flex flex-col h-full">
+<div class="mb-auto">
 <span class="material-symbols-outlined text-primary text-4xl mb-10 block" data-icon="account_balance">account_balance</span>
 <h3 class="text-3xl font-black font-headline text-primary mb-6">Institutional Online Banking</h3>
-<p class="text-on-surface-variant text-lg max-w-md mb-12 opacity-70">Manage high-volume multi-currency operations through a unified ledger. Zero friction, total clarity.</p>
+<p class="text-on-surface-variant text-lg max-w-md mb-8 opacity-80 leading-relaxed">Track every deposit, transfer and withdrawal in real time from your personal Finzo dashboard.</p>
 <a id="terminal-link-btn" class="text-primary font-black inline-flex items-center gap-3 group-hover:gap-5 transition-all text-sm uppercase tracking-widest font-label" href="views/user/dashboard.html">
-                                Explore The Terminal <span class="material-symbols-outlined text-lg">arrow_forward</span>
+        VIEW DASHBOARD <span class="material-symbols-outlined text-lg">arrow_forward</span>
 </a>
 </div>
-<div class="absolute top-0 right-0 w-1/2 h-full opacity-5 group-hover:opacity-10 transition-opacity">
-<canvas class="finzo-chart" data-type="line"></canvas>
+
+<!-- Stats Row at bottom -->
+<div class="mt-12 flex flex-wrap gap-6 pt-8 border-t border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="text-emerald-500 font-black">↑</span>
+<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Deposits</span>
+<span class="text-emerald-500 font-bold text-xs">+14.2%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-rose-400 font-black">↓</span>
+<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Withdrawals</span>
+<span class="text-rose-400 font-bold text-xs">-8.3%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-blue-500 font-black">→</span>
+<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Transfers</span>
+<span class="text-blue-500 font-bold text-xs">+11.5%</span>
+</div>
+</div>
+</div>
+
+<!-- Grouped Bar Chart Subsystem -->
+<div class="absolute top-0 right-0 w-full md:w-[65%] h-full opacity-10 group-hover:opacity-100 transition-all duration-1000 p-12 flex flex-col justify-end">
+<div class="absolute top-12 right-12 flex gap-4 text-[9px] font-bold tracking-widest uppercase opacity-40 z-30">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span> Deposits
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#F87171]"></span> Withdrawals
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span> Transfers
+</div>
+</div>
+<div class="h-[60%] w-full">
+<canvas class="finzo-chart" data-type="grouped-bar"></canvas>
+</div>
 </div>
 </div>
 <!-- Feature 2: High Contrast Security -->
