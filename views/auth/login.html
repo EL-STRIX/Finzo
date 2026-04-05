@@ -90,9 +90,14 @@
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <style>
+        /* Interactive Placeholder Polish */
+        input:focus::placeholder {
+            color: transparent !important;
+            transition: color 0.2s ease;
+        }
+    </style>
 </head>
 <body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
 <main class="min-h-screen flex items-stretch">
@@ -102,12 +107,12 @@
 <span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
 </div>
 <div class="max-w-md">
-<h1 class="text-5xl font-headline font-extrabold text-white leading-tight tracking-tight mb-6">
-                        The Architectural Ledger of Modern Wealth.
-                    </h1>
-<p class="text-on-primary-container text-lg leading-relaxed font-light">
-                        Experience banking redefined through structural integrity, intentional transparency, and absolute precision. Your assets, engineered for growth.
-                    </p>
+    <h1 class="text-5xl font-headline font-extrabold text-white leading-tight tracking-tight mb-6">
+        Strategic Wealth, <br/>Simplified.
+    </h1>
+    <p class="text-on-primary-container text-lg leading-relaxed opacity-80">
+        Access your global financial headquarters. Securely managed, precisely engineered.
+    </p>
 </div>
 </div>
 <div class="relative z-10 flex gap-12 items-end">
@@ -120,10 +125,10 @@
 <div class="text-on-primary-container text-[10px] tracking-widest font-label uppercase mt-1">System Uptime</div>
 </div>
 </div>
-<div class="absolute inset-0 z-0 opacity-20">
-<img alt="abstract architectural building with sharp angles and dramatic shadows" class="w-full h-full object-cover grayscale" data-alt="abstract architectural building with sharp angles and dramatic geometric shadows and clean lines against a clear sky" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+<div class="absolute inset-0 z-0">
+    <img alt="Modern Architecture Interior" class="w-full h-full object-cover brightness-[0.35] contrast-[1.1]" src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"/>
+    <div class="absolute inset-0 bg-primary/30 mix-blend-multiply"></div>
 </div>
-<div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full architectural-gradient blur-3xl opacity-50"></div>
 </section>
 <section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-24 bg-surface">
 <div class="w-full max-w-md">
@@ -140,7 +145,7 @@
 <label class="text-[10px] font-label font-bold tracking-widest text-on-surface-variant uppercase" for="identity">Email or Username</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="alex.sterling@nexabank.com" required="" type="text"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="sujaypaul123@gmail.com" required="" type="text"/>
 </div>
 </div>
 <div class="space-y-2">
@@ -176,8 +181,8 @@
 </div>
 <div class="grid grid-cols-2 gap-4">
 <button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
-<img alt="Google Logo" class="w-5 h-5 grayscale opacity-70" data-alt="minimalist google logo icon for single sign on authentication service" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">SSO Identity</span>
+    <span class="material-symbols-outlined text-outline text-xl">account_circle</span>
+    <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">SSO Identity</span>
 </button>
 <button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
 <span class="material-symbols-outlined text-outline">key</span>
