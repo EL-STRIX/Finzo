@@ -1,6 +1,6 @@
 /**
- * Finzo Component Loader
- * Dynamically injects shared HTML components into the page.
+ * Finzo Component Loader v2.0
+ * Unified systemic injection for Navbars, Sidebars, and Footers.
  */
 
 async function loadComponent(elementId, componentPath) {
@@ -12,17 +12,45 @@ async function loadComponent(elementId, componentPath) {
         if (response.ok) {
             const html = await response.text();
             placeholder.innerHTML = html;
+            
+            // Post-load logic: Active Link Highlighting
+            highlightActiveLinks(placeholder);
         } else {
-            console.error(`Failed to load component: ${componentPath}`);
+            console.error(`Status ${response.status}: Failed to load ${componentPath}`);
         }
     } catch (error) {
-        console.error(`Error loading component: ${componentPath}`, error);
+        console.error(`Network Error loading ${componentPath}:`, error);
     }
 }
 
-// Auto-load common components on DOM loaded
+function highlightActiveLinks(container) {
+    const currentPath = window.location.pathname;
+    const links = container.querySelectorAll('a');
+    
+    links.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath && currentPath.endsWith(linkPath)) {
+            // Apply active styles for Nav
+            if (link.classList.contains('nav-link')) {
+                link.classList.add('nav-link-active');
+            }
+            // Apply active styles for Sidebar
+            if (container.parentElement && container.parentElement.tagName === 'ASIDE' || link.closest('aside')) {
+                link.classList.add('bg-white', 'text-indigo-700', 'font-bold', 'shadow-sm');
+                link.classList.remove('text-slate-600');
+            }
+        }
+    });
+}
+
+// Global initialization
 document.addEventListener('DOMContentLoaded', () => {
-    // Determine the path to the components folder based on current location
-    // Since we are running on a local server, we can use absolute paths from root.
+    // Top Navbar (Landing/Auth)
+    loadComponent('navbar-placeholder', '/components/navbar.html');
+    
+    // Side Sidebar (Dashboard/Admin)
+    loadComponent('sidebar-placeholder', '/components/sidebar.html');
+    
+    // Universal Footer
     loadComponent('footer-placeholder', '/components/footer.html');
 });

@@ -12,6 +12,9 @@
     
     <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
     
+
+<!-- Modular Footer -->
+<div id="footer-placeholder"></div>
 <script>
       
       tailwind.config = {
@@ -119,44 +122,8 @@
 </div>
 </nav>
 <!-- Sidebar Integration -->
-<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-slate-50 :bg-slate-950 flex flex-col py-6 hidden lg:flex border-r border-outline-variant/10">
-<div class="text-lg font-black text-indigo-900 :text-white px-6 py-8 font-manrope">Finzo</div>
-<div class="px-6 mb-8">
-<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
-<p class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Active Account</p>
-<p class="text-sm font-bold text-on-surface">****4290</p>
-<p class="text-[10px] text-secondary">Global Private Equity</p>
-</div>
-</div>
-<nav class="flex-1 space-y-1 px-2">
-<a class="flex items-center space-x-3 text-slate-600 :text-slate-400 hover:text-indigo-600 p-3 rounded-lg hover:bg-slate-200 transition-all" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-medium text-sm">Overview</span>
-</a>
-<a class="flex items-center space-x-3 bg-white :bg-slate-900 text-indigo-700 :text-indigo-400 font-bold rounded-lg shadow-sm p-3 transition-all" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">swap_horiz</span>
-<span class="font-medium text-sm">Payments</span>
-</a>
-<a class="flex items-center space-x-3 text-slate-600 :text-slate-400 hover:text-indigo-600 p-3 rounded-lg hover:bg-slate-200 transition-all" href="#">
-<span class="material-symbols-outlined">receipt_long</span>
-<span class="font-medium text-sm">History</span>
-</a>
-<a class="flex items-center space-x-3 text-slate-600 :text-slate-400 hover:text-indigo-600 p-3 rounded-lg hover:bg-slate-200 transition-all" href="#">
-<span class="material-symbols-outlined">verified_user</span>
-<span class="font-medium text-sm">Security</span>
-</a>
-</nav>
-<div class="mt-auto px-6 space-y-4">
-<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-sm">add</span>
-<span>New Transfer</span>
-</button>
-<div class="pt-6 border-t border-outline-variant/20 space-y-1">
-<a class="flex items-center space-x-3 text-slate-600 p-2 text-sm hover:text-primary" href="#"><span class="material-symbols-outlined text-sm">help</span><span>Help Center</span></a>
-<a class="flex items-center space-x-3 text-slate-600 p-2 text-sm hover:text-error" href="../auth/login.html"><span class="material-symbols-outlined text-sm">logout</span><span>Logout</span></a>
-</div>
-</div>
-</aside>
+<!-- Modular Side Sidebar -->
+<div id="sidebar-placeholder"></div>
 <!-- Main Content -->
 <main class="lg:ml-64 pt-16 min-h-screen bg-surface">
 <div class="max-w-7xl mx-auto p-8">

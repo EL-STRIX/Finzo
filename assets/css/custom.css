@@ -39,18 +39,40 @@
             transform: translateY(-1px);
             box-shadow: 0 10px 20px -5px rgba(0, 38, 69, 0.3);
         }
-        /* Professional Entrance Animations */
-        @keyframes revealUp {
-            0% { transform: translateY(40px); opacity: 0; filter: blur(8px); }
-            100% { transform: translateY(0); opacity: 1; filter: blur(0); }
-        }
+        /* Premium Entrance Animations (Scroll-Triggered) */
         .reveal-up {
-            animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
         }
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
+        .reveal-up.revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        .animate-drift {
+            animation: drift 20s infinite ease-in-out;
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s infinite ease-in-out;
+        }
 
         /* Premium Navbar & Branding Refinement */
         .glass-nav {
@@ -98,6 +120,19 @@
         }
         .nav-link-active::after {
             width: 100% !important;
+        }
+
+        .line-reveal {
+            overflow: hidden;
+            display: block;
+        }
+        .line-reveal-inner {
+            display: block;
+            transform: translateY(110%);
+            transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .revealed .line-reveal-inner {
+            transform: translateY(0);
         }
 
         .glass-panel {
@@ -159,5 +194,20 @@
         .text-high-contrast {
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* Institutional Line Reveal System */
+        .line-reveal {
+            display: block;
+            overflow: hidden;
+            line-height: inherit;
+        }
+        .line-reveal-inner {
+            display: block;
+            transform: translateY(110%);
+            transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .revealed .line-reveal-inner {
+            transform: translateY(0);
         }
     

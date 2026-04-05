@@ -95,34 +95,21 @@
 </head>
 <body class="bg-surface font-body text-on-surface antialiased">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-12 h-20 glass-nav">
-<div class="flex items-center gap-16">
-<span class="text-2xl logo-text">Finzo</span>
-<div class="hidden md:flex items-center gap-10">
-<a class="nav-link nav-link-active" href="#">Products</a>
-<a class="nav-link" href="#benefits">Solutions</a>
-<a class="nav-link" href="#features">Security</a>
-<a class="nav-link" href="#">Support</a>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<a href="views/auth/login.html" class="text-sm font-bold text-primary hover:opacity-70 transition-opacity">Log In</a>
-<a href="views/auth/register.html" class="architectural-gradient px-6 py-3 text-sm text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all">Open Account</a>
-</div>
-</nav>
+<!-- Modular Top Navbar -->
+<div id="navbar-placeholder"></div>
 <main class="pt-20">
 <!-- Hero Section -->
 <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-surface">
 <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,38,69,0.03)_0%,transparent_50%)]"></div>
 <div class="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
 <div class="lg:col-span-6">
-<div class="reveal-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-10 border border-primary/10">
+<div class="reveal-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-10 border border-primary/10 animate-pulse-soft">
 <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
 <span class="text-[10px] font-bold tracking-[0.3em] uppercase font-label">The Modern Standard</span>
 </div>
 <h1 class="reveal-up stagger-1 text-7xl lg:text-9xl font-black font-headline text-primary leading-[0.9] tracking-tightest mb-10">
-                        Banking, <br/>
-<span class="text-on-primary-container">Perfected.</span>
+    <span class="line-reveal flex flex-col items-start"><span class="line-reveal-inner">Banking,</span></span>
+    <span class="line-reveal flex flex-col items-start"><span class="line-reveal-inner text-on-primary-container">Perfected.</span></span>
 </h1>
 <p class="reveal-up stagger-2 text-xl text-on-surface-variant max-w-lg leading-relaxed mb-12 opacity-70">
                         The modern standard for global banking. Absolute security. Institutional precision. Engineered for your institutional growth.
@@ -146,7 +133,7 @@
 <div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Global Portfolio</div>
 <span class="material-symbols-outlined text-on-tertiary-container animate-bounce" data-icon="trending_up">trending_up</span>
 </div>
-<div class="text-4xl font-black font-headline text-primary mb-6">$842,090.42</div>
+<div class="text-4xl font-black font-headline text-primary mb-6 reveal-up stagger-4" data-count-to="842090" data-prefix="$">$0</div>
 <div class="h-20 w-full flex items-end gap-1.5 px-1">
 <div class="w-full bg-primary/5 rounded-t-lg h-[40%]"></div>
 <div class="w-full bg-primary/10 rounded-t-lg h-[65%]"></div>
@@ -370,8 +357,8 @@
 </div>
 </div>
 <!-- Background decorative elements -->
-<div class="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-<div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-container/5 rounded-full blur-3xl"></div>
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-drift"></div>
+<div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-container/5 rounded-full blur-3xl animate-drift" style="animation-delay: -5s;"></div>
 </section>
 
 </main>

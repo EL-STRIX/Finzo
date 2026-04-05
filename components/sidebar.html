@@ -1,0 +1,49 @@
+<!-- Dashboard Sidebar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-slate-50 flex flex-col py-6 font-manrope text-sm z-40 hidden md:flex border-r border-slate-200">
+    <div class="text-lg font-black text-indigo-900 px-6 py-8 logo-text font-headline">Finzo</div>
+    <div class="px-6 mb-8">
+        <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100">
+            <img alt="Executive User Profile" class="w-10 h-10 rounded-full object-cover" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+            <div class="overflow-hidden">
+                <p class="font-bold text-primary truncate">Private Wealth</p>
+                <p class="text-[10px] text-secondary truncate">Account: ****4290</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Overview</span>
+        </a>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/transfer.html">
+            <span class="material-symbols-outlined">swap_horiz</span>
+            <span>Payments</span>
+        </a>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/transactions.html">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span>History</span>
+        </a>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/settings/profile.html">
+            <span class="material-symbols-outlined">verified_user</span>
+            <span>Security</span>
+        </a>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="#">
+            <span class="material-symbols-outlined">group</span>
+            <span>Recipients</span>
+        </a>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/admin/admin-audit-log.html">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            <span>Admin</span>
+        </a>
+    </nav>
+    <div class="mt-auto px-4 pt-6 border-t border-slate-200">
+        <button class="w-full bg-primary text-on-primary py-3 px-4 rounded-lg font-bold flex items-center justify-center gap-2 mb-4 hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-sm">add</span>
+            New Transfer
+        </button>
+        <a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform cursor-pointer font-medium" href="/views/auth/login.html">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>

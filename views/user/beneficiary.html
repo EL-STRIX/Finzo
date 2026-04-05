@@ -95,49 +95,8 @@
 </head>
 <body class="bg-surface text-on-surface">
 <!-- Sidebar Navigation (Shared Component Alex Sterling Variant) -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200 flex flex-col p-6 z-40">
-<div class="text-lg font-black text-blue-900 mb-8">Finzo</div>
-<div class="flex items-center gap-4 mb-10 p-2">
-<div class="relative w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional male executive with a confident expression, soft office lighting in the background" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-</div>
-<div>
-<p class="font-['Plus_Jakarta_Sans'] text-sm font-bold text-blue-900">Alex Sterling</p>
-<p class="text-xs text-slate-500">Premium Member</p>
-</div>
-</div>
-<nav class="flex-1 space-y-2">
-<!-- Dashboard -->
-<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Dashboard</span>
-</a>
-<!-- Accounts (Active for Beneficiary Management Context) -->
-<a class="flex items-center gap-3 bg-white text-blue-900 shadow-sm rounded-lg px-4 py-3 transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Accounts</span>
-</a>
-<!-- Payments -->
-<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Payments</span>
-</a>
-<!-- History -->
-<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">History</span>
-</a>
-<!-- Settings -->
-<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Settings</span>
-</a>
-</nav>
-<a class="flex items-center gap-3 text-slate-500 px-4 py-3 mt-auto hover:text-error transition-colors" href="#">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Logout</span>
-</a>
-</aside>
+<!-- Modular Side Sidebar -->
+<div id="sidebar-placeholder"></div>
 <!-- Main Content Canvas -->
 <main class="ml-64 min-h-screen bg-surface">
 <!-- Header Section -->
@@ -276,62 +235,8 @@
 </div>
 </section>
 <!-- Right: Insights & Quick Stats (4 Columns) -->
-<aside class="col-span-4 space-y-8">
-<!-- Data Card: Distribution -->
-<div class="bg-primary text-on-primary p-8 rounded-xl relative overflow-hidden">
-<div class="absolute -right-12 -top-12 w-48 h-48 bg-primary-container rounded-full opacity-50 blur-3xl"></div>
-<div class="relative z-10">
-<h3 class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-widest text-on-primary-container/80 mb-6 uppercase">Frequent Payees</h3>
-<div class="space-y-6">
-<div class="flex items-center justify-between">
-<span class="text-sm">Family &amp; Friends</span>
-<span class="text-sm font-mono">65%</span>
-</div>
-<div class="w-full bg-primary-container h-1.5 rounded-full">
-<div class="bg-tertiary-fixed-dim w-[65%] h-full rounded-full"></div>
-</div>
-<div class="flex items-center justify-between">
-<span class="text-sm">Business Services</span>
-<span class="text-sm font-mono">25%</span>
-</div>
-<div class="w-full bg-primary-container h-1.5 rounded-full">
-<div class="bg-on-tertiary-container w-[25%] h-full rounded-full"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Featured Card -->
-<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/30">
-<h3 class="font-['Plus_Jakarta_Sans'] text-sm font-bold text-primary mb-4">Security Tip</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed mb-6">
-                        Always verify account details before saving a new beneficiary. For international transfers, ensure the SWIFT/BIC code is accurate to avoid processing delays.
-                    </p>
-<a class="text-primary font-bold text-xs flex items-center gap-1 hover:underline" href="#">
-                        Learn more about secure transfers
-                        <span class="material-symbols-outlined text-xs" data-icon="arrow_forward">arrow_forward</span>
-</a>
-</div>
-<!-- Recent Activity Feed (Minimal) -->
-<div>
-<h3 class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-on-surface-variant tracking-[0.2em] uppercase mb-6">Recent Changes</h3>
-<div class="space-y-6">
-<div class="flex gap-4">
-<div class="w-2 h-2 mt-1.5 rounded-full bg-on-tertiary-container"></div>
-<div>
-<p class="text-sm font-medium">Added "Modern Coffee Roasters"</p>
-<p class="text-[10px] text-on-surface-variant">Oct 14, 2023 • 09:41 AM</p>
-</div>
-</div>
-<div class="flex gap-4">
-<div class="w-2 h-2 mt-1.5 rounded-full bg-outline"></div>
-<div>
-<p class="text-sm font-medium">Updated details for "Julianne S."</p>
-<p class="text-[10px] text-on-surface-variant">Oct 12, 2023 • 02:15 PM</p>
-</div>
-</div>
-</div>
-</div>
-</aside>
+<!-- Modular Side Sidebar -->
+<div id="sidebar-placeholder"></div>
 </div>
 </main>
 <!-- Slide-out Modal Backdrop (Simulated Open State) -->

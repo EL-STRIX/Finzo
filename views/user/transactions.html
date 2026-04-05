@@ -96,40 +96,8 @@
 </head>
 <body class="bg-surface text-on-surface flex min-h-screen">
 <!-- Sidebar: Admin Console Variant -->
-<aside class="h-screen w-72 fixed left-0 top-0 bg-slate-950 flex flex-col py-8 border-r border-emerald-900/30 shadow-2xl shadow-emerald-900/20 z-50">
-<div class="px-8 mb-12">
-<h1 class="text-emerald-500 font-mono text-lg">Admin Console</h1>
-<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 mt-1">System Root</p>
-</div>
-<nav class="flex-1 space-y-1">
-<!-- Active Tab: Audit Logs (Mapping Transactions to Logs) -->
-<a class="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 px-6 py-4 cursor-pointer active:scale-95 transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="security">security</span>
-<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Audit Logs</span>
-</a>
-<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all duration-200 cursor-pointer active:scale-95" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Overview</span>
-</a>
-<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all duration-200 cursor-pointer active:scale-95" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">User Management</span>
-</a>
-<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all duration-200 cursor-pointer active:scale-95" href="#">
-<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
-<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">System Settings</span>
-</a>
-</nav>
-<div class="px-8 mt-auto pt-8 border-t border-slate-800/50">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-bold text-xs">SR</div>
-<div>
-<p class="text-white text-xs font-semibold">ROOT_ADMIN</p>
-<p class="text-slate-500 text-[10px]">Session: 84h 12m</p>
-</div>
-</div>
-</div>
-</aside>
+<!-- Modular Side Sidebar -->
+<div id="sidebar-placeholder"></div>
 <!-- Main Content Canvas -->
 <main class="ml-72 flex-1 flex flex-col min-h-screen">
 <!-- Header Section -->

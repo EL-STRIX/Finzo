@@ -1,8 +1,12 @@
 /**
  * Finzo Main Interactions (Tailwind)
+ * Integrates institutional logic with the motion engine.
  */
 
 $(document).ready(function() {
+    
+    // --- ORIGINAL CORE LOGIC ---
+
     // Top Navigation Profile Toggle
     $(document).on('click', 'header button:has(img)', function() {
         const dropdown = $(this).next();
@@ -44,6 +48,79 @@ $(document).ready(function() {
 
     // Toasts placeholder
     window.showToast = function(message, type = 'success') {
-        alert(message);
+        console.log(`[Toast] ${type.toUpperCase()}: ${message}`);
     }
+
+    // --- INSTITUTIONAL MOTION ENGINE ---
+
+    // Intersection Observer for Reveal Animations
+    const motionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                
+                // Trigger Count-Up if it's a stat
+                if (entry.target.hasAttribute('data-count-to')) {
+                    animateValue(entry.target);
+                }
+                
+                // Unobserve after reveal to save cycles
+                motionObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    // Initialize observers for everything with reveal-up
+    function initMotion() {
+        $('.reveal-up').each(function() {
+            motionObserver.observe(this);
+        });
+    }
+    initMotion();
+
+    // Stat Counter Utility
+    function animateValue(obj) {
+        const start = 0;
+        const endEndAttr = obj.getAttribute('data-count-to');
+        const end = parseFloat(endEndAttr.replace(/[^\d.]/g, ''));
+        const duration = 1500;
+        const prefix = obj.getAttribute('data-prefix') || '';
+        const suffix = obj.getAttribute('data-suffix') || '';
+        let startTimestamp = null;
+
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = progress * (end - start) + start;
+            
+            // Format number with commas
+            const formatted = Math.floor(value).toLocaleString();
+            obj.innerHTML = prefix + formatted + suffix;
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                // Ensure final value is exact
+                obj.innerHTML = prefix + end.toLocaleString() + suffix;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Smooth Scroll for anchor links
+    $(document).on('click', 'a[href^="#"]', function(e) {
+        const targetId = $(this).attr('href');
+        if (targetId === '#' || !targetId.startsWith('#')) return;
+        
+        const target = $(targetId);
+        if (target.length) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: target.offset().top - 100
+            }, 800);
+        }
+    });
+
+    // Re-initialize motion for dynamically loaded content
+    window.refreshMotion = initMotion;
 });
