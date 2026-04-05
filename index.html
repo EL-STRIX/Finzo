@@ -95,61 +95,49 @@
 </head>
 <body class="bg-surface font-body text-on-surface antialiased">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 :bg-slate-900/80 glass-nav shadow-sm font-['Plus_Jakarta_Sans'] text-sm tracking-tight border-b border-outline-variant/10">
-<div class="flex items-center gap-12">
-<span class="text-xl font-bold tracking-tighter text-blue-900 :text-white">Finzo</span>
-<div class="hidden md:flex items-center gap-8">
-<a class="text-blue-900 :text-emerald-400 font-semibold border-b-2 border-blue-600 py-1" href="#">Products</a>
-<a class="text-slate-600 :text-slate-400 hover:text-blue-900 hover:bg-slate-50 :hover:bg-slate-800 transition-colors py-1" href="#">Solutions</a>
-<a class="text-slate-600 :text-slate-400 hover:text-blue-900 hover:bg-slate-50 :hover:bg-slate-800 transition-colors py-1" href="#">Security</a>
-<a class="text-slate-600 :text-slate-400 hover:text-blue-900 hover:bg-slate-50 :hover:bg-slate-800 transition-colors py-1" href="#">Support</a>
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-12 h-20 glass-nav">
+<div class="flex items-center gap-16">
+<span class="text-2xl logo-text">Finzo</span>
+<div class="hidden md:flex items-center gap-10">
+<a class="nav-link nav-link-active" href="#">Products</a>
+<a class="nav-link" href="#benefits">Solutions</a>
+<a class="nav-link" href="#features">Security</a>
+<a class="nav-link" href="#">Support</a>
 </div>
 </div>
-<div class="flex items-center gap-4">
-<a href="views/auth/login.html" class="px-5 py-2 text-primary font-semibold hover:bg-surface-container transition-colors rounded-lg" style="display:inline-block;text-align:center;">Log In</a>
-<a href="views/auth/register.html" class="architectural-gradient px-6 py-2.5 text-white font-bold rounded-lg shadow-sm active:opacity-80 transition-all text-center flex items-center justify-center">Open Account</a>
+<div class="flex items-center gap-6">
+<a href="views/auth/login.html" class="text-sm font-bold text-primary hover:opacity-70 transition-opacity">Log In</a>
+<a href="views/auth/register.html" class="architectural-gradient px-6 py-3 text-sm text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all">Open Account</a>
 </div>
 </nav>
-<main class="pt-16">
+<main class="pt-20">
 <!-- Hero Section -->
-<section class="relative min-h-[850px] flex items-center overflow-hidden bg-surface">
-<div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,38,69,0.05)_0%,transparent_50%)]"></div>
-<div class="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+<section class="relative min-h-[90vh] flex items-center overflow-hidden bg-surface">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,38,69,0.03)_0%,transparent_50%)]"></div>
+<div class="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
 <div class="lg:col-span-6">
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary mb-8 border border-primary/10">
-<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-<span class="text-[10px] font-bold tracking-[0.2em] uppercase font-label">The Gold Standard of Digital Banking</span>
+<div class="reveal-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-10 border border-primary/10">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="text-[10px] font-bold tracking-[0.3em] uppercase font-label">The Modern Standard</span>
 </div>
-<h1 class="text-6xl lg:text-8xl font-black font-headline text-primary leading-[0.95] tracking-tightest mb-8">
-                        Precision <br/>
-<span class="text-on-primary-container">Architecture.</span>
+<h1 class="reveal-up stagger-1 text-7xl lg:text-9xl font-black font-headline text-primary leading-[0.9] tracking-tightest mb-10">
+                        Wealth, <br/>
+<span class="text-on-primary-container">Engineered.</span>
 </h1>
-<p class="text-xl text-on-surface-variant max-w-lg leading-relaxed mb-12 opacity-80">
-                        Experience a new era of institutional-grade finance. Engineering-led security meets a minimalist aesthetic for the next generation of global wealth management.
+<p class="reveal-up stagger-2 text-xl text-on-surface-variant max-w-lg leading-relaxed mb-12 opacity-70">
+                        The modern standard for global banking. Secure, architectural, and precision-built for your institutional growth.
                     </p>
-<div class="flex flex-wrap gap-5">
-<a href="views/auth/register.html" class="architectural-gradient px-10 py-5 text-white font-bold rounded-2xl shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center">Open Your Account</a>
+<div class="reveal-up stagger-3 flex flex-wrap gap-6">
+<a href="views/auth/register.html" class="architectural-gradient px-12 py-5 text-white font-bold rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,38,69,0.3)] hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center justify-center">Get Started</a>
 <a href="#features" class="px-10 py-5 bg-white text-primary font-bold rounded-2xl border border-outline-variant/30 hover:bg-surface-container-low transition-all flex items-center justify-center gap-3">
-<span class="material-symbols-outlined" data-icon="explore">explore</span>
-                            Explore Ecosystem
+                            The Ecosystem
                         </a>
 </div>
-<div class="mt-16 flex items-center gap-12">
-<div>
-<div class="text-3xl font-black font-headline text-primary">$42B+</div>
-<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-label opacity-50 font-bold">Assets Secured</div>
 </div>
-<div class="w-px h-10 bg-outline-variant/30"></div>
-<div>
-<div class="text-3xl font-black font-headline text-primary">0.001s</div>
-<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-label opacity-50 font-bold">Execution Latency</div>
-</div>
-</div>
-</div>
-<div class="lg:col-span-6 relative">
-<div class="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-2xl border-[12px] border-white ring-1 ring-black/5">
-<img alt="Modern architecture" class="w-full h-full object-cover scale-110 hover:scale-100 transition-transform duration-1000" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop"/>
-<div class="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-transparent"></div>
+<div class="lg:col-span-6 relative reveal-up stagger-2">
+<div class="relative rounded-[3rem] overflow-hidden aspect-[4/5] shadow-[0_48px_80px_-16px_rgba(0,0,0,0.3)] border-[16px] border-white ring-1 ring-black/5">
+<img alt="Digital Architecture" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2070&auto=format&fit=crop"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent"></div>
 </div>
 <!-- Floating Portfolio Card -->
 <div class="absolute -bottom-10 -left-16 bg-white p-8 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] max-w-xs hidden xl:block border border-outline-variant/10">

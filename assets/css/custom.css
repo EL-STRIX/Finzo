@@ -39,18 +39,73 @@
             transform: translateY(-1px);
             box-shadow: 0 10px 20px -5px rgba(0, 38, 69, 0.3);
         }
-        .glass-nav {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.8);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        /* Professional Entrance Animations */
+        @keyframes revealUp {
+            0% { transform: translateY(40px); opacity: 0; filter: blur(8px); }
+            100% { transform: translateY(0); opacity: 1; filter: blur(0); }
         }
+        .reveal-up {
+            animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+
+        /* Premium Navbar & Branding Refinement */
+        .glass-nav {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid rgba(0, 38, 69, 0.05);
+            transition: all 0.3s ease;
+        }
+        .logo-text {
+            background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .nav-link {
+            position: relative;
+            color: #545f6f;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #002645;
+        }
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            width: 0;
+            height: 2px;
+            background: #002645;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link-active {
+            color: #002645 !important;
+            font-weight: 700;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+
         .glass-panel {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 38, 69, 0.05);
         }
 
         /* Professional Card Hover Animations */
