@@ -149,7 +149,14 @@
             cursor: pointer;
         }
 
-        /* Text Contrast Utils */
+        /* Forced Visibility Utilities (Bypasses Tailwind Load Delays) */
+        .bg-primary-forced {
+            background-color: #002645 !important;
+            color: #ffffff !important;
+        }
+        .bg-white-forced {
+            background-color: #ffffff !important;
+        }
         .text-high-contrast {
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
