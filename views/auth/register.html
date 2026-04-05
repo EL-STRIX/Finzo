@@ -146,8 +146,16 @@
 <div class="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface">
 <div class="w-full max-w-md">
 <div class="mb-12">
-<h2 class="font-headline text-3xl font-extrabold tracking-tight text-primary">Establish Account</h2>
-<p class="text-on-surface-variant text-sm mt-2">Enter your credentials to join the Finzo ledger.</p>
+    <h2 class="font-headline text-3xl font-extrabold tracking-tight text-primary">Establish Account</h2>
+    <p class="text-on-surface-variant text-sm mt-2">Enter your credentials to join the Finzo ledger.</p>
+</div>
+
+<!-- Institutional Error Banner -->
+<div id="auth-error-banner" class="error-banner">
+    <div class="glass-error p-4 rounded-xl flex items-center gap-3">
+        <span class="material-symbols-outlined text-error text-xl">warning</span>
+        <span class="text-xs font-bold text-error uppercase tracking-wider">Registration incomplete. Please ensure all architectural fields are precisely configured.</span>
+    </div>
 </div>
 <form action="#" class="space-y-6" method="POST">
 <input name="csrf_token" type="hidden" value="static_placeholder_token"/>

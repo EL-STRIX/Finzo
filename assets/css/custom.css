@@ -210,4 +210,40 @@
         .revealed .line-reveal-inner {
             transform: translateY(0);
         }
+
+        /* Institutional Error System */
+.error-banner {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.error-banner.active {
+    max-height: 120px;
+    opacity: 1;
+    margin-bottom: 2rem;
+}
+.glass-error {
+    background: rgba(186, 26, 26, 0.05);
+    border: 1px solid rgba(186, 26, 26, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+/* Input Error States */
+.input-error {
+    border: 1.5px solid rgba(186, 26, 26, 0.5) !important;
+    box-shadow: 0 0 0 4px rgba(186, 26, 26, 0.05) !important;
+    background-color: rgba(186, 26, 26, 0.02) !important;
+}
+
+.shake-animation {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1.5px, 0, 0); }
+    20%, 80% { transform: translate3d(2.5px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+    40%, 60% { transform: translate3d(5px, 0, 0); }
+}
     

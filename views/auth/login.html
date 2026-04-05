@@ -130,14 +130,22 @@
     <div class="absolute inset-0 bg-primary/30 mix-blend-multiply"></div>
 </div>
 </section>
-<section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-24 bg-surface">
-<div class="w-full max-w-md">
-<div class="lg:hidden mb-12">
+<section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-12 bg-surface overflow-y-auto h-screen">
+<div class="w-full max-w-md my-auto">
+<div class="lg:hidden mb-8">
 <span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
 </div>
-<div class="mb-12">
-<h2 class="text-3xl font-headline font-bold text-primary tracking-tight mb-2">Welcome Back</h2>
-<p class="text-on-surface-variant font-medium">Access your architectural financial ecosystem.</p>
+<div class="mb-8">
+    <h2 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Welcome Back</h2>
+    <p class="text-on-surface-variant font-medium text-sm">Access your architectural financial ecosystem.</p>
+</div>
+
+<!-- Institutional Error Banner -->
+<div id="auth-error-banner" class="error-banner">
+    <div class="glass-error p-4 rounded-xl flex items-center gap-3">
+        <span class="material-symbols-outlined text-error text-xl">error</span>
+        <span class="text-xs font-bold text-error uppercase tracking-wider">Authentication failed. The provided identity does not match our architectural records.</span>
+    </div>
 </div>
 <form action="#" class="space-y-6" method="POST">
 <input name="csrf_token" type="hidden" value="static_secure_token_placeholder"/>
@@ -171,10 +179,13 @@
 </label>
 </div>
 <div class="pt-4">
-<a href="../auth/login.html" class="w-full architectural-gradient text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-[0.98] transition-all" type="submit" style="display:inline-block;text-align:center;">Log In</a>
+    <button class="w-full architectural-gradient text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+        <span>Log In</span>
+        <span class="material-symbols-outlined text-lg">login</span>
+    </button>
 </div>
 </form>
-<div class="mt-12 pt-8 border-t border-surface-container-high flex flex-col gap-6">
+<div class="mt-8 pt-6 border-t border-surface-container-high flex flex-col gap-5">
 <div class="text-center">
 <span class="text-on-surface-variant text-sm">Don't have an account?</span>
 <a class="ml-2 text-primary font-bold text-sm hover:underline decoration-tertiary-fixed-dim decoration-2 underline-offset-4 transition-all" href="../auth/register.html">Create Account</a>
@@ -190,9 +201,7 @@
 </button>
 </div>
 </div>
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
-</div>
+<!-- Login Section End -->
 </section>
 </main>
 <div class="fixed top-8 right-8 flex items-center gap-4">
