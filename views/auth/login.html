@@ -7,13 +7,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 
-    
-    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-    
 <script>
-      
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -81,11 +76,9 @@
           },
         },
       }
-    
 </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
     
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
@@ -103,8 +96,8 @@
 <main class="min-h-screen flex items-stretch">
 <section class="hidden lg:flex lg:w-1/2 relative architectural-gradient flex-col justify-between p-16 overflow-hidden">
 <div class="relative z-10">
-<div class="flex items-center gap-2 mb-20">
-<span class="text-3xl font-black tracking-tighter text-white font-headline cursor-pointer" onclick="window.location.href='../../index.html'">Finzo</span>
+<div class="flex items-center gap-2 mb-20 cursor-pointer" onclick="window.location.href='../../index.html'">
+<span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
 </div>
 <div class="max-w-md">
     <h1 class="text-5xl font-headline font-extrabold text-white leading-tight tracking-tight mb-6">
@@ -133,7 +126,7 @@
 <section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-12 bg-surface overflow-y-auto h-screen">
 <div class="w-full max-w-md my-auto">
 <div class="lg:hidden mb-8">
-<span class="text-2xl font-black tracking-tighter text-primary font-headline" onclick="window.location.href='../../index.html'">Finzo</span>
+<span class="text-2xl font-black tracking-tighter text-primary font-headline cursor-pointer" onclick="window.location.href='../../index.html'">Finzo</span>
 </div>
 <div class="mb-8">
     <h2 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Welcome Back</h2>
@@ -153,7 +146,7 @@
 <label class="text-[10px] font-label font-bold tracking-widest text-on-surface-variant uppercase" for="identity">Email or Username</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="sujaypaul123@gmail.com" type="text"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="user@finzo.com" type="text"/>
 </div>
 </div>
 <div class="space-y-2">
@@ -164,7 +157,7 @@
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
 <input class="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="password" name="password" placeholder="••••••••••••" type="password"/>
-<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button" id="toggle-password">
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" id="toggle-password" type="button">
 <span class="material-symbols-outlined text-lg">visibility</span>
 </button>
 </div>
@@ -191,11 +184,11 @@
 <a class="ml-2 text-primary font-bold text-sm hover:underline decoration-tertiary-fixed-dim decoration-2 underline-offset-4 transition-all" href="../auth/register.html">Create Account</a>
 </div>
 <div class="grid grid-cols-2 gap-4">
-<button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
+<button type="button" class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
     <span class="material-symbols-outlined text-outline text-xl">account_circle</span>
     <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">SSO Identity</span>
 </button>
-<button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
+<button type="button" class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
 <span class="material-symbols-outlined text-outline">key</span>
 <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Passkey</span>
 </button>
@@ -231,21 +224,21 @@ $(document).ready(function() {
         let isValid = true;
         let errorMessage = "Authentication failed. The provided identity does not match our architectural records.";
 
+        const identity = identityInput.val().trim();
+        const password = passwordInput.val().trim();
+
         // Reset states
         $('.input-error').removeClass('input-error');
         $('.shake-animation').removeClass('shake-animation');
         errorBanner.removeClass('active');
 
-        // Delay to handle re-triggering of animations
         setTimeout(() => {
-            // Validate Identity
-            if (identityInput.val().trim() === '') {
+            // Validate Empty
+            if (identity === '') {
                 identityInput.addClass('input-error shake-animation');
                 isValid = false;
             }
-
-            // Validate Password
-            if (passwordInput.val().trim() === '') {
+            if (password === '') {
                 passwordInput.addClass('input-error shake-animation');
                 isValid = false;
             }
@@ -257,16 +250,24 @@ $(document).ready(function() {
                 return;
             }
 
-            // Simulated identity check for demonstration
-            if (identityInput.val() === 'error@finzo.com') {
-                errorText.text("Identity verification failed. Access denied by security protocols.");
-                errorBanner.addClass('active');
-                identityInput.addClass('input-error shake-animation');
-                passwordInput.addClass('input-error');
+            // --- ARCHITECTURAL DEMO CREDENTIALS ---
+            if (identity === 'user@finzo.com' && password === 'user123') {
+                console.log("Identity verified. Initializing secure session for Private Banking Client...");
+                window.location.href = '../user/dashboard.html';
                 return;
             }
 
-            console.log("Validation Passed: Proceeding to gateway...");
+            if (identity === 'admin@finzo.com' && password === 'admin123') {
+                console.log("Architect Access Verified. Initializing secure session for Portfolio Admin...");
+                window.location.href = '../admin/admin-dashboard.html';
+                return;
+            }
+
+            // Failure state
+            errorText.text("Invalid credentials. The provided identity does not match our institutional ledger.");
+            errorBanner.addClass('active');
+            identityInput.addClass('input-error shake-animation');
+            passwordInput.addClass('input-error');
         }, 10);
     });
 
