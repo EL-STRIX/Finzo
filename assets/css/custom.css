@@ -108,22 +108,21 @@
             box-shadow: 0 8px 32px 0 rgba(0, 38, 69, 0.05);
         }
 
-        /* Professional Card Hover Animations */
-        div[class*="p-10 rounded-xl"],
-        div[class*="p-8 rounded-xl"],
-        div[class*="p-6 rounded-xl"],
-        div[class*="bg-white p-6 rounded-2xl"] {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Subtle Professional Card Hover Animations */
+        div[class*="rounded-[2rem]"],
+        div[class*="rounded-3xl"],
+        div[class*="rounded-xl"] {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
         
-        div[class*="p-10 rounded-xl"]:hover,
-        div[class*="p-8 rounded-xl"]:hover,
-        div[class*="p-6 rounded-xl"]:hover,
-        div[class*="bg-white p-6 rounded-2xl"]:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2);
-            border-color: rgba(0, 38, 69, 0.05);
+        div[class*="rounded-[2rem]"]:hover,
+        div[class*="rounded-3xl"]:hover,
+        div[class*="rounded-xl"]:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.08);
+            border-color: rgba(0, 38, 69, 0.04);
             cursor: pointer;
         }
 

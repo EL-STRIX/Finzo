@@ -209,7 +209,7 @@
 <span class="material-symbols-outlined text-primary text-4xl mb-10 block" data-icon="account_balance">account_balance</span>
 <h3 class="text-3xl font-black font-headline text-primary mb-6">Institutional Online Banking</h3>
 <p class="text-on-surface-variant text-lg max-w-md mb-12 opacity-70">Manage high-volume multi-currency operations through a unified ledger. Zero friction, total clarity.</p>
-<a class="text-primary font-black inline-flex items-center gap-3 group-hover:gap-5 transition-all text-sm uppercase tracking-widest font-label" href="views/user/dashboard.html">
+<a id="terminal-link-btn" class="text-primary font-black inline-flex items-center gap-3 group-hover:gap-5 transition-all text-sm uppercase tracking-widest font-label" href="views/user/dashboard.html">
                                 Explore The Terminal <span class="material-symbols-outlined text-lg">arrow_forward</span>
 </a>
 </div>
@@ -241,46 +241,63 @@
 <span class="text-xs text-tertiary-fixed-dim font-black">+14.2%</span>
 </div>
 </div>
-<!-- Feature 4: Global Liquidity Rails -->
+<!-- Feature 4: Everything in One Place -->
 <div class="md:col-span-8 bg-white p-12 rounded-[2rem] border border-outline-variant/10 group overflow-hidden">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
 <div>
-<span class="material-symbols-outlined text-primary text-4xl mb-10 block">currency_exchange</span>
-<h3 class="text-3xl font-black font-headline text-primary mb-6">Institutional Liquidity.</h3>
-<p class="text-on-surface-variant leading-relaxed opacity-70">Global settlement via architectural-grade rails. Bypassing traditional hop-based clearing for real-time ledger finality across 140+ nodes.</p>
+<span class="material-symbols-outlined text-primary text-4xl mb-10 block">dashboard_customize</span>
+<h2 class="text-3xl font-black font-headline text-primary mb-6">Everything in One Place.</h2>
+<p class="text-on-surface-variant leading-relaxed opacity-70">Deposit, withdraw, transfer, and track every rupee — all from your personal Finzo dashboard. No hidden fees. No complications. Ever.</p>
 </div>
-<div class="space-y-4">
-<div class="bg-surface-container-low p-5 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-3 transition-all duration-500">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-xl architectural-gradient text-white flex items-center justify-center text-[10px] font-black">NYC</div>
+<div class="space-y-6 relative">
+<!-- Dash Connector Rail -->
+<div class="absolute left-[34px] top-6 bottom-6 w-px border-l-2 border-dashed border-primary/10"></div>
+
+<div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-3 transition-all duration-500 relative z-10">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl architectural-gradient text-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+</div>
 <div>
-<div class="text-[10px] uppercase tracking-widest text-primary/40 font-bold mb-0.5">Origin Node</div>
-<div class="text-xs font-bold text-primary">Settlement Core v.4</div>
+<div class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">Service</div>
+<div class="text-sm font-bold text-primary">Deposit & Withdraw</div>
 </div>
 </div>
-<div class="text-[8px] text-on-tertiary-container font-black px-2 py-1 bg-on-tertiary-container/20 rounded-md uppercase tracking-tighter">Verified</div>
+<div class="px-3 py-1 bg-on-tertiary-container/10 rounded-full flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="text-[9px] text-on-tertiary-container font-black uppercase tracking-tighter">FAST</span>
 </div>
-<div class="bg-surface-container-low p-5 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-6 transition-all duration-700">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center text-[10px] font-black">LDN</div>
+</div>
+
+<div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-6 transition-all duration-700 relative z-10">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl bg-white text-primary border border-primary/5 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xl">swap_horiz</span>
+</div>
 <div>
-<div class="text-[10px] uppercase tracking-widest text-primary/40 font-bold mb-1">Transit Node</div>
-<div class="text-xs font-bold text-primary">Institutional Relay</div>
+<div class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">Service</div>
+<div class="text-sm font-bold text-primary">Fund Transfer</div>
 </div>
 </div>
-<div class="text-[8px] text-primary/40 font-black px-2 py-1 bg-primary/5 rounded-md uppercase tracking-tighter">Mapping</div>
+<div class="px-3 py-1 bg-primary/5 rounded-full flex items-center gap-2 animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+<span class="text-[9px] text-primary/40 font-black uppercase tracking-tighter">PROTECTED</span>
 </div>
-<div class="bg-white p-5 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,38,69,0.1)] border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-9 transition-all duration-1000">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-xl bg-tertiary-fixed-dim text-white flex items-center justify-center text-[10px] font-black">SGP</div>
+</div>
+
+<div class="bg-white p-6 rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,38,69,0.15)] border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-9 transition-all duration-1000 relative z-10">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim text-white flex items-center justify-center shadow-lg shadow-tertiary-fixed-dim/20">
+<span class="material-symbols-outlined text-xl">file_download</span>
+</div>
 <div>
-<div class="text-[10px] uppercase tracking-widest text-primary/40 font-bold mb-1">Target Node</div>
-<div class="text-xs font-bold text-primary text-tertiary-fixed-dim">Terminal Point</div>
+<div class="text-[10px] uppercase tracking-widest text-tertiary-fixed-dim font-bold mb-1">Service</div>
+<div class="text-sm font-bold text-primary">Download Statement</div>
 </div>
 </div>
-<div class="flex gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim/40"></span>
+<div class="flex gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+<span class="text-[9px] text-tertiary-fixed-dim font-black uppercase tracking-tighter">READY</span>
 </div>
 </div>
 </div>
@@ -310,20 +327,6 @@
 <div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-container/5 rounded-full blur-3xl"></div>
 </section>
 
-<!-- Trust Section (Simplified) -->
-<section class="py-24 bg-surface-container-low border-t border-outline-variant/10">
-<div class="container mx-auto px-8 text-center">
-<p class="text-[10px] font-bold tracking-[0.4em] text-on-surface-variant/40 uppercase mb-12">Secured by Institutional Partnerships</p>
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-12 items-center opacity-30 grayscale">
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=VENTURE+I&font=Montserrat"/>
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=VAULT+CORP&font=Montserrat"/>
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=SECURE+B&font=Montserrat"/>
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=GLOBAL+R&font=Montserrat"/>
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=LEDGER+X&font=Montserrat"/>
-<img alt="Partner" class="h-6 object-contain mx-auto" src="https://placehold.co/200x60/transparent/333333?text=BANK+SYS&font=Montserrat"/>
-</div>
-</div>
-</section>
 </main>
 <!-- Footer -->
 <footer class="w-full border-t border-slate-200 :border-slate-800 bg-slate-50 :bg-slate-950 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -332,11 +335,10 @@
 <div class="flex gap-6">
 <a class="text-slate-500 hover:text-blue-600 font-['Inter'] text-xs transition-colors" href="#">Privacy Policy</a>
 <a class="text-slate-500 hover:text-blue-600 font-['Inter'] text-xs transition-colors" href="#">Terms of Service</a>
-<a class="text-slate-500 hover:text-blue-600 font-['Inter'] text-xs transition-colors" href="views/settings/profile.html">Cookie Settings</a>
 </div>
 </div>
 <div class="text-slate-500 font-['Inter'] text-xs">
-            © 2024 NexaBank Architectural Ledger. All rights reserved.
+            © 2024 Finzo Architectural Ledger. All rights reserved.
         </div>
 </footer>
 

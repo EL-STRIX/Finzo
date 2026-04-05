@@ -27,6 +27,21 @@ $(document).ready(function() {
         }
     });
 
+    // Authentication Guard Logic
+    window.isAuthenticated = function() {
+        return localStorage.getItem('finzo_logged_in') === 'true';
+    };
+
+    // Terminal Link Dynamic Routing
+    $(document).on('click', '#terminal-link-btn', function(e) {
+        e.preventDefault();
+        if (window.isAuthenticated()) {
+            window.location.href = 'views/user/dashboard.html';
+        } else {
+            window.location.href = 'views/auth/login.html';
+        }
+    });
+
     // Toasts placeholder
     window.showToast = function(message, type = 'success') {
         alert(message);
