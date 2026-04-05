@@ -1,0 +1,102 @@
+
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-style: normal;
+            font-weight: normal;
+            display: inline-block;
+            line-height: 1;
+        }
+        .data-micro-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf9fc;
+            line-height: 1.6;
+            color: #1a1c1e;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Essential Custom UI Utilities for Finzo Architectural Theme */
+        .architectural-gradient {
+            background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .architectural-gradient:hover {
+            background: linear-gradient(135deg, #001d36 0%, #002645 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(0, 38, 69, 0.3);
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .glass-panel {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Professional Card Hover Animations */
+        div[class*="p-10 rounded-xl"],
+        div[class*="p-8 rounded-xl"],
+        div[class*="p-6 rounded-xl"],
+        div[class*="bg-white p-6 rounded-2xl"] {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+        }
+        
+        div[class*="p-10 rounded-xl"]:hover,
+        div[class*="p-8 rounded-xl"]:hover,
+        div[class*="p-6 rounded-xl"]:hover,
+        div[class*="bg-white p-6 rounded-2xl"]:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2);
+            border-color: rgba(0, 38, 69, 0.05);
+            cursor: pointer;
+        }
+
+        /* Card rim light effect for dark theme cards */
+        .card-rim-light {
+            position: relative;
+            overflow: hidden;
+        }
+        .card-rim-light::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* Prevent interactive elements inside card from inheriting cursor */
+        div[class*="rounded-xl"] button,
+        div[class*="rounded-xl"] a,
+        div[class*="rounded-xl"] input {
+            cursor: pointer;
+        }
+
+        /* Text Contrast Utils */
+        .text-high-contrast {
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+    

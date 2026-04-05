@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo Admin Console</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="text-on-surface">
+<!-- Admin SideNavBar -->
+<nav class="h-screen w-72 fixed left-0 top-0 bg-slate-950 flex flex-col py-8 border-r border-emerald-900/30 shadow-2xl shadow-emerald-900/20 z-50">
+<div class="px-8 mb-12">
+<h1 class="text-emerald-500 font-mono text-lg uppercase tracking-widest">Admin Console</h1>
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 mt-1">System Root</p>
+</div>
+<div class="flex-grow space-y-1">
+<a class="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 px-6 py-4 cursor-pointer active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Overview</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 cursor-pointer active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">User Management</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 cursor-pointer active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Audit Logs</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 cursor-pointer active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">System Settings</span>
+</a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-surface-container-highest/10 text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+                Logout
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="ml-72 p-10 min-h-screen">
+<!-- Header -->
+<header class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-3xl font-extrabold text-primary tracking-tight">System Infrastructure</h2>
+<p class="text-on-surface-variant text-sm mt-1">Real-time ledger orchestration and node monitoring.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Server Status</p>
+<p class="text-sm font-semibold flex items-center gap-2 justify-end">
+                        Operational <span class="data-micro-dot bg-tertiary-fixed-dim shadow-[0_0_8px_rgba(74,225,131,0.6)]"></span>
+</p>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="bg-surface-container-lowest p-2 rounded-lg shadow-sm border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</div>
+</div>
+</header>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-10">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Total Users</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">128.4k</h3>
+<span class="text-[10px] text-on-tertiary-container font-bold">+12%</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Daily Trans.</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">42,080</h3>
+<span class="text-[10px] text-on-tertiary-container font-bold">+4.1%</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Active Sessions</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">8,192</h3>
+<span class="text-[10px] text-error font-bold">-2%</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Pending Appr.</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">142</h3>
+<span class="text-[10px] text-on-secondary-container font-bold">STABLE</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">System Health</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">99.9%</h3>
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg transition-shadow">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Total Deposits</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-2xl font-extrabold text-primary">$4.2B</h3>
+<span class="text-[10px] text-on-tertiary-container font-bold">+0.8%</span>
+</div>
+</div>
+</section>
+<!-- Charts Section -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+<!-- User Growth Chart -->
+<div class="lg:col-span-1 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">User Growth</h4>
+<p class="text-xl font-bold text-primary">Monthly Delta</p>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="more_vert">more_vert</span>
+</div>
+<div class="h-48 flex items-end gap-2 px-2">
+<div class="flex-1 bg-primary-fixed h-1/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-2/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-3/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-full rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-4/5 rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-2/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-5/6 rounded-t-sm"></div>
+</div>
+</div>
+<!-- Transaction Volume Chart -->
+<div class="lg:col-span-1 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Transaction Volume</h4>
+<p class="text-xl font-bold text-primary">$1.2M /hr</p>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="show_chart">show_chart</span>
+</div>
+<div class="h-48 relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q25,20 50,50 T100,10 L100,100 L0,100 Z" fill="url(#grad1)"></path>
+<path d="M0,80 Q25,20 50,50 T100,10" fill="none" stroke="#0abc64" stroke-width="2"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#4ae183;stop-opacity:0.3"></stop>
+<stop offset="100%" style="stop-color:#4ae183;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- System Load -->
+<div class="lg:col-span-1 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">System Load</h4>
+<p class="text-xl font-bold text-primary">Core Allocation</p>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="memory">memory</span>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>Mainframe A</span>
+<span>42%</span>
+</div>
+<div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[42%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>Ledger DB</span>
+<span>89%</span>
+</div>
+<div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error w-[89%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>API Gateway</span>
+<span>12%</span>
+</div>
+<div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim w-[12%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Users Table -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden">
+<div class="px-8 py-6 border-b border-outline-variant/5 flex justify-between items-center">
+<h4 class="text-sm font-extrabold text-primary uppercase tracking-widest">Recent User Activity</h4>
+<div class="flex gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg text-xs font-medium focus:ring-1 focus:ring-primary w-64" placeholder="Filter users..." type="text"/>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        New Protocol
+                    </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">User Entity</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Risk Level</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Node Location</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Last Auth</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Operations</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">AS</div>
+<div>
+<p class="text-sm font-semibold text-primary">Alex Sterling</p>
+<p class="text-xs text-on-surface-variant">alex.s@nexabank.arch</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-2 px-2 py-1 rounded bg-tertiary-fixed-dim/10 text-[10px] font-bold text-on-tertiary-container uppercase tracking-tighter">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span> Low Risk
+                                </span>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs font-medium text-on-surface">London, UK (Zone 1)</p>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs text-on-surface-variant">2 mins ago</p>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold text-xs">MK</div>
+<div>
+<p class="text-sm font-semibold text-primary">Marcus Kross</p>
+<p class="text-xs text-on-surface-variant">m.kross@corporate.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-2 px-2 py-1 rounded bg-error-container/20 text-[10px] font-bold text-error uppercase tracking-tighter">
+<span class="data-micro-dot bg-error"></span> Elevated
+                                </span>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs font-medium text-on-surface">Singapore (Cluster 4)</p>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs text-on-surface-variant">14 mins ago</p>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-tertiary-fixed-dim/20 flex items-center justify-center text-tertiary font-bold text-xs">EL</div>
+<div>
+<p class="text-sm font-semibold text-primary">Elena Lund</p>
+<p class="text-xs text-on-surface-variant">lund@vantage.fin</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-2 px-2 py-1 rounded bg-tertiary-fixed-dim/10 text-[10px] font-bold text-on-tertiary-container uppercase tracking-tighter">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span> Low Risk
+                                </span>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs font-medium text-on-surface">Oslo, NO (Proxy)</p>
+</td>
+<td class="px-8 py-5">
+<p class="text-xs text-on-surface-variant">1 hour ago</p>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 bg-surface-container-low/50 flex justify-between items-center text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<span>Displaying 3 of 12,842 nodes</span>
+<div class="flex gap-4">
+<button class="hover:text-primary transition-colors">Previous</button>
+<button class="text-primary underline">1</button>
+<button class="hover:text-primary transition-colors">2</button>
+<button class="hover:text-primary transition-colors">Next</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="ml-72 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 border-t border-slate-200">
+<p class="font-['Inter'] text-xs text-slate-500">© 2024 NexaBank Architectural Ledger. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600 transition-colors" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

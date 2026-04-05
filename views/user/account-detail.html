@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo | Account Details</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Sidebar Navigation (User Variant) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200 flex flex-col p-6 z-40">
+<div class="text-lg font-black text-blue-900 mb-8 font-headline">Finzo</div>
+<div class="mb-10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container">
+<img class="w-full h-full object-cover" data-alt="portrait of a professional man in his 30s with a clean haircut and neutral expression against a soft blue studio background" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<div>
+<p class="font-headline text-sm font-bold text-blue-900">Alex Sterling</p>
+<p class="text-xs text-slate-500 font-medium">Premium Member</p>
+</div>
+</div>
+<nav class="space-y-2 flex-grow">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform font-headline text-sm font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<!-- Active State for Account Detail -->
+<a class="flex items-center gap-3 bg-white text-blue-900 shadow-sm rounded-lg px-4 py-3 font-headline text-sm font-medium" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+                Accounts
+            </a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform font-headline text-sm font-medium" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Payments
+            </a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform font-headline text-sm font-medium" href="#">
+<span class="material-symbols-outlined">history</span>
+                History
+            </a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform font-headline text-sm font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform font-headline text-sm font-medium mt-auto" href="#">
+<span class="material-symbols-outlined">logout</span>
+            Logout
+        </a>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen p-8 md:p-12 lg:p-16">
+<!-- Header Section -->
+<header class="mb-12 flex justify-between items-end">
+<div>
+<span class="text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] font-bold">Account Overview</span>
+<h1 class="text-4xl font-headline font-extrabold text-primary tracking-tighter mt-2">Private Wealth Advantage</h1>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2.5 rounded-lg bg-surface-container-high text-on-surface font-headline text-sm font-semibold transition-colors hover:bg-surface-variant">
+                    Download Statement
+                </button>
+<button class="px-6 py-2.5 rounded-lg bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline text-sm font-semibold architectural-shadow">
+                    Transfer Funds
+                </button>
+</div>
+</header>
+<!-- Asymmetric Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Account Details Card -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 architectural-shadow">
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-8">
+<div>
+<label class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest block mb-1">Account Holder</label>
+<p class="text-lg font-headline font-bold text-primary">Alex Sterling</p>
+</div>
+<div>
+<label class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest block mb-1">Account Number</label>
+<div class="flex items-center gap-2">
+<p class="text-lg font-headline font-bold text-primary tracking-widest">•••• •••• •••• 8842</p>
+<span class="material-symbols-outlined text-sm text-outline cursor-pointer">content_copy</span>
+</div>
+</div>
+<div>
+<label class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest block mb-1">Account Type</label>
+<p class="text-lg font-headline font-bold text-primary">Interest-Bearing Checking</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col justify-center items-end text-right">
+<label class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest mb-2">Available Balance</label>
+<p class="text-5xl font-headline font-black text-primary tracking-tighter">$142,080.00</p>
+<div class="mt-4 flex items-center gap-2 text-on-tertiary-container font-medium text-sm">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span>
+                            +2.4% this month
+                        </div>
+</div>
+</div>
+</div>
+<!-- Limits & Controls Card -->
+<div class="col-span-12 lg:col-span-4 bg-primary text-on-primary rounded-xl p-8 architectural-shadow relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline text-xl font-bold mb-6">Daily Spending Limit</h3>
+<p class="text-on-primary-container text-sm mb-8 leading-relaxed">Adjust your maximum daily transaction amount for enhanced security and budget control.</p>
+<div class="mb-10">
+<div class="flex justify-between items-end mb-4">
+<span class="text-[10px] font-label uppercase tracking-widest text-on-primary-container">Current Limit</span>
+<span class="text-2xl font-headline font-black text-tertiary-fixed">$15,000.00</span>
+</div>
+<input class="w-full" max="50000" min="1000" step="1000" type="range" value="15000"/>
+<div class="flex justify-between text-[10px] font-label text-on-primary-container mt-2">
+<span>$1k</span>
+<span>$50k</span>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-headline text-sm font-bold transition-transform active:scale-[0.98]">
+                        Update Limit
+                    </button>
+</div>
+<!-- Abstract Design Element -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary-container rounded-full opacity-20 blur-3xl"></div>
+</div>
+<!-- Recent Transactions Table -->
+<div class="col-span-12 bg-surface-container-lowest rounded-xl overflow-hidden architectural-shadow">
+<div class="p-8 border-b border-surface-container">
+<h3 class="font-headline text-xl font-bold text-primary">Transaction History</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-8 py-4 text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold">Transaction Details</th>
+<th class="px-8 py-4 text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold">Category</th>
+<th class="px-8 py-4 text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold">Status</th>
+<th class="px-8 py-4 text-[10px] font-label uppercase tracking-widest text-on-surface-variant font-bold text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary text-sm">Apple Store Fifth Ave</p>
+<p class="text-xs text-on-surface-variant">Oct 24, 2024 • 14:32</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium text-secondary bg-secondary-fixed px-2 py-1 rounded-full">Technology</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2 text-xs font-semibold text-on-surface">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span>
+                                        Completed
+                                    </div>
+</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">
+                                    -$1,299.00
+                                </td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary text-sm">Dividend Payout - TSLA</p>
+<p class="text-xs text-on-surface-variant">Oct 22, 2024 • 09:00</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium text-secondary bg-secondary-fixed px-2 py-1 rounded-full">Investment</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2 text-xs font-semibold text-on-surface">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span>
+                                        Completed
+                                    </div>
+</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-on-tertiary-container text-sm">
+                                    +$450.20
+                                </td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">flight</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary text-sm">Emirates Airlines Dubai</p>
+<p class="text-xs text-on-surface-variant">Oct 20, 2024 • 11:15</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium text-secondary bg-secondary-fixed px-2 py-1 rounded-full">Travel</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2 text-xs font-semibold text-on-surface">
+<span class="data-micro-dot bg-surface-variant"></span>
+                                        Pending
+                                    </div>
+</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">
+                                    -$4,820.00
+                                </td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary text-sm">Eleven Madison Park</p>
+<p class="text-xs text-on-surface-variant">Oct 19, 2024 • 20:45</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium text-secondary bg-secondary-fixed px-2 py-1 rounded-full">Dining</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2 text-xs font-semibold text-on-surface">
+<span class="data-micro-dot bg-tertiary-fixed-dim"></span>
+                                        Completed
+                                    </div>
+</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">
+                                    -$945.00
+                                </td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-surface-container-low text-center">
+<button class="text-primary font-headline text-sm font-bold hover:underline">View All Transactions</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-24 py-12 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-body text-xs text-slate-500">© 2024 Finzo Architectural Ledger. All rights reserved.</p>
+<div class="flex gap-8">
+<a class="font-body text-xs text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="font-body text-xs text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="font-body text-xs text-slate-500 hover:text-blue-600 transition-colors" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

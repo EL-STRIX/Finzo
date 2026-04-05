@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Audit Logs | Finzo Admin Console</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar (Admin Console Variant) -->
+<aside class="h-screen w-72 fixed left-0 top-0 bg-slate-950 flex flex-col py-8 border-r border-emerald-900/30 shadow-2xl shadow-emerald-900/20 z-50">
+<div class="px-8 mb-12">
+<div class="text-emerald-500 font-mono text-lg tracking-tight">ADMIN CONSOLE</div>
+<div class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 mt-1">System Root</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Overview</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">User Management</span>
+</a>
+<a class="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 px-6 py-4 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Audit Logs</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">System Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="bg-emerald-500/5 rounded-xl p-4 border border-emerald-500/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-500" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<div>
+<div class="text-xs font-bold text-emerald-100">Root Admin</div>
+<div class="text-[10px] text-emerald-500/60 uppercase tracking-tighter">Secure Session Active</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-72 flex-1 p-12 bg-surface">
+<!-- Header & Breadcrumbs -->
+<header class="mb-12">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm mb-4">
+<span>System</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span>Security</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">Audit Logs</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tighter text-primary">System Integrity Ledger</h1>
+<p class="text-on-surface-variant mt-2 max-w-xl">A complete immutable record of all administrative actions performed within the Finzo core infrastructure.</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-surface-container-high text-on-surface px-6 py-3 rounded-lg flex items-center gap-2 font-medium hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+                        Export Report
+                    </button>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-lg flex items-center gap-2 font-medium shadow-lg shadow-primary/10 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
+                        Live Stream
+                    </button>
+</div>
+</div>
+</header>
+<!-- Search and Filters (Tonal Layering) -->
+<section class="bg-surface-container-low p-6 rounded-xl mb-8 flex flex-wrap gap-6 items-center">
+<div class="flex-1 min-w-[300px] relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/50" placeholder="Search by activity, admin, or target ID..." type="text"/>
+</div>
+<div class="flex gap-4 items-center">
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest px-1 mb-1">Admin User</span>
+<select class="bg-surface-container-lowest border-none rounded-lg text-sm py-2 px-4 focus:ring-0 cursor-pointer min-w-[160px]">
+<option>All Administrators</option>
+<option>Alex Sterling</option>
+<option>Sarah Chen</option>
+<option>Jameson Blake</option>
+</select>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest px-1 mb-1">Action Type</span>
+<select class="bg-surface-container-lowest border-none rounded-lg text-sm py-2 px-4 focus:ring-0 cursor-pointer min-w-[160px]">
+<option>All Actions</option>
+<option>Create</option>
+<option>Update</option>
+<option>Delete</option>
+<option>Security</option>
+</select>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest px-1 mb-1">Timeframe</span>
+<button class="bg-surface-container-lowest border-none rounded-lg text-sm py-2 px-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Last 24 Hours</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Audit Table (Architectural Ledger Style) -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container-high">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-container-high">
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px]">Timestamp</th>
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px]">Administrator</th>
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px]">Action Type</th>
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px]">Activity Description</th>
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px]">Entity ID</th>
+<th class="px-8 py-4 label-md uppercase text-on-surface-variant/60 font-bold tracking-widest text-[11px] text-right">Context</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<!-- Row 1: Delete Action -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-5">
+<div class="text-sm font-medium text-on-surface">Oct 24, 2023</div>
+<div class="text-[11px] text-on-surface-variant">14:22:05 UTC</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of male systems administrator in high-end office environment" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<span class="text-sm font-semibold text-primary">Alex Sterling</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<span class="text-xs font-bold text-error uppercase tracking-wider">Delete</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface-variant leading-relaxed">Deactivated user account and purged session tokens.</p>
+</td>
+<td class="px-8 py-5 font-mono text-[11px] text-on-secondary-container">
+                            USR-8829-QX
+                        </td>
+<td class="px-8 py-5 text-right">
+<button class="text-primary hover:bg-primary/5 p-2 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Create Action -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-5">
+<div class="text-sm font-medium text-on-surface">Oct 24, 2023</div>
+<div class="text-[11px] text-on-surface-variant">13:45:12 UTC</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="modern professional female executive portrait with soft natural lighting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<span class="text-sm font-semibold text-primary">Sarah Chen</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></div>
+<span class="text-xs font-bold text-on-tertiary-container uppercase tracking-wider">Create</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface-variant leading-relaxed">Initialized new merchant gateway for EMEA region.</p>
+</td>
+<td class="px-8 py-5 font-mono text-[11px] text-on-secondary-container">
+                            GWY-4402-EMEA
+                        </td>
+<td class="px-8 py-5 text-right">
+<button class="text-primary hover:bg-primary/5 p-2 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Update Action -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-5">
+<div class="text-sm font-medium text-on-surface">Oct 24, 2023</div>
+<div class="text-[11px] text-on-surface-variant">11:10:44 UTC</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="corporate male headshot with neutral gray background and professional attire" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<span class="text-sm font-semibold text-primary">Jameson Blake</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+<span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Update</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface-variant leading-relaxed">Modified credit limit parameters for Tier 1 Clients.</p>
+</td>
+<td class="px-8 py-5 font-mono text-[11px] text-on-secondary-container">
+                            POL-LMT-99
+                        </td>
+<td class="px-8 py-5 text-right">
+<button class="text-primary hover:bg-primary/5 p-2 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Security Action -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-5">
+<div class="text-sm font-medium text-on-surface">Oct 23, 2023</div>
+<div class="text-[11px] text-on-surface-variant">23:59:59 UTC</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xs" data-icon="smart_toy">smart_toy</span>
+</div>
+<span class="text-sm font-semibold text-primary">SYSTEM-BOT</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-900"></div>
+<span class="text-xs font-bold text-slate-900 uppercase tracking-wider">Security</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface-variant leading-relaxed">Rotated SSL certificates for core API domain.</p>
+</td>
+<td class="px-8 py-5 font-mono text-[11px] text-on-secondary-container">
+                            SEC-CERT-RSA
+                        </td>
+<td class="px-8 py-5 text-right">
+<button class="text-primary hover:bg-primary/5 p-2 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<footer class="px-8 py-6 bg-surface-container-lowest border-t border-surface-container-low flex justify-between items-center">
+<div class="text-xs text-on-surface-variant">
+                    Showing <span class="font-bold text-on-surface">1 - 25</span> of 4,821 logged activities
+                </div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-surface-container-high text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-container-low transition-colors text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-container-low transition-colors text-xs font-bold">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-surface-container-high text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</section>
+<!-- Asymmetric Insight Panel -->
+<section class="mt-12 grid grid-cols-12 gap-8">
+<div class="col-span-8 bg-surface-container-low rounded-xl p-8 border border-surface-container-high/50">
+<h3 class="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                    Activity Volume Trend
+                </h3>
+<div class="h-48 flex items-end justify-between gap-2 px-4 relative">
+<!-- Simple Bar Chart Mockup -->
+<div class="flex-1 bg-primary/10 rounded-t h-[40%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[65%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[50%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[85%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[30%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[45%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary rounded-t h-[95%] shadow-lg shadow-primary/10"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[60%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[55%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[40%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[70%] hover:bg-primary/20 transition-all"></div>
+<div class="flex-1 bg-primary/10 rounded-t h-[20%] hover:bg-primary/20 transition-all"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mt-4 px-2">
+<span>Oct 12</span>
+<span>Oct 18</span>
+<span>Oct 24 (Today)</span>
+</div>
+</div>
+<div class="col-span-4 flex flex-col gap-4">
+<div class="bg-primary text-on-primary p-6 rounded-xl flex flex-col justify-between h-1/2">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Critical Events</span>
+<span class="material-symbols-outlined" data-icon="report">report</span>
+</div>
+<div>
+<div class="text-4xl font-extrabold tracking-tight">0</div>
+<div class="text-xs font-medium text-emerald-400 mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                            Status Nominal
+                        </div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high p-6 rounded-xl flex flex-col justify-between h-1/2">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Active Admins</span>
+<span class="material-symbols-outlined text-primary" data-icon="badge">badge</span>
+</div>
+<div>
+<div class="text-4xl font-extrabold tracking-tight text-primary">12</div>
+<div class="text-xs font-medium text-on-surface-variant mt-1">Across 3 timezones</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Shell -->
+<footer class="mt-20 py-12 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-bold text-slate-900">Finzo Architectural Ledger</div>
+<div class="text-slate-500 font-['Inter'] text-xs">© 2024 NexaBank Architectural Ledger. All rights reserved.</div>
+<div class="flex gap-6">
+<a class="text-slate-500 font-['Inter'] text-xs hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 font-['Inter'] text-xs hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 font-['Inter'] text-xs hover:text-blue-600 transition-colors" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

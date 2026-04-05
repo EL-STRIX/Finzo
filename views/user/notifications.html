@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo | Notifications Ledger</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (User Variant) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-6 border-r border-slate-200 transition-all duration-200 ease-in-out font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<div class="text-lg font-black text-blue-900 mb-8">Finzo</div>
+<div class="flex items-center gap-3 mb-10">
+<img alt="Alex Sterling" class="w-10 h-10 rounded-full object-cover" data-alt="professional headshot of a refined man in a dark charcoal suit with soft office window lighting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+<div>
+<p class="text-blue-900 font-bold">Alex Sterling</p>
+<p class="text-slate-500 text-xs">Premium Member</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform hover:text-blue-700" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform hover:text-blue-700" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span>Accounts</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform hover:text-blue-700" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Payments</span>
+</a>
+<a class="flex items-center gap-3 bg-white text-blue-900 shadow-sm rounded-lg px-4 py-3" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
+<span>History</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform hover:text-blue-700" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<a class="mt-auto flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform hover:text-blue-700" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen bg-surface">
+<!-- Header Section -->
+<header class="px-12 pt-16 pb-8">
+<div class="flex justify-between items-end max-w-5xl">
+<div>
+<p class="text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] mb-2">Architectural Ledger</p>
+<h1 class="text-4xl font-extrabold tracking-tight text-primary leading-none">Notifications</h1>
+</div>
+<button class="bg-surface-container-high text-on-surface text-xs font-semibold px-6 py-3 rounded-lg hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+                    Mark All Read
+                </button>
+</div>
+</header>
+<!-- Notification Feed -->
+<section class="px-12 pb-24 max-w-5xl">
+<div class="space-y-4">
+<!-- Unread Notification: Security -->
+<div class="group relative flex items-start gap-6 p-6 bg-surface-container-lowest rounded-xl hover:bg-surface-bright transition-all duration-300">
+<div class="relative flex-shrink-0 mt-1">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">security</span>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-tertiary-container rounded-full ring-2 ring-white"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<h3 class="text-sm font-bold text-primary tracking-tight">New Login Detected</h3>
+<span class="text-[10px] font-label font-medium text-on-surface-variant uppercase tracking-widest">2 MIN AGO</span>
+</div>
+<p class="text-sm text-secondary leading-relaxed max-w-2xl">A successful login was recorded from a new device (MacBook Pro, London, UK). If this wasn't you, please secure your account immediately.</p>
+<div class="mt-4 flex gap-3">
+<button class="text-xs font-bold text-primary underline decoration-tertiary-fixed-dim decoration-2 underline-offset-4 hover:text-tertiary-container transition-colors">Review Activity</button>
+<button class="text-xs font-bold text-on-surface-variant hover:text-primary transition-colors">Dismiss</button>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-2 text-on-surface-variant hover:text-error transition-all">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<!-- Unread Notification: Transfer -->
+<div class="group relative flex items-start gap-6 p-6 bg-surface-container-lowest rounded-xl hover:bg-surface-bright transition-all duration-300">
+<div class="relative flex-shrink-0 mt-1">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-tertiary-container rounded-full ring-2 ring-white"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<h3 class="text-sm font-bold text-primary tracking-tight">Incoming Transfer Received</h3>
+<span class="text-[10px] font-label font-medium text-on-surface-variant uppercase tracking-widest">45 MIN AGO</span>
+</div>
+<p class="text-sm text-secondary leading-relaxed max-w-2xl">You received <span class="font-bold text-tertiary-container">$12,450.00</span> from <span class="text-primary font-medium">Vanguard Global Equities</span>. Funds are now available in your Investment Prime account.</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-2 text-on-surface-variant hover:text-error transition-all">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<!-- Read Notification: System Update -->
+<div class="group relative flex items-start gap-6 p-6 bg-surface-container-low/50 rounded-xl hover:bg-surface-container-low transition-all duration-300">
+<div class="flex-shrink-0 mt-1">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">update</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<h3 class="text-sm font-semibold text-secondary tracking-tight">System Maintenance Schedule</h3>
+<span class="text-[10px] font-label font-medium text-on-surface-variant uppercase tracking-widest">3 HOURS AGO</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed max-w-2xl">Scheduled maintenance will occur on Sunday, October 24, from 02:00 to 04:00 GMT. International transfers may experience brief delays.</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-2 text-on-surface-variant hover:text-error transition-all">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<!-- Read Notification: Transfer -->
+<div class="group relative flex items-start gap-6 p-6 bg-surface-container-low/50 rounded-xl hover:bg-surface-container-low transition-all duration-300">
+<div class="flex-shrink-0 mt-1">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">swap_horiz</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<h3 class="text-sm font-semibold text-secondary tracking-tight">Recurring Payment Executed</h3>
+<span class="text-[10px] font-label font-medium text-on-surface-variant uppercase tracking-widest">YESTERDAY</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed max-w-2xl">Monthly mortgage payment of <span class="font-medium">$3,200.00</span> to <span class="text-primary font-medium">Metropolitan Housing</span> was processed successfully.</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-2 text-on-surface-variant hover:text-error transition-all">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Empty State Illustration Placeholder / Asymmetric Layout Detail -->
+<div class="mt-16 grid grid-cols-12 gap-8">
+<div class="col-span-8 p-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-on-primary flex items-center gap-12 overflow-hidden relative">
+<div class="relative z-10">
+<h4 class="text-xl font-bold mb-2">Privacy &amp; Security Ledger</h4>
+<p class="text-on-primary-container text-sm leading-relaxed max-w-sm mb-6">Review your security posture and manage notification preferences to ensure your ledger remains airtight.</p>
+<button class="bg-tertiary-fixed text-on-tertiary-fixed font-bold text-xs px-6 py-3 rounded-lg hover:scale-105 transition-transform">Security Settings</button>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-20 transform rotate-12">
+<span class="material-symbols-outlined" style="font-size: 240px;">verified_user</span>
+</div>
+</div>
+<div class="col-span-4 bg-surface-container-low rounded-2xl p-8 flex flex-col justify-center border border-outline-variant/10">
+<div class="mb-4">
+<span class="material-symbols-outlined text-tertiary-container" style="font-size: 32px;">notifications_paused</span>
+</div>
+<h5 class="font-bold text-primary mb-2">Notification Hub</h5>
+<p class="text-xs text-secondary leading-relaxed">You have 2 unread alerts and 14 archived entries in your architectural ledger.</p>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200 py-12 px-12 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 font-['Inter'] text-xs">
+<span class="font-bold text-slate-900">Finzo Ledger</span>
+<p class="text-slate-500">© 2024 Finzo Architectural Ledger. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

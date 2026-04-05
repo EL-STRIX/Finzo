@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Admin SideNavBar Shell -->
+<aside class="h-screen w-72 fixed left-0 top-0 bg-slate-950 flex flex-col py-8 border-r border-emerald-900/30 shadow-2xl shadow-emerald-900/20 z-40">
+<div class="px-6 mb-12">
+<h1 class="text-emerald-500 font-mono text-lg tracking-widest">Admin Console</h1>
+<p class="text-slate-500 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest mt-1">System Root</p>
+</div>
+<nav class="flex-1">
+<div class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Overview</span>
+</div>
+<div class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">User Management</span>
+</div>
+<!-- Active Tab: System Settings matches the context of Interest Rate configuration -->
+<div class="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 px-6 py-4 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">System Settings</span>
+</div>
+<div class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Audit Logs</span>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<div class="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+<p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Node Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-emerald-400 text-xs font-mono">Operational</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen p-12">
+<!-- Header Section -->
+<header class="mb-16">
+<div class="flex justify-between items-end">
+<div>
+<span class="text-on-surface-variant font-label text-xs tracking-[0.2em] uppercase">Monetary Policy Control</span>
+<h2 class="text-primary font-headline text-5xl font-extrabold tracking-tighter mt-2">Interest Management</h2>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest">Global Market Reference</p>
+<p class="text-primary font-headline text-xl font-bold">SOFR: 5.31%</p>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8 items-start">
+<!-- Control Panel (Left Column) -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-8">
+<!-- Active Rate Display -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-sm relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-6">
+<span class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Live Savings Rate</span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-tertiary-fixed-dim/20 rounded-full">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></div>
+<span class="text-[9px] font-bold text-tertiary-container uppercase">Currently Active</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-primary font-headline text-7xl font-extrabold tracking-tighter">4.25</span>
+<span class="text-on-primary-container font-headline text-4xl font-bold">%</span>
+<span class="text-on-surface-variant font-label text-sm ml-2">APY</span>
+</div>
+<div class="mt-8 pt-8 border-t border-surface-container-low flex justify-between">
+<div>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest">Effective Since</p>
+<p class="text-on-surface font-semibold text-sm">Oct 12, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest">Next Review</p>
+<p class="text-on-surface font-semibold text-sm">Jan 01, 2024</p>
+</div>
+</div>
+</div>
+<!-- Decorative architectural element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8"></div>
+</div>
+<!-- Update Panel -->
+<div class="bg-surface-container-low p-8 rounded-xl">
+<h3 class="text-primary font-headline text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="edit_square">edit_square</span>
+                        Update Savings Yield
+                    </h3>
+<div class="space-y-6">
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Proposed Base Rate (%)</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-5 text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-primary/20 transition-all" type="text" value="4.50"/>
+<div class="absolute right-5 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-xl">%</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Effective Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 transition-all" type="date" value="2024-01-01"/>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Rate Lock Period</label>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 transition-all appearance-none">
+<option>90 Days</option>
+<option>180 Days</option>
+<option>Floating</option>
+</select>
+</div>
+</div>
+<button class="w-full architectural-gradient text-on-primary font-headline font-bold py-5 rounded-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                            Apply Rate
+                        </button>
+<p class="text-[10px] text-on-surface-variant text-center italic">
+                            * Applying a new rate will trigger immediate customer notifications across all active savings accounts.
+                        </p>
+</div>
+</div>
+</div>
+<!-- History & Insights (Right Column) -->
+<div class="col-span-12 lg:col-span-7 flex flex-col gap-8">
+<!-- History Table (No lines policy applied) -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="p-8 pb-0 flex justify-between items-center">
+<h3 class="text-primary font-headline text-lg font-bold">Historical Ledger</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 bg-surface-container-high rounded text-[10px] font-bold text-on-surface uppercase tracking-tighter hover:bg-surface-container-highest transition-colors">Export CSV</button>
+<button class="px-3 py-1.5 bg-surface-container-high rounded text-[10px] font-bold text-on-surface uppercase tracking-tighter hover:bg-surface-container-highest transition-colors">Print Audit</button>
+</div>
+</div>
+<div class="p-8">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-on-surface-variant/50">
+<th class="pb-6 font-medium">Effective Date</th>
+<th class="pb-6 font-medium">Interest Rate</th>
+<th class="pb-6 font-medium">Authorized By</th>
+<th class="pb-6 font-medium text-right">Status</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-5 font-medium text-on-surface">Oct 12, 2023</td>
+<td class="py-5 text-primary font-bold">4.25%</td>
+<td class="py-5 text-on-surface-variant">S. Harrington (CTO)</td>
+<td class="py-5 text-right">
+<div class="inline-flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></div>
+<span class="text-[10px] font-bold text-on-tertiary-container uppercase">Active</span>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-5 font-medium text-on-surface">Jun 15, 2023</td>
+<td class="py-5 text-primary font-bold">4.10%</td>
+<td class="py-5 text-on-surface-variant">Admin Root</td>
+<td class="py-5 text-right">
+<div class="inline-flex items-center gap-2 opacity-40">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Archived</span>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-5 font-medium text-on-surface">Jan 02, 2023</td>
+<td class="py-5 text-primary font-bold">3.75%</td>
+<td class="py-5 text-on-surface-variant">M. Vane (CFO)</td>
+<td class="py-5 text-right">
+<div class="inline-flex items-center gap-2 opacity-40">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Archived</span>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-5 font-medium text-on-surface">Aug 12, 2022</td>
+<td class="py-5 text-primary font-bold">3.50%</td>
+<td class="py-5 text-on-surface-variant">S. Harrington (CTO)</td>
+<td class="py-5 text-right">
+<div class="inline-flex items-center gap-2 opacity-40">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Archived</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Analysis Cards (Asymmetric Data Density) -->
+<div class="grid grid-cols-2 gap-8">
+<div class="bg-primary p-8 rounded-xl relative overflow-hidden">
+<p class="text-on-primary/60 text-[10px] uppercase tracking-widest font-bold mb-1">Projected Annual Cost</p>
+<h4 class="text-on-primary text-3xl font-headline font-bold">$12.4M</h4>
+<div class="mt-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm" data-icon="trending_up">trending_up</span>
+<span class="text-tertiary-fixed-dim text-xs font-bold">+8.2% from prev. rate</span>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="payments">payments</span>
+</div>
+</div>
+<div class="bg-surface-container-high p-8 rounded-xl flex flex-col justify-between">
+<div>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">Customer Retention Impact</p>
+<h4 class="text-primary text-3xl font-headline font-bold">High</h4>
+</div>
+<p class="text-on-surface-variant text-xs mt-4">Calculated based on competitive analysis of top 5 tier-1 banks.</p>
+</div>
+</div>
+<!-- Visualization Placeholders (Charts) -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm h-64 relative">
+<div class="flex justify-between items-center mb-8">
+<span class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Rate Volatility Index (12M)</span>
+</div>
+<!-- Mock Chart Area -->
+<div class="absolute inset-0 top-16 px-8 pb-8 flex items-end justify-between gap-2">
+<div class="w-full bg-primary/5 h-[30%] rounded-t-sm"></div>
+<div class="w-full bg-primary/5 h-[35%] rounded-t-sm"></div>
+<div class="w-full bg-primary/5 h-[40%] rounded-t-sm"></div>
+<div class="w-full bg-primary/5 h-[38%] rounded-t-sm"></div>
+<div class="w-full bg-primary/5 h-[45%] rounded-t-sm"></div>
+<div class="w-full bg-primary/10 h-[50%] rounded-t-sm"></div>
+<div class="w-full bg-primary/10 h-[55%] rounded-t-sm"></div>
+<div class="w-full bg-primary/10 h-[52%] rounded-t-sm"></div>
+<div class="w-full bg-primary/20 h-[65%] rounded-t-sm"></div>
+<div class="w-full bg-primary/30 h-[70%] rounded-t-sm"></div>
+<div class="w-full bg-primary/40 h-[75%] rounded-t-sm"></div>
+<div class="w-full architectural-gradient h-[80%] rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Confirmation Modal (Hidden state via opacity/pointer-events simulated) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-primary/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+<div class="bg-surface-container-lowest max-w-md w-full rounded-xl shadow-2xl overflow-hidden">
+<div class="p-8">
+<div class="w-16 h-16 bg-error-container/30 text-error rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl" data-icon="warning">warning</span>
+</div>
+<h3 class="text-primary font-headline text-2xl font-bold mb-4">Confirm Rate Shift</h3>
+<p class="text-on-surface-variant leading-relaxed mb-8">
+                    You are about to adjust the global savings rate from <span class="font-bold text-on-surface">4.25%</span> to <span class="font-bold text-on-surface">4.50%</span>. This action is irreversible and will update all ledger entries effective January 1st, 2024.
+                </p>
+<div class="flex gap-4">
+<button class="flex-1 px-6 py-4 rounded-lg bg-surface-container-high text-on-surface font-bold hover:bg-surface-container-highest transition-all">
+                        Cancel
+                    </button>
+<button class="flex-1 px-6 py-4 rounded-lg architectural-gradient text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                        Confirm &amp; Apply
+                    </button>
+</div>
+</div>
+<div class="bg-surface-container-low px-8 py-4 border-t border-surface-variant/30">
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest text-center">Authorization required by 2FA token</p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="ml-72 w-[calc(100%-18rem)] border-t border-slate-200 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50">
+<div class="font-bold text-slate-900">Finzo</div>
+<p class="font-['Inter'] text-xs text-slate-500">© 2024 NexaBank Architectural Ledger. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600" href="#">Terms of Service</a>
+<a class="font-['Inter'] text-xs text-slate-500 hover:text-blue-600" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Detail - Finzo Admin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface text-on-surface">
+<aside class="h-screen w-72 fixed left-0 top-0 bg-slate-950 flex flex-col py-8 border-r border-emerald-900/30 shadow-2xl shadow-emerald-900/20 z-50">
+<div class="px-8 mb-12">
+<h1 class="text-emerald-500 font-mono text-lg tracking-tight">Admin Console</h1>
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 mt-1">System Root</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Overview</span>
+</a>
+<a class="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 px-6 py-4 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">User Management</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">Audit Logs</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 px-6 py-4 hover:bg-slate-900 hover:text-emerald-300 transition-all cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">System Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="p-4 bg-slate-900 rounded-xl border border-emerald-900/20">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined text-sm" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<p class="text-[10px] text-emerald-500/60 font-bold uppercase tracking-tighter leading-none">Security Level</p>
+<p class="text-white text-xs font-semibold">Maximum Elevation</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<main class="ml-72 min-h-screen">
+<header class="h-20 flex items-center justify-between px-12 sticky top-0 bg-surface/80 backdrop-blur-md z-40">
+<div class="flex items-center gap-4">
+<button class="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<h2 class="font-headline text-lg font-bold tracking-tight text-primary">User Dossier: Alex Sterling</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-full">
+<div class="w-2 h-2 bg-tertiary-fixed-dim rounded-full"></div>
+<span class="text-xs font-semibold tracking-tighter text-on-surface-variant">ACTIVE SESSION</span>
+</div>
+<div class="h-10 w-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a financial administrator with soft neutral lighting and corporate background" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+</div>
+</header>
+<div class="px-12 py-8 space-y-10">
+<section class="grid grid-cols-12 gap-8">
+<div class="col-span-8 bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10">
+<div class="flex justify-between items-start mb-8">
+<div class="flex gap-6">
+<div class="h-24 w-24 rounded-xl overflow-hidden ring-4 ring-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="sharp studio portrait of a high-net-worth client wearing a tailored navy suit with professional warm lighting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<div>
+<h3 class="font-headline text-3xl font-extrabold tracking-tighter text-primary">Alex Sterling</h3>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-xs font-medium text-on-surface-variant px-2 py-0.5 bg-surface-container-high rounded uppercase tracking-widest">Premium Member</span>
+<span class="text-xs font-medium text-tertiary-container px-2 py-0.5 bg-tertiary-fixed-dim/20 rounded uppercase tracking-widest">KYC Verified</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-4 max-w-md leading-relaxed">Account managed since Oct 2019. High-frequency trader with primary interests in European markets and institutional bonds.</p>
+</div>
+</div>
+<button class="bg-primary hover:primary-container text-on-primary px-6 py-2.5 rounded-lg text-sm font-semibold transition-all">Edit Profile</button>
+</div>
+<div class="grid grid-cols-3 gap-y-8 gap-x-12 border-t border-outline-variant/10 pt-8">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Email Address</p>
+<p class="text-sm font-semibold text-primary">alex.sterling@corporate.com</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Contact Number</p>
+<p class="text-sm font-semibold text-primary">+1 (555) 012-8844</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Tax Residency</p>
+<p class="text-sm font-semibold text-primary">United Kingdom</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Residential Address</p>
+<p class="text-sm font-semibold text-primary">22 Knightsbridge, SW1X 7LY, London</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Date of Birth</p>
+<p class="text-sm font-semibold text-primary">January 14, 1982</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-1">Risk Profile</p>
+<p class="text-sm font-semibold text-primary">Moderate-Aggressive</p>
+</div>
+</div>
+</div>
+<div class="col-span-4 flex flex-col gap-8">
+<div class="bg-primary text-on-primary rounded-xl p-8 relative overflow-hidden">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-primary-container rounded-full blur-3xl opacity-50"></div>
+<p class="text-[10px] font-bold text-on-primary-container uppercase tracking-widest mb-2 relative z-10">Total Asset Value</p>
+<h4 class="font-headline text-4xl font-extrabold tracking-tight mb-2 relative z-10">$1,420,080.00</h4>
+<div class="flex items-center gap-2 text-tertiary-fixed-dim relative z-10">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-bold">+4.2% this month</span>
+</div>
+<div class="mt-8 pt-8 border-t border-white/10 relative z-10">
+<div class="flex justify-between items-center mb-4">
+<span class="text-xs text-on-primary-container">Equity Portfolio</span>
+<span class="text-xs font-bold">$980,450</span>
+</div>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-fixed-dim h-full w-[70%]"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10">
+<h5 class="text-xs font-bold text-primary uppercase tracking-widest mb-4">Quick Governance</h5>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between p-3 bg-surface-container-lowest rounded-lg text-sm font-medium hover:bg-white transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" data-icon="block">block</span>
+<span>Freeze All Accounts</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 bg-surface-container-lowest rounded-lg text-sm font-medium hover:bg-white transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="rate_review">rate_review</span>
+<span>Override Limits</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<section>
+<div class="flex items-end justify-between mb-6">
+<div>
+<h3 class="font-headline text-xl font-bold tracking-tight text-primary">Associated Accounts</h3>
+<p class="text-xs text-on-surface-variant font-medium tracking-tight">3 active ledgers across multiple currencies</p>
+</div>
+<button class="text-primary font-bold text-xs uppercase tracking-widest hover:underline">Provision New Account</button>
+</div>
+<div class="grid grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-12">
+<div class="h-10 w-10 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="text-[10px] font-bold text-tertiary-container bg-tertiary-fixed-dim/20 px-2 py-1 rounded">DEFAULT</span>
+</div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Global Personal Spending</p>
+<h4 class="font-headline text-2xl font-bold text-primary mt-1">$42,500.12</h4>
+<div class="mt-4 flex items-center gap-2 text-[10px] text-on-surface-variant font-mono">
+<span>**** **** 9012</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="content_copy">content_copy</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-12">
+<div class="h-10 w-10 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="savings">savings</span>
+</div>
+</div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">High-Yield Treasury Vault</p>
+<h4 class="font-headline text-2xl font-bold text-primary mt-1">$1,280,000.00</h4>
+<div class="mt-4 flex items-center gap-2 text-[10px] text-on-surface-variant font-mono">
+<span>**** **** 4481</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="content_copy">content_copy</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-12">
+<div class="h-10 w-10 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="euro">euro</span>
+</div>
+</div>
+<p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">EUR Operations Ledger</p>
+<h4 class="font-headline text-2xl font-bold text-primary mt-1">€97,579.88</h4>
+<div class="mt-4 flex items-center gap-2 text-[10px] text-on-surface-variant font-mono">
+<span>**** **** 2290</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="content_copy">content_copy</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-low/50">
+<div>
+<h3 class="font-headline text-xl font-bold tracking-tight text-primary">Audit Log: Recent Transactions</h3>
+<p class="text-xs text-on-surface-variant font-medium tracking-tight">Last 30 days of institutional and retail activity</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-white border border-outline-variant/30 rounded-lg text-xs font-bold text-primary flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                            Filter
+                        </button>
+<button class="px-4 py-2 bg-white border border-outline-variant/30 rounded-lg text-xs font-bold text-primary flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                            Export CSV
+                        </button>
+</div>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low/30">
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Transaction Ref</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Counterparty / Merchant</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Date &amp; Time</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest text-right">Amount</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Status</th>
+<th class="px-8 py-4 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5 font-mono text-[11px] text-on-surface-variant">NX-4912-KB-91</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary font-bold text-[10px]">LS</div>
+<span class="text-sm font-semibold text-primary">London Stock Exchange</span>
+</div>
+</td>
+<td class="px-8 py-5 text-xs text-on-surface-variant">Oct 24, 2024 • 14:22:10</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">-$142,000.00</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></div>
+<span class="text-xs font-semibold text-primary">Cleared</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5 font-mono text-[11px] text-on-surface-variant">NX-8821-XP-04</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="restaurant">restaurant</span>
+</div>
+<span class="text-sm font-semibold text-primary">The Wolseley</span>
+</div>
+</td>
+<td class="px-8 py-5 text-xs text-on-surface-variant">Oct 23, 2024 • 20:45:12</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">-$842.50</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></div>
+<span class="text-xs font-semibold text-primary">Cleared</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5 font-mono text-[11px] text-on-surface-variant">NX-1044-TR-18</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary font-bold text-[10px]">AS</div>
+<span class="text-sm font-semibold text-primary">Internal Transfer: Sterling Vault</span>
+</div>
+</td>
+<td class="px-8 py-5 text-xs text-on-surface-variant">Oct 22, 2024 • 09:10:00</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-tertiary-container text-sm">+$25,000.00</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></div>
+<span class="text-xs font-semibold text-primary">Cleared</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5 font-mono text-[11px] text-on-surface-variant">NX-9932-AM-72</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<span class="text-sm font-semibold text-primary">Harrods Department Store</span>
+</div>
+</td>
+<td class="px-8 py-5 text-xs text-on-surface-variant">Oct 21, 2024 • 16:30:55</td>
+<td class="px-8 py-5 text-right font-headline font-bold text-primary text-sm">-$12,400.00</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<span class="text-xs font-semibold text-error">Flagged / Review</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/10 text-center">
+<button class="text-xs font-bold text-primary uppercase tracking-widest hover:text-primary-container transition-colors">Load Extended History</button>
+</div>
+</section>
+</div>
+<footer class="py-12 px-12 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-outline-variant/10 bg-surface">
+<p class="text-slate-500 font-['Inter'] text-xs uppercase tracking-widest">© 2024 Finzo Architectural Ledger. Internal Use Only.</p>
+<div class="flex gap-8">
+<a class="text-slate-500 hover:text-primary font-['Inter'] text-xs uppercase tracking-widest transition-colors" href="#">Privacy Protocol</a>
+<a class="text-slate-500 hover:text-primary font-['Inter'] text-xs uppercase tracking-widest transition-colors" href="#">Security Standards</a>
+<a class="text-slate-500 hover:text-primary font-['Inter'] text-xs uppercase tracking-widest transition-colors" href="../admin/admin-dashboard.html">Admin Manual</a>
+</div>
+</footer>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

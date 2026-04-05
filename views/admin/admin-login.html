@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo | Admin Console Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Background Architectural Textures -->
+<div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-tertiary-container/20 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] bg-primary/40 rounded-full blur-[120px]"></div>
+<div class="absolute inset-0 opacity-[0.03]" data-alt="Subtle dark carbon fiber texture background with architectural grid overlay for industrial fintech aesthetic" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC2N9-CEpQMvaIQ9dfe4IvYXQZD0HIKDlmrpY0nRtHpQzLxBUDapaJOHsf89MZydmpRQ7YYubWXb7NsP-xOohiee5ZDIcE6i03jctbwW8gYwvxvGmgCBeUKRMCtcfMaOJJWK-fGZ1Wv6LlFgw8JhWNCf0PluA0E333yUgWiLcuQV4urhIMwjDRCQqNSxlArZ1LDPKucOfrdxhbVEnufxCOaAI5Tb1QJXXh4Y0AbXGA4aJ1gLDyuabO2xW7QJqFUcflBmT7vT5i075eT');"></div>
+</div>
+<!-- Login Container -->
+<main class="z-10 w-full max-w-md px-6 py-12">
+<!-- Header / Brand -->
+<div class="mb-12 text-center">
+<div class="inline-flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-tertiary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<h1 class="font-jakarta text-2xl font-black tracking-tighter text-white">Finzo</h1>
+</div>
+<h2 class="text-xs uppercase tracking-[0.3em] font-jakarta font-semibold text-tertiary-fixed-dim mb-2">Admin Console</h2>
+<p class="text-slate-500 text-sm font-light">Authorized Personnel Only. Secure Gateway 7.02</p>
+</div>
+<!-- Form Panel -->
+<div class="glass-panel rounded-xl p-8 shadow-2xl shadow-emerald-950/20">
+<form action="#" class="space-y-6" method="POST">
+<!-- Username -->
+<div>
+<label class="block font-jakarta text-[10px] uppercase tracking-widest text-slate-500 mb-2 px-1">Admin ID</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-lg group-focus-within:text-tertiary-fixed-dim transition-colors">admin_panel_settings</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-tertiary-fixed-dim focus:border-tertiary-fixed-dim transition-all text-sm font-medium" name="admin_id" placeholder="Enter system identifier" required="" type="text"/>
+</div>
+</div>
+<!-- Password -->
+<div>
+<div class="flex justify-between items-center mb-2 px-1">
+<label class="block font-jakarta text-[10px] uppercase tracking-widest text-slate-500">Secure Token</label>
+<a class="text-[10px] uppercase tracking-widest text-tertiary-fixed-dim hover:text-white transition-colors" href="#">Emergency Reset</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-lg group-focus-within:text-tertiary-fixed-dim transition-colors">lock</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-tertiary-fixed-dim focus:border-tertiary-fixed-dim transition-all text-sm font-medium" name="secure_token" placeholder="••••••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- MFA Warning / Notice -->
+<div class="flex items-start gap-3 p-4 bg-tertiary-container/10 border border-tertiary-container/20 rounded-lg">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm mt-0.5">security_update_good</span>
+<p class="text-[11px] leading-relaxed text-slate-400">
+                        This terminal requires <span class="text-tertiary-fixed-dim font-semibold">Multi-Factor Authentication</span>. Upon identity verification, a push notification will be sent to your registered hardware device.
+                    </p>
+</div>
+<!-- Login Button -->
+<button class="w-full py-4 bg-gradient-to-br from-tertiary-container to-slate-900 text-tertiary-fixed-dim font-jakarta font-bold text-sm tracking-widest uppercase rounded-lg border border-tertiary-container/30 hover:border-tertiary-fixed-dim/50 hover:shadow-lg hover:shadow-emerald-900/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3" type="submit">
+                    Initiate Authentication
+                    <span class="material-symbols-outlined text-lg">login</span>
+</button>
+</form>
+</div>
+<!-- Footer Info -->
+<div class="mt-12 space-y-6">
+<div class="flex items-center justify-center gap-6">
+<div class="flex items-center gap-2">
+<div class="data-dot bg-tertiary-fixed-dim"></div>
+<span class="text-[10px] text-slate-500 uppercase tracking-tighter">System Root Active</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="data-dot bg-tertiary-fixed-dim"></div>
+<span class="text-[10px] text-slate-500 uppercase tracking-tighter">Firewall Engaged</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="data-dot bg-slate-700"></div>
+<span class="text-[10px] text-slate-500 uppercase tracking-tighter">Node: US-EAST-1</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-slate-600 font-jakarta">© 2024 Finzo Architectural Ledger. All rights reserved.</p>
+<div class="flex justify-center gap-4 mt-2">
+<a class="text-[10px] text-slate-500 hover:text-slate-300 transition-colors" href="#">Privacy Policy</a>
+<a class="text-[10px] text-slate-500 hover:text-slate-300 transition-colors" href="#">Audit Logs</a>
+<a class="text-[10px] text-slate-500 hover:text-slate-300 transition-colors" href="#">Support</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Side Decoration (Architectural Lines) -->
+<div class="fixed left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-tertiary-container/30 to-transparent opacity-50"></div>
+<div class="fixed right-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-tertiary-container/30 to-transparent opacity-50"></div>
+<div class="fixed top-12 left-12">
+<span class="text-[9px] font-mono text-slate-700 uppercase tracking-[0.4em] rotate-90 origin-left">Structural.Integrity</span>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

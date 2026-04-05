@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beneficiary Management | Finzo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Sidebar Navigation (Shared Component Alex Sterling Variant) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200 flex flex-col p-6 z-40">
+<div class="text-lg font-black text-blue-900 mb-8">Finzo</div>
+<div class="flex items-center gap-4 mb-10 p-2">
+<div class="relative w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional male executive with a confident expression, soft office lighting in the background" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<div>
+<p class="font-['Plus_Jakarta_Sans'] text-sm font-bold text-blue-900">Alex Sterling</p>
+<p class="text-xs text-slate-500">Premium Member</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Dashboard</span>
+</a>
+<!-- Accounts (Active for Beneficiary Management Context) -->
+<a class="flex items-center gap-3 bg-white text-blue-900 shadow-sm rounded-lg px-4 py-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Accounts</span>
+</a>
+<!-- Payments -->
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Payments</span>
+</a>
+<!-- History -->
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">History</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 transition-transform transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Settings</span>
+</a>
+</nav>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 mt-auto hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-medium">Logout</span>
+</a>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen bg-surface">
+<!-- Header Section -->
+<header class="px-10 pt-12 pb-8 flex justify-between items-end">
+<div class="space-y-1">
+<span class="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant uppercase">Management Console</span>
+<h1 class="text-4xl font-extrabold text-primary tracking-tight">Saved Beneficiaries</h1>
+</div>
+<!-- Add New Beneficiary Button (Primary CTA) -->
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity shadow-md">
+<span class="material-symbols-outlined text-xl" data-icon="person_add">person_add</span>
+<span class="font-semibold text-sm">Add New Beneficiary</span>
+</button>
+</header>
+<!-- Content Section: Asymmetric Layout -->
+<div class="px-10 pb-20 grid grid-cols-12 gap-8">
+<!-- Left: Beneficiary Table (8 Columns) -->
+<section class="col-span-8">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
+<div class="p-6 border-b border-surface-container flex justify-between items-center bg-white">
+<div class="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-lg w-72">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-on-surface-variant/50" placeholder="Search by name or account..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Recipient</th>
+<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Account Number</th>
+<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Detail</th>
+<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Last Transfer</th>
+<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-sm">JS</div>
+<div>
+<div class="font-semibold text-on-surface">Julianne Sterling</div>
+<div class="text-xs text-on-surface-variant">Family</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 8829</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-on-surface">Finzo Prime</span>
+<span class="text-[10px] text-on-surface-variant">SWIFT: NEXA-GB-22</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface">$1,200.00</div>
+<div class="text-[10px] text-on-surface-variant">2 days ago</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center text-on-tertiary-container font-bold text-sm">MC</div>
+<div>
+<div class="font-semibold text-on-surface">Modern Coffee Roasters</div>
+<div class="text-xs text-on-surface-variant">Business</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 0041</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-on-surface">Standard Chartered</span>
+<span class="text-[10px] text-on-surface-variant">Domestic Transfer</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface">$45.80</div>
+<div class="text-[10px] text-on-surface-variant">14 Oct 2023</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-error-container/20 flex items-center justify-center text-error font-bold text-sm">AT</div>
+<div>
+<div class="font-semibold text-on-surface">Architectural Trust Ltd</div>
+<div class="text-xs text-on-surface-variant">Utility</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 9901</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-on-surface">Lloyds Bank</span>
+<span class="text-[10px] text-on-surface-variant">International</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface">$2,450.00</div>
+<div class="text-[10px] text-on-surface-variant">01 Oct 2023</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Right: Insights & Quick Stats (4 Columns) -->
+<aside class="col-span-4 space-y-8">
+<!-- Data Card: Distribution -->
+<div class="bg-primary text-on-primary p-8 rounded-xl relative overflow-hidden">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-primary-container rounded-full opacity-50 blur-3xl"></div>
+<div class="relative z-10">
+<h3 class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-widest text-on-primary-container/80 mb-6 uppercase">Frequent Payees</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<span class="text-sm">Family &amp; Friends</span>
+<span class="text-sm font-mono">65%</span>
+</div>
+<div class="w-full bg-primary-container h-1.5 rounded-full">
+<div class="bg-tertiary-fixed-dim w-[65%] h-full rounded-full"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm">Business Services</span>
+<span class="text-sm font-mono">25%</span>
+</div>
+<div class="w-full bg-primary-container h-1.5 rounded-full">
+<div class="bg-on-tertiary-container w-[25%] h-full rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured Card -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/30">
+<h3 class="font-['Plus_Jakarta_Sans'] text-sm font-bold text-primary mb-4">Security Tip</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+                        Always verify account details before saving a new beneficiary. For international transfers, ensure the SWIFT/BIC code is accurate to avoid processing delays.
+                    </p>
+<a class="text-primary font-bold text-xs flex items-center gap-1 hover:underline" href="#">
+                        Learn more about secure transfers
+                        <span class="material-symbols-outlined text-xs" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<!-- Recent Activity Feed (Minimal) -->
+<div>
+<h3 class="font-['Plus_Jakarta_Sans'] text-xs font-bold text-on-surface-variant tracking-[0.2em] uppercase mb-6">Recent Changes</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-2 h-2 mt-1.5 rounded-full bg-on-tertiary-container"></div>
+<div>
+<p class="text-sm font-medium">Added "Modern Coffee Roasters"</p>
+<p class="text-[10px] text-on-surface-variant">Oct 14, 2023 • 09:41 AM</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-2 h-2 mt-1.5 rounded-full bg-outline"></div>
+<div>
+<p class="text-sm font-medium">Updated details for "Julianne S."</p>
+<p class="text-[10px] text-on-surface-variant">Oct 12, 2023 • 02:15 PM</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Slide-out Modal Backdrop (Simulated Open State) -->
+<div class="fixed inset-0 bg-primary/20 backdrop-blur-sm z-50 flex justify-end">
+<!-- Add Beneficiary Slide-out -->
+<div class="w-[450px] h-full bg-white shadow-2xl p-10 flex flex-col">
+<div class="flex justify-between items-center mb-12">
+<h2 class="text-2xl font-extrabold text-primary tracking-tight">New Recipient</h2>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</button>
+</div>
+<form class="flex-1 space-y-8">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Full Name</label>
+<input class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-dim transition-colors outline-none font-medium" placeholder="e.g. Sarah Jenkins" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Account Number</label>
+<input class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-dim transition-colors outline-none font-mono" placeholder="0000 0000 0000" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Name</label>
+<div class="relative">
+<select class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface transition-colors outline-none font-medium appearance-none bg-transparent">
+<option>Select a bank</option>
+<option>Finzo Prime</option>
+<option>Barclays PLC</option>
+<option>HSBC Global</option>
+</select>
+<span class="material-symbols-outlined absolute right-0 top-3 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Category</label>
+<div class="flex flex-wrap gap-2 pt-2">
+<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Family</button>
+<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Business</button>
+<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Utilities</button>
+<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Investment</button>
+</div>
+</div>
+<div class="pt-10">
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold text-sm tracking-widest uppercase hover:bg-primary-container transition-colors shadow-lg" type="submit">Save Beneficiary</button>
+<p class="text-center text-[10px] text-on-surface-variant mt-4">By saving, you agree to our <a class="underline" href="../user/transfer.html">Transfer Safety Guidelines</a></p>
+</div>
+</form>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="ml-64 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 border-t border-slate-200">
+<div class="font-bold text-slate-900">Finzo</div>
+<div class="text-[10px] font-['Inter'] text-slate-500">© 2024 NexaBank Architectural Ledger. All rights reserved.</div>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-blue-600 text-[10px] font-['Inter']" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 text-[10px] font-['Inter']" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-blue-600 text-[10px] font-['Inter']" href="../settings/profile.html">Cookie Settings</a>
+</div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>

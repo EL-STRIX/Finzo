@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo | Secure Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    
+    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+    
+<script>
+      
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e5",
+                    "on-secondary-fixed": "#111c2a",
+                    "primary-container": "#1a3c5e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001d36",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f6",
+                    "surface-tint": "#416084",
+                    "primary": "#002645",
+                    "outline": "#73777f",
+                    "surface-container-high": "#e8e8eb",
+                    "inverse-on-surface": "#f1f0f4",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary-fixed-variant": "#28496b",
+                    "tertiary-fixed": "#6bfe9c",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-secondary-container": "#5a6575",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#545f6f",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#a9c9f2",
+                    "surface-container": "#eeedf1",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#d8e3f6",
+                    "on-secondary-fixed-variant": "#3c4856",
+                    "secondary-container": "#d8e3f6",
+                    "tertiary": "#002b12",
+                    "inverse-surface": "#2f3033",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed-dim": "#a9c9f2",
+                    "surface-dim": "#dad9dd",
+                    "on-tertiary-fixed-variant": "#005228",
+                    "primary-fixed": "#d1e4ff",
+                    "surface": "#faf9fc",
+                    "tertiary-container": "#004420",
+                    "on-background": "#1a1c1e",
+                    "on-tertiary-container": "#0abc64",
+                    "background": "#faf9fc",
+                    "on-primary-container": "#87a7ce",
+                    "tertiary-fixed-dim": "#4ae183",
+                    "on-tertiary-fixed": "#00210c",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bcc7d9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    
+</script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<main class="min-h-screen flex items-stretch">
+<section class="hidden lg:flex lg:w-1/2 relative architectural-gradient flex-col justify-between p-16 overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-20">
+<span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
+</div>
+<div class="max-w-md">
+<h1 class="text-5xl font-headline font-extrabold text-white leading-tight tracking-tight mb-6">
+                        The Architectural Ledger of Modern Wealth.
+                    </h1>
+<p class="text-on-primary-container text-lg leading-relaxed font-light">
+                        Experience banking redefined through structural integrity, intentional transparency, and absolute precision. Your assets, engineered for growth.
+                    </p>
+</div>
+</div>
+<div class="relative z-10 flex gap-12 items-end">
+<div>
+<div class="text-tertiary-fixed-dim text-3xl font-headline font-bold">$42.08B</div>
+<div class="text-on-primary-container text-[10px] tracking-widest font-label uppercase mt-1">Total Assets Secured</div>
+</div>
+<div>
+<div class="text-tertiary-fixed-dim text-3xl font-headline font-bold">99.99%</div>
+<div class="text-on-primary-container text-[10px] tracking-widest font-label uppercase mt-1">System Uptime</div>
+</div>
+</div>
+<div class="absolute inset-0 z-0 opacity-20">
+<img alt="abstract architectural building with sharp angles and dramatic shadows" class="w-full h-full object-cover grayscale" data-alt="abstract architectural building with sharp angles and dramatic geometric shadows and clean lines against a clear sky" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+</div>
+<div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full architectural-gradient blur-3xl opacity-50"></div>
+</section>
+<section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-24 bg-surface">
+<div class="w-full max-w-md">
+<div class="lg:hidden mb-12">
+<span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
+</div>
+<div class="mb-12">
+<h2 class="text-3xl font-headline font-bold text-primary tracking-tight mb-2">Welcome Back</h2>
+<p class="text-on-surface-variant font-medium">Access your architectural financial ecosystem.</p>
+</div>
+<form action="#" class="space-y-6" method="POST">
+<input name="csrf_token" type="hidden" value="static_secure_token_placeholder"/>
+<div class="space-y-2">
+<label class="text-[10px] font-label font-bold tracking-widest text-on-surface-variant uppercase" for="identity">Email or Username</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="alex.sterling@nexabank.com" required="" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="text-[10px] font-label font-bold tracking-widest text-on-surface-variant uppercase" for="password">Password</label>
+<a class="text-[10px] font-label font-bold tracking-widest text-primary hover:text-on-tertiary-container uppercase transition-colors" href="../auth/forgot-password.html">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
+<input class="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center">
+<input class="peer h-5 w-5 appearance-none rounded border border-outline-variant bg-surface-container-lowest checked:bg-primary checked:border-primary transition-all cursor-pointer" type="checkbox"/>
+<span class="material-symbols-outlined absolute inset-0 text-white text-xs flex items-center justify-center opacity-0 peer-checked:opacity-100 pointer-events-none" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Remember this device</span>
+</label>
+</div>
+<div class="pt-4">
+<a href="../auth/login.html" class="w-full architectural-gradient text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-[0.98] transition-all" type="submit" style="display:inline-block;text-align:center;">Log In</a>
+</div>
+</form>
+<div class="mt-12 pt-8 border-t border-surface-container-high flex flex-col gap-6">
+<div class="text-center">
+<span class="text-on-surface-variant text-sm">Don't have an account?</span>
+<a class="ml-2 text-primary font-bold text-sm hover:underline decoration-tertiary-fixed-dim decoration-2 underline-offset-4 transition-all" href="../auth/register.html">Create Account</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
+<img alt="Google Logo" class="w-5 h-5 grayscale opacity-70" data-alt="minimalist google logo icon for single sign on authentication service" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">SSO Identity</span>
+</button>
+<button class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-outline">key</span>
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Passkey</span>
+</button>
+</div>
+</div>
+<footer class="mt-16 text-center">
+<p class="text-[10px] text-outline font-label uppercase tracking-widest leading-loose">SECURED BY NEXALINK CRYPTOGRAPHIC PROTOCOL <br/> © 2024 Finzo Architectural Ledger. All rights reserved.</p>
+</footer>
+</div>
+</section>
+</main>
+<div class="fixed top-8 right-8 flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-tertiary-container/10 rounded-full border border-tertiary-container/20">
+<div class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></div>
+<span class="text-[10px] font-bold text-on-tertiary-container uppercase tracking-widest">Network Secure</span>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/charts.js"></script>
+</body></html>
