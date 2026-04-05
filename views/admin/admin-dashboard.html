@@ -101,11 +101,11 @@ tailwind.config = {
       </div>
 
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#fff8e1;">
-          <span class="material-symbols-outlined" style="color:#f39c12;">devices_other</span>
+        <div class="admin-stat-icon" style="background:#ffeef0;">
+          <span class="material-symbols-outlined" style="color:#e17055;">lock</span>
         </div>
-        <div class="admin-stat-label">Active Sessions</div>
-        <div class="admin-stat-value">8,192 <span class="admin-stat-delta negative">-2%</span></div>
+        <div class="admin-stat-label">Locked Accounts</div>
+        <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Brute Force</span></div>
       </div>
 
       <div class="admin-stat-card">
@@ -118,10 +118,10 @@ tailwind.config = {
 
       <div class="admin-stat-card">
         <div class="admin-stat-icon" style="background:#e8f8f2;">
-          <span class="material-symbols-outlined" style="color:#00b894;">monitor_heart</span>
+          <span class="material-symbols-outlined" style="color:#00b894;">manage_search</span>
         </div>
-        <div class="admin-stat-label">System Health</div>
-        <div class="admin-stat-value">99.9% <span class="admin-stat-delta positive">Great</span></div>
+        <div class="admin-stat-label">Audit Log Entries</div>
+        <div class="admin-stat-value">4,821 <span class="admin-stat-delta positive">Tracked</span></div>
       </div>
 
       <div class="admin-stat-card">
@@ -178,31 +178,31 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- System Load -->
+      <!-- Account Type Split -->
       <div class="admin-card" style="padding:24px;">
-        <div style="font-size:11px;font-weight:700;color:#9aa0b0;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:4px;">System Load</div>
-        <div class="admin-section-title" style="font-size:16px;margin-bottom:24px;">Core Allocation</div>
+        <div style="font-size:11px;font-weight:700;color:#9aa0b0;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:4px;">Account Type Split</div>
+        <div class="admin-section-title" style="font-size:16px;margin-bottom:24px;">Account Breakdown</div>
         <div style="display:flex;flex-direction:column;gap:18px;">
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-size:11px;font-weight:700;color:#5a6270;">Mainframe A</span>
-              <span style="font-size:11px;font-weight:700;color:#0a0f1e;">42%</span>
+              <span style="font-size:11px;font-weight:700;color:#5a6270;">Savings Accounts</span>
+              <span style="font-size:11px;font-weight:700;color:#00b894;">62%</span>
             </div>
-            <div class="admin-progress"><div class="admin-progress-fill" style="width:42%;background:#3b82f6;"></div></div>
+            <div class="admin-progress"><div class="admin-progress-fill" style="width:62%;background:#00b894;"></div></div>
           </div>
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-size:11px;font-weight:700;color:#5a6270;">Ledger DB</span>
-              <span style="font-size:11px;font-weight:700;color:#e17055;">89%</span>
+              <span style="font-size:11px;font-weight:700;color:#5a6270;">Current Accounts</span>
+              <span style="font-size:11px;font-weight:700;color:#3b82f6;">31%</span>
             </div>
-            <div class="admin-progress"><div class="admin-progress-fill" style="width:89%;background:#e17055;"></div></div>
+            <div class="admin-progress"><div class="admin-progress-fill" style="width:31%;background:#3b82f6;"></div></div>
           </div>
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-size:11px;font-weight:700;color:#5a6270;">API Gateway</span>
-              <span style="font-size:11px;font-weight:700;color:#00b894;">12%</span>
+              <span style="font-size:11px;font-weight:700;color:#5a6270;">Frozen Accounts</span>
+              <span style="font-size:11px;font-weight:700;color:#e17055;">7%</span>
             </div>
-            <div class="admin-progress"><div class="admin-progress-fill" style="width:12%;background:#00b894;"></div></div>
+            <div class="admin-progress"><div class="admin-progress-fill" style="width:7%;background:#e17055;"></div></div>
           </div>
         </div>
       </div>
