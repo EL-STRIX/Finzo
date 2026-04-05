@@ -3,16 +3,13 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finzo | Establish Account</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 
-    
     <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-    
 <script>
-      
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -80,11 +77,9 @@
           },
         },
       }
-    
 </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
     
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
@@ -115,7 +110,7 @@
 <div class="min-h-screen flex flex-col md:flex-row">
 <div class="hidden md:flex md:w-1/2 architectural-gradient p-16 flex-col justify-between relative overflow-hidden">
 <div class="relative z-10">
-<h1 class="font-headline text-4xl font-extrabold tracking-tighter text-white mb-4">Finzo</h1>
+<h1 class="font-headline text-4xl font-extrabold tracking-tighter text-white mb-4 cursor-pointer" onclick="window.location.href='../../index.html'">Finzo</h1>
 <div class="h-1 w-12 bg-tertiary-fixed-dim"></div>
 </div>
 <div class="relative z-10 max-w-lg">
@@ -157,7 +152,7 @@
         <span class="text-xs font-bold text-error uppercase tracking-wider">Registration incomplete. Please ensure all architectural fields are precisely configured.</span>
     </div>
 </div>
-<form action="#" class="space-y-6" method="POST">
+<form action="#" class="space-y-6" id="register-form" method="POST" novalidate>
 <input name="csrf_token" type="hidden" value="static_placeholder_token"/>
 <div class="grid grid-cols-2 gap-4 mb-8">
     <label class="relative cursor-pointer group">
@@ -196,14 +191,14 @@
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Full Legal Name</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">person</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="Sujay Paul" type="text"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" id="full-name" placeholder="Sujay Paul" type="text"/>
 </div>
 </div>
 <div class="space-y-1">
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Digital Address</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">mail</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="sujaypaul123@gmail.com" type="email"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" id="email" placeholder="sujaypaul123@gmail.com" type="email"/>
 </div>
 </div>
 <div class="space-y-1">
@@ -212,7 +207,7 @@
         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">call</span>
         <div class="flex bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border-2 border-transparent focus-within:border-primary/10 transition-all">
             <span class="pl-12 pr-2 py-4 text-sm font-bold text-primary flex items-center">+91</span>
-            <input class="w-full pr-4 py-4 bg-transparent border-none focus:ring-0 text-on-surface text-sm transition-all" placeholder="00000-00000" type="tel"/>
+            <input class="w-full pr-4 py-4 bg-transparent border-none focus:ring-0 text-on-surface text-sm transition-all" id="phone" placeholder="00000-00000" type="tel"/>
         </div>
     </div>
 </div>
@@ -220,8 +215,8 @@
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Security Cipher</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">lock</span>
-<input class="w-full pl-12 pr-12 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="••••••••••••" type="password"/>
-<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors" type="button">
+<input class="w-full pl-12 pr-12 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" id="password" placeholder="••••••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors" id="toggle-password" type="button">
 <span class="material-symbols-outlined text-xl">visibility</span>
 </button>
 </div>
@@ -253,4 +248,84 @@
 <script src="../../assets/js/component-loader.js"></script>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/charts.js"></script>
+
+<script>
+$(document).ready(function() {
+    const registerForm = $('#register-form');
+    const nameInput = $('#full-name');
+    const emailInput = $('#email');
+    const phoneInput = $('#phone');
+    const passwordInput = $('#password');
+    const errorBanner = $('#auth-error-banner');
+    const errorText = errorBanner.find('span.text-xs');
+
+    registerForm.on('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        let errorMessage = "Registration incomplete. Please ensure all architectural fields are precisely configured.";
+
+        // Reset
+        $('.input-error').removeClass('input-error');
+        $('.shake-animation').removeClass('shake-animation');
+        errorBanner.removeClass('active');
+
+        setTimeout(() => {
+            // Validate Empty
+            const inputs = [nameInput, emailInput, phoneInput, passwordInput];
+            inputs.forEach(input => {
+                if (input.val().trim() === '') {
+                    input.addClass('input-error shake-animation');
+                    if (input.attr('id') === 'phone') {
+                        input.closest('.flex').addClass('input-error shake-animation');
+                    }
+                    isValid = false;
+                }
+            });
+
+            // Specific Phone Check (10 digits)
+            const phoneVal = phoneInput.val().trim().replace(/[^0-9]/g, '');
+            if (phoneVal !== '' && phoneVal.length !== 10) {
+                phoneInput.closest('.flex').addClass('input-error shake-animation');
+                isValid = false;
+                errorMessage = "Security notice: Phone identity must be 10 digits for digital verification.";
+            }
+
+            // Simple Email Regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailInput.val().trim() !== '' && !emailRegex.test(emailInput.val().trim())) {
+                emailInput.addClass('input-error shake-animation');
+                isValid = false;
+                if (isValid) errorMessage = "Invalid digital address format detected.";
+            }
+
+            if (!isValid) {
+                if (errorMessage === "Registration incomplete. Please ensure all architectural fields are precisely configured.") {
+                    errorMessage = "All architectural fields must be established to proceed.";
+                }
+                errorText.text(errorMessage);
+                errorBanner.addClass('active');
+                return;
+            }
+
+            console.log("Registration Validation Passed.");
+            // Proceed with registration...
+        }, 10);
+    });
+
+    $('input').on('input', function() {
+        $(this).removeClass('input-error shake-animation');
+        $(this).closest('.flex').removeClass('input-error shake-animation');
+        if ($('.input-error').length === 0) {
+            errorBanner.removeClass('active');
+        }
+    });
+
+    $('#toggle-password').on('click', function() {
+        const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+        $(this).find('span').text(type === 'password' ? 'visibility' : 'visibility_off');
+    });
+});
+</script>
 </body></html>

@@ -104,7 +104,7 @@
 <section class="hidden lg:flex lg:w-1/2 relative architectural-gradient flex-col justify-between p-16 overflow-hidden">
 <div class="relative z-10">
 <div class="flex items-center gap-2 mb-20">
-<span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
+<span class="text-3xl font-black tracking-tighter text-white font-headline cursor-pointer" onclick="window.location.href='../../index.html'">Finzo</span>
 </div>
 <div class="max-w-md">
     <h1 class="text-5xl font-headline font-extrabold text-white leading-tight tracking-tight mb-6">
@@ -133,7 +133,7 @@
 <section class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-12 bg-surface overflow-y-auto h-screen">
 <div class="w-full max-w-md my-auto">
 <div class="lg:hidden mb-8">
-<span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
+<span class="text-2xl font-black tracking-tighter text-primary font-headline" onclick="window.location.href='../../index.html'">Finzo</span>
 </div>
 <div class="mb-8">
     <h2 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Welcome Back</h2>
@@ -147,13 +147,13 @@
         <span class="text-xs font-bold text-error uppercase tracking-wider">Authentication failed. The provided identity does not match our architectural records.</span>
     </div>
 </div>
-<form action="#" class="space-y-6" method="POST">
+<form action="#" class="space-y-6" method="POST" novalidate>
 <input name="csrf_token" type="hidden" value="static_secure_token_placeholder"/>
 <div class="space-y-2">
 <label class="text-[10px] font-label font-bold tracking-widest text-on-surface-variant uppercase" for="identity">Email or Username</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="sujaypaul123@gmail.com" required="" type="text"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="identity" name="identity" placeholder="sujaypaul123@gmail.com" type="text"/>
 </div>
 </div>
 <div class="space-y-2">
@@ -163,8 +163,8 @@
 </div>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
-<input class="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
-<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<input class="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/10 transition-all font-body" id="password" name="password" placeholder="••••••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button" id="toggle-password">
 <span class="material-symbols-outlined text-lg">visibility</span>
 </button>
 </div>
@@ -216,4 +216,72 @@
 <script src="../../assets/js/component-loader.js"></script>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/charts.js"></script>
+
+<script>
+$(document).ready(function() {
+    const loginForm = $('form');
+    const identityInput = $('#identity');
+    const passwordInput = $('#password');
+    const errorBanner = $('#auth-error-banner');
+    const errorText = errorBanner.find('span.text-xs');
+
+    loginForm.on('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        let errorMessage = "Authentication failed. The provided identity does not match our architectural records.";
+
+        // Reset states
+        $('.input-error').removeClass('input-error');
+        $('.shake-animation').removeClass('shake-animation');
+        errorBanner.removeClass('active');
+
+        // Delay to handle re-triggering of animations
+        setTimeout(() => {
+            // Validate Identity
+            if (identityInput.val().trim() === '') {
+                identityInput.addClass('input-error shake-animation');
+                isValid = false;
+            }
+
+            // Validate Password
+            if (passwordInput.val().trim() === '') {
+                passwordInput.addClass('input-error shake-animation');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                errorMessage = "All architectural fields must be established to proceed.";
+                errorText.text(errorMessage);
+                errorBanner.addClass('active');
+                return;
+            }
+
+            // Simulated identity check for demonstration
+            if (identityInput.val() === 'error@finzo.com') {
+                errorText.text("Identity verification failed. Access denied by security protocols.");
+                errorBanner.addClass('active');
+                identityInput.addClass('input-error shake-animation');
+                passwordInput.addClass('input-error');
+                return;
+            }
+
+            console.log("Validation Passed: Proceeding to gateway...");
+        }, 10);
+    });
+
+    $('input').on('input', function() {
+        $(this).removeClass('input-error shake-animation');
+        if ($('.input-error').length === 0) {
+            errorBanner.removeClass('active');
+        }
+    });
+
+    $('#toggle-password').on('click', function() {
+        const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+        $(this).find('span').text(type === 'password' ? 'visibility' : 'visibility_off');
+    });
+});
+</script>
 </body></html>
