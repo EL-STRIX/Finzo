@@ -89,9 +89,27 @@
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <style>
+        /* Robust Account selection States */
+        input[name="account_type"]:checked + div {
+            border-color: #002645 !important;
+            background-color: rgba(0, 38, 69, 0.03) !important;
+        }
+        input[name="account_type"]:checked + div .selection-dot {
+            transform: scale(1) !important;
+            background-color: #002645 !important;
+        }
+        input[name="account_type"]:checked + div .selection-circle {
+            border-color: #002645 !important;
+        }
+
+        /* Interactive Placeholder Polish */
+        input:focus::placeholder {
+            color: transparent !important;
+            transition: color 0.2s ease;
+        }
+    </style>
 </head>
 <body class="bg-surface font-body text-on-surface antialiased">
 <div class="min-h-screen flex flex-col md:flex-row">
@@ -101,33 +119,28 @@
 <div class="h-1 w-12 bg-tertiary-fixed-dim"></div>
 </div>
 <div class="relative z-10 max-w-lg">
-<p class="font-headline text-5xl font-bold leading-tight text-white mb-8">The Architectural Ledger of Modern Finance.</p>
-<div class="flex items-start gap-4 mb-12">
-<div class="mt-1">
-<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">verified_user</span>
-</div>
-<div>
-<h3 class="text-white font-headline text-xl font-semibold">Institutional Security</h3>
-<p class="text-on-primary-container text-sm mt-1">Multi-layered encryption protocols designed for high-net-worth digital asset protection.</p>
-</div>
-</div>
-<div class="flex items-start gap-4">
-<div class="mt-1">
-<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">account_balance</span>
-</div>
-<div>
-<h3 class="text-white font-headline text-xl font-semibold">Unified Sovereignty</h3>
-<p class="text-on-primary-container text-sm mt-1">Seamlessly manage your global portfolio through our precision-engineered architectural interface.</p>
-</div>
-</div>
+    <p class="font-headline text-5xl font-bold leading-tight text-white mb-6">Global Banking, <br/>Refined.</p>
+    <p class="text-on-primary-container text-lg mb-12 opacity-80">Experience institutional security and seamless asset management in one unified ledger.</p>
+    
+    <div class="space-y-6">
+        <div class="flex items-center gap-4 text-white/90">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim">check_circle</span>
+            <span class="text-sm font-medium">Institutional Grade Security</span>
+        </div>
+        <div class="flex items-center gap-4 text-white/90">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim">check_circle</span>
+            <span class="text-sm font-medium">Real-time Asset Tracking</span>
+        </div>
+    </div>
 </div>
 <div class="relative z-10 flex gap-4 text-white/40 text-xs font-label tracking-widest uppercase">
 <span>01 Integrity</span>
 <span>02 Precision</span>
 <span>03 Authority</span>
 </div>
-<div class="absolute inset-0 opacity-10 pointer-events-none">
-<img class="w-full h-full object-cover grayscale" data-alt="minimalist architectural building with clean geometric lines and blue shadows against a clear morning sky" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+<div class="absolute inset-0 pointer-events-none">
+    <img alt="Modern Architecture" class="w-full h-full object-cover brightness-[0.4] contrast-[1.2]" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop"/>
+    <div class="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
 </div>
 </div>
 <div class="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface">
@@ -139,54 +152,61 @@
 <form action="#" class="space-y-6" method="POST">
 <input name="csrf_token" type="hidden" value="static_placeholder_token"/>
 <div class="grid grid-cols-2 gap-4 mb-8">
-<label class="relative cursor-pointer">
-<input checked="" class="peer sr-only" name="account_type" type="radio" value="savings"/>
-<div class="p-4 border border-outline-variant rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary-fixed/30 hover:bg-surface-container-low">
-<div class="flex justify-between items-start mb-2">
-<span class="material-symbols-outlined text-primary">savings</span>
-<div class="w-4 h-4 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
-<div class="w-2 h-2 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
-</div>
-</div>
-<p class="font-headline text-sm font-bold text-primary">Savings</p>
-<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Enter your credentials to join the Finzo ledger.</p>
-</div>
-</label>
-<label class="relative cursor-pointer">
-<input class="peer sr-only" name="account_type" type="radio" value="current"/>
-<div class="p-4 border border-outline-variant rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary-fixed/30 hover:bg-surface-container-low">
-<div class="flex justify-between items-start mb-2">
-<span class="material-symbols-outlined text-primary">payments</span>
-<div class="w-4 h-4 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
-<div class="w-2 h-2 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
-</div>
-</div>
-<p class="font-headline text-sm font-bold text-primary">Current</p>
-<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Enter your credentials to join the Finzo ledger.</p>
-</div>
-</label>
+    <label class="relative cursor-pointer group">
+        <input checked="" class="peer sr-only" name="account_type" type="radio" value="savings"/>
+        <div class="p-5 border-2 border-outline-variant/30 rounded-2xl transition-all hover:bg-surface-container-low flex flex-col h-full">
+            <div class="flex justify-between items-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined">savings</span>
+                </div>
+                <div class="selection-circle w-5 h-5 rounded-full border-2 border-outline-variant flex items-center justify-center transition-colors">
+                    <div class="selection-dot w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform duration-300"></div>
+                </div>
+            </div>
+            <p class="font-headline text-sm font-bold text-primary mb-1">Savings</p>
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider leading-tight">Personal wealth management</p>
+        </div>
+    </label>
+    <label class="relative cursor-pointer group">
+        <input class="peer sr-only" name="account_type" type="radio" value="current"/>
+        <div class="p-5 border-2 border-outline-variant/30 rounded-2xl transition-all hover:bg-surface-container-low flex flex-col h-full">
+            <div class="flex justify-between items-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined">payments</span>
+                </div>
+                <div class="selection-circle w-5 h-5 rounded-full border-2 border-outline-variant flex items-center justify-center transition-colors">
+                    <div class="selection-dot w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform duration-300"></div>
+                </div>
+            </div>
+            <p class="font-headline text-sm font-bold text-primary mb-1">Current</p>
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider leading-tight">Institutional settlements</p>
+        </div>
+    </label>
 </div>
 <div class="space-y-4">
 <div class="space-y-1">
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Full Legal Name</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">person</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="Alex Sterling" type="text"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="Sujay Paul" type="text"/>
 </div>
 </div>
 <div class="space-y-1">
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Digital Address</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">mail</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="alex@sterling.com" type="email"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="sujaypaul123.com" type="email"/>
 </div>
 </div>
 <div class="space-y-1">
-<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Primary Phone</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">call</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface text-sm transition-all shadow-sm" placeholder="+1 (555) 000-0000" type="tel"/>
-</div>
+    <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Primary Phone</label>
+    <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">call</span>
+        <div class="flex bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border-2 border-transparent focus-within:border-primary/10 transition-all">
+            <span class="pl-12 pr-2 py-4 text-sm font-bold text-primary flex items-center">+91</span>
+            <input class="w-full pr-4 py-4 bg-transparent border-none focus:ring-0 text-on-surface text-sm transition-all" placeholder="00000-00000" type="tel"/>
+        </div>
+    </div>
 </div>
 <div class="space-y-1">
 <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Security Cipher</label>
@@ -219,8 +239,6 @@
 </div>
 </div>
 </div>
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
