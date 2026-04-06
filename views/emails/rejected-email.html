@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f3f6; color: #1a1c1e; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header { background-color: #002645; color: #ffffff; padding: 30px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .error-box { background-color: #fff5f5; border: 1px solid #ffcdd2; color: #c62828; padding: 20px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+        .btn { display: inline-block; background-color: #002645; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+        .footer { background-color: #f4f3f6; padding: 20px; text-align: center; font-size: 12px; color: #73777f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif;">Finzo</h1>
+        </div>
+        <div class="content">
+            <h2 style="color: #002645;">Action Required on Your Application</h2>
+            <p>Hi there,</p>
+            <p>Our team has reviewed your recent application, but unfortunately, we were unable to approve it at this time due to the following reason:</p>
+            <div class="error-box">
+                <strong>Admin Reason:</strong><br><br>
+                "Identity document provided does not match the personal details entered in the application. Please provide a clear copy of your valid ID."
+            </div>
+            <p>Don't worry, you can easily update your application and resubmit it for approval by clicking the link below.</p>
+            <center>
+                <a href="http://localhost:3000/views/user/account-rejected.html" class="btn">Review Application</a>
+            </center>
+            <p style="margin-top: 30px;">If you have any questions, reply directly to this email.</p>
+            <p>Best Regards,<br><strong>The Finzo Team</strong></p>
+        </div>
+        <div class="footer">
+            &copy; 2026 Finzo Banking. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

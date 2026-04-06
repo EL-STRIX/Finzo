@@ -4,48 +4,53 @@
     <div class="text-lg font-black px-6 py-8 logo-text font-headline" style="color:#ffffff">Finzo</div>
     <div class="px-6 mb-8">
         <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100">
-            <img alt="Executive User Profile" class="w-10 h-10 rounded-full object-cover" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">RK</div>
             <div class="overflow-hidden">
-                <p class="font-bold text-primary truncate">Private Wealth</p>
-                <p class="text-[10px] text-secondary truncate">Account: ****4290</p>
+                <p class="font-bold text-primary truncate">Rahul Kumar</p>
+                <p class="text-[10px] text-primary truncate">Savings Account</p>
+                <p class="text-[10px] text-secondary truncate">Account: Pending Approval</p>
             </div>
         </div>
     </div>
     <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
+        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
             <span class="material-symbols-outlined">dashboard</span>
-            <span>Overview</span>
+            <span>Dashboard</span>
         </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/transfer.html">
-            <span class="material-symbols-outlined">swap_horiz</span>
-            <span>Payments</span>
+        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">lock</span>
+            <span>My Accounts</span>
+        </div>
+        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">lock</span>
+            <span>Fund Transfer</span>
+        </div>
+        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">lock</span>
+            <span>Transactions</span>
+        </div>
+        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">lock</span>
+            <span>Statement</span>
+        </div>
+        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">lock</span>
+            <span>Beneficiaries</span>
+        </div>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
+            <span class="material-symbols-outlined">person</span>
+            <span>Profile</span>
         </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/transactions.html">
-            <span class="material-symbols-outlined">receipt_long</span>
-            <span>History</span>
-        </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/settings/profile.html">
-            <span class="material-symbols-outlined">verified_user</span>
-            <span>Security</span>
-        </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="#">
-            <span class="material-symbols-outlined">group</span>
-            <span>Recipients</span>
-        </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-indigo-600 mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/admin/admin-audit-log.html">
-            <span class="material-symbols-outlined">admin_panel_settings</span>
-            <span>Admin</span>
+        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
+            <span class="material-symbols-outlined">security</span>
+            <span>Change Password</span>
         </a>
     </nav>
     <div class="mt-auto px-4 pt-6" style="border-top:1px solid rgba(255,255,255,0.08);">
-        <a href="/views/user/transfer.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#002645;color:white;padding:12px 16px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;margin-bottom:8px;">
-            <span class="material-symbols-outlined" style="font-size:18px;">add</span>
-            New Transfer
+        <a href="/views/user/complete-profile.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#002645;color:white;padding:12px 16px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;margin-bottom:8px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">person_add</span>
+            + Complete Profile
         </a>
-        <button data-toggle-theme style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:6px;transition:all 0.2s;">
-            <span class="material-symbols-outlined" style="font-size:18px;" data-theme-icon>dark_mode</span>
-            <span data-theme-label>Dark Mode</span>
-        </button>
         <a class="flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform cursor-pointer font-medium" href="/views/auth/login.html" style="color:rgba(255,255,255,0.4);text-decoration:none;">
             <span class="material-symbols-outlined">logout</span>
             <span>Logout</span>

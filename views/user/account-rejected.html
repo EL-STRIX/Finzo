@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Application Rejected | Finzo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+<!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+<script>
+    tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+        "colors": {
+            "surface-variant": "#e3e2e5",
+            "primary": "#002645",
+            "outline": "#73777f",
+            "outline-variant": "#c3c6cf",
+            "surface-container-highest": "#e3e2e5",
+            "surface-container-low": "#f4f3f6",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "on-surface": "#1a1c1e"
+        },
+        "fontFamily": {
+            "headline": ["Plus Jakarta Sans"],
+            "body": ["Inter"]
+        }
+        }
+    }
+    }
+</script>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body class="bg-surface text-on-surface h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl shadow-lg p-10 max-w-lg w-full text-center border top-0 border-slate-100 relative overflow-hidden">
+        <div class="absolute inset-0 bg-error/5 pointer-events-none"></div>
+
+        <div class="relative z-10 space-y-6">
+            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto text-error">
+                <span class="material-symbols-outlined text-4xl">cancel</span>
+            </div>
+
+            <div>
+                <h1 class="text-2xl font-headline font-extrabold tracking-tight text-error">Application Rejected</h1>
+                <p class="text-sm text-slate-500 mt-3 leading-relaxed">
+                    Unfortunately your account application was not approved for the following reason:
+                </p>
+                <div class="mt-4 bg-red-50 border border-error/20 rounded-xl p-4 text-sm font-semibold text-error/80 text-left">
+                    "Identity document provided does not match the personal details entered in the application. Please provide a clear copy of your valid ID."
+                </div>
+            </div>
+
+            <div class="pt-6 pb-4">
+                <div class="text-left space-y-4 max-w-xs mx-auto">
+                    <div class="flex items-center gap-4 text-slate-800">
+                        <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+                        <span class="font-bold text-sm">Registered</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-slate-800">
+                        <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+                        <span class="font-bold text-sm">Profile Submitted</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-error bg-error/10 rounded-lg p-2 -mx-2">
+                        <span class="material-symbols-outlined text-error text-xl">cancel</span>
+                        <span class="font-bold text-sm">Application Rejected</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 space-y-4">
+                <a href="complete-profile.html" class="block w-full bg-primary text-white font-bold py-4 rounded-xl hover:opacity-90 shadow-lg transition-opacity">
+                    Update & Resubmit
+                </a>
+                <a href="#" class="inline-block text-xs text-slate-500 font-semibold hover:text-primary">Contact Support</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

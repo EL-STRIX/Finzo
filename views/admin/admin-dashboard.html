@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -37,6 +37,10 @@ tailwind.config = {
     <a href="admin-dashboard.html" class="admin-nav-item active">
       <span class="material-symbols-outlined">dashboard</span> Overview
     </a>
+    <a href="admin-pending-approvals.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">how_to_reg</span> <span style="flex:1;">Pending Approvals</span>
+      <span style="background:#ba1a1a;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;">3</span>
+    </a>
     <a href="admin-users.html" class="admin-nav-item">
       <span class="material-symbols-outlined">group</span> User Management
     </a>
@@ -67,13 +71,13 @@ tailwind.config = {
   <!-- TOP BAR -->
   <div class="admin-topbar">
     <div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;">System Infrastructure</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;">ADMIN OVERVIEW</div>
       <div style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;color:#0a0f1e;letter-spacing:-0.5px;">Dashboard Overview</div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;">
       <div style="display:flex;align-items:center;gap:8px;background:#e8f8f2;padding:6px 14px;border-radius:20px;">
         <div style="width:8px;height:8px;background:#00b894;border-radius:50%;animation:pulse 2s infinite;"></div>
-        <span style="font-size:11px;font-weight:700;color:#00b894;text-transform:uppercase;letter-spacing:0.1em;">All Systems Operational</span>
+        <span style="font-size:11px;font-weight:700;color:#00b894;text-transform:uppercase;letter-spacing:0.1em;">FINZO ADMIN PANEL</span>
       </div>
       <div style="width:38px;height:38px;background:#002645;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px;">A</div>
     </div>
@@ -83,6 +87,14 @@ tailwind.config = {
 
     <!-- STAT CARDS -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#ffeef0;">
+          <span class="material-symbols-outlined" style="color:#ba1a1a;">schedule</span>
+        </div>
+        <div class="admin-stat-label">PENDING APPROVALS</div>
+        <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Action Required</span></div>
+      </div>
 
       <div class="admin-stat-card">
         <div class="admin-stat-icon" style="background:#ffeef0;">
@@ -156,6 +168,30 @@ tailwind.config = {
         <div class="admin-stat-value">24 <span class="admin-stat-delta" style="background:#f3e8ff;color:#9333ea;">Today</span></div>
       </div>
 
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#e8f3ff;">
+          <span class="material-symbols-outlined" style="color:#3b82f6;">group</span>
+        </div>
+        <div class="admin-stat-label">TOTAL USERS</div>
+        <div class="admin-stat-value">128,400 <span class="admin-stat-delta positive">+12%</span></div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#e8f8f2;">
+          <span class="material-symbols-outlined" style="color:#00b894;">assignment</span>
+        </div>
+        <div class="admin-stat-label">AUDIT LOG ENTRIES</div>
+        <div class="admin-stat-value">4,821 <span class="admin-stat-delta positive">Tracked</span></div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#fff8e1;">
+          <span class="material-symbols-outlined" style="color:#f39c12;">restore</span>
+        </div>
+        <div class="admin-stat-label">SOFT DELETED USERS</div>
+        <div class="admin-stat-value">5 <span class="admin-stat-delta" style="background:#fff3cd;color:#b07d00;">Recoverable</span></div>
+      </div>
+
     </div>
     </div>
 
@@ -189,7 +225,7 @@ tailwind.config = {
       <!-- Transaction Volume -->
       <div class="admin-card" style="padding:24px;">
         <div style="font-size:11px;font-weight:700;color:#9aa0b0;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:4px;">Transaction Volume</div>
-        <div class="admin-section-title" style="font-size:16px;margin-bottom:24px;">$1.2M /hr</div>
+        <div class="admin-section-title" style="font-size:16px;margin-bottom:24px;">₹ TRANSACTION VOLUME</div>
         <div style="height:140px;position:relative;">
           <svg viewBox="0 0 200 100" style="width:100%;height:100%;" preserveAspectRatio="none">
             <defs>
@@ -276,54 +312,37 @@ tailwind.config = {
       <table class="admin-table" style="width:100%;">
         <thead>
           <tr>
-            <th>User Entity</th>
-            <th>Risk Level</th>
-            <th>Node Location</th>
-            <th>Last Auth</th>
-            <th style="text-align:right;">Operations</th>
+            <th>USER</th>
+            <th>STATUS</th>
+            <th>APPROVAL STATUS</th>
+            <th>ACCOUNT TYPE</th>
+            <th>LAST ACTIVE</th>
+            <th style="text-align:right;">ACTIONS</th>
           </tr>
         </thead>
         <tbody id="dash-user-tbody">
-          <tr data-name="alex sterling" data-risk="low risk">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">AS</div><div><div style="font-weight:700;color:#0a0f1e;">Alex Sterling</div><div style="font-size:11px;color:#9aa0b0;">alex.s@nexabank.arch</div></div></div></td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
-            <td style="color:#5a6270;">London, UK (Zone 1)</td>
+          <tr data-name="rahul kumar" data-risk="active">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">RK</div><div><div style="font-weight:700;color:#0a0f1e;">Rahul Kumar</div><div style="font-size:11px;color:#9aa0b0;">rahul.kumar@gmail.com</div></div></div></td>
+            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span></td>
+            <td><span style="font-size:11px;font-weight:700;color:#00b894;background:#e8f8f2;padding:4px 8px;border-radius:6px;">APPROVED</span></td>
+            <td style="color:#5a6270;">Savings</td>
             <td style="color:#9aa0b0;">2 mins ago</td>
             <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
-          <tr data-name="marcus kross" data-risk="elevated">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#ffeef0;color:#e17055;">MK</div><div><div style="font-weight:700;color:#0a0f1e;">Marcus Kross</div><div style="font-size:11px;color:#9aa0b0;">m.kross@corporate.com</div></div></div></td>
-            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;display:inline-block;margin-right:4px;"></span>Elevated</span></td>
-            <td style="color:#5a6270;">Singapore (Cluster 4)</td>
+          <tr data-name="priya sharma" data-risk="inactive">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#ffeef0;color:#e17055;">PS</div><div><div style="font-weight:700;color:#0a0f1e;">Priya Sharma</div><div style="font-size:11px;color:#9aa0b0;">priya.sharma@gmail.com</div></div></div></td>
+            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;display:inline-block;margin-right:4px;"></span>INACTIVE</span></td>
+            <td><span style="font-size:11px;font-weight:700;color:#e53935;background:#ffebee;padding:4px 8px;border-radius:6px;">REJECTED</span></td>
+            <td style="color:#5a6270;">Current</td>
             <td style="color:#9aa0b0;">14 mins ago</td>
             <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
-          <tr data-name="elena lund" data-risk="low risk">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">EL</div><div><div style="font-weight:700;color:#0a0f1e;">Elena Lund</div><div style="font-size:11px;color:#9aa0b0;">lund@vantage.fin</div></div></div></td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
-            <td style="color:#5a6270;">Oslo, NO (Proxy)</td>
+          <tr data-name="amit mondal" data-risk="active">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">AM</div><div><div style="font-weight:700;color:#0a0f1e;">Amit Mondal</div><div style="font-size:11px;color:#9aa0b0;">amit.mondal@gmail.com</div></div></div></td>
+            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span></td>
+            <td><span style="font-size:11px;font-weight:700;color:#f39c12;background:#fff8e1;padding:4px 8px;border-radius:6px;">PENDING</span></td>
+            <td style="color:#5a6270;">Savings</td>
             <td style="color:#9aa0b0;">1 hour ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <tr data-name="riya verma" data-risk="medium risk">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#f3e8ff;color:#9333ea;">RV</div><div><div style="font-weight:700;color:#0a0f1e;">Riya Verma</div><div style="font-size:11px;color:#9aa0b0;">riya.v@finzone.in</div></div></div></td>
-            <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>Medium Risk</span></td>
-            <td style="color:#5a6270;">Mumbai, IN (Gateway)</td>
-            <td style="color:#9aa0b0;">3 hours ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <tr data-name="james thorne" data-risk="flagged">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#ffeef0;color:#e17055;">JT</div><div><div style="font-weight:700;color:#0a0f1e;">James Thorne</div><div style="font-size:11px;color:#9aa0b0;">j.thorne@arquis.io</div></div></div></td>
-            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;display:inline-block;margin-right:4px;"></span>Flagged</span></td>
-            <td style="color:#5a6270;">Dubai, UAE (VPN)</td>
-            <td style="color:#9aa0b0;">5 hours ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <tr data-name="nina schulz" data-risk="low risk">
-            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#e8f3ff;color:#3b82f6;">NS</div><div><div style="font-weight:700;color:#0a0f1e;">Nina Schulz</div><div style="font-size:11px;color:#9aa0b0;">nina.s@eurobank.de</div></div></div></td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
-            <td style="color:#5a6270;">Berlin, DE (Zone 2)</td>
-            <td style="color:#9aa0b0;">Yesterday</td>
             <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
         </tbody>

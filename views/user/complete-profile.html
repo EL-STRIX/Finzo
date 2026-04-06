@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Complete Profile | Finzo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+<!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
+<script>
+    tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+        "colors": {
+            "surface-variant": "#e3e2e5",
+            "primary": "#002645",
+            "outline": "#73777f",
+            "outline-variant": "#c3c6cf",
+            "surface-container-highest": "#e3e2e5",
+            "surface-container-low": "#f4f3f6",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "on-surface": "#1a1c1e"
+        },
+        "fontFamily": {
+            "headline": ["Plus Jakarta Sans"],
+            "body": ["Inter"]
+        }
+        }
+    }
+    }
+</script>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<script src="../../assets/js/theme.js"></script>
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- Modular Side Sidebar -->
+<div id="sidebar-placeholder"></div>
+
+<!-- Main Content Canvas -->
+<main class="md:ml-64 min-h-screen">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white/80 :bg-slate-900/80 backdrop-blur-md z-50 shadow-sm :shadow-none">
+        <div class="flex items-center gap-4">
+            <h1 class="text-xl font-bold tracking-tighter text-indigo-900 :text-white">Complete Profile</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                </button>
+                <div class="flex items-center gap-4">
+                    <button data-toggle-theme class="user-theme-toggle">
+                        <span class="material-symbols-outlined" style="font-size:18px;" data-theme-icon>dark_mode</span>
+                    </button>
+                    <div class="h-8 w-[1px] bg-slate-200"></div>
+                    <button class="text-indigo-900 font-semibold text-sm hover:opacity-80">Secure Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-24 pb-12 px-8 max-w-4xl mx-auto space-y-8">
+        
+        <!-- Progress Bar -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-lg font-bold mb-6 tracking-tight">Profile Completion</h2>
+            <div class="flex justify-between items-center relative">
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 -z-10"></div>
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[15%] h-1 bg-primary -z-10"></div>
+
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-md">1</div>
+                    <span class="text-xs font-semibold text-primary">Personal Info</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white border-2 border-slate-200 text-slate-400 flex items-center justify-center font-bold text-sm">2</div>
+                    <span class="text-xs font-semibold text-slate-400">Address Details</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white border-2 border-slate-200 text-slate-400 flex items-center justify-center font-bold text-sm">3</div>
+                    <span class="text-xs font-semibold text-slate-400">Identity Document</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white border-2 border-slate-200 text-slate-400 flex items-center justify-center font-bold text-sm">4</div>
+                    <span class="text-xs font-semibold text-slate-400">Account Preference</span>
+                </div>
+            </div>
+        </div>
+
+        <form action="account-pending.html" method="GET" class="space-y-8">
+            <!-- STEP 1 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 class="text-md font-bold mb-6 text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined">person</span> Step 1: Personal Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Date of Birth</label>
+                        <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Gender</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Father's Name</label>
+                        <input type="text" placeholder="Full name of father" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Occupation</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">Select Occupation</option>
+                            <option>Student</option>
+                            <option>Employed</option>
+                            <option>Self-Employed</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Annual Income</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">Select Income Bracket</option>
+                            <option>Below ₹1L</option>
+                            <option>₹1L - ₹5L</option>
+                            <option>Above ₹5L</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 class="text-md font-bold mb-6 text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined">home</span> Step 2: Address Details
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Street Address</label>
+                        <textarea rows="2" placeholder="House/Flat No., Street, Landmark" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">City</label>
+                        <input type="text" placeholder="City or Town" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">State</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">Select State</option>
+                            <option>Andhra Pradesh</option>
+                            <option>Delhi</option>
+                            <option>Karnataka</option>
+                            <option>Maharashtra</option>
+                            <option>Tamil Nadu</option>
+                            <option>West Bengal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">PIN Code</label>
+                        <input type="text" placeholder="6-digit PIN" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Country</label>
+                        <input type="text" value="India" readonly class="w-full bg-slate-100 text-slate-500 border border-slate-200 rounded-lg px-4 py-3 text-sm cursor-not-allowed">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 class="text-md font-bold mb-6 text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined">badge</span> Step 3: Identity Document
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">ID Type</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">Select Document</option>
+                            <option>Aadhaar Card</option>
+                            <option>PAN Card</option>
+                            <option>Passport</option>
+                            <option>Voter ID</option>
+                            <option>Driving License</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">ID Number</label>
+                        <input type="text" placeholder="Document ID/Number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Upload ID Front</label>
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined text-slate-400 text-3xl mb-2">add_photo_alternate</span>
+                            <p class="text-xs text-slate-500 font-medium">Click to upload front photo</p>
+                            <input type="file" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Upload ID Back</label>
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined text-slate-400 text-3xl mb-2">add_photo_alternate</span>
+                            <p class="text-xs text-slate-500 font-medium">Click to upload back photo</p>
+                            <input type="file" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm">
+                <h3 class="text-md font-bold mb-6 text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined">settings_suggest</span> Step 4: Account Preference
+                </h3>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Account Type</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="border border-slate-200 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:border-primary focus-within:ring-2 focus-within:ring-primary/20 hover:bg-slate-50">
+                                <input type="radio" name="acc_type" value="savings" class="mt-1 text-primary focus:ring-primary" checked>
+                                <div>
+                                    <p class="font-bold text-sm text-primary">Savings Account</p>
+                                    <p class="text-xs text-slate-500 mt-1">Earn automatic monthly interest on your balances. Perfect for personal use.</p>
+                                </div>
+                            </label>
+                            <label class="border border-slate-200 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:border-primary focus-within:ring-2 focus-within:ring-primary/20 hover:bg-slate-50">
+                                <input type="radio" name="acc_type" value="current" class="mt-1 text-primary focus:ring-primary">
+                                <div>
+                                    <p class="font-bold text-sm text-primary">Current Account</p>
+                                    <p class="text-xs text-slate-500 mt-1">High transaction limits designed for frequent usage and institutional settlements.</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Initial Deposit</label>
+                            <input type="number" placeholder="₹500 min." min="500" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Transaction PIN</label>
+                            <input type="password" placeholder="4 digits" maxlength="4" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm tracking-widest text-center focus:ring-2 focus:ring-primary/20" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Confirm PIN</label>
+                            <input type="password" placeholder="4 digits" maxlength="4" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm tracking-widest text-center focus:ring-2 focus:ring-primary/20" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:opacity-90 transition-opacity">
+                    Submit for Approval
+                </button>
+                <p class="text-xs text-center text-slate-500 mt-4 leading-relaxed font-medium">
+                    Your application will be reviewed by our team within 24 hours. <br>
+                    You will be notified by email once your account is activated.
+                </p>
+            </div>
+        </form>
+
+    </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/component-loader.js"></script>
+</body>
+</html>

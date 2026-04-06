@@ -110,32 +110,112 @@
 <h1 class="text-xl font-bold tracking-tighter text-indigo-900 :text-white">Dashboard</h1>
 </div>
 <div class="flex items-center gap-6">
-<div class="hidden lg:flex items-center bg-slate-100 :bg-slate-800 rounded-full px-4 py-1.5">
+<div class="hidden lg:flex items-center bg-slate-100 rounded-full px-4 py-1.5">
 <span class="material-symbols-outlined text-slate-400 text-sm mr-2">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface" placeholder="Search transactions..." type="text"/>
 </div>
-<div class="flex items-center gap-4">
-<button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
-</button>
-<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-<div class="flex items-center gap-4">
-<button data-toggle-theme class="user-theme-toggle">
-  <span class="material-symbols-outlined" style="font-size:18px;" data-theme-icon>dark_mode</span>
-  <span data-theme-label>Dark</span>
-</button>
-<div class="h-8 w-[1px] bg-slate-200"></div>
-<button class="text-indigo-900 font-semibold text-sm hover:opacity-80">
-                        Secure Logout
-                    </button>
-</div>
+<div class="flex items-center gap-3 relative">
+
+  <!-- Notifications Button -->
+  <div class="relative" id="notif-wrapper">
+    <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <!-- Notifications Dropdown -->
+    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+        <span class="font-bold text-sm text-slate-800">Notifications</span>
+        <span class="text-xs text-primary font-semibold cursor-pointer hover:underline">Mark all read</span>
+      </div>
+      <div class="divide-y divide-slate-50">
+        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-full bg-yellow-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Account Pending Approval</p>
+            <p class="text-xs text-slate-500 mt-0.5">Your account is under review. Complete your profile to proceed.</p>
+            <p class="text-[10px] text-slate-400 mt-1">Just now</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Welcome to Finzo!</p>
+            <p class="text-xs text-slate-500 mt-0.5">Your account has been registered. Complete your KYC to activate.</p>
+            <p class="text-[10px] text-slate-400 mt-1">Today</p>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-3 text-center border-t border-slate-100">
+        <span class="text-xs text-primary font-semibold cursor-pointer hover:underline">View all notifications</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <button data-toggle-theme class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors" title="Toggle Theme">
+    <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+  </button>
+
+  <!-- Settings Button -->
+  <div class="relative" id="settings-wrapper">
+    <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+    <!-- Settings Dropdown -->
+    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100">
+        <span class="font-bold text-sm text-slate-800">Settings</span>
+      </div>
+      <div class="py-2">
+        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors cursor-pointer text-slate-700 no-underline">
+          <span class="material-symbols-outlined text-primary" style="font-size:20px;">manage_accounts</span>
+          <div>
+            <p class="text-sm font-semibold">Complete Profile</p>
+            <p class="text-xs text-slate-400">Finish your KYC setup</p>
+          </div>
+        </a>
+        <div class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors cursor-pointer text-slate-700">
+          <span class="material-symbols-outlined text-primary" style="font-size:20px;">lock</span>
+          <div>
+            <p class="text-sm font-semibold">Change Password</p>
+            <p class="text-xs text-slate-400">Update your login credentials</p>
+          </div>
+        </div>
+        <div class="border-t border-slate-100 mt-1 pt-1">
+          <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 hover:bg-red-50 transition-colors cursor-pointer text-red-500 no-underline">
+            <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+            <p class="text-sm font-semibold">Logout</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 </header>
 <!-- Dashboard Content -->
 <section class="pt-24 pb-12 px-8 max-w-7xl mx-auto space-y-8">
+<!-- Banners Area -->
+<div id="restricted-banner" class="bg-[#fff8e1] border border-[#f39c12] rounded-xl p-4 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[#f39c12]">warning</span>
+        <span class="text-sm font-semibold text-[#b07d00]">Your account is not activated yet. Complete your profile to start banking.</span>
+    </div>
+    <a href="complete-profile.html" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">Complete My Profile &rarr;</a>
+</div>
+
+<div id="approved-banner" class="hidden bg-[#e8f8f2] border border-[#00b894] rounded-xl p-4 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        <span class="text-sm font-semibold text-[#005228]">&emsp;&#127881; Welcome to Finzo! Your account FNZ20260001 has been activated. You can now start banking.</span>
+    </div>
+    <button onclick="document.getElementById('approved-banner').classList.add('hidden')" class="text-[#00b894] hover:text-[#005228] transition-colors"><span class="material-symbols-outlined">close</span></button>
+</div>
 <!-- Bento Grid Layout -->
 <div class="grid grid-cols-12 gap-6">
 <!-- Account Summary Card (Main Anchor) -->
@@ -146,30 +226,17 @@
 <div class="flex justify-between items-start mb-12">
 <div>
 <p class="text-secondary font-medium mb-1">Total Available Balance</p>
-<h2 class="text-5xl font-extrabold text-primary tracking-tight">$428,950.00</h2>
+<h2 id="dash-balance" class="text-5xl font-extrabold text-primary tracking-tight" style="margin-bottom:8px;">— —</h2>
+<p class="text-sm font-semibold text-slate-500">Available after account activation</p>
 </div>
 <div class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
-                                Private Savings
+                                SAVINGS ACCOUNT
                             </div>
 </div>
 <div class="flex flex-wrap gap-12 items-end">
 <div>
 <p class="text-[10px] uppercase tracking-widest text-secondary mb-2">Account Number</p>
-<p class="font-mono text-lg font-semibold tracking-tighter">0042 9011 8823 4401</p>
-</div>
-<div>
-<p class="text-[10px] uppercase tracking-widest text-secondary mb-2">Expiry</p>
-<p class="font-semibold text-lg">12 / 28</p>
-</div>
-<div class="ml-auto">
-<div class="flex -space-x-2">
-<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-sm">credit_card</span>
-</div>
-<div class="w-10 h-10 rounded-full border-2 border-white bg-indigo-50 flex items-center justify-center">
-<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
-</div>
-</div>
+<p id="dash-account" class="font-mono text-lg font-semibold tracking-tighter">Pending Approval</p>
 </div>
 </div>
 </div>
@@ -177,9 +244,9 @@
 <!-- Spending Overview (Chart Placeholder) -->
 <div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-2xl p-6 flex flex-col justify-between">
 <div>
-<h3 class="text-lg font-bold mb-1">Spending Insights</h3>
-<p class="text-sm text-secondary mb-6">Monthly velocity overview</p>
-<div class="h-32 flex items-end justify-between gap-2 px-2">
+<h3 class="text-lg font-bold mb-1">Spending Analytics</h3>
+<p class="text-sm text-secondary mb-6">Monthly spending overview</p>
+<div class="h-32 flex items-end justify-between gap-2 px-2 relative opacity-30 grayscale">
 <div class="w-full bg-slate-200 rounded-t-lg h-[40%]"></div>
 <div class="w-full bg-slate-200 rounded-t-lg h-[60%]"></div>
 <div class="w-full bg-primary/20 rounded-t-lg h-[35%]"></div>
@@ -187,146 +254,111 @@
 <div class="w-full bg-primary/40 rounded-t-lg h-[50%]"></div>
 <div class="w-full bg-primary rounded-t-lg h-[90%]"></div>
 <div class="w-full bg-slate-200 rounded-t-lg h-[45%]"></div>
+<div class="absolute inset-0 flex items-center justify-center -rotate-6">
+    <span class="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded shadow-lg">Available after account activation</span>
 </div>
 </div>
-<div class="mt-6 pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 flex justify-between items-center opacity-30 cursor-not-allowed">
 <div>
 <p class="text-[10px] uppercase text-secondary">Highest Category</p>
-<p class="font-bold text-sm">Investments</p>
+<p class="font-bold text-sm">Food & Bills</p>
 </div>
 <span class="material-symbols-outlined text-primary text-xl">trending_up</span>
 </div>
 </div>
 <!-- Quick Actions -->
 <div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-<button class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:bg-white transition-all hover:translate-y-[-2px]">
+<button disabled class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-primary">
+<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
 </div>
-<div class="text-left">
+<div class="text-left text-slate-400">
 <p class="font-bold">Deposit</p>
-<p class="text-xs text-secondary">Add funds to account</p>
+<p class="text-xs">Add money to your account</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+<span class="material-symbols-outlined text-slate-300">lock</span>
 </button>
-<button class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:bg-white transition-all hover:translate-y-[-2px]">
+<button disabled class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-primary">
+<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
 </div>
-<div class="text-left">
+<div class="text-left text-slate-400">
 <p class="font-bold">Withdraw</p>
-<p class="text-xs text-secondary">Instant cash access</p>
+<p class="text-xs">Withdraw your funds</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+<span class="material-symbols-outlined text-slate-300">lock</span>
 </button>
-<button class="flex items-center justify-between p-6 bg-primary text-on-primary rounded-xl shadow-lg hover:shadow-xl transition-all hover:translate-y-[-2px]">
+<button disabled class="flex items-center justify-between p-6 bg-primary text-on-primary rounded-xl shadow-lg opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
 </div>
 <div class="text-left">
 <p class="font-bold text-white">Transfer</p>
-<p class="text-xs text-white/70">Move wealth instantly</p>
+<p class="text-xs text-white/70">Send money instantly</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-white/50">chevron_right</span>
+<span class="material-symbols-outlined text-white/50">lock</span>
 </button>
 </div>
 <!-- Recent Transactions -->
 <div class="col-span-12 bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
 <div class="flex justify-between items-center mb-8">
 <h3 class="text-xl font-bold">Recent Transactions</h3>
-<button class="text-primary font-bold text-sm hover:underline">Download Report</button>
+<a href="#" class="text-primary font-bold text-sm hover:underline">View All Transactions</a>
 </div>
 <div class="space-y-6">
 <!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-4">
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">shopping_bag</span>
+<span class="material-symbols-outlined text-secondary">arrow_upward</span>
 </div>
 <div>
-<p class="font-bold text-on-surface">Bespoke Furnishings Ltd.</p>
-<p class="text-xs text-secondary">Oct 24, 2023 • 14:32</p>
+<p class="font-bold text-on-surface">Account Registration</p>
+<p class="text-xs text-secondary">Today • Just now</p>
 </div>
 </div>
 <div class="text-right flex items-center gap-6">
 <div class="text-right">
-<p class="font-bold text-error">-$12,400.00</p>
-<p class="text-[10px] text-secondary">Debit</p>
+<p class="font-bold text-slate-400">—</p>
 </div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">
-                                    SUCCESS
-                                </div>
-</div>
-</div>
-<!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">account_balance</span>
-</div>
-<div>
-<p class="font-bold text-on-surface">Quarterly Dividends</p>
-<p class="text-xs text-secondary">Oct 22, 2023 • 09:15</p>
-</div>
-</div>
-<div class="text-right flex items-center gap-6">
-<div class="text-right">
-<p class="font-bold text-on-secondary-container">+$4,250.00</p>
-<p class="text-[10px] text-secondary">Credit</p>
-</div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">
-                                    SUCCESS
-                                </div>
-</div>
-</div>
-<!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">flight</span>
-</div>
-<div>
-<p class="font-bold text-on-surface">Global Airways - Premium</p>
-<p class="text-xs text-secondary">Oct 20, 2023 • 18:44</p>
-</div>
-</div>
-<div class="text-right flex items-center gap-6">
-<div class="text-right">
-<p class="font-bold text-error">-$6,120.00</p>
-<p class="text-[10px] text-secondary">Debit</p>
-</div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-error-container text-on-error-container">
+<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#fff8e1] text-[#f39c12]">
                                     PENDING
                                 </div>
 </div>
 </div>
 <!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-4">
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">monitoring</span>
+<span class="material-symbols-outlined text-secondary">info</span>
 </div>
 <div>
-<p class="font-bold text-on-surface">Vanguard Fund Transfer</p>
-<p class="text-xs text-secondary">Oct 18, 2023 • 11:02</p>
+<p class="font-bold text-on-surface">Profile Incomplete</p>
+<p class="text-xs text-secondary">Complete your profile to see transactions</p>
 </div>
 </div>
 <div class="text-right flex items-center gap-6">
 <div class="text-right">
-<p class="font-bold text-on-secondary-container">+$50,000.00</p>
-<p class="text-[10px] text-secondary">Credit</p>
+<p class="font-bold text-slate-400">—</p>
 </div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">
-                                    SUCCESS
+<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#fff3e0] text-[#e67e22]">
+                                    ACTION NEEDED
                                 </div>
 </div>
 </div>
+
+<div class="text-center pt-8 pb-4">
+    <p class="text-sm font-semibold text-slate-500 mb-4">Your transactions will appear here once your account is activated.</p>
+    <a href="complete-profile.html" class="inline-block text-primary font-bold text-sm hover:opacity-80 transition-opacity">Complete Profile &rarr;</a>
+</div>
+
 </div>
 </div>
 </div>
@@ -357,4 +389,28 @@
 <script src="../../assets/js/component-loader.js"></script>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/charts.js"></script>
+
+<script>
+function togglePanel(openId, closeId) {
+  const panel = document.getElementById(openId);
+  const other = document.getElementById(closeId);
+  if (other) other.classList.add('hidden');
+  panel.classList.toggle('hidden');
+}
+
+// Close panels when clicking outside
+document.addEventListener('click', function(e) {
+  const notifPanel = document.getElementById('notif-panel');
+  const settingsPanel = document.getElementById('settings-panel');
+  const notifBtn = document.getElementById('notif-btn');
+  const settingsBtn = document.getElementById('settings-btn');
+
+  if (notifPanel && !notifPanel.contains(e.target) && !notifBtn.contains(e.target)) {
+    notifPanel.classList.add('hidden');
+  }
+  if (settingsPanel && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+    settingsPanel.classList.add('hidden');
+  }
+});
+</script>
 </body></html>
