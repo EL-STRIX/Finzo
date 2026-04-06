@@ -13,8 +13,7 @@
     <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
     
 
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
+
 <script>
       
       tailwind.config = {
@@ -105,14 +104,14 @@
 <!-- Main Content Canvas -->
 <main class="md:ml-64 min-h-screen">
 <!-- TopNavBar Execution -->
-<header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white/80 :bg-slate-900/80 backdrop-blur-md z-50 shadow-sm :shadow-none">
+<header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white dark:bg-[#0a0f1e] backdrop-blur-md z-50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-300">
 <div class="flex items-center gap-4">
-<h1 class="text-xl font-bold tracking-tighter text-indigo-900 :text-white">Dashboard</h1>
+<h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">Dashboard</h1>
 </div>
 <div class="flex items-center gap-6">
-<div class="hidden lg:flex items-center bg-slate-100 rounded-full px-4 py-1.5">
-<span class="material-symbols-outlined text-slate-400 text-sm mr-2">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface" placeholder="Search transactions..." type="text"/>
+<div class="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800/50 rounded-full px-4 py-1.5 transition-colors">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500" placeholder="Search transactions..." type="text"/>
 </div>
 <div class="flex items-center gap-3 relative">
 
@@ -123,35 +122,35 @@
       <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
     </button>
     <!-- Notifications Dropdown -->
-    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden">
-      <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
-        <span class="font-bold text-sm text-slate-800">Notifications</span>
-        <span class="text-xs text-primary font-semibold cursor-pointer hover:underline">Mark all read</span>
+    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+        <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Notifications</span>
+        <span class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline">Mark all read</span>
       </div>
-      <div class="divide-y divide-slate-50">
-        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 transition-colors cursor-pointer">
-          <div class="w-9 h-9 rounded-full bg-yellow-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div class="divide-y divide-slate-50 dark:divide-slate-800">
+        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
           </div>
           <div>
-            <p class="text-sm font-semibold text-slate-800">Account Pending Approval</p>
-            <p class="text-xs text-slate-500 mt-0.5">Your account is under review. Complete your profile to proceed.</p>
-            <p class="text-[10px] text-slate-400 mt-1">Just now</p>
+            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Account Pending Approval</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Your account is under review. Complete your profile to proceed.</p>
+            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Just now</p>
           </div>
         </div>
-        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 transition-colors cursor-pointer">
-          <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
           </div>
           <div>
-            <p class="text-sm font-semibold text-slate-800">Welcome to Finzo!</p>
-            <p class="text-xs text-slate-500 mt-0.5">Your account has been registered. Complete your KYC to activate.</p>
-            <p class="text-[10px] text-slate-400 mt-1">Today</p>
+            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Welcome to Finzo!</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Your account has been registered. Complete your KYC to activate.</p>
+            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Today</p>
           </div>
         </div>
       </div>
-      <div class="px-5 py-3 text-center border-t border-slate-100">
-        <span class="text-xs text-primary font-semibold cursor-pointer hover:underline">View all notifications</span>
+      <div class="px-5 py-3 text-center border-t border-slate-100 dark:border-slate-800">
+        <span class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline">View all notifications</span>
       </div>
     </div>
   </div>
@@ -167,27 +166,27 @@
       <span class="material-symbols-outlined">settings</span>
     </button>
     <!-- Settings Dropdown -->
-    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden">
-      <div class="px-5 py-4 border-b border-slate-100">
-        <span class="font-bold text-sm text-slate-800">Settings</span>
+    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+        <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Settings</span>
       </div>
       <div class="py-2">
-        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors cursor-pointer text-slate-700 no-underline">
-          <span class="material-symbols-outlined text-primary" style="font-size:20px;">manage_accounts</span>
+        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
+          <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">manage_accounts</span>
           <div>
             <p class="text-sm font-semibold">Complete Profile</p>
-            <p class="text-xs text-slate-400">Finish your KYC setup</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Finish your KYC setup</p>
           </div>
         </a>
-        <div class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition-colors cursor-pointer text-slate-700">
-          <span class="material-symbols-outlined text-primary" style="font-size:20px;">lock</span>
+        <a href="../settings/change-password.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
+          <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">lock</span>
           <div>
             <p class="text-sm font-semibold">Change Password</p>
-            <p class="text-xs text-slate-400">Update your login credentials</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Update your login credentials</p>
           </div>
-        </div>
-        <div class="border-t border-slate-100 mt-1 pt-1">
-          <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 hover:bg-red-50 transition-colors cursor-pointer text-red-500 no-underline">
+        </a>
+        <div class="border-t border-slate-100 dark:border-slate-800 mt-1 pt-1">
+          <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors cursor-pointer text-red-500 no-underline">
             <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
             <p class="text-sm font-semibold">Logout</p>
           </a>
@@ -200,6 +199,11 @@
 </header>
 <!-- Dashboard Content -->
 <section class="pt-24 pb-12 px-8 max-w-7xl mx-auto space-y-8">
+<!-- Welcome Header -->
+<div class="mb-2">
+    <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight">Welcome back, Rahul Kumar</h2>
+    <p class="text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
+</div>
 <!-- Banners Area -->
 <div id="restricted-banner" class="bg-[#fff8e1] border border-[#f39c12] rounded-xl p-4 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-3">
@@ -246,16 +250,18 @@
 <div>
 <h3 class="text-lg font-bold mb-1">Spending Analytics</h3>
 <p class="text-sm text-secondary mb-6">Monthly spending overview</p>
-<div class="h-32 flex items-end justify-between gap-2 px-2 relative opacity-30 grayscale">
-<div class="w-full bg-slate-200 rounded-t-lg h-[40%]"></div>
-<div class="w-full bg-slate-200 rounded-t-lg h-[60%]"></div>
-<div class="w-full bg-primary/20 rounded-t-lg h-[35%]"></div>
-<div class="w-full bg-slate-200 rounded-t-lg h-[75%]"></div>
-<div class="w-full bg-primary/40 rounded-t-lg h-[50%]"></div>
-<div class="w-full bg-primary rounded-t-lg h-[90%]"></div>
-<div class="w-full bg-slate-200 rounded-t-lg h-[45%]"></div>
-<div class="absolute inset-0 flex items-center justify-center -rotate-6">
-    <span class="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded shadow-lg">Available after account activation</span>
+<div class="h-32 flex items-end justify-between gap-2 px-2 relative overflow-hidden rounded-xl">
+<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
+<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[60%]"></div>
+<div class="w-full bg-primary/20 dark:bg-blue-900/20 rounded-t-lg h-[35%]"></div>
+<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[75%]"></div>
+<div class="w-full bg-primary/40 dark:bg-blue-900/40 rounded-t-lg h-[50%]"></div>
+<div class="w-full bg-primary dark:bg-blue-600 rounded-t-lg h-[90%]"></div>
+<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[45%]"></div>
+<div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4">
+    <div class="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-2 rounded-xl shadow-xl text-center">
+        <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">Spending insights available after account activation</p>
+    </div>
 </div>
 </div>
 </div>
@@ -413,4 +419,6 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
+<!-- Modular Footer -->
+<div id="footer-placeholder"></div>
 </body></html>

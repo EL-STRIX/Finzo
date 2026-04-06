@@ -36,11 +36,13 @@
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link rel="stylesheet" href="../../assets/css/custom.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<script src="../../assets/js/theme.js"></script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 </head>
 <body class="bg-surface text-on-surface h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white rounded-2xl shadow-lg p-10 max-w-lg w-full text-center border top-0 border-slate-100 relative overflow-hidden">
+    <div class="bg-white dark:bg-[#0a0f1e] rounded-2xl shadow-xl p-10 max-w-lg w-full text-center border border-slate-100 dark:border-slate-800 relative overflow-hidden transition-colors">
         <div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
 
         <div class="relative z-10 space-y-6">
@@ -49,27 +51,27 @@
             </div>
 
             <div>
-                <h1 class="text-2xl font-headline font-extrabold tracking-tight text-primary">Application Under Review</h1>
-                <p class="text-sm text-slate-500 mt-3 leading-relaxed">
+                <h1 class="text-2xl font-headline font-extrabold tracking-tight text-primary dark:text-white">Application Under Review</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
                     Thank you for submitting your details. Our team will review your application within 24 hours and notify you on your registered email.
                 </p>
             </div>
 
             <div class="pt-6 pb-4">
                 <div class="text-left space-y-4 max-w-xs mx-auto">
-                    <div class="flex items-center gap-4 text-slate-800">
+                    <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
                         <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
                         <span class="font-bold text-sm">Registered</span>
                     </div>
-                    <div class="flex items-center gap-4 text-slate-800">
+                    <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
                         <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
                         <span class="font-bold text-sm">Profile Submitted</span>
                     </div>
-                    <div class="flex items-center gap-4 text-primary bg-primary/5 rounded-lg p-2 -mx-2">
-                        <span class="material-symbols-outlined text-primary text-xl animate-pulse">hourglass_top</span>
+                    <div class="flex items-center gap-4 text-primary dark:text-blue-400 bg-primary/5 dark:bg-blue-900/20 rounded-lg p-2 -mx-2">
+                        <span class="material-symbols-outlined text-primary dark:text-blue-400 text-xl animate-pulse">hourglass_top</span>
                         <span class="font-bold text-sm">Under Review</span>
                     </div>
-                    <div class="flex items-center gap-4 text-slate-400 opacity-50">
+                    <div class="flex items-center gap-4 text-slate-400 dark:text-slate-600 opacity-50">
                         <span class="material-symbols-outlined text-xl">radio_button_unchecked</span>
                         <span class="font-bold text-sm">Account Activated</span>
                     </div>
@@ -77,7 +79,7 @@
             </div>
 
             <div class="pt-4 space-y-4">
-                <a href="dashboard.html" class="block w-full bg-surface-container-low text-primary font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors">
+                <a href="dashboard.html" class="block w-full bg-slate-100 dark:bg-slate-800/50 text-primary dark:text-white font-bold py-3 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors no-underline">
                     Go to Dashboard
                 </a>
                 <a href="#" class="inline-block text-xs text-slate-500 font-semibold hover:text-primary">Contact Support</a>
