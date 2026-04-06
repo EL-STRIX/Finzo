@@ -13,6 +13,18 @@ $(document).ready(function() {
         dropdown.toggleClass('hidden');
     });
 
+    // --- NEW: Password Visibility Toggle ---
+    $(document).on('click', '.material-symbols-outlined', function() {
+        const icon = $(this);
+        const input = icon.siblings('input[type="password"], input[type="text"]');
+        
+        if (input.length && (icon.text().trim() === 'visibility' || icon.text().trim() === 'visibility_off')) {
+            const isPassword = input.attr('type') === 'password';
+            input.attr('type', isPassword ? 'text' : 'password');
+            icon.text(isPassword ? 'visibility_off' : 'visibility');
+        }
+    });
+
     // Mobile Sidebar Toggle
     $(document).on('click', '.material-symbols-outlined:contains("menu")', function() {
         $('aside.fixed').toggleClass('-translate-x-full');

@@ -1,58 +1,58 @@
 <!-- Dashboard Sidebar Component -->
 <aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto flex flex-col py-6 font-manrope text-sm z-40 hidden md:flex border-r transition-colors duration-300" 
   style="background:var(--user-sidebar-bg, #0a0f1e);border-color:var(--user-border, #1e2740);">
-    <div class="text-lg font-black px-6 py-8 logo-text font-headline" style="color:#ffffff">Finzo</div>
-    <div class="px-6 mb-8">
-        <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100">
+    <div class="text-xl font-black px-6 py-4 logo-text font-headline" style="color:#ffffff">Finzo</div>
+    <div class="px-5 mb-4">
+        <div class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl border border-slate-700/50">
             <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">RK</div>
             <div class="overflow-hidden">
-                <p class="font-bold text-primary truncate">Rahul Kumar</p>
-                <p class="text-[10px] text-primary truncate">Savings Account</p>
-                <p class="text-[10px] text-secondary truncate">Account: Pending Approval</p>
+                <p class="font-bold text-white text-sm truncate">Rahul Kumar</p>
+                <p class="text-[9px] text-slate-300 truncate">Savings Account</p>
+                <p class="text-[9px] text-amber-400 truncate font-semibold">Account: Pending...</p>
             </div>
         </div>
     </div>
     <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/user/dashboard.html">
-            <span class="material-symbols-outlined">dashboard</span>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white mx-3 p-2 rounded-lg hover:bg-white/5 transition-colors no-underline" href="/views/user/dashboard.html">
+            <span class="material-symbols-outlined text-xl">dashboard</span>
             <span>Dashboard</span>
         </a>
-        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
-            <span class="material-symbols-outlined">lock</span>
+        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+            <span class="material-symbols-outlined text-xl">lock</span>
             <span>My Accounts</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
-            <span class="material-symbols-outlined">lock</span>
+        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+            <span class="material-symbols-outlined text-xl">lock</span>
             <span>Fund Transfer</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
-            <span class="material-symbols-outlined">lock</span>
+        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+            <span class="material-symbols-outlined text-xl">lock</span>
             <span>Transactions</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
-            <span class="material-symbols-outlined">lock</span>
+        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+            <span class="material-symbols-outlined text-xl">lock</span>
             <span>Statement</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-400 mx-4 mb-1 p-3 rounded-lg opacity-50 cursor-not-allowed">
-            <span class="material-symbols-outlined">lock</span>
+        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+            <span class="material-symbols-outlined text-xl">lock</span>
             <span>Beneficiaries</span>
         </div>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/settings/profile.html">
-            <span class="material-symbols-outlined">person</span>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white mx-3 p-2 rounded-lg hover:bg-white/5 transition-colors no-underline" href="/views/settings/profile.html">
+            <span class="material-symbols-outlined text-xl">person</span>
             <span>Profile</span>
         </a>
-        <a class="flex items-center gap-3 text-slate-600 hover:text-primary mx-4 mb-1 p-3 rounded-lg hover:bg-slate-200 transition-colors" href="/views/settings/change-password.html">
-            <span class="material-symbols-outlined">security</span>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white mx-3 p-2 rounded-lg hover:bg-white/5 transition-colors no-underline" href="/views/settings/change-password.html">
+            <span class="material-symbols-outlined text-xl">security</span>
             <span>Change Password</span>
         </a>
     </nav>
-    <div class="mt-auto px-4 pt-6" style="border-top:1px solid rgba(255,255,255,0.08);">
-        <a href="/views/user/complete-profile.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#002645;color:white;padding:12px 16px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;margin-bottom:8px;">
-            <span class="material-symbols-outlined" style="font-size:18px;">person_add</span>
-            + Complete Profile
+    <div class="mt-auto px-4 pt-4 pb-2" style="border-top:1px solid rgba(255,255,255,0.08);">
+        <a href="/views/user/complete-profile.html" class="flex items-center justify-center gap-2 bg-[#002645] hover:opacity-90 text-white p-2.5 rounded-lg font-bold text-xs no-underline mb-1.5 transition-all active:scale-95">
+            <span class="material-symbols-outlined text-lg">person_add</span>
+            <span>Complete Profile</span>
         </a>
-        <a class="flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform cursor-pointer font-medium" href="/views/auth/login.html" style="color:rgba(255,255,255,0.4);text-decoration:none;">
-            <span class="material-symbols-outlined">logout</span>
+        <a class="flex items-center gap-3 px-4 py-1.5 hover:translate-x-1 transition-all cursor-pointer font-medium text-slate-500 no-underline text-xs" href="/views/auth/login.html">
+            <span class="material-symbols-outlined text-lg">logout</span>
             <span>Logout</span>
         </a>
     </div>

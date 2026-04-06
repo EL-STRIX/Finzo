@@ -198,19 +198,19 @@
 </div>
 </header>
 <!-- Dashboard Content -->
-<section class="pt-24 pb-12 px-8 max-w-7xl mx-auto space-y-8">
+<section class="pt-20 pb-8 px-8 max-w-7xl mx-auto space-y-4">
 <!-- Welcome Header -->
-<div class="mb-2">
-    <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight">Welcome back, Rahul Kumar</h2>
-    <p class="text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
+<div class="mb-1">
+    <h2 class="text-2xl font-extrabold text-indigo-950 dark:text-white tracking-tight">Welcome back, Rahul Kumar</h2>
+    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
 </div>
 <!-- Banners Area -->
-<div id="restricted-banner" class="bg-[#fff8e1] border border-[#f39c12] rounded-xl p-4 flex items-center justify-between shadow-sm">
+<div id="restricted-banner" class="bg-[#fff8e1] border border-[#f39c12] rounded-xl p-3 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined text-[#f39c12]">warning</span>
-        <span class="text-sm font-semibold text-[#b07d00]">Your account is not activated yet. Complete your profile to start banking.</span>
+        <span class="material-symbols-outlined text-[#f39c12] text-xl">warning</span>
+        <span class="text-xs font-semibold text-[#b07d00]">Your account is not activated yet. Complete your profile to start banking.</span>
     </div>
-    <a href="complete-profile.html" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">Complete My Profile &rarr;</a>
+    <a href="complete-profile.html" class="bg-primary hover:bg-[#003366] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors no-underline">Complete Profile &rarr;</a>
 </div>
 
 <div id="approved-banner" class="hidden bg-[#e8f8f2] border border-[#00b894] rounded-xl p-4 flex items-center justify-between shadow-sm">
@@ -223,17 +223,17 @@
 <!-- Bento Grid Layout -->
 <div class="grid grid-cols-12 gap-6">
 <!-- Account Summary Card (Main Anchor) -->
-<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-8 shadow-sm relative overflow-hidden group">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden group">
 <!-- Subtle background decoration -->
 <div class="absolute -right-12 -top-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
 <div class="relative z-10">
-<div class="flex justify-between items-start mb-12">
+<div class="flex justify-between items-start mb-8">
 <div>
-<p class="text-secondary font-medium mb-1">Total Available Balance</p>
-<h2 id="dash-balance" class="text-5xl font-extrabold text-primary tracking-tight" style="margin-bottom:8px;">— —</h2>
-<p class="text-sm font-semibold text-slate-500">Available after account activation</p>
+<p class="text-secondary font-medium mb-1 text-xs">Total Available Balance</p>
+<h2 id="dash-balance" class="text-4xl font-extrabold text-primary tracking-tight" style="margin-bottom:4px;">— —</h2>
+<p class="text-xs font-semibold text-slate-500">Available after activation</p>
 </div>
-<div class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
                                 SAVINGS ACCOUNT
                             </div>
 </div>
@@ -248,9 +248,9 @@
 <!-- Spending Overview (Chart Placeholder) -->
 <div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-2xl p-6 flex flex-col justify-between">
 <div>
-<h3 class="text-lg font-bold mb-1">Spending Analytics</h3>
-<p class="text-sm text-secondary mb-6">Monthly spending overview</p>
-<div class="h-32 flex items-end justify-between gap-2 px-2 relative overflow-hidden rounded-xl">
+<h3 class="text-base font-bold mb-0.5">Spending Analytics</h3>
+<p class="text-[11px] text-secondary mb-3">Monthly spending overview</p>
+<div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
 <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
 <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[60%]"></div>
 <div class="w-full bg-primary/20 dark:bg-blue-900/20 rounded-t-lg h-[35%]"></div>
@@ -265,104 +265,101 @@
 </div>
 </div>
 </div>
-<div class="mt-6 pt-4 border-t border-outline-variant/20 flex justify-between items-center opacity-30 cursor-not-allowed">
-<div>
-<p class="text-[10px] uppercase text-secondary">Highest Category</p>
-<p class="font-bold text-sm">Food & Bills</p>
 </div>
-<span class="material-symbols-outlined text-primary text-xl">trending_up</span>
+<div class="mt-4 pt-3 border-t border-outline-variant/20 flex justify-between items-center opacity-30 cursor-not-allowed">
+<div>
+<p class="text-[9px] uppercase text-secondary">Highest Category</p>
+<p class="font-bold text-xs">Food & Bills</p>
+</div>
+<span class="material-symbols-outlined text-primary text-lg">trending_up</span>
 </div>
 </div>
 <!-- Quick Actions -->
-<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-<button disabled class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+<button disabled class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
 </div>
 <div class="text-left text-slate-400">
-<p class="font-bold">Deposit</p>
-<p class="text-xs">Add money to your account</p>
+<p class="font-bold text-sm">Deposit</p>
+<p class="text-[10px]">Add money</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-slate-300">lock</span>
+<span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<button disabled class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">payments</span>
 </div>
 <div class="text-left text-slate-400">
-<p class="font-bold">Withdraw</p>
-<p class="text-xs">Withdraw your funds</p>
+<p class="font-bold text-sm">Withdraw</p>
+<p class="text-[10px]">Withdraw funds</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-slate-300">lock</span>
+<span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-6 bg-primary text-on-primary rounded-xl shadow-lg opacity-50 cursor-not-allowed">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+<button disabled class="flex items-center justify-between p-4 bg-primary text-on-primary rounded-xl shadow-lg opacity-50 cursor-not-allowed">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">send</span>
 </div>
 <div class="text-left">
-<p class="font-bold text-white">Transfer</p>
-<p class="text-xs text-white/70">Send money instantly</p>
+<p class="font-bold text-sm text-white">Transfer</p>
+<p class="text-[10px] text-white/70">Send money</p>
 </div>
 </div>
-<span class="material-symbols-outlined text-white/50">lock</span>
+<span class="material-symbols-outlined text-white/50 text-sm">lock</span>
 </button>
 </div>
 <!-- Recent Transactions -->
-<div class="col-span-12 bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
-<div class="flex justify-between items-center mb-8">
-<h3 class="text-xl font-bold">Recent Transactions</h3>
-<a href="#" class="text-primary font-bold text-sm hover:underline">View All Transactions</a>
+<div class="col-span-12 bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+<div class="flex justify-between items-center mb-5">
+<h3 class="text-lg font-bold">Recent Transactions</h3>
+<a href="#" class="text-primary font-bold text-xs hover:underline no-underline">View All &rarr;</a>
 </div>
-<div class="space-y-6">
+<div class="space-y-3">
 <!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-4">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">arrow_upward</span>
+<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">arrow_upward</span>
 </div>
 <div>
-<p class="font-bold text-on-surface">Account Registration</p>
-<p class="text-xs text-secondary">Today • Just now</p>
+<p class="font-bold text-on-surface text-sm">Registration</p>
+<p class="text-[10px] text-secondary">Today • Just now</p>
 </div>
 </div>
-<div class="text-right flex items-center gap-6">
-<div class="text-right">
-<p class="font-bold text-slate-400">—</p>
+<div class="text-right flex items-center gap-4">
+<p class="font-bold text-slate-400 text-sm">—</p>
+<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#fff8e1] text-[#f39c12]">
+    PENDING
 </div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#fff8e1] text-[#f39c12]">
-                                    PENDING
-                                </div>
 </div>
 </div>
 <!-- Transaction Row -->
-<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-4">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary">info</span>
+<div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">info</span>
 </div>
 <div>
-<p class="font-bold text-on-surface">Profile Incomplete</p>
-<p class="text-xs text-secondary">Complete your profile to see transactions</p>
+<p class="font-bold text-on-surface text-sm">Profile Incomplete</p>
+<p class="text-[10px] text-secondary">Action required to verify account</p>
 </div>
 </div>
-<div class="text-right flex items-center gap-6">
-<div class="text-right">
-<p class="font-bold text-slate-400">—</p>
+<div class="text-right flex items-center gap-4">
+<p class="font-bold text-slate-400 text-sm">—</p>
+<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#fff3e0] text-[#e67e22]">
+    REVIEWD
 </div>
-<div class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#fff3e0] text-[#e67e22]">
-                                    ACTION NEEDED
-                                </div>
 </div>
 </div>
 
-<div class="text-center pt-8 pb-4">
-    <p class="text-sm font-semibold text-slate-500 mb-4">Your transactions will appear here once your account is activated.</p>
-    <a href="complete-profile.html" class="inline-block text-primary font-bold text-sm hover:opacity-80 transition-opacity">Complete Profile &rarr;</a>
+<div class="text-center pt-5 pb-2">
+    <p class="text-xs font-semibold text-slate-500 mb-3">Your transactions will appear here after activation.</p>
+    <a href="complete-profile.html" class="inline-block text-primary font-bold text-xs hover:opacity-80 transition-opacity no-underline">Complete Profile &rarr;</a>
 </div>
 
 </div>
