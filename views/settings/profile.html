@@ -97,110 +97,281 @@
 </head>
 <body class="bg-surface font-body text-on-surface">
 <!-- Sidebar Navigation Shell -->
-<!-- Modular Side Sidebar -->
 <div id="sidebar-placeholder"></div>
+
 <!-- Main Content Canvas -->
-<main class="ml-64 p-12 min-h-screen">
-<header class="mb-12">
-<h1 class="text-4xl font-extrabold font-headline tracking-tighter text-primary mb-2">Edit Profile</h1>
-<p class="text-on-surface-variant font-label text-sm uppercase tracking-widest">Architectural Ledger • Security Protocol</p>
-</header>
-<div class="max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-8">
-<!-- Profile Photo Section - Asymmetric Density -->
-<div class="md:col-span-4">
-<div class="bg-surface-container-lowest rounded-xl p-8 flex flex-col items-center text-center shadow-[0_32px_64px_-12px_rgba(0,38,69,0.04)]">
-<div class="relative mb-6">
-<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container">
-<img class="w-full h-full object-cover" data-alt="close up professional high resolution portrait of a man with clean shaven face and soft studio lighting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-</div>
-<button class="absolute bottom-0 right-0 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
-<span class="material-symbols-outlined text-sm">photo_camera</span>
-</button>
-</div>
-<h3 class="font-headline font-bold text-primary mb-1">Alex Sterling</h3>
-<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Account ID: NB-7729-X</p>
-<div class="w-full h-px bg-surface-container-low mb-6"></div>
-<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Upload a high-resolution photo. Recommended size 400x400px.</p>
-<button class="text-xs font-bold text-primary border-b-2 border-tertiary-fixed-dim pb-1 hover:text-tertiary-container transition-colors">Update Photo</button>
-</div>
-</div>
-<!-- Form Section -->
-<div class="md:col-span-8">
-<div class="bg-surface-container-lowest rounded-xl p-10 shadow-[0_32px_64px_-12px_rgba(0,38,69,0.04)]">
-<form class="space-y-8">
-<!-- Section Heading -->
-<div class="mb-8">
-<h2 class="text-xl font-bold font-headline text-primary mb-1">Personal Ledger</h2>
-<p class="text-on-surface-variant text-sm">Synchronize your institutional identification details.</p>
-</div>
-<!-- Grid Form Inputs -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-<!-- Full Name -->
-<div class="flex flex-col gap-2">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Full Identity Name</label>
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none transition-all placeholder:text-outline-variant" type="text" value="Alex Sterling"/>
-</div>
-<!-- Phone -->
-<div class="flex flex-col gap-2">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Secure Contact Line</label>
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none transition-all" type="tel" value="+1 (555) 012-3456"/>
-</div>
-<!-- Email (Read Only Example) -->
-<div class="flex flex-col gap-2 md:col-span-2">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Primary Digital Address</label>
-<div class="flex items-center bg-surface-container-low rounded-lg px-4 py-3">
-<input class="bg-transparent border-none w-full text-on-surface-variant font-medium cursor-not-allowed outline-none" disabled="" type="email" value="alex.sterling@nexabank.ledger"/>
-<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
-</div>
-</div>
-<!-- Address -->
-<div class="flex flex-col gap-2 md:col-span-2">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Physical Correspondence Ledger</label>
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none transition-all mb-2" type="text" value="72nd Wall St, Apartment 4B"/>
-<div class="grid grid-cols-3 gap-4">
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none" placeholder="City" type="text" value="New York"/>
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none" placeholder="State" type="text" value="NY"/>
-<input class="bg-surface-container-low border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary-fixed outline-none" placeholder="Zip" type="text" value="10005"/>
-</div>
-</div>
-</div>
-<!-- CTA Section -->
-<div class="pt-8 mt-4 border-t border-surface-container flex items-center justify-between">
-<button class="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" type="button">Discard Alterations</button>
-<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold py-4 px-10 rounded-lg shadow-xl shadow-primary/10 hover:opacity-90 active:scale-95 transition-all flex items-center gap-2" type="submit">
-                                Save Changes
-                                <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
-</form>
-</div>
-<!-- Subtle Info Area -->
-<div class="mt-8 grid grid-cols-2 gap-4">
-<div class="p-6 bg-surface-container-low rounded-xl">
-<div class="flex items-center gap-3 mb-2">
-<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">security</span>
-<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Encryption Status</span>
-</div>
-<p class="text-xs text-on-surface-variant">All modifications are stored using AES-256 architectural standards.</p>
-</div>
-<div class="p-6 bg-surface-container-low rounded-xl">
-<div class="flex items-center gap-3 mb-2">
-<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">update</span>
-<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Last Synced</span>
-</div>
-<p class="text-xs text-on-surface-variant">Your profile was last verified on Oct 24, 2024 at 14:32 GMT.</p>
-</div>
-</div>
-</div>
-</div>
+<main class="md:ml-64 min-h-screen py-10 px-6 md:px-12 bg-surface transition-all duration-300">
+
+  <!-- Page Header -->
+  <header class="mb-8">
+    <span class="text-blue-500 font-bold text-[10px] uppercase tracking-widest mb-2 block">Account Settings</span>
+    <h1 class="text-2xl font-extrabold font-headline tracking-tight dark:text-white">My Profile</h1>
+    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your personal information and contact details.</p>
+  </header>
+
+  <div class="max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-6">
+
+    <!-- LEFT: Profile Photo Card -->
+    <div class="md:col-span-4">
+      <div class="bg-white dark:bg-[#0a0f1e] rounded-2xl p-6 flex flex-col items-center text-center shadow-lg shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-slate-800 transition-colors">
+
+        <!-- Avatar with Upload Button -->
+        <div class="relative mb-5">
+          <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-blue-100 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <img id="profile-avatar" class="w-full h-full object-cover hidden" alt="Profile Photo" />
+            <span id="avatar-initials" class="text-4xl font-extrabold text-[#002645] dark:text-white select-none">RK</span>
+          </div>
+          <label for="photo-upload" class="absolute bottom-0 right-0 bg-[#002645] text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-base">photo_camera</span>
+          </label>
+          <input id="photo-upload" type="file" accept="image/*" class="hidden" />
+        </div>
+
+        <h3 class="font-headline font-bold text-[#002645] dark:text-white text-lg mb-0.5">Rahul Kumar</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">rahul.kumar@gmail.com</p>
+        <span class="text-[10px] font-bold bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full uppercase tracking-wider mb-5">Account Pending</span>
+
+        <div class="w-full h-px bg-slate-100 dark:bg-slate-800 mb-5"></div>
+
+        <!-- Account Info -->
+        <div class="w-full space-y-3 text-left">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500 dark:text-slate-400">Customer ID</span>
+            <span class="text-xs font-semibold dark:text-slate-300">FNZ-2026-0001</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500 dark:text-slate-400">Account Type</span>
+            <span class="text-xs font-semibold dark:text-slate-300">Savings Account</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-500 dark:text-slate-400">Member Since</span>
+            <span class="text-xs font-semibold dark:text-slate-300">Apr 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Profile Form -->
+    <div class="md:col-span-8">
+      <div class="bg-white dark:bg-[#0a0f1e] rounded-2xl p-8 shadow-lg shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-slate-800 transition-colors">
+
+        <!-- Form -->
+        <form id="profile-form" class="space-y-6">
+
+          <div class="pb-4 border-b border-slate-100 dark:border-slate-800">
+            <h2 class="text-base font-bold dark:text-white">Personal Information</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Keep your details up to date.</p>
+          </div>
+
+          <!-- Full Name + Father's Name -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-1.5 text-slate-400">
+              <label class="text-[10px] font-bold uppercase tracking-widest ml-1" for="field-fullname">Full Name (Locked)</label>
+              <input id="field-fullname" class="bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-500 font-medium cursor-not-allowed outline-none" type="text" value="Rahul Kumar" disabled />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-fathername">Father's Name</label>
+              <input id="field-fathername" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="text" value="" placeholder="Enter father's name" />
+            </div>
+          </div>
+
+          <!-- DOB + Gender -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-dob">Date of Birth</label>
+              <input id="field-dob" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="date" value="" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-gender">Gender</label>
+              <select id="field-gender" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                <option value="" disabled selected>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Phone + Alternate Phone -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-1.5 text-slate-400">
+              <label class="text-[10px] font-bold uppercase tracking-widest ml-1" for="field-phone">Mobile Number (Locked)</label>
+              <div class="flex">
+                <span class="bg-slate-100 dark:bg-slate-800/60 border border-r-0 border-slate-200 dark:border-slate-800 rounded-l-xl px-3 py-2.5 text-sm text-slate-500 font-semibold">+91</span>
+                <input id="field-phone" class="flex-1 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-r-xl px-4 py-2.5 text-sm text-slate-500 font-medium cursor-not-allowed outline-none" type="tel" value="9876543210" disabled />
+              </div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-altphone">Alternate Number <span class="text-slate-400 normal-case font-normal">(optional)</span></label>
+              <div class="flex">
+                <span class="bg-slate-100 dark:bg-slate-700 border border-r-0 border-slate-200 dark:border-slate-700 rounded-l-xl px-3 py-2.5 text-sm text-slate-500 dark:text-slate-400 font-semibold">+91</span>
+                <input id="field-altphone" class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-r-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="tel" placeholder="Alternate number" maxlength="10" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Email (Read-only) -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Email Address <span class="text-slate-400 normal-case font-normal">(cannot be changed)</span></label>
+            <div class="flex items-center bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5">
+              <input class="flex-1 bg-transparent border-none text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed outline-none" disabled type="email" value="rahul.kumar@gmail.com" />
+              <span class="material-symbols-outlined text-green-500 text-base" style="font-variation-settings: 'FILL' 1;">verified</span>
+            </div>
+          </div>
+
+          <div class="pb-4 pt-2 border-b border-slate-100 dark:border-slate-800">
+            <h2 class="text-base font-bold dark:text-white">Address Details</h2>
+          </div>
+
+          <!-- Address Line -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-address">Street Address</label>
+            <input id="field-address" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="text" value="" placeholder="House no., Street, Locality" />
+          </div>
+
+          <!-- City + State + Pincode -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-city">City</label>
+              <input id="field-city" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="text" value="" placeholder="City" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-state">State</label>
+              <select id="field-state" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                <option value="" disabled selected>Select State</option>
+                <option>Rajasthan</option>
+                <option>Maharashtra</option>
+                <option>Uttar Pradesh</option>
+                <option>Delhi</option>
+                <option>Karnataka</option>
+                <option>Gujarat</option>
+                <option>Madhya Pradesh</option>
+                <option>Tamil Nadu</option>
+                <option>West Bengal</option>
+                <option>Bihar</option>
+                <option>Punjab</option>
+                <option>Haryana</option>
+                <option>Andhra Pradesh</option>
+                <option>Telangana</option>
+                <option>Kerala</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-pincode">PIN Code</label>
+              <input id="field-pincode" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all" type="text" value="" placeholder="6-digit PIN" maxlength="6" />
+            </div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="pt-6 mt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+            <button id="btn-discard" class="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors" type="button">Discard Changes</button>
+            <button id="btn-save" class="bg-[#002645] dark:bg-blue-600 hover:bg-[#003366] dark:hover:bg-blue-500 text-white font-headline font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-900/10 dark:shadow-none active:scale-95 transition-all flex items-center gap-2" type="submit">
+              <span class="material-symbols-outlined text-xl">save</span>
+              <span>Save Changes</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-5 bg-white dark:bg-[#0a0f1e] rounded-2xl border border-slate-100 dark:border-slate-800 flex items-start gap-3 transition-colors">
+          <span class="material-symbols-outlined text-green-500 mt-0.5" style="font-variation-settings: 'FILL' 1;">security</span>
+          <div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-0.5">Data Security</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Your information is encrypted and stored securely with AES-256 protection.</p>
+          </div>
+        </div>
+        <div class="p-5 bg-white dark:bg-[#0a0f1e] rounded-2xl border border-slate-100 dark:border-slate-800 flex items-start gap-3 transition-colors">
+          <span class="material-symbols-outlined text-blue-500 mt-0.5" style="font-variation-settings: 'FILL' 1;">update</span>
+          <div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-0.5">Last Updated</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Your profile was last saved on 6 April 2026 at 06:00 PM IST.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
 </main>
-<!-- Footer - Shell Component -->
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
+
+<!-- Toast Notification -->
+<div id="profile-toast" class="fixed bottom-6 right-6 z-50 hidden">
+  <div class="bg-green-600 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 transition-all">
+    <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+    <span>Profile updated successfully!</span>
+  </div>
+</div>
+
+<!-- Mobile Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0a0f1e] border-t border-slate-100 dark:border-slate-800 flex items-center justify-around px-4 z-50">
+  <a href="/views/user/dashboard.html" class="flex flex-col items-center gap-1 text-slate-400 no-underline">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span class="text-[10px]">Home</span>
+  </a>
+  <a href="/views/settings/profile.html" class="flex flex-col items-center gap-1 text-[#002645] dark:text-white no-underline">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+    <span class="text-[10px] font-bold">Profile</span>
+  </a>
+  <a href="/views/settings/change-password.html" class="flex flex-col items-center gap-1 text-slate-400 no-underline">
+    <span class="material-symbols-outlined">security</span>
+    <span class="text-[10px]">Security</span>
+  </a>
+</nav>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../../assets/js/component-loader.js"></script>
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/charts.js"></script>
+
+<script>
+  // Profile Photo Preview
+  document.getElementById('photo-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const avatar = document.getElementById('profile-avatar');
+      const initials = document.getElementById('avatar-initials');
+      avatar.src = ev.target.result;
+      avatar.classList.remove('hidden');
+      initials.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Discard Changes — Reset form to original values
+  const originalValues = {};
+  document.querySelectorAll('#profile-form input:not([disabled]), #profile-form select').forEach(el => {
+    originalValues[el.id] = el.value;
+  });
+  document.getElementById('btn-discard').addEventListener('click', function() {
+    Object.entries(originalValues).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+    // Reset avatar if changed
+    const avatar = document.getElementById('profile-avatar');
+    const initials = document.getElementById('avatar-initials');
+    avatar.classList.add('hidden');
+    initials.classList.remove('hidden');
+    document.getElementById('photo-upload').value = '';
+  });
+
+  // Save — Show Toast
+  document.getElementById('profile-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const toast = document.getElementById('profile-toast');
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 3000);
+
+    // Update original values to new saved state
+    document.querySelectorAll('#profile-form input:not([disabled]), #profile-form select').forEach(el => {
+      originalValues[el.id] = el.value;
+    });
+  });
+</script>
+
 </body></html>
