@@ -37,7 +37,14 @@ $(document).ready(function() {
         const balanceEl = $('#dash-balance');
         const accountEl = $('#dash-account');
         
-        const isHidden = icon.text().trim() === 'visibility_off';
+        // Safety check: Avoid toggling if not activated
+        const realValue = balanceEl.attr('data-real-value');
+        if (realValue === 'Pending Activation' || realValue === 'Unavailable') {
+            window.showToast("Please complete your profile to activate your account.", "warning");
+            return;
+        }
+
+        const isHidden = icon.text().trim() === 'visibility_off' || icon.text().trim() === 'lock';
         
         if (isHidden) {
             // Show real values
@@ -49,7 +56,7 @@ $(document).ready(function() {
             // Hide values
             icon.text('visibility_off');
             balanceEl.text('••••••••');
-            accountEl.text('•••• •••• •••• ' + accountEl.attr('data-real-value').slice(-4));
+            accountEl.text('•••• •••• •••• ' + (accountEl.attr('data-real-value').slice(-4) || 'XXXX'));
             btn.addClass('text-slate-400').removeClass('text-primary');
         }
     });
@@ -85,7 +92,58 @@ $(document).ready(function() {
     // Toasts placeholder
     window.showToast = function(message, type = 'success') {
         console.log(`[Toast] ${type.toUpperCase()}: ${message}`);
+        // Optionally create a visible toast element here
     }
+
+    // --- NEW: Panel Management (Global) ---
+    window.togglePanel = function(openId, closeId) {
+        const panel = $('#' + openId);
+        const other = $('#' + closeId);
+        if (other.length) other.addClass('hidden');
+        panel.toggleClass('hidden');
+    }
+
+    // Individual notification clicks
+    $(document).on('click', '.notif-item', function() {
+        const item = $(this);
+        const title = item.find('p.font-semibold').text();
+        
+        item.removeClass('is-unread').addClass('is-read');
+        $('#notif-panel').addClass('hidden');
+        
+        window.showToast(`Viewing: ${title}`, 'info');
+        
+        // Hide badge if no unreads left
+        if ($('.notif-item.is-unread').length === 0) {
+            $('#notif-badge').addClass('scale-0');
+        }
+    });
+
+    // Mark all read
+    $(document).on('click', '#mark-all-read', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        $('.notif-item').removeClass('is-unread').addClass('is-read');
+        $('#notif-badge').addClass('scale-0');
+        
+        window.showToast('All notifications marked as read', 'success');
+    });
+
+    // Global click-outside to close panels
+    $(document).on('click', function(e) {
+        const target = $(e.target);
+        
+        // Notification Panel
+        if (!target.closest('#notif-wrapper').length && !target.closest('#notif-panel').length) {
+            $('#notif-panel').addClass('hidden');
+        }
+        
+        // Settings Panel
+        if (!target.closest('#settings-wrapper').length && !target.closest('#settings-panel').length) {
+            $('#settings-panel').addClass('hidden');
+        }
+    });
 
     // --- INSTITUTIONAL MOTION ENGINE ---
 

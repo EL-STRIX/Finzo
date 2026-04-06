@@ -119,16 +119,16 @@
   <div class="relative" id="notif-wrapper">
     <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="relative btn-icon-hover no-outline">
       <span class="material-symbols-outlined">notifications</span>
-      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#0a0f1e]"></span>
+      <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0a0f1e] transform scale-100 transition-transform duration-300"></span>
     </button>
     <!-- Notifications Dropdown -->
     <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
       <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Notifications</span>
-        <span class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline">Mark all read</span>
+        <button id="mark-all-read" class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline focus:outline-none">Mark all read</button>
       </div>
       <div class="divide-y divide-slate-50 dark:divide-slate-800">
-        <div class="flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-50 dark:border-slate-800">
+        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-50 dark:border-slate-800 is-unread">
           <div class="w-9 h-9 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
           </div>
@@ -138,7 +138,7 @@
             <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Just now</p>
           </div>
         </div>
-        <div class="flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer">
+        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer is-unread">
           <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
           </div>
@@ -222,32 +222,48 @@
 </div>
 <!-- Bento Grid Layout -->
 <div class="grid grid-cols-12 gap-6">
-<!-- Account Summary Card (Main Anchor) -->
-<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden group">
-<!-- Subtle background decoration -->
-<div class="absolute -right-12 -top-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
-<div class="relative z-10">
-<div class="flex justify-between items-start mb-8">
-<div class="flex items-start gap-4">
+<!-- Account Summary Card (Institutional Anchor) -->
+<div class="col-span-12 lg:col-span-8 bg-slate-950 dark:bg-[#0a0f1e] rounded-3xl p-8 shadow-2xl shadow-indigo-900/20 relative overflow-hidden group border border-white/10">
+<!-- Shimmer Overlay -->
+<div class="absolute inset-0 card-shimmer pointer-events-none"></div>
+<!-- Premium background decoration -->
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-700"></div>
+<div class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px] group-hover:bg-indigo-500/20 transition-all duration-700"></div>
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col justify-between h-full">
+<div class="flex justify-between items-start mb-12">
+<div class="flex items-start gap-6">
+  <!-- Stylized Bank Chip -->
+  <div class="w-12 h-10 bg-gradient-to-br from-amber-200 to-amber-500 rounded-lg shadow-inner relative overflow-hidden opacity-80 shrink-0">
+    <div class="absolute inset-0 border border-black/10"></div>
+    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-black/10"></div>
+    <div class="absolute top-0 left-1/2 w-[1px] h-full bg-black/10"></div>
+  </div>
 <div>
-<p class="text-secondary font-medium mb-1 text-xs">Total Available Balance</p>
-<div class="flex items-center gap-3">
-  <h2 id="dash-balance" class="text-4xl font-extrabold text-primary tracking-tight transition-all duration-300" data-real-value="₹ 5,84,290.00" style="margin-bottom:4px;">••••••••</h2>
-  <button id="toggle-balance" class="p-1 px-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500 transition-all focus:outline-none" title="Toggle visibility">
-    <span class="material-symbols-outlined text-lg">visibility_off</span>
+<p class="text-slate-400 font-bold mb-2 text-[10px] uppercase tracking-[0.2em] opacity-80">Total Available Balance</p>
+<div class="flex items-center gap-4">
+  <h2 id="dash-balance" class="text-5xl font-black text-white tracking-tighter transition-all duration-500 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" data-real-value="Pending Activation">₹ --.--</h2>
+  <button id="toggle-balance" class="p-2 hover:bg-white/10 rounded-full text-slate-500 transition-all focus:outline-none" title="Complete profile to activate">
+    <span class="material-symbols-outlined text-xl">lock</span>
   </button>
 </div>
-<p class="text-xs font-semibold text-slate-500">Available after activation</p>
+<div class="inline-flex items-center gap-2 mt-3 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Activation Required</span>
 </div>
 </div>
-<div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+</div>
+<div class="bg-white/5 backdrop-blur-md border border-white/10 text-white/80 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em]">
                                 SAVINGS ACCOUNT
                             </div>
 </div>
-<div class="flex flex-wrap gap-12 items-end">
+<div class="flex flex-wrap gap-12 items-end mt-4">
 <div>
-<p class="text-[10px] uppercase tracking-widest text-secondary mb-2">Account Number</p>
-<p id="dash-account" class="font-mono text-lg font-semibold tracking-tighter text-on-surface dark:text-slate-300" data-real-value="7729 4410 8820 1092">•••• •••• •••• 1092</p>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-3 font-bold">Account Number</p>
+<div class="flex items-center gap-3">
+    <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.15em] text-white/90" data-real-value="Unavailable">NOT YET ASSIGNED</p>
+    <span class="material-symbols-outlined text-slate-600 text-sm">lock</span>
+</div>
 </div>
 </div>
 </div>
@@ -401,26 +417,6 @@
 <script src="../../assets/js/charts.js"></script>
 
 <script>
-function togglePanel(openId, closeId) {
-  const panel = document.getElementById(openId);
-  const other = document.getElementById(closeId);
-  if (other) other.classList.add('hidden');
-  panel.classList.toggle('hidden');
-}
-
-// Close panels when clicking outside
-document.addEventListener('click', function(e) {
-  const notifPanel = document.getElementById('notif-panel');
-  const settingsPanel = document.getElementById('settings-panel');
-  const notifBtn = document.getElementById('notif-btn');
-  const settingsBtn = document.getElementById('settings-btn');
-
-  if (notifPanel && !notifPanel.contains(e.target) && !notifBtn.contains(e.target)) {
-    notifPanel.classList.add('hidden');
-  }
-  if (settingsPanel && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
-    settingsPanel.classList.add('hidden');
-  }
-});
+// Dashboard specific logic (if any) can go here
 </script>
 </body></html>

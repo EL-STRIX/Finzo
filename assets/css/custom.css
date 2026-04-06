@@ -256,19 +256,46 @@
             background-color: rgba(255, 255, 255, 0.02);
         }
 
-        /* Card rim light effect for dark theme cards */
-        .card-rim-light {
-            position: relative;
-            overflow: hidden;
+        /* --- Notification Unread States --- */
+        #notif-badge.scale-0 {
+            transform: scale(0);
+            pointer-events: none;
         }
-        .card-rim-light::after {
+
+        .notif-item.is-unread {
+            background-color: var(--un-read-bg, rgba(79, 70, 229, 0.03));
+            position: relative;
+        }
+
+        .notif-item.is-unread::after {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            right: 1.25rem;
+            top: 1.25rem;
+            width: 6px;
+            height: 6px;
+            background: #ef4444; /* red-500 */
+            border-radius: 9999px;
+        }
+
+        .notif-item.is-read {
+            background-color: transparent !important;
+            opacity: 0.7;
+        }
+
+        .notif-item.is-read::after {
+            display: none;
+        }
+
+        /* Card Shimmer Animation */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .card-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 4s infinite linear;
         }
 
         /* Prevent interactive elements inside card from inheriting cursor */
