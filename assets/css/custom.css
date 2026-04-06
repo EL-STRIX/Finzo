@@ -144,6 +144,65 @@
         }
 
         /* Subtle Professional Card Hover Animations */
+        .hover-premium {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .hover-premium:hover {
+            background-color: rgba(79, 70, 229, 0.08); /* Indigo tint */
+            transform: translateX(4px);
+            color: #4f46e5 !important;
+        }
+
+        .dark .hover-premium:hover {
+            background-color: rgba(99, 102, 241, 0.2); /* Higher contrast in dark mode */
+            color: #818cf8 !important;
+            box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.2);
+        }
+
+        .dropdown-item-hover {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .dropdown-item-hover::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: #4f46e5;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dark .dropdown-item-hover::before {
+            background: #818cf8;
+        }
+
+        .dropdown-item-hover:hover::before {
+            width: 4px;
+        }
+
+        .dropdown-item-hover:hover {
+            background-color: rgba(79, 70, 229, 0.05);
+            padding-left: 1.5rem !important;
+        }
+
+        .dark .dropdown-item-hover:hover {
+            background-color: rgba(129, 140, 248, 0.15);
+        }
+
+        @keyframes dropdownScale {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .animate-dropdown {
+            animation: dropdownScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: top right;
+        }
+
         div[class*="rounded-[2rem]"],
         div[class*="rounded-3xl"],
         div[class*="rounded-xl"] {
@@ -154,11 +213,19 @@
         
         div[class*="rounded-[2rem]"]:hover,
         div[class*="rounded-3xl"]:hover,
-        div[class*="rounded-xl"]:hover {
+        div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.08);
+            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.08); /* Standard shadow */
             border-color: rgba(0, 38, 69, 0.04);
             cursor: pointer;
+        }
+
+        .dark div[class*="rounded-[2rem]"]:hover,
+        .dark div[class*="rounded-3xl"]:hover,
+        .dark div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(79, 70, 229, 0.1); /* Indigo glow shadow for dark mode */
+            border-color: rgba(129, 140, 248, 0.2);
+            background-color: rgba(255, 255, 255, 0.02);
         }
 
         /* Card rim light effect for dark theme cards */

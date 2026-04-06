@@ -122,13 +122,13 @@
       <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
     </button>
     <!-- Notifications Dropdown -->
-    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
       <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Notifications</span>
         <span class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline">Mark all read</span>
       </div>
       <div class="divide-y divide-slate-50 dark:divide-slate-800">
-        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+        <div class="flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-50 dark:border-slate-800">
           <div class="w-9 h-9 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
           </div>
@@ -138,7 +138,7 @@
             <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Just now</p>
           </div>
         </div>
-        <div class="flex items-start gap-3 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+        <div class="flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer">
           <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
           </div>
@@ -166,12 +166,12 @@
       <span class="material-symbols-outlined">settings</span>
     </button>
     <!-- Settings Dropdown -->
-    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
       <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
         <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Settings</span>
       </div>
       <div class="py-2">
-        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
+        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover transition-all cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
           <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">manage_accounts</span>
           <div>
             <p class="text-sm font-semibold">Complete Profile</p>
@@ -323,36 +323,36 @@
 <!-- Transaction Row -->
 <div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-3">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary text-lg">arrow_upward</span>
+<div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600 text-lg">check_circle</span>
 </div>
 <div>
-<p class="font-bold text-on-surface text-sm">Registration</p>
-<p class="text-[10px] text-secondary">Today • Just now</p>
+<p class="font-bold text-on-surface text-sm">Registration Status</p>
+<p class="text-[10px] text-secondary">Completed on signup</p>
 </div>
 </div>
 <div class="text-right flex items-center gap-4">
 <p class="font-bold text-slate-400 text-sm">—</p>
-<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#fff8e1] text-[#f39c12]">
-    PENDING
+<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-green-100 text-green-700">
+    DONE
 </div>
 </div>
 </div>
 <!-- Transaction Row -->
 <div class="flex items-center justify-between group cursor-pointer opacity-80 shadow-sm border border-slate-100 rounded-xl p-3">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary text-lg">info</span>
+<div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-600 text-lg">error</span>
 </div>
 <div>
-<p class="font-bold text-on-surface text-sm">Profile Incomplete</p>
-<p class="text-[10px] text-secondary">Action required to verify account</p>
+<p class="font-bold text-on-surface text-sm">Account Complete Status</p>
+<p class="text-[10px] text-secondary">Pending profile completion</p>
 </div>
 </div>
 <div class="text-right flex items-center gap-4">
 <p class="font-bold text-slate-400 text-sm">—</p>
-<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#fff3e0] text-[#e67e22]">
-    REVIEWD
+<div class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-orange-100 text-orange-700">
+    INCOMPLETE
 </div>
 </div>
 </div>
@@ -416,6 +416,4 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
 </body></html>
