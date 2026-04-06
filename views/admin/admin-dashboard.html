@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -85,19 +85,43 @@ tailwind.config = {
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
 
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#e8f3ff;">
-          <span class="material-symbols-outlined" style="color:#3b82f6;">group</span>
+        <div class="admin-stat-icon" style="background:#ffeef0;">
+          <span class="material-symbols-outlined" style="color:#e17055;">arrow_downward</span>
         </div>
-        <div class="admin-stat-label">Total Users</div>
-        <div class="admin-stat-value">128.4k <span class="admin-stat-delta positive">+12%</span></div>
+        <div class="admin-stat-label">Total Withdrawals</div>
+        <div class="admin-stat-value">₹38,000 <span class="admin-stat-delta positive">+8.3%</span></div>
       </div>
 
       <div class="admin-stat-card">
         <div class="admin-stat-icon" style="background:#e8f8f2;">
-          <span class="material-symbols-outlined" style="color:#00b894;">swap_horiz</span>
+          <span class="material-symbols-outlined" style="color:#00b894;">arrow_upward</span>
         </div>
-        <div class="admin-stat-label">Daily Transactions</div>
-        <div class="admin-stat-value">42,080 <span class="admin-stat-delta positive">+4.1%</span></div>
+        <div class="admin-stat-label">Total Deposits</div>
+        <div class="admin-stat-value">₹72,000 <span class="admin-stat-delta positive">+14.2%</span></div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#e8f3ff;">
+          <span class="material-symbols-outlined" style="color:#3b82f6;">sync_alt</span>
+        </div>
+        <div class="admin-stat-label">Total Transfers</div>
+        <div class="admin-stat-value">₹1.4L <span class="admin-stat-delta positive">+11.6%</span></div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#e8f3ff;">
+          <span class="material-symbols-outlined" style="color:#3b82f6;">account_balance</span>
+        </div>
+        <div class="admin-stat-label">Total Accounts</div>
+        <div class="admin-stat-value">2,480 <span class="admin-stat-delta positive">+5.2%</span></div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:#fff8e1;">
+          <span class="material-symbols-outlined" style="color:#f39c12;">percent</span>
+        </div>
+        <div class="admin-stat-label">Interest Credited</div>
+        <div class="admin-stat-value">₹12,400 <span class="admin-stat-delta" style="background:#fff3cd;color:#b07d00;">This Month</span></div>
       </div>
 
       <div class="admin-stat-card">
@@ -117,20 +141,22 @@ tailwind.config = {
       </div>
 
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#e8f8f2;">
-          <span class="material-symbols-outlined" style="color:#00b894;">manage_search</span>
+        <div class="admin-stat-icon" style="background:#fff8e1;">
+          <span class="material-symbols-outlined" style="color:#f39c12;">warning</span>
         </div>
-        <div class="admin-stat-label">Audit Log Entries</div>
-        <div class="admin-stat-value">4,821 <span class="admin-stat-delta positive">Tracked</span></div>
+        <div class="admin-stat-label">Daily Limit Breaches</div>
+        <div class="admin-stat-value">7 <span class="admin-stat-delta negative">Alert</span></div>
       </div>
 
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#f0f2ff;">
-          <span class="material-symbols-outlined" style="color:#6c63ff;">account_balance</span>
+        <div class="admin-stat-icon" style="background:#f3e8ff;">
+          <span class="material-symbols-outlined" style="color:#9333ea;">lock_reset</span>
         </div>
-        <div class="admin-stat-label">Total Deposits</div>
-        <div class="admin-stat-value">$4.2B <span class="admin-stat-delta positive">+0.8%</span></div>
+        <div class="admin-stat-label">Password Resets Today</div>
+        <div class="admin-stat-value">24 <span class="admin-stat-delta" style="background:#f3e8ff;color:#9333ea;">Today</span></div>
       </div>
+
+    </div>
     </div>
 
     <!-- CHARTS ROW -->
@@ -210,14 +236,39 @@ tailwind.config = {
 
     <!-- RECENT USERS TABLE -->
     <div class="admin-card">
-      <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
+      <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <div class="admin-section-title">Recent User Activity</div>
-        <div style="display:flex;gap:12px;align-items:center;">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+
+          <!-- Search box -->
           <div style="position:relative;">
-            <span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;color:#9aa0b0;">search</span>
-            <input type="text" placeholder="Filter users..." style="padding:8px 12px 8px 34px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;width:220px;outline:none;"/>
+            <span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;color:#9aa0b0;pointer-events:none;">search</span>
+            <input
+              id="dash-user-search"
+              type="text"
+              placeholder="Filter users..."
+              oninput="filterDashUsers()"
+              style="padding:8px 12px 8px 34px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:8px;font-size:12px;width:200px;outline:none;color:inherit;transition:border 0.2s;"
+              onfocus="this.style.borderColor='#002645'"
+              onblur="this.style.borderColor=''"
+            />
           </div>
-          <a href="admin-users.html" style="background:#002645;color:white;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;">
+
+          <!-- Status filter dropdown -->
+          <select
+            id="dash-status-filter"
+            onchange="filterDashUsers()"
+            style="padding:8px 14px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:8px;font-size:12px;color:inherit;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%239aa0b0%22 d=%22M7 10l5 5 5-5z%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;"
+          >
+            <option value="">All Status</option>
+            <option value="low risk">Low Risk</option>
+            <option value="medium risk">Medium Risk</option>
+            <option value="high risk">High Risk</option>
+            <option value="flagged">Flagged</option>
+          </select>
+
+          <!-- All Users link -->
+          <a href="admin-users.html" style="background:#002645;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap;">
             <span class="material-symbols-outlined" style="font-size:16px;">group</span> All Users
           </a>
         </div>
@@ -232,79 +283,99 @@ tailwind.config = {
             <th style="text-align:right;">Operations</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">AS</div>
-                <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Alex Sterling</div>
-                  <div style="font-size:11px;color:#9aa0b0;">alex.s@nexabank.arch</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Low Risk</span></td>
+        <tbody id="dash-user-tbody">
+          <tr data-name="alex sterling" data-risk="low risk">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">AS</div><div><div style="font-weight:700;color:#0a0f1e;">Alex Sterling</div><div style="font-size:11px;color:#9aa0b0;">alex.s@nexabank.arch</div></div></div></td>
+            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
             <td style="color:#5a6270;">London, UK (Zone 1)</td>
             <td style="color:#9aa0b0;">2 mins ago</td>
-            <td style="text-align:right;">
-              <a href="admin-user-detail.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View
-              </a>
-            </td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#ffeef0;color:#e17055;">MK</div>
-                <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Marcus Kross</div>
-                  <div style="font-size:11px;color:#9aa0b0;">m.kross@corporate.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;"></span>Elevated</span></td>
+          <tr data-name="marcus kross" data-risk="elevated">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#ffeef0;color:#e17055;">MK</div><div><div style="font-weight:700;color:#0a0f1e;">Marcus Kross</div><div style="font-size:11px;color:#9aa0b0;">m.kross@corporate.com</div></div></div></td>
+            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;display:inline-block;margin-right:4px;"></span>Elevated</span></td>
             <td style="color:#5a6270;">Singapore (Cluster 4)</td>
             <td style="color:#9aa0b0;">14 mins ago</td>
-            <td style="text-align:right;">
-              <a href="admin-user-detail.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View
-              </a>
-            </td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">EL</div>
-                <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Elena Lund</div>
-                  <div style="font-size:11px;color:#9aa0b0;">lund@vantage.fin</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Low Risk</span></td>
+          <tr data-name="elena lund" data-risk="low risk">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">EL</div><div><div style="font-weight:700;color:#0a0f1e;">Elena Lund</div><div style="font-size:11px;color:#9aa0b0;">lund@vantage.fin</div></div></div></td>
+            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
             <td style="color:#5a6270;">Oslo, NO (Proxy)</td>
             <td style="color:#9aa0b0;">1 hour ago</td>
-            <td style="text-align:right;">
-              <a href="admin-user-detail.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View
-              </a>
-            </td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
+          <tr data-name="riya verma" data-risk="medium risk">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#f3e8ff;color:#9333ea;">RV</div><div><div style="font-weight:700;color:#0a0f1e;">Riya Verma</div><div style="font-size:11px;color:#9aa0b0;">riya.v@finzone.in</div></div></div></td>
+            <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>Medium Risk</span></td>
+            <td style="color:#5a6270;">Mumbai, IN (Gateway)</td>
+            <td style="color:#9aa0b0;">3 hours ago</td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
+          <tr data-name="james thorne" data-risk="flagged">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#ffeef0;color:#e17055;">JT</div><div><div style="font-weight:700;color:#0a0f1e;">James Thorne</div><div style="font-size:11px;color:#9aa0b0;">j.thorne@arquis.io</div></div></div></td>
+            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;display:inline-block;margin-right:4px;"></span>Flagged</span></td>
+            <td style="color:#5a6270;">Dubai, UAE (VPN)</td>
+            <td style="color:#9aa0b0;">5 hours ago</td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
+          <tr data-name="nina schulz" data-risk="low risk">
+            <td><div style="display:flex;align-items:center;gap:12px;"><div class="admin-avatar" style="background:#e8f3ff;color:#3b82f6;">NS</div><div><div style="font-weight:700;color:#0a0f1e;">Nina Schulz</div><div style="font-size:11px;color:#9aa0b0;">nina.s@eurobank.de</div></div></div></td>
+            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>Low Risk</span></td>
+            <td style="color:#5a6270;">Berlin, DE (Zone 2)</td>
+            <td style="color:#9aa0b0;">Yesterday</td>
+            <td style="text-align:right;"><a href="admin-users.html" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#f0f2ff;color:#6c63ff;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
         </tbody>
       </table>
       <div style="padding:14px 24px;display:flex;justify-content:space-between;align-items:center;background:#fafbff;border-top:1px solid #eef0f5;">
-        <span style="font-size:11px;color:#9aa0b0;font-weight:600;">Displaying 3 of 12,842 nodes</span>
+        <span id="dash-row-counter" style="font-size:11px;color:#9aa0b0;font-weight:600;">Displaying 1-3 of 6 users</span>
         <div style="display:flex;gap:6px;">
-          <button style="padding:5px 12px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">1</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
+          <button id="dash-pg-1" onclick="dashGoPage(1)" style="padding:5px 12px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">1</button>
+          <button id="dash-pg-2" onclick="dashGoPage(2)" style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
+          <button onclick="dashGoPage(Math.min(dashCurrentPage+1,2))" style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next &rarr;</button>
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style>
+[data-theme="dark"] #dash-user-search,[data-theme="dark"] #dash-status-filter{background:#1c2128!important;border-color:rgba(255,255,255,0.1)!important;color:#e6edf3!important;}
+[data-theme="dark"] #dash-user-search::placeholder{color:#484f58!important;}
+[data-theme="dark"] #dash-status-filter option{background:#1c2128;color:#e6edf3;}
+#dash-user-search:focus,#dash-status-filter:focus{border-color:#002645!important;box-shadow:0 0 0 3px rgba(0,38,69,0.12)!important;outline:none;}
+[data-theme="dark"] #dash-user-search:focus,[data-theme="dark"] #dash-status-filter:focus{border-color:#58a6ff!important;box-shadow:0 0 0 3px rgba(88,166,255,0.12)!important;}
+[data-theme="dark"] #dash-pg-2{background:#1c2128!important;border-color:rgba(255,255,255,0.08)!important;color:#8b949e!important;}
+</style>
+<script>
+var dashCurrentPage=1,dashRowsPerPage=3;
+function dashGoPage(p){dashCurrentPage=p;renderDashTable();}
+function filterDashUsers(){dashCurrentPage=1;renderDashTable();}
+function renderDashTable(){
+  var q=(document.getElementById('dash-user-search').value||'').toLowerCase().trim();
+  var s=(document.getElementById('dash-status-filter').value||'').toLowerCase().trim();
+  var all=Array.from(document.querySelectorAll('#dash-user-tbody tr'));
+  var filtered=all.filter(function(r){
+    var t=r.innerText.toLowerCase();
+    var b=r.querySelector('.status-badge');
+    var bt=b?b.innerText.toLowerCase():'';
+    return(!q||t.includes(q))&&(!s||bt.includes(s));
+  });
+  all.forEach(function(r){r.style.display='none';});
+  var start=(dashCurrentPage-1)*dashRowsPerPage;
+  filtered.slice(start,start+dashRowsPerPage).forEach(function(r){r.style.display='';});
+  var c=document.getElementById('dash-row-counter');
+  if(c){var end=Math.min(start+dashRowsPerPage,filtered.length);c.textContent=filtered.length===0?'No users found':'Displaying '+(filtered.length?start+1:0)+'-'+end+' of '+filtered.length+' users';}
+  var tp=Math.ceil(filtered.length/dashRowsPerPage);
+  for(var i=1;i<=2;i++){var btn=document.getElementById('dash-pg-'+i);if(!btn)continue;if(i===dashCurrentPage){btn.style.background='#002645';btn.style.color='white';btn.style.border='none';btn.style.fontWeight='700';}else{btn.style.background='white';btn.style.color='#5a6270';btn.style.border='1px solid #eef0f5';btn.style.fontWeight='500';}btn.style.display=i<=Math.max(tp,1)?'':'none';}
+}
+document.addEventListener('DOMContentLoaded',function(){
+  // Update status filter options to match actual badge text
+  var sel=document.getElementById('dash-status-filter');
+  if(sel){sel.innerHTML='<option value="">All Status</option><option value="low risk">Low Risk</option><option value="medium risk">Medium Risk</option><option value="elevated">Elevated</option><option value="flagged">Flagged</option>';}
+  renderDashTable();
+});
+</script>
 </body>
 </html>
