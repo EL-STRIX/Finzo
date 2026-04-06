@@ -388,4 +388,168 @@
     30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
     40%, 60% { transform: translate3d(5px, 0, 0); }
 }
-    
+
+/* ============================================================
+   GLOBAL NATIVE SELECT OVERRIDE
+   Forces all <select> elements to match the Finzo dark theme.
+   Eliminates white/grey browser default backgrounds on all pages.
+   ============================================================ */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px !important;
+    cursor: pointer;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+select:hover {
+    border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Dark mode selects */
+.dark select {
+    background-color: #1e2333;
+    color: #e2e8f0;
+    border-color: rgba(255,255,255,0.08);
+}
+
+.dark select option {
+    background-color: #1e2333;
+    color: #e2e8f0;
+}
+
+/* Light mode selects */
+select {
+    background-color: #f8fafc;
+    color: #1a1c1e;
+    border-color: #e2e8f0;
+}
+
+select option {
+    background-color: #f8fafc;
+    color: #1a1c1e;
+    padding: 8px 12px;
+}
+
+/* ============================================================
+   CUSTOM DROPDOWN COMPONENT
+   Used on all pages via [data-dropdown] attribute pattern.
+   Provides smooth slide-down animation, indigo hover states.
+   ============================================================ */
+@keyframes dropdown-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.finzo-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.finzo-dropdown-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(30, 35, 51, 0.6);
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.finzo-dropdown-trigger:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.finzo-dropdown-trigger.is-open {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.finzo-dropdown-trigger .chevron {
+    transition: transform 0.25s ease;
+    color: #6366f1;
+}
+
+.finzo-dropdown-trigger.is-open .chevron {
+    transform: rotate(180deg);
+}
+
+.finzo-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(15, 20, 35, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03) inset;
+}
+
+.finzo-dropdown-menu.is-open {
+    display: block;
+    animation: dropdown-enter 0.2s ease forwards;
+}
+
+.finzo-dropdown-option {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.finzo-dropdown-option:hover {
+    background: rgba(99, 102, 241, 0.12);
+    color: #ffffff;
+    padding-left: 22px;
+}
+
+.finzo-dropdown-option.is-selected {
+    color: #818cf8;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.finzo-dropdown-option.is-selected::after {
+    content: '✓';
+    float: right;
+    font-size: 12px;
+}
+
+.finzo-dropdown-option:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.finzo-dropdown-option:last-child {
+    border-radius: 0 0 12px 12px;
+}

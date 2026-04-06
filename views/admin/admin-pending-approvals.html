@@ -92,11 +92,18 @@ tailwind.config = {
                     <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9aa0b0;font-size:18px;">search</span>
                     <input type="text" placeholder="Search applications..." style="padding:8px 12px 8px 36px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;width:240px;outline:none;" />
                 </div>
-                <select style="padding:8px 12px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;outline:none;background:white;">
-                    <option>All ID Types</option>
-                    <option>Aadhaar Card</option>
-                    <option>PAN Card</option>
-                </select>
+                <div class="finzo-dropdown" style="width:160px;">
+                    <input type="hidden" name="id_type_filter" value="">
+                    <div class="finzo-dropdown-trigger" style="padding:8px 12px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;background:white;cursor:pointer;">
+                        <span class="dropdown-label">All ID Types</span>
+                        <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu">
+                        <div class="finzo-dropdown-option" data-value="All ID Types">All ID Types</div>
+                        <div class="finzo-dropdown-option" data-value="Aadhaar Card">Aadhaar Card</div>
+                        <div class="finzo-dropdown-option" data-value="PAN Card">PAN Card</div>
+                    </div>
+                </div>
                 <input type="date" style="padding:8px 12px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;outline:none;" />
             </div>
             <div style="display:flex;background:#f0f2ff;border-radius:8px;padding:4px;">
@@ -192,5 +199,6 @@ tailwind.config = {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/main.js"></script>
 </body>
 </html>

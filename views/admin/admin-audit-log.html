@@ -99,15 +99,45 @@
         <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:#9aa0b0;">search</span>
         <input type="text" placeholder="Search by activity, admin, or entity ID..." style="width:100%;padding:10px 12px 10px 38px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;"/>
       </div>
-      <select style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
-        <option>All Administrators</option><option>Alex Sterling</option><option>Sarah Chen</option><option>Jameson Blake</option>
-      </select>
-      <select style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
-        <option>All Actions</option><option>Create</option><option>Update</option><option>Delete</option><option>Security</option>
-      </select>
-      <select style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
-        <option>Last 24 Hours</option><option>Last 7 Days</option><option>Last 30 Days</option>
-      </select>
+      <div class="finzo-dropdown" style="width:180px;">
+        <input type="hidden" name="admin_filter" value="">
+        <div class="finzo-dropdown-trigger" style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+          <span class="dropdown-label">All Administrators</span>
+          <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+        </div>
+        <div class="finzo-dropdown-menu">
+          <div class="finzo-dropdown-option" data-value="All Administrators">All Administrators</div>
+          <div class="finzo-dropdown-option" data-value="Alex Sterling">Alex Sterling</div>
+          <div class="finzo-dropdown-option" data-value="Sarah Chen">Sarah Chen</div>
+          <div class="finzo-dropdown-option" data-value="Jameson Blake">Jameson Blake</div>
+        </div>
+      </div>
+      <div class="finzo-dropdown" style="width:140px;">
+        <input type="hidden" name="action_filter" value="">
+        <div class="finzo-dropdown-trigger" style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+          <span class="dropdown-label">All Actions</span>
+          <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+        </div>
+        <div class="finzo-dropdown-menu">
+          <div class="finzo-dropdown-option" data-value="All Actions">All Actions</div>
+          <div class="finzo-dropdown-option" data-value="Create">Create</div>
+          <div class="finzo-dropdown-option" data-value="Update">Update</div>
+          <div class="finzo-dropdown-option" data-value="Delete">Delete</div>
+          <div class="finzo-dropdown-option" data-value="Security">Security</div>
+        </div>
+      </div>
+      <div class="finzo-dropdown" style="width:160px;">
+        <input type="hidden" name="timeframe_filter" value="">
+        <div class="finzo-dropdown-trigger" style="padding:10px 16px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+          <span class="dropdown-label">Last 24 Hours</span>
+          <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+        </div>
+        <div class="finzo-dropdown-menu">
+          <div class="finzo-dropdown-option" data-value="Last 24 Hours">Last 24 Hours</div>
+          <div class="finzo-dropdown-option" data-value="Last 7 Days">Last 7 Days</div>
+          <div class="finzo-dropdown-option" data-value="Last 30 Days">Last 30 Days</div>
+        </div>
+      </div>
     </div>
 
     <!-- Table -->
@@ -245,5 +275,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/main.js"></script>
 </body>
 </html>

@@ -111,9 +111,18 @@
               </div>
               <div>
                 <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;margin-bottom:8px;">Rate Lock Period</label>
-                <select style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;cursor:pointer;box-sizing:border-box;">
-                  <option>90 Days</option><option>180 Days</option><option>Floating</option>
-                </select>
+                <div class="finzo-dropdown">
+                  <input type="hidden" name="lock_period" value="90 Days">
+                  <div class="finzo-dropdown-trigger" style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;cursor:pointer;box-sizing:border-box;">
+                    <span class="dropdown-label">90 Days</span>
+                    <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu">
+                    <div class="finzo-dropdown-option" data-value="90 Days">90 Days</div>
+                    <div class="finzo-dropdown-option" data-value="180 Days">180 Days</div>
+                    <div class="finzo-dropdown-option" data-value="Floating">Floating</div>
+                  </div>
+                </div>
               </div>
             </div>
             <button onclick="applyRate()" style="width:100%;padding:14px;background:#002645;color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;">
@@ -239,6 +248,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/main.js"></script>
 <script>
 function checkRateChange() {
   const newRate = document.getElementById('new-rate').value;

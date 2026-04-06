@@ -291,17 +291,20 @@ tailwind.config = {
           </div>
 
           <!-- Status filter dropdown -->
-          <select
-            id="dash-status-filter"
-            onchange="filterDashUsers()"
-            style="padding:8px 14px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:8px;font-size:12px;color:inherit;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%239aa0b0%22 d=%22M7 10l5 5 5-5z%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;"
-          >
-            <option value="">All Status</option>
-            <option value="low risk">Low Risk</option>
-            <option value="medium risk">Medium Risk</option>
-            <option value="high risk">High Risk</option>
-            <option value="flagged">Flagged</option>
-          </select>
+          <div class="finzo-dropdown" style="width:160px;">
+            <input type="hidden" id="dash-status-filter" onchange="filterDashUsers()" value="">
+            <div class="finzo-dropdown-trigger" style="padding:8px 14px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:8px;font-size:12px;color:inherit;cursor:pointer;outline:none;">
+              <span class="dropdown-label font-bold uppercase tracking-widest" style="font-size:10px;color:#9aa0b0;">All Status</span>
+              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="">All Status</div>
+              <div class="finzo-dropdown-option" data-value="low risk">Low Risk</div>
+              <div class="finzo-dropdown-option" data-value="medium risk">Medium Risk</div>
+              <div class="finzo-dropdown-option" data-value="elevated">Elevated</div>
+              <div class="finzo-dropdown-option" data-value="flagged">Flagged</div>
+            </div>
+          </div>
 
           <!-- All Users link -->
           <a href="admin-users.html" style="background:#002645;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap;">
@@ -359,12 +362,12 @@ tailwind.config = {
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/main.js"></script>
 <style>
-[data-theme="dark"] #dash-user-search,[data-theme="dark"] #dash-status-filter{background:#1c2128!important;border-color:rgba(255,255,255,0.1)!important;color:#e6edf3!important;}
+[data-theme="dark"] #dash-user-search,[data-theme="dark"] .finzo-dropdown-trigger{background:#1c2128!important;border-color:rgba(255,255,255,0.1)!important;color:#e6edf3!important;}
 [data-theme="dark"] #dash-user-search::placeholder{color:#484f58!important;}
-[data-theme="dark"] #dash-status-filter option{background:#1c2128;color:#e6edf3;}
-#dash-user-search:focus,#dash-status-filter:focus{border-color:#002645!important;box-shadow:0 0 0 3px rgba(0,38,69,0.12)!important;outline:none;}
-[data-theme="dark"] #dash-user-search:focus,[data-theme="dark"] #dash-status-filter:focus{border-color:#58a6ff!important;box-shadow:0 0 0 3px rgba(88,166,255,0.12)!important;}
+#dash-user-search:focus,.finzo-dropdown-trigger.is-open{border-color:#002645!important;box-shadow:0 0 0 3px rgba(0,38,69,0.12)!important;outline:none;}
+[data-theme="dark"] #dash-user-search:focus,[data-theme="dark"] .finzo-dropdown-trigger.is-open{border-color:#58a6ff!important;box-shadow:0 0 0 3px rgba(88,166,255,0.12)!important;}
 [data-theme="dark"] #dash-pg-2{background:#1c2128!important;border-color:rgba(255,255,255,0.08)!important;color:#8b949e!important;}
 </style>
 <script>
@@ -390,9 +393,6 @@ function renderDashTable(){
   for(var i=1;i<=2;i++){var btn=document.getElementById('dash-pg-'+i);if(!btn)continue;if(i===dashCurrentPage){btn.style.background='#002645';btn.style.color='white';btn.style.border='none';btn.style.fontWeight='700';}else{btn.style.background='white';btn.style.color='#5a6270';btn.style.border='1px solid #eef0f5';btn.style.fontWeight='500';}btn.style.display=i<=Math.max(tp,1)?'':'none';}
 }
 document.addEventListener('DOMContentLoaded',function(){
-  // Update status filter options to match actual badge text
-  var sel=document.getElementById('dash-status-filter');
-  if(sel){sel.innerHTML='<option value="">All Status</option><option value="low risk">Low Risk</option><option value="medium risk">Medium Risk</option><option value="elevated">Elevated</option><option value="flagged">Flagged</option>';}
   renderDashTable();
 });
 </script>

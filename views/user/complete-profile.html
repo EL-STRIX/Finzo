@@ -110,12 +110,18 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Gender</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
-                            <option value="">Select Gender</option>
-                            <option>Male</option>
-                            <option>Female</option>
-                            <option>Other</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <input type="hidden" name="gender" required>
+                            <div class="finzo-dropdown-trigger">
+                                <span class="dropdown-label text-slate-400 dark:text-slate-500">Select Gender</span>
+                                <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                                <div class="finzo-dropdown-option" data-value="Female">Female</div>
+                                <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Father's Name</label>
@@ -123,22 +129,34 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Occupation</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
-                            <option value="">Select Occupation</option>
-                            <option>Student</option>
-                            <option>Employed</option>
-                            <option>Self-Employed</option>
-                            <option>Other</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <input type="hidden" name="occupation" required>
+                            <div class="finzo-dropdown-trigger">
+                                <span class="dropdown-label text-slate-400 dark:text-slate-500">Select Occupation</span>
+                                <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="Student">Student</div>
+                                <div class="finzo-dropdown-option" data-value="Employed">Employed</div>
+                                <div class="finzo-dropdown-option" data-value="Self-Employed">Self-Employed</div>
+                                <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Annual Income</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
-                            <option value="">Select Income Bracket</option>
-                            <option>Below ₹1L</option>
-                            <option>₹1L - ₹5L</option>
-                            <option>Above ₹5L</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <input type="hidden" name="income" required>
+                            <div class="finzo-dropdown-trigger">
+                                <span class="dropdown-label text-slate-400 dark:text-slate-500">Select Income Bracket</span>
+                                <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="Below ₹1L">Below ₹1L</div>
+                                <div class="finzo-dropdown-option" data-value="₹1L - ₹5L">₹1L - ₹5L</div>
+                                <div class="finzo-dropdown-option" data-value="Above ₹5L">Above ₹5L</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,15 +177,21 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">State</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
-                            <option value="">Select State</option>
-                            <option>Andhra Pradesh</option>
-                            <option>Delhi</option>
-                            <option>Karnataka</option>
-                            <option>Maharashtra</option>
-                            <option>Tamil Nadu</option>
-                            <option>West Bengal</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <input type="hidden" name="state" required>
+                            <div class="finzo-dropdown-trigger">
+                                <span class="dropdown-label text-slate-400 dark:text-slate-500">Select State</span>
+                                <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="Andhra Pradesh">Andhra Pradesh</div>
+                                <div class="finzo-dropdown-option" data-value="Delhi">Delhi</div>
+                                <div class="finzo-dropdown-option" data-value="Karnataka">Karnataka</div>
+                                <div class="finzo-dropdown-option" data-value="Maharashtra">Maharashtra</div>
+                                <div class="finzo-dropdown-option" data-value="Tamil Nadu">Tamil Nadu</div>
+                                <div class="finzo-dropdown-option" data-value="West Bengal">West Bengal</div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">PIN Code</label>
@@ -188,14 +212,20 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">ID Type</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" required>
-                            <option value="">Select Document</option>
-                            <option>Aadhaar Card</option>
-                            <option>PAN Card</option>
-                            <option>Passport</option>
-                            <option>Voter ID</option>
-                            <option>Driving License</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <input type="hidden" name="id_type" required>
+                            <div class="finzo-dropdown-trigger">
+                                <span class="dropdown-label text-slate-400 dark:text-slate-500">Select Document</span>
+                                <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="Aadhaar Card">Aadhaar Card</div>
+                                <div class="finzo-dropdown-option" data-value="PAN Card">PAN Card</div>
+                                <div class="finzo-dropdown-option" data-value="Passport">Passport</div>
+                                <div class="finzo-dropdown-option" data-value="Voter ID">Voter ID</div>
+                                <div class="finzo-dropdown-option" data-value="Driving License">Driving License</div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">ID Number</label>
@@ -281,5 +311,6 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/component-loader.js"></script>
+<script src="../../assets/js/main.js"></script>
 </body>
 </html>

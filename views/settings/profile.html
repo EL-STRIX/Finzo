@@ -193,11 +193,18 @@
             </div>
             <div class="flex flex-col gap-1.5">
               <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-gender">Gender</label>
-              <select id="field-gender" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all">
-                <option value="" disabled selected>Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+              <div class="finzo-dropdown">
+                <input type="hidden" name="gender" id="field-gender" value="">
+                <div class="finzo-dropdown-trigger">
+                  <span class="dropdown-label text-slate-400 dark:text-slate-500">Select Gender</span>
+                  <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                </div>
+                <div class="finzo-dropdown-menu">
+                  <div class="finzo-dropdown-option" data-value="male">Male</div>
+                  <div class="finzo-dropdown-option" data-value="female">Female</div>
+                  <div class="finzo-dropdown-option" data-value="other">Other</div>
+                </div>
+              </div>
               </select>
             </div>
           </div>

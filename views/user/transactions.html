@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -128,33 +128,54 @@
 <span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-lg" data-icon="calendar_today">calendar_today</span>
 </div>
 </div>
-<div class="space-y-1.5">
-<label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Account</label>
-<select class="w-full bg-white border-0 text-sm py-2 px-4 rounded focus:ring-1 focus:ring-primary shadow-sm">
-<option>All Accounts</option>
-<option>Operational Reserve</option>
-<option>Customer Deposits</option>
-<option>Clearing Fund</option>
-</select>
-</div>
-<div class="space-y-1.5">
-<label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Type</label>
-<select class="w-full bg-white border-0 text-sm py-2 px-4 rounded focus:ring-1 focus:ring-primary shadow-sm">
-<option>All Types</option>
-<option>ACH Transfer</option>
-<option>Internal Sweep</option>
-<option>Fee Collection</option>
-</select>
-</div>
-<div class="space-y-1.5">
-<label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Status</label>
-<select class="w-full bg-white border-0 text-sm py-2 px-4 rounded focus:ring-1 focus:ring-primary shadow-sm">
-<option>Any Status</option>
-<option>Completed</option>
-<option>Pending</option>
-<option>Flagged</option>
-</select>
-</div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Account</label>
+                    <div class="finzo-dropdown">
+                        <input type="hidden" name="account_filter" value="">
+                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
+                            <span class="dropdown-label text-slate-400 text-sm">All Accounts</span>
+                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu">
+                            <div class="finzo-dropdown-option" data-value="All Accounts">All Accounts</div>
+                            <div class="finzo-dropdown-option" data-value="Operational Reserve">Operational Reserve</div>
+                            <div class="finzo-dropdown-option" data-value="Customer Deposits">Customer Deposits</div>
+                            <div class="finzo-dropdown-option" data-value="Clearing Fund">Clearing Fund</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Type</label>
+                    <div class="finzo-dropdown">
+                        <input type="hidden" name="type_filter" value="">
+                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
+                            <span class="dropdown-label text-slate-400 text-sm">All Types</span>
+                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu">
+                            <div class="finzo-dropdown-option" data-value="All Types">All Types</div>
+                            <div class="finzo-dropdown-option" data-value="ACH Transfer">ACH Transfer</div>
+                            <div class="finzo-dropdown-option" data-value="Internal Sweep">Internal Sweep</div>
+                            <div class="finzo-dropdown-option" data-value="Fee Collection">Fee Collection</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Status</label>
+                    <div class="finzo-dropdown">
+                        <input type="hidden" name="status_filter" value="">
+                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
+                            <span class="dropdown-label text-slate-400 text-sm">Any Status</span>
+                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu">
+                            <div class="finzo-dropdown-option" data-value="Any Status">Any Status</div>
+                            <div class="finzo-dropdown-option" data-value="Completed">Completed</div>
+                            <div class="finzo-dropdown-option" data-value="Pending">Pending</div>
+                            <div class="finzo-dropdown-option" data-value="Flagged">Flagged</div>
+                        </div>
+                    </div>
+                </div>
 <div class="flex items-end">
 <button class="w-full py-2 bg-surface-container-highest text-primary font-bold text-xs uppercase tracking-widest rounded hover:bg-outline-variant/20 transition-all">Apply Filter</button>
 </div>

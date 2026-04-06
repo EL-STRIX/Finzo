@@ -163,12 +163,30 @@
       <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
         <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#0a0f1e;">Historical Ledger</div>
         <div style="display:flex;gap:10px;">
-          <select style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
-            <option>Last 30 Days</option><option>Last 3 Months</option><option>Custom</option>
-          </select>
-          <select id="type-filter" style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
-            <option>All Types</option><option>Credits Only</option><option>Debits Only</option>
-          </select>
+          <div class="finzo-dropdown" style="width:140px;">
+            <input type="hidden" name="date_range" value="">
+            <div class="finzo-dropdown-trigger" style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+              <span class="dropdown-label">Last 30 Days</span>
+              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Last 30 Days">Last 30 Days</div>
+              <div class="finzo-dropdown-option" data-value="Last 3 Months">Last 3 Months</div>
+              <div class="finzo-dropdown-option" data-value="Custom">Custom</div>
+            </div>
+          </div>
+          <div class="finzo-dropdown" style="width:140px;">
+            <input type="hidden" id="type-filter" name="type_filter" value="">
+            <div class="finzo-dropdown-trigger" style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+              <span class="dropdown-label">All Types</span>
+              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="All Types">All Types</div>
+              <div class="finzo-dropdown-option" data-value="Credits Only">Credits Only</div>
+              <div class="finzo-dropdown-option" data-value="Debits Only">Debits Only</div>
+            </div>
+          </div>
         </div>
       </div>
       <table class="admin-table" style="width:100%;">
@@ -247,6 +265,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/main.js"></script>
 <script>
 function setActive(btn) {
   ['btn-6m','btn-yr'].forEach(id => {

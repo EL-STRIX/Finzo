@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -261,15 +261,18 @@
 </div>
 <div class="space-y-1">
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Name</label>
-<div class="relative">
-<select class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface transition-colors outline-none font-medium appearance-none bg-transparent">
-<option>Select a bank</option>
-<option>Finzo Prime</option>
-<option>Barclays PLC</option>
-<option>HSBC Global</option>
-</select>
-<span class="material-symbols-outlined absolute right-0 top-3 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
-</div>
+                    <div class="finzo-dropdown">
+                        <input type="hidden" name="bank_name" id="field-bank" value="">
+                        <div class="finzo-dropdown-trigger !border-b !border-t-0 !border-x-0 !rounded-none !bg-transparent !px-0 py-3">
+                            <span class="dropdown-label text-slate-400 dark:text-slate-500 font-medium">Select a bank</span>
+                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu">
+                            <div class="finzo-dropdown-option" data-value="Finzo Prime">Finzo Prime</div>
+                            <div class="finzo-dropdown-option" data-value="Barclays PLC">Barclays PLC</div>
+                            <div class="finzo-dropdown-option" data-value="HSBC Global">HSBC Global</div>
+                        </div>
+                    </div>
 </div>
 <div class="space-y-1">
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Category</label>
