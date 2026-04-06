@@ -215,6 +215,23 @@ $(document).ready(function() {
         }
     });
 
+    // --- NEW: Sidebar Auto-Highlighting ---
+    function highlightActiveSidebar() {
+        const currentPath = window.location.pathname;
+        const filename = currentPath.split('/').pop() || 'index.html';
+        
+        $('aside nav a').each(function() {
+            const link = $(this);
+            const href = link.attr('href');
+            if (href && href.includes(filename)) {
+                link.addClass('sidebar-link-active').removeClass('text-slate-400');
+            } else {
+                link.removeClass('sidebar-link-active').addClass('text-slate-400');
+            }
+        });
+    }
+    highlightActiveSidebar();
+
     // Re-initialize motion for dynamically loaded content
     window.refreshMotion = initMotion;
 });

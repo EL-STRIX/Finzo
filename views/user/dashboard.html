@@ -109,9 +109,12 @@
 <h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">Dashboard</h1>
 </div>
 <div class="flex items-center gap-6">
-<div class="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800/50 rounded-full px-4 py-1.5 transition-colors">
-<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-sm mr-2">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500" placeholder="Search transactions..." type="text"/>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-slate-100/80 dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/5 hover:border-indigo-500/30 focus-within:border-indigo-500/60 rounded-xl px-4 py-2 transition-all duration-500 group relative w-72 focus-within:w-96 shadow-2xl shadow-indigo-900/5 dark:shadow-black/20">
+    <span class="material-symbols-outlined text-slate-500 text-lg transition-colors group-hover:text-indigo-500 dark:group-hover:text-indigo-400 group-focus-within:text-indigo-500 dark:group-focus-within:text-indigo-400">search</span>
+    <input class="bg-transparent border-none focus:ring-0 text-sm w-full ml-2 text-indigo-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 font-medium" placeholder="Search anything..." type="text"/>
+    <!-- Shimmer Border Effect -->
+    <div class="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 </div>
 <div class="flex items-center gap-3 relative">
 
@@ -204,13 +207,18 @@
     <h2 class="text-2xl font-extrabold text-indigo-950 dark:text-white tracking-tight">Welcome back, Rahul Kumar</h2>
     <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
 </div>
-<!-- Banners Area -->
-<div id="restricted-banner" class="bg-[#fff8e1] border border-[#f39c12] rounded-xl p-3 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined text-[#f39c12] text-xl">warning</span>
-        <span class="text-xs font-semibold text-[#b07d00]">Your account is not activated yet. Complete your profile to start banking.</span>
+<!-- Banners Area (Institutional Mode) -->
+<div id="restricted-banner" class="group bg-indigo-500/5 backdrop-blur-md border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-[0_8px_32px_-8px_rgba(79,70,229,0.1)] transition-all duration-500 hover:border-indigo-500/40 hover:-translate-y-1 hover:shadow-indigo-500/10 cursor-default">
+    <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 transition-transform duration-500 group-hover:scale-110 group-hover:bg-indigo-500/20">
+            <span class="material-symbols-outlined text-xl">verified_user</span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-xs font-bold text-white tracking-wide">Account Verification Pending</span>
+            <span class="text-[10px] text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
+        </div>
     </div>
-    <a href="complete-profile.html" class="bg-primary hover:bg-[#003366] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors no-underline">Complete Profile &rarr;</a>
+    <a href="complete-profile.html" class="architectural-gradient text-white text-[10px] font-black px-5 py-2.5 rounded-xl shadow-lg hover:shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-95 no-underline uppercase tracking-widest">Complete Setup &rarr;</a>
 </div>
 
 <div id="approved-banner" class="hidden bg-[#e8f8f2] border border-[#00b894] rounded-xl p-4 flex items-center justify-between shadow-sm">
@@ -255,7 +263,7 @@
 </div>
 </div>
 </div>
-<div class="bg-white/5 backdrop-blur-md border border-white/10 text-white/40 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em]">
+<div class="bg-white/5 backdrop-blur-md border border-white/10 text-white/40 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] pointer-events-none select-none">
                                 TYPE UNAVAILABLE
                             </div>
 </div>
@@ -271,9 +279,11 @@
 </div>
 </div>
 <!-- Spending Overview (Chart Placeholder) -->
-<div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-2xl p-6 flex flex-col justify-between">
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-2xl p-6 flex flex-col justify-between opacity-60 cursor-not-allowed select-none pointer-events-none">
 <div>
-<h3 class="text-base font-bold mb-0.5">Spending Analytics</h3>
+<div class="flex justify-between items-start mb-0.5">
+    <h3 class="text-base font-bold text-on-surface">Spending Analytics</h3>
+</div>
 <p class="text-[11px] text-secondary mb-3">Monthly spending overview</p>
 <div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
 <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
@@ -284,7 +294,8 @@
 <div class="w-full bg-primary dark:bg-blue-600 rounded-t-lg h-[90%]"></div>
 <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[45%]"></div>
 <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4">
-    <div class="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-2 rounded-xl shadow-xl text-center">
+    <div class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 px-4 py-2.5 rounded-xl shadow-xl flex flex-col items-center gap-2 text-center">
+        <span class="material-symbols-outlined text-slate-500 text-xl">lock</span>
         <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">Spending insights available after account activation</p>
     </div>
 </div>
