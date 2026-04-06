@@ -215,18 +215,24 @@ $(document).ready(function() {
         }
     });
 
-    // --- NEW: Sidebar Auto-Highlighting ---
+    // --- NEW: Sidebar Auto-Highlighting (Extension-Aware) ---
     function highlightActiveSidebar() {
-        const currentPath = window.location.pathname;
-        const filename = currentPath.split('/').pop() || 'index.html';
+        const fullPath = window.location.pathname.replace('.html', '').replace(/\/$/, "");
         
         $('aside nav a').each(function() {
             const link = $(this);
-            const href = link.attr('href');
-            if (href && href.includes(filename)) {
-                link.addClass('sidebar-link-active').removeClass('text-slate-400');
+            let href = link.attr('href');
+            if (!href) return;
+            
+            // Normalize href for comparison
+            const cleanHref = href.replace('.html', '').replace(/\/$/, "");
+            
+            if (fullPath === cleanHref || fullPath.endsWith(cleanHref)) {
+                link.addClass('sidebar-link-active').removeClass('text-slate-400 opacity-60');
+                link.find('.material-symbols-outlined').css('color', '#818cf8');
             } else {
                 link.removeClass('sidebar-link-active').addClass('text-slate-400');
+                link.find('.material-symbols-outlined').css('color', '');
             }
         });
     }

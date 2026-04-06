@@ -24,20 +24,23 @@ async function loadComponent(elementId, componentPath) {
 }
 
 function highlightActiveLinks(container) {
-    const currentPath = window.location.pathname;
+    const fullPath = window.location.pathname.replace('.html', '').replace(/\/$/, "");
     const links = container.querySelectorAll('a');
     
     links.forEach(link => {
-        const linkPath = link.getAttribute('href');
-        if (linkPath && currentPath.endsWith(linkPath)) {
+        const linkHref = link.getAttribute('href');
+        if (!linkHref) return;
+        
+        const cleanHref = linkHref.replace('.html', '').replace(/\/$/, "");
+        
+        if (fullPath === cleanHref || fullPath.endsWith(cleanHref)) {
             // Apply active styles for Nav
             if (link.classList.contains('nav-link')) {
                 link.classList.add('nav-link-active');
             }
             // Apply active styles for Sidebar
-            if (container.parentElement && container.parentElement.tagName === 'ASIDE' || link.closest('aside')) {
-                link.classList.add('bg-white', 'text-indigo-700', 'font-bold', 'shadow-sm');
-                link.classList.remove('text-slate-600');
+            if (link.closest('aside') || container.id === 'sidebar-placeholder') {
+                link.classList.add('sidebar-link-active');
             }
         }
     });
