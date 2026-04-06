@@ -1,378 +1,474 @@
 <!DOCTYPE html>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet" />
 
 
-    
+
     <!-- Config BEFORE CDN -->
-    
-<script>
-      
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#e3e2e5",
-                    "on-secondary-fixed": "#111c2a",
-                    "primary-container": "#1a3c5e",
-                    "on-primary": "#ffffff",
-                    "on-primary-fixed": "#001d36",
-                    "on-error": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-container-low": "#f4f3f6",
-                    "surface-tint": "#416084",
-                    "primary": "#002645",
-                    "outline": "#73777f",
-                    "surface-container-high": "#e8e8eb",
-                    "inverse-on-surface": "#f1f0f4",
-                    "outline-variant": "#c3c6cf",
-                    "on-primary-fixed-variant": "#28496b",
-                    "tertiary-fixed": "#6bfe9c",
-                    "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#5a6575",
-                    "on-surface": "#1a1c1e",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#a9c9f2",
-                    "surface-container": "#eeedf1",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#d8e3f6",
-                    "on-secondary-fixed-variant": "#3c4856",
-                    "secondary-container": "#d8e3f6",
-                    "tertiary": "#002b12",
-                    "inverse-surface": "#2f3033",
-                    "surface-bright": "#faf9fc",
-                    "primary-fixed-dim": "#a9c9f2",
-                    "surface-dim": "#dad9dd",
-                    "on-tertiary-fixed-variant": "#005228",
-                    "primary-fixed": "#d1e4ff",
-                    "surface": "#faf9fc",
-                    "tertiary-container": "#004420",
-                    "on-background": "#1a1c1e",
-                    "on-tertiary-container": "#0abc64",
-                    "background": "#faf9fc",
-                    "on-primary-container": "#87a7ce",
-                    "tertiary-fixed-dim": "#4ae183",
-                    "on-tertiary-fixed": "#00210c",
-                    "on-surface-variant": "#43474e",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed-dim": "#bcc7d9"
+
+    <script>
+
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e3e2e5",
+                        "on-secondary-fixed": "#111c2a",
+                        "primary-container": "#1a3c5e",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001d36",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f4f3f6",
+                        "surface-tint": "#416084",
+                        "primary": "#002645",
+                        "outline": "#73777f",
+                        "surface-container-high": "#e8e8eb",
+                        "inverse-on-surface": "#f1f0f4",
+                        "outline-variant": "#c3c6cf",
+                        "on-primary-fixed-variant": "#28496b",
+                        "tertiary-fixed": "#6bfe9c",
+                        "surface-container-highest": "#e3e2e5",
+                        "on-secondary-container": "#5a6575",
+                        "on-surface": "#1a1c1e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#545f6f",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#a9c9f2",
+                        "surface-container": "#eeedf1",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d8e3f6",
+                        "on-secondary-fixed-variant": "#3c4856",
+                        "secondary-container": "#d8e3f6",
+                        "tertiary": "#002b12",
+                        "inverse-surface": "#2f3033",
+                        "surface-bright": "#faf9fc",
+                        "primary-fixed-dim": "#a9c9f2",
+                        "surface-dim": "#dad9dd",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "primary-fixed": "#d1e4ff",
+                        "surface": "#faf9fc",
+                        "tertiary-container": "#004420",
+                        "on-background": "#1a1c1e",
+                        "on-tertiary-container": "#0abc64",
+                        "background": "#faf9fc",
+                        "on-primary-container": "#87a7ce",
+                        "tertiary-fixed-dim": "#4ae183",
+                        "on-tertiary-fixed": "#00210c",
+                        "on-surface-variant": "#43474e",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#bcc7d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
-        },
-      }
-    
-</script>
+        }
+
+    </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    
-<link rel="stylesheet" href="./assets/css/custom.css">
-<link rel="stylesheet" href="./assets/css/dark-mode.css">
+
+    <link rel="stylesheet" href="./assets/css/custom.css">
+    <link rel="stylesheet" href="./assets/css/dark-mode.css">
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 </head>
+
 <body class="bg-surface font-body text-on-surface antialiased">
-<!-- TopNavBar -->
-<!-- Modular Top Navbar -->
-<div id="navbar-placeholder"></div>
-<main class="pt-20">
-<!-- Hero Section -->
-<section class="relative min-h-[90vh] flex items-center overflow-hidden bg-surface">
-<div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,38,69,0.03)_0%,transparent_50%)]"></div>
-<div class="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-<div class="lg:col-span-6">
-<div class="reveal-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-10 border border-primary/10 animate-pulse-soft">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-<span class="text-[10px] font-bold tracking-[0.3em] uppercase font-label">SECURE · SIMPLE · FAST</span>
-</div>
-<h1 class="reveal-up stagger-1 text-7xl lg:text-9xl font-black font-headline text-primary leading-[0.9] tracking-tightest mb-10">
-    <span class="line-reveal flex flex-col items-start"><span class="line-reveal-inner">Banking Made</span></span>
-    <span class="line-reveal flex flex-col items-start"><span class="line-reveal-inner text-on-primary-container">Simple.</span></span>
-</h1>
-<p class="reveal-up stagger-2 text-xl text-on-surface-variant max-w-lg leading-relaxed mb-12 opacity-70">
-                        Deposit, withdraw and transfer money <br/>
-                        instantly. Your complete personal <br/>
+    <!-- TopNavBar -->
+    <!-- Modular Top Navbar -->
+    <div id="navbar-placeholder"></div>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-surface">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,38,69,0.03)_0%,transparent_50%)]">
+            </div>
+            <div class="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+                <div class="lg:col-span-6">
+                    <div
+                        class="reveal-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-10 border border-primary/10 animate-pulse-soft">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        <span class="text-[10px] font-bold tracking-[0.3em] uppercase font-label">SECURE · SIMPLE ·
+                            FAST</span>
+                    </div>
+                    <h1
+                        class="reveal-up stagger-1 text-7xl lg:text-9xl font-black font-headline text-primary leading-[0.9] tracking-tightest mb-10">
+                        <span class="line-reveal flex flex-col items-start"><span class="line-reveal-inner">Banking
+                                Made</span></span>
+                        <span class="line-reveal flex flex-col items-start"><span
+                                class="line-reveal-inner text-on-primary-container">Simple.</span></span>
+                    </h1>
+                    <p
+                        class="reveal-up stagger-2 text-xl text-on-surface-variant max-w-lg leading-relaxed mb-12 opacity-70">
+                        Deposit, withdraw and transfer money <br />
+                        instantly. Your complete personal <br />
                         banking experience starts here.
                     </p>
-<div class="reveal-up stagger-3 flex flex-wrap gap-6">
-<a href="views/auth/register.html" class="architectural-gradient px-12 py-5 text-white font-bold rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,38,69,0.3)] hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center justify-center">Open Account</a>
-<a href="#features" class="px-10 py-5 bg-white text-primary font-bold rounded-2xl border border-outline-variant/30 hover:bg-surface-container-low transition-all flex items-center justify-center gap-3">
-<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                    <div class="reveal-up stagger-3 flex flex-wrap gap-6">
+                        <a href="views/auth/register.html"
+                            class="architectural-gradient px-12 py-5 text-white font-bold rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,38,69,0.3)] hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center justify-center">Open
+                            Account</a>
+                        <a href="#features"
+                            class="px-10 py-5 bg-white text-primary font-bold rounded-2xl border border-outline-variant/30 hover:bg-surface-container-low transition-all flex items-center justify-center gap-3">
+                            <span class="material-symbols-outlined" data-icon="explore">explore</span>
                             View Dashboard
                         </a>
-</div>
-</div>
-<div class="lg:col-span-6 relative reveal-up stagger-2">
-<div class="relative rounded-[3rem] overflow-hidden aspect-[4/5] shadow-[0_48px_80px_-16px_rgba(0,0,0,0.3)] border-[16px] border-white ring-1 ring-black/5">
-<img alt="Banking interface" class="w-full h-full object-cover" src="./assets/images/Screenshot%202026-04-06%20152216.png"/>
-<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent"></div>
-</div>
-<!-- Floating Portfolio Card -->
-<div class="absolute -bottom-10 -left-16 bg-white p-8 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] max-w-xs hidden xl:block border border-outline-variant/10">
-<div class="flex justify-between items-start mb-6">
-<div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest">TOTAL BALANCE</div>
-<span class="material-symbols-outlined text-on-tertiary-container animate-bounce" data-icon="trending_up">trending_up</span>
-</div>
-<div class="text-4xl font-black font-headline text-primary mb-6 reveal-up stagger-4" data-count-to="842090" data-prefix="₹">₹0</div>
-<div class="h-20 w-full flex items-end gap-1.5 px-1">
-<div class="w-full bg-primary/5 rounded-t-lg h-[40%]"></div>
-<div class="w-full bg-primary/10 rounded-t-lg h-[65%]"></div>
-<div class="w-full bg-primary/20 rounded-t-lg h-[55%]"></div>
-<div class="w-full bg-primary/30 rounded-t-lg h-[85%]"></div>
-<div class="w-full architectural-gradient rounded-t-lg h-[100%] shadow-lg"></div>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- Why Finzo Section (Institutional Grid) -->
-<section id="benefits" class="py-32 bg-white">
-<div class="container mx-auto px-8">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<!-- Feature 1 -->
-<div class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
-<div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
-<span class="material-symbols-outlined text-2xl">lock</span>
-</div>
-<div class="space-y-4">
-<h3 class="text-2xl font-black font-headline text-primary">Always Secured.</h3>
-<p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Every login is protected with hashed passwords, CSRF tokens and automatic lockout — unauthorized access blocked.</p>
-</div>
-</div>
-
-<!-- Feature 2 -->
-<div class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
-<div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
-<span class="material-symbols-outlined text-2xl">sync_alt</span>
-</div>
-<div class="space-y-4">
-<h3 class="text-2xl font-black font-headline text-primary">ACID Safe Transfers.</h3>
-<p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Money either moves completely or not at all — our MySQL transaction system guarantees zero risk of fund loss.</p>
-</div>
-</div>
-
-<!-- Feature 3 -->
-<div class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
-<div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
-<span class="material-symbols-outlined text-2xl">calendar_month</span>
-</div>
-<div class="space-y-4">
-<h3 class="text-2xl font-black font-headline text-primary">Monthly Interest.</h3>
-<p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Your savings account earns simple interest automatically — calculated and credited to your balance every 30 days.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- Features Section (Bento Grid) -->
-<section id="features" class="py-32 bg-surface-container-low/50">
-<div class="container mx-auto px-8">
-<div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
-<div class="max-w-2xl">
-<h2 class="text-5xl font-black font-headline text-primary tracking-tight mb-6">Banking That Works.</h2>
-<p class="text-xl text-on-surface-variant opacity-60">Open an account, deposit money, transfer 
-funds and download your statement — 
-everything works instantly with 
-zero hidden fees.</p>
-</div>
-<div class="hidden md:block">
-<div class="px-4 py-2 border border-outline-variant/30 rounded-xl">
-<span class="text-[10px] font-bold tracking-[0.3em] text-primary/40 uppercase">Arch v.4.0</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-<!-- Feature 1: Online Banking (Grouped Bar Redesign) -->
-<div class="md:col-span-8 group relative bg-white p-12 rounded-[2rem] overflow-hidden border border-outline-variant/10">
-<div class="relative z-20 flex flex-col h-full">
-<div class="mb-auto">
-<span class="material-symbols-outlined text-primary text-4xl mb-10 block" data-icon="account_balance">account_balance</span>
-<h3 class="text-3xl font-black font-headline text-primary mb-6">Institutional Online Banking</h3>
-<p class="text-on-surface-variant text-lg max-w-md mb-8 opacity-80 leading-relaxed">Track every deposit, transfer and withdrawal in real time from your personal Finzo dashboard.</p>
-<a id="terminal-link-btn" class="text-primary font-black inline-flex items-center gap-3 group-hover:gap-5 transition-all text-sm uppercase tracking-widest font-label" href="views/user/dashboard.html">
-        VIEW DASHBOARD <span class="material-symbols-outlined text-lg">arrow_forward</span>
-</a>
-</div>
-
-<!-- Stats Row at bottom -->
-<div class="mt-12 flex flex-wrap gap-6 pt-8 border-t border-outline-variant/10">
-<div class="flex items-center gap-2">
-<span class="text-emerald-500 font-black">↑</span>
-<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Deposits</span>
-<span class="text-emerald-500 font-bold text-xs">+14.2%</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="text-rose-400 font-black">↓</span>
-<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Withdrawals</span>
-<span class="text-rose-400 font-bold text-xs">-8.3%</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="text-blue-500 font-black">→</span>
-<span class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Transfers</span>
-<span class="text-blue-500 font-bold text-xs">+11.5%</span>
-</div>
-</div>
-</div>
-
-<!-- Grouped Bar Chart Subsystem -->
-<div class="absolute top-0 right-0 w-full md:w-[65%] h-full opacity-10 group-hover:opacity-100 transition-all duration-1000 p-12 flex flex-col justify-end">
-<div class="absolute top-12 right-12 flex gap-4 text-[9px] font-bold tracking-widest uppercase opacity-40 z-30">
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span> Deposits
-</div>
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-[#F87171]"></span> Withdrawals
-</div>
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span> Transfers
-</div>
-</div>
-<div class="h-[60%] w-full">
-<canvas class="finzo-chart" data-type="grouped-bar"></canvas>
-</div>
-</div>
-</div>
-<!-- Feature 2: High Contrast Security -->
-<div class="md:col-span-4 bg-primary-forced p-12 rounded-[2rem] text-white card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
-<div>
-<span class="material-symbols-outlined text-tertiary-fixed-dim text-4xl mb-10 block">shield_lock</span>
-<h3 class="text-3xl font-black font-headline mb-6">Vault-Grade <br/>Security</h3>
-<p class="text-blue-100/60 mb-12 leading-relaxed">Military-grade AES-256 encryption at rest and biometric multi-sig for every cross-border settlement.</p>
-</div>
-<div class="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl border border-white/10">
-<div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></div>
-<span class="text-[10px] font-bold tracking-widest uppercase opacity-80">Security Core v.2 Active</span>
-</div>
-</div>
-<!-- Feature 3: Interest, Every Month (Dark Theme) -->
-<div class="md:col-span-4 bg-primary-forced p-12 rounded-[2rem] card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
-<div>
-<span class="material-symbols-outlined text-tertiary-fixed-dim text-4xl mb-10 block">percent</span>
-<h3 class="text-3xl font-black font-headline text-white mb-6">Interest, <br/>Every Month.</h3>
-<p class="text-white/60 mb-10 leading-relaxed">Your savings account earns simple interest automatically — calculated and credited to your balance every 30 days.</p>
-</div>
-<div class="pt-8 border-t border-white/10 flex justify-between items-center">
-<span class="text-[10px] font-bold text-white uppercase tracking-widest opacity-40">CREDITED EVERY</span>
-<span class="text-xs text-tertiary-fixed-dim font-black uppercase tracking-widest">30 Days</span>
-</div>
-</div>
-<!-- Feature 4: Your Records, Always Ready. -->
-<div class="md:col-span-8 bg-white p-12 rounded-[2rem] border border-outline-variant/10 group overflow-hidden reveal-up">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-        <div>
-            <span class="material-symbols-outlined text-primary text-4xl mb-10 block">description</span>
-            <h2 class="text-3xl font-black font-headline text-primary mb-6">Your Records, Always Ready.</h2>
-            <p class="text-on-surface-variant leading-relaxed opacity-70">Search, filter and download your complete transaction history as a PDF statement anytime you need it.</p>
-        </div>
-        <div class="space-y-6 relative">
-            <!-- Dash Connector Rail -->
-            <div class="absolute left-[34px] top-6 bottom-6 w-px border-l-2 border-dashed border-primary/10"></div>
-            
-            <div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-3 transition-all duration-500 relative z-10">
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-xl architectural-gradient text-white flex items-center justify-center shadow-lg">
-                        <span class="material-symbols-outlined text-xl">list_alt</span>
-                    </div>
-                    <div>
-                        <div class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">HISTORY</div>
-                        <div class="text-sm font-bold text-primary">Full Transaction Log</div>
                     </div>
                 </div>
-                <div class="px-3 py-1 bg-on-tertiary-container/10 rounded-full flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
-                    <span class="text-[9px] text-on-tertiary-container font-black uppercase tracking-tighter">UNLIMITED</span>
+                <div class="lg:col-span-6 relative reveal-up stagger-2">
+                    <div
+                        class="relative rounded-[3rem] overflow-hidden aspect-[4/5] shadow-[0_48px_80px_-16px_rgba(0,0,0,0.3)] border-[16px] border-white ring-1 ring-black/5">
+                        <img alt="Banking interface" class="w-full h-full object-cover"
+                            src="./assets/images/landing-page-image.png" />
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent">
+                        </div>
+                    </div>
+                    <!-- Floating Portfolio Card -->
+                    <div
+                        class="absolute -bottom-10 -left-16 bg-white p-8 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] max-w-xs hidden xl:block border border-outline-variant/10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest">
+                                TOTAL BALANCE</div>
+                            <span class="material-symbols-outlined text-on-tertiary-container animate-bounce"
+                                data-icon="trending_up">trending_up</span>
+                        </div>
+                        <div class="text-4xl font-black font-headline text-primary mb-6 reveal-up stagger-4"
+                            data-count-to="842090" data-prefix="₹">₹0</div>
+                        <div class="h-20 w-full flex items-end gap-1.5 px-1">
+                            <div class="w-full bg-primary/5 rounded-t-lg h-[40%]"></div>
+                            <div class="w-full bg-primary/10 rounded-t-lg h-[65%]"></div>
+                            <div class="w-full bg-primary/20 rounded-t-lg h-[55%]"></div>
+                            <div class="w-full bg-primary/30 rounded-t-lg h-[85%]"></div>
+                            <div class="w-full architectural-gradient rounded-t-lg h-[100%] shadow-lg"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-6 transition-all duration-700 relative z-10">
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-xl bg-white text-primary border border-primary/5 flex items-center justify-center shadow-sm">
-                        <span class="material-symbols-outlined text-xl">filter_alt</span>
+        <!-- Why Finzo Section (Institutional Grid) -->
+        <section id="benefits" class="py-32 bg-white">
+            <div class="container mx-auto px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div
+                        class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
+                        <div
+                            class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
+                            <span class="material-symbols-outlined text-2xl">lock</span>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-black font-headline text-primary">Always Secured.</h3>
+                            <p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Every login is
+                                protected with hashed passwords, CSRF tokens and automatic lockout — unauthorized access
+                                blocked.</p>
+                        </div>
                     </div>
-                    <div>
-                        <div class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">FILTER</div>
-                        <div class="text-sm font-bold text-primary">Search & Filter</div>
+
+                    <!-- Feature 2 -->
+                    <div
+                        class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
+                        <div
+                            class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
+                            <span class="material-symbols-outlined text-2xl">sync_alt</span>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-black font-headline text-primary">ACID Safe Transfers.</h3>
+                            <p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Money either moves
+                                completely or not at all — our MySQL transaction system guarantees zero risk of fund
+                                loss.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="px-3 py-1 bg-primary/5 rounded-full flex items-center gap-2 animate-pulse">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-                    <span class="text-[9px] text-primary/40 font-black uppercase tracking-tighter">INSTANT</span>
+
+                    <!-- Feature 3 -->
+                    <div
+                        class="p-10 rounded-[2rem] bg-surface-container-low border border-outline-variant/10 hover:border-primary/20 transition-all duration-500 flex flex-col items-start gap-8">
+                        <div
+                            class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
+                            <span class="material-symbols-outlined text-2xl">calendar_month</span>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-black font-headline text-primary">Monthly Interest.</h3>
+                            <p class="text-on-surface-variant opacity-70 leading-relaxed text-sm">Your savings account
+                                earns simple interest automatically — calculated and credited to your balance every 30
+                                days.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="bg-white p-6 rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,38,69,0.15)] border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-9 transition-all duration-1000 relative z-10">
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim text-primary flex items-center justify-center shadow-lg shadow-tertiary-fixed-dim/20">
-                        <span class="material-symbols-outlined text-xl font-bold">file_download</span>
+        <!-- Features Section (Bento Grid) -->
+        <section id="features" class="py-32 bg-surface-container-low/50">
+            <div class="container mx-auto px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+                    <div class="max-w-2xl">
+                        <h2 class="text-5xl font-black font-headline text-primary tracking-tight mb-6">Banking That
+                            Works.</h2>
+                        <p class="text-xl text-on-surface-variant opacity-60">Open an account, deposit money, transfer
+                            funds and download your statement —
+                            everything works instantly with
+                            zero hidden fees.</p>
                     </div>
-                    <div>
-                        <div class="text-[10px] uppercase tracking-widest text-tertiary-fixed-dim font-bold mb-1">EXPORT</div>
-                        <div class="text-sm font-bold text-primary">Download Statement</div>
+                    <div class="hidden md:block">
+                        <div class="px-4 py-2 border border-outline-variant/30 rounded-xl">
+                            <span class="text-[10px] font-bold tracking-[0.3em] text-primary/40 uppercase">WHY CHOOSE
+                                FINZO</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
-                    <span class="text-[9px] text-tertiary-fixed-dim font-black uppercase tracking-tighter">PDF READY</span>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <!-- Feature 1: Online Banking (Grouped Bar Redesign) -->
+                    <div
+                        class="md:col-span-8 group relative bg-white p-12 rounded-[2rem] overflow-hidden border border-outline-variant/10">
+                        <div class="relative z-20 flex flex-col h-full">
+                            <div class="mb-auto">
+                                <span class="material-symbols-outlined text-primary text-4xl mb-10 block"
+                                    data-icon="account_balance">account_balance</span>
+                                <h3 class="text-3xl font-black font-headline text-primary mb-6">Institutional Online
+                                    Banking</h3>
+                                <p class="text-on-surface-variant text-lg max-w-md mb-8 opacity-80 leading-relaxed">
+                                    Track every deposit, transfer and withdrawal in real time from your personal Finzo
+                                    dashboard.</p>
+                                <a id="terminal-link-btn"
+                                    class="text-primary font-black inline-flex items-center gap-3 group-hover:gap-5 transition-all text-sm uppercase tracking-widest font-label"
+                                    href="views/user/dashboard.html">
+                                    VIEW DASHBOARD <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </a>
+                            </div>
+
+                            <!-- Stats Row at bottom -->
+                            <div class="mt-12 flex flex-wrap gap-6 pt-8 border-t border-outline-variant/10">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-emerald-500 font-black">↑</span>
+                                    <span
+                                        class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Deposits</span>
+                                    <span class="text-emerald-500 font-bold text-xs">+14.2%</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-rose-400 font-black">↓</span>
+                                    <span
+                                        class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Withdrawals</span>
+                                    <span class="text-rose-400 font-bold text-xs">-8.3%</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-blue-500 font-black">→</span>
+                                    <span
+                                        class="text-[10px] font-bold text-primary/40 uppercase tracking-widest">Transfers</span>
+                                    <span class="text-blue-500 font-bold text-xs">+11.5%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grouped Bar Chart Subsystem -->
+                        <div
+                            class="absolute top-0 right-0 w-full md:w-[65%] h-full opacity-10 group-hover:opacity-100 transition-all duration-1000 p-12 flex flex-col justify-end">
+                            <div
+                                class="absolute top-12 right-12 flex gap-4 text-[9px] font-bold tracking-widest uppercase opacity-40 z-30">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span> Deposits
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#F87171]"></span> Withdrawals
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span> Transfers
+                                </div>
+                            </div>
+                            <div class="h-[60%] w-full">
+                                <canvas class="finzo-chart" data-type="grouped-bar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Feature 2: High Contrast Security -->
+                    <div
+                        class="md:col-span-4 bg-primary-forced p-12 rounded-[2rem] text-white card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
+                        <div>
+                            <span
+                                class="material-symbols-outlined text-tertiary-fixed-dim text-4xl mb-10 block">shield_lock</span>
+                            <h3 class="text-3xl font-black font-headline mb-6">Login <br />Protection.</h3>
+                            <p class="text-blue-100/60 mb-12 leading-relaxed">Hashed passwords, session management and
+                                automatic lockout after 5 failed attempts — your account is always safe.</p>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></div>
+                            <span class="text-[10px] font-bold tracking-widest uppercase opacity-80">PROTECTION
+                                ENABLED</span>
+                        </div>
+                    </div>
+                    <!-- Feature 3: Interest, Every Month (Dark Theme) -->
+                    <div
+                        class="md:col-span-4 bg-primary-forced p-12 rounded-[2rem] card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
+                        <div>
+                            <span
+                                class="material-symbols-outlined text-tertiary-fixed-dim text-4xl mb-10 block">percent</span>
+                            <h3 class="text-3xl font-black font-headline text-white mb-6">Interest, <br />Every Month.
+                            </h3>
+                            <p class="text-white/60 mb-10 leading-relaxed">Your savings account earns simple interest
+                                automatically — calculated and credited to your balance every 30 days.</p>
+                        </div>
+                        <div class="pt-8 border-t border-white/10 flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-white uppercase tracking-widest opacity-40">CREDITED
+                                EVERY</span>
+                            <span class="text-xs text-tertiary-fixed-dim font-black uppercase tracking-widest">30
+                                Days</span>
+                        </div>
+                    </div>
+                    <!-- Feature 4: Your Records, Always Ready. -->
+                    <div
+                        class="md:col-span-8 bg-white p-12 rounded-[2rem] border border-outline-variant/10 group overflow-hidden reveal-up">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                            <div>
+                                <span
+                                    class="material-symbols-outlined text-primary text-4xl mb-10 block">description</span>
+                                <h2 class="text-3xl font-black font-headline text-primary mb-6">Your Records, Always
+                                    Ready.</h2>
+                                <p class="text-on-surface-variant leading-relaxed opacity-70">Search, filter and
+                                    download your complete transaction history as a PDF statement anytime you need it.
+                                </p>
+                            </div>
+                            <div class="space-y-6 relative">
+                                <!-- Dash Connector Rail -->
+                                <div
+                                    class="absolute left-[34px] top-6 bottom-6 w-px border-l-2 border-dashed border-primary/10">
+                                </div>
+
+                                <div
+                                    class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-3 transition-all duration-500 relative z-10">
+                                    <div class="flex items-center gap-5">
+                                        <div
+                                            class="w-12 h-12 rounded-xl architectural-gradient text-white flex items-center justify-center shadow-lg">
+                                            <span class="material-symbols-outlined text-xl">list_alt</span>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">
+                                                HISTORY</div>
+                                            <div class="text-sm font-bold text-primary">Full Transaction Log</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="px-3 py-1 bg-on-tertiary-container/10 rounded-full flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                                        <span
+                                            class="text-[9px] text-on-tertiary-container font-black uppercase tracking-tighter">UNLIMITED</span>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-6 transition-all duration-700 relative z-10">
+                                    <div class="flex items-center gap-5">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-white text-primary border border-primary/5 flex items-center justify-center shadow-sm">
+                                            <span class="material-symbols-outlined text-xl">filter_alt</span>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase tracking-widest text-primary/30 font-bold mb-1">
+                                                FILTER</div>
+                                            <div class="text-sm font-bold text-primary">Search & Filter</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="px-3 py-1 bg-primary/5 rounded-full flex items-center gap-2 animate-pulse">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+                                        <span
+                                            class="text-[9px] text-primary/40 font-black uppercase tracking-tighter">INSTANT</span>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,38,69,0.15)] border border-outline-variant/10 flex justify-between items-center transform group-hover:translate-x-9 transition-all duration-1000 relative z-10">
+                                    <div class="flex items-center gap-5">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim text-primary flex items-center justify-center shadow-lg shadow-tertiary-fixed-dim/20">
+                                            <span
+                                                class="material-symbols-outlined text-xl font-bold">file_download</span>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase tracking-widest text-tertiary-fixed-dim font-bold mb-1">
+                                                EXPORT</div>
+                                            <div class="text-sm font-bold text-primary">Download Statement</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+                                        <span
+                                            class="text-[9px] text-tertiary-fixed-dim font-black uppercase tracking-tighter">PDF
+                                            READY</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
-</section>
+        </section>
 
-<!-- Final CTA Section -->
-<section class="py-40 bg-white relative overflow-hidden">
-<div class="container mx-auto px-8 text-center relative z-10">
-<h2 class="text-5xl lg:text-7xl font-black font-headline text-primary tracking-tightest mb-8">
-                        The Ledger <br/> awaits your capital.
-                    </h2>
-<p class="text-xl text-on-surface-variant max-w-2xl mx-auto mb-16 opacity-60">
-                        Join 12,000+ institutional partners managing global wealth on the world's most stable digital infrastructure.
-                    </p>
-<div class="flex justify-center">
-<a href="views/auth/register.html" class="architectural-gradient px-12 py-6 text-xl font-black rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
-                            Initialize Account
-                        </a>
-</div>
-</div>
-<!-- Background decorative elements -->
-<div class="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-drift"></div>
-<div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-container/5 rounded-full blur-3xl animate-drift" style="animation-delay: -5s;"></div>
-</section>
+        <!-- Final CTA Section -->
+        <section class="py-40 bg-white relative overflow-hidden">
+            <div class="container mx-auto px-8 text-center relative z-10">
+                <h2 class="text-5xl lg:text-7xl font-black font-headline text-primary tracking-tightest mb-8">
+                    Start Banking with Finzo Today.
+                </h2>
+                <p class="text-xl text-on-surface-variant max-w-2xl mx-auto mb-16 opacity-60">
+                    Open your free account in minutes —
+                    deposit, transfer and manage your
+                    money all from one simple dashboard.
+                </p>
+                <div class="flex justify-center">
+                    <a href="views/auth/register.html"
+                        class="architectural-gradient px-12 py-6 text-xl font-black rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
+                        Open Free Account
+                    </a>
+                </div>
+            </div>
+            <!-- Background decorative elements -->
+            <div
+                class="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-drift">
+            </div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-container/5 rounded-full blur-3xl animate-drift"
+                style="animation-delay: -5s;"></div>
+        </section>
 
-</main>
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
+    </main>
+    <!-- Modular Footer -->
+    <div id="footer-placeholder"></div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="assets/js/component-loader.js"></script>
-<script src="./assets/js/main.js"></script>
-<script src="./assets/js/charts.js"></script>
-</body></html>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/component-loader.js"></script>
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/charts.js"></script>
+</body>
+
+</html>
