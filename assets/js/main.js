@@ -30,6 +30,30 @@ $(document).ready(function() {
         $('aside.fixed').toggleClass('-translate-x-full');
     });
 
+    // --- NEW: Dashboard Balance Visibility Toggle ---
+    $(document).on('click', '#toggle-balance', function() {
+        const btn = $(this);
+        const icon = btn.find('.material-symbols-outlined');
+        const balanceEl = $('#dash-balance');
+        const accountEl = $('#dash-account');
+        
+        const isHidden = icon.text().trim() === 'visibility_off';
+        
+        if (isHidden) {
+            // Show real values
+            icon.text('visibility');
+            balanceEl.text(balanceEl.attr('data-real-value'));
+            accountEl.text(accountEl.attr('data-real-value'));
+            btn.addClass('text-primary').removeClass('text-slate-400');
+        } else {
+            // Hide values
+            icon.text('visibility_off');
+            balanceEl.text('••••••••');
+            accountEl.text('•••• •••• •••• ' + accountEl.attr('data-real-value').slice(-4));
+            btn.addClass('text-slate-400').removeClass('text-primary');
+        }
+    });
+
     // Dark Mode Toggle Logic
     const darkModeBtn = $('.material-symbols-outlined:contains("dark_mode")').parent();
     darkModeBtn.on('click', function(e) {

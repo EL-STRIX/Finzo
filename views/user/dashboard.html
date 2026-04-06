@@ -117,9 +117,9 @@
 
   <!-- Notifications Button -->
   <div class="relative" id="notif-wrapper">
-    <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+    <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="relative btn-icon-hover no-outline">
       <span class="material-symbols-outlined">notifications</span>
-      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#0a0f1e]"></span>
     </button>
     <!-- Notifications Dropdown -->
     <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
@@ -156,13 +156,13 @@
   </div>
 
   <!-- Dark Mode Toggle -->
-  <button data-toggle-theme class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors" title="Toggle Theme">
+  <button data-toggle-theme class="btn-icon-hover" title="Toggle Theme">
     <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
   </button>
 
   <!-- Settings Button -->
   <div class="relative" id="settings-wrapper">
-    <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+    <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="btn-icon-hover">
       <span class="material-symbols-outlined">settings</span>
     </button>
     <!-- Settings Dropdown -->
@@ -228,10 +228,17 @@
 <div class="absolute -right-12 -top-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-8">
+<div class="flex items-start gap-4">
 <div>
 <p class="text-secondary font-medium mb-1 text-xs">Total Available Balance</p>
-<h2 id="dash-balance" class="text-4xl font-extrabold text-primary tracking-tight" style="margin-bottom:4px;">— —</h2>
+<div class="flex items-center gap-3">
+  <h2 id="dash-balance" class="text-4xl font-extrabold text-primary tracking-tight transition-all duration-300" data-real-value="₹ 5,84,290.00" style="margin-bottom:4px;">••••••••</h2>
+  <button id="toggle-balance" class="p-1 px-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500 transition-all focus:outline-none" title="Toggle visibility">
+    <span class="material-symbols-outlined text-lg">visibility_off</span>
+  </button>
+</div>
 <p class="text-xs font-semibold text-slate-500">Available after activation</p>
+</div>
 </div>
 <div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
                                 SAVINGS ACCOUNT
@@ -240,7 +247,7 @@
 <div class="flex flex-wrap gap-12 items-end">
 <div>
 <p class="text-[10px] uppercase tracking-widest text-secondary mb-2">Account Number</p>
-<p id="dash-account" class="font-mono text-lg font-semibold tracking-tighter">Pending Approval</p>
+<p id="dash-account" class="font-mono text-lg font-semibold tracking-tighter text-on-surface dark:text-slate-300" data-real-value="7729 4410 8820 1092">•••• •••• •••• 1092</p>
 </div>
 </div>
 </div>
