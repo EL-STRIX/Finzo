@@ -205,7 +205,6 @@
                   <div class="finzo-dropdown-option" data-value="other">Other</div>
                 </div>
               </div>
-              </select>
             </div>
           </div>
 
@@ -254,24 +253,30 @@
             </div>
             <div class="flex flex-col gap-1.5">
               <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-state">State</label>
-              <select id="field-state" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-on-surface dark:text-white font-medium focus:ring-2 focus:ring-blue-400 outline-none transition-all">
-                <option value="" disabled selected>Select State</option>
-                <option>Rajasthan</option>
-                <option>Maharashtra</option>
-                <option>Uttar Pradesh</option>
-                <option>Delhi</option>
-                <option>Karnataka</option>
-                <option>Gujarat</option>
-                <option>Madhya Pradesh</option>
-                <option>Tamil Nadu</option>
-                <option>West Bengal</option>
-                <option>Bihar</option>
-                <option>Punjab</option>
-                <option>Haryana</option>
-                <option>Andhra Pradesh</option>
-                <option>Telangana</option>
-                <option>Kerala</option>
-              </select>
+              <div class="finzo-dropdown">
+                <input type="hidden" name="state" id="field-state" value="">
+                <div class="finzo-dropdown-trigger">
+                  <span class="dropdown-label text-slate-400 dark:text-slate-500">Select State</span>
+                  <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                </div>
+                <div class="finzo-dropdown-menu">
+                  <div class="finzo-dropdown-option" data-value="Rajasthan">Rajasthan</div>
+                  <div class="finzo-dropdown-option" data-value="Maharashtra">Maharashtra</div>
+                  <div class="finzo-dropdown-option" data-value="Uttar Pradesh">Uttar Pradesh</div>
+                  <div class="finzo-dropdown-option" data-value="Delhi">Delhi</div>
+                  <div class="finzo-dropdown-option" data-value="Karnataka">Karnataka</div>
+                  <div class="finzo-dropdown-option" data-value="Gujarat">Gujarat</div>
+                  <div class="finzo-dropdown-option" data-value="Madhya Pradesh">Madhya Pradesh</div>
+                  <div class="finzo-dropdown-option" data-value="Tamil Nadu">Tamil Nadu</div>
+                  <div class="finzo-dropdown-option" data-value="West Bengal">West Bengal</div>
+                  <div class="finzo-dropdown-option" data-value="Bihar">Bihar</div>
+                  <div class="finzo-dropdown-option" data-value="Punjab">Punjab</div>
+                  <div class="finzo-dropdown-option" data-value="Haryana">Haryana</div>
+                  <div class="finzo-dropdown-option" data-value="Andhra Pradesh">Andhra Pradesh</div>
+                  <div class="finzo-dropdown-option" data-value="Telangana">Telangana</div>
+                  <div class="finzo-dropdown-option" data-value="Kerala">Kerala</div>
+                </div>
+              </div>
             </div>
             <div class="flex flex-col gap-1.5">
               <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest" for="field-pincode">PIN Code</label>

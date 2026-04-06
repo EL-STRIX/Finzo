@@ -309,7 +309,17 @@
     </section>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(e) {
+        // Since this is a prototype, we'll allow it to submit and flag completion
+        localStorage.setItem('finzo_profile_complete', 'true');
+        // Let the form submit naturally or redirect if needed
+        // For now, let's just alert and redirect to dashboard for demo
+        alert("Profile submitted for approval!");
+    });
+});
+</script>
 <script src="../../assets/js/component-loader.js"></script>
 <script src="../../assets/js/main.js"></script>
 </body>
