@@ -237,27 +237,51 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        div[class*="rounded-[2rem]"],
-        div[class*="rounded-3xl"],
-        div[class*="rounded-xl"] {
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(0, 38, 69, 0.08); /* More visible border in light mode */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Slightly darker shadow in light mode */
+        /* --- Tiered Elevation System (Architectural Lift) --- */
+        :root {
+            --finzo-shadow-sm: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02);
+            --finzo-shadow-md: 0 4px 12px rgba(0, 32, 64, 0.05), 0 2px 4px rgba(0, 32, 64, 0.02), 0 0 0 1px rgba(0, 32, 64, 0.01);
+            --finzo-shadow-lg: 0 12px 24px -8px rgba(0, 32, 64, 0.08), 0 4px 12px -4px rgba(0, 32, 64, 0.04);
+            --finzo-shadow-premium: 0 20px 40px -12px rgba(0, 38, 69, 0.12), 0 12px 24px -12px rgba(0, 38, 69, 0.08);
         }
-        
+
+        /* Semantic Elevation Utilities */
+        .elevation-sm { box-shadow: var(--finzo-shadow-sm); }
+        .elevation-md { box-shadow: var(--finzo-shadow-md); }
+        .elevation-lg { box-shadow: var(--finzo-shadow-lg); }
+        .elevation-premium { box-shadow: var(--finzo-shadow-premium); }
+
+        /* Catch-all for Card-like content across the platform (Light Mode Only) */
+        :root:not(.dark) div[class*="rounded-xl"],
+        :root:not(.dark) div[class*="rounded-3xl"] {
+            border: 1px solid #e2e8f0; /* Removed !important to allow specific border overrides like border-l-4 */
+            box-shadow: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02) !important; /* Professional shadow-sm */
+            background-color: #ffffff; /* Removed !important to allow specific backgrounds for states like is-unread */
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Hover elevation refinement */
         div[class*="rounded-[2rem]"]:hover,
         div[class*="rounded-3xl"]:hover,
         div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.12); /* Stronger shadow on hover */
-            border-color: rgba(0, 38, 69, 0.1);
+            box-shadow: var(--finzo-shadow-premium);
+            border-color: rgba(0, 38, 69, 0.08);
             cursor: pointer;
+        }
+
+        /* Dark mode preserves its existing logic (borders/glows instead of shadows) */
+        .dark div[class*="rounded-[2rem]"],
+        .dark div[class*="rounded-3xl"],
+        .dark div[class*="rounded-xl"] {
+            box-shadow: none;
+            background-color: transparent; /* Rely on dark-mode.css or inline bg */
         }
 
         .dark div[class*="rounded-[2rem]"]:hover,
         .dark div[class*="rounded-3xl"]:hover,
         .dark div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(79, 70, 229, 0.1); /* Indigo glow shadow for dark mode */
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(79, 70, 229, 0.1); 
             border-color: rgba(129, 140, 248, 0.2);
             background-color: rgba(255, 255, 255, 0.02);
         }

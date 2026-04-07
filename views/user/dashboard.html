@@ -106,7 +106,7 @@
 <!-- TopNavBar Execution -->
 <header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white dark:bg-[#0a0f1e] backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
 <div class="flex items-center gap-4">
-<h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">Dashboard</h1>
+<h1 class="text-xl font-bold tracking-tight text-[#002645] dark:text-white">Dashboard</h1>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-6">
@@ -197,9 +197,9 @@
 <!-- Dashboard Content -->
 <section class="pt-20 pb-8 px-8 max-w-7xl mx-auto space-y-4">
 <!-- Welcome Header -->
-<div class="mb-1">
-    <h2 class="text-2xl font-extrabold text-indigo-950 dark:text-white tracking-tight">Welcome back, Rahul Kumar</h2>
-    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
+<div class="mb-4">
+    <h2 class="text-2xl font-extrabold text-[#002645] tracking-tight">Welcome back, Rahul Kumar</h2>
+    <p class="text-xs text-[#64748b] font-medium">Here's what's happening with your account today.</p>
 </div>
 <!-- Banners Area (Institutional Mode) -->
 <div id="restricted-banner" class="group bg-indigo-500/10 dark:bg-indigo-500/5 backdrop-blur-md border border-indigo-500/30 dark:border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-[0_8px_32px_-8px_rgba(79,70,229,0.1)] transition-all duration-500 hover:border-indigo-500/40 hover:-translate-y-1 hover:shadow-indigo-500/10 cursor-default">
@@ -208,8 +208,8 @@
             <span class="material-symbols-outlined text-xl">verified_user</span>
         </div>
         <div class="flex flex-col">
-            <span class="text-xs font-bold text-indigo-950 dark:text-white tracking-wide">Account Verification Pending</span>
-            <span class="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
+            <span class="text-xs font-bold text-[#002645] dark:text-white tracking-wide">Account Verification Pending</span>
+            <span class="text-[10px] text-[#64748b] dark:text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
         </div>
     </div>
     <a href="complete-profile.html" class="architectural-gradient text-white text-[10px] font-black px-5 py-2.5 rounded-xl shadow-lg hover:shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-95 no-underline uppercase tracking-widest">Complete Setup &rarr;</a>
@@ -225,7 +225,7 @@
 <!-- Bento Grid Layout -->
 <div class="grid grid-cols-12 gap-6">
 <!-- Account Summary Card (Institutional Anchor) -->
-<div class="col-span-12 lg:col-span-8 bg-white dark:bg-[#0a0f1e] rounded-3xl p-8 shadow-sm dark:shadow-2xl dark:shadow-indigo-900/20 relative overflow-hidden group border border-slate-200 dark:border-white/10 transition-colors duration-300">
+<div class="col-span-12 lg:col-span-8 bg-white rounded-xl p-8 border border-[#e2e8f0] shadow-sm relative overflow-hidden group transition-all duration-300">
 <!-- Shimmer Overlay -->
 <div class="absolute inset-0 card-shimmer pointer-events-none opacity-10 dark:opacity-100"></div>
 <!-- Premium background decoration -->
@@ -262,10 +262,10 @@
 </div>
 </div>
 <!-- Spending Overview (Chart Placeholder) -->
-<div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-2xl p-6 flex flex-col justify-between opacity-60 cursor-not-allowed select-none pointer-events-none">
+<div class="col-span-12 lg:col-span-4 bg-white rounded-xl p-6 flex flex-col justify-between border border-[#e2e8f0] shadow-sm opacity-60 cursor-not-allowed select-none pointer-events-none group transition-all duration-300">
 <div>
 <div class="flex justify-between items-start mb-0.5">
-    <h3 class="text-base font-bold text-on-surface">Spending Analytics</h3>
+    <h3 class="text-base font-bold text-primary dark:text-on-surface">Spending Analytics</h3>
 </div>
 <p class="text-[11px] text-secondary mb-3">Monthly spending overview</p>
 <div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
@@ -287,7 +287,7 @@
 </div>
 <!-- Quick Actions -->
 <div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
@@ -299,7 +299,7 @@
 </div>
 <span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">payments</span>
@@ -311,7 +311,7 @@
 </div>
 <span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">send</span>
@@ -325,9 +325,9 @@
 </button>
 </div>
 <!-- Recent Transactions -->
-<div class="col-span-12 bg-white dark:bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-transparent">
+<div class="col-span-12 bg-white rounded-xl p-6 border border-[#e2e8f0] shadow-sm">
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-    <h3 class="text-lg font-bold text-indigo-950 dark:text-white">Recent Transactions</h3>
+    <h3 class="text-lg font-bold text-[#002645]">Recent Transactions</h3>
     
     <div class="flex items-center bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 hover:border-indigo-500/30 focus-within:border-indigo-500/60 rounded-xl px-3 py-2 transition-all duration-300 group relative w-full md:w-64">
         <span class="material-symbols-outlined text-slate-400 text-lg group-focus-within:text-indigo-500 transition-colors">search</span>
@@ -337,7 +337,7 @@
 
 <div id="tx-list" class="space-y-3">
     <!-- Placeholder rows for "Workable" feel (filtered out initially but searchable) -->
-    <div class="tx-row flex items-center justify-between p-3 border border-slate-100 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
+    <div class="tx-row flex items-center justify-between p-3 border border-slate-200 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500">
                 <span class="material-symbols-outlined">account_balance</span>
@@ -353,7 +353,7 @@
         </div>
     </div>
 
-    <div class="tx-row flex items-center justify-between p-3 border border-slate-100 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
+    <div class="tx-row flex items-center justify-between p-3 border border-slate-200 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500">
                 <span class="material-symbols-outlined text-lg">card_membership</span>
@@ -419,7 +419,7 @@ $(document).ready(function() {
         $('#dash-balance')
             .text('₹ 42,080.00')
             .removeClass('text-slate-300 dark:text-white/30 tracking-[0.25em]')
-            .addClass('text-indigo-950 dark:text-white tracking-normal');
+            .addClass('text-[#002645] tracking-normal');
         $('#dash-account').text('FNZ20260001');
         $('#verification-badge').hide();
         $('.tx-row').show().removeClass('opacity-40 grayscale');

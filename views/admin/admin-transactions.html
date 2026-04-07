@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="../../assets/js/theme.js"></script>
 </head>
-<body style="background:#f6f8fc;font-family:'Inter',sans-serif;">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -52,13 +52,13 @@
 
 <!-- MAIN -->
 <div class="admin-main">
-  <div class="admin-topbar">
+  <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;">Capital Flow</div>
-      <div style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;color:#0a0f1e;letter-spacing:-0.5px;">Transaction Intelligence</div>
+      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Capital Flow</div>
+      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">Transaction Intelligence</div>
     </div>
-    <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#002645;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;">
-      <span class="material-symbols-outlined" style="font-size:18px;">download</span> Export PDF
+    <button class="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg text-sm font-bold transition-all elevation-md active:scale-95">
+      <span class="material-symbols-outlined text-lg">download</span> Export PDF
     </button>
   </div>
 
@@ -90,14 +90,14 @@
 
     <!-- Chart + Donut -->
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:28px;">
-      <div class="admin-card" style="padding:24px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
+        <div class="flex justify-between items-center mb-6">
           <div>
-            <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#0a0f1e;">Monthly Capital Expenditure</div>
+            <div class="font-headline text-lg font-bold text-indigo-950 dark:text-white">Monthly Capital Expenditure</div>
           </div>
-          <div style="display:flex;gap:6px;">
-            <button id="btn-6m" onclick="setActive(this)" style="padding:5px 14px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">6 Months</button>
-            <button id="btn-yr" onclick="setActive(this)" style="padding:5px 14px;background:#f6f8fc;color:#9aa0b0;border:1px solid #eef0f5;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;">Yearly</button>
+          <div class="flex gap-2">
+            <button id="btn-6m" onclick="setActive(this)" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-lg elevation-sm transition-all">6 Months</button>
+            <button id="btn-yr" onclick="setActive(this)" class="px-4 py-1.5 bg-slate-100 dark:bg-surface-container-low text-slate-500 text-xs font-semibold rounded-lg hover:bg-slate-200 transition-all">Yearly</button>
           </div>
         </div>
         <div style="display:flex;align-items:flex-end;gap:10px;height:160px;padding:0 8px;">
@@ -127,8 +127,8 @@
           </div>
         </div>
       </div>
-      <div class="admin-card" style="padding:24px;">
-        <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#0a0f1e;margin-bottom:20px;">Asset Allocation</div>
+      <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
+        <div class="font-headline text-lg font-bold text-indigo-950 dark:text-white mb-5">Asset Allocation</div>
         <div style="position:relative;width:160px;height:160px;margin:0 auto 20px;">
           <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg);">
             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#eef0f5" stroke-width="3.5"/>
@@ -159,7 +159,7 @@
     </div>
 
     <!-- Transaction Table -->
-    <div class="admin-card">
+    <div class="admin-card elevation-md transition-all duration-300">
       <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
         <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#0a0f1e;">Historical Ledger</div>
         <div style="display:flex;gap:10px;">

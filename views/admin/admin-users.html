@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="../../assets/js/theme.js"></script>
 </head>
-<body style="background:#f6f8fc;font-family:'Inter',sans-serif;">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -52,10 +52,10 @@
 
 <!-- MAIN -->
 <div class="admin-main">
-  <div class="admin-topbar">
+  <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;">Central Ledger</div>
-      <div style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;color:#0a0f1e;letter-spacing:-0.5px;">User Management</div>
+      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Central Ledger</div>
+      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">User Management</div>
     </div>
     <div style="display:flex;gap:12px;">
       <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:10px;font-size:13px;font-weight:600;color:#5a6270;cursor:pointer;">
@@ -70,22 +70,22 @@
   <div style="padding:32px 36px;">
 
     <!-- Stats -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
-      <div class="admin-stat-card" style="padding:18px 22px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;">
+      <div class="admin-stat-card !p-6 elevation-md">
         <div class="admin-stat-label">Total Users</div>
-        <div class="admin-stat-value" style="font-size:22px;">12,842</div>
+        <div class="admin-stat-value !text-2xl">12,842</div>
       </div>
-      <div class="admin-stat-card" style="padding:18px 22px;">
+      <div class="admin-stat-card !p-6 elevation-md">
         <div class="admin-stat-label">Active</div>
-        <div class="admin-stat-value" style="font-size:22px;color:#00b894;">11,204</div>
+        <div class="admin-stat-value !text-2xl !text-on-tertiary-container">11,204</div>
       </div>
-      <div class="admin-stat-card" style="padding:18px 22px;">
+      <div class="admin-stat-card !p-6 elevation-md">
         <div class="admin-stat-label">Suspended</div>
-        <div class="admin-stat-value" style="font-size:22px;color:#f39c12;">938</div>
+        <div class="admin-stat-value !text-2xl !text-orange-500">938</div>
       </div>
-      <div class="admin-stat-card" style="padding:18px 22px;">
+      <div class="admin-stat-card !p-6 elevation-md">
         <div class="admin-stat-label">Locked</div>
-        <div class="admin-stat-value" style="font-size:22px;color:#e17055;">700</div>
+        <div class="admin-stat-value !text-2xl !text-error">700</div>
       </div>
     </div>
 
@@ -96,7 +96,7 @@
     </div>
 
     <!-- Table -->
-    <div class="admin-card">
+    <div class="admin-card elevation-md transition-all duration-300">
       <table class="admin-table" style="width:100%;" id="users-table">
         <thead>
           <tr>

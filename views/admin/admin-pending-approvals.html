@@ -23,7 +23,7 @@ tailwind.config = {
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="../../assets/js/theme.js"></script>
 </head>
-<body style="background:#f6f8fc; font-family:'Inter',sans-serif;">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -68,10 +68,10 @@ tailwind.config = {
 <!-- MAIN -->
 <div class="admin-main">
   <!-- TOP BAR -->
-  <div class="admin-topbar">
+  <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#9aa0b0;">USER ONBOARDING</div>
-      <div style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;color:#0a0f1e;letter-spacing:-0.5px;">Pending Account Approvals</div>
+      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER ONBOARDING</div>
+      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">Pending Account Approvals</div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;">
       <div style="display:flex;align-items:center;gap:8px;background:#e8f8f2;padding:6px 14px;border-radius:20px;">
@@ -84,7 +84,7 @@ tailwind.config = {
 
   <div style="padding:32px 36px;">
     
-    <div class="admin-card" style="padding:24px;">
+    <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
         <!-- Filters -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;border-bottom:1px solid #eef0f5;padding-bottom:16px;">
             <div style="display:flex;gap:16px;align-items:center;">
