@@ -92,20 +92,7 @@
 
     <meta http-equiv="Expires" content="0">
     <style>
-        /* Robust Account selection States */
-        input[name="account_type"]:checked+div {
-            border-color: #002645 !important;
-            background-color: rgba(0, 38, 69, 0.03) !important;
-        }
 
-        input[name="account_type"]:checked+div .selection-dot {
-            transform: scale(1) !important;
-            background-color: #002645 !important;
-        }
-
-        input[name="account_type"]:checked+div .selection-circle {
-            border-color: #002645 !important;
-        }
 
         /* Interactive Placeholder Polish */
         input:focus::placeholder {
@@ -125,12 +112,10 @@
                 <div class="h-1 w-12 bg-tertiary-fixed-dim"></div>
             </div>
             <div class="relative z-10 max-w-lg">
-                <p class="font-headline text-5xl font-bold leading-tight text-white mb-6">Built to be, <br />Trusted.
-                </p>
-                <p class="text-on-primary-container text-lg mb-12 opacity-80">Finzo is designed with real
-                    security practices — not just
-                    a student project but a
-                    production-ready banking system.</p>
+                <p class="font-headline text-5xl font-bold leading-tight text-white mb-6">Simple. Secure. Banking.</p>
+                <p class="text-on-primary-container text-lg mb-12 opacity-80">Register in seconds and complete 
+                    your profile to unlock full 
+                    banking features.</p>
 
                 <div class="space-y-6">
                     <div class="flex items-center gap-4 text-white/90">
@@ -157,8 +142,8 @@
         <div class="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface">
             <div class="w-full max-w-md">
                 <div class="mb-12">
-                    <h2 class="font-headline text-3xl font-extrabold tracking-tight text-primary">Establish Account</h2>
-                    <p class="text-on-surface-variant text-sm mt-2">Enter your credentials to join the Finzo ledger.</p>
+                    <h2 class="font-headline text-3xl font-extrabold tracking-tight text-primary">Create Your Account</h2>
+                    <p class="text-on-surface-variant text-sm mt-2">Join Finzo and start banking in minutes.</p>
                 </div>
 
                 <!-- Institutional Error Banner -->
@@ -175,8 +160,7 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <label
-                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Full
-                                Legal Name</label>
+                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Full Name</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">person</span>
@@ -187,8 +171,7 @@
                         </div>
                         <div class="space-y-1">
                             <label
-                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Digital
-                                Address</label>
+                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Email Address</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">mail</span>
@@ -199,8 +182,7 @@
                         </div>
                         <div class="space-y-1">
                             <label
-                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Primary
-                                Phone</label>
+                                class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Phone Number</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-xl">call</span>
@@ -214,35 +196,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Account Category</label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <label class="relative cursor-pointer">
-                                    <input type="radio" name="account_type" value="savings" class="hidden" checked>
-                                    <div class="p-4 bg-surface-container-lowest border-2 border-transparent rounded-xl transition-all shadow-sm flex flex-col gap-2">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-xs font-bold text-primary">Savings</span>
-                                            <div class="selection-circle w-4 h-4 rounded-full border-2 border-outline-variant flex items-center justify-center">
-                                                <div class="selection-dot w-2 h-2 rounded-full bg-transparent scale-0 transition-transform"></div>
-                                            </div>
-                                        </div>
-                                        <p class="text-[10px] text-on-surface-variant leading-tight">Yield-bearing personal ledger.</p>
-                                    </div>
-                                </label>
-                                <label class="relative cursor-pointer">
-                                    <input type="radio" name="account_type" value="current" class="hidden">
-                                    <div class="p-4 bg-surface-container-lowest border-2 border-transparent rounded-xl transition-all shadow-sm flex flex-col gap-2">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-xs font-bold text-primary">Current</span>
-                                            <div class="selection-circle w-4 h-4 rounded-full border-2 border-outline-variant flex items-center justify-center">
-                                                <div class="selection-dot w-2 h-2 rounded-full bg-transparent scale-0 transition-transform"></div>
-                                            </div>
-                                        </div>
-                                        <p class="text-[10px] text-on-surface-variant leading-tight">Institutional high-volume settlements.</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
+
                         <div class="space-y-1">
                             <label
                                 class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Password</label>
@@ -258,6 +212,11 @@
                                     <span class="material-symbols-outlined text-xl">visibility</span>
                                 </button>
                             </div>
+                            <!-- Strength Indicator -->
+                            <div class="h-1 w-full bg-slate-100 rounded-full mt-2 overflow-hidden flex transition-all duration-500 opacity-0" id="password-strength-bar">
+                                <div class="h-full w-0 transition-all duration-500" id="strength-fill"></div>
+                            </div>
+                            <p id="password-strength-text" class="text-[9px] font-bold mt-1 ml-1 uppercase tracking-widest transition-all duration-300 opacity-0"></p>
                         </div>
                         <div class="space-y-1">
                             <label
@@ -284,14 +243,8 @@
                     </div>
                 </form>
                 <div class="mt-8 flex flex-col items-center gap-6">
-                    <div class="w-full h-[1px] bg-outline-variant/30 relative">
-                        <span
-                            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-surface px-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Verification</span>
-                    </div>
-                    <p class="text-on-surface-variant text-xs text-center leading-relaxed">Enter your credentials to
-                        join the Finzo Online Banking.</p>
                     <div class="text-sm">
-                        <span class="text-on-surface-variant">Already an active member?</span>
+                        <span class="text-on-surface-variant">Already have an account?</span>
                         <a class="ml-2 text-primary font-bold hover:underline decoration-tertiary-fixed-dim decoration-2 underline-offset-4"
                             href="../auth/login.html">Log In</a>
                     </div>
@@ -340,6 +293,15 @@
                     }
                 });
 
+                // Password Strength Check
+                const password = passwordInput.val();
+                const strengthResult = checkPasswordStrength(password);
+                if (strengthResult.score < 3) {
+                    passwordInput.addClass('input-error shake-animation');
+                    isValid = false;
+                    errorMessage = "Security notice: Choose a strong password. Use 8+ characters with mixed case, numbers, and symbols.";
+                }
+
                 // Password Matching
                 if (passwordInput.val() !== confirmInput.val()) {
                     passwordInput.addClass('input-error');
@@ -378,7 +340,51 @@
                 if ($('.input-error').length === 0) {
                     errorBanner.removeClass('active');
                 }
+                
+                // Real-time password strength update
+                if ($(this).attr('id') === 'password') {
+                    updateStrengthUI($(this).val());
+                }
             });
+
+            function checkPasswordStrength(p) {
+                let s = 0;
+                if (!p) return { score: 0, label: "" };
+                if (p.length >= 8) s++;
+                if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++;
+                if (/[0-9]/.test(p)) s++;
+                if (/[^A-Za-z0-9]/.test(p)) s++;
+                
+                let labels = ["Weak", "Weak", "Fair", "Good", "Strong"];
+                let colors = ["bg-error", "bg-error", "bg-amber-400", "bg-blue-400", "bg-on-tertiary-container"];
+                return { score: s, label: labels[s], color: colors[s] };
+            }
+
+            function updateStrengthUI(p) {
+                const res = checkPasswordStrength(p);
+                const bar = $('#password-strength-bar');
+                const fill = $('#strength-fill');
+                const text = $('#password-strength-text');
+
+                if (p.length === 0) {
+                    bar.addClass('opacity-0');
+                    text.addClass('opacity-0');
+                    return;
+                }
+
+                bar.removeClass('opacity-0');
+                text.removeClass('opacity-0');
+                
+                fill.removeClass('bg-error bg-amber-400 bg-blue-400 bg-on-tertiary-container');
+                fill.addClass(res.color);
+                fill.css('width', (res.score / 4 * 100) + '%');
+                
+                text.text(res.label + ' Password');
+                text.removeClass('text-error text-amber-400 text-blue-400 text-on-tertiary-container');
+                // Maps bg class to text class for simplicity
+                const textClass = res.color.replace('bg-', 'text-');
+                text.addClass(textClass);
+            }
 
             $('#toggle-password').on('click', function () {
                 const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
