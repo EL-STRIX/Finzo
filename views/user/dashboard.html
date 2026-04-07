@@ -104,7 +104,7 @@
 <!-- Main Content Canvas -->
 <main class="md:ml-64 min-h-screen">
 <!-- TopNavBar Execution -->
-<header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white dark:bg-[#0a0f1e] backdrop-blur-md z-50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-300">
+<header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white dark:bg-[#0a0f1e] backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
 <div class="flex items-center gap-4">
 <h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">Dashboard</h1>
 </div>
@@ -120,12 +120,12 @@
     </button>
     <!-- Notifications Dropdown -->
     <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
-      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
         <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Notifications</span>
         <button id="mark-all-read" class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline focus:outline-none">Mark all read</button>
       </div>
-      <div class="divide-y divide-slate-50 dark:divide-slate-800">
-        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-50 dark:border-slate-800 is-unread">
+      <div class="divide-y divide-slate-100 dark:divide-slate-800">
+        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-100 dark:border-slate-800 is-unread">
           <div class="w-9 h-9 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
           </div>
@@ -202,14 +202,14 @@
     <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Here's what's happening with your account today.</p>
 </div>
 <!-- Banners Area (Institutional Mode) -->
-<div id="restricted-banner" class="group bg-indigo-500/5 backdrop-blur-md border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-[0_8px_32px_-8px_rgba(79,70,229,0.1)] transition-all duration-500 hover:border-indigo-500/40 hover:-translate-y-1 hover:shadow-indigo-500/10 cursor-default">
+<div id="restricted-banner" class="group bg-indigo-500/10 dark:bg-indigo-500/5 backdrop-blur-md border border-indigo-500/30 dark:border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-[0_8px_32px_-8px_rgba(79,70,229,0.1)] transition-all duration-500 hover:border-indigo-500/40 hover:-translate-y-1 hover:shadow-indigo-500/10 cursor-default">
     <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 transition-transform duration-500 group-hover:scale-110 group-hover:bg-indigo-500/20">
+        <div class="w-10 h-10 rounded-full bg-indigo-500/10 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-110 group-hover:bg-indigo-500/20">
             <span class="material-symbols-outlined text-xl">verified_user</span>
         </div>
         <div class="flex flex-col">
-            <span class="text-xs font-bold text-white tracking-wide">Account Verification Pending</span>
-            <span class="text-[10px] text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
+            <span class="text-xs font-bold text-indigo-950 dark:text-white tracking-wide">Account Verification Pending</span>
+            <span class="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
         </div>
     </div>
     <a href="complete-profile.html" class="architectural-gradient text-white text-[10px] font-black px-5 py-2.5 rounded-xl shadow-lg hover:shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-95 no-underline uppercase tracking-widest">Complete Setup &rarr;</a>
@@ -225,24 +225,24 @@
 <!-- Bento Grid Layout -->
 <div class="grid grid-cols-12 gap-6">
 <!-- Account Summary Card (Institutional Anchor) -->
-<div class="col-span-12 lg:col-span-8 bg-slate-950 dark:bg-[#0a0f1e] rounded-3xl p-8 shadow-2xl shadow-indigo-900/20 relative overflow-hidden group border border-white/10">
+<div class="col-span-12 lg:col-span-8 bg-white dark:bg-[#0a0f1e] rounded-3xl p-8 shadow-sm dark:shadow-2xl dark:shadow-indigo-900/20 relative overflow-hidden group border border-slate-200 dark:border-white/10 transition-colors duration-300">
 <!-- Shimmer Overlay -->
-<div class="absolute inset-0 card-shimmer pointer-events-none"></div>
+<div class="absolute inset-0 card-shimmer pointer-events-none opacity-10 dark:opacity-100"></div>
 <!-- Premium background decoration -->
-<div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-700"></div>
-<div class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px] group-hover:bg-indigo-500/20 transition-all duration-700"></div>
-<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[100px] group-hover:bg-blue-500/10 dark:group-hover:bg-blue-500/20 transition-all duration-700"></div>
+<div class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-[100px] group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all duration-700"></div>
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.01] dark:opacity-[0.03] pointer-events-none"></div>
 <div class="relative z-10 flex flex-col justify-between h-full">
 <div class="flex justify-between items-start mb-12">
 <div class="flex items-start gap-6">
 <div>
-<p class="text-slate-400 font-bold mb-3 text-[10px] uppercase tracking-[0.2em] opacity-80">Total Available Balance</p>
+<p class="text-slate-500 dark:text-slate-400 font-bold mb-3 text-[10px] uppercase tracking-[0.2em] opacity-80">Total Available Balance</p>
 <div class="flex flex-col">
-    <h2 id="dash-balance" class="text-4xl font-black text-white/30 tracking-[0.25em] transition-all duration-500 select-none pb-1" data-real-value="Pending Activation">₹ </h2>
+    <h2 id="dash-balance" class="text-4xl font-black text-slate-300 dark:text-white/30 tracking-[0.25em] transition-all duration-500 select-none pb-1" data-real-value="Pending Activation">₹ </h2>
 </div>
 </div>
 </div>
-<div class="bg-white/5 backdrop-blur-md border border-white/10 text-white/40 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] pointer-events-none select-none">
+<div class="bg-indigo-50 dark:bg-white/5 backdrop-blur-md border border-indigo-100 dark:border-white/10 text-indigo-900 dark:text-white/40 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] pointer-events-none select-none">
                                 SAVINGS ACCOUNT
                             </div>
 </div>
@@ -250,8 +250,8 @@
 <div>
 <p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-3 font-bold">Account Number</p>
 <div class="flex items-center gap-3">
-    <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.15em] text-white/90" data-real-value="Unavailable">NOT YET ASSIGNED</p>
-    <span class="material-symbols-outlined text-slate-600 text-sm">lock</span>
+    <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.15em] text-indigo-950 dark:text-white/90" data-real-value="Unavailable">NOT YET ASSIGNED</p>
+    <span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-sm">lock</span>
 </div>
 <div id="verification-badge" class="inline-flex items-center gap-2 mt-1 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
     <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,1)]"></span>
@@ -287,9 +287,9 @@
 </div>
 <!-- Quick Actions -->
 <div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-<button disabled class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
 </div>
 <div class="text-left text-slate-400">
@@ -299,9 +299,9 @@
 </div>
 <span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">payments</span>
 </div>
 <div class="text-left text-slate-400">
@@ -311,9 +311,9 @@
 </div>
 <span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
 </button>
-<button disabled class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm opacity-50 cursor-not-allowed">
+<button disabled class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 dark:border-transparent opacity-50 cursor-not-allowed">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">send</span>
 </div>
 <div class="text-left text-slate-400">
@@ -325,9 +325,9 @@
 </button>
 </div>
 <!-- Recent Transactions -->
-<div class="col-span-12 bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+<div class="col-span-12 bg-white dark:bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-transparent">
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-    <h3 class="text-lg font-bold">Recent Transactions</h3>
+    <h3 class="text-lg font-bold text-indigo-950 dark:text-white">Recent Transactions</h3>
     
     <div class="flex items-center bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 hover:border-indigo-500/30 focus-within:border-indigo-500/60 rounded-xl px-3 py-2 transition-all duration-300 group relative w-full md:w-64">
         <span class="material-symbols-outlined text-slate-400 text-lg group-focus-within:text-indigo-500 transition-colors">search</span>
@@ -416,7 +416,10 @@ $(document).ready(function() {
     if (isActive) {
         $('#restricted-banner').addClass('hidden');
         $('#approved-banner').removeClass('hidden');
-        $('#dash-balance').text('₹ 42,080.00').removeClass('text-white/30 tracking-[0.25em]').addClass('text-white tracking-normal');
+        $('#dash-balance')
+            .text('₹ 42,080.00')
+            .removeClass('text-slate-300 dark:text-white/30 tracking-[0.25em]')
+            .addClass('text-indigo-950 dark:text-white tracking-normal');
         $('#dash-account').text('FNZ20260001');
         $('#verification-badge').hide();
         $('.tx-row').show().removeClass('opacity-40 grayscale');

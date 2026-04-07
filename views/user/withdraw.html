@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -112,12 +112,12 @@
 </header>
 <div class="grid grid-cols-12 gap-8">
 <section class="col-span-12 lg:col-span-8 space-y-8">
-<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 shadow-sm">
+<div class="bg-white dark:bg-surface-container-lowest rounded-xl p-8 border border-slate-200 dark:border-outline-variant/10 shadow-sm">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 <div class="space-y-2">
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Select Source Account</label>
 <div class="relative group">
-<div class="w-full bg-surface-container-low p-4 rounded-lg flex items-center justify-between cursor-pointer border border-transparent group-hover:border-primary-container/20 transition-all">
+<div class="w-full bg-slate-50 dark:bg-surface-container-low p-4 rounded-lg flex items-center justify-between cursor-pointer border border-slate-100 dark:border-transparent group-hover:border-primary-container/20 transition-all">
 <div class="flex items-center gap-4">
 <div class="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary">
 <span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
@@ -135,7 +135,7 @@
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Withdrawal Amount (USD)</label>
 <div class="relative">
 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-primary">$</span>
-<input class="w-full bg-white border-b-2 border-primary-container/10 focus:border-primary text-4xl font-extrabold text-primary p-4 pl-10 focus:ring-0 transition-all font-headline" type="text" value="2,500.00"/>
+<input class="w-full bg-slate-50 dark:bg-white border-b-2 border-slate-200 dark:border-primary-container/10 focus:border-primary text-4xl font-extrabold text-primary p-4 pl-10 focus:ring-0 transition-all font-headline" type="text" value="2,500.00"/>
 </div>
 </div>
 </div>
@@ -143,14 +143,14 @@
 <div class="flex justify-between items-center pb-4 border-b border-outline-variant/20">
 <h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Quick Select</h3>
 <div class="flex gap-2">
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors">$100</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors">$500</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors border border-slate-100 dark:border-transparent">$100</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors border border-slate-100 dark:border-transparent">$500</button>
 <button class="px-4 py-2 rounded-lg bg-primary-container text-xs font-bold text-on-primary">$1,000</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors">Max</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-primary hover:bg-primary-fixed transition-colors border border-slate-100 dark:border-transparent">Max</button>
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="p-6 rounded-xl bg-surface-container-low border-l-4 border-primary">
+<div class="p-6 rounded-xl bg-slate-50 dark:bg-surface-container-low border-l-4 border-primary">
 <div class="flex items-start gap-4">
 <span class="material-symbols-outlined text-primary" data-icon="info">info</span>
 <div>
@@ -171,7 +171,7 @@
 </div>
 </div>
 <div class="mt-12">
-<button class="w-full h-16 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl font-bold tracking-tight text-lg shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-3">
+<button class="w-full h-16 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl font-bold tracking-tight text-lg shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-3">
                             Process Withdrawal
                             <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
 </button>
@@ -204,8 +204,8 @@
 </div>
 </div>
 </div>
-<div class="bg-surface-container-low rounded-xl p-6">
-<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">Recent Outflows</h3>
+<div class="bg-white dark:bg-surface-container-low rounded-xl p-6 border border-slate-200 dark:border-transparent shadow-sm">
+<h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-on-surface-variant mb-6">Recent Outflows</h3>
 <div class="space-y-6">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-3">
@@ -213,8 +213,8 @@
 <span class="material-symbols-outlined text-primary text-sm" data-icon="atm">atm</span>
 </div>
 <div>
-<p class="text-xs font-bold text-primary">ATM Withdrawal</p>
-<p class="text-[10px] text-on-surface-variant">Oct 12, 2023</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-primary">ATM Withdrawal</p>
+<p class="text-[10px] text-slate-500 dark:text-on-surface-variant font-medium">Oct 12, 2023</p>
 </div>
 </div>
 <span class="text-xs font-bold text-error">-$200.00</span>
@@ -225,8 +225,8 @@
 <span class="material-symbols-outlined text-primary text-sm" data-icon="send">send</span>
 </div>
 <div>
-<p class="text-xs font-bold text-primary">External Transfer</p>
-<p class="text-[10px] text-on-surface-variant">Oct 09, 2023</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-primary">External Transfer</p>
+<p class="text-[10px] text-slate-500 dark:text-on-surface-variant font-medium">Oct 09, 2023</p>
 </div>
 </div>
 <span class="text-xs font-bold text-error">-$1,450.00</span>

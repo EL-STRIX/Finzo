@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -94,10 +94,10 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 </head>
-<body class="bg-surface-container-low font-body text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
 <!-- Top Navigation (Shell) -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 :bg-slate-900/80 backdrop-blur-md shadow-sm no-print">
-<div class="text-xl font-bold tracking-tighter text-blue-900 :text-white font-headline">Finzo</div>
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/90 dark:bg-surface/90 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-transparent no-print">
+<div class="text-xl font-bold tracking-tighter text-indigo-950 dark:text-white font-headline">Finzo</div>
 <div class="hidden md:flex gap-8 items-center font-headline text-sm tracking-tight">
 <a class="text-slate-600 :text-slate-400 hover:text-blue-900 transition-colors" href="#">Products</a>
 <a class="text-slate-600 :text-slate-400 hover:text-blue-900 transition-colors" href="#">Solutions</a>
@@ -124,18 +124,18 @@
 <h1 class="text-3xl font-extrabold font-headline text-primary tracking-tight">Monthly Statement</h1>
 </div>
 <div class="flex gap-3">
-<button class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-lg text-sm font-semibold text-primary hover:bg-surface-container-highest transition-colors" onclick="window.print()">
+<button class="flex items-center gap-2 bg-slate-100 dark:bg-surface-container-high px-4 py-2.5 rounded-lg text-sm font-semibold text-indigo-950 dark:text-primary hover:bg-slate-200 dark:hover:bg-surface-container-highest transition-colors border border-slate-200 dark:border-transparent" onclick="window.print()">
 <span class="material-symbols-outlined text-[18px]" data-icon="print">print</span>
                     Print
                 </button>
-<button class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+<button class="flex items-center gap-2 bg-primary text-white border border-transparent px-5 py-2.5 rounded-lg text-sm font-semibold shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
 <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
                     Download PDF
                 </button>
 </div>
 </div>
 <!-- The Architectural Ledger: Statement Document -->
-<div class="max-w-4xl mx-auto bg-surface-container-lowest shadow-2xl shadow-primary/5 rounded-none p-12 md:p-16 relative statement-container">
+<div class="max-w-4xl mx-auto bg-white dark:bg-surface-container-lowest shadow-xl border border-slate-100 dark:border-transparent rounded-none p-12 md:p-16 relative statement-container">
 <!-- Letterhead Header -->
 <header class="flex justify-between items-start mb-16">
 <div>
@@ -149,7 +149,7 @@
 </div>
 </div>
 <div class="text-right">
-<div class="inline-block px-3 py-1 bg-tertiary-container/10 text-on-tertiary-container text-[10px] font-bold tracking-widest uppercase rounded mb-4">Official Document</div>
+<div class="inline-block px-3 py-1 bg-emerald-50 dark:bg-tertiary-container/10 text-emerald-700 dark:text-on-tertiary-container text-[10px] font-bold tracking-widest uppercase rounded mb-4">Official Document</div>
 <div class="space-y-1">
 <div class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tighter">Statement Period</div>
 <div class="text-sm font-semibold text-primary">Oct 01, 2024 - Oct 31, 2024</div>
@@ -161,17 +161,17 @@
 </div>
 </header>
 <!-- Account Summary - Tonal Layering -->
-<div class="grid grid-cols-3 gap-0 mb-16 border border-outline-variant/30 overflow-hidden rounded-lg">
-<div class="bg-surface-container-low p-6">
-<div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Opening Balance</div>
-<div class="text-xl font-extrabold font-headline text-primary">$124,502.80</div>
+<div class="grid grid-cols-3 gap-0 mb-16 border border-slate-100 dark:border-outline-variant/30 overflow-hidden rounded-lg">
+<div class="bg-slate-50 dark:bg-surface-container-low p-6">
+<div class="text-[10px] font-bold text-slate-400 dark:text-on-surface-variant uppercase tracking-widest mb-2">Opening Balance</div>
+<div class="text-xl font-extrabold font-headline text-indigo-950 dark:text-primary">$124,502.80</div>
 </div>
-<div class="bg-surface-container-low p-6 border-l border-outline-variant/30">
-<div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Net Change</div>
-<div class="text-xl font-extrabold font-headline text-on-tertiary-container">+$8,421.15</div>
+<div class="bg-slate-50 dark:bg-surface-container-low p-6 border-l border-slate-100 dark:border-outline-variant/30">
+<div class="text-[10px] font-bold text-slate-400 dark:text-on-surface-variant uppercase tracking-widest mb-2">Net Change</div>
+<div class="text-xl font-extrabold font-headline text-emerald-700 dark:text-on-tertiary-container">+$8,421.15</div>
 </div>
 <div class="bg-primary p-6">
-<div class="text-[10px] font-bold text-primary-fixed/60 uppercase tracking-widest mb-2">Closing Balance</div>
+<div class="text-[10px] font-bold text-slate-300 dark:text-primary-fixed/60 uppercase tracking-widest mb-2">Closing Balance</div>
 <div class="text-xl font-extrabold font-headline text-white">$132,923.95</div>
 </div>
 </div>
@@ -187,7 +187,7 @@
 <div class="col-span-2 text-right">Credit</div>
 </div>
 <!-- Row 1 -->
-<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-slate-100 dark:border-outline-variant/10 hover:bg-slate-50 dark:hover:bg-surface-container-low transition-colors">
 <div class="col-span-2 text-xs font-medium text-on-surface-variant">Oct 02, 2024</div>
 <div class="col-span-6">
 <p class="text-sm font-bold text-primary">Equity Dividend Payment</p>
@@ -197,7 +197,7 @@
 <div class="col-span-2 text-right text-sm font-bold text-on-tertiary-container">$2,450.00</div>
 </div>
 <!-- Row 2 -->
-<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-slate-100 dark:border-outline-variant/10 hover:bg-slate-50 dark:hover:bg-surface-container-low transition-colors">
 <div class="col-span-2 text-xs font-medium text-on-surface-variant">Oct 05, 2024</div>
 <div class="col-span-6">
 <p class="text-sm font-bold text-primary">Property Management Fee</p>
@@ -207,17 +207,17 @@
 <div class="col-span-2 text-right text-sm text-on-surface-variant">—</div>
 </div>
 <!-- Row 3 -->
-<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-slate-100 dark:border-outline-variant/10 hover:bg-slate-50 dark:hover:bg-surface-container-low transition-colors">
 <div class="col-span-2 text-xs font-medium text-on-surface-variant">Oct 12, 2024</div>
 <div class="col-span-6">
 <p class="text-sm font-bold text-primary">Wire Transfer Incoming</p>
 <p class="text-[10px] text-on-surface-variant">S.K. VENTURES PARTNERS - CONSULTING FEE</p>
 </div>
 <div class="col-span-2 text-right text-sm text-on-surface-variant">—</div>
-<div class="col-span-2 text-right text-sm font-bold text-on-tertiary-container">$12,000.00</div>
+<div class="col-span-2 text-right text-sm font-bold text-emerald-700 dark:text-on-tertiary-container">$12,000.00</div>
 </div>
 <!-- Row 4 -->
-<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-slate-100 dark:border-outline-variant/10 hover:bg-slate-50 dark:hover:bg-surface-container-low transition-colors">
 <div class="col-span-2 text-xs font-medium text-on-surface-variant">Oct 18, 2024</div>
 <div class="col-span-6">
 <p class="text-sm font-bold text-primary">Luxury Retail - Harrods</p>
@@ -227,7 +227,7 @@
 <div class="col-span-2 text-right text-sm text-on-surface-variant">—</div>
 </div>
 <!-- Row 5 -->
-<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+<div class="grid grid-cols-12 gap-4 py-5 px-4 border-b border-slate-100 dark:border-outline-variant/10 hover:bg-slate-50 dark:hover:bg-surface-container-low transition-colors">
 <div class="col-span-2 text-xs font-medium text-on-surface-variant">Oct 24, 2024</div>
 <div class="col-span-6">
 <p class="text-sm font-bold text-primary">Subscription Service</p>
@@ -239,8 +239,6 @@
 </div>
 </section>
 <!-- Footer & Signature - Architectural Anchor -->
-<!-- Modular Footer -->
-<div id="footer-placeholder" class="ml-64 bg-slate-50"></div>
 </div>
 <!-- Secondary Information Cards - Asymmetric Layout -->
 <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
@@ -285,7 +283,7 @@
 </main>
 <!-- Page Footer (Shell) -->
 <!-- Modular Footer -->
-<div id="footer-placeholder" class="ml-64 bg-slate-50"></div>
+<div id="footer-placeholder" class="md:ml-64 bg-slate-50 dark:bg-transparent border-t border-slate-100 dark:border-transparent no-print"></div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

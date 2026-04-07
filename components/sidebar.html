@@ -1,61 +1,60 @@
 <!-- Dashboard Sidebar Component -->
-<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto flex flex-col py-6 font-manrope text-sm z-40 hidden md:flex border-r transition-colors duration-300" 
-  style="background:var(--user-sidebar-bg, #0a0f1e);border-color:var(--user-border, #1e2740);">
-    <div class="text-xl font-black px-6 py-4 logo-text font-headline" style="color:#ffffff">Finzo</div>
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto flex flex-col py-6 font-manrope text-sm z-40 hidden md:flex border-r border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0a0f1e] transition-colors duration-300">
+    <div class="text-xl font-black px-6 py-4 logo-text font-headline text-primary dark:text-white">Finzo</div>
     <div class="px-5 mb-4">
-        <div class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl border border-slate-700/50">
-            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">RK</div>
+        <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm dark:shadow-none">
+            <div class="w-10 h-10 rounded-full bg-primary dark:bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">RK</div>
             <div class="overflow-hidden">
-                <p class="font-bold text-white text-sm truncate">Rahul Kumar</p>
-                <p class="text-[9px] text-slate-300 truncate uppercase tracking-widest font-black">Type: Savings</p>
-                <p class="text-[9px] text-amber-400 truncate font-semibold">Status: Incomplete</p>
+                <p class="font-bold text-indigo-950 dark:text-white text-sm truncate">Rahul Kumar</p>
+                <p class="text-[9px] text-slate-500 dark:text-slate-300 truncate uppercase tracking-widest font-black">Type: Savings</p>
+                <p class="text-[9px] text-amber-600 dark:text-amber-400 truncate font-semibold">Status: Incomplete</p>
             </div>
         </div>
     </div>
     <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-3 text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline" href="/views/user/dashboard.html">
+        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/dashboard.html">
             <span class="material-symbols-outlined text-xl">dashboard</span>
             <span>Dashboard</span>
         </a>
-        <a class="flex items-center gap-3 text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline" href="/views/user/notifications.html">
+        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/notifications.html">
             <span class="material-symbols-outlined text-xl">notifications</span>
             <span>Notifications</span>
         </a>
-        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
             <span class="material-symbols-outlined text-xl">lock</span>
             <span>My Accounts</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
             <span class="material-symbols-outlined text-xl">lock</span>
             <span>Fund Transfer</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
             <span class="material-symbols-outlined text-xl">lock</span>
             <span>Transactions</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
             <span class="material-symbols-outlined text-xl">lock</span>
             <span>Statement</span>
         </div>
-        <div class="flex items-center gap-3 text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
+        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
             <span class="material-symbols-outlined text-xl">lock</span>
             <span>Beneficiaries</span>
         </div>
-        <a class="flex items-center gap-3 text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline" href="/views/settings/profile.html">
+        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/settings/profile.html">
             <span class="material-symbols-outlined text-xl">person</span>
             <span>Profile</span>
         </a>
-        <a class="flex items-center gap-3 text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline" href="/views/settings/change-password.html">
+        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/settings/change-password.html">
             <span class="material-symbols-outlined text-xl">security</span>
             <span>Change Password</span>
         </a>
     </nav>
-    <div class="mt-auto px-4 pt-4 pb-2" style="border-top:1px solid rgba(255,255,255,0.08);">
-        <a href="/views/user/complete-profile.html" class="flex items-center justify-center gap-2 bg-[#002645] hover:opacity-90 text-white p-2.5 rounded-lg font-bold text-xs no-underline mb-1.5 transition-all active:scale-95">
+    <div class="mt-auto px-4 pt-4 pb-2 border-t border-slate-100 dark:border-white/10">
+        <a href="/views/user/complete-profile.html" class="flex items-center justify-center gap-2 bg-primary dark:bg-blue-600 hover:opacity-90 text-white p-3 rounded-xl font-bold text-xs no-underline mb-1.5 transition-all active:scale-95 shadow-md">
             <span class="material-symbols-outlined text-lg">person_add</span>
             <span>Complete Profile</span>
         </a>
-        <a class="flex items-center gap-3 px-4 py-1.5 hover-premium cursor-pointer font-medium text-slate-500 no-underline text-xs" href="/views/auth/login.html">
+        <a class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer font-bold text-slate-500 dark:text-slate-400 no-underline text-xs transition-colors" href="/views/auth/login.html">
             <span class="material-symbols-outlined text-lg">logout</span>
             <span>Logout</span>
         </a>

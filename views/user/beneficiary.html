@@ -116,11 +116,11 @@
 <div class="px-10 pb-20 grid grid-cols-12 gap-8">
 <!-- Left: Beneficiary Table (8 Columns) -->
 <section class="col-span-8">
-<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
-<div class="p-6 border-b border-surface-container flex justify-between items-center bg-white">
-<div class="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-lg w-72">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-on-surface-variant/50" placeholder="Search by name or account..." type="text"/>
+<div class="bg-white dark:bg-surface-container-lowest rounded-xl border border-slate-200 dark:border-transparent shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-100 dark:border-surface-container flex justify-between items-center bg-white dark:bg-surface-container-lowest">
+<div class="flex items-center gap-4 bg-slate-50 dark:bg-surface-container-low px-4 py-2 rounded-lg w-72 border border-slate-200 dark:border-transparent">
+<span class="material-symbols-outlined text-slate-400 dark:text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400 dark:placeholder:text-on-surface-variant/50" placeholder="Search by name or account..." type="text"/>
 </div>
 <div class="flex gap-2">
 <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
@@ -134,7 +134,7 @@
 <div class="overflow-x-auto">
 <table class="w-full text-left">
 <thead>
-<tr class="bg-surface-container-low">
+<tr class="bg-slate-50/50 dark:bg-surface-container-low border-b border-slate-100 dark:border-transparent">
 <th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Recipient</th>
 <th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Account Number</th>
 <th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Detail</th>
@@ -142,12 +142,12 @@
 <th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Actions</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-surface-container">
+<tbody class="divide-y divide-slate-100 dark:divide-surface-container">
 <!-- Row 1 -->
-<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-sm">JS</div>
+<div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-secondary-container flex items-center justify-center text-indigo-700 dark:text-primary font-bold text-sm">JS</div>
 <div>
 <div class="font-semibold text-on-surface">Julianne Sterling</div>
 <div class="text-xs text-on-surface-variant">Family</div>
@@ -173,10 +173,10 @@
 </td>
 </tr>
 <!-- Row 2 -->
-<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center text-on-tertiary-container font-bold text-sm">MC</div>
+<div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-tertiary-container/10 flex items-center justify-center text-emerald-700 dark:text-on-tertiary-container font-bold text-sm">MC</div>
 <div>
 <div class="font-semibold text-on-surface">Modern Coffee Roasters</div>
 <div class="text-xs text-on-surface-variant">Business</div>
@@ -202,10 +202,10 @@
 </td>
 </tr>
 <!-- Row 3 -->
-<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-error-container/20 flex items-center justify-center text-error font-bold text-sm">AT</div>
+<div class="w-10 h-10 rounded-full bg-red-50 dark:bg-error-container/20 flex items-center justify-center text-error font-bold text-sm">AT</div>
 <div>
 <div class="font-semibold text-on-surface">Architectural Trust Ltd</div>
 <div class="text-xs text-on-surface-variant">Utility</div>
@@ -241,9 +241,9 @@
 </div>
 </main>
 <!-- Slide-out Modal Backdrop (Simulated Open State) -->
-<div class="fixed inset-0 bg-primary/20 backdrop-blur-sm z-50 flex justify-end">
+<div class="fixed inset-0 bg-primary/20 dark:bg-slate-900/60 backdrop-blur-sm z-50 flex justify-end">
 <!-- Add Beneficiary Slide-out -->
-<div class="w-[450px] h-full bg-white shadow-2xl p-10 flex flex-col">
+<div class="w-[450px] h-full bg-white dark:bg-slate-950 shadow-2xl p-10 flex flex-col border-l border-slate-200 dark:border-slate-800">
 <div class="flex justify-between items-center mb-12">
 <h2 class="text-2xl font-extrabold text-primary tracking-tight">New Recipient</h2>
 <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
@@ -252,12 +252,12 @@
 </div>
 <form class="flex-1 space-y-8">
 <div class="space-y-1">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Full Name</label>
-<input class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-dim transition-colors outline-none font-medium" placeholder="e.g. Sarah Jenkins" type="text"/>
+<label class="text-[10px] font-bold text-slate-500 dark:text-on-surface-variant uppercase tracking-widest">Full Name</label>
+<input class="w-full border-b border-slate-100 dark:border-surface-container py-3 focus:border-primary focus:ring-0 text-indigo-950 dark:text-on-surface placeholder:text-slate-300 dark:placeholder:text-surface-dim transition-colors outline-none font-medium" placeholder="e.g. Sarah Jenkins" type="text"/>
 </div>
 <div class="space-y-1">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Account Number</label>
-<input class="w-full border-b border-surface-container py-3 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-dim transition-colors outline-none font-mono" placeholder="0000 0000 0000" type="text"/>
+<label class="text-[10px] font-bold text-slate-500 dark:text-on-surface-variant uppercase tracking-widest">Account Number</label>
+<input class="w-full border-b border-slate-100 dark:border-surface-container py-3 focus:border-primary focus:ring-0 text-indigo-950 dark:text-on-surface placeholder:text-slate-300 dark:placeholder:text-surface-dim transition-colors outline-none font-mono" placeholder="0000 0000 0000" type="text"/>
 </div>
 <div class="space-y-1">
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Name</label>
@@ -276,11 +276,11 @@
 </div>
 <div class="space-y-1">
 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Category</label>
-<div class="flex flex-wrap gap-2 pt-2">
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Family</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Business</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Utilities</button>
-<button class="px-4 py-2 rounded-lg bg-surface-container-low text-xs font-semibold text-primary hover:bg-primary hover:text-on-primary transition-all" type="button">Investment</button>
+<div class="pt-2 flex flex-wrap gap-2 text-primary">
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Family</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Business</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Utilities</button>
+<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Investment</button>
 </div>
 </div>
 <div class="pt-10">

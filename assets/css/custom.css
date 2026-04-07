@@ -241,16 +241,16 @@
         div[class*="rounded-3xl"],
         div[class*="rounded-xl"] {
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid transparent;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 38, 69, 0.08); /* More visible border in light mode */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Slightly darker shadow in light mode */
         }
         
         div[class*="rounded-[2rem]"]:hover,
         div[class*="rounded-3xl"]:hover,
         div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.08); /* Standard shadow */
-            border-color: rgba(0, 38, 69, 0.04);
+            box-shadow: 0 20px 40px -12px rgba(0, 38, 69, 0.12); /* Stronger shadow on hover */
+            border-color: rgba(0, 38, 69, 0.1);
             cursor: pointer;
         }
 

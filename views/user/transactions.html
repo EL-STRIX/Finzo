@@ -3,7 +3,7 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Finzo Admin - All Transactions</title>
+<title>Finzo | All Transactions</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
@@ -100,31 +100,31 @@
 <!-- Modular Side Sidebar -->
 <div id="sidebar-placeholder"></div>
 <!-- Main Content Canvas -->
-<main class="ml-72 flex-1 flex flex-col min-h-screen">
+<main class="md:ml-64 flex-1 flex flex-col min-h-screen">
 <!-- Header Section -->
-<header class="h-24 px-12 flex items-center justify-between bg-surface sticky top-0 z-40">
+<header class="h-24 px-12 flex items-center justify-between bg-white dark:bg-surface sticky top-0 z-40 border-b border-slate-200 dark:border-transparent">
 <div>
-<h2 class="text-3xl font-extrabold font-headline tracking-tighter text-primary uppercase">All Transactions</h2>
-<p class="text-on-surface-variant text-sm font-body">Ledger Real-time Synchronization: <span class="text-on-tertiary-container font-mono">ACTIVE_SYNC_STABLE</span></p>
+<h2 class="text-3xl font-extrabold font-headline tracking-tighter text-indigo-950 dark:text-primary uppercase">All Transactions</h2>
+<p class="text-slate-500 dark:text-on-surface-variant text-sm font-body">Ledger Real-time Synchronization: <span class="text-indigo-600 dark:text-on-tertiary-container font-mono font-bold">ACTIVE_SYNC_STABLE</span></p>
 </div>
 <div class="flex gap-4">
-<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface rounded transition-colors hover:bg-surface-container-highest">
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-surface-container-high text-indigo-950 dark:text-on-surface rounded border border-slate-200 dark:border-transparent transition-colors hover:bg-slate-100 dark:hover:bg-surface-container-highest">
 <span class="material-symbols-outlined text-sm" data-icon="csv">csv</span>
-<span class="text-xs font-semibold tracking-wider">Export to CSV</span>
+<span class="text-xs font-bold tracking-wider">Export to CSV</span>
 </button>
-<button class="flex items-center gap-2 px-6 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded shadow-sm hover:opacity-90 transition-all">
+<button class="flex items-center gap-2 px-6 py-2 bg-gradient-to-br from-indigo-900 to-primary-container text-on-primary rounded shadow-lg shadow-indigo-900/20 hover:shadow-indigo-900/30 transition-all font-bold">
 <span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span>
-<span class="text-xs font-semibold tracking-wider">Export to PDF</span>
+<span class="text-xs font-bold tracking-wider uppercase">Export to PDF</span>
 </button>
 </div>
 </header>
 <!-- Filter Bar: Surface Tonal Separation -->
-<section class="px-12 py-6 bg-surface-container-low border-b border-outline-variant/10">
+<section class="px-12 py-6 bg-slate-50 dark:bg-surface-container-low border-b border-slate-200 dark:border-outline-variant/10">
 <div class="grid grid-cols-5 gap-6">
 <div class="space-y-1.5">
 <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Date Range</label>
 <div class="relative">
-<input class="w-full bg-white border-0 text-sm py-2 px-4 rounded focus:ring-1 focus:ring-primary shadow-sm" placeholder="Select Period" type="text"/>
+<input class="w-full bg-white dark:bg-surface-container-lowest border border-slate-200 dark:border-0 text-sm py-2 px-4 rounded focus:ring-1 focus:ring-primary shadow-sm text-indigo-950 dark:text-white" placeholder="Select Period" type="text"/>
 <span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-lg" data-icon="calendar_today">calendar_today</span>
 </div>
 </div>
@@ -132,9 +132,9 @@
                     <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Account</label>
                     <div class="finzo-dropdown">
                         <input type="hidden" name="account_filter" value="">
-                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
-                            <span class="dropdown-label text-slate-400 text-sm">All Accounts</span>
-                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        <div class="finzo-dropdown-trigger !bg-white dark:!bg-surface-container-lowest !shadow-sm !border !border-slate-200 dark:!border-0 !rounded !py-2 !px-4 hover:border-indigo-300 transition-colors">
+                            <span class="dropdown-label text-slate-400 dark:text-slate-400 text-sm">All Accounts</span>
+                            <span class="material-symbols-outlined chevron text-lg text-slate-400">expand_more</span>
                         </div>
                         <div class="finzo-dropdown-menu">
                             <div class="finzo-dropdown-option" data-value="All Accounts">All Accounts</div>
@@ -148,9 +148,9 @@
                     <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Type</label>
                     <div class="finzo-dropdown">
                         <input type="hidden" name="type_filter" value="">
-                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
-                            <span class="dropdown-label text-slate-400 text-sm">All Types</span>
-                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        <div class="finzo-dropdown-trigger !bg-white dark:!bg-surface-container-lowest !shadow-sm !border !border-slate-200 dark:!border-0 !rounded !py-2 !px-4 hover:border-indigo-300 transition-colors">
+                            <span class="dropdown-label text-slate-400 dark:text-slate-400 text-sm">All Types</span>
+                            <span class="material-symbols-outlined chevron text-lg text-slate-400">expand_more</span>
                         </div>
                         <div class="finzo-dropdown-menu">
                             <div class="finzo-dropdown-option" data-value="All Types">All Types</div>
@@ -164,9 +164,9 @@
                     <label class="block text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">Status</label>
                     <div class="finzo-dropdown">
                         <input type="hidden" name="status_filter" value="">
-                        <div class="finzo-dropdown-trigger !bg-white !shadow-sm !border-0 !rounded !py-2 !px-4">
-                            <span class="dropdown-label text-slate-400 text-sm">Any Status</span>
-                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
+                        <div class="finzo-dropdown-trigger !bg-white dark:!bg-surface-container-lowest !shadow-sm !border !border-slate-200 dark:!border-0 !rounded !py-2 !px-4 hover:border-indigo-300 transition-colors">
+                            <span class="dropdown-label text-slate-400 dark:text-slate-400 text-sm">Any Status</span>
+                            <span class="material-symbols-outlined chevron text-lg text-slate-400">expand_more</span>
                         </div>
                         <div class="finzo-dropdown-menu">
                             <div class="finzo-dropdown-option" data-value="Any Status">Any Status</div>
@@ -177,16 +177,16 @@
                     </div>
                 </div>
 <div class="flex items-end">
-<button class="w-full py-2 bg-surface-container-highest text-primary font-bold text-xs uppercase tracking-widest rounded hover:bg-outline-variant/20 transition-all">Apply Filter</button>
+<button class="w-full py-2 bg-indigo-50 dark:bg-surface-container-highest text-indigo-950 dark:text-primary font-bold text-xs uppercase tracking-widest rounded border border-indigo-100 dark:border-transparent hover:bg-indigo-100 transition-all">Apply Filter</button>
 </div>
 </div>
 </section>
 <!-- Transaction Ledger: Spreadheet-like UI -->
 <div class="flex-1 px-12 py-8 overflow-x-auto">
-<div class="min-w-full bg-surface-container-lowest rounded overflow-hidden shadow-sm">
+<div class="min-w-full bg-white dark:bg-surface-container-lowest rounded overflow-hidden shadow-sm border border-slate-200 dark:border-transparent">
 <table class="w-full text-left border-collapse">
 <thead>
-<tr class="bg-surface-container-high/50">
+<tr class="bg-slate-50/80 dark:bg-surface-container-high/50 border-b border-slate-200 dark:border-transparent">
 <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">ID</th>
 <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Timestamp</th>
 <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Origin/Account</th>
@@ -196,7 +196,7 @@
 <th class="px-6 py-4"></th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/10">
+<tbody class="divide-y divide-slate-100 dark:divide-outline-variant/10">
 <!-- Transaction Row 1 -->
 <tr class="hover:bg-surface-container-low transition-colors group">
 <td class="px-6 py-4 font-mono text-[11px] text-slate-500">TXN-098234-AX</td>
@@ -205,13 +205,13 @@
 <p class="text-[10px] text-on-surface-variant">14:22:05 UTC</p>
 </td>
 <td class="px-6 py-4">
-<p class="text-xs font-medium text-on-surface">Operational Reserve</p>
-<p class="text-[10px] text-slate-400">#4409-XXXX-1122</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-on-surface">Operational Reserve</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">#4409-XXXX-1122</p>
 </td>
 <td class="px-6 py-4">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="swap_horiz">swap_horiz</span>
-<span class="text-xs text-on-surface">SWIFT Transfer</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm" data-icon="swap_horiz">swap_horiz</span>
+<span class="text-xs font-medium text-indigo-900 dark:text-on-surface">SWIFT Transfer</span>
 </div>
 </td>
 <td class="px-6 py-4">
@@ -237,13 +237,13 @@
 <p class="text-[10px] text-on-surface-variant">14:18:12 UTC</p>
 </td>
 <td class="px-6 py-4">
-<p class="text-xs font-medium text-on-surface">Customer Deposits</p>
-<p class="text-[10px] text-slate-400">#8821-XXXX-0091</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-on-surface">Customer Deposits</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">#8821-XXXX-0091</p>
 </td>
 <td class="px-6 py-4">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="payments">payments</span>
-<span class="text-xs text-on-surface">Internal Sweep</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm" data-icon="payments">payments</span>
+<span class="text-xs font-medium text-indigo-900 dark:text-on-surface">Internal Sweep</span>
 </div>
 </td>
 <td class="px-6 py-4">
@@ -269,13 +269,13 @@
 <p class="text-[10px] text-on-surface-variant">14:02:44 UTC</p>
 </td>
 <td class="px-6 py-4">
-<p class="text-xs font-medium text-on-surface">Vault A-1</p>
-<p class="text-[10px] text-slate-400">#0001-XXXX-9999</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-on-surface">Vault A-1</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">#0001-XXXX-9999</p>
 </td>
 <td class="px-6 py-4">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="security_update_warning">security_update_warning</span>
-<span class="text-xs text-on-surface">External Settlement</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm" data-icon="security_update_warning">security_update_warning</span>
+<span class="text-xs font-medium text-indigo-900 dark:text-on-surface">External Settlement</span>
 </div>
 </td>
 <td class="px-6 py-4">
@@ -301,13 +301,13 @@
 <p class="text-[10px] text-on-surface-variant">13:55:01 UTC</p>
 </td>
 <td class="px-6 py-4">
-<p class="text-xs font-medium text-on-surface">Fee Revenue</p>
-<p class="text-[10px] text-slate-400">#3311-XXXX-4455</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-on-surface">Fee Revenue</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">#3311-XXXX-4455</p>
 </td>
 <td class="px-6 py-4">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="account_balance">account_balance</span>
-<span class="text-xs text-on-surface">Merchant Fee</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm" data-icon="account_balance">account_balance</span>
+<span class="text-xs font-medium text-indigo-900 dark:text-on-surface">Merchant Fee</span>
 </div>
 </td>
 <td class="px-6 py-4">
@@ -332,13 +332,13 @@
 <p class="text-[10px] text-on-surface-variant">13:42:19 UTC</p>
 </td>
 <td class="px-6 py-4">
-<p class="text-xs font-medium text-on-surface">Operational Reserve</p>
-<p class="text-[10px] text-slate-400">#4409-XXXX-1122</p>
+<p class="text-xs font-bold text-indigo-950 dark:text-on-surface">Operational Reserve</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">#4409-XXXX-1122</p>
 </td>
 <td class="px-6 py-4">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="trending_up">trending_up</span>
-<span class="text-xs text-on-surface">Equity Purchase</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-medium text-indigo-900 dark:text-on-surface">Equity Purchase</span>
 </div>
 </td>
 <td class="px-6 py-4">
@@ -361,7 +361,7 @@
 </div>
 <!-- Pagination Footer -->
 <div class="flex items-center justify-between mt-6">
-<p class="text-xs text-on-surface-variant">Showing <span class="font-bold text-on-surface">1 - 50</span> of 14,204 transactions</p>
+<p class="text-xs text-slate-500 dark:text-on-surface-variant">Showing <span class="font-bold text-indigo-950 dark:text-on-surface">1 - 50</span> of 14,204 transactions</p>
 <div class="flex gap-2">
 <button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-white transition-all">
 <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
@@ -379,7 +379,7 @@
 </div>
 <!-- System Stats Bar: Minimalist Footer Overlay -->
 <!-- Modular Footer -->
-<div id="footer-placeholder" class="ml-64 bg-slate-50"></div>
+<div id="footer-placeholder" class="md:ml-64 bg-slate-50 dark:bg-transparent"></div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -120,7 +120,7 @@
 <!-- Asymmetric Layout: 8-col / 4-col -->
 <div class="grid grid-cols-12 gap-8 items-start">
 <!-- Deposit Form (Left Panel) -->
-<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 border border-white/50 shadow-sm">
+<div class="col-span-12 lg:col-span-8 bg-white dark:bg-surface-container-lowest rounded-xl p-8 border border-slate-200 dark:border-white/50 shadow-sm">
 <div class="mb-10">
 <h2 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/50 mb-6 font-label">Transaction Details</h2>
 <!-- Account Selector -->
@@ -128,21 +128,21 @@
 <div>
 <label class="block text-sm font-semibold text-primary mb-3">Target Account</label>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="p-4 rounded-xl border-2 border-primary-container bg-surface-container-low cursor-pointer ring-2 ring-primary/5">
+<div class="p-4 rounded-xl border-2 border-primary bg-indigo-50/30 dark:bg-surface-container-low cursor-pointer ring-2 ring-primary/5">
 <div class="flex justify-between items-start mb-2">
 <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
 <div class="w-4 h-4 rounded-full border-4 border-primary bg-white"></div>
 </div>
 <p class="font-bold text-primary">Vault Savings</p>
-<p class="text-xs text-on-surface-variant">•••• 4829</p>
+<p class="text-xs text-slate-500 dark:text-on-surface-variant">•••• 4829</p>
 </div>
-<div class="p-4 rounded-xl border border-outline-variant bg-white hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="p-4 rounded-xl border border-slate-200 dark:border-outline-variant bg-slate-50 dark:bg-white hover:bg-slate-100 dark:hover:bg-surface-container-low cursor-pointer transition-colors">
 <div class="flex justify-between items-start mb-2">
-<span class="material-symbols-outlined text-outline">credit_card</span>
-<div class="w-4 h-4 rounded-full border border-outline-variant bg-white"></div>
+<span class="material-symbols-outlined text-slate-400 dark:text-outline">credit_card</span>
+<div class="w-4 h-4 rounded-full border border-slate-200 dark:border-outline-variant bg-white"></div>
 </div>
-<p class="font-bold text-on-surface-variant">Active Checking</p>
-<p class="text-xs text-on-surface-variant">•••• 9102</p>
+<p class="font-bold text-slate-500 dark:text-on-surface-variant">Active Checking</p>
+<p class="text-xs text-slate-400 dark:text-on-surface-variant">•••• 9102</p>
 </div>
 </div>
 </div>
@@ -150,14 +150,14 @@
 <div>
 <label class="block text-sm font-semibold text-primary mb-3">Deposit Amount</label>
 <div class="relative">
-<span class="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-light text-on-surface-variant">$</span>
-<input class="w-full bg-surface-container-low border-none rounded-xl py-6 pl-12 pr-6 text-4xl font-headline font-bold text-primary focus:ring-2 focus:ring-on-tertiary-container transition-all" type="text" value="2,500.00"/>
+<span class="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-light text-slate-400 dark:text-on-surface-variant">$</span>
+<input class="w-full bg-slate-50 dark:bg-surface-container-low border-none rounded-xl py-6 pl-12 pr-6 text-4xl font-headline font-bold text-primary focus:ring-2 focus:ring-on-tertiary-container transition-all" type="text" value="2,500.00"/>
 </div>
 <div class="flex gap-3 mt-4">
-<button class="px-4 py-2 bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-secondary-fixed transition-colors">+$100</button>
-<button class="px-4 py-2 bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-secondary-fixed transition-colors">+$500</button>
-<button class="px-4 py-2 bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-secondary-fixed transition-colors">+$1,000</button>
-<button class="px-4 py-2 bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-secondary-fixed transition-colors">MAX</button>
+<button class="px-4 py-2 bg-slate-100 dark:bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-indigo-50 dark:hover:bg-secondary-fixed transition-colors">+$100</button>
+<button class="px-4 py-2 bg-slate-100 dark:bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-indigo-50 dark:hover:bg-secondary-fixed transition-colors">+$500</button>
+<button class="px-4 py-2 bg-slate-100 dark:bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-indigo-50 dark:hover:bg-secondary-fixed transition-colors">+$1,000</button>
+<button class="px-4 py-2 bg-slate-100 dark:bg-surface-container-high rounded-full text-xs font-bold text-primary hover:bg-indigo-50 dark:hover:bg-secondary-fixed transition-colors">MAX</button>
 </div>
 </div>
 </div>
@@ -195,15 +195,15 @@
 </button>
 </div>
 <!-- Quick Insights -->
-<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/30">
+<div class="bg-white dark:bg-surface-container-low rounded-xl p-6 border border-slate-200 dark:border-outline-variant/30 shadow-sm">
 <div class="flex items-center gap-2 mb-4">
 <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
 <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Deposit Insights</h3>
 </div>
-<p class="text-sm text-on-surface-variant leading-relaxed">
-                            Increasing your <span class="font-bold text-primary">Vault Savings</span> by $2.5k will place you in the top 5% of monthly savers in your region.
+<p class="text-sm text-slate-600 dark:text-on-surface-variant leading-relaxed">
+                            Increasing your <span class="font-bold text-indigo-950 dark:text-primary">Vault Savings</span> by $2.5k will place you in the top 5% of monthly savers in your region.
                         </p>
-<div class="mt-6 flex items-center gap-2 text-on-tertiary-container">
+<div class="mt-6 flex items-center gap-2 text-indigo-700 dark:text-on-tertiary-container">
 <span class="material-symbols-outlined text-lg">trending_up</span>
 <span class="text-xs font-bold">+12% interest yield projected</span>
 </div>
