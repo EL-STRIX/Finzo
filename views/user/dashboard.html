@@ -1,403 +1,695 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Dashboard | Finzo</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-
-    
-    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-    
-
 
 <script>
-      
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#e3e2e5",
-                    "on-secondary-fixed": "#111c2a",
-                    "primary-container": "#1a3c5e",
-                    "on-primary": "#ffffff",
-                    "on-primary-fixed": "#001d36",
-                    "on-error": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-container-low": "#f4f3f6",
-                    "surface-tint": "#416084",
-                    "primary": "#002645",
-                    "outline": "#73777f",
-                    "surface-container-high": "#e8e8eb",
-                    "inverse-on-surface": "#f1f0f4",
-                    "outline-variant": "#c3c6cf",
-                    "on-primary-fixed-variant": "#28496b",
-                    "tertiary-fixed": "#6bfe9c",
-                    "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#5a6575",
-                    "on-surface": "#1a1c1e",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#a9c9f2",
-                    "surface-container": "#eeedf1",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#d8e3f6",
-                    "on-secondary-fixed-variant": "#3c4856",
-                    "secondary-container": "#d8e3f6",
-                    "tertiary": "#002b12",
-                    "inverse-surface": "#2f3033",
-                    "surface-bright": "#faf9fc",
-                    "primary-fixed-dim": "#a9c9f2",
-                    "surface-dim": "#dad9dd",
-                    "on-tertiary-fixed-variant": "#005228",
-                    "primary-fixed": "#d1e4ff",
-                    "surface": "#faf9fc",
-                    "tertiary-container": "#004420",
-                    "on-background": "#1a1c1e",
-                    "on-tertiary-container": "#0abc64",
-                    "background": "#faf9fc",
-                    "on-primary-container": "#87a7ce",
-                    "tertiary-fixed-dim": "#4ae183",
-                    "on-tertiary-fixed": "#00210c",
-                    "on-surface-variant": "#43474e",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed-dim": "#bcc7d9"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-variant": "#e3e2e5",
+          "on-secondary-fixed": "#111c2a",
+          "primary-container": "#1a3c5e",
+          "on-primary": "#ffffff",
+          "on-primary-fixed": "#001d36",
+          "on-error": "#ffffff",
+          "error": "#ba1a1a",
+          "surface-container-low": "#f4f3f6",
+          "surface-tint": "#416084",
+          "primary": "#002645",
+          "outline": "#73777f",
+          "surface-container-high": "#e8e8eb",
+          "inverse-on-surface": "#f1f0f4",
+          "outline-variant": "#c3c6cf",
+          "on-primary-fixed-variant": "#28496b",
+          "tertiary-fixed": "#6bfe9c",
+          "surface-container-highest": "#e3e2e5",
+          "on-secondary-container": "#5a6575",
+          "on-surface": "#1a1c1e",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary": "#ffffff",
+          "secondary": "#545f6f",
+          "error-container": "#ffdad6",
+          "inverse-primary": "#a9c9f2",
+          "surface-container": "#eeedf1",
+          "on-tertiary": "#ffffff",
+          "secondary-fixed": "#d8e3f6",
+          "on-secondary-fixed-variant": "#3c4856",
+          "secondary-container": "#d8e3f6",
+          "tertiary": "#002b12",
+          "inverse-surface": "#2f3033",
+          "surface-bright": "#faf9fc",
+          "primary-fixed-dim": "#a9c9f2",
+          "surface-dim": "#dad9dd",
+          "on-tertiary-fixed-variant": "#005228",
+          "primary-fixed": "#d1e4ff",
+          "surface": "#faf9fc",
+          "tertiary-container": "#004420",
+          "on-background": "#1a1c1e",
+          "on-tertiary-container": "#0abc64",
+          "background": "#faf9fc",
+          "on-primary-container": "#87a7ce",
+          "tertiary-fixed-dim": "#4ae183",
+          "on-tertiary-fixed": "#00210c",
+          "on-surface-variant": "#43474e",
+          "on-error-container": "#93000a",
+          "secondary-fixed-dim": "#bcc7d9"
         },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "fontFamily": {
+          "headline": ["Plus Jakarta Sans"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
       }
-    
+    }
+  }
 </script>
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
-    
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
 <link rel="stylesheet" href="../../assets/css/custom.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="../../assets/js/theme.js"></script>
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<style>
+  /* ── Unified design tokens matching Notifications page ── */
+
+  /* Cards — same border/shadow language as notifications page */
+  .fin-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .fin-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .dark .fin-card {
+    background: rgba(26,28,30,0.8);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .dark .fin-card:hover {
+    border-color: rgba(255,255,255,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  /* Top header — matches notifications page style */
+  .fin-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+  }
+  .dark .fin-topbar {
+    background: #0f1117;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Notification dropdown */
+  .notif-dropdown {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .dark .notif-dropdown {
+    background: #1a1c1e;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  /* Unread notification items in dropdown — matches notifications ledger page */
+  .notif-item.is-unread {
+    background-color: #fef9ee;
+    border-left: 3px solid #f59e0b;
+  }
+  .dark .notif-item.is-unread {
+    background-color: rgba(30, 27, 75, 0.65);
+    border-left: 3px solid #818cf8;
+  }
+  .notif-item:not(.is-unread) {
+    background-color: transparent;
+    border-left: 3px solid transparent;
+  }
+  .notif-item {
+    transition: background 0.15s ease;
+  }
+  .notif-item:hover {
+    background-color: #f8fafc;
+  }
+  .dark .notif-item:hover {
+    background-color: rgba(255,255,255,0.03);
+  }
+
+  /* Icon button hover — unified */
+  .btn-icon-hover {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #43474e;
+    transition: background 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+  }
+  .btn-icon-hover:hover {
+    background: #f1f5f9;
+    color: #002645;
+  }
+  .dark .btn-icon-hover {
+    color: #9aa0ab;
+  }
+  .dark .btn-icon-hover:hover {
+    background: rgba(255,255,255,0.06);
+    color: #e2e8f0;
+  }
+  .btn-icon-hover:focus { outline: none; }
+
+  /* Dropdown item hover */
+  .dropdown-item-hover {
+    transition: background 0.15s ease;
+  }
+  .dropdown-item-hover:hover {
+    background: #f8fafc;
+  }
+  .dark .dropdown-item-hover:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* Quick action buttons */
+  .quick-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+    cursor: not-allowed;
+    opacity: 0.55;
+    width: 100%;
+  }
+  .dark .quick-action-btn {
+    background: rgba(26,28,30,0.8);
+    border-color: rgba(255,255,255,0.06);
+  }
+
+  /* Transaction rows */
+  .tx-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+  .tx-row:hover {
+    border-color: #c7d2e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .dark .tx-row {
+    border-color: rgba(255,255,255,0.06);
+  }
+  .dark .tx-row:hover {
+    border-color: rgba(255,255,255,0.10);
+  }
+
+  /* Search input */
+  .fin-search {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .fin-search:focus-within {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129,140,248,0.12);
+  }
+  .dark .fin-search {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.07);
+  }
+  .dark .fin-search:focus-within {
+    border-color: #818cf8;
+  }
+
+  /* Verification banner */
+  .fin-banner-pending {
+    background: rgba(99,102,241,0.07);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+  }
+  .fin-banner-pending:hover {
+    border-color: rgba(99,102,241,0.35);
+    box-shadow: 0 4px 16px rgba(99,102,241,0.08);
+  }
+  .dark .fin-banner-pending {
+    background: rgba(99,102,241,0.06);
+    border-color: rgba(99,102,241,0.18);
+  }
+
+  /* Account card balance shimmer on locked state */
+  .balance-locked {
+    color: #cbd5e1;
+    letter-spacing: 0.25em;
+  }
+  .dark .balance-locked {
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* Animate dropdown */
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .animate-dropdown {
+    animation: dropIn 0.18s ease forwards;
+  }
+
+  /* Typography alignment with Notifications page */
+  .page-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #43474e;
+    font-weight: 500;
+  }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #002645;
+    line-height: 1;
+  }
+  .dark .page-title {
+    color: #e2e8f0;
+  }
+
+  /* Spending analytics locked overlay */
+  .locked-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  .dark .locked-overlay {
+    background: rgba(15,17,23,0.75);
+  }
+
+  /* Architectural gradient button — same as notifications CTA */
+  .btn-primary {
+    background: #002645;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: #1a3c5e;
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0,38,69,0.25);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+
+  /* No-underline helper */
+  .no-underline { text-decoration: none !important; }
+
+  /* Pulse animation for unread badge */
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+  }
+  #notif-badge { animation: pulse 2s infinite; }
+</style>
 </head>
-<body class="bg-surface text-on-surface">
-<!-- SideNavBar Execution -->
-<!-- Modular Side Sidebar -->
+
+<body class="bg-surface text-on-surface font-body">
+
+<!-- Sidebar placeholder -->
 <div id="sidebar-placeholder"></div>
-<!-- Main Content Canvas -->
-<main class="md:ml-64 min-h-screen">
-<!-- TopNavBar Execution -->
-<header class="fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center bg-white dark:bg-[#0a0f1e] backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
-<div class="flex items-center gap-4">
-<h1 class="text-xl font-bold tracking-tight text-[#002645] dark:text-white">Dashboard</h1>
-</div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-3 relative">
 
-  <!-- Notifications Button -->
-  <div class="relative" id="notif-wrapper">
-    <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="relative btn-icon-hover no-outline">
-      <span class="material-symbols-outlined">notifications</span>
-      <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0a0f1e] transform scale-100 transition-transform duration-300"></span>
-    </button>
-    <!-- Notifications Dropdown -->
-    <div id="notif-panel" class="hidden absolute right-0 top-12 w-80 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
-      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-        <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Notifications</span>
-        <button id="mark-all-read" class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline focus:outline-none">Mark all read</button>
-      </div>
-      <div class="divide-y divide-slate-100 dark:divide-slate-800">
-        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer border-b border-slate-100 dark:border-slate-800 is-unread">
-          <div class="w-9 h-9 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="material-symbols-outlined text-yellow-500" style="font-size:18px;">warning</span>
-          </div>
-          <div>
-            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Account Pending Approval</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Your account is under review. Complete your profile to proceed.</p>
-            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Just now</p>
-          </div>
-        </div>
-        <div class="notif-item flex items-start gap-3 px-5 py-4 dropdown-item-hover transition-all cursor-pointer is-unread">
-          <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
-          </div>
-          <div>
-            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Welcome to Finzo!</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Your account has been registered. Complete your KYC to activate.</p>
-            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Today</p>
-          </div>
-        </div>
-      </div>
-            <div class="px-5 py-3 text-center border-t border-slate-100 dark:border-slate-800">
-        <a href="notifications.html" class="text-xs text-primary dark:text-blue-400 font-semibold cursor-pointer hover:underline no-underline">View all notifications</a>
-      </div>
-    </div>
-  </div>
+<!-- Main Content -->
+<main class="md:ml-64 min-h-screen bg-surface">
 
-  <!-- Dark Mode Toggle -->
-  <button data-toggle-theme class="btn-icon-hover" title="Toggle Theme">
-    <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-  </button>
-
-  <!-- Settings Button -->
-  <div class="relative" id="settings-wrapper">
-    <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="btn-icon-hover">
-      <span class="material-symbols-outlined">settings</span>
-    </button>
-    <!-- Settings Dropdown -->
-    <div id="settings-panel" class="hidden absolute right-0 top-12 w-72 bg-white dark:bg-[#1a1c1e] border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 overflow-hidden animate-dropdown">
-      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-        <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Settings</span>
-      </div>
-      <div class="py-2">
-        <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover transition-all cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
-          <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">manage_accounts</span>
-          <div>
-            <p class="text-sm font-semibold">Complete Profile</p>
-            <p class="text-xs text-slate-400 dark:text-slate-500">Finish your KYC setup</p>
-          </div>
-        </a>
-        <a href="../settings/change-password.html" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-700 dark:text-slate-300 no-underline">
-          <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">lock</span>
-          <div>
-            <p class="text-sm font-semibold">Change Password</p>
-            <p class="text-xs text-slate-400 dark:text-slate-500">Update your login credentials</p>
-          </div>
-        </a>
-        <div class="border-t border-slate-100 dark:border-slate-800 mt-1 pt-1">
-          <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors cursor-pointer text-red-500 no-underline">
-            <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
-            <p class="text-sm font-semibold">Logout</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</header>
-<!-- Dashboard Content -->
-<section class="pt-20 pb-8 px-8 max-w-7xl mx-auto space-y-4">
-<!-- Welcome Header -->
-<div class="mb-4">
-    <h2 class="text-2xl font-extrabold text-[#002645] tracking-tight">Welcome back, Rahul Kumar</h2>
-    <p class="text-xs text-[#64748b] font-medium">Here's what's happening with your account today.</p>
-</div>
-<!-- Banners Area (Institutional Mode) -->
-<div id="restricted-banner" class="group bg-indigo-500/10 dark:bg-indigo-500/5 backdrop-blur-md border border-indigo-500/30 dark:border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-[0_8px_32px_-8px_rgba(79,70,229,0.1)] transition-all duration-500 hover:border-indigo-500/40 hover:-translate-y-1 hover:shadow-indigo-500/10 cursor-default">
-    <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-full bg-indigo-500/10 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 transition-transform duration-500 group-hover:scale-110 group-hover:bg-indigo-500/20">
-            <span class="material-symbols-outlined text-xl">verified_user</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="text-xs font-bold text-[#002645] dark:text-white tracking-wide">Account Verification Pending</span>
-            <span class="text-[10px] text-[#64748b] dark:text-slate-400 font-medium">Please complete your identity verification to unlock full banking features.</span>
-        </div>
-    </div>
-    <a href="complete-profile.html" class="architectural-gradient text-white text-[10px] font-black px-5 py-2.5 rounded-xl shadow-lg hover:shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-95 no-underline uppercase tracking-widest">Complete Setup &rarr;</a>
-</div>
-
-<div id="approved-banner" class="hidden bg-[#e8f8f2] border border-[#00b894] rounded-xl p-4 flex items-center justify-between shadow-sm">
+  <!-- ── Top Navigation Bar ── -->
+  <header class="fin-topbar fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center z-50 transition-colors duration-300">
     <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-        <span class="text-sm font-semibold text-[#005228]">&emsp;&#127881; Welcome to Finzo! Your account FNZ20260001 has been activated. You can now start banking.</span>
+      <p class="page-eyebrow mb-0">Overview</p>
+      <span class="text-outline-variant text-xs">·</span>
+      <h1 class="font-headline font-extrabold text-lg tracking-tight text-primary dark:text-on-surface">Dashboard</h1>
     </div>
-    <button onclick="document.getElementById('approved-banner').classList.add('hidden')" class="text-[#00b894] hover:text-[#005228] transition-colors"><span class="material-symbols-outlined">close</span></button>
-</div>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-12 gap-6">
-<!-- Account Summary Card (Institutional Anchor) -->
-<div class="col-span-12 lg:col-span-8 bg-white rounded-xl p-8 border border-[#e2e8f0] shadow-sm relative overflow-hidden group transition-all duration-300">
-<!-- Shimmer Overlay -->
-<div class="absolute inset-0 card-shimmer pointer-events-none opacity-10 dark:opacity-100"></div>
-<!-- Premium background decoration -->
-<div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[100px] group-hover:bg-blue-500/10 dark:group-hover:bg-blue-500/20 transition-all duration-700"></div>
-<div class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-[100px] group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all duration-700"></div>
-<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.01] dark:opacity-[0.03] pointer-events-none"></div>
-<div class="relative z-10 flex flex-col justify-between h-full">
-<div class="flex justify-between items-start mb-12">
-<div class="flex items-start gap-6">
-<div>
-<p class="text-slate-500 dark:text-slate-400 font-bold mb-3 text-[10px] uppercase tracking-[0.2em] opacity-80">Total Available Balance</p>
-<div class="flex flex-col">
-    <h2 id="dash-balance" class="text-4xl font-black text-slate-300 dark:text-white/30 tracking-[0.25em] transition-all duration-500 select-none pb-1" data-real-value="Pending Activation">₹ </h2>
-</div>
-</div>
-</div>
-<div class="bg-indigo-50 dark:bg-white/5 backdrop-blur-md border border-indigo-100 dark:border-white/10 text-indigo-900 dark:text-white/40 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] pointer-events-none select-none">
-                                SAVINGS ACCOUNT
-                            </div>
-</div>
-<div class="flex flex-wrap gap-12 items-end mt-4">
-<div>
-<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-3 font-bold">Account Number</p>
-<div class="flex items-center gap-3">
-    <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.15em] text-indigo-950 dark:text-white/90" data-real-value="Unavailable">NOT YET ASSIGNED</p>
-    <span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-sm">lock</span>
-</div>
-<div id="verification-badge" class="inline-flex items-center gap-2 mt-1 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
-    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,1)]"></span>
-    <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Awaiting Verification</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Spending Overview (Chart Placeholder) -->
-<div class="col-span-12 lg:col-span-4 bg-white rounded-xl p-6 flex flex-col justify-between border border-[#e2e8f0] shadow-sm opacity-60 cursor-not-allowed select-none pointer-events-none group transition-all duration-300">
-<div>
-<div class="flex justify-between items-start mb-0.5">
-    <h3 class="text-base font-bold text-primary dark:text-on-surface">Spending Analytics</h3>
-</div>
-<p class="text-[11px] text-secondary mb-3">Monthly spending overview</p>
-<div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
-<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
-<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[60%]"></div>
-<div class="w-full bg-primary/20 dark:bg-blue-900/20 rounded-t-lg h-[35%]"></div>
-<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[75%]"></div>
-<div class="w-full bg-primary/40 dark:bg-blue-900/40 rounded-t-lg h-[50%]"></div>
-<div class="w-full bg-primary dark:bg-blue-600 rounded-t-lg h-[90%]"></div>
-<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[45%]"></div>
-<div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4">
-    <div class="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 px-4 py-2.5 rounded-xl shadow-xl flex flex-col items-center gap-2 text-center">
-        <span class="material-symbols-outlined text-slate-500 text-xl">lock</span>
-        <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">Spending insights available after account activation</p>
-    </div>
-</div>
-</div>
-</div>
-</div>
-<!-- Quick Actions -->
-<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
-</div>
-<div class="text-left text-slate-400">
-<p class="font-bold text-sm">Deposit</p>
-<p class="text-[10px]">Add money</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
-</button>
-<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">payments</span>
-</div>
-<div class="text-left text-slate-400">
-<p class="font-bold text-sm">Withdraw</p>
-<p class="text-[10px]">Withdraw funds</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
-</button>
-<button disabled class="flex items-center justify-between p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-sm opacity-50 cursor-not-allowed transition-all duration-300">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-100 flex items-center justify-center text-slate-400">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">send</span>
-</div>
-<div class="text-left text-slate-400">
-<p class="font-bold text-sm">Transfer</p>
-<p class="text-[10px]">Send money</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-slate-300 text-sm">lock</span>
-</button>
-</div>
-<!-- Recent Transactions -->
-<div class="col-span-12 bg-white rounded-xl p-6 border border-[#e2e8f0] shadow-sm">
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-    <h3 class="text-lg font-bold text-[#002645]">Recent Transactions</h3>
-    
-    <div class="flex items-center bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 hover:border-indigo-500/30 focus-within:border-indigo-500/60 rounded-xl px-3 py-2 transition-all duration-300 group relative w-full md:w-64">
-        <span class="material-symbols-outlined text-slate-400 text-lg group-focus-within:text-indigo-500 transition-colors">search</span>
-        <input id="tx-search" class="bg-transparent border-none focus:ring-0 text-xs w-full ml-2 text-indigo-950 dark:text-white placeholder-slate-400 font-medium" placeholder="Search transactions..." type="text"/>
-    </div>
-</div>
 
-<div id="tx-list" class="space-y-3">
-    <!-- Placeholder rows for "Workable" feel (filtered out initially but searchable) -->
-    <div class="tx-row flex items-center justify-between p-3 border border-slate-200 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
+    <div class="flex items-center gap-2">
+
+      <!-- Notifications Button -->
+      <div class="relative" id="notif-wrapper">
+        <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="btn-icon-hover no-outline relative">
+          <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
+          <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0f1117]"></span>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div id="notif-panel" class="notif-dropdown hidden absolute right-0 top-12 w-80 z-50 overflow-hidden animate-dropdown">
+          <div class="px-5 py-4 border-b border-slate-100 dark:border-white/06 flex justify-between items-center">
+            <span class="font-headline font-bold text-sm text-on-surface">Notifications</span>
+            <button id="mark-all-read" class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline focus:outline-none font-label">Mark all read</button>
+          </div>
+          <div>
+            <!-- Unread item 1 -->
+            <div class="notif-item flex items-start gap-3 px-5 py-4 cursor-pointer is-unread">
+              <div class="w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-amber-500" style="font-size:18px;">warning</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-on-surface">Account Pending Approval</p>
+                <p class="text-xs text-secondary mt-0.5 leading-relaxed">Your account is under review. Complete your profile to proceed.</p>
+                <p class="text-[10px] text-on-surface-variant mt-1 font-label uppercase tracking-widest">Just now</p>
+              </div>
+            </div>
+            <!-- Unread item 2 -->
+            <div class="notif-item flex items-start gap-3 px-5 py-4 cursor-pointer is-unread">
+              <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-on-surface">Welcome to Finzo!</p>
+                <p class="text-xs text-secondary mt-0.5 leading-relaxed">Your account has been registered. Complete your KYC to activate.</p>
+                <p class="text-[10px] text-on-surface-variant mt-1 font-label uppercase tracking-widest">Today</p>
+              </div>
+            </div>
+          </div>
+          <div class="px-5 py-3 text-center border-t border-slate-100 dark:border-white/06">
+            <a href="notifications.html" class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline no-underline font-label">View all notifications</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <button data-toggle-theme class="btn-icon-hover" title="Toggle Theme">
+        <span class="material-symbols-outlined" data-theme-icon style="font-size:22px;">dark_mode</span>
+      </button>
+
+      <!-- Settings Button -->
+      <div class="relative" id="settings-wrapper">
+        <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="btn-icon-hover">
+          <span class="material-symbols-outlined" style="font-size:22px;">settings</span>
+        </button>
+        <!-- Settings Dropdown -->
+        <div id="settings-panel" class="notif-dropdown hidden absolute right-0 top-12 w-72 z-50 overflow-hidden animate-dropdown">
+          <div class="px-5 py-4 border-b border-slate-100 dark:border-white/06">
+            <span class="font-headline font-bold text-sm text-on-surface">Settings</span>
+          </div>
+          <div class="py-2">
+            <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-on-surface no-underline">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">manage_accounts</span>
+              <div>
+                <p class="text-sm font-semibold">Complete Profile</p>
+                <p class="text-xs text-secondary">Finish your KYC setup</p>
+              </div>
+            </a>
+            <a href="../settings/change-password.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-on-surface no-underline">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">lock</span>
+              <div>
+                <p class="text-sm font-semibold">Change Password</p>
+                <p class="text-xs text-secondary">Update your login credentials</p>
+              </div>
+            </a>
+            <div class="border-t border-slate-100 dark:border-white/06 mt-1 pt-1">
+              <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-error no-underline transition-colors hover:bg-red-50 dark:hover:bg-red-900/10">
+                <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+                <p class="text-sm font-semibold">Logout</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── Dashboard Content ── -->
+  <section class="pt-24 pb-12 px-12 max-w-7xl">
+
+    <!-- Page Header — matches Notifications page structure -->
+    <header class="pb-8">
+      <p class="page-eyebrow mb-2">Account Overview</p>
+      <h1 class="page-title">Welcome back, Rahul</h1>
+      <p class="text-xs text-on-surface-variant font-label mt-1">Here's what's happening with your account today.</p>
+    </header>
+
+    <div class="space-y-5">
+
+      <!-- ── Verification Banner ── -->
+      <div id="restricted-banner" class="fin-banner-pending p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+            <span class="material-symbols-outlined" style="font-size:20px;">verified_user</span>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-primary dark:text-on-surface tracking-wide font-headline">Account Verification Pending</span>
+            <p class="text-[11px] text-secondary font-label mt-0.5">Please complete your identity verification to unlock full banking features.</p>
+          </div>
+        </div>
+        <a href="complete-profile.html" class="btn-primary no-underline ml-6 whitespace-nowrap">Complete Setup →</a>
+      </div>
+
+      <!-- ── Approved Banner (hidden by default) ── -->
+      <div id="approved-banner" class="hidden p-4 flex items-center justify-between rounded-xl" style="background:#e8f8f2; border: 1px solid #00b894;">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500">
-                <span class="material-symbols-outlined">account_balance</span>
+          <span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings:'FILL' 1; font-size:20px;">check_circle</span>
+          <span class="text-sm font-semibold text-[#005228] font-headline">🎉 Welcome to Finzo! Your account FNZ20260001 has been activated.</span>
+        </div>
+        <button onclick="document.getElementById('approved-banner').classList.add('hidden')" class="text-[#00b894] hover:text-[#005228] transition-colors ml-4">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+        </button>
+      </div>
+
+      <!-- ── Bento Grid ── -->
+      <div class="grid grid-cols-12 gap-5">
+
+        <!-- Account Summary Card -->
+        <div class="col-span-12 lg:col-span-8 fin-card p-8 relative overflow-hidden">
+          <!-- Subtle background decoration -->
+          <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(65,96,132,0.06) 0%, transparent 70%);"></div>
+          <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(65,96,132,0.04) 0%, transparent 70%);"></div>
+
+          <div class="relative z-10 flex flex-col justify-between h-full gap-8">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="page-eyebrow mb-3">Total Available Balance</p>
+                <h2 id="dash-balance" class="font-headline font-black text-4xl balance-locked transition-all duration-500 select-none">₹ ——</h2>
+              </div>
+              <span class="text-[10px] font-black font-label uppercase tracking-widest px-3 py-1.5 rounded-lg" style="background:#eef2f7; color:#28496b;">Savings Account</span>
             </div>
             <div>
-                <p class="font-bold text-sm">Initial Vault Deposit</p>
-                <p class="text-[10px] text-slate-500 italic">Held until activation</p>
+              <p class="page-eyebrow mb-2">Account Number</p>
+              <div class="flex items-center gap-3">
+                <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.12em] text-primary dark:text-on-surface">NOT YET ASSIGNED</p>
+                <span class="material-symbols-outlined text-outline text-sm">lock</span>
+              </div>
+              <div id="verification-badge" class="inline-flex items-center gap-2 mt-2 px-3 py-1.5 rounded-full" style="background:rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.18);">
+                <span class="w-2 h-2 rounded-full bg-indigo-500" style="animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(99,102,241,0.8);"></span>
+                <span class="text-[9px] font-black font-label text-indigo-500 uppercase tracking-widest">Awaiting Verification</span>
+              </div>
             </div>
+          </div>
         </div>
-        <div class="text-right">
-            <p class="font-bold text-sm text-green-600">+₹500.00</p>
-            <p class="text-[9px] text-slate-400">06 Apr 2026</p>
-        </div>
-    </div>
 
-    <div class="tx-row flex items-center justify-between p-3 border border-slate-200 dark:border-white/5 rounded-xl opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-300" style="display:none;">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                <span class="material-symbols-outlined text-lg">card_membership</span>
+        <!-- Spending Analytics Card -->
+        <div class="col-span-12 lg:col-span-4 fin-card p-6 flex flex-col justify-between opacity-60 cursor-not-allowed select-none pointer-events-none">
+          <div>
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="text-base font-bold font-headline text-primary dark:text-on-surface">Spending Analytics</h3>
             </div>
+            <p class="text-[11px] text-secondary font-label mb-4">Monthly spending overview</p>
+            <div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
+              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
+              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[60%]"></div>
+              <div class="w-full rounded-t-lg h-[35%]" style="background:rgba(0,38,69,0.15);"></div>
+              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[75%]"></div>
+              <div class="w-full rounded-t-lg h-[50%]" style="background:rgba(0,38,69,0.3);"></div>
+              <div class="w-full rounded-t-lg h-[90%]" style="background:#002645;"></div>
+              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[45%]"></div>
+              <!-- Lock overlay -->
+              <div class="locked-overlay">
+                <div class="fin-card px-4 py-3 flex flex-col items-center gap-1.5 text-center">
+                  <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px;">lock</span>
+                  <p class="text-[10px] font-bold text-on-surface font-label leading-tight">Available after activation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Deposit -->
+          <button class="quick-action-btn" disabled>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
+                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">account_balance_wallet</span>
+              </div>
+              <div class="text-left">
+                <p class="font-bold text-sm text-slate-400 font-headline">Deposit</p>
+                <p class="text-[10px] text-slate-400 font-label">Add money</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
+          </button>
+
+          <!-- Withdraw -->
+          <button class="quick-action-btn" disabled>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
+                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">payments</span>
+              </div>
+              <div class="text-left">
+                <p class="font-bold text-sm text-slate-400 font-headline">Withdraw</p>
+                <p class="text-[10px] text-slate-400 font-label">Withdraw funds</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
+          </button>
+
+          <!-- Transfer -->
+          <button class="quick-action-btn" disabled>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
+                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">send</span>
+              </div>
+              <div class="text-left">
+                <p class="font-bold text-sm text-slate-400 font-headline">Transfer</p>
+                <p class="text-[10px] text-slate-400 font-label">Send money</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
+          </button>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="col-span-12 fin-card p-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
-                <p class="font-bold text-sm">Account Issue Fee</p>
-                <p class="text-[10px] text-slate-500 italic">Waived (Promotion)</p>
+              <h3 class="text-lg font-bold font-headline text-primary dark:text-on-surface">Recent Transactions</h3>
+              <p class="text-[11px] text-secondary font-label mt-0.5">Your latest account activity</p>
             </div>
-        </div>
-        <div class="text-right">
-            <p class="font-bold text-sm">₹0.00</p>
-            <p class="text-[9px] text-slate-400">06 Apr 2026</p>
-        </div>
-    </div>
-</div>
+            <div id="search-wrapper" class="fin-search w-full md:w-64" style="display:none;">
+              <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px;">search</span>
+              <input id="tx-search" class="bg-transparent border-none focus:ring-0 text-xs w-full ml-2 text-on-surface placeholder-on-surface-variant font-label" placeholder="Search transactions..." type="text"/>
+            </div>
+          </div>
 
-<div id="empty-tx-message" class="text-center py-8 border-t border-slate-50 dark:border-white/5 mt-4">
-    <p class="text-xs font-semibold text-slate-500 mb-2">Detailed transactions will appear here after activation.</p>
-    <a href="complete-profile.html" class="inline-block text-primary dark:text-indigo-400 font-bold text-xs hover:opacity-80 transition-opacity no-underline">Complete Profile &rarr;</a>
-</div>
+          <div id="tx-list" class="space-y-3"></div>
 
-</div>
-</div>
-</div>
-</section>
+          <!-- Placeholder tx rows (shown when active) -->
+          <div id="tx-rows-static" style="display:none;" class="space-y-3">
+            <div class="tx-row opacity-90">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500">
+                  <span class="material-symbols-outlined" style="font-size:20px;">account_balance</span>
+                </div>
+                <div>
+                  <p class="font-bold text-sm text-on-surface font-headline">Initial Vault Deposit</p>
+                  <p class="text-[10px] text-secondary font-label italic">Held until activation</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-sm text-[#00b894] font-headline">+₹500.00</p>
+                <p class="text-[10px] text-on-surface-variant font-label">06 Apr 2026</p>
+              </div>
+            </div>
+            <div class="tx-row opacity-90">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                  <span class="material-symbols-outlined" style="font-size:20px;">card_membership</span>
+                </div>
+                <div>
+                  <p class="font-bold text-sm text-on-surface font-headline">Account Issue Fee</p>
+                  <p class="text-[10px] text-secondary font-label italic">Waived (Promotion)</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-sm text-on-surface font-headline">₹0.00</p>
+                <p class="text-[10px] text-on-surface-variant font-label">06 Apr 2026</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="empty-tx-message" class="text-center py-10 border-t border-slate-100 dark:border-white/05 mt-4">
+            <span class="material-symbols-outlined text-on-surface-variant mb-3" style="font-size:32px;">receipt_long</span>
+            <p class="text-xs font-semibold text-secondary mb-3 font-label">Detailed transactions will appear here after activation.</p>
+            <a href="complete-profile.html" class="btn-primary no-underline">Complete Profile →</a>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+    </div><!-- /space-y -->
+  </section>
 </main>
-<!-- Mobile Navigation Suppressed on Task-Focused desktop view but defined for responsiveness -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex items-center justify-around px-4 z-50">
-<button class="flex flex-col items-center gap-1 text-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-<span class="text-[10px] font-bold">Home</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-400">
-<span class="material-symbols-outlined">swap_horiz</span>
-<span class="text-[10px]">Transfer</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-400">
-<span class="material-symbols-outlined">history</span>
-<span class="text-[10px]">History</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-400">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px]">Profile</span>
-</button>
+
+<!-- Mobile Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0f1117] border-t border-slate-100 dark:border-white/06 flex items-center justify-around px-4 z-50">
+  <button class="flex flex-col items-center gap-1 text-primary">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">dashboard</span>
+    <span class="text-[10px] font-bold font-label">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined" style="font-size:22px;">swap_horiz</span>
+    <span class="text-[10px] font-label">Transfer</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined" style="font-size:22px;">history</span>
+    <span class="text-[10px] font-label">History</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined" style="font-size:22px;">person</span>
+    <span class="text-[10px] font-label">Profile</span>
+  </button>
 </nav>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -407,54 +699,88 @@
 <script src="../../assets/js/charts.js"></script>
 
 <script>
-$(document).ready(function() {
-    // Check Activation & Profile Status
-    var isApproved = localStorage.getItem('finzo_approved') === 'true';
-    var isProfileComplete = localStorage.getItem('finzo_profile_complete') === 'true';
-    var isActive = isApproved && isProfileComplete;
-    
-    if (isActive) {
-        $('#restricted-banner').addClass('hidden');
-        $('#approved-banner').removeClass('hidden');
-        $('#dash-balance')
-            .text('₹ 42,080.00')
-            .removeClass('text-slate-300 dark:text-white/30 tracking-[0.25em]')
-            .addClass('text-[#002645] tracking-normal');
-        $('#dash-account').text('FNZ20260001');
-        $('#verification-badge').hide();
-        $('.tx-row').show().removeClass('opacity-40 grayscale');
-        $('#tx-search').closest('div').show();
-        $('#empty-tx-message').hide();
-    } else {
-        $('.tx-row').hide();
-        $('#tx-search').closest('div').hide();
-        $('#empty-tx-message').show();
-        $('#verification-badge').show();
+// Panel toggle helper
+function togglePanel(openId, closeId) {
+  const openEl  = document.getElementById(openId);
+  const closeEl = document.getElementById(closeId);
+  if (closeEl) closeEl.classList.add('hidden');
+  if (openEl)  openEl.classList.toggle('hidden');
+}
+
+// Close panels when clicking outside
+document.addEventListener('click', function(e) {
+  ['notif-panel', 'settings-panel'].forEach(function(id) {
+    const panel   = document.getElementById(id);
+    const wrapper = document.getElementById(id.replace('panel', 'wrapper'));
+    if (panel && wrapper && !wrapper.contains(e.target)) {
+      panel.classList.add('hidden');
     }
+  });
+});
 
-    $('#tx-search').on('keyup', function() {
-        if (!isActive) return;
-        
-        var value = $(this).val().toLowerCase();
-        var matchCount = 0;
-        
-        $('.tx-row').each(function() {
-            var isMatch = $(this).text().toLowerCase().indexOf(value) > -1;
-            $(this).toggle(isMatch);
-            if (isMatch) matchCount++;
-        });
+$(document).ready(function() {
 
-        // Toggle message if no matches
-        if (value === '') {
-            $('#empty-tx-message').hide();
-        } else if (matchCount === 0) {
-            $('#empty-tx-message').show();
-            $('#empty-tx-message p').text('No transactions matching "' + value + '"');
-            $('#empty-tx-message a').hide();
-        } else {
-            $('#empty-tx-message').hide();
-        }
+  // ── Activation State ──
+  var isApproved        = localStorage.getItem('finzo_approved') === 'true';
+  var isProfileComplete = localStorage.getItem('finzo_profile_complete') === 'true';
+  var isActive          = isApproved && isProfileComplete;
+
+  if (isActive) {
+    $('#restricted-banner').addClass('hidden');
+    $('#approved-banner').removeClass('hidden');
+    $('#dash-balance')
+      .text('₹ 42,080.00')
+      .removeClass('balance-locked')
+      .addClass('text-primary dark:text-on-surface');
+    $('#dash-account').text('FNZ20260001');
+    $('#verification-badge').hide();
+    $('#tx-rows-static').show();
+    $('#search-wrapper').show();
+    $('#empty-tx-message').hide();
+    $('#notif-badge').hide();
+  } else {
+    $('#tx-rows-static').hide();
+    $('#search-wrapper').hide();
+    $('#empty-tx-message').show();
+    $('#verification-badge').show();
+  }
+
+  // ── Transaction Search ──
+  $('#tx-search').on('keyup', function() {
+    if (!isActive) return;
+    var val = $(this).val().toLowerCase();
+    var count = 0;
+    $('#tx-rows-static .tx-row').each(function() {
+      var match = $(this).text().toLowerCase().indexOf(val) > -1;
+      $(this).toggle(match);
+      if (match) count++;
     });
+    if (val === '') {
+      $('#empty-tx-message').hide();
+    } else if (count === 0) {
+      $('#empty-tx-message').show();
+      $('#empty-tx-message p').text('No transactions matching "' + val + '"');
+      $('#empty-tx-message a').hide();
+    } else {
+      $('#empty-tx-message').hide();
+    }
+  });
+
+  // ── Mark all notifications read in dropdown ──
+  $('#mark-all-read').on('click', function() {
+    $('.notif-item.is-unread').removeClass('is-unread');
+    $('#notif-badge').hide();
+  });
+
+  // ── Click individual notification to mark read ──
+  $(document).on('click', '.notif-item.is-unread', function() {
+    $(this).removeClass('is-unread');
+    if ($('.notif-item.is-unread').length === 0) {
+      $('#notif-badge').hide();
+    }
+  });
+
 });
 </script>
-</body></html>
+</body>
+</html>
