@@ -130,25 +130,51 @@
     z-index: 50;
 }
 
-/* Stat cards */
+/* Stat cards - Premium Upgrade */
 .admin-stat-card {
-    background: #ffffff;
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 24px;
     padding: 24px;
-    border: 1px solid #eef0f5;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 4px rgba(0, 38, 69, 0.04), 0 4px 12px rgba(0, 38, 69, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 38, 69, 0.05), 
+        0 10px 15px -3px rgba(0, 38, 69, 0.05);
+    position: relative;
+    overflow: hidden;
 }
 
 .admin-stat-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 38, 69, 0.06), 0 12px 24px rgba(0, 38, 69, 0.05);
-    transform: translateY(-2px);
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 38, 69, 0.1), 
+        0 10px 10px -5px rgba(0, 38, 69, 0.04);
+    transform: translateY(-4px) scale(1.01);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.admin-stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(0, 38, 69, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.admin-stat-card:hover::after {
+    opacity: 1;
 }
 
 [data-theme="dark"] .admin-stat-card {
-    background: #1c2128;
-    border-color: rgba(255,255,255,0.05);
-    box-shadow: none;
+    background: rgba(28, 33, 40, 0.65);
+    backdrop-filter: blur(16px);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
 .admin-stat-icon {
@@ -169,7 +195,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 26px;
     font-weight: 800;
-    color: #0a0f1e;
+    color: #000000;
     letter-spacing: -0.5px;
 }
 
@@ -178,7 +204,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #9aa0b0;
+    color: #000000;
     margin-bottom: 8px;
 }
 
@@ -195,19 +221,26 @@
 .admin-stat-delta.negative { background: #ffeef0; color: #e17055; }
 .admin-stat-delta.neutral  { background: #f0f2ff; color: #6c63ff; }
 
-/* Card container */
+/* Card container - Premium Upgrade */
 .admin-card {
-    background: #ffffff;
-    border-radius: 16px;
-    border: 1px solid #eef0f5;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 38, 69, 0.05), 0 2px 4px -1px rgba(0, 38, 69, 0.03);
+    box-shadow: 0 10px 15px -3px rgba(0, 38, 69, 0.05), 0 4px 6px -2px rgba(0, 38, 69, 0.03);
+    transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 38, 69, 0.08);
 }
 
 [data-theme="dark"] .admin-card {
-    background: #1c2128;
-    border-color: rgba(255,255,255,0.05);
-    box-shadow: none;
+    background: rgba(28, 33, 40, 0.8);
+    backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
 }
 
 /* Badge utilities */
@@ -235,7 +268,7 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #9aa0b0;
+    color: #000000;
     background: #f9fafc;
     border-bottom: 1px solid #eef0f5;
 }
@@ -244,7 +277,7 @@
     padding: 16px 24px;
     border-bottom: 1px solid #f5f6f9;
     font-size: 13px;
-    color: #2d3142;
+    color: #000000;
 }
 
 .admin-table tbody tr:hover {
@@ -287,7 +320,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 18px;
     font-weight: 800;
-    color: #0a0f1e;
+    color: #000000;
     letter-spacing: -0.3px;
 }
 
@@ -328,7 +361,7 @@
   border: 1px solid #eef0f5 !important;
   border-radius: 10px !important;
   padding: 8px 14px !important;
-  color: #5a6270 !important;
+  color: #000000 !important;
 }
 
 .finzo-dropdown-trigger:hover {
@@ -382,7 +415,7 @@
   padding: 9px 12px !important;
   font-size: 13px !important;
   font-weight: 600 !important;
-  color: #475569 !important;
+  color: #000000 !important;
   border-radius: 8px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
@@ -419,3 +452,44 @@
   background: rgba(255,255,255,0.05) !important;
   color: #ffffff !important;
 }
+/* Sparkline Styles */
+.sparkline-container {
+    height: 40px;
+    margin-top: 12px;
+}
+
+.sparkline-path {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: sparkline-draw 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sparkline-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Premium Gradient backgrounds for hero sections */
+.premium-gradient-primary {
+    background: linear-gradient(135deg, #002645 0%, #003a6b 100%);
+    color: white !important;
+}
+
+.premium-gradient-success {
+    background: linear-gradient(135deg, #00b894 0%, #00d2ad 100%);
+    color: white !important;
+}
+
+/* Aura Background Effects */
+.aura-soft {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.aura-primary { background: #002645; right: -50px; top: -50px; }
+.aura-success { background: #00b894; left: -50px; bottom: -50px; }

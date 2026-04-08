@@ -14,7 +14,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -56,8 +56,8 @@
 <div class="admin-main">
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Capital Flow</div>
-      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">Transaction Intelligence</div>
+      <div class="text-[11px] font-bold tracking-widest text-black dark:text-on-surface-variant uppercase">Capital Flow</div>
+      <div class="font-headline text-3xl font-extrabold text-black dark:text-white tracking-tight mt-1">Transaction Intelligence</div>
     </div>
     <button class="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg text-sm font-bold transition-all elevation-md active:scale-95">
       <span class="material-symbols-outlined text-lg">download</span> Export PDF
@@ -69,17 +69,17 @@
     <!-- Stats -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#e8f8f2;"><span class="material-symbols-outlined" style="color:#00b894;">payments</span></div>
+        <div class="admin-stat-icon" style="background:#e8f8f2;"><span class="material-symbols-outlined" style="color:#000000;">payments</span></div>
         <div class="admin-stat-label">Total Volume Today</div>
         <div class="admin-stat-value">$1.2M <span class="admin-stat-delta positive">+4.1%</span></div>
       </div>
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#e8f3ff;"><span class="material-symbols-outlined" style="color:#3b82f6;">check_circle</span></div>
+        <div class="admin-stat-icon" style="background:#e8f3ff;"><span class="material-symbols-outlined" style="color:#000000;">check_circle</span></div>
         <div class="admin-stat-label">Completed</div>
         <div class="admin-stat-value">38,204 <span class="admin-stat-delta positive">+2.8%</span></div>
       </div>
       <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background:#fff8e1;"><span class="material-symbols-outlined" style="color:#f39c12;">pending</span></div>
+        <div class="admin-stat-icon" style="background:#fff8e1;"><span class="material-symbols-outlined" style="color:#000000;">pending</span></div>
         <div class="admin-stat-label">Pending</div>
         <div class="admin-stat-value">3,876 <span class="admin-stat-delta neutral">Stable</span></div>
       </div>
@@ -95,7 +95,7 @@
       <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
         <div class="flex justify-between items-center mb-6">
           <div>
-            <div class="font-headline text-lg font-bold text-indigo-950 dark:text-white">Monthly Capital Expenditure</div>
+            <div class="font-headline text-lg font-bold text-black dark:text-white">Monthly Capital Expenditure</div>
           </div>
           <div class="flex gap-2">
             <button id="btn-6m" onclick="setActive(this)" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-lg elevation-sm transition-all">6 Months</button>
@@ -105,19 +105,19 @@
         <div style="display:flex;align-items:flex-end;gap:10px;height:160px;padding:0 8px;">
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:linear-gradient(to top,#002645cc,#002645aa);border-radius:6px 6px 0 0;height:40%;"></div>
-            <span style="font-size:9px;color:#9aa0b0;font-weight:700;">JAN</span>
+            <span style="font-size:9px;color:#000000;font-weight:700;">JAN</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:linear-gradient(to top,#002645cc,#002645aa);border-radius:6px 6px 0 0;height:65%;"></div>
-            <span style="font-size:9px;color:#9aa0b0;font-weight:700;">FEB</span>
+            <span style="font-size:9px;color:#000000;font-weight:700;">FEB</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:linear-gradient(to top,#002645cc,#002645aa);border-radius:6px 6px 0 0;height:25%;"></div>
-            <span style="font-size:9px;color:#9aa0b0;font-weight:700;">MAR</span>
+            <span style="font-size:9px;color:#000000;font-weight:700;">MAR</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:linear-gradient(to top,#002645cc,#002645aa);border-radius:6px 6px 0 0;height:85%;"></div>
-            <span style="font-size:9px;color:#9aa0b0;font-weight:700;">APR</span>
+            <span style="font-size:9px;color:#000000;font-weight:700;">APR</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:#002645;border-radius:6px 6px 0 0;height:100%;box-shadow:0 -4px 12px rgba(0,38,69,0.3);"></div>
@@ -125,12 +125,12 @@
           </div>
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:linear-gradient(to top,#002645cc,#002645aa);border-radius:6px 6px 0 0;height:50%;"></div>
-            <span style="font-size:9px;color:#9aa0b0;font-weight:700;">JUN</span>
+            <span style="font-size:9px;color:#000000;font-weight:700;">JUN</span>
           </div>
         </div>
       </div>
       <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
-        <div class="font-headline text-lg font-bold text-indigo-950 dark:text-white mb-5">Asset Allocation</div>
+        <div class="font-headline text-lg font-bold text-black dark:text-white mb-5">Asset Allocation</div>
         <div style="position:relative;width:160px;height:160px;margin:0 auto 20px;">
           <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg);">
             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#eef0f5" stroke-width="3.5"/>
@@ -139,22 +139,22 @@
             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#f39c12" stroke-width="4" stroke-dasharray="5 95" stroke-dashoffset="-95" stroke-linecap="round"/>
           </svg>
           <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-            <span style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;color:#0a0f1e;">$42.8k</span>
-            <span style="font-size:10px;color:#9aa0b0;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Total Month</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;color:#000000;">$42.8k</span>
+            <span style="font-size:10px;color:#000000;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Total Month</span>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#002645;border-radius:50%;"></div><span style="font-size:12px;color:#5a6270;">Investments</span></div>
-            <span style="font-size:12px;font-weight:700;color:#0a0f1e;">70%</span>
+            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#002645;border-radius:50%;"></div><span style="font-size:12px;color:#000000;">Investments</span></div>
+            <span style="font-size:12px;font-weight:700;color:#000000;">70%</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#00b894;border-radius:50%;"></div><span style="font-size:12px;color:#5a6270;">Operations</span></div>
-            <span style="font-size:12px;font-weight:700;color:#0a0f1e;">25%</span>
+            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#00b894;border-radius:50%;"></div><span style="font-size:12px;color:#000000;">Operations</span></div>
+            <span style="font-size:12px;font-weight:700;color:#000000;">25%</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#f39c12;border-radius:50%;"></div><span style="font-size:12px;color:#5a6270;">Luxury</span></div>
-            <span style="font-size:12px;font-weight:700;color:#0a0f1e;">5%</span>
+            <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;background:#f39c12;border-radius:50%;"></div><span style="font-size:12px;color:#000000;">Luxury</span></div>
+            <span style="font-size:12px;font-weight:700;color:#000000;">5%</span>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@
     <!-- Transaction Table -->
     <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix">
       <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
-        <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#0a0f1e;">Historical Ledger</div>
+        <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#000000;">Historical Ledger</div>
         <div style="display:flex;gap:10px;">
           <div class="finzo-dropdown" style="width:140px;">
             <input type="hidden" name="date_range" value="">
@@ -206,60 +206,60 @@
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:40px;height:40px;background:#f0f2ff;border-radius:12px;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="color:#6c63ff;font-size:20px;">shopping_bag</span></div>
-                <div><div style="font-weight:700;color:#0a0f1e;">Harrods Knightbridge</div><div style="font-size:11px;color:#9aa0b0;">Ref: #882910</div></div>
+                <div><div style="font-weight:700;color:#000000;">Harrods Knightbridge</div><div style="font-size:11px;color:#000000;">Ref: #882910</div></div>
               </div>
             </td>
             <td style="text-align:center;"><span class="status-badge badge-success">Completed</span></td>
-            <td style="color:#5a6270;">Lifestyle & Retail</td>
-            <td><div style="font-weight:600;color:#0a0f1e;">May 24, 2024</div><div style="font-size:11px;color:#9aa0b0;">14:32 GMT</div></td>
+            <td style="color:#000000;">Lifestyle & Retail</td>
+            <td><div style="font-weight:600;color:#000000;">May 24, 2024</div><div style="font-size:11px;color:#000000;">14:32 GMT</div></td>
             <td style="text-align:right;font-weight:700;color:#e17055;">-$12,450.00</td>
           </tr>
           <tr>
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:40px;height:40px;background:#e8f8f2;border-radius:12px;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="color:#00b894;font-size:20px;">payments</span></div>
-                <div><div style="font-weight:700;color:#0a0f1e;">Goldman Sachs Dividend</div><div style="font-size:11px;color:#9aa0b0;">Ref: #990122</div></div>
+                <div><div style="font-weight:700;color:#000000;">Goldman Sachs Dividend</div><div style="font-size:11px;color:#000000;">Ref: #990122</div></div>
               </div>
             </td>
             <td style="text-align:center;"><span class="status-badge badge-success">Completed</span></td>
-            <td style="color:#5a6270;">Asset Yield</td>
-            <td><div style="font-weight:600;color:#0a0f1e;">May 22, 2024</div><div style="font-size:11px;color:#9aa0b0;">09:15 GMT</div></td>
+            <td style="color:#000000;">Asset Yield</td>
+            <td><div style="font-weight:600;color:#000000;">May 22, 2024</div><div style="font-size:11px;color:#000000;">09:15 GMT</div></td>
             <td style="text-align:right;font-weight:700;color:#00b894;">+$85,000.00</td>
           </tr>
           <tr>
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:40px;height:40px;background:#fff8e1;border-radius:12px;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="color:#f39c12;font-size:20px;">real_estate_agent</span></div>
-                <div><div style="font-weight:700;color:#0a0f1e;">Mayfair Property Tax</div><div style="font-size:11px;color:#9aa0b0;">Ref: #771239</div></div>
+                <div><div style="font-weight:700;color:#000000;">Mayfair Property Tax</div><div style="font-size:11px;color:#000000;">Ref: #771239</div></div>
               </div>
             </td>
             <td style="text-align:center;"><span class="status-badge badge-warn">Pending</span></td>
-            <td style="color:#5a6270;">Obligatory</td>
-            <td><div style="font-weight:600;color:#0a0f1e;">May 21, 2024</div><div style="font-size:11px;color:#9aa0b0;">16:45 GMT</div></td>
+            <td style="color:#000000;">Obligatory</td>
+            <td><div style="font-weight:600;color:#000000;">May 21, 2024</div><div style="font-size:11px;color:#000000;">16:45 GMT</div></td>
             <td style="text-align:right;font-weight:700;color:#e17055;">-$5,200.00</td>
           </tr>
           <tr>
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:40px;height:40px;background:#ffeef0;border-radius:12px;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="color:#e17055;font-size:20px;">flight_takeoff</span></div>
-                <div><div style="font-weight:700;color:#0a0f1e;">NetJets Fractional Service</div><div style="font-size:11px;color:#9aa0b0;">Ref: #110056</div></div>
+                <div><div style="font-weight:700;color:#000000;">NetJets Fractional Service</div><div style="font-size:11px;color:#000000;">Ref: #110056</div></div>
               </div>
             </td>
             <td style="text-align:center;"><span class="status-badge badge-success">Completed</span></td>
-            <td style="color:#5a6270;">Logistics</td>
-            <td><div style="font-weight:600;color:#0a0f1e;">May 19, 2024</div><div style="font-size:11px;color:#9aa0b0;">11:02 GMT</div></td>
+            <td style="color:#000000;">Logistics</td>
+            <td><div style="font-weight:600;color:#000000;">May 19, 2024</div><div style="font-size:11px;color:#000000;">11:02 GMT</div></td>
             <td style="text-align:right;font-weight:700;color:#e17055;">-$22,800.00</td>
           </tr>
         </tbody>
       </table>
       <div style="padding:14px 24px;display:flex;justify-content:space-between;align-items:center;background:#fafbff;border-top:1px solid #eef0f5;">
-        <span style="font-size:11px;color:#9aa0b0;font-weight:600;">Showing 4 of 1,280 results</span>
+        <span style="font-size:11px;color:#000000;font-weight:600;">Showing 4 of 1,280 results</span>
         <div style="display:flex;gap:6px;">
-          <button style="padding:5px 10px;background:white;color:#9aa0b0;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">← Prev</button>
+          <button style="padding:5px 10px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">← Prev</button>
           <button style="padding:5px 12px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">1</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">3</button>
-          <button style="padding:5px 10px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
+          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
+          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">3</button>
+          <button style="padding:5px 10px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
         </div>
       </div>
     </div>
@@ -271,7 +271,7 @@
 function setActive(btn) {
   ['btn-6m','btn-yr'].forEach(id => {
     const b = document.getElementById(id);
-    b.style.background = '#f6f8fc'; b.style.color = '#9aa0b0'; b.style.border = '1px solid #eef0f5';
+    b.style.background = '#f6f8fc'; b.style.color = '#000000'; b.style.border = '1px solid #eef0f5';
   });
   btn.style.background = '#002645'; btn.style.color = 'white'; btn.style.border = 'none';
 }

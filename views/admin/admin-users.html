@@ -14,7 +14,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -57,10 +57,10 @@
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
       <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Central Ledger</div>
-      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">User Management</div>
+      <div class="font-headline text-3xl font-extrabold text-black dark:text-white tracking-tight mt-1">User Management</div>
     </div>
     <div style="display:flex;gap:12px;">
-      <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:10px;font-size:13px;font-weight:600;color:#5a6270;cursor:pointer;">
+      <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:10px;font-size:13px;font-weight:600;color:#000000;cursor:pointer;">
         <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> Export List
       </button>
       <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#002645;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;">
@@ -93,7 +93,7 @@
 
     <!-- Search -->
     <div style="margin-bottom:20px;position:relative;max-width:480px;">
-      <span class="material-symbols-outlined" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#9aa0b0;">search</span>
+      <span class="material-symbols-outlined" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#000000;">search</span>
       <input id="user-search" type="text" placeholder="Search by name, email, or ID..." style="width:100%;padding:11px 14px 11px 42px;background:white;border:1px solid #eef0f5;border-radius:10px;font-size:13px;outline:none;box-sizing:border-box;"/>
     </div>
 
@@ -116,19 +116,19 @@
               <div style="display:flex;align-items:center;gap:12px;">
                 <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">MV</div>
                 <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Marcus Vane</div>
-                  <div style="font-size:11px;color:#9aa0b0;">Joined Oct 2023</div>
+                  <div style="font-weight:700;color:#000000;">Marcus Vane</div>
+                  <div style="font-size:11px;color:#000000;">Joined Oct 2023</div>
                 </div>
               </div>
             </td>
-            <td style="color:#5a6270;">m.vane@finzo.com</td>
-            <td style="color:#5a6270;">Savings</td>
+            <td style="color:#000000;">m.vane@finzo.com</td>
+            <td style="color:#000000;">Savings</td>
             <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
-            <td style="color:#5a6270;font-size:12px;">Tier-1 Retail</td>
+            <td style="color:#000000;font-size:12px;">Tier-1 Retail</td>
             <td style="text-align:right;">
               <div style="display:flex;gap:6px;justify-content:flex-end;">
                 <a href="admin-user-detail.html" style="padding:6px;background:#f0f2ff;color:#6c63ff;border-radius:8px;display:inline-flex;text-decoration:none;" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></a>
-                <button style="padding:6px;background:#f6f8fc;color:#9aa0b0;border:none;border-radius:8px;cursor:pointer;" title="Block"><span class="material-symbols-outlined" style="font-size:18px;">block</span></button>
+                <button style="padding:6px;background:#f6f8fc;color:#000000;border:none;border-radius:8px;cursor:pointer;" title="Block"><span class="material-symbols-outlined" style="font-size:18px;">block</span></button>
                 <button onclick="this.closest('tr').remove()" style="padding:6px;background:#ffeef0;color:#e17055;border:none;border-radius:8px;cursor:pointer;" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
               </div>
             </td>
@@ -138,15 +138,15 @@
               <div style="display:flex;align-items:center;gap:12px;">
                 <div class="admin-avatar" style="background:#f3e8ff;color:#7c3aed;">ES</div>
                 <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Elena Sterling</div>
-                  <div style="font-size:11px;color:#9aa0b0;">Joined Jan 2024</div>
+                  <div style="font-weight:700;color:#000000;">Elena Sterling</div>
+                  <div style="font-size:11px;color:#000000;">Joined Jan 2024</div>
                 </div>
               </div>
             </td>
-            <td style="color:#5a6270;">e.sterling@architect.io</td>
-            <td style="color:#5a6270;">Current</td>
+            <td style="color:#000000;">e.sterling@architect.io</td>
+            <td style="color:#000000;">Current</td>
             <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;"></span>Suspended</span></td>
-            <td style="color:#5a6270;font-size:12px;">Premium Wealth</td>
+            <td style="color:#000000;font-size:12px;">Premium Wealth</td>
             <td style="text-align:right;">
               <div style="display:flex;gap:6px;justify-content:flex-end;">
                 <a href="admin-user-detail.html" style="padding:6px;background:#f0f2ff;color:#6c63ff;border-radius:8px;display:inline-flex;text-decoration:none;" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></a>
@@ -160,19 +160,19 @@
               <div style="display:flex;align-items:center;gap:12px;">
                 <div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">JT</div>
                 <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Julian Thorne</div>
-                  <div style="font-size:11px;color:#9aa0b0;">Joined Nov 2023</div>
+                  <div style="font-weight:700;color:#000000;">Julian Thorne</div>
+                  <div style="font-size:11px;color:#000000;">Joined Nov 2023</div>
                 </div>
               </div>
             </td>
-            <td style="color:#5a6270;">j.thorne@techflow.net</td>
-            <td style="color:#5a6270;">Savings</td>
+            <td style="color:#000000;">j.thorne@techflow.net</td>
+            <td style="color:#000000;">Savings</td>
             <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
-            <td style="color:#5a6270;font-size:12px;">Global Institutional</td>
+            <td style="color:#000000;font-size:12px;">Global Institutional</td>
             <td style="text-align:right;">
               <div style="display:flex;gap:6px;justify-content:flex-end;">
                 <a href="admin-user-detail.html" style="padding:6px;background:#f0f2ff;color:#6c63ff;border-radius:8px;display:inline-flex;text-decoration:none;" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></a>
-                <button style="padding:6px;background:#f6f8fc;color:#9aa0b0;border:none;border-radius:8px;cursor:pointer;" title="Block"><span class="material-symbols-outlined" style="font-size:18px;">block</span></button>
+                <button style="padding:6px;background:#f6f8fc;color:#000000;border:none;border-radius:8px;cursor:pointer;" title="Block"><span class="material-symbols-outlined" style="font-size:18px;">block</span></button>
                 <button onclick="this.closest('tr').remove()" style="padding:6px;background:#ffeef0;color:#e17055;border:none;border-radius:8px;cursor:pointer;" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
               </div>
             </td>
@@ -182,15 +182,15 @@
               <div style="display:flex;align-items:center;gap:12px;">
                 <div class="admin-avatar" style="background:#ffeef0;color:#e17055;">SB</div>
                 <div>
-                  <div style="font-weight:700;color:#0a0f1e;">Sienna Brooks</div>
-                  <div style="font-size:11px;color:#9aa0b0;">Joined Feb 2024</div>
+                  <div style="font-weight:700;color:#000000;">Sienna Brooks</div>
+                  <div style="font-size:11px;color:#000000;">Joined Feb 2024</div>
                 </div>
               </div>
             </td>
-            <td style="color:#5a6270;">s.brooks@finstrat.org</td>
-            <td style="color:#5a6270;">Current</td>
+            <td style="color:#000000;">s.brooks@finstrat.org</td>
+            <td style="color:#000000;">Current</td>
             <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;"></span>Locked</span></td>
-            <td style="color:#5a6270;font-size:12px;">Tier-2 Enterprise</td>
+            <td style="color:#000000;font-size:12px;">Tier-2 Enterprise</td>
             <td style="text-align:right;">
               <div style="display:flex;gap:6px;justify-content:flex-end;">
                 <a href="admin-user-detail.html" style="padding:6px;background:#f0f2ff;color:#6c63ff;border-radius:8px;display:inline-flex;text-decoration:none;" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></a>
@@ -202,11 +202,11 @@
         </tbody>
       </table>
       <div style="padding:14px 24px;display:flex;justify-content:space-between;align-items:center;background:#fafbff;border-top:1px solid #eef0f5;">
-        <span style="font-size:11px;color:#9aa0b0;font-weight:600;">Showing 4 of 12,842 users</span>
+        <span style="font-size:11px;color:#000000;font-weight:600;">Showing 4 of 12,842 users</span>
         <div style="display:flex;gap:6px;">
           <button style="padding:5px 12px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">1</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
-          <button style="padding:5px 12px;background:white;color:#5a6270;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
+          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
+          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
         </div>
       </div>
     </div>

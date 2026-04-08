@@ -25,7 +25,7 @@ tailwind.config = {
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
 <!-- SIDEBAR -->
 <nav class="admin-sidebar">
@@ -72,8 +72,8 @@ tailwind.config = {
   <!-- TOP BAR -->
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER ONBOARDING</div>
-      <div class="font-headline text-3xl font-extrabold text-indigo-950 dark:text-white tracking-tight mt-1">Pending Account Approvals</div>
+      <div class="text-[11px] font-bold tracking-widest text-black dark:text-on-surface-variant uppercase">USER ONBOARDING</div>
+      <div class="font-headline text-3xl font-extrabold text-black dark:text-white tracking-tight mt-1">Pending Account Approvals</div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;">
       <div style="display:flex;align-items:center;gap:8px;background:#e8f8f2;padding:6px 14px;border-radius:20px;">
@@ -91,7 +91,7 @@ tailwind.config = {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;border-bottom:1px solid #eef0f5;padding-bottom:16px;">
             <div style="display:flex;gap:16px;align-items:center;">
                 <div style="position:relative;">
-                    <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9aa0b0;font-size:18px;">search</span>
+                    <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#000000;font-size:18px;">search</span>
                     <input type="text" placeholder="Search applications..." style="padding:8px 12px 8px 36px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;width:240px;outline:none;" />
                 </div>
                 <div class="finzo-dropdown" style="width:160px;">
@@ -110,9 +110,9 @@ tailwind.config = {
             </div>
             <div style="display:flex;background:#f0f2ff;border-radius:8px;padding:4px;">
                 <button style="padding:6px 12px;background:white;color:#002645;font-weight:600;font-size:12px;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,0.05);border:none;">All Applications</button>
-                <button style="padding:6px 12px;color:#5a6270;font-weight:500;font-size:12px;border:none;background:transparent;">Pending <span style="background:#ba1a1a;color:white;padding:2px 6px;border-radius:10px;font-size:10px;margin-left:4px;">3</span></button>
-                <button style="padding:6px 12px;color:#5a6270;font-weight:500;font-size:12px;border:none;background:transparent;">Under Review</button>
-                <button style="padding:6px 12px;color:#5a6270;font-weight:500;font-size:12px;border:none;background:transparent;">Rejected</button>
+                <button style="padding:6px 12px;color:#000000;font-weight:500;font-size:12px;border:none;background:transparent;">Pending <span style="background:#ba1a1a;color:white;padding:2px 6px;border-radius:10px;font-size:10px;margin-left:4px;">3</span></button>
+                <button style="padding:6px 12px;color:#000000;font-weight:500;font-size:12px;border:none;background:transparent;">Under Review</button>
+                <button style="padding:6px 12px;color:#000000;font-weight:500;font-size:12px;border:none;background:transparent;">Rejected</button>
             </div>
         </div>
 
@@ -132,20 +132,20 @@ tailwind.config = {
             </thead>
             <tbody>
                 <tr>
-                    <td style="font-weight:600;color:#5a6270;">1</td>
+                    <td style="font-weight:600;color:#000000;">1</td>
                     <td>
                         <div style="display:flex;align-items:center;gap:12px;">
-                            <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">AK</div>
+                            <div class="admin-avatar" style="background:#dbeafe;color:#000000;">AK</div>
                             <div>
-                                <div style="font-weight:700;color:#0a0f1e;">Anjali Kapoor</div>
-                                <div style="font-size:11px;color:#9aa0b0;">anjali.k@gmail.com</div>
+                                <div style="font-weight:700;color:#000000;">Anjali Kapoor</div>
+                                <div style="font-size:11px;color:#000000;">anjali.k@gmail.com</div>
                             </div>
                         </div>
                     </td>
-                    <td style="color:#5a6270;font-size:13px;">+91 9876543210</td>
-                    <td style="color:#5a6270;font-size:13px;">Savings</td>
-                    <td style="color:#5a6270;font-size:13px;">Aadhaar Card</td>
-                    <td style="color:#5a6270;font-size:13px;">Oct 24, 2026</td>
+                    <td style="color:#000000;font-size:13px;">+91 9876543210</td>
+                    <td style="color:#000000;font-size:13px;">Savings</td>
+                    <td style="color:#000000;font-size:13px;">Aadhaar Card</td>
+                    <td style="color:#000000;font-size:13px;">Oct 24, 2026</td>
                     <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>Pending</span></td>
                     <td style="text-align:right;display:flex;justify-content:flex-end;gap:8px;">
                         <a href="admin-review-application.html" style="padding:6px 12px;background:#002645;color:white;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">Review</a>
@@ -153,20 +153,20 @@ tailwind.config = {
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-weight:600;color:#5a6270;">2</td>
+                    <td style="font-weight:600;color:#000000;">2</td>
                     <td>
                         <div style="display:flex;align-items:center;gap:12px;">
                             <div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">VM</div>
                             <div>
-                                <div style="font-weight:700;color:#0a0f1e;">Vikram Malhotra</div>
-                                <div style="font-size:11px;color:#9aa0b0;">v.malhotra@business.in</div>
+                                <div style="font-weight:700;color:#000000;">Vikram Malhotra</div>
+                                <div style="font-size:11px;color:#000000;">v.malhotra@business.in</div>
                             </div>
                         </div>
                     </td>
-                    <td style="color:#5a6270;font-size:13px;">+91 9123456789</td>
-                    <td style="color:#5a6270;font-size:13px;">Current</td>
-                    <td style="color:#5a6270;font-size:13px;">PAN Card</td>
-                    <td style="color:#5a6270;font-size:13px;">Oct 24, 2026</td>
+                    <td style="color:#000000;font-size:13px;">+91 9123456789</td>
+                    <td style="color:#000000;font-size:13px;">Current</td>
+                    <td style="color:#000000;font-size:13px;">PAN Card</td>
+                    <td style="color:#000000;font-size:13px;">Oct 24, 2026</td>
                     <td><span style="padding:4px 10px;background:#e8f3ff;color:#3b82f6;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"><span style="width:6px;height:6px;background:#3b82f6;border-radius:50%;display:inline-block;margin-right:4px;"></span>Under Review</span></td>
                     <td style="text-align:right;display:flex;justify-content:flex-end;gap:8px;">
                         <a href="admin-review-application.html" style="padding:6px 12px;background:#002645;color:white;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">Continue Review</a>
@@ -174,20 +174,20 @@ tailwind.config = {
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-weight:600;color:#5a6270;">3</td>
+                    <td style="font-weight:600;color:#000000;">3</td>
                     <td>
                         <div style="display:flex;align-items:center;gap:12px;">
                             <div class="admin-avatar" style="background:#ffeef0;color:#e17055;">SD</div>
                             <div>
-                                <div style="font-weight:700;color:#0a0f1e;">Sanjay Desai</div>
-                                <div style="font-size:11px;color:#9aa0b0;">sanjay99@yahoo.in</div>
+                                <div style="font-weight:700;color:#000000;">Sanjay Desai</div>
+                                <div style="font-size:11px;color:#000000;">sanjay99@yahoo.in</div>
                             </div>
                         </div>
                     </td>
-                    <td style="color:#5a6270;font-size:13px;">+91 9988776655</td>
-                    <td style="color:#5a6270;font-size:13px;">Savings</td>
-                    <td style="color:#5a6270;font-size:13px;">Voter ID</td>
-                    <td style="color:#5a6270;font-size:13px;">Oct 23, 2026</td>
+                    <td style="color:#000000;font-size:13px;">+91 9988776655</td>
+                    <td style="color:#000000;font-size:13px;">Savings</td>
+                    <td style="color:#000000;font-size:13px;">Voter ID</td>
+                    <td style="color:#000000;font-size:13px;">Oct 23, 2026</td>
                     <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>Pending</span></td>
                     <td style="text-align:right;display:flex;justify-content:flex-end;gap:8px;">
                         <a href="admin-review-application.html" style="padding:6px 12px;background:#002645;color:white;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">Review</a>
