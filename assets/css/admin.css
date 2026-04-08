@@ -18,25 +18,30 @@
 }
 
 .admin-sidebar-brand {
-    padding: 28px 24px 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 28px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .admin-sidebar-brand .brand-name {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: #ffffff;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .admin-sidebar-brand .brand-sub {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.25em;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.35em;
     text-transform: uppercase;
     color: #00b894;
-    margin-top: 2px;
+    margin-top: 4px;
+    opacity: 0.8;
 }
 
 .admin-nav {
@@ -58,25 +63,40 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 11px 16px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
     text-decoration: none;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.45);
     font-size: 13px;
     font-weight: 600;
-    transition: all 0.2s ease;
-    margin-bottom: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
 }
 
 .admin-nav-item:hover {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
     color: rgba(255,255,255,0.9);
+    padding-left: 22px;
 }
 
 .admin-nav-item.active {
-    background: rgba(0, 184, 148, 0.12);
+    background: linear-gradient(90deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.02) 100%);
     color: #00b894;
-    border: 1px solid rgba(0, 184, 148, 0.2);
+    font-weight: 700;
+}
+
+.admin-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    background: #00b894;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 12px rgba(0, 184, 148, 0.8);
 }
 
 .admin-nav-item .material-symbols-outlined {
@@ -119,15 +139,25 @@
 
 /* Top bar */
 .admin-topbar {
-    background: #ffffff;
-    border-bottom: 1px solid #e8eaf0;
-    padding: 16px 36px;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(0, 38, 69, 0.06) !important;
+    padding: 18px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: sticky !important;
     top: 0;
     z-index: 50;
+    color: #000000 !important;
+}
+
+[data-theme="dark"] .admin-topbar,
+.dark .admin-topbar {
+    background: rgba(10, 15, 30, 0.8) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
 }
 
 /* Stat cards - Premium Upgrade */

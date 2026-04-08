@@ -117,9 +117,11 @@ $(document).ready(function() {
     const darkModeBtn = $('.material-symbols-outlined:contains("dark_mode")').parent();
     darkModeBtn.on('click', function(e) {
         e.preventDefault();
-        $('html').toggleClass('dark');
+        const isDark = $('html').toggleClass('dark').hasClass('dark');
+        $('html').attr('data-theme', isDark ? 'dark' : 'light');
+        
         // Icon swap
-        if ($('html').hasClass('dark')) {
+        if (isDark) {
             $(this).find('.material-symbols-outlined').text('light_mode');
         } else {
             $(this).find('.material-symbols-outlined').text('dark_mode');
