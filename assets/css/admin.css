@@ -2,36 +2,42 @@
    FINZO ADMIN PANEL — SHARED STYLES
    ============================================ */
 
-/* Sidebar */
+/* Sidebar Variables - Standardised */
+:root {
+  --sidebar-bg: #0a0f1e;
+  --sidebar-text: rgba(255, 255, 255, 0.55);
+  --sidebar-text-muted: rgba(255, 255, 255, 0.25);
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-brand-text: #ffffff;
+  --sidebar-item-hover: rgba(255, 255, 255, 0.03);
+  --sidebar-active-bg: linear-gradient(90deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.02) 100%);
+}
+
 .admin-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
     width: 260px;
-    background: #0a0f1e;
+    background: var(--sidebar-bg);
     display: flex;
     flex-direction: column;
     padding: 0;
     z-index: 100;
-    border-right: 1px solid rgba(0, 184, 148, 0.12);
+    border-right: 1px solid var(--sidebar-border);
 }
 
 .admin-sidebar-brand {
     padding: 32px 28px 28px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--sidebar-border);
 }
 
 .admin-sidebar-brand .brand-name {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 24px;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--sidebar-brand-text);
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .admin-sidebar-brand .brand-sub {
@@ -55,7 +61,7 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    color: var(--sidebar-text-muted);
     padding: 16px 12px 8px;
 }
 
@@ -66,7 +72,7 @@
     padding: 12px 18px;
     border-radius: 12px;
     text-decoration: none;
-    color: rgba(255,255,255,0.45);
+    color: var(--sidebar-text);
     font-size: 13px;
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -76,13 +82,13 @@
 }
 
 .admin-nav-item:hover {
-    background: rgba(255,255,255,0.03);
-    color: rgba(255,255,255,0.9);
+    background: var(--sidebar-item-hover);
+    color: #ffffff;
     padding-left: 22px;
 }
 
 .admin-nav-item.active {
-    background: linear-gradient(90deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.02) 100%);
+    background: var(--sidebar-active-bg);
     color: #00b894;
     font-weight: 700;
 }
@@ -105,7 +111,7 @@
 
 .admin-sidebar-footer {
     padding: 16px 12px;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid var(--sidebar-border);
 }
 
 .admin-logout-btn {
@@ -114,7 +120,7 @@
     gap: 12px;
     padding: 11px 16px;
     border-radius: 10px;
-    color: rgba(255,255,255,0.4);
+    color: var(--sidebar-text-muted);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -126,8 +132,8 @@
 }
 
 .admin-logout-btn:hover {
-    background: rgba(186, 26, 26, 0.12);
-    color: #ff6b6b;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
 }
 
 /* Main content */
@@ -523,3 +529,77 @@
 
 .aura-primary { background: #002645; right: -50px; top: -50px; }
 .aura-success { background: #00b894; left: -50px; bottom: -50px; }
+
+/* ============================================================
+   PREMIUM BUTTON COMPONENTS
+   ============================================================ */
+
+.admin-btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 11px 24px !important;
+    background: linear-gradient(135deg, #6c63ff 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 10px 20px -10px rgba(108, 99, 255, 0.5) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.admin-btn-primary:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 20px 25px -10px rgba(108, 99, 255, 0.4) !important;
+    filter: brightness(1.1) !important;
+}
+
+.admin-btn-primary:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+.admin-btn-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    background: rgba(108, 99, 255, 0.06) !important;
+    color: #4f46e5 !important;
+    border: 1px solid rgba(108, 99, 255, 0.15) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.admin-btn-secondary:hover {
+    background: rgba(108, 99, 255, 0.12) !important;
+    border-color: rgba(108, 99, 255, 0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Dark Mode Overrides for Buttons */
+[data-theme="dark"] .admin-btn-primary {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+    box-shadow: 0 10px 25px -8px rgba(129, 140, 248, 0.4) !important;
+}
+
+[data-theme="dark"] .admin-btn-secondary {
+    background: rgba(129, 140, 248, 0.08) !important;
+    color: #a5b4fc !important;
+    border-color: rgba(129, 140, 248, 0.2) !important;
+}
+
+[data-theme="dark"] .admin-btn-secondary:hover {
+    background: rgba(129, 140, 248, 0.15) !important;
+    border-color: rgba(129, 140, 248, 0.4) !important;
+}
