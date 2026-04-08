@@ -21,6 +21,8 @@ tailwind.config = {
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
@@ -94,12 +96,12 @@ tailwind.config = {
                 </div>
                 <div class="finzo-dropdown" style="width:160px;">
                     <input type="hidden" name="id_type_filter" value="">
-                    <div class="finzo-dropdown-trigger" style="padding:8px 12px;border:1px solid #eef0f5;border-radius:8px;font-size:13px;background:white;cursor:pointer;">
+                    <div class="finzo-dropdown-trigger">
                         <span class="dropdown-label">All ID Types</span>
-                        <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+                        <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
                     </div>
                     <div class="finzo-dropdown-menu">
-                        <div class="finzo-dropdown-option" data-value="All ID Types">All ID Types</div>
+                        <div class="finzo-dropdown-option is-selected" data-value="All ID Types">All ID Types</div>
                         <div class="finzo-dropdown-option" data-value="Aadhaar Card">Aadhaar Card</div>
                         <div class="finzo-dropdown-option" data-value="PAN Card">PAN Card</div>
                     </div>
@@ -198,7 +200,6 @@ tailwind.config = {
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/main.js"></script>
 </body>
 </html>

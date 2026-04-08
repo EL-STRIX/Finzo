@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="../../assets/js/theme.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-indigo-950 dark:text-on-surface antialiased">
 
@@ -165,24 +167,24 @@
         <div style="display:flex;gap:10px;">
           <div class="finzo-dropdown" style="width:140px;">
             <input type="hidden" name="date_range" value="">
-            <div class="finzo-dropdown-trigger" style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+            <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">Last 30 Days</span>
-              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+              <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option" data-value="Last 30 Days">Last 30 Days</div>
+              <div class="finzo-dropdown-option is-selected" data-value="Last 30 Days">Last 30 Days</div>
               <div class="finzo-dropdown-option" data-value="Last 3 Months">Last 3 Months</div>
               <div class="finzo-dropdown-option" data-value="Custom">Custom</div>
             </div>
           </div>
           <div class="finzo-dropdown" style="width:140px;">
             <input type="hidden" id="type-filter" name="type_filter" value="">
-            <div class="finzo-dropdown-trigger" style="padding:8px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:12px;color:#5a6270;cursor:pointer;">
+            <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">All Types</span>
-              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+              <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option" data-value="All Types">All Types</div>
+              <div class="finzo-dropdown-option is-selected" data-value="All Types">All Types</div>
               <div class="finzo-dropdown-option" data-value="Credits Only">Credits Only</div>
               <div class="finzo-dropdown-option" data-value="Debits Only">Debits Only</div>
             </div>
@@ -264,7 +266,6 @@
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/main.js"></script>
 <script>
 function setActive(btn) {

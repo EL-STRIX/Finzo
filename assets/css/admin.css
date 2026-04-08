@@ -295,3 +295,122 @@
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d0d4e0; border-radius: 99px; }
+
+/* ============================================================
+   ADMIN DROPDOWN COMPONENT — ANIMATED
+   ============================================================ */
+
+@keyframes admin-dropdown-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.finzo-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.finzo-dropdown-trigger {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  user-select: none !important;
+  background: #ffffff !important;
+  border: 1px solid #eef0f5 !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  color: #5a6270 !important;
+}
+
+.finzo-dropdown-trigger:hover {
+  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+}
+
+.finzo-dropdown-trigger.is-open {
+  border-color: #002645 !important;
+  box-shadow: 0 0 0 4px rgba(0, 38, 69, 0.08) !important;
+  background: #ffffff !important;
+}
+
+.finzo-dropdown-trigger .chevron {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: #9aa0b0 !important;
+}
+
+.finzo-dropdown-trigger.is-open .chevron {
+  transform: rotate(180deg) !important;
+  color: #002645 !important;
+}
+
+.finzo-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  min-width: 180px;
+  background: #ffffff !important;
+  border: 1px solid #eef0f5 !important;
+  border-radius: 12px !important;
+  padding: 6px !important;
+  z-index: 1000 !important;
+  box-shadow: 0 12px 30px -4px rgba(0, 38, 69, 0.12), 0 4px 8px -2px rgba(0, 38, 69, 0.08) !important;
+  transform-origin: top center;
+}
+
+.finzo-dropdown-menu.is-open {
+  display: block !important;
+  animation: admin-dropdown-enter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+.finzo-dropdown-option {
+  padding: 9px 12px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.finzo-dropdown-option:hover {
+  background: #f1f5f9 !important;
+  color: #002645 !important;
+  padding-left: 16px !important;
+}
+
+.finzo-dropdown-option.is-selected {
+  background: #eef2ff !important;
+  color: #4f46e5 !important;
+}
+
+/* Dark mode support within forced-white admin cards */
+[data-theme="dark"] .finzo-dropdown-trigger {
+  background: #1c2128 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .finzo-dropdown-menu {
+  background: #1c2128 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+[data-theme="dark"] .finzo-dropdown-option {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .finzo-dropdown-option:hover {
+  background: rgba(255,255,255,0.05) !important;
+  color: #ffffff !important;
+}

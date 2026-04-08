@@ -28,6 +28,8 @@
   </script>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/admin-dropdowns.js"></script>
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="../../assets/js/theme.js"></script>
 </head>
@@ -331,19 +333,18 @@
           </div>
 
           <!-- Status filter dropdown -->
-          <div class="finzo-dropdown" style="width:160px;">
-            <input type="hidden" id="dash-status-filter" onchange="filterDashUsers()" value="">
-            <div class="finzo-dropdown-trigger"
-              style="padding:8px 14px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:8px;font-size:12px;color:inherit;cursor:pointer;outline:none;">
-              <span class="dropdown-label font-bold uppercase tracking-widest" style="font-size:10px;color:#9aa0b0;">All
-                Status</span>
-              <span class="material-symbols-outlined chevron text-sm" style="color:#9aa0b0;">expand_more</span>
+          <div class="finzo-dropdown" style="width:160px;flex-shrink:0;">
+            <input type="hidden" id="dash-status-filter" value="">
+            <div class="finzo-dropdown-trigger">
+              <span class="dropdown-label">All Status</span>
+              <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option" data-value="">All Status</div>
+              <div class="finzo-dropdown-option is-selected" data-value="">All Status</div>
               <div class="finzo-dropdown-option" data-value="low risk">Low Risk</div>
               <div class="finzo-dropdown-option" data-value="medium risk">Medium Risk</div>
               <div class="finzo-dropdown-option" data-value="elevated">Elevated</div>
+              <div class="finzo-dropdown-option" data-value="inactive">Inactive</div>
               <div class="finzo-dropdown-option" data-value="flagged">Flagged</div>
             </div>
           </div>
@@ -452,7 +453,6 @@
     </div>
   </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/main.js"></script>
   <style>
     [data-theme="dark"] #dash-user-search,
@@ -486,6 +486,14 @@
     }
   </style>
   <script>
+    /* ═══════════════════════════════════════════════
+       TABLE REFRESH LOGIC — DASHBOARD SPECIFIC
+       ═══════════════════════════════════════════════ */
+    // Trigger table refresh when status change
+    $(document).on('change', '#dash-status-filter', function() {
+      filterDashUsers();
+    });
+
     var dashCurrentPage = 1, dashRowsPerPage = 3;
     function dashGoPage(p) { dashCurrentPage = p; renderDashTable(); }
     function filterDashUsers() { dashCurrentPage = 1; renderDashTable(); }
