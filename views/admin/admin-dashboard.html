@@ -137,6 +137,14 @@
         </div>
 
         <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background:#e8f3ff;">
+            <span class="material-symbols-outlined" style="color:#3b82f6;">group</span>
+          </div>
+          <div class="admin-stat-label">TOTAL USERS</div>
+          <div class="admin-stat-value">128,400 <span class="admin-stat-delta positive">+12%</span></div>
+        </div>
+
+        <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#fff8e1;">
             <span class="material-symbols-outlined" style="color:#f39c12;">percent</span>
           </div>
@@ -185,14 +193,6 @@
           <div class="admin-stat-label">Password Resets Today</div>
           <div class="admin-stat-value">24 <span class="admin-stat-delta"
               style="background:#f3e8ff;color:#9333ea;">Today</span></div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:#e8f3ff;">
-            <span class="material-symbols-outlined" style="color:#3b82f6;">group</span>
-          </div>
-          <div class="admin-stat-label">TOTAL USERS</div>
-          <div class="admin-stat-value">128,400 <span class="admin-stat-delta positive">+12%</span></div>
         </div>
 
         <!-- <div class="admin-stat-card">
@@ -288,28 +288,19 @@
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
               <span style="font-size:11px;font-weight:700;color:#5a6270;">Savings Accounts</span>
-              <span style="font-size:11px;font-weight:700;color:#00b894;">62%</span>
+              <span style="font-size:11px;font-weight:700;color:#00b894;">65%</span>
             </div>
             <div class="admin-progress">
-              <div class="admin-progress-fill" style="width:62%;background:#00b894;"></div>
+              <div class="admin-progress-fill" style="width:65%;background:#00b894;"></div>
             </div>
           </div>
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
               <span style="font-size:11px;font-weight:700;color:#5a6270;">Current Accounts</span>
-              <span style="font-size:11px;font-weight:700;color:#3b82f6;">31%</span>
+              <span style="font-size:11px;font-weight:700;color:#3b82f6;">35%</span>
             </div>
             <div class="admin-progress">
-              <div class="admin-progress-fill" style="width:31%;background:#3b82f6;"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-size:11px;font-weight:700;color:#5a6270;">Frozen Accounts</span>
-              <span style="font-size:11px;font-weight:700;color:#e17055;">7%</span>
-            </div>
-            <div class="admin-progress">
-              <div class="admin-progress-fill" style="width:7%;background:#e17055;"></div>
+              <div class="admin-progress-fill" style="width:35%;background:#3b82f6;"></div>
             </div>
           </div>
         </div>
@@ -317,7 +308,7 @@
     </div>
 
     <!-- RECENT USERS TABLE -->
-    <div class="admin-card elevation-md transition-all duration-300">
+    <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix">
       <div
         class="p-6 border-b border-slate-100 dark:border-surface-container flex justify-between items-center bg-white dark:bg-surface-container-lowest">
         <div class="admin-section-title text-indigo-950 dark:text-white">Recent User Activity</div>
@@ -490,7 +481,7 @@
        TABLE REFRESH LOGIC — DASHBOARD SPECIFIC
        ═══════════════════════════════════════════════ */
     // Trigger table refresh when status change
-    $(document).on('change', '#dash-status-filter', function() {
+    $(document).on('change', '#dash-status-filter', function () {
       filterDashUsers();
     });
 

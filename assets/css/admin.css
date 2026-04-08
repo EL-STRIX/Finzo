@@ -363,9 +363,14 @@
   border: 1px solid #eef0f5 !important;
   border-radius: 12px !important;
   padding: 6px !important;
-  z-index: 1000 !important;
+  z-index: 2000 !important;
   box-shadow: 0 12px 30px -4px rgba(0, 38, 69, 0.12), 0 4px 8px -2px rgba(0, 38, 69, 0.08) !important;
   transform-origin: top center;
+}
+
+/* Visibility fix for cards with overflow: hidden */
+.admin-card-dropdown-fix {
+  overflow: visible !important;
 }
 
 .finzo-dropdown-menu.is-open {
