@@ -166,6 +166,28 @@
   color: var(--dk-text-1) !important;
 }
 
+/* Force all hardcoded black text to white in dark mode */
+[data-theme="dark"] div[style*="color:#000000"],
+[data-theme="dark"] span[style*="color:#000000"],
+[data-theme="dark"] p[style*="color:#000000"],
+[data-theme="dark"] td[style*="color:#000000"],
+[data-theme="dark"] [style*="color:var(--dk-text,#000000)"],
+[data-theme="dark"] [style*="color: var(--dk-text,#000000)"],
+[data-theme="dark"] [style*="color: #000000"] {
+  color: var(--dk-text-1) !important;
+}
+
+/* Force specific metric values and secondary text */
+[data-theme="dark"] .admin-stat-value,
+[data-theme="dark"] .admin-section-title,
+[data-theme="dark"] .admin-stat-label {
+  color: var(--dk-text-1) !important;
+}
+
+[data-theme="dark"] .admin-stat-label {
+  color: var(--dk-text-2) !important;
+}
+
 /* --------------------------------
    ADMIN: TABLES
 -------------------------------- */
@@ -198,6 +220,13 @@
 [data-theme="dark"] .status-badge.badge-error   { background: var(--dk-red-t) !important;   color: var(--dk-red) !important; }
 [data-theme="dark"] .status-badge.badge-warn    { background: var(--dk-amber-t) !important; color: var(--dk-amber) !important; }
 [data-theme="dark"] .status-badge.badge-info    { background: var(--dk-purple-t) !important; color: var(--dk-purple) !important; }
+
+/* Table Approval Badges (inline styled background overrides) */
+[data-theme="dark"] span[style*="background:#e8f8f2"] { background: var(--dk-green-t) !important; }
+[data-theme="dark"] span[style*="background:#ffebee"] { background: var(--dk-red-t) !important; }
+[data-theme="dark"] span[style*="background:#fff8e1"] { background: var(--dk-amber-t) !important; }
+[data-theme="dark"] span[style*="background:#e8f3ff"] { background: var(--dk-blue-t) !important; }
+[data-theme="dark"] span[style*="background:#f0f2ff"] { background: var(--dk-purple-t) !important; }
 
 /* --------------------------------
    PROGRESS BARS
