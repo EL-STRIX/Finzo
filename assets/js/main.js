@@ -113,20 +113,7 @@ $(document).ready(function() {
         }
     });
 
-    // Dark Mode Toggle Logic
-    const darkModeBtn = $('.material-symbols-outlined:contains("dark_mode")').parent();
-    darkModeBtn.on('click', function(e) {
-        e.preventDefault();
-        const isDark = $('html').toggleClass('dark').hasClass('dark');
-        $('html').attr('data-theme', isDark ? 'dark' : 'light');
-        
-        // Icon swap
-        if (isDark) {
-            $(this).find('.material-symbols-outlined').text('light_mode');
-        } else {
-            $(this).find('.material-symbols-outlined').text('dark_mode');
-        }
-    });
+    // Re-highlight sidebar if dynamic navigation occurs (handled by highlightActiveSidebar)
 
     // Authentication Guard Logic
     window.isAuthenticated = function() {

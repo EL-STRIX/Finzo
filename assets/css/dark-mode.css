@@ -173,6 +173,8 @@
 [data-theme="dark"] td[style*="color:#000000"],
 [data-theme="dark"] [style*="color:var(--dk-text,#000000)"],
 [data-theme="dark"] [style*="color: var(--dk-text,#000000)"],
+[data-theme="dark"] [style*="color:var(--dk-text-muted,#000000)"],
+[data-theme="dark"] [style*="color: var(--dk-text-muted,#000000)"],
 [data-theme="dark"] [style*="color: #000000"] {
   color: var(--dk-text-1) !important;
 }
