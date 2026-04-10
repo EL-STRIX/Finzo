@@ -50,14 +50,18 @@
       <a href="admin-pending-approvals.html" class="admin-nav-item">
         <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
         <span
-          style="background:rgba(255,255,255,0.06);color:#00b894;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;border:1px solid rgba(0,184,148,0.2);">03</span>
+          style="background:rgba(255,59,48,0.1);color:#ff3b30;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;border:1px solid rgba(255,59,48,0.2);">03</span>
       </a>
       <a href="admin-users.html" class="admin-nav-item">
         <span class="material-symbols-outlined">group</span> User Management
       </a>
+      <a href="admin-tellers.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">badge</span> Teller Management
+      </a>
       <a href="admin-transactions.html" class="admin-nav-item">
         <span class="material-symbols-outlined">swap_horiz</span> Transactions
       </a>
+
       <div class="admin-nav-section">System</div>
       <a href="admin-audit-log.html" class="admin-nav-item">
         <span class="material-symbols-outlined">manage_search</span> Audit Logs
@@ -65,13 +69,16 @@
       <a href="admin-interest.html" class="admin-nav-item">
         <span class="material-symbols-outlined">percent</span> Interest Management
       </a>
-    </div>
-    <div class="admin-sidebar-footer">
-      <button class="theme-toggle-btn" data-toggle-theme>
+      <a href="admin-deleted-users.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">person_remove</span> Deleted Users
+      </a>
+
+      <div class="admin-nav-section">ACCOUNT</div>
+      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
         <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
         <span data-theme-label>Dark Mode</span>
       </button>
-      <a href="../../views/auth/login.html" class="admin-logout-btn">
+      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
         <span class="material-symbols-outlined">logout</span> Logout
       </a>
     </div>
@@ -289,7 +296,7 @@
       <!-- Account Type Split -->
       <div class="admin-card elevation-md transition-all duration-300" style="padding:24px;">
         <div class="admin-stat-label" style="margin-bottom:4px;">ACCOUNT OVERVIEW</div>
-        <div class="admin-section-title" style="font-size:16px;margin-bottom:24px;">Account Type Split</div>
+        <div class="admin-section-title !text-black dark:!text-white" style="font-size:16px;margin-bottom:24px;">Account Type Split</div>
 
         <div style="display:flex;align-items:center;gap:32px;">
           <!-- SVG Donut Chart -->
@@ -597,19 +604,18 @@
         c.textContent = filtered.length === 0 ? 'No users found' : 'Displaying ' + (filtered.length ? start + 1 : 0) + '-' + end + ' of ' + filtered.length + ' users'; 
       }
       var tp = Math.ceil(filtered.length / dashRowsPerPage);
-      // Update page buttons classes instead of manual styles
+      // Update page buttons
       for (var i = 1; i <= 2; i++) { 
         var btn = document.getElementById('dash-pg-' + i); 
         if (!btn) continue; 
         if (i === dashCurrentPage) { 
-          btn.className = 'admin-btn-primary';
-          // Clear any prev inline styles
-          btn.style.cssText = 'padding: 6px 14px !important; min-width: 38px;';
+          btn.classList.remove('admin-btn-secondary');
+          btn.classList.add('admin-btn-primary');
         } else { 
-          btn.className = 'admin-btn-secondary';
-          btn.style.cssText = 'padding: 6px 14px !important; min-width: 38px;';
+          btn.classList.remove('admin-btn-primary');
+          btn.classList.add('admin-btn-secondary');
         } 
-        btn.style.display = (i <= tp && tp > 1) ? '' : (i === 1 && tp === 1 ? '' : 'none');
+        btn.style.display = (i <= tp) ? 'inline-block' : 'none';
       }
       // Update next button target
       var nxt = document.getElementById('dash-pg-next');

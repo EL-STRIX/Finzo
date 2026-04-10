@@ -180,13 +180,12 @@
 }
 
 /* Force specific metric values and secondary text */
-[data-theme="dark"] .admin-stat-value,
-[data-theme="dark"] .admin-section-title,
-[data-theme="dark"] .admin-stat-label {
+[data-theme="dark"] .admin-stat-label,
+[data-theme="dark"] .admin-section-title {
   color: var(--dk-text-1) !important;
 }
 
-[data-theme="dark"] .admin-stat-label {
+[data-theme="dark"] .text-slate-400 {
   color: var(--dk-text-2) !important;
 }
 
@@ -247,14 +246,28 @@
 }
 
 /* Pagination buttons */
-[data-theme="dark"] div[style*="background:white"],
-[data-theme="dark"] div[style*="background: white"] {
+[data-theme="dark"] .admin-btn-secondary {
   background: var(--dk-raised) !important;
+  border-color: var(--dk-border-m) !important;
+  color: var(--dk-text-1) !important;
 }
-[data-theme="dark"] button[style*="background:white"] {
+[data-theme="dark"] .admin-btn-secondary:hover {
+  background: #2d333b !important;
+  border-color: rgba(255,255,255,0.2) !important;
+}
+
+[data-theme="dark"] .admin-btn-primary {
+  background: var(--dk-blue) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+[data-theme="dark"] button[style*="background:white"],
+[data-theme="dark"] button[style*="background: white"],
+[data-theme="dark"] button[style*="background:#f6f8fc"] {
   background: var(--dk-raised) !important;
   border-color: var(--dk-border) !important;
-  color: var(--dk-text-2) !important;
+  color: var(--dk-text-1) !important;
 }
 
 /* --------------------------------
