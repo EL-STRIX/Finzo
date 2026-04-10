@@ -534,6 +534,8 @@
         <span id="dash-row-counter" style="font-size:11px;color:#000000;font-weight:600;">Displaying 1-3 of 6
           users</span>
         <div style="display:flex;gap:8px;">
+          <button id="dash-pg-prev" onclick="dashGoPage(Math.max(dashCurrentPage-1, 1))" class="admin-btn-secondary"
+            style="padding: 6px 14px !important;">&larr; Previous</button>
           <button id="dash-pg-1" onclick="dashGoPage(1)" class="admin-btn-primary"
             style="padding: 6px 14px !important; min-width: 38px;">1</button>
           <button id="dash-pg-2" onclick="dashGoPage(2)" class="admin-btn-secondary"
@@ -616,6 +618,12 @@
           btn.classList.add('admin-btn-secondary');
         } 
         btn.style.display = (i <= tp) ? 'inline-block' : 'none';
+      }
+      // Update prev button target
+      var prv = document.getElementById('dash-pg-prev');
+      if(prv) {
+        prv.onclick = function() { dashGoPage(Math.max(dashCurrentPage - 1, 1)); };
+        prv.style.display = (dashCurrentPage > 1) ? '' : 'none';
       }
       // Update next button target
       var nxt = document.getElementById('dash-pg-next');
