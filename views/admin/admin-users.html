@@ -210,11 +210,18 @@
         </tbody>
       </table>
       <div style="padding:14px 24px;display:flex;justify-content:space-between;align-items:center;background:#fafbff;border-top:1px solid #eef0f5;">
-        <span style="font-size:11px;color:#000000;font-weight:600;">Showing 4 of 12,842 users</span>
-        <div style="display:flex;gap:6px;">
-          <button style="padding:5px 12px;background:#002645;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">1</button>
-          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">2</button>
-          <button style="padding:5px 12px;background:white;color:#000000;border:1px solid #eef0f5;border-radius:6px;font-size:11px;cursor:pointer;">Next →</button>
+        <span id="pagination-info" style="font-size:11px;color:#64748b;font-weight:600;">Showing 1-2 of 4 users</span>
+        <div style="display:flex;gap:8px;">
+          <button id="prev-btn" style="display:flex;align-items:center;gap:6px;padding:7px 16px;background:#f0f2ff;color:#6c63ff;border:1px solid #e0e2ff;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;">
+            <span class="material-symbols-outlined" style="font-size:16px;">west</span> Previous
+          </button>
+          <div id="page-numbers" style="display:flex;gap:6px;">
+            <button class="page-num active" data-page="1" style="padding:7px 14px;background:#6c63ff;color:white;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;">1</button>
+            <button class="page-num" data-page="2" style="padding:7px 14px;background:#f0f2ff;color:#6c63ff;border:1px solid #e0e2ff;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">2</button>
+          </div>
+          <button id="next-btn" style="display:flex;align-items:center;gap:6px;padding:7px 16px;background:#f0f2ff;color:#6c63ff;border:1px solid #e0e2ff;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;">
+            Next <span class="material-symbols-outlined" style="font-size:16px;">east</span>
+          </button>
         </div>
       </div>
     </div>
@@ -299,34 +306,111 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 $(function() {
-  // Search
+  let currentPage = 1;
+  const rowsPerPage = 2; // Small number to demonstrate pagination with mock data
+
+  function updatePagination() {
+    // Select rows that are NOT hidden by search
+    const $rows = $('#users-table tbody tr').not('[data-search-hidden="true"]');
+    const totalRows = $rows.length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    // Initial state: hide ALL rows in the table first
+    $('#users-table tbody tr').hide();
+
+    // Clamp current page
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+    if (currentPage < 1) currentPage = 1;
+
+    // Show only the relevant rows for the current page
+    $rows.each(function(index) {
+      if (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) {
+        $(this).show();
+      }
+    });
+
+    // Update Info
+    const start = totalRows === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, totalRows);
+    $('#pagination-info').text(`Showing ${start}-${end} of ${totalRows} users`);
+
+    // Update Buttons
+    const isFirstPage = currentPage === 1;
+    const isLastPage = currentPage === totalPages || totalPages === 0;
+
+    $('#prev-btn').css({
+      'opacity': isFirstPage ? '0.4' : '1',
+      'pointer-events': isFirstPage ? 'none' : 'auto'
+    });
+    $('#next-btn').css({
+      'opacity': isLastPage ? '0.4' : '1',
+      'pointer-events': isLastPage ? 'none' : 'auto'
+    });
+
+    // Update Page Numbers UI
+    $('.page-num').each(function() {
+      const p = $(this).data('page');
+      if (p === currentPage) {
+        $(this).css({ 'background': '#6c63ff', 'color': 'white', 'border': 'none', 'font-weight': '800' });
+      } else {
+        $(this).css({ 'background': '#f0f2ff', 'color': '#6c63ff', 'border': '1px solid #e0e2ff', 'font-weight': '700' });
+      }
+    });
+  }
+
+  // Initial render
+  updatePagination();
+
+  // Search logic marks rows but lets updatePagination handle the show/hide
   $('#user-search').on('input', function() {
     const q = $(this).val().toLowerCase();
     $('#users-table tbody tr').each(function() {
       const text = $(this).text().toLowerCase();
-      $(this).toggle(text.includes(q));
+      const isMatch = text.includes(q);
+      $(this).attr('data-search-hidden', !isMatch);
     });
+    currentPage = 1;
+    updatePagination();
+  });
+
+  // Pagination Clicks
+  $('#prev-btn').on('click', function(e) { 
+    e.preventDefault();
+    if (currentPage > 1) { 
+      currentPage--; 
+      updatePagination(); 
+    } 
+  });
+
+  $('#next-btn').on('click', function(e) { 
+    e.preventDefault();
+    const totalRows = $('#users-table tbody tr').not('[data-search-hidden="true"]').length;
+    if (currentPage < Math.ceil(totalRows / rowsPerPage)) { 
+      currentPage++; 
+      updatePagination(); 
+    } 
+  });
+
+  $('.page-num').on('click', function(e) {
+    e.preventDefault();
+    currentPage = parseInt($(this).data('page'));
+    updatePagination();
   });
 
   // Modal Logic
   const $modal = $('#export-modal');
-  
   $('#open-export-modal').on('click', function() {
     $modal.removeClass('hidden').addClass('flex');
     $('body').addClass('overflow-hidden');
   });
-
   $('.close-export-modal').on('click', function() {
     $modal.addClass('hidden').removeClass('flex');
     $('body').removeClass('overflow-hidden');
   });
-
   $('#start-export').on('click', function() {
     const $btn = $(this);
     const originalText = $btn.text();
-    
     $btn.prop('disabled', true).html('<span class="flex items-center gap-2 justify-center"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...</span>');
-    
     setTimeout(() => {
       $btn.prop('disabled', false).text('Excel Ready! (Download Started)');
       setTimeout(() => {
