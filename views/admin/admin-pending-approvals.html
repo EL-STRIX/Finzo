@@ -278,9 +278,9 @@
         <div class="p-6 border-t border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/30 dark:bg-white/5">
           <div class="text-xs font-bold opacity-40">Showing 1-3 of 3 applications</div>
           <div class="flex items-center gap-2">
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Previous</button>
-            <button class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Next</button>
+            <button id="prev-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Previous</button>
+            <button id="page-1" onclick="goToPage(1)" class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
+            <button id="next-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next</button>
           </div>
         </div>
       </div>
@@ -300,19 +300,25 @@
       const $applyBtn = $('#apply-filters');
       const $resetBtn = $('#reset-filters');
       const $tableRows = $('#applications-table-body tr');
+      const $prevBtn = $('#prev-page');
+      const $nextBtn = $('#next-page');
 
       let currentStatus = 'all';
+      let currentPage = 1;
+      const rowsPerPage = 3;
 
       // Status Tab handling
       $statusBtns.on('click', function() {
-        $statusBtns.removeClass('bg-primary text-white shadow-lg').addClass('text-slate-500');
-        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-lg');
+        $statusBtns.removeClass('bg-primary text-white shadow-md').addClass('text-slate-500');
+        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-md');
         currentStatus = $(this).data('status');
+        currentPage = 1; // Reset to page 1
         applyFilters();
       });
 
       // Apply Button Click
       $applyBtn.on('click', function() {
+        currentPage = 1;
         applyFilters();
       });
 
@@ -322,6 +328,7 @@
         $dateFrom.val('');
         $dateTo.val('');
         $idTypeInput.val('all').trigger('change');
+        currentPage = 1;
         
         // Reset status tabs
         $statusBtns.removeClass('bg-primary text-white shadow-lg').addClass('text-slate-500');
@@ -338,8 +345,15 @@
 
       // Search on keyup for live feeling
       $searchInput.on('keyup', function() {
+        currentPage = 1;
         applyFilters();
       });
+
+      // Pagination helper
+      window.goToPage = function(p) {
+        currentPage = p;
+        applyFilters();
+      };
 
       // Auto-filter on ID Type change
       $idTypeInput.on('change', function() {
@@ -352,7 +366,7 @@
         const dateTo = $dateTo.val();
         const idType = $idTypeInput.val().toLowerCase();
 
-        let visibleCount = 0;
+        let filteredRows = [];
 
         $tableRows.each(function() {
           const $row = $(this);
@@ -361,33 +375,47 @@
           const rowDate = $row.data('date');
           const rowText = $row.find('.applicant-info').text().toLowerCase();
 
-          // Status Filter
           const matchesStatus = (currentStatus === 'all' || rowStatus === currentStatus);
-          
-          // Search Filter
           const matchesSearch = (!searchTerm || rowText.includes(searchTerm));
-
-          // ID Type Filter
           const matchesIdType = (idType === 'all' || rowIdType === idType);
 
-          // Date Filter
           let matchesDate = true;
           if (dateFrom && rowDate < dateFrom) matchesDate = false;
           if (dateTo && rowDate > dateTo) matchesDate = false;
 
-          // Combine
           if (matchesStatus && matchesSearch && matchesIdType && matchesDate) {
-            $row.show();
-            visibleCount++;
+            filteredRows.push($row);
           } else {
             $row.hide();
           }
         });
 
-        // Update counter
+        // Paginate filtered results
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+
+        filteredRows.forEach(($row, index) => {
+          if (index >= startIndex && index < endIndex) {
+            $row.show();
+          } else {
+            $row.hide();
+          }
+        });
+
+        // Update Pagination Buttons
+        $prevBtn.prop('disabled', currentPage === 1)
+                .off('click').on('click', () => goToPage(currentPage - 1));
+        
+        $nextBtn.prop('disabled', currentPage === totalPages || totalPages === 0)
+                .off('click').on('click', () => goToPage(currentPage + 1));
+
+        // Update Counter
+        const startNum = filteredRows.length > 0 ? startIndex + 1 : 0;
+        const endNum = Math.min(endIndex, filteredRows.length);
         const $counter = $('.opacity-40:contains("Showing")');
         if ($counter.length) {
-          $counter.text(`Showing ${visibleCount} of ${$tableRows.length} applications`);
+          $counter.text(`Showing ${startNum}-${endNum} of ${filteredRows.length} applications`);
         }
       }
     });
