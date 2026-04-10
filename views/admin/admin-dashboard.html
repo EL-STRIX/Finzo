@@ -451,6 +451,73 @@
                 style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
                 <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
           </tr>
+          <!-- Added more dummy rows for pagination test -->
+          <tr data-name="sneha gupta" data-risk="active">
+            <td>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="admin-avatar" style="background:#f3e8ff;color:#9333ea;">SG</div>
+                <div>
+                  <div style="font-weight:700;color:#000000;">Sneha Gupta</div>
+                  <div style="font-size:11px;color:#000000;">sneha.g@gmail.com</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="status-badge badge-success"><span
+                  style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span>
+            </td>
+            <td><span
+                style="font-size:11px;font-weight:700;color:#00b894;background:#e8f8f2;padding:4px 8px;border-radius:6px;">APPROVED</span>
+            </td>
+            <td style="color:#000000;">Savings</td>
+            <td style="color:#000000;">3 hours ago</td>
+            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
+                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
+          <tr data-name="vikram singh" data-risk="flagged">
+            <td>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="admin-avatar" style="background:#fff8e1;color:#f39c12;">VS</div>
+                <div>
+                  <div style="font-weight:700;color:#000000;">Vikram Singh</div>
+                  <div style="font-size:11px;color:#000000;">vikram.s@outlook.com</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="status-badge badge-warn"><span
+                  style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>FLAGGED</span>
+            </td>
+            <td><span
+                style="font-size:11px;font-weight:700;color:#f39c12;background:#fff8e1;padding:4px 8px;border-radius:6px;">PENDING</span>
+            </td>
+            <td style="color:#000000;">Current</td>
+            <td style="color:#000000;">5 hours ago</td>
+            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
+                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
+          <tr data-name="ananya das" data-risk="active">
+            <td>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="admin-avatar" style="background:#e0f2fe;color:#0369a1;">AD</div>
+                <div>
+                  <div style="font-weight:700;color:#000000;">Ananya Das</div>
+                  <div style="font-size:11px;color:#000000;">ananya.das@live.in</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="status-badge badge-success"><span
+                  style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span>
+            </td>
+            <td><span
+                style="font-size:11px;font-weight:700;color:#00b894;background:#e8f8f2;padding:4px 8px;border-radius:6px;">APPROVED</span>
+            </td>
+            <td style="color:#000000;">Savings</td>
+            <td style="color:#000000;">1 day ago</td>
+            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
+                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          </tr>
         </tbody>
       </table>
       <div
@@ -462,7 +529,7 @@
             style="padding: 6px 14px !important; min-width: 38px;">1</button>
           <button id="dash-pg-2" onclick="dashGoPage(2)" class="admin-btn-secondary"
             style="padding: 6px 14px !important; min-width: 38px;">2</button>
-          <button onclick="dashGoPage(Math.min(dashCurrentPage+1,2))" class="admin-btn-secondary"
+          <button id="dash-pg-next" onclick="dashGoPage(Math.min(dashCurrentPage+1, 2))" class="admin-btn-secondary"
             style="padding: 6px 14px !important;">Next &rarr;</button>
         </div>
       </div>
@@ -523,9 +590,31 @@
       var start = (dashCurrentPage - 1) * dashRowsPerPage;
       filtered.slice(start, start + dashRowsPerPage).forEach(function (r) { r.style.display = ''; });
       var c = document.getElementById('dash-row-counter');
-      if (c) { var end = Math.min(start + dashRowsPerPage, filtered.length); c.textContent = filtered.length === 0 ? 'No users found' : 'Displaying ' + (filtered.length ? start + 1 : 0) + '-' + end + ' of ' + filtered.length + ' users'; }
+      if (c) { 
+        var end = Math.min(start + dashRowsPerPage, filtered.length); 
+        c.textContent = filtered.length === 0 ? 'No users found' : 'Displaying ' + (filtered.length ? start + 1 : 0) + '-' + end + ' of ' + filtered.length + ' users'; 
+      }
       var tp = Math.ceil(filtered.length / dashRowsPerPage);
-      for (var i = 1; i <= 2; i++) { var btn = document.getElementById('dash-pg-' + i); if (!btn) continue; if (i === dashCurrentPage) { btn.style.background = '#002645'; btn.style.color = 'white'; btn.style.border = 'none'; btn.style.fontWeight = '700'; } else { btn.style.background = 'white'; btn.style.color = '#000000'; btn.style.border = '1px solid #eef0f5'; btn.style.fontWeight = '500'; } btn.style.display = i <= Math.max(tp, 1) ? '' : 'none'; }
+      // Update page buttons classes instead of manual styles
+      for (var i = 1; i <= 2; i++) { 
+        var btn = document.getElementById('dash-pg-' + i); 
+        if (!btn) continue; 
+        if (i === dashCurrentPage) { 
+          btn.className = 'admin-btn-primary';
+          // Clear any prev inline styles
+          btn.style.cssText = 'padding: 6px 14px !important; min-width: 38px;';
+        } else { 
+          btn.className = 'admin-btn-secondary';
+          btn.style.cssText = 'padding: 6px 14px !important; min-width: 38px;';
+        } 
+        btn.style.display = (i <= tp && tp > 1) ? '' : (i === 1 && tp === 1 ? '' : 'none');
+      }
+      // Update next button target
+      var nxt = document.getElementById('dash-pg-next');
+      if(nxt) {
+        nxt.onclick = function() { dashGoPage(Math.min(dashCurrentPage + 1, tp)); };
+        nxt.style.display = (dashCurrentPage < tp) ? '' : 'none';
+      }
     }
     document.addEventListener('DOMContentLoaded', function () {
       renderDashTable();
