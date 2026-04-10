@@ -423,9 +423,21 @@
 </tr>
 </tbody>
 </table>
-<div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/10 text-center">
-<button class="text-xs font-bold text-primary uppercase tracking-widest hover:text-primary-container transition-colors">Load Extended History</button>
-</div>
+    <div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/10 flex justify-between items-center px-8">
+      <div class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Showing 4 of 28 transactions</div>
+      <div class="flex items-center gap-2">
+        <button class="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700/50 shadow-sm">
+          <span class="material-symbols-outlined text-sm">west</span> Previous
+        </button>
+        <div class="flex gap-2">
+          <button class="w-9 h-9 flex items-center justify-center bg-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20">1</button>
+          <button class="w-9 h-9 flex items-center justify-center bg-slate-900 dark:bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700/50">2</button>
+        </div>
+        <button class="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700/50 shadow-sm">
+          Next <span class="material-symbols-outlined text-sm">east</span>
+        </button>
+      </div>
+    </div>
 </section>
 </div>
 </div>
