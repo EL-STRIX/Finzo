@@ -68,14 +68,11 @@
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
       <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Central Ledger</div>
-      <div class="font-headline text-3xl font-extrabold text-black dark:text-white tracking-tight mt-1">User Management</div>
+      <div class="font-headline text-3xl font-extrabold dark:text-white tracking-tight mt-1" style="color: #000000 !important;">User Management</div>
     </div>
     <div style="display:flex;gap:12px;">
-      <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:10px;font-size:13px;font-weight:600;color:#000000;cursor:pointer;">
-        <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> Export List
-      </button>
-      <button style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#002645;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;">
-        <span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Add User
+      <button id="open-export-modal" class="admin-btn-secondary" style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">
+        <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> Export Excel
       </button>
     </div>
   </div>
@@ -224,14 +221,120 @@
   </div>
 </div>
 
+<!-- EXPORT SETTINGS MODAL -->
+<div id="export-modal" class="fixed inset-0 z-[1000] hidden">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+  
+  <!-- Modal Content -->
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
+    <div class="admin-card !border-none shadow-2xl overflow-visible">
+      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
+        <h3 class="text-lg font-bold dark:text-white" style="color: #000000 !important;">Export Settings</h3>
+        <button class="close-export-modal text-slate-400 hover:text-slate-600 transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="p-6 space-y-5">
+        <!-- Transaction Type -->
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Transaction Type</label>
+          <select class="w-full bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-3 outline-none focus:ring-2 focus:ring-primary/20">
+            <option>All Transactions</option>
+            <option>Deposits Only</option>
+            <option>Withdrawals Only</option>
+            <option>Internal Transfers</option>
+          </select>
+        </div>
+
+        <!-- Account Type -->
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Type</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-transparent hover:border-primary/30 cursor-pointer transition-all">
+              <input type="checkbox" checked class="rounded text-primary focus:ring-primary/20">
+              <span class="text-xs font-bold">Savings</span>
+            </label>
+            <label class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-transparent hover:border-primary/30 cursor-pointer transition-all">
+              <input type="checkbox" checked class="rounded text-primary focus:ring-primary/20">
+              <span class="text-xs font-bold">Current</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Date Range</label>
+          <div class="flex items-center gap-2">
+            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5">
+            <span class="text-slate-400 text-xs">to</span>
+            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5">
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="pt-2 border-t border-slate-50 dark:border-white/5 space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input type="checkbox" class="rounded text-primary focus:ring-primary/20">
+            <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Include account balances</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input type="checkbox" checked class="rounded text-primary focus:ring-primary/20">
+            <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Include suspended users</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50/50 dark:bg-white/5 flex gap-3">
+        <button class="close-export-modal flex-1 py-3 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30 border border-rose-100 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 font-bold rounded-xl text-xs transition-all">Cancel</button>
+        <button id="start-export" class="flex-1 py-3 !bg-indigo-600 hover:!bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+          Generate Excel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-$('#user-search').on('input', function() {
-  const q = $(this).val().toLowerCase();
-  $('#users-table tbody tr').each(function() {
-    const name = $(this).data('name').toLowerCase();
-    const text = $(this).text().toLowerCase();
-    $(this).toggle(text.includes(q));
+$(function() {
+  // Search
+  $('#user-search').on('input', function() {
+    const q = $(this).val().toLowerCase();
+    $('#users-table tbody tr').each(function() {
+      const text = $(this).text().toLowerCase();
+      $(this).toggle(text.includes(q));
+    });
+  });
+
+  // Modal Logic
+  const $modal = $('#export-modal');
+  
+  $('#open-export-modal').on('click', function() {
+    $modal.removeClass('hidden').addClass('flex');
+    $('body').addClass('overflow-hidden');
+  });
+
+  $('.close-export-modal').on('click', function() {
+    $modal.addClass('hidden').removeClass('flex');
+    $('body').removeClass('overflow-hidden');
+  });
+
+  $('#start-export').on('click', function() {
+    const $btn = $(this);
+    const originalText = $btn.text();
+    
+    $btn.prop('disabled', true).html('<span class="flex items-center gap-2 justify-center"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...</span>');
+    
+    setTimeout(() => {
+      $btn.prop('disabled', false).text('Excel Ready! (Download Started)');
+      setTimeout(() => {
+        $btn.text(originalText);
+        $modal.addClass('hidden').removeClass('flex');
+        $('body').removeClass('overflow-hidden');
+      }, 2000);
+    }, 2500);
   });
 });
 </script>
