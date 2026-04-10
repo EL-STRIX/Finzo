@@ -120,50 +120,63 @@
       </div>
 
       <!-- FILTER TABS -->
-      <div class="flex items-center gap-2 mb-8 bg-slate-100 dark:bg-white/5 p-1.5 rounded-2xl self-start w-fit">
-        <button class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all bg-primary text-white shadow-lg">All Applications</button>
-        <button class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all hover:bg-white dark:hover:bg-white/10 opacity-60 hover:opacity-100">Pending</button>
-        <button class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all hover:bg-white dark:hover:bg-white/10 opacity-60 hover:opacity-100">Under Review</button>
-        <button class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all hover:bg-white dark:hover:bg-white/10 opacity-60 hover:opacity-100">Approved</button>
-        <button class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all hover:bg-white dark:hover:bg-white/10 opacity-60 hover:opacity-100">Rejected</button>
+      <div id="status-tabs" class="flex items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl self-start">
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Applications</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="pending">Pending</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="under review">Under Review</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="approved">Approved</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="rejected">Rejected</button>
       </div>
 
       <!-- SEARCH & FILTER -->
-      <div class="admin-card mb-8">
-        <div class="p-6 flex flex-wrap items-center gap-4">
-          <div class="flex-1 min-w-[300px] relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input type="text" placeholder="Search by name or email"
-              class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm">
+      <div class="admin-card mb-8 !overflow-visible relative z-[30]">
+        <div class="p-4 flex flex-wrap items-end gap-3">
+          <!-- Multi-search -->
+          <div class="flex-1 min-w-[280px]">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Applicant</label>
+            <div class="relative group">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+              <input type="text" id="filter-search" placeholder="Search by name or email..."
+                class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+            </div>
           </div>
           
-          <div class="flex items-center gap-3">
+          <!-- Date Range -->
+          <div class="flex items-center gap-2">
              <div class="flex flex-col">
-               <span class="text-[9px] font-black uppercase text-slate-400 ml-1 mb-1">Submitted From</span>
-               <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold px-4 py-2.5">
+               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">From</label>
+               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
              </div>
              <div class="flex flex-col">
-               <span class="text-[9px] font-black uppercase text-slate-400 ml-1 mb-1">To</span>
-               <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold px-4 py-2.5">
+               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">To</label>
+               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
              </div>
           </div>
 
-          <div class="finzo-dropdown">
-            <div class="finzo-dropdown-trigger">
-              <span class="material-symbols-outlined text-lg opacity-60">badge</span>
-              <span class="dropdown-label">All ID Types</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
-            </div>
-            <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="all">All ID Types</div>
-              <div class="finzo-dropdown-option" data-value="aadhaar">Aadhaar Card</div>
-              <div class="finzo-dropdown-option" data-value="pan">PAN Card</div>
-              <div class="finzo-dropdown-option" data-value="passport">Passport</div>
+          <!-- ID Type -->
+          <div class="flex flex-col">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">ID Validation</label>
+            <div class="finzo-dropdown" id="filter-id-dropdown">
+              <input type="hidden" id="filter-id-type" value="all">
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[160px]">
+                <span class="material-symbols-outlined text-lg opacity-60">badge</span>
+                <span class="dropdown-label font-bold text-xs">All ID Types</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
+                <div class="finzo-dropdown-option is-selected" data-value="all">All ID Types</div>
+                <div class="finzo-dropdown-option" data-value="aadhaar card">Aadhaar Card</div>
+                <div class="finzo-dropdown-option" data-value="pan card">PAN Card</div>
+                <div class="finzo-dropdown-option" data-value="passport">Passport</div>
+              </div>
             </div>
           </div>
 
-          <button class="admin-btn-primary" style="padding: 10px 24px !important;">Apply</button>
-          <button class="admin-btn-secondary" style="padding: 10px 24px !important;">Reset</button>
+          <!-- Buttons -->
+          <div class="flex gap-2">
+            <button id="apply-filters" class="admin-btn-primary" style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
+            <button id="reset-filters" class="admin-btn-secondary" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
+          </div>
         </div>
       </div>
 
@@ -182,22 +195,22 @@
               <th class="text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
+          <tbody id="applications-table-body">
+            <tr data-status="pending" data-id-type="aadhaar card" data-date="2026-04-10">
               <td class="font-bold opacity-40">01</td>
               <td>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 applicant-info">
                   <div class="admin-avatar premium-gradient-primary">RK</div>
                   <div>
-                    <div class="font-bold">Rahul Kumar</div>
-                    <div class="text-[11px] opacity-60">rahul.kumar@gmail.com</div>
+                    <div class="font-bold applicant-name">Rahul Kumar</div>
+                    <div class="text-[11px] opacity-60 applicant-email">rahul.kumar@gmail.com</div>
                   </div>
                 </div>
               </td>
               <td class="text-xs font-bold">+91 98765 43210</td>
               <td><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">Savings Account</span></td>
               <td class="text-xs font-bold">Aadhaar Card</td>
-              <td class="text-xs whitespace-nowrap">Today 08:30 AM</td>
+              <td class="text-xs whitespace-nowrap">April 10, 2026 08:30 AM</td>
               <td><span class="status-badge badge-warn">Pending</span></td>
               <td>
                 <div class="flex justify-end gap-2">
@@ -208,21 +221,21 @@
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="under review" data-id-type="pan card" data-date="2026-04-10">
               <td class="font-bold opacity-40">02</td>
               <td>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 applicant-info">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white;">PS</div>
                   <div>
-                    <div class="font-bold">Priya Sharma</div>
-                    <div class="text-[11px] opacity-60">priya.sharma@gmail.com</div>
+                    <div class="font-bold applicant-name">Priya Sharma</div>
+                    <div class="text-[11px] opacity-60 applicant-email">priya.sharma@gmail.com</div>
                   </div>
                 </div>
               </td>
               <td class="text-xs font-bold">+91 87654 32109</td>
               <td><span class="status-badge" style="background:#f0f2ff; color:#002645;">Current Account</span></td>
               <td class="text-xs font-bold">PAN Card</td>
-              <td class="text-xs whitespace-nowrap">Today 07:15 AM</td>
+              <td class="text-xs whitespace-nowrap">April 10, 2026 07:15 AM</td>
               <td><span class="status-badge" style="background:#e0f2fe; color:#0369a1;">Under Review</span></td>
               <td>
                 <div class="flex justify-end gap-2">
@@ -233,21 +246,21 @@
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="pending" data-id-type="passport" data-date="2026-04-09">
               <td class="font-bold opacity-40">03</td>
               <td>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 applicant-info">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">AM</div>
                   <div>
-                    <div class="font-bold">Amit Mondal</div>
-                    <div class="text-[11px] opacity-60">amit.mondal@gmail.com</div>
+                    <div class="font-bold applicant-name">Amit Mondal</div>
+                    <div class="text-[11px] opacity-60 applicant-email">amit.mondal@gmail.com</div>
                   </div>
                 </div>
               </td>
               <td class="text-xs font-bold">+91 76543 21098</td>
               <td><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">Savings Account</span></td>
               <td class="text-xs font-bold">Passport</td>
-              <td class="text-xs whitespace-nowrap">Yesterday 05:45 PM</td>
+              <td class="text-xs whitespace-nowrap">April 09, 2026 05:45 PM</td>
               <td><span class="status-badge badge-warn">Pending</span></td>
               <td>
                 <div class="flex justify-end gap-2">
@@ -274,6 +287,106 @@
     </div>
   </div>
 
+  <script>
+    /* ═══════════════════════════════════════════════
+       FILTERING LOGIC
+       ═══════════════════════════════════════════════ */
+    $(function() {
+      const $statusBtns = $('.tab-btn');
+      const $searchInput = $('#filter-search');
+      const $dateFrom = $('#filter-date-from');
+      const $dateTo = $('#filter-date-to');
+      const $idTypeInput = $('#filter-id-type');
+      const $applyBtn = $('#apply-filters');
+      const $resetBtn = $('#reset-filters');
+      const $tableRows = $('#applications-table-body tr');
+
+      let currentStatus = 'all';
+
+      // Status Tab handling
+      $statusBtns.on('click', function() {
+        $statusBtns.removeClass('bg-primary text-white shadow-lg').addClass('text-slate-500');
+        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-lg');
+        currentStatus = $(this).data('status');
+        applyFilters();
+      });
+
+      // Apply Button Click
+      $applyBtn.on('click', function() {
+        applyFilters();
+      });
+
+      // Reset Button Click
+      $resetBtn.on('click', function() {
+        $searchInput.val('');
+        $dateFrom.val('');
+        $dateTo.val('');
+        $idTypeInput.val('all').trigger('change');
+        
+        // Reset status tabs
+        $statusBtns.removeClass('bg-primary text-white shadow-lg').addClass('text-slate-500');
+        $statusBtns.first().removeClass('text-slate-500').addClass('bg-primary text-white shadow-lg');
+        currentStatus = 'all';
+
+        // Reset dropdown label manually
+        $('#filter-id-dropdown .dropdown-label').text('All ID Types');
+        $('#filter-id-dropdown .finzo-dropdown-option').removeClass('is-selected');
+        $('#filter-id-dropdown .finzo-dropdown-option[data-value="all"]').addClass('is-selected');
+
+        applyFilters();
+      });
+
+      // Search on keyup for live feeling
+      $searchInput.on('keyup', function() {
+        applyFilters();
+      });
+
+      function applyFilters() {
+        const searchTerm = $searchInput.val().toLowerCase();
+        const dateFrom = $dateFrom.val();
+        const dateTo = $dateTo.val();
+        const idType = $idTypeInput.val().toLowerCase();
+
+        let visibleCount = 0;
+
+        $tableRows.each(function() {
+          const $row = $(this);
+          const rowStatus = $row.data('status');
+          const rowIdType = $row.data('id-type');
+          const rowDate = $row.data('date');
+          const rowText = $row.find('.applicant-info').text().toLowerCase();
+
+          // Status Filter
+          const matchesStatus = (currentStatus === 'all' || rowStatus === currentStatus);
+          
+          // Search Filter
+          const matchesSearch = (!searchTerm || rowText.includes(searchTerm));
+
+          // ID Type Filter
+          const matchesIdType = (idType === 'all' || rowIdType === idType);
+
+          // Date Filter
+          let matchesDate = true;
+          if (dateFrom && rowDate < dateFrom) matchesDate = false;
+          if (dateTo && rowDate > dateTo) matchesDate = false;
+
+          // Combine
+          if (matchesStatus && matchesSearch && matchesIdType && matchesDate) {
+            $row.show();
+            visibleCount++;
+          } else {
+            $row.hide();
+          }
+        });
+
+        // Update counter
+        const $counter = $('.opacity-40:contains("Showing")');
+        if ($counter.length) {
+          $counter.text(`Showing ${visibleCount} of ${$tableRows.length} applications`);
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>
