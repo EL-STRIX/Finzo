@@ -341,6 +341,11 @@
         applyFilters();
       });
 
+      // Auto-filter on ID Type change
+      $idTypeInput.on('change', function() {
+        applyFilters();
+      });
+
       function applyFilters() {
         const searchTerm = $searchInput.val().toLowerCase();
         const dateFrom = $dateFrom.val();

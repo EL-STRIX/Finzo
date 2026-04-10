@@ -590,7 +590,7 @@
 /* Dark Mode Overrides for Buttons */
 [data-theme="dark"] .admin-btn-primary {
     background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
-    box-shadow: 0 10px 25px -8px rgba(129, 140, 248, 0.4) !important;
+    box-shadow: none !important;
 }
 
 [data-theme="dark"] .admin-btn-secondary {

@@ -222,12 +222,30 @@
 [data-theme="dark"] .status-badge.badge-warn    { background: var(--dk-amber-t) !important; color: var(--dk-amber) !important; }
 [data-theme="dark"] .status-badge.badge-info    { background: var(--dk-purple-t) !important; color: var(--dk-purple) !important; }
 
-/* Table Approval Badges (inline styled background overrides) */
+/* Table Approval Badges (inline styled background overrides) - Premium Refinement */
+[data-theme="dark"] span[style*="background:#eef2ff"],
+[data-theme="dark"] span[style*="background:#f0f2ff"] { 
+    background: rgba(108, 99, 255, 0.08) !important; 
+    color: #818cf8 !important; 
+    border: 1px solid rgba(108, 99, 255, 0.15) !important;
+}
+
+[data-theme="dark"] span[style*="background:#e0f2fe"] { 
+    background: rgba(0, 184, 148, 0.08) !important; 
+    color: #4ae183 !important; 
+    border: 1px solid rgba(0, 184, 148, 0.15) !important;
+}
+
+[data-theme="dark"] .badge-warn {
+    background: rgba(243, 156, 18, 0.08) !important;
+    color: #f1c40f !important;
+    border: 1px solid rgba(243, 156, 18, 0.15) !important;
+}
+
 [data-theme="dark"] span[style*="background:#e8f8f2"] { background: var(--dk-green-t) !important; }
 [data-theme="dark"] span[style*="background:#ffebee"] { background: var(--dk-red-t) !important; }
 [data-theme="dark"] span[style*="background:#fff8e1"] { background: var(--dk-amber-t) !important; }
 [data-theme="dark"] span[style*="background:#e8f3ff"] { background: var(--dk-blue-t) !important; }
-[data-theme="dark"] span[style*="background:#f0f2ff"] { background: var(--dk-purple-t) !important; }
 
 /* --------------------------------
    PROGRESS BARS
