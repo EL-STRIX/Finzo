@@ -191,16 +191,13 @@
   <div class="admin-main">
     <div class="admin-topbar">
       <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">System › Security</div>
-        <h1 class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">System Integrity Ledger</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">Real-time record of all admin and system-level actions</p>
+        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">ADMIN › AUDIT LOGS</div>
+        <h1 class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Audit Log</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">Track every admin action across the Finzo banking system</p>
       </div>
       <div class="flex items-center gap-3">
         <button class="flex items-center gap-2 px-4 py-2.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-200 dark:hover:bg-white/10 transition-all">
-          <span class="material-symbols-outlined text-[18px]">download</span> Export Report
-        </button>
-        <button class="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-          <span class="material-symbols-outlined text-[18px]" style="animation:spin 2s linear infinite;">refresh</span> Live Stream
+          <span class="material-symbols-outlined text-[18px]">download</span> Export CSV
         </button>
       </div>
     </div>
@@ -255,9 +252,10 @@
             </div>
             <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
               <div class="finzo-dropdown-option is-selected" data-value="all">All Administrators</div>
-              <div class="finzo-dropdown-option" data-value="Alex Sterling">Alex Sterling</div>
-              <div class="finzo-dropdown-option" data-value="Sarah Chen">Sarah Chen</div>
+              <div class="finzo-dropdown-option" data-value="Arjun Sharma">Arjun Sharma</div>
+              <div class="finzo-dropdown-option" data-value="Priya Singh">Priya Singh</div>
               <div class="finzo-dropdown-option" data-value="Jameson Blake">Jameson Blake</div>
+              <div class="finzo-dropdown-option" data-value="System">System</div>
             </div>
           </div>
         </div>
@@ -271,10 +269,13 @@
             </div>
             <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
               <div class="finzo-dropdown-option is-selected" data-value="all">All Actions</div>
-              <div class="finzo-dropdown-option" data-value="create">Create</div>
+              <div class="finzo-dropdown-option" data-value="approve">Approve</div>
+              <div class="finzo-dropdown-option" data-value="reject">Reject</div>
+              <div class="finzo-dropdown-option" data-value="activate">Activate</div>
+              <div class="finzo-dropdown-option" data-value="deactivate">Deactivate</div>
               <div class="finzo-dropdown-option" data-value="update">Update</div>
               <div class="finzo-dropdown-option" data-value="delete">Delete</div>
-              <div class="finzo-dropdown-option" data-value="security">Security</div>
+              <div class="finzo-dropdown-option" data-value="create">Create</div>
             </div>
           </div>
         </div>
@@ -318,47 +319,47 @@
               <th style="text-align:right;">Context</th>
             </thead>
           <tbody id="audit-log-body">
-            <tr data-admin="Alex Sterling" data-type="delete">
-              <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">14:22:05 UTC</div></td>
+            <tr data-admin="Arjun Sharma" data-type="delete">
+              <td><div class="al-ts-date">10 Apr 2026</div><div class="al-ts-time">14:22:05 IST</div></td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="al-admin-avatar" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;">AS</div>
-                  <span class="al-admin-name">Alex Sterling</span>
+                  <span class="al-admin-name">Arjun Sharma</span>
                 </div>
               </td>
               <td><span class="al-badge delete"><span class="material-symbols-outlined">delete</span>Delete</span></td>
-              <td><div class="al-desc">Deactivated user account and purged session tokens.</div></td>
-              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">person</span>USR-8829-QX</span></td>
+              <td><div class="al-desc">Deactivated user account of Rahul Kumar (FNZ20260010)</div></td>
+              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">person</span>FNZ20260010</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr data-admin="Sarah Chen" data-type="create">
-              <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">13:45:12 UTC</div></td>
+            <tr data-admin="Priya Singh" data-type="create">
+              <td><div class="al-ts-date">10 Apr 2026</div><div class="al-ts-time">13:45:12 IST</div></td>
               <td>
                 <div class="flex items-center gap-3">
-                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669;">SC</div>
-                  <span class="al-admin-name">Sarah Chen</span>
+                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669;">PS</div>
+                  <span class="al-admin-name">Priya Singh</span>
                 </div>
               </td>
               <td><span class="al-badge create"><span class="material-symbols-outlined">add_circle</span>Create</span></td>
-              <td><div class="al-desc">Initialized new merchant gateway for EMEA region.</div></td>
-              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">hub</span>GWY-4402-EMEA</span></td>
+              <td><div class="al-desc">Created savings account for Amit Mondal (FNZ20260011)</div></td>
+              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">hub</span>FNZ20260011</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr data-admin="Jameson Blake" data-type="update">
-              <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">11:10:44 UTC</div></td>
+            <tr data-admin="Amit Mondal" data-type="update">
+              <td><div class="al-ts-date">10 Apr 2026</div><div class="al-ts-time">11:10:44 IST</div></td>
               <td>
                 <div class="flex items-center gap-3">
-                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed;">JB</div>
-                  <span class="al-admin-name">Jameson Blake</span>
+                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed;">AM</div>
+                  <span class="al-admin-name">Amit Mondal</span>
                 </div>
               </td>
               <td><span class="al-badge update"><span class="material-symbols-outlined">edit</span>Update</span></td>
               <td><div class="al-desc">Modified credit limit parameters for Tier 1 Clients.</div></td>
-              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">policy</span>POL-LMT-99</span></td>
+              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">policy</span>FNZ-POL-LMT</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr data-admin="SYSTEM-BOT" data-type="security">
-              <td><div class="al-ts-date">Oct 23, 2023</div><div class="al-ts-time">23:59:59 UTC</div></td>
+            <tr data-admin="System" data-type="security">
+              <td><div class="al-ts-date">10 Apr 2026</div><div class="al-ts-time">09:15:33 IST</div></td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="al-admin-avatar" style="background:linear-gradient(135deg,#1e293b,#0f172a);color:#94a3b8;">
@@ -372,17 +373,17 @@
               <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">lock</span>SEC-CERT-RSA</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr data-admin="Sarah Chen" data-type="escalate">
-              <td><div class="al-ts-date">Oct 23, 2023</div><div class="al-ts-time">18:30:00 UTC</div></td>
+            <tr data-admin="Priya Singh" data-type="update">
+              <td><div class="al-ts-date">09 Apr 2026</div><div class="al-ts-time">18:30:00 IST</div></td>
               <td>
                 <div class="flex items-center gap-3">
-                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#d97706;">SC</div>
-                  <span class="al-admin-name">Sarah Chen</span>
+                  <div class="al-admin-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#d97706;">PS</div>
+                  <span class="al-admin-name">Priya Singh</span>
                 </div>
               </td>
-              <td><span class="al-badge escalate"><span class="material-symbols-outlined">warning</span>Escalate</span></td>
-              <td><div class="al-desc">Flagged suspicious transaction pattern, elevated to Tier-2 review.</div></td>
-              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">flag</span>TXN-SUSP-441</span></td>
+              <td><span class="al-badge update"><span class="material-symbols-outlined">edit</span>Update</span></td>
+              <td><div class="al-desc">Updated user account status to Under Review</div></td>
+              <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">flag</span>TXN20260441</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
           </tbody>
@@ -409,7 +410,7 @@
               </div>
               <div>
                 <div class="font-headline text-base font-extrabold">Activity Volume Trend</div>
-                <div class="text-[10px] font-bold opacity-40 uppercase tracking-widest">Oct 12 — Today</div>
+                <div class="text-[10px] font-bold opacity-40 uppercase tracking-widest">Apr 06 — Today</div>
               </div>
             </div>
             <div class="flex items-center gap-2 text-[10px] font-bold" style="color:#00b894;">
@@ -432,41 +433,31 @@
             <div class="al-bar muted" style="height:45%;"></div>
           </div>
           <div class="flex justify-between mt-3 px-1">
-            <span class="text-[9px] font-bold opacity-40 uppercase">Oct 12</span>
-            <span class="text-[9px] font-bold opacity-40 uppercase">Oct 18</span>
-            <span class="text-[9px] font-black uppercase" style="color:#002645;">Today</span>
+            <span class="text-[9px] font-bold opacity-40 uppercase">Apr 06</span>
+            <span class="text-[9px] font-bold opacity-40 uppercase">Apr 09</span>
+            <span class="text-[9px] font-black uppercase" style="color:#002645;">APR 12</span>
           </div>
         </div>
 
         <div class="flex flex-col gap-5">
-          <div class="al-panel-navy flex-1">
-            <div class="text-[9px] font-black tracking-[0.15em] uppercase mb-3" style="color:rgba(255,255,255,0.45);">Critical Events</div>
-            <div class="font-headline text-5xl font-black text-white">0</div>
-            <div class="flex items-center gap-2 mt-3 text-xs font-bold" style="color:#00b894;">
-              <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> Status Nominal
-            </div>
-            <div class="mt-4 pt-4" style="border-top:1px solid rgba(255,255,255,0.1);">
-              <div class="text-[9px] font-bold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,0.3);">Last Critical Event</div>
-              <div class="text-xs font-bold" style="color:rgba(255,255,255,0.4);">None in last 30 days</div>
-            </div>
-          </div>
+          <!-- Redundant Critical Events Panel Removed -->
 
           <div class="al-panel-card flex-1">
             <div class="text-[9px] font-black tracking-[0.15em] uppercase text-slate-400 mb-3">Active Admins</div>
             <div class="font-headline text-5xl font-black" style="color:var(--al-text);">12</div>
             <div class="flex items-center gap-2 mt-3 text-xs font-bold text-slate-500">
-              <span class="material-symbols-outlined" style="font-size:16px;">globe</span> Across 3 timezones
+              <span class="material-symbols-outlined" style="font-size:16px;">globe</span> IST Timezone
             </div>
             <div class="mt-4 pt-4" style="border-top:1px solid var(--al-border);">
               <div class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">Online Now</div>
               <div class="flex items-center gap-2">
                 <div class="flex" style="gap:-4px;">
                   <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:2px solid white;margin-right:-6px;">AS</div>
-                  <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669;border:2px solid white;margin-right:-6px;">SC</div>
-                  <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed;border:2px solid white;margin-right:-6px;">JB</div>
+                  <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669;border:2px solid white;margin-right:-6px;">PS</div>
+                  <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed;border:2px solid white;margin-right:-6px;">AM</div>
                   <div class="w-6 h-6 rounded-full text-[8px] font-bold flex items-center justify-center" style="background:#f1f5f9;color:#64748b;border:2px solid white;">+9</div>
                 </div>
-                <span class="text-[10px] font-semibold text-slate-400" style="margin-left:10px;">online now</span>
+                <span class="text-[10px] font-semibold text-slate-400" style="margin-left:10px;">Currently Active</span>
               </div>
             </div>
           </div>
@@ -514,7 +505,7 @@
       $('#filter-admin, #filter-action').on('change', applyFilters);
 
       // Animation for Live Stream button
-      console.log("Audit log logic initialized.");
+      // Console log for initialization removed.
     });
   </script>
 </body>
