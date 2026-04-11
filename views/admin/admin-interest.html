@@ -10,6 +10,11 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<style>
+  .force-black { color: #000000 !important; }
+  .dark .force-black { color: #ffffff !important; }
+  .sidebar-header-fix { color: #ffffff !important; opacity: 1 !important; }
+</style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
@@ -18,11 +23,11 @@
 
   <nav class="admin-sidebar">
     <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
+      <div class="brand-name force-black">Finzo</div>
+      <div class="brand-sub" style="font-weight:700;color:#00b894;">ADMIN CONSOLE</div>
     </div>
     <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
+      <div class="admin-nav-section sidebar-header-fix font-bold">MAIN</div>
       <a href="admin-dashboard.html" class="admin-nav-item">
         <span class="material-symbols-outlined">analytics</span> Overview
       </a>
@@ -41,7 +46,7 @@
         <span class="material-symbols-outlined">swap_horiz</span> Transactions
       </a>
 
-      <div class="admin-nav-section">System</div>
+      <div class="admin-nav-section sidebar-header-fix font-bold">System</div>
       <a href="admin-audit-log.html" class="admin-nav-item">
         <span class="material-symbols-outlined">manage_search</span> Audit Logs
       </a>
@@ -52,7 +57,7 @@
         <span class="material-symbols-outlined">percent</span> Interest Management
       </a>
 
-      <div class="admin-nav-section">ACCOUNT</div>
+      <div class="admin-nav-section sidebar-header-fix font-bold">ACCOUNT</div>
       <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
         <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
         <span data-theme-label>Dark Mode</span>
@@ -67,12 +72,9 @@
 <div class="admin-main">
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
     <div>
-      <div class="text-[11px] font-bold tracking-widest text-black dark:text-on-surface-variant uppercase">Monetary Policy Control</div>
-      <div class="font-headline text-3xl font-extrabold text-black dark:text-white tracking-tight mt-1">Interest Management</div>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;">Global Market Reference</div>
-      <div style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;color:#000000;">SOFR: 5.31%</div>
+      <div class="text-[11px] font-bold tracking-widest force-black uppercase">INTEREST MANAGEMENT</div>
+      <div class="font-headline text-3xl font-extrabold force-black tracking-tight mt-1">Savings Interest Management</div>
+      <div class="text-xs force-black mt-1 font-medium" style="opacity:0.7;">Configure and manage monthly interest rates for savings accounts</div>
     </div>
   </div>
 
@@ -85,20 +87,20 @@
         <!-- Live Rate Card -->
         <div class="admin-card elevation-md transition-all duration-300" style="padding:28px;position:relative;overflow:hidden;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#000000;">Live Savings Rate</div>
+            <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">Live Savings Rate</div>
             <div style="display:flex;align-items:center;gap:6px;background:#e8f8f2;padding:4px 12px;border-radius:20px;">
               <div style="width:6px;height:6px;background:#00b894;border-radius:50%;"></div>
               <span style="font-size:10px;font-weight:700;color:#00b894;text-transform:uppercase;">Active</span>
             </div>
           </div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:24px;">
-            <span id="live-rate" style="font-family:'Plus Jakarta Sans';font-size:72px;font-weight:800;color:#000000;letter-spacing:-3px;line-height:1;">4.25</span>
-            <span style="font-family:'Plus Jakarta Sans';font-size:36px;font-weight:700;color:#000000;">%</span>
-            <span style="font-size:13px;color:#000000;margin-left:4px;">APY</span>
+          <div class="force-black" style="display:flex;align-items:baseline;gap:6px;margin-bottom:24px;">
+            <span id="live-rate" style="font-family:'Plus Jakarta Sans';font-size:72px;font-weight:800;letter-spacing:-3px;line-height:1;">4.25</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:36px;font-weight:700;">%</span>
+            <span class="force-black" style="font-size:13px;margin-left:4px;">p.a.</span>
           </div>
           <div style="border-top:1px solid #eef0f5;padding-top:20px;display:flex;justify-content:space-between;">
-            <div><div style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:4px;">Effective Since</div><div style="font-weight:600;color:#000000;">Oct 12, 2023</div></div>
-            <div style="text-align:right;"><div style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:4px;">Next Review</div><div style="font-weight:600;color:#000000;">Jan 01, 2024</div></div>
+            <div><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Effective Since</div><div class="force-black" style="font-weight:600;">01 Apr 2026</div></div>
+            <div style="text-align:right;"><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Next Review</div><div class="force-black" style="font-weight:600;">01 Jul 2026</div></div>
           </div>
           <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:#002645;opacity:0.04;border-radius:50%;"></div>
         </div>
@@ -106,34 +108,34 @@
         <!-- Update Form -->
         <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix" style="padding:28px;background:#f9fafc;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-            <span class="material-symbols-outlined" style="color:#002645;font-size:20px;">edit</span>
-            <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#000000;">Update Savings Yield</div>
+            <span class="material-symbols-outlined force-black" style="font-size:20px;">edit</span>
+            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Update Interest Rate</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <div>
-              <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:8px;">Proposed Base Rate (%)</label>
+              <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">New Interest Rate (%)</label>
               <div style="position:relative;">
-                <input id="new-rate" type="text" value="4.50" style="width:100%;padding:16px 48px 16px 16px;background:white;border:2px solid #eef0f5;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:#000000;outline:none;box-sizing:border-box;" oninput="checkRateChange()"/>
-                <span style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:700;color:#000000;">%</span>
+                <input id="new-rate" type="text" value="4.50" class="force-black dark:bg-surface-container-low" style="width:100%;padding:16px 48px 16px 16px;background:white;border:2px solid #eef0f5;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;outline:none;box-sizing:border-box;" oninput="checkRateChange()"/>
+                <span class="force-black" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:700;">%</span>
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:8px;">Effective Date</label>
-                <input type="date" value="2024-01-01" style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;outline:none;box-sizing:border-box;"/>
+                <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Effective Date</label>
+                <input type="date" value="2026-07-01" class="force-black dark:bg-surface-container-low" style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;outline:none;box-sizing:border-box;"/>
               </div>
               <div>
-                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:8px;">Rate Lock Period</label>
+                <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Apply From</label>
                 <div class="finzo-dropdown" style="width:100%;">
-                  <input type="hidden" name="lock_period" value="90 Days">
+                  <input type="hidden" name="lock_period" value="Immediately">
                   <div class="finzo-dropdown-trigger">
-                    <span class="dropdown-label">90 Days</span>
-                    <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
+                    <span class="dropdown-label force-black">Immediately</span>
+                    <span class="material-symbols-outlined chevron force-black" style="font-size:18px;">expand_more</span>
                   </div>
                   <div class="finzo-dropdown-menu">
-                    <div class="finzo-dropdown-option is-selected" data-value="90 Days">90 Days</div>
-                    <div class="finzo-dropdown-option" data-value="180 Days">180 Days</div>
-                    <div class="finzo-dropdown-option" data-value="Floating">Floating</div>
+                    <div class="finzo-dropdown-option is-selected" data-value="Immediately">Immediately</div>
+                    <div class="finzo-dropdown-option" data-value="Next Month">Next Month</div>
+                    <div class="finzo-dropdown-option" data-value="Custom Date">Custom Date</div>
                   </div>
                 </div>
               </div>
@@ -141,7 +143,7 @@
             <button onclick="applyRate()" style="width:100%;padding:14px;background:#002645;color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;">
               Apply Rate Update
             </button>
-            <p style="font-size:11px;color:#000000;text-align:center;line-height:1.6;">* Updating rate triggers immediate customer notifications on all active savings accounts.</p>
+            <p class="force-black" style="font-size:11px;text-align:center;line-height:1.6;">* Updating rate triggers immediate customer notifications on all active savings accounts.</p>
           </div>
         </div>
       </div>
@@ -152,45 +154,45 @@
         <!-- History Table -->
         <div class="admin-card elevation-md transition-all duration-300">
           <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;color:#000000;">Historical Rate Ledger</div>
+            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Interest Rate History</div>
             <div style="display:flex;gap:8px;">
-              <button style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:#000000;">Export CSV</button>
-              <button style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:#000000;">Print Audit</button>
+              <button class="force-black dark:bg-surface-container-low" style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Export CSV</button>
+              <button class="force-black dark:bg-surface-container-low" style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Print</button>
             </div>
           </div>
           <table class="admin-table" style="width:100%;">
             <thead>
               <tr>
-                <th>Effective Date</th>
-                <th>Interest Rate</th>
-                <th>Authorized By</th>
-                <th style="text-align:right;">Status</th>
+                <th class="force-black" style="background:#f9fafc;">EFFECTIVE DATE</th>
+                <th class="force-black" style="background:#f9fafc;">INTEREST RATE</th>
+                <th class="force-black" style="background:#f9fafc;">UPDATED BY</th>
+                <th class="force-black" style="text-align:right;background:#f9fafc;">STATUS</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="font-weight:600;color:#000000;">Oct 12, 2023</td>
-                <td style="font-weight:800;color:#002645;font-family:'Plus Jakarta Sans';font-size:16px;">4.25%</td>
-                <td style="color:#000000;">S. Harrington (CTO)</td>
+                <td class="force-black" style="font-weight:600;">12 Apr 2026</td>
+                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">4.25%</td>
+                <td class="force-black">Arjun Sharma (Admin)</td>
                 <td style="text-align:right;"><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
               </tr>
               <tr>
-                <td style="font-weight:600;color:#000000;">Jun 15, 2023</td>
-                <td style="font-weight:800;color:#000000;font-family:'Plus Jakarta Sans';font-size:16px;">4.10%</td>
-                <td style="color:#000000;">Admin Root</td>
-                <td style="text-align:right;"><span class="status-badge" style="background:#f6f8fc;color:#000000;">Archived</span></td>
+                <td class="force-black" style="font-weight:600;">01 Jan 2026</td>
+                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">4.10%</td>
+                <td class="force-black">Admin</td>
+                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
               </tr>
               <tr>
-                <td style="font-weight:600;color:#000000;">Jan 02, 2023</td>
-                <td style="font-weight:800;color:#000000;font-family:'Plus Jakarta Sans';font-size:16px;">3.75%</td>
-                <td style="color:#000000;">M. Vane (CFO)</td>
-                <td style="text-align:right;"><span class="status-badge" style="background:#f6f8fc;color:#000000;">Archived</span></td>
+                <td class="force-black" style="font-weight:600;">01 Oct 2025</td>
+                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.75%</td>
+                <td class="force-black">Priya Singh (Admin)</td>
+                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
               </tr>
               <tr>
-                <td style="font-weight:600;color:#000000;">Aug 12, 2022</td>
-                <td style="font-weight:800;color:#000000;font-family:'Plus Jakarta Sans';font-size:16px;">3.50%</td>
-                <td style="color:#000000;">S. Harrington (CTO)</td>
-                <td style="text-align:right;"><span class="status-badge" style="background:#f6f8fc;color:#000000;">Archived</span></td>
+                <td class="force-black" style="font-weight:600;">01 Jul 2025</td>
+                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.50%</td>
+                <td class="force-black">Admin</td>
+                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
               </tr>
             </tbody>
           </table>
@@ -199,40 +201,43 @@
         <!-- Analysis Row -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
           <div class="admin-card" style="padding:22px;background:#002645;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Projected Annual Cost</div>
-            <div style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:white;margin-bottom:8px;">$12.4M</div>
-            <div style="display:flex;align-items:center;gap:6px;color:#00b894;font-size:11px;font-weight:700;">
-              <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> +8.2% from prev. rate
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Total Interest Credited</div>
+            <div style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:white;margin-bottom:8px;">₹12,400</div>
+            <div style="display:flex;align-items:center;gap:6px;color:#10b981;font-size:11px;font-weight:700;">
+              <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> +4.5% from last month
             </div>
           </div>
           <div class="admin-card" style="padding:22px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:8px;">Customer Retention Impact</div>
-            <div style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:#00b894;margin-bottom:8px;">High</div>
-            <div style="font-size:11px;color:#000000;line-height:1.5;">Based on analysis of top 5 tier-1 banks.</div>
+            <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Accounts Earning Interest</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+              <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;">1,536</div>
+              <span style="background:rgba(16,185,129,0.1);color:#10b981;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.2);">Savings Accounts</span>
+            </div>
+            <div class="force-black" style="font-size:11px;line-height:1.5;">Auto-credited every 30 days</div>
           </div>
         </div>
 
         <!-- Volatility Chart -->
         <div class="admin-card" style="padding:24px;">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;margin-bottom:20px;">Rate Volatility Index (12 Months)</div>
+          <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px;">Monthly Interest Credited (12 Months)</div>
           <div style="display:flex;align-items:flex-end;gap:4px;height:100px;">
-            <div style="flex:1;background:#e8ecf4;border-radius:3px 3px 0 0;height:30%;"></div>
-            <div style="flex:1;background:#e8ecf4;border-radius:3px 3px 0 0;height:35%;"></div>
-            <div style="flex:1;background:#e8ecf4;border-radius:3px 3px 0 0;height:40%;"></div>
-            <div style="flex:1;background:#e8ecf4;border-radius:3px 3px 0 0;height:38%;"></div>
-            <div style="flex:1;background:#e8ecf4;border-radius:3px 3px 0 0;height:45%;"></div>
-            <div style="flex:1;background:#cdd5e0;border-radius:3px 3px 0 0;height:52%;"></div>
-            <div style="flex:1;background:#cdd5e0;border-radius:3px 3px 0 0;height:55%;"></div>
-            <div style="flex:1;background:#cdd5e0;border-radius:3px 3px 0 0;height:52%;"></div>
-            <div style="flex:1;background:#9fb0c4;border-radius:3px 3px 0 0;height:65%;"></div>
-            <div style="flex:1;background:#7090ab;border-radius:3px 3px 0 0;height:72%;"></div>
-            <div style="flex:1;background:#4a6e8a;border-radius:3px 3px 0 0;height:78%;"></div>
-            <div style="flex:1;background:#002645;border-radius:3px 3px 0 0;height:100%;box-shadow:0 -4px 12px rgba(0,38,69,0.2);"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:30%;opacity:0.6;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:35%;opacity:0.65;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:40%;opacity:0.7;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:38%;opacity:0.68;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:45%;opacity:0.75;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:52%;opacity:0.8;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:55%;opacity:0.85;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:52%;opacity:0.82;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:65%;opacity:0.9;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:72%;opacity:0.95;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:78%;"></div>
+            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:100%;box-shadow:0 -4px 12px rgba(16,185,129,0.2);"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;">
-            <span style="font-size:9px;color:#000000;font-weight:700;">JAN 2023</span>
-            <span style="font-size:9px;color:#000000;font-weight:700;">JUN</span>
-            <span style="font-size:9px;color:#002645;font-weight:700;">DEC 2023</span>
+            <span class="force-black" style="font-size:9px;font-weight:700;">JAN 2026</span>
+            <span class="force-black" style="font-size:9px;font-weight:700;">JUN 2026</span>
+            <span class="force-black" style="font-size:9px;font-weight:700;">DEC 2026</span>
           </div>
         </div>
       </div>
@@ -247,15 +252,15 @@
       <div style="width:56px;height:56px;background:#fff8e1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
         <span class="material-symbols-outlined" style="color:#f39c12;font-size:28px;">warning</span>
       </div>
-      <div style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;color:#000000;margin-bottom:12px;">Confirm Rate Shift</div>
-      <p id="modal-msg" style="font-size:13px;color:#000000;line-height:1.7;margin-bottom:24px;">You are about to adjust the global savings rate. This action is irreversible and will update all active savings accounts.</p>
+      <div class="text-black dark:text-white" style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;margin-bottom:12px;">Confirm Rate Shift</div>
+      <p id="modal-msg" class="text-black dark:text-white" style="font-size:13px;line-height:1.7;margin-bottom:24px;">You are about to adjust the global savings rate. This action is irreversible and will update all active savings accounts.</p>
       <div style="display:flex;gap:12px;">
-        <button onclick="closeModal()" style="flex:1;padding:14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:#000000;">Cancel</button>
+        <button onclick="closeModal()" class="text-black dark:text-white dark:bg-surface-container-low" style="flex:1;padding:14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
         <button onclick="confirmRate()" style="flex:1;padding:14px;background:#002645;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;">Confirm & Apply</button>
       </div>
     </div>
-    <div style="background:#f6f8fc;padding:12px 32px;text-align:center;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#000000;">Authorization Required · 2FA Token</span>
+    <div class="bg-slate-50 dark:bg-surface-container-low" style="padding:12px 32px;text-align:center;">
+      <span class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">Authorization Required · 2FA Token</span>
     </div>
   </div>
 </div>
@@ -284,7 +289,7 @@ function confirmRate() {
   const newRate = document.getElementById('new-rate').value;
   document.getElementById('live-rate').textContent = newRate;
   closeModal();
-  alert(`✅ Rate successfully updated to ${newRate}% APY. Customer notifications dispatched.`);
+  alert(`✅ Rate successfully updated to ${newRate}% p.a. Customer notifications dispatched.`);
 }
 </script>
 </body>
