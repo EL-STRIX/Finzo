@@ -189,18 +189,18 @@
 
       <!-- TABLE -->
       <div class="admin-card">
-        <table class="admin-table w-full text-left">
+        <table class="admin-table w-full table-fixed text-left">
           <thead>
             <tr>
-              <th class="w-16">#</th>
-              <th>Staff</th>
-              <th>Staff ID</th>
-              <th>Branch</th>
-              <th>Total Transactions</th>
-              <th>Amount Processed</th>
-              <th>Last Active</th>
-              <th>Status</th>
-              <th class="text-right min-w-[360px]">ACTIONS</th>
+               <th style="width: 4%;">#</th>
+               <th style="width: 22%;">Staff</th>
+               <th style="width: 8%;" class="text-center">ID</th>
+               <th style="width: 12%;">Branch</th>
+               <th style="width: 10%;" class="text-center">Trans</th>
+               <th style="width: 12%;" class="text-right">Amount</th>
+               <th style="width: 12%;">Active</th>
+               <th style="width: 8%;">Status</th>
+               <th style="width: 10%;" class="text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody id="staff-table-body">
@@ -209,26 +209,23 @@
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar premium-gradient-primary">AS</div>
-                  <div>
-                    <div class="font-bold">Amit Sharma</div>
-                    <div class="text-[11px] opacity-60">amit.sharma@finzobank.com</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Amit Sharma</div>
+                    <div class="text-[11px] opacity-60 truncate">amit.sharma@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF001</code></td>
-              <td>Main Branch</td>
-              <td class="font-bold">342</td>
-              <td class="font-bold text-primary dark:text-blue-400">₹8,42,000</td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-[10px] font-bold">STF001</code></td>
+              <td class="text-xs truncate" title="Main Branch">Main Branch</td>
+              <td class="font-bold text-center">342</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹8,42,000</td>
               <td class="text-xs">Today 10:45 AM</td>
               <td><span class="status-badge badge-success">Active</span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
                 </div>
               </td>
             </tr>
@@ -237,26 +234,23 @@
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white;">PS</div>
-                  <div>
-                    <div class="font-bold">Priya Singh</div>
-                    <div class="text-[11px] opacity-60">priya.singh@finzobank.com</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Priya Singh</div>
+                    <div class="text-[11px] opacity-60 truncate">priya.singh@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF002</code></td>
-              <td>North Branch</td>
-              <td class="font-bold">218</td>
-              <td class="font-bold text-primary dark:text-blue-400">₹5,24,000</td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF002</code></td>
+              <td class="text-xs truncate" title="North Branch">North Branch</td>
+              <td class="font-bold text-center">218</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹5,24,000</td>
               <td class="text-xs">Today 09:30 AM</td>
               <td><span class="status-badge badge-success">Active</span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
                 </div>
               </td>
             </tr>
@@ -265,26 +259,23 @@
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">RK</div>
-                  <div>
-                    <div class="font-bold">Raj Kumar</div>
-                    <div class="text-[11px] opacity-60">raj.kumar@finzobank.com</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Raj Kumar</div>
+                    <div class="text-[11px] opacity-60 truncate">raj.kumar@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF003</code></td>
-              <td>South Branch</td>
-              <td class="font-bold">156</td>
-              <td class="font-bold text-primary dark:text-blue-400">₹3,82,000</td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF003</code></td>
+              <td class="text-xs truncate" title="South Branch">South Branch</td>
+              <td class="font-bold text-center">156</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹3,82,000</td>
               <td class="text-xs">Yesterday 05:15 PM</td>
               <td><span class="status-badge" style="background:#eef0f5;color:#6c757d;">Inactive</span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(0, 184, 148, 0.2); color: #00b894;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Activate</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
                 </div>
               </td>
             </tr>
@@ -293,26 +284,23 @@
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">SM</div>
-                  <div>
-                    <div class="font-bold">Sunita Mehta</div>
-                    <div class="text-[11px] opacity-60">sunita.mehta@finzobank.com</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Sunita Mehta</div>
+                    <div class="text-[11px] opacity-60 truncate">sunita.mehta@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF004</code></td>
-              <td>Main Branch</td>
-              <td class="font-bold">89</td>
-              <td class="font-bold text-primary dark:text-blue-400">₹2,14,000</td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF004</code></td>
+              <td class="text-xs truncate" title="Main Branch">Main Branch</td>
+              <td class="font-bold text-center">89</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹2,14,000</td>
               <td class="text-xs">Yesterday 04:00 PM</td>
               <td><span class="status-badge badge-success">Active</span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
                 </div>
               </td>
             </tr>
@@ -321,26 +309,98 @@
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white;">DG</div>
-                  <div>
-                    <div class="font-bold">Dev Gupta</div>
-                    <div class="text-[11px] opacity-60">dev.gupta@finzobank.com</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Dev Gupta</div>
+                    <div class="text-[11px] opacity-60 truncate">dev.gupta@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF005</code></td>
-              <td>North Branch</td>
-              <td class="font-bold">67</td>
-              <td class="font-bold text-primary dark:text-blue-400">₹1,68,000</td>
-              <td class="text-xs">2 days ago</td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF005</code></td>
+              <td class="text-xs truncate" title="North Branch">North Branch</td>
+              <td class="font-bold text-center">67</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹1,68,000</td>
+              <td class="text-xs truncate" title="2 days ago">2 days ago</td>
               <td><span class="status-badge" style="background:#eef0f5;color:#6c757d;">Inactive</span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(0, 184, 148, 0.2); color: #00b894;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Activate</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="active" data-branch="east-branch">
+              <td class="font-bold opacity-40">06</td>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="admin-avatar" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white;">AD</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Anita Desai</div>
+                    <div class="text-[11px] opacity-60 truncate">anita.desai@finzobank.com</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF006</code></td>
+              <td class="text-xs truncate" title="East Branch">East Branch</td>
+              <td class="font-bold text-center">45</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹1,12,000</td>
+              <td class="text-xs truncate" title="3 days ago">3 days ago</td>
+              <td><span class="status-badge badge-success">Active</span></td>
+              <td>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="active" data-branch="main-branch">
+              <td class="font-bold opacity-40">07</td>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="admin-avatar" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white;">RV</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Rahul Verma</div>
+                    <div class="text-[11px] opacity-60 truncate">rahul.verma@finzobank.com</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF007</code></td>
+              <td class="text-xs truncate" title="Main Branch">Main Branch</td>
+              <td class="font-bold text-center">32</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹86,000</td>
+              <td class="text-xs truncate" title="4 days ago">4 days ago</td>
+              <td><span class="status-badge badge-success">Active</span></td>
+              <td>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="inactive" data-branch="west-branch">
+              <td class="font-bold opacity-40">08</td>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="admin-avatar" style="background: linear-gradient(135deg, #64748b 0%, #334155 100%); color: white;">SK</div>
+                  <div class="max-w-[180px]">
+                    <div class="font-bold truncate">Sneha Kapur</div>
+                    <div class="text-[11px] opacity-60 truncate">sneha.kapur@finzobank.com</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF008</code></td>
+              <td class="text-xs truncate" title="West Branch">West Branch</td>
+              <td class="font-bold text-center">12</td>
+              <td class="font-bold text-primary dark:text-blue-400 text-right">₹24,000</td>
+              <td class="text-xs truncate" title="5 days ago">5 days ago</td>
+              <td><span class="status-badge" style="background:#eef0f5;color:#6c757d;">Inactive</span></td>
+              <td>
+                <div class="flex justify-end">
+                  <a href="admin-staff-detail.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
+                  </a>
                 </div>
               </td>
             </tr>
@@ -348,14 +408,14 @@
         </table>
 
         <!-- PAGINATION -->
-        <div class="p-6 border-t border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
-          <div class="text-xs font-bold opacity-40">Showing 1-5 of 8 staff</div>
+        <div class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex justify-between items-center transition-all mt-4">
+          <div id="pagination-counter" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Showing 1-5 of 8 staff</div>
           <div class="flex items-center gap-2">
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Previous</button>
-            <button class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
-            <button class="admin-btn-secondary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">2</button>
-            <button class="admin-btn-secondary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">3</button>
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next</button>
+            <button id="prev-page" class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">&larr; Previous</button>
+            <div id="page-numbers" class="flex gap-1.5">
+              <!-- Dynamically Generated -->
+            </div>
+            <button id="next-page" class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">Next &rarr;</button>
           </div>
         </div>
       </div>
@@ -432,6 +492,7 @@
   </style>
 
   <script>
+    console.log("Staff Management script initialization...");
     $(document).ready(function() {
       const $searchInput = $('#staff-search-input');
       const $statusInput = $('#filter-status');
@@ -441,14 +502,17 @@
       const $resetBtn = $('#reset-filters');
       const $counter = $('.opacity-40:contains("Showing")');
 
+      console.log("DOM elements found:", $searchInput.length, $statusInput.length, $branchInput.length, $tableRows.length);
+
       function applyFilters() {
         const searchTerm = $searchInput.val().toLowerCase();
         const status = $statusInput.val();
         const branch = $branchInput.val();
+        
+        console.log("Applying filters:", { searchTerm, status, branch });
 
         let visibleCount = 0;
         let totalCount = $tableRows.length;
-
         $tableRows.each(function() {
           const $row = $(this);
           const rowStatus = $row.data('status');
@@ -460,28 +524,24 @@
           const matchesBranch = branch === 'all' || rowBranch === branch;
 
           if (matchesSearch && matchesStatus && matchesBranch) {
-            $row.show();
-            visibleCount++;
+            $row.attr('data-visible', 'true');
           } else {
-            $row.hide();
+            $row.attr('data-visible', 'false');
           }
         });
 
-        if ($counter.length) {
-          $counter.text(`Showing ${visibleCount} of ${totalCount} staff`);
-        }
+        currentPage = 1;
+        updatePagination();
+        console.log("Filter complete. Total Visible:", $tableRows.filter('[data-visible="true"]').length);
       }
 
-      $applyBtn.on('click', function() {
-        applyFilters();
-      });
+      $applyBtn.on('click', applyFilters);
 
       $resetBtn.on('click', function() {
         $searchInput.val('');
         $statusInput.val('all');
         $branchInput.val('all');
         
-        // Reset dropdown labels if needed
         $('.dropdown-label').each(function() {
           const defaultText = $(this).closest('.finzo-dropdown').find('.finzo-dropdown-option[data-value="all"]').text();
           if (defaultText) $(this).text(defaultText);
@@ -493,10 +553,81 @@
         applyFilters();
       });
 
-      // Real-time search
-      $searchInput.on('keyup', function() {
-        applyFilters();
+      $searchInput.on('keyup', applyFilters);
+
+      // --- PAGINATION LOGIC ---
+      let currentPage = 1;
+      const rowsPerPage = 5;
+
+      function updatePagination() {
+        const $visibleRows = $('#staff-table-body tr').filter(function() {
+          return $(this).attr('data-visible') !== 'false';
+        });
+        
+        const totalRows = $visibleRows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+        
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        // Hide ALL rows
+        $('#staff-table-body tr').hide();
+
+        // Show relevant rows for current page
+        $visibleRows.each(function(index) {
+          const start = (currentPage - 1) * rowsPerPage;
+          const end = start + rowsPerPage;
+          if (index >= start && index < end) {
+            $(this).show();
+          }
+        });
+
+        // Update button states
+        $('#prev-page').prop('disabled', currentPage === 1).css('opacity', currentPage === 1 ? '0.5' : '1');
+        $('#next-page').prop('disabled', currentPage === totalPages).css('opacity', currentPage === totalPages ? '0.5' : '1');
+
+        // Dynamic Page Numbers
+        let pageHtml = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const isActive = i === currentPage;
+          pageHtml += `
+            <button class="page-num ${isActive ? 'admin-btn-primary' : 'admin-btn-secondary'}" 
+                    data-page="${i}" 
+                    style="width:32px; height:32px; padding:0 !important; border-radius:8px !important; font-size:11px !important;">
+              ${i}
+            </button>`;
+        }
+        $('#page-numbers').html(pageHtml);
+
+        // Update counter
+        const startIdx = totalRows === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+        const endIdx = Math.min(currentPage * rowsPerPage, totalRows);
+        $('#pagination-counter').text(`Showing ${startIdx}-${endIdx} of ${totalRows} staff`);
+      }
+
+      $(document).on('click', '.page-num', function() {
+        currentPage = parseInt($(this).data('page'));
+        updatePagination();
       });
+
+      $('#prev-page').on('click', function() {
+        if (currentPage > 1) {
+          currentPage--;
+          updatePagination();
+        }
+      });
+
+      $('#next-page').on('click', function() {
+        const $visible = $('#staff-table-body tr').filter(function() {
+          return $(this).attr('data-visible') !== 'false';
+        });
+        if (currentPage < Math.ceil($visible.length / rowsPerPage)) {
+          currentPage++;
+          updatePagination();
+        }
+      });
+
+      applyFilters();
     });
   </script>
 </body>
