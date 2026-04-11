@@ -18,12 +18,25 @@
   .dark .force-white-bg { background: rgba(28, 33, 40, 0.9) !important; backdrop-filter: blur(10px) !important; }
   .force-status-bg { background: #f1f2f6 !important; }
   .dark .force-status-bg { background: rgba(51, 65, 85, 0.5) !important; }
+  
+  /* High-Specificity Fix for metrics card */
+  #metrics-interest-total { background: #ffffff !important; backdrop-filter: none !important; }
+  .dark #metrics-interest-total { background: rgba(28, 33, 40, 0.9) !important; backdrop-filter: blur(10px) !important; }
+  
+  #update-rate-card { background: #ffffff !important; backdrop-filter: none !important; }
+  .dark #update-rate-card { background: rgba(28, 33, 40, 0.9) !important; backdrop-filter: blur(10px) !important; }
+
+  .table-header-theme { background: #ffffff !important; }
+  .dark .table-header-theme { background: rgba(28, 33, 40, 1) !important; }
+
+  /* Global Light Mode Overrides */
+  body:not(.dark) .admin-main { background: #ffffff !important; }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <nav class="admin-sidebar">
     <div class="admin-sidebar-brand">
@@ -78,7 +91,7 @@
     <div>
       <div class="text-[11px] font-bold tracking-widest force-black uppercase">INTEREST MANAGEMENT</div>
       <div class="font-headline text-3xl font-extrabold force-black tracking-tight mt-1">Savings Interest Management</div>
-      <div class="text-xs force-black mt-1 font-medium" style="opacity:0.7;">Configure and manage monthly interest rates for savings accounts</div>
+      <div class="text-xs force-black mt-1 font-medium">Configure and manage monthly interest rates for savings accounts</div>
     </div>
   </div>
 
@@ -106,11 +119,11 @@
             <div><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Effective Since</div><div class="force-black" style="font-weight:600;">01 Apr 2026</div></div>
             <div style="text-align:right;"><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Next Review</div><div class="force-black" style="font-weight:600;">01 Jul 2026</div></div>
           </div>
-          <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:#002645;opacity:0.04;border-radius:50%;"></div>
+          <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:#002645;opacity:0.1;border-radius:50%;"></div>
         </div>
 
         <!-- Update Form -->
-        <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix dark:!bg-slate-800/40" style="padding:28px; background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">
+        <div id="update-rate-card" class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix dark:!bg-slate-800/40" style="padding:28px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
             <span class="material-symbols-outlined force-black" style="font-size:20px;">edit</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Update Interest Rate</div>
@@ -167,10 +180,10 @@
           <table class="admin-table" style="width:100%;">
             <thead>
               <tr>
-                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">EFFECTIVE DATE</th>
-                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">INTEREST RATE</th>
-                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">UPDATED BY</th>
-                <th class="force-black dark:!bg-slate-800/60" style="text-align:right; background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">STATUS</th>
+                <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">EFFECTIVE DATE</th>
+                <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">INTEREST RATE</th>
+                <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">UPDATED BY</th>
+                <th class="force-black table-header-theme dark:!bg-slate-800/60" style="text-align:right; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">STATUS</th>
               </tr>
             </thead>
             <tbody>
@@ -204,9 +217,9 @@
 
         <!-- Analysis Row -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div class="admin-card" style="padding:22px;background:#002645;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Total Interest Credited</div>
-            <div style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:white;margin-bottom:8px;">₹12,400</div>
+          <div id="metrics-interest-total" class="admin-card force-white-bg" style="padding:22px;">
+            <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px; color:rgba(0,0,0,0.6);">Total Interest Credited</div>
+            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;margin-bottom:8px;">₹12,400</div>
             <div style="display:flex;align-items:center;gap:6px;color:#10b981;font-size:11px;font-weight:700;">
               <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> +4.5% from last month
             </div>
@@ -217,7 +230,7 @@
               <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;">1,536</div>
               <span style="background:rgba(16,185,129,0.1);color:#10b981;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.2);">Savings Accounts</span>
             </div>
-            <div class="force-black" style="font-size:11px;line-height:1.5;">Auto-credited every 30 days</div>
+            <div class="force-black" style="font-size:11px;line-height:1.5; font-weight: 500;">Auto-credited every 30 days</div>
           </div>
         </div>
 
@@ -251,7 +264,7 @@
 
 <!-- Confirmation Modal -->
 <div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,38,69,0.5);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;">
-  <div class="bg-white dark:bg-slate-900" style="max-width:440px;width:90%;border-radius:24px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);">
+  <div class="bg-white dark:bg-slate-900 force-white-bg" style="max-width:440px;width:90%;border-radius:24px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);">
     <div style="padding:32px;">
       <div style="width:56px;height:56px;background:#fff8e1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
         <span class="material-symbols-outlined" style="color:#f39c12;font-size:28px;">warning</span>
@@ -263,7 +276,7 @@
         <button onclick="confirmRate()" style="flex:1;padding:14px;background:#002645;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;">Confirm & Apply</button>
       </div>
     </div>
-    <div class="bg-slate-50 dark:bg-surface-container-low" style="padding:12px 32px;text-align:center;">
+    <div class="table-header-theme" style="padding:12px 32px;text-align:center;">
       <span class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">Authorization Required · 2FA Token</span>
     </div>
   </div>
