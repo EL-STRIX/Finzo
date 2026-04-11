@@ -192,11 +192,128 @@
       </div>
 
       <!-- DELETED USERS TABLE -->
-      <div class="admin-card overflow-hidden">
-        <table class="admin-table w-full text-left">
+      <div class="admin-card overflow-hidden" style="border-radius:24px;">
+        <style>
+          .du-table { width: 100%; border-collapse: collapse; }
+          .du-table thead tr { background: #f8fafc; }
+          .dark .du-table thead tr { background: rgba(255,255,255,0.03); }
+          .du-table thead th {
+            padding: 14px 20px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: nowrap;
+          }
+          .dark .du-table thead th { border-color: rgba(255,255,255,0.05); }
+          .du-table tbody tr {
+            border-bottom: 1px solid #f8fafc;
+            transition: background 0.15s;
+          }
+          .dark .du-table tbody tr { border-color: rgba(255,255,255,0.04); }
+          .du-table tbody tr:last-child { border-bottom: none; }
+          .du-table tbody tr:hover { background: #fafbff; }
+          .dark .du-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+          .du-table tbody td { padding: 18px 20px; vertical-align: middle; }
+
+          .du-num { font-size: 11px; font-weight: 800; color: #cbd5e1; width: 48px; }
+
+          .du-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+          }
+          .du-name { font-size: 13px; font-weight: 800; color: #0f172a; line-height: 1.2; }
+          .dark .du-name { color: #f0f6fc; }
+          .du-email { font-size: 11px; font-weight: 500; color: #94a3b8; margin-top: 2px; }
+
+          .du-phone { font-size: 12px; font-weight: 700; color: #334155; white-space: nowrap; }
+          .dark .du-phone { color: #94a3b8; }
+
+          .du-acc {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f1f5f9; border-radius: 8px;
+            padding: 5px 10px; font-size: 11px; font-weight: 800;
+            color: #475569; font-family: monospace; letter-spacing: 0.02em;
+            border: 1px solid #e2e8f0;
+          }
+          .dark .du-acc { background: rgba(255,255,255,0.06); color: #94a3b8; border-color: rgba(255,255,255,0.08); }
+
+          .du-type-savings {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #ecfdf5; color: #059669;
+            border: 1px solid #a7f3d0;
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.07em;
+          }
+          .dark .du-type-savings { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #34d399; }
+          .du-type-current {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #eff6ff; color: #3b82f6;
+            border: 1px solid #bfdbfe;
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.07em;
+          }
+          .dark .du-type-current { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.2); color: #60a5fa; }
+
+          .du-deleted-by {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 800; color: #475569;
+          }
+          .du-deleted-by .material-symbols-outlined { font-size: 14px; color: #94a3b8; }
+          .dark .du-deleted-by { color: #8b949e; }
+
+          .du-date-main { font-size: 12px; font-weight: 700; color: #334155; white-space: nowrap; }
+          .dark .du-date-main { color: #8b949e; }
+
+          .du-reason {
+            display: flex; align-items: flex-start; gap: 7px;
+            max-width: 200px;
+          }
+          .du-reason-icon { font-size: 14px; color: #f59e0b; margin-top: 1px; flex-shrink: 0; }
+          .du-reason-text { font-size: 11px; font-weight: 600; color: #64748b; font-style: italic; line-height: 1.4; }
+          .dark .du-reason-text { color: #8b949e; }
+
+          .du-btn-recover {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 10px;
+            background: #ecfdf5; color: #059669;
+            border: 1px solid #a7f3d0;
+            font-size: 11px; font-weight: 800;
+            cursor: pointer; transition: all 0.2s;
+            white-space: nowrap;
+          }
+          .du-btn-recover:hover {
+            background: #10b981; color: #fff;
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+            transform: translateY(-1px);
+          }
+          .du-btn-recover .material-symbols-outlined { font-size: 15px; }
+          .dark .du-btn-recover { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #34d399; }
+          .dark .du-btn-recover:hover { background: #10b981; color: #fff; border-color: #10b981; }
+
+          .du-btn-details {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 7px 14px; border-radius: 10px;
+            background: #f8fafc; color: #64748b;
+            border: 1px solid #e2e8f0;
+            font-size: 11px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            white-space: nowrap;
+          }
+          .du-btn-details:hover { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+          .dark .du-btn-details { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); color: #8b949e; }
+          .dark .du-btn-details:hover { background: rgba(255,255,255,0.08); color: #e6edf3; }
+        </style>
+
+        <table class="du-table">
           <thead>
             <tr>
-              <th class="w-16">#</th>
+              <th>#</th>
               <th>USER</th>
               <th>PHONE</th>
               <th>ACCOUNT NO</th>
@@ -204,147 +321,152 @@
               <th>DELETED BY</th>
               <th>DELETED ON</th>
               <th>REASON</th>
-              <th class="text-right">ACTIONS</th>
+              <th style="text-align:right;">ACTIONS</th>
             </tr>
           </thead>
           <tbody id="deleted-table-body">
             <tr data-status="all" data-deleted-by="admin" data-date="2026-04-05">
-              <td class="font-bold opacity-40">01</td>
+              <td class="du-num">01</td>
               <td>
                 <div class="flex items-center gap-3 user-info">
-                  <div class="admin-avatar" style="background: #94a3b8; color: white;">MK</div>
+                  <div class="du-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff;">MK</div>
                   <div>
-                    <div class="font-bold user-name">Mohan Kumar</div>
-                    <div class="text-[11px] opacity-60 user-email">mohan.kumar@gmail.com</div>
+                    <div class="du-name user-name">Mohan Kumar</div>
+                    <div class="du-email user-email">mohan.kumar@gmail.com</div>
                   </div>
                 </div>
               </td>
-              <td class="text-xs font-bold">+91 99887 76655</td>
-              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260010</span></td>
-              <td><span class="status-badge badge-success">Savings</span></td>
-              <td class="text-xs font-bold">Admin</td>
-              <td class="text-xs whitespace-nowrap">05 Apr 2026 11:30 AM</td>
-              <td class="text-xs italic opacity-60">"User requested account closure"</td>
+              <td><span class="du-phone">+91 99887 76655</span></td>
+              <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260010</span></td>
+              <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
+              <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+              <td><span class="du-date-main">05 Apr 2026<br><span style="font-size:10px;font-weight:600;color:#94a3b8;">11:30 AM</span></span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <button onclick="openRecoverModal('Mohan Kumar', 'FNZ20260010')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
-                  </button>
-                  <button onclick="openDetailsModal('Row 01')" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    View Details
-                  </button>
+                <div class="du-reason">
+                  <span class="material-symbols-outlined du-reason-icon">info</span>
+                  <span class="du-reason-text">"User requested account closure"</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                  <button onclick="openRecoverModal('Mohan Kumar','FNZ20260010')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                  <button onclick="openDetailsModal('Row 01')" class="du-btn-details"><span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>Details</button>
                 </div>
               </td>
             </tr>
             <tr data-status="all" data-deleted-by="admin" data-date="2026-04-03">
-              <td class="font-bold opacity-40">02</td>
+              <td class="du-num">02</td>
               <td>
                 <div class="flex items-center gap-3 user-info">
-                  <div class="admin-avatar" style="background: #a855f7; color: white;">SP</div>
+                  <div class="du-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;">SP</div>
                   <div>
-                    <div class="font-bold user-name">Sneha Patel</div>
-                    <div class="text-[11px] opacity-60 user-email">sneha.patel@gmail.com</div>
+                    <div class="du-name user-name">Sneha Patel</div>
+                    <div class="du-email user-email">sneha.patel@gmail.com</div>
                   </div>
                 </div>
               </td>
-              <td class="text-xs font-bold">+91 88776 65544</td>
-              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260015</span></td>
-              <td><span class="status-badge badge-info">Current</span></td>
-              <td class="text-xs font-bold">Admin</td>
-              <td class="text-xs whitespace-nowrap">03 Apr 2026 02:15 PM</td>
-              <td class="text-xs italic opacity-60">"Suspicious activity detected"</td>
+              <td><span class="du-phone">+91 88776 65544</span></td>
+              <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260015</span></td>
+              <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
+              <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+              <td><span class="du-date-main">03 Apr 2026<br><span style="font-size:10px;font-weight:600;color:#94a3b8;">02:15 PM</span></span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <button onclick="openRecoverModal('Sneha Patel', 'FNZ20260015')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
-                  </button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    View Details
-                  </button>
+                <div class="du-reason">
+                  <span class="material-symbols-outlined du-reason-icon">warning</span>
+                  <span class="du-reason-text">"Suspicious activity detected"</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                  <button onclick="openRecoverModal('Sneha Patel','FNZ20260015')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                  <button onclick="openDetailsModal('Row 02')" class="du-btn-details"><span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>Details</button>
                 </div>
               </td>
             </tr>
             <tr data-status="all" data-deleted-by="admin" data-date="2026-04-01">
-              <td class="font-bold opacity-40">03</td>
+              <td class="du-num">03</td>
               <td>
                 <div class="flex items-center gap-3 user-info">
-                  <div class="admin-avatar" style="background: #f97316; color: white;">AK</div>
+                  <div class="du-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;">AK</div>
                   <div>
-                    <div class="font-bold user-name">Arjun Khanna</div>
-                    <div class="text-[11px] opacity-60 user-email">arjun.khanna@gmail.com</div>
+                    <div class="du-name user-name">Arjun Khanna</div>
+                    <div class="du-email user-email">arjun.khanna@gmail.com</div>
                   </div>
                 </div>
               </td>
-              <td class="text-xs font-bold">+91 77665 54433</td>
-              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260018</span></td>
-              <td><span class="status-badge badge-success">Savings</span></td>
-              <td class="text-xs font-bold">Admin</td>
-              <td class="text-xs whitespace-nowrap">01 Apr 2026 10:00 AM</td>
-              <td class="text-xs italic opacity-60">"Duplicate account found"</td>
+              <td><span class="du-phone">+91 77665 54433</span></td>
+              <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260018</span></td>
+              <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
+              <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+              <td><span class="du-date-main">01 Apr 2026<br><span style="font-size:10px;font-weight:600;color:#94a3b8;">10:00 AM</span></span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <button onclick="openRecoverModal('Arjun Khanna', 'FNZ20260018')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
-                  </button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    View Details
-                  </button>
+                <div class="du-reason">
+                  <span class="material-symbols-outlined du-reason-icon">content_copy</span>
+                  <span class="du-reason-text">"Duplicate account found"</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                  <button onclick="openRecoverModal('Arjun Khanna','FNZ20260018')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                  <button onclick="openDetailsModal('Row 03')" class="du-btn-details"><span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>Details</button>
                 </div>
               </td>
             </tr>
             <tr data-status="all" data-deleted-by="system" data-date="2026-03-28">
-              <td class="font-bold opacity-40">04</td>
+              <td class="du-num">04</td>
               <td>
                 <div class="flex items-center gap-3 user-info">
-                  <div class="admin-avatar" style="background: #14b8a6; color: white;">NR</div>
+                  <div class="du-avatar" style="background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;">NR</div>
                   <div>
-                    <div class="font-bold user-name">Nisha Rao</div>
-                    <div class="text-[11px] opacity-60 user-email">nisha.rao@gmail.com</div>
+                    <div class="du-name user-name">Nisha Rao</div>
+                    <div class="du-email user-email">nisha.rao@gmail.com</div>
                   </div>
                 </div>
               </td>
-              <td class="text-xs font-bold">+91 66554 43322</td>
-              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260022</span></td>
-              <td><span class="status-badge badge-success">Savings</span></td>
-              <td class="text-xs font-bold">System</td>
-              <td class="text-xs whitespace-nowrap">28 Mar 2026 09:45 AM</td>
-              <td class="text-xs italic opacity-60">"Inactive for 6 months"</td>
+              <td><span class="du-phone">+91 66554 43322</span></td>
+              <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260022</span></td>
+              <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
+              <td><span class="du-deleted-by"><span class="material-symbols-outlined">computer</span>System</span></td>
+              <td><span class="du-date-main">28 Mar 2026<br><span style="font-size:10px;font-weight:600;color:#94a3b8;">09:45 AM</span></span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <button onclick="openRecoverModal('Nisha Rao', 'FNZ20260022')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
-                  </button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    View Details
-                  </button>
+                <div class="du-reason">
+                  <span class="material-symbols-outlined du-reason-icon" style="color:#94a3b8;">schedule</span>
+                  <span class="du-reason-text">"Inactive for 6 months"</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                  <button onclick="openRecoverModal('Nisha Rao','FNZ20260022')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                  <button onclick="openDetailsModal('Row 04')" class="du-btn-details"><span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>Details</button>
                 </div>
               </td>
             </tr>
             <tr data-status="all" data-deleted-by="admin" data-date="2026-03-25">
-              <td class="font-bold opacity-40">05</td>
+              <td class="du-num">05</td>
               <td>
                 <div class="flex items-center gap-3 user-info">
-                  <div class="admin-avatar" style="background: #ef4444; color: white;">VG</div>
+                  <div class="du-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;">VG</div>
                   <div>
-                    <div class="font-bold user-name">Vikram Gupta</div>
-                    <div class="text-[11px] opacity-60 user-email">vikram.gupta@gmail.com</div>
+                    <div class="du-name user-name">Vikram Gupta</div>
+                    <div class="du-email user-email">vikram.gupta@gmail.com</div>
                   </div>
                 </div>
               </td>
-              <td class="text-xs font-bold">+91 55443 32211</td>
-              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260025</span></td>
-              <td><span class="status-badge badge-info">Current</span></td>
-              <td class="text-xs font-bold">Admin</td>
-              <td class="text-xs whitespace-nowrap">25 Mar 2026 04:30 PM</td>
-              <td class="text-xs italic opacity-60">"Fraudulent activity reported"</td>
+              <td><span class="du-phone">+91 55443 32211</span></td>
+              <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260025</span></td>
+              <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
+              <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+              <td><span class="du-date-main">25 Mar 2026<br><span style="font-size:10px;font-weight:600;color:#94a3b8;">04:30 PM</span></span></td>
               <td>
-                <div class="flex justify-end gap-2">
-                  <button onclick="openRecoverModal('Vikram Gupta', 'FNZ20260025')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
-                  </button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    View Details
-                  </button>
+                <div class="du-reason">
+                  <span class="material-symbols-outlined du-reason-icon" style="color:#ef4444;">gpp_bad</span>
+                  <span class="du-reason-text">"Fraudulent activity reported"</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                  <button onclick="openRecoverModal('Vikram Gupta','FNZ20260025')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                  <button onclick="openDetailsModal('Row 05')" class="du-btn-details"><span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>Details</button>
                 </div>
               </td>
             </tr>
