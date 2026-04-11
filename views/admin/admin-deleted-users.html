@@ -66,11 +66,11 @@
       <a href="admin-audit-log.html" class="admin-nav-item">
         <span class="material-symbols-outlined">manage_search</span> Audit Logs
       </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
       <a href="admin-deleted-users.html" class="admin-nav-item active">
         <span class="material-symbols-outlined">person_remove</span> Deleted Users
+      </a>
+      <a href="admin-interest.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">percent</span> Interest Management
       </a>
 
       <div class="admin-nav-section">ACCOUNT</div>
@@ -91,7 +91,7 @@
       <div>
         <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">SOFT DELETE MANAGEMENT</div>
         <div class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Deleted Users</div>
-        <div class="text-sm text-slate-500 font-medium hov-opacity">View and recover soft deleted user accounts</div>
+        <div class="text-sm text-slate-500 font-medium hov-opacity">View and restore soft deleted user accounts — no data is permanently lost</div>
       </div>
       <div class="flex items-center gap-4">
         <div class="admin-avatar premium-gradient-primary">A</div>
@@ -100,22 +100,22 @@
 
     <div class="p-10">
       <!-- INFO BANNER -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-6 mb-10 flex gap-5 items-start">
-        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0">
+      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-6 mb-10 flex gap-5 items-start animate-fade-in">
+        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0 shadow-sm">
           <span class="material-symbols-outlined">info</span>
         </div>
         <div>
           <h4 class="font-bold text-blue-900 dark:text-blue-300 mb-1">Soft Delete Policy</h4>
-          <p class="text-sm text-blue-800/70 dark:text-blue-400/70 leading-relaxed max-w-2xl">
-            Soft deleted users are not permanently removed. Their data is preserved and can be fully recovered by the admin at any time. This includes account balances, transaction history, and profile documents.
+          <p class="text-sm text-blue-800/70 dark:text-blue-400/70 leading-relaxed max-w-3xl">
+            Soft deleted users are not permanently removed from the database. All their account data, transaction history and documents are fully preserved and can be recovered by the admin at any time.
           </p>
         </div>
       </div>
 
       <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div class="admin-stat-card">
-          <div class="admin-stat-label">TOTAL DELETED USERS</div>
+          <div class="admin-stat-label">TOTAL DELETED</div>
           <div class="admin-stat-value">5 <span class="admin-stat-delta neutral" style="background:#fff3cd; color:#b07d00;">Recoverable</span></div>
         </div>
         <div class="admin-stat-card">
@@ -126,123 +126,225 @@
           <div class="admin-stat-label">RECOVERED THIS MONTH</div>
           <div class="admin-stat-value">1 <span class="admin-stat-delta positive">Restored</span></div>
         </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-label">DELETED BY ADMIN</div>
+          <div class="admin-stat-value">4 <span class="admin-stat-delta neutral" style="background:#f1f3f5; color:#6c757d;">Manual</span></div>
+        </div>
       </div>
 
-      <!-- FILTERS -->
-      <div class="admin-card mb-8">
-        <div class="p-6 flex flex-wrap items-center gap-4">
-          <div class="flex-1 min-w-[300px] relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input type="text" placeholder="Search by name or email"
-              class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm">
+      <!-- FILTER TABS -->
+      <div id="status-tabs" class="flex items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl self-start">
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Deleted</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="this-week">Deleted This Week</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="this-month">Deleted This Month</button>
+        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="recovered">Recovered</button>
+      </div>
+
+      <!-- SEARCH & FILTER -->
+      <div class="admin-card mb-8 !overflow-visible relative z-[30]">
+        <div class="p-4 flex flex-wrap items-end gap-3">
+          <!-- Multi-search -->
+          <div class="flex-1 min-w-[280px]">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">SEARCH USER</label>
+            <div class="relative group">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+              <input type="text" id="filter-search" placeholder="Search by name, email or account number..."
+                class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+            </div>
           </div>
           
-          <div class="flex items-center gap-3">
+          <!-- Date Range -->
+          <div class="flex items-center gap-2">
              <div class="flex flex-col">
-               <span class="text-[9px] font-black uppercase text-slate-400 ml-1 mb-1">Deleted From</span>
-               <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold px-4 py-2.5">
+               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">DELETED FROM</label>
+               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
              </div>
              <div class="flex flex-col">
-               <span class="text-[9px] font-black uppercase text-slate-400 ml-1 mb-1">Deleted To</span>
-               <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold px-4 py-2.5">
+               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">TO</label>
+               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
              </div>
           </div>
 
-          <div class="self-end pb-0.5">
-            <button class="admin-btn-primary" style="padding: 10px 24px !important;">Apply</button>
-            <button class="admin-btn-secondary" style="padding: 10px 24px !important;">Reset</button>
+          <!-- Deleted By -->
+          <div class="flex flex-col">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">DELETED BY</label>
+            <div class="finzo-dropdown" id="filter-deleted-by-dropdown">
+              <input type="hidden" id="filter-deleted-by" value="all">
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[140px]">
+                <span class="material-symbols-outlined text-lg opacity-60">person</span>
+                <span class="dropdown-label font-bold text-xs">All</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
+                <div class="finzo-dropdown-option is-selected" data-value="all">All</div>
+                <div class="finzo-dropdown-option" data-value="admin">Admin</div>
+                <div class="finzo-dropdown-option" data-value="system">System</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-2">
+            <button id="apply-filters" class="admin-btn-primary" style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
+            <button id="reset-filters" class="admin-btn-secondary" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
           </div>
         </div>
       </div>
 
-      <!-- TABLE -->
-      <div class="admin-card">
+      <!-- DELETED USERS TABLE -->
+      <div class="admin-card overflow-hidden">
         <table class="admin-table w-full text-left">
           <thead>
             <tr>
               <th class="w-16">#</th>
-              <th>User</th>
-              <th>Account Number</th>
-              <th>Type</th>
-              <th>Deleted By</th>
-              <th>Deleted On</th>
-              <th>Reason</th>
-              <th class="text-right">Actions</th>
+              <th>USER</th>
+              <th>PHONE</th>
+              <th>ACCOUNT NO</th>
+              <th>ACCOUNT TYPE</th>
+              <th>DELETED BY</th>
+              <th>DELETED ON</th>
+              <th>REASON</th>
+              <th class="text-right">ACTIONS</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
+          <tbody id="deleted-table-body">
+            <tr data-status="all" data-deleted-by="admin" data-date="2026-04-05">
               <td class="font-bold opacity-40">01</td>
               <td>
-                <div class="flex items-center gap-3">
-                  <div class="admin-avatar" style="background: linear-gradient(135deg, #fbbf24 0%, #d17800 100%); color: white;">MK</div>
+                <div class="flex items-center gap-3 user-info">
+                  <div class="admin-avatar" style="background: #94a3b8; color: white;">MK</div>
                   <div>
-                    <div class="font-bold">Mohan Kumar</div>
-                    <div class="text-[11px] opacity-60">mohan.kumar@gmail.com</div>
+                    <div class="font-bold user-name">Mohan Kumar</div>
+                    <div class="text-[11px] opacity-60 user-email">mohan.kumar@gmail.com</div>
                   </div>
                 </div>
               </td>
+              <td class="text-xs font-bold">+91 99887 76655</td>
               <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260010</span></td>
-              <td>Savings</td>
+              <td><span class="status-badge badge-success">Savings</span></td>
               <td class="text-xs font-bold">Admin</td>
               <td class="text-xs whitespace-nowrap">05 Apr 2026 11:30 AM</td>
-              <td class="text-xs italic opacity-60">User requested account closure</td>
+              <td class="text-xs italic opacity-60">"User requested account closure"</td>
               <td>
                 <div class="flex justify-end gap-2">
-                  <button onclick="$('#recoverModal').removeClass('hidden').addClass('flex')" class="admin-btn-secondary" style="background:#e8f8f2 !important; color:#00b894 !important; border-color: rgba(0, 184, 148, 0.2) !important; padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">restore</span> Recover</button>
-                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View Details</button>
+                  <button onclick="openRecoverModal('Mohan Kumar', 'FNZ20260010')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
+                  </button>
+                  <button onclick="openDetailsModal('Row 01')" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                    View Details
+                  </button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="all" data-deleted-by="admin" data-date="2026-04-03">
               <td class="font-bold opacity-40">02</td>
               <td>
-                <div class="flex items-center gap-3">
-                  <div class="admin-avatar" style="background: linear-gradient(135deg, #f472b6 0%, #db2777 100%); color: white;">SP</div>
+                <div class="flex items-center gap-3 user-info">
+                  <div class="admin-avatar" style="background: #a855f7; color: white;">SP</div>
                   <div>
-                    <div class="font-bold">Sneha Patel</div>
-                    <div class="text-[11px] opacity-60">sneha.patel@gmail.com</div>
+                    <div class="font-bold user-name">Sneha Patel</div>
+                    <div class="text-[11px] opacity-60 user-email">sneha.patel@gmail.com</div>
                   </div>
                 </div>
               </td>
+              <td class="text-xs font-bold">+91 88776 65544</td>
               <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260015</span></td>
-              <td>Current</td>
+              <td><span class="status-badge badge-info">Current</span></td>
               <td class="text-xs font-bold">Admin</td>
               <td class="text-xs whitespace-nowrap">03 Apr 2026 02:15 PM</td>
-              <td class="text-xs italic opacity-60">Suspicious activity detected</td>
+              <td class="text-xs italic opacity-60">"Suspicious activity detected"</td>
               <td>
                 <div class="flex justify-end gap-2">
-                  <button class="admin-btn-secondary" style="background:#e8f8f2 !important; color:#00b894 !important; border-color: rgba(0, 184, 148, 0.2) !important; padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">restore</span> Recover</button>
+                  <button onclick="openRecoverModal('Sneha Patel', 'FNZ20260015')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
+                  </button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View Details</button>
+                    View Details
+                  </button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="all" data-deleted-by="admin" data-date="2026-04-01">
               <td class="font-bold opacity-40">03</td>
               <td>
-                <div class="flex items-center gap-3">
-                  <div class="admin-avatar" style="background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%); color: white;">AK</div>
+                <div class="flex items-center gap-3 user-info">
+                  <div class="admin-avatar" style="background: #f97316; color: white;">AK</div>
                   <div>
-                    <div class="font-bold">Arjun Khanna</div>
-                    <div class="text-[11px] opacity-60">arjun.khanna@gmail.com</div>
+                    <div class="font-bold user-name">Arjun Khanna</div>
+                    <div class="text-[11px] opacity-60 user-email">arjun.khanna@gmail.com</div>
                   </div>
                 </div>
               </td>
+              <td class="text-xs font-bold">+91 77665 54433</td>
               <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260018</span></td>
-              <td>Savings</td>
+              <td><span class="status-badge badge-success">Savings</span></td>
               <td class="text-xs font-bold">Admin</td>
               <td class="text-xs whitespace-nowrap">01 Apr 2026 10:00 AM</td>
-              <td class="text-xs italic opacity-60">Duplicate account</td>
+              <td class="text-xs italic opacity-60">"Duplicate account found"</td>
               <td>
                 <div class="flex justify-end gap-2">
-                  <button class="admin-btn-secondary" style="background:#e8f8f2 !important; color:#00b894 !important; border-color: rgba(0, 184, 148, 0.2) !important; padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">restore</span> Recover</button>
+                  <button onclick="openRecoverModal('Arjun Khanna', 'FNZ20260018')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
+                  </button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View Details</button>
+                    View Details
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="all" data-deleted-by="system" data-date="2026-03-28">
+              <td class="font-bold opacity-40">04</td>
+              <td>
+                <div class="flex items-center gap-3 user-info">
+                  <div class="admin-avatar" style="background: #14b8a6; color: white;">NR</div>
+                  <div>
+                    <div class="font-bold user-name">Nisha Rao</div>
+                    <div class="text-[11px] opacity-60 user-email">nisha.rao@gmail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-xs font-bold">+91 66554 43322</td>
+              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260022</span></td>
+              <td><span class="status-badge badge-success">Savings</span></td>
+              <td class="text-xs font-bold">System</td>
+              <td class="text-xs whitespace-nowrap">28 Mar 2026 09:45 AM</td>
+              <td class="text-xs italic opacity-60">"Inactive for 6 months"</td>
+              <td>
+                <div class="flex justify-end gap-2">
+                  <button onclick="openRecoverModal('Nisha Rao', 'FNZ20260022')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
+                  </button>
+                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                    View Details
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="all" data-deleted-by="admin" data-date="2026-03-25">
+              <td class="font-bold opacity-40">05</td>
+              <td>
+                <div class="flex items-center gap-3 user-info">
+                  <div class="admin-avatar" style="background: #ef4444; color: white;">VG</div>
+                  <div>
+                    <div class="font-bold user-name">Vikram Gupta</div>
+                    <div class="text-[11px] opacity-60 user-email">vikram.gupta@gmail.com</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-xs font-bold">+91 55443 32211</td>
+              <td><span class="font-code text-xs font-bold opacity-60 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">FNZ20260025</span></td>
+              <td><span class="status-badge badge-info">Current</span></td>
+              <td class="text-xs font-bold">Admin</td>
+              <td class="text-xs whitespace-nowrap">25 Mar 2026 04:30 PM</td>
+              <td class="text-xs italic opacity-60">"Fraudulent activity reported"</td>
+              <td>
+                <div class="flex justify-end gap-2">
+                  <button onclick="openRecoverModal('Vikram Gupta', 'FNZ20260025')" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-[11px] font-bold hover:bg-green-600 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-[16px]">restore</span> Recover
+                  </button>
+                  <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                    View Details
+                  </button>
                 </div>
               </td>
             </tr>
@@ -251,53 +353,163 @@
 
         <!-- PAGINATION -->
         <div class="p-6 border-t border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/30 dark:bg-white/5">
-          <div class="text-xs font-bold opacity-40">Showing 1-3 of 5 deleted users</div>
+          <div class="text-xs font-bold opacity-40">Showing 1-5 of 5 deleted users</div>
           <div class="flex items-center gap-2">
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Previous</button>
-            <button class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
-            <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Next</button>
+            <button id="prev-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>
+            <button id="page-1" onclick="goToPage(1)" class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
+            <button id="next-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next →</button>
           </div>
         </div>
+      </div>
+      
+      <!-- EMPTY STATE (hidden by default) -->
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 animate-fade-in">
+        <div class="w-24 h-24 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-300 mb-6">
+          <span class="material-symbols-outlined text-6xl">person_check</span>
+        </div>
+        <h3 class="font-headline text-2xl font-extrabold text-slate-800 dark:text-white mb-2">No Deleted Users Found</h3>
+        <p class="text-slate-500 dark:text-slate-400 text-center max-w-sm">All user accounts are currently active. Soft deleted users will appear here.</p>
       </div>
     </div>
   </div>
 
   <!-- RECOVERY MODAL -->
   <div id="recoverModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#recoverModal').addClass('hidden').removeClass('flex')"></div>
-    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter">
-      <div class="p-8 text-center">
-        <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center">
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('recoverModal')"></div>
+    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter shadow-2xl p-0 overflow-hidden">
+      <div class="p-8 text-center bg-white dark:bg-surface-container-high">
+        <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center shadow-inner">
           <span class="material-symbols-outlined text-4xl">restore</span>
         </div>
-        <h3 class="admin-section-title text-2xl mb-4">Recover User Account</h3>
-        <p class="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-          You are about to recover the account of <span class="font-bold text-slate-900 dark:text-white">Mohan Kumar (FNZ20260010)</span>. This will restore full access to their account and all their data.
+        <h3 class="font-headline text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Recover User Account</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+          You are about to recover the account of <span id="recover-user-name" class="font-bold text-slate-900 dark:text-white"></span> with account number <span id="recover-user-acc" class="font-bold text-slate-900 dark:text-white"></span>.
+          This will restore full access to their account and all their transaction history and data.
         </p>
 
-        <div class="bg-slate-50 dark:bg-white/5 p-6 rounded-2xl mb-8 border border-slate-100 dark:border-white/5 text-left">
-           <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Restore Options</label>
+        <div class="bg-slate-50 dark:bg-white/5 p-6 rounded-2xl mb-8 border border-slate-100 dark:border-white/5 text-left transition-colors">
+           <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">RESTORE OPTIONS</label>
            <div class="space-y-4">
              <label class="flex items-center gap-4 cursor-pointer group">
-               <input type="radio" name="restore-option" checked class="w-5 h-5 text-green-500 border-slate-200 focus:ring-green-500/20 bg-white">
+               <input type="radio" name="restore-option" checked class="w-5 h-5 text-green-500 border-slate-300 dark:border-white/10 focus:ring-green-500/20 bg-white dark:bg-slate-800 transition-all">
                <div class="flex flex-col">
-                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors">Restore with original balance</span>
-                 <span class="text-[10px] opacity-60">Balance: ₹12,450.00 will be restored</span>
+                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors dark:text-white">Restore with original balance</span>
+                 <span class="text-[10px] opacity-60 dark:text-white/60">Balance before deletion will be restored</span>
                </div>
              </label>
              <label class="flex items-center gap-4 cursor-pointer group">
-               <input type="radio" name="restore-option" class="w-5 h-5 text-green-500 border-slate-200 focus:ring-green-500/20 bg-white">
+               <input type="radio" name="restore-option" class="w-5 h-5 text-green-500 border-slate-300 dark:border-white/10 focus:ring-green-500/20 bg-white dark:bg-slate-800 transition-all">
                <div class="flex flex-col">
-                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors">Restore with zero balance</span>
-                 <span class="text-[10px] opacity-60">User starts with ₹0.00 balance</span>
+                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors dark:text-white">Restore with zero balance</span>
+                 <span class="text-[10px] opacity-60 dark:text-white/60">Account will start with ₹0.00 balance</span>
                </div>
              </label>
            </div>
         </div>
 
-        <div class="flex gap-3">
-          <button onclick="$('#recoverModal').addClass('hidden').removeClass('flex')" class="flex-1 admin-btn-secondary py-4">Cancel</button>
-          <button class="flex-1 admin-btn-primary py-4" style="background:#00b894 !important; border:none !important;">Recover Account</button>
+        <div class="flex gap-4">
+          <button onclick="closeModal('recoverModal')" class="flex-1 px-6 py-3.5 border-2 border-slate-100 dark:border-white/10 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Cancel</button>
+          <button onclick="confirmRecovery()" class="flex-1 px-6 py-3.5 bg-green-500 text-white rounded-xl text-sm font-bold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILS MODAL -->
+  <div id="detailsModal" class="fixed inset-0 z-[2030] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('detailsModal')"></div>
+    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter shadow-2xl overflow-hidden p-0">
+      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-surface-container-high">
+        <h3 class="font-headline text-xl font-extrabold text-slate-900 dark:text-white">Deleted User Details</h3>
+        <button onclick="closeModal('detailsModal')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-8 bg-white dark:bg-surface-container-high">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <!-- Left Column -->
+          <div class="space-y-8">
+            <div>
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-[#6c63ff] mb-4">Personal Information</h4>
+              <div class="space-y-4">
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Full Name</span>
+                  <span class="text-sm font-bold dark:text-white">Mohan Kumar</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Email</span>
+                  <span class="text-sm font-bold dark:text-white">mohan.kumar@gmail.com</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Phone</span>
+                  <span class="text-sm font-bold dark:text-white">+91 99887 76655</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Account No</span>
+                  <span class="text-sm font-code font-bold text-indigo-600 dark:text-indigo-400">FNZ20260010</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Account Type</span>
+                  <span class="text-sm font-bold dark:text-white">Savings</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase">Registration Date</span>
+                  <span class="text-sm font-bold dark:text-white">15 Jan 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 mb-3">Deletion Information</h4>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase">Deleted By</span>
+                  <span class="text-xs font-bold text-red-900 dark:text-red-200">Admin</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase">Deleted On</span>
+                  <span class="text-xs font-bold text-red-900 dark:text-red-200">05 Apr 2026 11:30 AM</span>
+                </div>
+                <div class="mt-2">
+                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase block mb-1">Deletion Reason</span>
+                  <span class="text-xs font-medium text-red-900 dark:text-red-200 italic">"User requested account closure"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="space-y-8">
+            <div class="p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Account Summary at time of deletion</h4>
+              <div class="space-y-6">
+                <div class="flex justify-between items-end">
+                  <span class="text-[11px] font-bold text-slate-500 uppercase">Last Balance</span>
+                  <span class="text-2xl font-black text-slate-900 dark:text-white">₹5,000.00</span>
+                </div>
+                <div class="h-px bg-slate-200 dark:bg-white/10"></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Total Transactions</span>
+                    <span class="text-lg font-extrabold dark:text-white">24</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Last Transaction</span>
+                    <span class="text-sm font-bold dark:text-white">04 Apr 2026</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 mt-4 px-3 py-2 bg-slate-200/50 dark:bg-white/10 rounded-lg w-fit">
+                   <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                   <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Account Status: Soft Deleted</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4 pt-10">
+              <button onclick="confirmRecovery()" class="w-full px-6 py-4 bg-green-500 text-white rounded-xl text-sm font-extrabold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover This Account</button>
+              <button onclick="closeModal('detailsModal')" class="w-full px-6 py-4 border-2 border-slate-100 dark:border-white/10 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Close</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -308,9 +520,88 @@
       from { opacity: 0; transform: scale(0.95) translateY(-20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    .animate-modal-enter { animation: modal-enter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-modal-enter { animation: modal-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
   </style>
 
+  <script>
+    $(function() {
+      // Tab handling
+      $('.tab-btn').on('click', function() {
+        $('.tab-btn').removeClass('bg-primary text-white shadow-md').addClass('text-slate-500');
+        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-md');
+        applyFilters();
+      });
+
+      // Filter handling
+      $('#apply-filters').on('click', applyFilters);
+      $('#reset-filters').on('click', function() {
+        $('#filter-search').val('');
+        $('#filter-date-from').val('');
+        $('#filter-date-to').val('');
+        $('#filter-deleted-by').val('all');
+        $('#filter-deleted-by-dropdown .dropdown-label').text('All');
+        $('.tab-btn').first().click();
+        applyFilters();
+      });
+
+      function applyFilters() {
+        const search = $('#filter-search').val().toLowerCase();
+        const deletedBy = $('#filter-deleted-by').val();
+        const tab = $('.tab-btn.bg-primary').data('status');
+        
+        let visibleCount = 0;
+        $('#deleted-table-body tr').each(function() {
+          const name = $(this).find('.user-name').text().toLowerCase();
+          const email = $(this).find('.user-email').text().toLowerCase();
+          const acc = $(this).find('.font-code').text().toLowerCase();
+          const by = $(this).data('deleted-by');
+          
+          let matches = (name.includes(search) || email.includes(search) || acc.includes(search));
+          if (deletedBy !== 'all' && by !== deletedBy) matches = false;
+          
+          if (matches) {
+            $(this).show();
+            visibleCount++;
+          } else {
+            $(this).hide();
+          }
+        });
+
+        if (visibleCount === 0) {
+          $('.admin-table').parent().hide();
+          $('#empty-state').removeClass('hidden').addClass('flex');
+        } else {
+          $('.admin-table').parent().show();
+          $('#empty-state').addClass('hidden').removeClass('flex');
+        }
+      }
+    });
+
+    function openRecoverModal(name, acc) {
+      $('#recover-user-name').text(name);
+      $('#recover-user-acc').text(acc);
+      $('#recoverModal').removeClass('hidden').addClass('flex');
+    }
+
+    function openDetailsModal(row) {
+      $('#detailsModal').removeClass('hidden').addClass('flex');
+    }
+
+    function closeModal(id) {
+      $(`#${id}`).addClass('hidden').removeClass('flex');
+    }
+
+    function confirmRecovery() {
+      alert('Recovery initiated successfully!');
+      closeModal('recoverModal');
+      closeModal('detailsModal');
+    }
+  </script>
 </body>
 
 </html>
