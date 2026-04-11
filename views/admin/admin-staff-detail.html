@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — Teller Detail</title>
+  <title>Finzo Admin — Staff Detail</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
@@ -55,8 +55,8 @@
       <a href="admin-users.html" class="admin-nav-item">
         <span class="material-symbols-outlined">group</span> User Management
       </a>
-      <a href="admin-tellers.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">badge</span> Teller Management
+      <a href="admin-staff.html" class="admin-nav-item active">
+        <span class="material-symbols-outlined">badge</span> Staff Management
       </a>
       <a href="admin-transactions.html" class="admin-nav-item">
         <span class="material-symbols-outlined">swap_horiz</span> Transactions
@@ -89,18 +89,18 @@
     <!-- TOP BAR -->
     <div class="admin-topbar">
       <div class="flex items-center gap-4">
-        <a href="admin-tellers.html" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
+        <a href="admin-staff.html" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
           <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <div class="flex flex-col">
           <div class="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] opacity-40 uppercase">
              <span>Admin</span>
              <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-             <span>Teller Management</span>
+             <span>Staff Management</span>
              <span class="material-symbols-outlined text-[10px]">chevron_right</span>
              <span class="text-primary dark:text-blue-400">Amit Sharma</span>
           </div>
-          <div class="font-headline text-2xl font-extrabold tracking-tight">Teller Details</div>
+          <div class="font-headline text-2xl font-extrabold tracking-tight">Staff Details</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -109,7 +109,7 @@
     </div>
 
     <div class="p-10">
-      <!-- TELLER HEADER CARD -->
+      <!-- STAFF HEADER CARD -->
       <div class="admin-card p-8 mb-10 flex flex-wrap justify-between items-center gap-8">
         <div class="flex items-center gap-6">
           <div class="w-20 h-20 rounded-full premium-gradient-primary flex items-center justify-center font-black text-3xl shadow-lg border-4 border-white dark:border-slate-800">AS</div>
@@ -121,7 +121,7 @@
             <div class="flex items-center gap-6">
               <div class="flex items-center gap-2 opacity-60 font-medium">
                 <span class="material-symbols-outlined text-sm">badge</span>
-                <span>ID: TLR001</span>
+                <span>ID: STF001</span>
               </div>
               <div class="flex items-center gap-2 opacity-60 font-medium">
                 <span class="material-symbols-outlined text-sm">location_on</span>
@@ -132,7 +132,7 @@
         </div>
         <div class="flex gap-3">
           <button class="admin-btn-secondary" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;">
-             <span class="material-symbols-outlined">block</span> Deactivate Teller
+             <span class="material-symbols-outlined">block</span> Deactivate Staff
           </button>
           <button class="admin-btn-secondary">
              <span class="material-symbols-outlined">lock_reset</span> Reset Password
@@ -167,7 +167,7 @@
           <div class="admin-card">
             <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary dark:text-blue-400">info</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Teller Information</h3>
+              <h3 class="admin-section-title" style="font-size:16px;">Staff Information</h3>
             </div>
             <div class="p-8 space-y-6">
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
@@ -187,8 +187,8 @@
                 <span class="font-bold">Main Branch</span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Teller ID</span>
-                <span class="font-bold">TLR001</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Staff ID</span>
+                <span class="font-bold">STF001</span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Joined</span>
@@ -237,7 +237,7 @@
             <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-[#1c2128]">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-primary dark:text-blue-400">history</span>
-                <h3 class="admin-section-title" style="font-size:16px;">All Transactions by This Teller</h3>
+                <h3 class="admin-section-title" style="font-size:16px;">All Transactions by This Staff</h3>
               </div>
               <div class="flex gap-2">
                 <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2">
