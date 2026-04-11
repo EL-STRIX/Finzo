@@ -33,12 +33,74 @@
   .dark #prev-btn, .dark #next-btn { background: #1e293b !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.05) !important; }
   .dark .page-num { background: #1e293b !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.05) !important; }
   .dark .page-num.active { background: #3b82f6 !important; color: #ffffff !important; border: none !important; }
+
+  /* COMPREHENSIVE LIGHT MODE OVERRIDES (Solid White/Black) */
+  /* Target ONLY the main content area to avoid touching the sidebar */
+  html[data-theme="light"] body {
+    background-color: #ffffff !important;
+  }
+
+  html[data-theme="light"] .admin-main,
+  html[data-theme="light"] .admin-main *,
+  html[data-theme="light"] .admin-topbar,
+  html[data-theme="light"] .admin-topbar *,
+  html[data-theme="light"] .admin-stat-card,
+  html[data-theme="light"] .admin-card,
+  html[data-theme="light"] .admin-table,
+  html[data-theme="light"] #users-table tr,
+  html[data-theme="light"] .finzo-dropdown-trigger,
+  html[data-theme="light"] .finzo-dropdown-menu {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Specific text override for main content descendants to ensure pure black */
+  html[data-theme="light"] .admin-main h1, 
+  html[data-theme="light"] .admin-main h2, 
+  html[data-theme="light"] .admin-main h3, 
+  html[data-theme="light"] .admin-main p, 
+  html[data-theme="light"] .admin-main span:not(.page-num), 
+  html[data-theme="light"] .admin-main label,
+  html[data-theme="light"] .admin-main td,
+  html[data-theme="light"] .admin-main th,
+  html[data-theme="light"] .admin-main div:not(.bg-primary):not(.admin-sidebar) {
+    color: #000000 !important;
+    opacity: 1 !important;
+  }
+
+  /* Footer and Filter bar specificity */
+  html[data-theme="light"] .admin-main .flex.flex-wrap.items-end.gap-4,
+  html[data-theme="light"] .admin-main #users-table + div {
+    background: #ffffff !important;
+  }
+
+  /* ENSURE SIDEBAR REMAINS DARK (Restoring from admin.css) */
+  html[data-theme="light"] .admin-sidebar {
+    background: #0a0f1e !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+  }
+  html[data-theme="light"] .admin-sidebar * {
+    color: inherit;
+  }
+  html[data-theme="light"] .admin-sidebar .brand-name { color: #ffffff !important; }
+  html[data-theme="light"] .admin-sidebar .admin-nav-item { color: rgba(255, 255, 255, 0.55) !important; }
+  html[data-theme="light"] .admin-sidebar .admin-nav-item:hover { color: #ffffff !important; }
+  html[data-theme="light"] .admin-sidebar .admin-nav-item.active { color: #00b894 !important; }
+
+  html[data-theme="light"] input::placeholder {
+    color: #00000040 !important;
+  }
+
+  html[data-theme="light"] .admin-table th {
+    border-bottom: 2px solid #000000 !important;
+  }
 </style>
 <script src="../../assets/js/theme.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <nav class="admin-sidebar">
     <div class="admin-sidebar-brand">
@@ -123,10 +185,64 @@
       </div>
     </div>
 
-    <!-- Search -->
-    <div style="margin-bottom:20px;position:relative;max-width:480px;">
-      <span class="material-symbols-outlined" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#000000;">search</span>
-      <input id="user-search" type="text" placeholder="Search by name, email, or ID..." style="width:100%;padding:11px 14px 11px 42px;background:white;border:1px solid #eef0f5;border-radius:10px;font-size:13px;outline:none;box-sizing:border-box;"/>
+    <!-- PROFESSIONAL FILTER BAR -->
+    <div class="flex flex-wrap items-end gap-4 mb-8">
+      <!-- Search Database -->
+      <div class="flex-1 min-w-[300px]">
+        <label class="block text-[10px] font-black uppercase text-black dark:text-white tracking-widest mb-1.5 ml-1">Search Database</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <input id="user-search" type="text" placeholder="Search name, email, or institutional ID..." 
+                 class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-xl text-xs font-bold text-black dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20 transition-all shadow-sm"/>
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="w-52">
+        <label class="block text-[10px] font-black uppercase text-black dark:text-white tracking-widest mb-1.5 ml-1">Account Status</label>
+        <div class="finzo-dropdown w-full">
+          <input type="hidden" id="filter-status" value="all">
+          <div class="finzo-dropdown-trigger !py-3">
+            <span class="dropdown-label text-black dark:text-white">All Statuses</span>
+            <span class="material-symbols-outlined chevron">expand_more</span>
+          </div>
+          <div class="finzo-dropdown-menu">
+            <div class="finzo-dropdown-option is-selected text-black dark:text-white" data-value="all">All Statuses</div>
+            <div class="finzo-dropdown-option font-bold text-green-600 dark:text-green-400" data-value="Active">
+              <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Active
+            </div>
+            <div class="finzo-dropdown-option font-bold text-orange-600 dark:text-orange-400" data-value="Suspended">
+              <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> Suspended
+            </div>
+            <div class="finzo-dropdown-option font-bold text-red-600 dark:text-red-400" data-value="Locked">
+              <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Locked
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Type Filter -->
+      <div class="w-44">
+        <label class="block text-[10px] font-black uppercase text-black dark:text-white tracking-widest mb-1.5 ml-1">Account Type</label>
+        <div class="finzo-dropdown w-full">
+          <input type="hidden" id="filter-type" value="all">
+          <div class="finzo-dropdown-trigger !py-3">
+            <span class="dropdown-label text-black dark:text-white">All Types</span>
+            <span class="material-symbols-outlined chevron">expand_more</span>
+          </div>
+          <div class="finzo-dropdown-menu">
+            <div class="finzo-dropdown-option is-selected text-black dark:text-white" data-value="all">All Types</div>
+            <div class="finzo-dropdown-option text-black dark:text-white" data-value="Savings">Savings</div>
+            <div class="finzo-dropdown-option text-black dark:text-white" data-value="Current">Current</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action: Clear -->
+      <button id="clear-filters" class="h-[46px] px-4 flex items-center gap-2 text-slate-400 hover:text-black dark:hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-slate-200 dark:hover:border-white/5 rounded-xl">
+        <span class="material-symbols-outlined text-lg">filter_list_off</span>
+        Reset
+      </button>
     </div>
 
     <!-- Table -->
@@ -268,16 +384,7 @@
       </div>
       
       <div class="p-6 space-y-5">
-        <!-- Transaction Type -->
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Transaction Type</label>
-          <select class="w-full bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-3 outline-none focus:ring-2 focus:ring-primary/20">
-            <option>All Transactions</option>
-            <option>Deposits Only</option>
-            <option>Withdrawals Only</option>
-            <option>Internal Transfers</option>
-          </select>
-        </div>
+
 
         <!-- Account Type -->
         <div>
@@ -296,11 +403,11 @@
 
         <!-- Date Range -->
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Date Range</label>
+          <label class="block text-[10px] font-black uppercase text-black dark:text-slate-400 mb-1.5 ml-1">Date Range</label>
           <div class="flex items-center gap-2">
-            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5">
-            <span class="text-slate-400 text-xs">to</span>
-            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5">
+            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5 text-black dark:text-on-surface">
+            <span class="text-black dark:text-slate-400 text-xs">to</span>
+            <input type="date" class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5 text-black dark:text-on-surface">
           </div>
         </div>
 
@@ -410,16 +517,58 @@ $(function() {
   // Initial render
   updatePagination();
 
-  // Search logic marks rows but lets updatePagination handle the show/hide
-  $('#user-search').on('input', function() {
-    const q = $(this).val().toLowerCase();
+  // COMBINED FILTERING LOGIC
+  function applyFilters() {
+    const query = $('#user-search').val().toLowerCase().trim();
+    const status = $('#filter-status').val();
+    const type = $('#filter-type').val();
+
     $('#users-table tbody tr').each(function() {
-      const text = $(this).text().toLowerCase();
-      const isMatch = text.includes(q);
-      $(this).attr('data-search-hidden', !isMatch);
+      const $row = $(this);
+      const rowText = $row.text().toLowerCase();
+      
+      // Get Status from the badge text (e.g., "Active", "Suspended")
+      const rowStatus = $row.find('.status-badge').text().trim();
+      
+      // Get Account Type from the 3rd column
+      const rowType = $row.find('td:nth-child(3)').text().trim();
+
+      const matchesSearch = rowText.includes(query);
+      const matchesStatus = (status === 'all' || rowStatus === status);
+      const matchesType = (type === 'all' || rowType === type);
+
+      if (matchesSearch && matchesStatus && matchesType) {
+        $row.attr('data-search-hidden', 'false');
+      } else {
+        $row.attr('data-search-hidden', 'true');
+      }
     });
+
     currentPage = 1;
     updatePagination();
+  }
+
+  // Listeners
+  $('#user-search').on('input', applyFilters);
+  
+  // Custom dropdown triggers 'change' on the hidden input
+  $('#filter-status, #filter-type').on('change', applyFilters);
+
+  // Reset Filters
+  $('#clear-filters').on('click', function() {
+    $('#user-search').val('');
+    $('#filter-status').val('all').trigger('change');
+    $('#filter-type').val('all').trigger('change');
+    
+    // Reset Dropdown UI labels
+    $('.finzo-dropdown').each(function() {
+      const defaultText = $(this).find('.finzo-dropdown-option[data-value="all"]').text();
+      $(this).find('.dropdown-label').text(defaultText);
+      $(this).find('.finzo-dropdown-option').removeClass('is-selected');
+      $(this).find('.finzo-dropdown-option[data-value="all"]').addClass('is-selected');
+    });
+    
+    applyFilters();
   });
 
   // Pagination Clicks
@@ -433,8 +582,9 @@ $(function() {
 
   $('#next-btn').on('click', function(e) { 
     e.preventDefault();
-    const totalRows = $('#users-table tbody tr').not('[data-search-hidden="true"]').length;
-    if (currentPage < Math.ceil(totalRows / rowsPerPage)) { 
+    const $rows = $('#users-table tbody tr').not('[data-search-hidden="true"]');
+    const totalPages = Math.ceil($rows.length / rowsPerPage);
+    if (currentPage < totalPages) { 
       currentPage++; 
       updatePagination(); 
     } 

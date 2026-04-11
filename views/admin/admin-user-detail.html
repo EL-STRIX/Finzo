@@ -23,7 +23,7 @@
                     "on-secondary-fixed": "#111c2a",
                     "primary-container": "#1a3c5e",
                     "on-primary": "#ffffff",
-                    "on-primary-fixed": "#000000d36",
+                    "on-primary-fixed": "#000000",
                     "on-error": "#ffffff",
                     "error": "#ba1a1a",
                     "surface-container-low": "#f4f3f6",
@@ -36,11 +36,11 @@
                     "on-primary-fixed-variant": "#28496b",
                     "tertiary-fixed": "#6bfe9c",
                     "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#0000005",
+                    "on-secondary-container": "#000000",
                     "on-surface": "#000000",
                     "surface-container-lowest": "#ffffff",
                     "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
+                    "secondary": "#000000",
                     "error-container": "#ffdad6",
                     "inverse-primary": "#a9c9f2",
                     "surface-container": "#eeedf1",
@@ -64,7 +64,7 @@
                     "tertiary-fixed-dim": "#4ae183",
                     "on-tertiary-fixed": "#00210c",
                     "on-surface-variant": "#000000",
-                    "on-error-container": "#0000000a",
+                    "on-error-container": "#000000",
                     "secondary-fixed-dim": "#bcc7d9"
             },
             "borderRadius": {
@@ -94,6 +94,45 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <style>
+        /* Force full black text in light mode for content area */
+        html.light .admin-main h1, 
+        html.light .admin-main h2, 
+        html.light .admin-main h3, 
+        html.light .admin-main h4, 
+        html.light .admin-main h5,
+        html.light .admin-main p, 
+        html.light .admin-main span, 
+        html.light .admin-main div:not(.bg-primary):not(.bg-slate-900):not(.architectural-gradient):not(.bg-slate-800), 
+        html.light .admin-main th, 
+        html.light .admin-main td, 
+        html.light .admin-main a:not(.admin-nav-item), 
+        html.light .admin-main label {
+            color: #000000 !important;
+            --tw-text-opacity: 1 !important;
+            opacity: 1 !important;
+        }
+
+        /* Exceptions for status colors */
+        html.light .text-error, 
+        html.light .text-error * {
+            color: #ba1a1a !important;
+        }
+        
+        html.light .text-tertiary-container,
+        html.light .text-tertiary-container * {
+            color: #0abc64 !important;
+        }
+
+        /* Ensure text on specific dark backgrounds remains white */
+        html.light .bg-primary *, 
+        html.light .bg-slate-900 *,
+        html.light .bg-slate-800 *,
+        html.light .architectural-gradient *,
+        html.light .admin-btn-primary {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
