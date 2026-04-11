@@ -65,30 +65,13 @@
   .al-stat-value { font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;color:var(--al-text);letter-spacing:-0.5px; }
   .al-stat-sub { font-size:11px;font-weight:700;margin-top:6px;display:flex;align-items:center;gap:4px; }
 
-  .al-filter-bar {
-    background:var(--al-card); border:1px solid var(--al-border); border-radius:20px;
-    padding:16px 20px; display:flex; gap:12px; align-items:flex-end;
-    box-shadow:0 4px 20px rgba(0,38,69,0.03);
-    position:relative; z-index:20; overflow:visible;
+  .al-filter-bar { 
+    display: flex; gap: 16px; align-items: center; padding: 24px; 
+    border-bottom: 1px solid #f1f5f9; background: white;
+    position: relative; z-index: 50;
   }
-  .al-search-wrap { position:relative; flex:1; }
-  .al-search-icon {
-    position:absolute; left:14px; top:50%; transform:translateY(-50%);
-    font-size:20px; color:var(--al-muted); pointer-events:none; transition:color 0.2s;
-  }
-  .al-search-wrap:focus-within .al-search-icon { color: #002645; }
-  .al-search-input {
-    width: 100%; padding: 12px 14px 12px 48px;
-    background: #f1f5f9; border: 1px solid transparent;
-    border-radius: 14px; font-size: 13px; font-weight: 700;
-    color: var(--al-text); outline: none;
-    transition: all 0.2s;
-  }
-  .dark .al-search-input { background: rgba(255,255,255,0.05); color: #f0f6fc; }
-  .al-search-input:focus { 
-    border-color: rgba(0,38,69,0.2) !important; 
-    box-shadow: 0 0 0 4px rgba(0,38,69,0.06) !important; 
-  }
+  .dark .al-filter-bar { background: transparent; border-color: rgba(255,255,255,0.05); }
+
   .al-filter-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--al-muted); margin-bottom: 6px; margin-left: 4px; display: block; opacity: 0.6; }
   .al-filter-group { display: flex; flex-direction: column; flex-shrink: 0; }
 
@@ -271,10 +254,14 @@
       </div>
 
       <!-- FILTER BAR -->
-      <div class="al-filter-bar mb-6 al-fade-5">
-        <div class="al-search-wrap">
-          <span class="material-symbols-outlined al-search-icon">search</span>
-          <input type="text" id="filter-search" placeholder="Search by activity, admin, or entity ID..." class="al-search-input">
+        <div class="al-filter-bar al-fade-5">
+        <div class="flex-1 min-w-[300px]">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Activity</label>
+          <div class="relative group">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+            <input type="text" id="filter-search" placeholder="Search by activity, admin, or entity ID..."
+              class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+          </div>
         </div>
         <div class="al-filter-group">
           <span class="al-filter-label">Administrator</span>
