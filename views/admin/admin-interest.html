@@ -29,6 +29,9 @@
   .table-header-theme { background: #ffffff !important; }
   .dark .table-header-theme { background: rgba(28, 33, 40, 1) !important; }
 
+  #history-header-row th { background: #ffffff !important; }
+  .dark #history-header-row th { background: rgba(28, 33, 40, 1) !important; }
+
   /* Global Light Mode Overrides */
   body:not(.dark) .admin-main { background: #ffffff !important; }
 </style>
@@ -179,7 +182,7 @@
           </div>
           <table class="admin-table" style="width:100%;">
             <thead>
-              <tr>
+              <tr id="history-header-row">
                 <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">EFFECTIVE DATE</th>
                 <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">INTEREST RATE</th>
                 <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">UPDATED BY</th>
