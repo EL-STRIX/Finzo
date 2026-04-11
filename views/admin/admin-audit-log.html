@@ -76,18 +76,43 @@
     position:absolute; left:14px; top:50%; transform:translateY(-50%);
     font-size:20px; color:var(--al-muted); pointer-events:none; transition:color 0.2s;
   }
-  .al-search-wrap:focus-within .al-search-icon { color:#002645; }
+  .al-search-wrap:focus-within .al-search-icon { color: #002645; }
   .al-search-input {
-    width:100%; padding:10px 14px 10px 44px;
-    background:#f1f5f9; border:1px solid transparent;
-    border-radius:12px; font-size:13px; font-weight:600;
-    color:var(--al-text); outline:none;
-    transition:border-color 0.2s, box-shadow 0.2s;
+    width: 100%; padding: 12px 14px 12px 48px;
+    background: #f1f5f9; border: 1px solid transparent;
+    border-radius: 14px; font-size: 13px; font-weight: 700;
+    color: var(--al-text); outline: none;
+    transition: all 0.2s;
   }
-  .dark .al-search-input { background:rgba(255,255,255,0.05); color:#f0f6fc; }
-  .al-search-input:focus { border-color:rgba(0,38,69,0.2)!important; box-shadow:0 0 0 4px rgba(0,38,69,0.06); }
-  .al-filter-label { font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;color:var(--al-muted);margin-bottom:5px;margin-left:2px;display:block; }
-  .al-filter-group { display:flex; flex-direction:column; }
+  .dark .al-search-input { background: rgba(255,255,255,0.05); color: #f0f6fc; }
+  .al-search-input:focus { 
+    border-color: rgba(0,38,69,0.2) !important; 
+    box-shadow: 0 0 0 4px rgba(0,38,69,0.06) !important; 
+  }
+  .al-filter-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--al-muted); margin-bottom: 6px; margin-left: 4px; display: block; opacity: 0.6; }
+  .al-filter-group { display: flex; flex-direction: column; flex-shrink: 0; }
+
+  /* Dropdown Premium Overrides */
+  .al-filter-group .finzo-dropdown { width: 100%; }
+  .al-filter-group .finzo-dropdown-trigger {
+    border-radius: 14px !important;
+    background: #f1f5f9 !important;
+    border: none !important;
+    padding: 10px 16px !important;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dark .al-filter-group .finzo-dropdown-trigger {
+    background: rgba(255,255,255,0.05) !important;
+  }
+  .al-filter-group .dropdown-label { font-size: 12px; font-weight: 700; }
+  .al-filter-group .finzo-dropdown-menu {
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+  }
 
   .al-table { width:100%; border-collapse:collapse; }
   .al-table thead tr { background:#f8fafc; }
@@ -249,18 +274,18 @@
       <div class="al-filter-bar mb-6 al-fade-5">
         <div class="al-search-wrap">
           <span class="material-symbols-outlined al-search-icon">search</span>
-          <input type="text" placeholder="Search by activity, admin, or entity ID..." class="al-search-input">
+          <input type="text" id="filter-search" placeholder="Search by activity, admin, or entity ID..." class="al-search-input">
         </div>
         <div class="al-filter-group">
           <span class="al-filter-label">Administrator</span>
-          <div class="finzo-dropdown" style="width:180px;">
-            <input type="hidden" name="admin_filter" value="">
+          <div class="finzo-dropdown" id="admin-dropdown">
+            <input type="hidden" id="filter-admin" value="all">
             <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">All Administrators</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
+              <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="All Administrators">All Administrators</div>
+              <div class="finzo-dropdown-option is-selected" data-value="all">All Administrators</div>
               <div class="finzo-dropdown-option" data-value="Alex Sterling">Alex Sterling</div>
               <div class="finzo-dropdown-option" data-value="Sarah Chen">Sarah Chen</div>
               <div class="finzo-dropdown-option" data-value="Jameson Blake">Jameson Blake</div>
@@ -269,33 +294,33 @@
         </div>
         <div class="al-filter-group">
           <span class="al-filter-label">Action Type</span>
-          <div class="finzo-dropdown" style="width:140px;">
-            <input type="hidden" name="action_filter" value="">
+          <div class="finzo-dropdown" id="action-dropdown">
+            <input type="hidden" id="filter-action" value="all">
             <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">All Actions</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
+              <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="All Actions">All Actions</div>
-              <div class="finzo-dropdown-option" data-value="Create">Create</div>
-              <div class="finzo-dropdown-option" data-value="Update">Update</div>
-              <div class="finzo-dropdown-option" data-value="Delete">Delete</div>
-              <div class="finzo-dropdown-option" data-value="Security">Security</div>
+              <div class="finzo-dropdown-option is-selected" data-value="all">All Actions</div>
+              <div class="finzo-dropdown-option" data-value="create">Create</div>
+              <div class="finzo-dropdown-option" data-value="update">Update</div>
+              <div class="finzo-dropdown-option" data-value="delete">Delete</div>
+              <div class="finzo-dropdown-option" data-value="security">Security</div>
             </div>
           </div>
         </div>
         <div class="al-filter-group">
           <span class="al-filter-label">Timeframe</span>
-          <div class="finzo-dropdown" style="width:160px;">
-            <input type="hidden" name="timeframe_filter" value="">
+          <div class="finzo-dropdown" id="timeframe-dropdown">
+            <input type="hidden" id="filter-timeframe" value="24h">
             <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">Last 24 Hours</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
+              <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
             <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="Last 24 Hours">Last 24 Hours</div>
-              <div class="finzo-dropdown-option" data-value="Last 7 Days">Last 7 Days</div>
-              <div class="finzo-dropdown-option" data-value="Last 30 Days">Last 30 Days</div>
+              <div class="finzo-dropdown-option is-selected" data-value="24h">Last 24 Hours</div>
+              <div class="finzo-dropdown-option" data-value="7d">Last 7 Days</div>
+              <div class="finzo-dropdown-option" data-value="30d">Last 30 Days</div>
             </div>
           </div>
         </div>
@@ -322,10 +347,9 @@
               <th>Activity Description</th>
               <th>Entity ID</th>
               <th style="text-align:right;">Context</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
+            </          </thead>
+          <tbody id="audit-log-body">
+            <tr data-admin="Alex Sterling" data-type="delete">
               <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">14:22:05 UTC</div></td>
               <td>
                 <div class="flex items-center gap-3">
@@ -338,7 +362,7 @@
               <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">person</span>USR-8829-QX</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr>
+            <tr data-admin="Sarah Chen" data-type="create">
               <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">13:45:12 UTC</div></td>
               <td>
                 <div class="flex items-center gap-3">
@@ -351,7 +375,7 @@
               <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">hub</span>GWY-4402-EMEA</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr>
+            <tr data-admin="Jameson Blake" data-type="update">
               <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">11:10:44 UTC</div></td>
               <td>
                 <div class="flex items-center gap-3">
@@ -364,7 +388,7 @@
               <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">policy</span>POL-LMT-99</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr>
+            <tr data-admin="SYSTEM-BOT" data-type="security">
               <td><div class="al-ts-date">Oct 23, 2023</div><div class="al-ts-time">23:59:59 UTC</div></td>
               <td>
                 <div class="flex items-center gap-3">
@@ -379,7 +403,7 @@
               <td><span class="al-entity"><span class="material-symbols-outlined" style="font-size:11px;">lock</span>SEC-CERT-RSA</span></td>
               <td style="text-align:right;"><button class="al-ctx-btn"><span class="material-symbols-outlined">open_in_new</span></button></td>
             </tr>
-            <tr>
+            <tr data-admin="Sarah Chen" data-type="escalate">
               <td><div class="al-ts-date">Oct 23, 2023</div><div class="al-ts-time">18:30:00 UTC</div></td>
               <td>
                 <div class="flex items-center gap-3">
@@ -396,12 +420,11 @@
         </table>
 
         <div class="px-6 py-4 flex justify-between items-center" style="background:#fafbff;border-top:1px solid var(--al-border);">
-          <span class="text-xs font-bold opacity-40">Showing 5 of 48,291 events</span>
+          <span class="text-xs font-bold opacity-40" id="filter-counter">Showing 5 of 5 events</span>
           <div class="flex items-center gap-2">
-            <button class="px-4 py-2 text-xs font-bold rounded-lg" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;">← Prev</button>
+            <button class="px-4 py-2 text-xs font-bold rounded-lg opacity-50 cursor-not-allowed" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;">← Prev</button>
             <button class="w-8 h-8 flex items-center justify-center text-xs font-bold rounded-lg" style="background:#002645;color:#fff;">1</button>
-            <button class="w-8 h-8 flex items-center justify-center text-xs font-bold rounded-lg" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;">2</button>
-            <button class="px-4 py-2 text-xs font-bold rounded-lg" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;">Next →</button>
+            <button class="px-4 py-2 text-xs font-bold rounded-lg opacity-50 cursor-not-allowed" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;">Next →</button>
           </div>
         </div>
       </div>
@@ -485,5 +508,47 @@
   </div>
 
   <script src="../../assets/js/main.js"></script>
+  <script>
+    $(document).ready(function() {
+      function applyFilters() {
+        const search = $('#filter-search').val().toLowerCase();
+        const admin = $('#filter-admin').val();
+        const action = $('#filter-action').val();
+        
+        let visibleCount = 0;
+        let totalCount = 0;
+
+        $('#audit-log-body tr').each(function() {
+          const $row = $(this);
+          const rowAdmin = $row.data('admin');
+          const rowType = $row.data('type');
+          const rowText = $row.text().toLowerCase();
+
+          const matchesSearch = !search || rowText.includes(search);
+          const matchesAdmin = admin === 'all' || rowAdmin === admin;
+          const matchesAction = action === 'all' || rowType === action;
+
+          if (matchesSearch && matchesAdmin && matchesAction) {
+            $row.show();
+            visibleCount++;
+          } else {
+            $row.hide();
+          }
+          totalCount++;
+        });
+
+        $('#filter-counter').text(`Showing ${visibleCount} of ${totalCount} events`);
+      }
+
+      // Live Listeners
+      $('#filter-search').on('input keyup', applyFilters);
+      $('#filter-admin, #filter-action').on('change', applyFilters);
+
+      // Animation for Live Stream button
+      console.log("Audit log logic initialized.");
+    });
+  </script>
 </body>
+</html>
+
 </html>
