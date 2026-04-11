@@ -91,7 +91,6 @@
       <div>
         <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF MANAGEMENT</div>
         <div class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Bank Staff</div>
-        <div class="text-sm text-slate-500 font-medium hov-opacity">Manage all bank staff accounts</div>
       </div>
       <div style="display:flex;align-items:center;gap:20px;">
         <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary" style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
@@ -127,7 +126,7 @@
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#fff8e1;">
-            <span class="material-symbols-outlined" style="color:#f39c12;">swap_horiz</span>
+            <span class="material-symbols-outlined" style="color:#f39c12;">receipt</span>
           </div>
           <div class="admin-stat-label">TRANSACTIONS TODAY</div>
           <div class="admin-stat-value">124 <span class="admin-stat-delta neutral" style="background:#fff3cd;color:#b07d00;">By Staff</span></div>
@@ -135,45 +134,56 @@
       </div>
 
       <!-- FILTERS -->
-      <div class="admin-card mb-8">
+      <div class="admin-card admin-card-dropdown-fix mb-8 relative z-20">
         <div class="p-6 flex flex-wrap items-center gap-4">
-          <div class="flex-1 min-w-[300px] relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input type="text" placeholder="Search by name or staff ID"
-              class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm">
+          <div class="flex-1 min-w-[300px]">
+             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 block">Search Staff</label>
+             <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                <input type="text" id="staff-search-input" placeholder="Search by name or staff ID"
+                  class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm">
+             </div>
           </div>
           
-          <div class="finzo-dropdown">
-            <div class="finzo-dropdown-trigger">
-              <span class="material-symbols-outlined text-lg opacity-60">filter_list</span>
-              <span class="dropdown-label">All Status</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
+          <div class="flex flex-col">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Status</label>
+            <div class="finzo-dropdown" id="status-filter-dropdown">
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl min-w-[150px]">
+                <span class="material-symbols-outlined text-lg opacity-60">filter_list</span>
+                <span class="dropdown-label font-bold text-xs">All Status</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu !z-[3000]">
+                <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
+                <div class="finzo-dropdown-option" data-value="active">Active</div>
+                <div class="finzo-dropdown-option" data-value="inactive">Inactive</div>
+              </div>
+              <input type="hidden" id="filter-status" value="all">
             </div>
-            <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
-              <div class="finzo-dropdown-option" data-value="active">Active</div>
-              <div class="finzo-dropdown-option" data-value="inactive">Inactive</div>
-            </div>
-            <input type="hidden" name="status" value="all">
           </div>
 
-          <div class="finzo-dropdown">
-            <div class="finzo-dropdown-trigger">
-              <span class="material-symbols-outlined text-lg opacity-60">location_on</span>
-              <span class="dropdown-label">All Branches</span>
-              <span class="material-symbols-outlined chevron">expand_more</span>
+          <div class="flex flex-col">
+            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Branch</label>
+            <div class="finzo-dropdown" id="branch-filter-dropdown">
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl min-w-[180px]">
+                <span class="material-symbols-outlined text-lg opacity-60">location_on</span>
+                <span class="dropdown-label font-bold text-xs">All Branches</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu !z-[3000]">
+                <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
+                <div class="finzo-dropdown-option" data-value="main-branch">Main Branch</div>
+                <div class="finzo-dropdown-option" data-value="north-branch">North Branch</div>
+                <div class="finzo-dropdown-option" data-value="south-branch">South Branch</div>
+              </div>
+              <input type="hidden" id="filter-branch" value="all">
             </div>
-            <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
-              <div class="finzo-dropdown-option" data-value="main">Main Branch</div>
-              <div class="finzo-dropdown-option" data-value="north">North Branch</div>
-              <div class="finzo-dropdown-option" data-value="south">South Branch</div>
-            </div>
-            <input type="hidden" name="branch" value="all">
           </div>
 
-          <button class="admin-btn-primary" style="padding: 10px 24px !important;">Apply</button>
-          <button class="admin-btn-secondary" style="padding: 10px 24px !important;">Reset</button>
+          <div class="flex items-end pt-5">
+            <button id="apply-filters" class="admin-btn-primary" style="padding: 12px 32px !important; border-radius: 12px !important;">Apply</button>
+            <button id="reset-filters" class="admin-btn-secondary ml-2" style="padding: 12px 28px !important; border-radius: 12px !important;">Reset</button>
+          </div>
         </div>
       </div>
 
@@ -190,22 +200,22 @@
               <th>Amount Processed</th>
               <th>Last Active</th>
               <th>Status</th>
-              <th class="text-right">Actions</th>
+              <th class="text-right min-w-[360px]">ACTIONS</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
+          <tbody id="staff-table-body">
+            <tr data-status="active" data-branch="main-branch">
               <td class="font-bold opacity-40">01</td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar premium-gradient-primary">AS</div>
                   <div>
                     <div class="font-bold">Amit Sharma</div>
-                    <div class="text-[11px] opacity-60">amit.sharma@finzo.com</div>
+                    <div class="text-[11px] opacity-60">amit.sharma@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">TLR001</code></td>
+              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF001</code></td>
               <td>Main Branch</td>
               <td class="font-bold">342</td>
               <td class="font-bold text-primary dark:text-blue-400">₹8,42,000</td>
@@ -218,22 +228,22 @@
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
                     <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset</button>
+                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="active" data-branch="north-branch">
               <td class="font-bold opacity-40">02</td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white;">PS</div>
                   <div>
                     <div class="font-bold">Priya Singh</div>
-                    <div class="text-[11px] opacity-60">priya.singh@finzo.com</div>
+                    <div class="text-[11px] opacity-60">priya.singh@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">TLR002</code></td>
+              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF002</code></td>
               <td>North Branch</td>
               <td class="font-bold">218</td>
               <td class="font-bold text-primary dark:text-blue-400">₹5,24,000</td>
@@ -246,22 +256,22 @@
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
                     <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset</button>
+                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="inactive" data-branch="south-branch">
               <td class="font-bold opacity-40">03</td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">RK</div>
                   <div>
                     <div class="font-bold">Raj Kumar</div>
-                    <div class="text-[11px] opacity-60">raj.kumar@finzo.com</div>
+                    <div class="text-[11px] opacity-60">raj.kumar@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">TLR003</code></td>
+              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF003</code></td>
               <td>South Branch</td>
               <td class="font-bold">156</td>
               <td class="font-bold text-primary dark:text-blue-400">₹3,82,000</td>
@@ -274,22 +284,22 @@
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(0, 184, 148, 0.2); color: #00b894;">
                     <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Activate</button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset</button>
+                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="active" data-branch="main-branch">
               <td class="font-bold opacity-40">04</td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">SM</div>
                   <div>
                     <div class="font-bold">Sunita Mehta</div>
-                    <div class="text-[11px] opacity-60">sunita.mehta@finzo.com</div>
+                    <div class="text-[11px] opacity-60">sunita.mehta@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">TLR004</code></td>
+              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF004</code></td>
               <td>Main Branch</td>
               <td class="font-bold">89</td>
               <td class="font-bold text-primary dark:text-blue-400">₹2,14,000</td>
@@ -302,22 +312,22 @@
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
                     <span class="material-symbols-outlined" style="font-size:14px;">block</span> Deactivate</button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset</button>
+                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr data-status="inactive" data-branch="north-branch">
               <td class="font-bold opacity-40">05</td>
               <td>
                 <div class="flex items-center gap-3">
                   <div class="admin-avatar" style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white;">DG</div>
                   <div>
                     <div class="font-bold">Dev Gupta</div>
-                    <div class="text-[11px] opacity-60">dev.gupta@finzo.com</div>
+                    <div class="text-[11px] opacity-60">dev.gupta@finzobank.com</div>
                   </div>
                 </div>
               </td>
-              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">TLR005</code></td>
+              <td><code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold">STF005</code></td>
               <td>North Branch</td>
               <td class="font-bold">67</td>
               <td class="font-bold text-primary dark:text-blue-400">₹1,68,000</td>
@@ -330,7 +340,7 @@
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(0, 184, 148, 0.2); color: #00b894;">
                     <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Activate</button>
                   <button class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; border-color: rgba(100, 116, 139, 0.2); color: #64748b;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset</button>
+                    <span class="material-symbols-outlined" style="font-size:14px;">lock_reset</span> Reset Password</button>
                 </div>
               </td>
             </tr>
@@ -421,6 +431,74 @@
     .animate-modal-enter { animation: modal-enter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
   </style>
 
+  <script>
+    $(document).ready(function() {
+      const $searchInput = $('#staff-search-input');
+      const $statusInput = $('#filter-status');
+      const $branchInput = $('#filter-branch');
+      const $tableRows = $('#staff-table-body tr');
+      const $applyBtn = $('#apply-filters');
+      const $resetBtn = $('#reset-filters');
+      const $counter = $('.opacity-40:contains("Showing")');
+
+      function applyFilters() {
+        const searchTerm = $searchInput.val().toLowerCase();
+        const status = $statusInput.val();
+        const branch = $branchInput.val();
+
+        let visibleCount = 0;
+        let totalCount = $tableRows.length;
+
+        $tableRows.each(function() {
+          const $row = $(this);
+          const rowStatus = $row.data('status');
+          const rowBranch = $row.data('branch');
+          const rowText = $row.text().toLowerCase();
+
+          const matchesSearch = !searchTerm || rowText.includes(searchTerm);
+          const matchesStatus = status === 'all' || rowStatus === status;
+          const matchesBranch = branch === 'all' || rowBranch === branch;
+
+          if (matchesSearch && matchesStatus && matchesBranch) {
+            $row.show();
+            visibleCount++;
+          } else {
+            $row.hide();
+          }
+        });
+
+        if ($counter.length) {
+          $counter.text(`Showing ${visibleCount} of ${totalCount} staff`);
+        }
+      }
+
+      $applyBtn.on('click', function() {
+        applyFilters();
+      });
+
+      $resetBtn.on('click', function() {
+        $searchInput.val('');
+        $statusInput.val('all');
+        $branchInput.val('all');
+        
+        // Reset dropdown labels if needed
+        $('.dropdown-label').each(function() {
+          const defaultText = $(this).closest('.finzo-dropdown').find('.finzo-dropdown-option[data-value="all"]').text();
+          if (defaultText) $(this).text(defaultText);
+        });
+        
+        $('.finzo-dropdown-option').removeClass('is-selected');
+        $('.finzo-dropdown-option[data-value="all"]').addClass('is-selected');
+
+        applyFilters();
+      });
+
+      // Real-time search
+      $searchInput.on('keyup', function() {
+        applyFilters();
+      });
+    });
+  </script>
 </body>
 
 </html>
