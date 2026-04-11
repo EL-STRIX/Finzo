@@ -9,8 +9,9 @@
   --sidebar-text-muted: rgba(255, 255, 255, 0.25);
   --sidebar-border: rgba(255, 255, 255, 0.05);
   --sidebar-brand-text: #ffffff;
-  --sidebar-item-hover: rgba(255, 255, 255, 0.03);
-  --sidebar-active-bg: linear-gradient(90deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.02) 100%);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.04);
+  --sidebar-active-bg: linear-gradient(90deg, rgba(108, 99, 255, 0.15) 0%, rgba(108, 99, 255, 0.02) 100%);
+  --sidebar-shadow: 10px 0 30px -10px rgba(0, 0, 0, 0.25);
 }
 
 .admin-sidebar {
@@ -23,8 +24,10 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    z-index: 100;
+    z-index: 1000; /* Increased to ensure it overlays everything */
     border-right: 1px solid var(--sidebar-border);
+    box-shadow: var(--sidebar-shadow);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .admin-sidebar-brand {
@@ -53,7 +56,32 @@
 .admin-nav {
     flex: 1;
     padding: 16px 12px;
-    overflow-y: auto;
+    overflow-y: overlay; /* Allows scrollbar to overlap content without shifting */
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* Premium Sidebar Scrollbar */
+.admin-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.admin-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-nav::-webkit-scrollbar-thumb {
+    background: rgba(108, 99, 255, 0.1);
+    border-radius: 20px;
+    transition: background 0.3s;
+}
+
+.admin-nav:hover::-webkit-scrollbar-thumb {
+    background: rgba(108, 99, 255, 0.3);
+}
+
+.admin-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 99, 255, 0.5);
 }
 
 .admin-nav-section {
@@ -89,7 +117,7 @@
 
 .admin-nav-item.active {
     background: var(--sidebar-active-bg);
-    color: #00b894;
+    color: #a5b4fc;
     font-weight: 700;
 }
 
@@ -97,12 +125,12 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 20%;
-    bottom: 20%;
+    top: 15%;
+    bottom: 15%;
     width: 3px;
-    background: #00b894;
+    background: #6c63ff;
     border-radius: 0 4px 4px 0;
-    box-shadow: 0 0 12px rgba(0, 184, 148, 0.8);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.8);
 }
 
 .admin-nav-item .material-symbols-outlined {
