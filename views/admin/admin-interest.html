@@ -11,9 +11,13 @@
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <style>
-  .force-black { color: #000000 !important; }
-  .dark .force-black { color: #ffffff !important; }
+  .force-black { color: #000000 !important; opacity: 1 !important; }
+  .dark .force-black { color: #ffffff !important; opacity: 1 !important; }
   .sidebar-header-fix { color: #ffffff !important; opacity: 1 !important; }
+  .force-white-bg { background: #ffffff !important; background-color: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .dark .force-white-bg { background: rgba(28, 33, 40, 0.9) !important; backdrop-filter: blur(10px) !important; }
+  .force-status-bg { background: #f1f2f6 !important; }
+  .dark .force-status-bg { background: rgba(51, 65, 85, 0.5) !important; }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
@@ -106,7 +110,7 @@
         </div>
 
         <!-- Update Form -->
-        <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix" style="padding:28px;background:#f9fafc;">
+        <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix dark:!bg-slate-800/40" style="padding:28px; background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
             <span class="material-symbols-outlined force-black" style="font-size:20px;">edit</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Update Interest Rate</div>
@@ -163,10 +167,10 @@
           <table class="admin-table" style="width:100%;">
             <thead>
               <tr>
-                <th class="force-black" style="background:#f9fafc;">EFFECTIVE DATE</th>
-                <th class="force-black" style="background:#f9fafc;">INTEREST RATE</th>
-                <th class="force-black" style="background:#f9fafc;">UPDATED BY</th>
-                <th class="force-black" style="text-align:right;background:#f9fafc;">STATUS</th>
+                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">EFFECTIVE DATE</th>
+                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">INTEREST RATE</th>
+                <th class="force-black dark:!bg-slate-800/60" style="background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">UPDATED BY</th>
+                <th class="force-black dark:!bg-slate-800/60" style="text-align:right; background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">STATUS</th>
               </tr>
             </thead>
             <tbody>
@@ -180,19 +184,19 @@
                 <td class="force-black" style="font-weight:600;">01 Jan 2026</td>
                 <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">4.10%</td>
                 <td class="force-black">Admin</td>
-                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
+                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
               </tr>
               <tr>
                 <td class="force-black" style="font-weight:600;">01 Oct 2025</td>
                 <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.75%</td>
                 <td class="force-black">Priya Singh (Admin)</td>
-                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
+                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
               </tr>
               <tr>
                 <td class="force-black" style="font-weight:600;">01 Jul 2025</td>
                 <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.50%</td>
                 <td class="force-black">Admin</td>
-                <td style="text-align:right;"><span class="status-badge dark:bg-surface-container-low force-black" style="background:#f6f8fc;">Archived</span></td>
+                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
               </tr>
             </tbody>
           </table>
@@ -246,16 +250,16 @@
 </div>
 
 <!-- Confirmation Modal -->
-<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,38,69,0.4);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;">
-  <div style="background:white;max-width:440px;width:90%;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,38,69,0.5);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;">
+  <div class="bg-white dark:bg-slate-900" style="max-width:440px;width:90%;border-radius:24px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);">
     <div style="padding:32px;">
       <div style="width:56px;height:56px;background:#fff8e1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
         <span class="material-symbols-outlined" style="color:#f39c12;font-size:28px;">warning</span>
       </div>
-      <div class="text-black dark:text-white" style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;margin-bottom:12px;">Confirm Rate Shift</div>
-      <p id="modal-msg" class="text-black dark:text-white" style="font-size:13px;line-height:1.7;margin-bottom:24px;">You are about to adjust the global savings rate. This action is irreversible and will update all active savings accounts.</p>
+      <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:22px;font-weight:800;margin-bottom:12px;">Confirm Rate Shift</div>
+      <p id="modal-msg" class="force-black" style="font-size:13px;line-height:1.7;margin-bottom:24px;">You are about to adjust the global savings rate. This action is irreversible and will update all active savings accounts.</p>
       <div style="display:flex;gap:12px;">
-        <button onclick="closeModal()" class="text-black dark:text-white dark:bg-surface-container-low" style="flex:1;padding:14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+        <button onclick="closeModal()" class="force-black dark:bg-surface-container-low" style="flex:1;padding:14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
         <button onclick="confirmRate()" style="flex:1;padding:14px;background:#002645;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;">Confirm & Apply</button>
       </div>
     </div>
