@@ -549,11 +549,11 @@
             <span class="filter-label">Type</span>
             <div class="finzo-dropdown" id="type-dropdown">
               <input type="hidden" id="filter-type" value="all">
-              <div class="finzo-dropdown-trigger">
-                <span class="dropdown-label">All Types</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
+                <span class="dropdown-label font-bold text-xs">All Types</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Types</div>
                 <div class="finzo-dropdown-option" data-value="deposit">Deposit</div>
                 <div class="finzo-dropdown-option" data-value="withdrawal">Withdrawal</div>
@@ -566,11 +566,11 @@
             <span class="filter-label">Status</span>
             <div class="finzo-dropdown" id="status-dropdown">
               <input type="hidden" id="filter-status" value="all">
-              <div class="finzo-dropdown-trigger">
-                <span class="dropdown-label">All Status</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
+                <span class="dropdown-label font-bold text-xs">All Status</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                 <div class="finzo-dropdown-option" data-value="completed">Completed</div>
                 <div class="finzo-dropdown-option" data-value="pending">Pending</div>
@@ -582,11 +582,11 @@
             <span class="filter-label">Account</span>
             <div class="finzo-dropdown" id="account-dropdown">
               <input type="hidden" id="filter-account" value="all">
-              <div class="finzo-dropdown-trigger">
-                <span class="dropdown-label">All Accounts</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
+              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
+                <span class="dropdown-label font-bold text-xs">All Accounts</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
                 <div class="finzo-dropdown-option" data-value="savings">Savings</div>
                 <div class="finzo-dropdown-option" data-value="current">Current</div>
@@ -728,7 +728,14 @@
         $('#account-dropdown .dropdown-label').text('All Accounts');
         currentPage = 1; currentType = 'all'; applyFilters();
       });
-      $('#filter-search').on('keyup', () => { currentPage = 1; applyFilters(); });
+      $('#filter-search').on('keyup input', () => { currentPage = 1; applyFilters(); });
+      
+      // Live Filtering for Premium Dropdowns
+      $('#filter-type, #filter-status, #filter-account, #date-from, #date-to').on('change', () => {
+        currentPage = 1;
+        applyFilters();
+      });
+
       $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; applyFilters(); } });
       $('#next-page').on('click', () => { if (currentPage < Math.ceil(data.length / rowsPerPage)) { currentPage++; applyFilters(); } });
 

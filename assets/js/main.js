@@ -9,53 +9,7 @@ $(document).ready(function() {
     // FINZO CUSTOM DROPDOWN CONTROLLER
     // Handles all [data-finzo-dropdown] elements on any page.
     // ============================================================
-    function initFinzoDropdowns() {
-        $(document).on('click', '.finzo-dropdown-trigger', function(e) {
-            e.stopPropagation();
-            const trigger = $(this);
-            const menu = trigger.siblings('.finzo-dropdown-menu');
-            const isOpen = trigger.hasClass('is-open');
-
-            // Close any other open dropdowns first
-            $('.finzo-dropdown-trigger.is-open').not(trigger).removeClass('is-open');
-            $('.finzo-dropdown-menu.is-open').not(menu).removeClass('is-open');
-
-            trigger.toggleClass('is-open', !isOpen);
-            menu.toggleClass('is-open', !isOpen);
-        });
-
-        $(document).on('click', '.finzo-dropdown-option', function(e) {
-            e.stopPropagation();
-            const option = $(this);
-            const menu = option.closest('.finzo-dropdown-menu');
-            const dropdown = option.closest('.finzo-dropdown');
-            const trigger = dropdown.find('.finzo-dropdown-trigger');
-            const label = trigger.find('.dropdown-label');
-            const hiddenInput = dropdown.find('input[type="hidden"]');
-
-            // Update selected state
-            menu.find('.finzo-dropdown-option').removeClass('is-selected');
-            option.addClass('is-selected');
-
-            // Update trigger label
-            label.text(option.text());
-            label.css('color', '');
-
-            // Update hidden input value and trigger change for reactiveness
-            hiddenInput.val(option.data('value')).trigger('change');
-
-            // Close menu
-            trigger.removeClass('is-open');
-            menu.removeClass('is-open');
-        });
-
-        // Close on outside click
-        $(document).on('click', function() {
-            $('.finzo-dropdown-trigger.is-open').removeClass('is-open');
-            $('.finzo-dropdown-menu.is-open').removeClass('is-open');
-        });
-    }
-    initFinzoDropdowns();
+    // Dropdowns are now handled by assets/js/admin-dropdowns.js for consistent premium behavior.
 
 
 
@@ -132,7 +86,7 @@ $(document).ready(function() {
 
     // Toasts placeholder
     window.showToast = function(message, type = 'success') {
-        console.log(`[Toast] ${type.toUpperCase()}: ${message}`);
+        // Audit log logic initialized.
         // Optionally create a visible toast element here
     }
 

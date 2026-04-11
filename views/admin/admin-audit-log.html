@@ -75,27 +75,9 @@
   .al-filter-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--al-muted); margin-bottom: 6px; margin-left: 4px; display: block; opacity: 0.6; }
   .al-filter-group { display: flex; flex-direction: column; flex-shrink: 0; }
 
-  /* Dropdown Premium Overrides */
+  /* Dropdown Premium Overrides - Simplified to let Tailwind handle exact design */
   .al-filter-group .finzo-dropdown { width: 100%; }
-  .al-filter-group .finzo-dropdown-trigger {
-    border-radius: 14px !important;
-    background: #f1f5f9 !important;
-    border: none !important;
-    padding: 10px 16px !important;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .dark .al-filter-group .finzo-dropdown-trigger {
-    background: rgba(255,255,255,0.05) !important;
-  }
   .al-filter-group .dropdown-label { font-size: 12px; font-weight: 700; }
-  .al-filter-group .finzo-dropdown-menu {
-    border-radius: 16px !important;
-    border: none !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
-  }
 
   .al-table { width:100%; border-collapse:collapse; }
   .al-table thead tr { background:#f8fafc; }
@@ -267,11 +249,11 @@
           <span class="al-filter-label">Administrator</span>
           <div class="finzo-dropdown" id="admin-dropdown">
             <input type="hidden" id="filter-admin" value="all">
-            <div class="finzo-dropdown-trigger">
-              <span class="dropdown-label">All Administrators</span>
+            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[160px]">
+              <span class="dropdown-label font-bold text-xs">All Administrators</span>
               <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
-            <div class="finzo-dropdown-menu">
+            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
               <div class="finzo-dropdown-option is-selected" data-value="all">All Administrators</div>
               <div class="finzo-dropdown-option" data-value="Alex Sterling">Alex Sterling</div>
               <div class="finzo-dropdown-option" data-value="Sarah Chen">Sarah Chen</div>
@@ -283,11 +265,11 @@
           <span class="al-filter-label">Action Type</span>
           <div class="finzo-dropdown" id="action-dropdown">
             <input type="hidden" id="filter-action" value="all">
-            <div class="finzo-dropdown-trigger">
-              <span class="dropdown-label">All Actions</span>
+            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[160px]">
+              <span class="dropdown-label font-bold text-xs">All Actions</span>
               <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
-            <div class="finzo-dropdown-menu">
+            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
               <div class="finzo-dropdown-option is-selected" data-value="all">All Actions</div>
               <div class="finzo-dropdown-option" data-value="create">Create</div>
               <div class="finzo-dropdown-option" data-value="update">Update</div>
@@ -300,11 +282,11 @@
           <span class="al-filter-label">Timeframe</span>
           <div class="finzo-dropdown" id="timeframe-dropdown">
             <input type="hidden" id="filter-timeframe" value="24h">
-            <div class="finzo-dropdown-trigger">
-              <span class="dropdown-label">Last 24 Hours</span>
+            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[160px]">
+              <span class="dropdown-label font-bold text-xs">Last 24 Hours</span>
               <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
             </div>
-            <div class="finzo-dropdown-menu">
+            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
               <div class="finzo-dropdown-option is-selected" data-value="24h">Last 24 Hours</div>
               <div class="finzo-dropdown-option" data-value="7d">Last 7 Days</div>
               <div class="finzo-dropdown-option" data-value="30d">Last 30 Days</div>
@@ -334,7 +316,7 @@
               <th>Activity Description</th>
               <th>Entity ID</th>
               <th style="text-align:right;">Context</th>
-            </          </thead>
+            </thead>
           <tbody id="audit-log-body">
             <tr data-admin="Alex Sterling" data-type="delete">
               <td><div class="al-ts-date">Oct 24, 2023</div><div class="al-ts-time">14:22:05 UTC</div></td>
