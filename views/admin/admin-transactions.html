@@ -125,9 +125,35 @@
       color: var(--text-primary);
     }
     .dark .pill-input { background: rgba(255,255,255,0.04); }
+    /* Search box — matches pending-approvals style */
     .search-wrap { position: relative; display: flex; align-items: center; }
-    .search-icon { position: absolute; left: 16px; color: #94a3b8; font-size: 20px; }
-    .search-input { padding-left: 48px; }
+    .search-icon {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; font-size: 20px; pointer-events: none;
+      transition: color 0.2s;
+    }
+    .search-wrap:focus-within .search-icon { color: #002645; }
+    .search-input {
+      padding-left: 48px !important;
+      background: #f1f5f9 !important;
+      border: 1px solid transparent !important;
+      border-radius: 14px !important;
+      height: 48px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .dark .search-input { background: rgba(255,255,255,0.05) !important; }
+    .search-input:focus {
+      border-color: rgba(0,38,69,0.2) !important;
+      box-shadow: 0 0 0 4px rgba(0,38,69,0.06) !important;
+    }
+    /* Make finzo-dropdown fill filter-item width */
+    .filter-item .finzo-dropdown { display: block; width: 100%; }
+    .filter-item .finzo-dropdown-trigger { width: 100%; box-sizing: border-box; }
     .btn-apply-main {
       height: 48px;
       padding: 0 32px;
@@ -323,9 +349,9 @@
             <span class="filter-label">Type</span>
             <div class="finzo-dropdown" id="type-dropdown">
               <input type="hidden" id="filter-type" value="all">
-              <div class="pill-input flex items-center justify-between cursor-pointer finzo-dropdown-trigger">
+              <div class="finzo-dropdown-trigger">
                 <span class="dropdown-label">All Types</span>
-                <span class="material-symbols-outlined text-slate-400 chevron text-[20px]">expand_more</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Types</div>
@@ -340,9 +366,9 @@
             <span class="filter-label">Status</span>
             <div class="finzo-dropdown" id="status-dropdown">
               <input type="hidden" id="filter-status" value="all">
-              <div class="pill-input flex items-center justify-between cursor-pointer finzo-dropdown-trigger">
+              <div class="finzo-dropdown-trigger">
                 <span class="dropdown-label">All Status</span>
-                <span class="material-symbols-outlined text-slate-400 chevron text-[20px]">expand_more</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
@@ -356,9 +382,9 @@
             <span class="filter-label">Account</span>
             <div class="finzo-dropdown" id="account-dropdown">
               <input type="hidden" id="filter-account" value="all">
-              <div class="pill-input flex items-center justify-between cursor-pointer finzo-dropdown-trigger">
+              <div class="finzo-dropdown-trigger">
                 <span class="dropdown-label">All Accounts</span>
-                <span class="material-symbols-outlined text-slate-400 chevron text-[20px]">expand_more</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-2xl !border-none !shadow-2xl">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
@@ -411,17 +437,28 @@
     function applyFilters() {
       const search = $('#filter-search').val().toLowerCase();
       const status = $('#filter-status').val();
+      const type = $('#filter-type').val();
+      const account = $('#filter-account').val();
       const from = $('#date-from').val();
       const to = $('#date-to').val();
 
       const filtered = data.filter(r => {
-        const matchesType = currentType === 'all' || r.type.toLowerCase() === currentType;
+        let matchesCategory = true;
+        if (currentType === 'pending') {
+          matchesCategory = r.status.toLowerCase() === 'pending';
+        } else if (currentType !== 'all') {
+          matchesCategory = r.type.toLowerCase() === currentType;
+        }
+
+        const matchesType = type === 'all' || r.type.toLowerCase() === type;
         const matchesStatus = status === 'all' || r.status.toLowerCase() === status;
         const matchesSearch = !search || r.name.toLowerCase().includes(search) || r.txId.toLowerCase().includes(search) || r.acc.toLowerCase().includes(search);
+        
         let matchesDate = true;
         if (from && r.date < from) matchesDate = false;
         if (to && r.date > to) matchesDate = false;
-        return matchesType && matchesStatus && matchesSearch && matchesDate;
+        
+        return matchesCategory && matchesType && matchesStatus && matchesSearch && matchesDate;
       });
 
       const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
@@ -458,9 +495,19 @@
       });
       $('#apply-filters').on('click', () => { currentPage = 1; applyFilters(); });
       $('#reset-filters').on('click', () => { 
-        $('#filter-search').val(''); $('#filter-status').val('all').trigger('change'); $('#date-from, #date-to').val('');
-        $('.filter-tab-btn').removeClass('active bg-primary text-white').first().addClass('active bg-primary text-white');
-        $('.finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected'); $('.dropdown-label').text('All Status');
+        $('#filter-search').val(''); 
+        $('#date-from, #date-to').val('');
+        $('.filter-tab-btn').removeClass('active').first().addClass('active');
+        // Reset each dropdown individually with correct labels
+        $('#type-dropdown input[type="hidden"]').val('all');
+        $('#type-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
+        $('#type-dropdown .dropdown-label').text('All Types');
+        $('#status-dropdown input[type="hidden"]').val('all');
+        $('#status-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
+        $('#status-dropdown .dropdown-label').text('All Status');
+        $('#account-dropdown input[type="hidden"]').val('all');
+        $('#account-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
+        $('#account-dropdown .dropdown-label').text('All Accounts');
         currentPage = 1; currentType = 'all'; applyFilters(); 
       });
       $('#filter-search').on('keyup', () => { currentPage = 1; applyFilters(); });
