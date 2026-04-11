@@ -161,7 +161,7 @@
 <div class="admin-main">
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
     <div>
-      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">Central Ledger</div>
+      <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER MANAGEMENT</div>
       <div class="user-mgmt-title font-headline text-3xl font-extrabold tracking-tight mt-1">User Management</div>
     </div>
     <div style="display:flex;gap:12px;">
@@ -184,12 +184,12 @@
         <div class="admin-stat-value !text-2xl !text-on-tertiary-container">11,204</div>
       </div>
       <div class="admin-stat-card !p-6 elevation-md">
-        <div class="admin-stat-label">Suspended</div>
+        <div class="admin-stat-label">INACTIVE</div>
         <div class="admin-stat-value !text-2xl !text-orange-500">938</div>
       </div>
       <div class="admin-stat-card !p-6 elevation-md">
         <div class="admin-stat-label">Locked</div>
-        <div class="admin-stat-value !text-2xl !text-error">700</div>
+        <div class="admin-stat-value !text-2xl !text-error">3</div>
       </div>
     </div>
 
@@ -201,7 +201,7 @@
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Database</label>
           <div class="relative group">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-            <input type="text" id="user-search" placeholder="Search by name, email, or institutional ID..."
+            <input type="text" id="user-search" placeholder="Search by name, email or account number..."
               class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
           </div>
         </div>
@@ -256,99 +256,58 @@
       <table class="admin-table" style="width:100%;" id="users-table">
         <thead>
           <tr>
-            <th>Registered User</th>
-            <th>System Identity</th>
+            <th>User</th>
+            <th>Email</th>
             <th>Account Type</th>
+            <th>Phone</th>
             <th>Status</th>
-            <th>Access Protocol</th>
+            <th>Joined Date</th>
             <th style="text-align:right;">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr data-name="Marcus Vane">
+          <tr data-name="Rahul Kumar">
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">MV</div>
+                <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">RK</div>
                 <div>
-                  <div style="font-weight:700;color:#000000;">Marcus Vane</div>
-                  <div style="font-size:11px;color:#000000;">Joined Oct 2023</div>
+                  <div style="font-weight:700;color:#000000;">Rahul Kumar</div>
                 </div>
               </div>
             </td>
-            <td style="color:#000000;">m.vane@finzo.com</td>
+            <td style="color:#000000;">rahul.kumar@gmail.com</td>
             <td style="color:#000000;">Savings</td>
+            <td style="color:#000000;">+91 98765 43210</td>
             <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
-            <td style="color:#000000;font-size:12px;">Tier-1 Retail</td>
+            <td style="color:#000000;font-size:12px;">15 Oct 2023</td>
             <td style="text-align:right;">
-              <div style="display:flex;gap:6px;justify-content:flex-end;">
-                <a href="admin-user-detail.html" class="btn-view" style="padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12px;font-weight:700;" title="View Detail">
-                  <span class="material-symbols-outlined" style="font-size:18px;">visibility</span> Manage
+              <div style="display:flex;justify-content:flex-end;">
+                <a href="admin-user-detail.html" class="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all group">
+                  <span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">visibility</span>
+                  <span>Manage</span>
                 </a>
               </div>
             </td>
           </tr>
-          <tr data-name="Elena Sterling">
+          <tr data-name="Priya Sharma">
             <td>
               <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#f3e8ff;color:#7c3aed;">ES</div>
+                <div class="admin-avatar" style="background:#f3e8ff;color:#7c3aed;">PS</div>
                 <div>
-                  <div style="font-weight:700;color:#000000;">Elena Sterling</div>
-                  <div style="font-size:11px;color:#000000;">Joined Jan 2024</div>
+                  <div style="font-weight:700;color:#000000;">Priya Sharma</div>
                 </div>
               </div>
             </td>
-            <td style="color:#000000;">e.sterling@architect.io</td>
+            <td style="color:#000000;">priya.sharma@gmail.com</td>
             <td style="color:#000000;">Current</td>
-            <td><span class="status-badge badge-warn"><span style="width:6px;height:6px;background:#f39c12;border-radius:50%;"></span>Suspended</span></td>
-            <td style="color:#000000;font-size:12px;">Premium Wealth</td>
+            <td style="color:#000000;">+91 87654 32109</td>
+            <td><span class="status-badge badge-neutral"><span style="width:6px;height:6px;background:#94a3b8;border-radius:50%;"></span>Inactive</span></td>
+            <td style="color:#000000;font-size:12px;">20 Jan 2024</td>
             <td style="text-align:right;">
-              <div style="display:flex;gap:6px;justify-content:flex-end;">
-                <a href="admin-user-detail.html" class="btn-view" style="padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12px;font-weight:700;" title="View Detail">
-                  <span class="material-symbols-outlined" style="font-size:18px;">visibility</span> Manage
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr data-name="Julian Thorne">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">JT</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Julian Thorne</div>
-                  <div style="font-size:11px;color:#000000;">Joined Nov 2023</div>
-                </div>
-              </div>
-            </td>
-            <td style="color:#000000;">j.thorne@techflow.net</td>
-            <td style="color:#000000;">Savings</td>
-            <td><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
-            <td style="color:#000000;font-size:12px;">Global Institutional</td>
-            <td style="text-align:right;">
-              <div style="display:flex;gap:6px;justify-content:flex-end;">
-                <a href="admin-user-detail.html" class="btn-view" style="padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12px;font-weight:700;" title="View Detail">
-                  <span class="material-symbols-outlined" style="font-size:18px;">visibility</span> Manage
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr data-name="Sienna Brooks">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#ffeef0;color:#e17055;">SB</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Sienna Brooks</div>
-                  <div style="font-size:11px;color:#000000;">Joined Feb 2024</div>
-                </div>
-              </div>
-            </td>
-            <td style="color:#000000;">s.brooks@finstrat.org</td>
-            <td style="color:#000000;">Current</td>
-            <td><span class="status-badge badge-error"><span style="width:6px;height:6px;background:#e17055;border-radius:50%;"></span>Locked</span></td>
-            <td style="color:#000000;font-size:12px;">Tier-2 Enterprise</td>
-            <td style="text-align:right;">
-              <div style="display:flex;gap:6px;justify-content:flex-end;">
-                <a href="admin-user-detail.html" class="btn-view" style="padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12px;font-weight:700;" title="View Detail">
-                  <span class="material-symbols-outlined" style="font-size:18px;">visibility</span> Manage
+              <div style="display:flex;justify-content:flex-end;">
+                <a href="admin-user-detail.html" class="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all group">
+                  <span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">visibility</span>
+                  <span>Manage</span>
                 </a>
               </div>
             </td>
