@@ -270,34 +270,92 @@
           <div class="relative group">
             <input id="password" type="password" placeholder="••••••••••••" class="fin-input"/>
             <span class="material-symbols-outlined input-icon">lock</span>
-          <label class="flex items-center gap-2.5 cursor-pointer group">
-            <input type="checkbox" class="h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all cursor-pointer"/>
-            <span class="text-sm font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember Me</span>
-          </label>
+            <span class="material-symbols-outlined password-toggle" id="toggle-password">visibility</span>
+          </div>
+          <div class="flex justify-between items-center mt-3 px-1">
+            <div class="flex items-center gap-2 group cursor-pointer" onclick="$('#remember-check').toggleClass('checked')">
+              <div class="custom-checkbox" id="remember-check"></div>
+              <span class="text-[13px] font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember me</span>
+            </div>
+            <a href="forgot-password.html" class="text-[12px] font-bold text-primary hover:underline tracking-[0.03em]">Forgot Password?</a>
+          </div>
         </div>
+
+        <div id="error-box" class="error-msg">Invalid email or password</div>
 
         <!-- Action -->
         <div class="pt-4">
-          <button type="submit" id="login-btn" class="auth-btn">
-            <span id="btn-text">Sign In</span>
+          <button type="submit" id="login-btn" class="customer-btn" style="transition-delay: 160ms;">
+            <span>Sign In to Account</span>
             <span class="material-symbols-outlined text-xl">login</span>
           </button>
         </div>
       </form>
 
-      <!-- Footer -->
-      <div class="mt-10 pt-8 border-t border-slate-100 fade-up stagger-3 text-center">
-        <p class="text-sm text-slate-500 font-medium" id="footer-text">
-          Don't have an account? 
-          <a href="../auth/register.html" class="text-primary font-bold hover:underline" id="footer-link-text">Register Now</a>
-        </p>
+      <!-- Switching link -->
+      <div class="mt-8 text-center">
+        <span class="text-[13px] font-semibold text-slate-500">Don't have an account?</span>
+        <a href="register.html" class="text-[13px] font-bold text-primary hover:text-emerald-500 transition-colors ml-1">Register Now</a>
+      </div>
+
+      <!-- Footer Security Note -->
+      <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-center gap-2">
+        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+        <span class="text-[11px] font-bold tracking-widest text-slate-400 uppercase">● 256-BIT SSL ENCRYPTED CONNECTION</span>
       </div>
     </div>
+  </section>
+</main>
 
-    <!-- Security Note (Desktop Only) -->
-    <div class="hidden lg:flex fixed bottom-8 right-8 items-center gap-3 px-4 py-2 bg-white rounded-full shadow-lg border border-slate-50">
-      <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-      <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">256-BIT SSL ENCRYPTED CONNECTION</span>
-    </div>
-  </body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(function() {
+    // Show animations
+    setTimeout(() => {
+      $('.fin-input-container, .customer-btn').addClass('visible');
+    }, 100);
+
+    const $form = $('#loginForm');
+    const $btn = $('#login-btn');
+    const $error = $('#error-box');
+
+    $form.on('submit', function(e) {
+      e.preventDefault();
+      const id = $('#identity').val().trim();
+      const pw = $('#password').val().trim();
+
+      $form.removeClass('error-state');
+      $error.hide();
+
+      if (!id || !pw) {
+        $form.addClass('error-state');
+        $error.text("Please enter your credentials").show();
+        return;
+      }
+
+      const original = $btn.html();
+      $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
+      $btn.prop('disabled', true);
+
+      // Demo auth
+      setTimeout(() => {
+        if ((id === '12345678' || id === 'user@finzo.com') && pw === 'user123') {
+          window.location.href = '../user/dashboard.html';
+        } else {
+          $form.addClass('error-state');
+          $error.text("Invalid email or password").show();
+          $btn.html(original).prop('disabled', false);
+        }
+      }, 1200);
+    });
+
+    $('#toggle-password').on('click', function() {
+      const p = $('#password');
+      const isPw = p.attr('type') === 'password';
+      p.attr('type', isPw ? 'text' : 'password');
+      $(this).text(isPw ? 'visibility_off' : 'visibility');
+    });
+  });
+</script>
+</body>
 </html>
