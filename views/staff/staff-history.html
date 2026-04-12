@@ -11,7 +11,7 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: { "primary": "#1a3c5e", "amber-staff": "#f59e0b", "surface-container-low": "#f4f3f6" },
+                    colors: { "primary": "#1a3c5e", "amber-staff": "#f59e0b", "surface-container-low": "#0d1117" },
                     fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
                 }
             }
@@ -30,6 +30,19 @@
         .staff-sidebar-active::before {
             background: #f59e0b !important;
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
+        }
+
+        /* Custom Dropdown Animations */
+        .dropdown-menu {
+            transform: translateY(10px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dropdown-menu.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -89,17 +102,17 @@
     <div class="admin-main">
         <div class="admin-topbar">
             <div>
-                <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION HISTORY</div>
+                <div class="text-[10px] font-bold tracking-[0.2em] text-black dark:text-amber-500 uppercase mb-1">TRANSACTION HISTORY</div>
                 <div class="font-headline text-2xl font-extrabold tracking-tight">My Transactions</div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="hidden lg:flex flex-col items-end text-right">
-                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
-                    <div class="text-sm font-black text-primary dark:text-white" id="live-clock">10:45:00 AM</div>
+                    <div class="text-[11px] font-bold text-black dark:text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
+                    <div class="text-sm font-black text-primary dark:text-blue-500" id="live-clock">10:45:00 AM</div>
                 </div>
-                <div class="h-8 w-px bg-slate-200 dark:bg-white/10"></div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
                 <div class="flex items-center gap-3">
-                    <div class="text-xs font-bold dark:text-white">Amit Sharma</div>
+                    <div class="text-xs font-bold dark:text-blue-500">Amit Sharma</div>
                     <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">End Shift</button>
                 </div>
             </div>
@@ -143,53 +156,78 @@
             </div>
 
             <!-- FILTER BAR -->
-            <div class="admin-card p-6 mb-8 space-y-6">
+            <div class="admin-card !overflow-visible relative z-[50] p-6 mb-8 space-y-6">
                 <!-- TABS -->
                 <div class="flex gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
-                    <button class="px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-xs uppercase tracking-widest">All Time</button>
-                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">Today</button>
-                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Week</button>
-                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Month</button>
+                    <button class="px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-xs uppercase tracking-widest shadow-md">All Time</button>
+                    <button class="px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">Today</button>
+                    <button class="px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Week</button>
+                    <button class="px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Month</button>
                 </div>
                 
                 <!-- INPUTS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                     <div class="lg:col-span-2">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
-                        <input type="text" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white focus:outline-none focus:border-amber-500">
+                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
+                        <input type="text" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-black focus:outline-none focus:border-amber-500">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
-                        <select class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white">
-                            <option>All Types</option>
-                            <option>Deposits</option>
-                            <option>Withdrawals</option>
-                        </select>
+                    <div class="relative custom-dropdown" id="dropdown-type">
+                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
+                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-black flex items-center justify-between dropdown-trigger">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">list</span>
+                                <span class="selected-text">All Types</span>
+                            </span>
+                            <span class="material-symbols-outlined dropdown-arrow transition-transform">expand_more</span>
+                        </button>
+                        <div class="absolute top-[calc(100%+5px)] left-0 w-full bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl z-[100] dropdown-menu overflow-hidden">
+                            <div class="p-2 space-y-1">
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="All Types">
+                                    <span class="material-symbols-outlined text-[18px]">list</span> All Types
+                                </button>
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Deposits">
+                                    <span class="material-symbols-outlined text-[18px] text-emerald-500">add_circle</span> Deposits
+                                </button>
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Withdrawals">
+                                    <span class="material-symbols-outlined text-[18px] text-red-500">remove_circle</span> Withdrawals
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="filter-type" value="All Types">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
-                        <select class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white">
-                            <option>All Status</option>
-                            <option>Completed</option>
-                            <option>Pending</option>
-                            <option>Failed</option>
-                        </select>
+
+                    <div class="relative custom-dropdown" id="dropdown-status">
+                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
+                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-black flex items-center justify-between dropdown-trigger">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">rule</span>
+                                <span class="selected-text">All Status</span>
+                            </span>
+                            <span class="material-symbols-outlined dropdown-arrow transition-transform">expand_more</span>
+                        </button>
+                        <div class="absolute top-[calc(100%+5px)] left-0 w-full bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl z-[100] dropdown-menu overflow-hidden">
+                            <div class="p-2 space-y-1">
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="All Status">
+                                    <span class="material-symbols-outlined text-[18px]">rule</span> All Status
+                                </button>
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Completed">
+                                    <span class="material-symbols-outlined text-[18px] text-emerald-500">check_circle</span> Completed
+                                </button>
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Pending">
+                                    <span class="material-symbols-outlined text-[18px] text-amber-500">pending</span> Pending
+                                </button>
+                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Failed">
+                                    <span class="material-symbols-outlined text-[18px] text-red-500">cancel</span> Failed
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="filter-status" value="All Status">
                     </div>
                     <div class="flex items-end gap-2 lg:col-span-2">
                         <button class="h-12 flex-1 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl">Apply Filters</button>
-                        <button class="h-12 px-6 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100">Reset</button>
+                        <button class="h-12 px-6 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-400 font-bold rounded-xl hover:bg-slate-100">Reset</button>
                     </div>
                 </div>
-
-                <!-- SUMMARY ROW -->
-                <div class="bg-slate-100 dark:bg-white/5 p-4 rounded-xl flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                    <div class="flex gap-8">
-                        <span>Deposits: <span class="text-emerald-500">₹5,24,000</span></span>
-                        <span>Withdrawals: <span class="text-red-500">₹3,18,000</span></span>
-                    </div>
-                    <span>Total: 342 transactions</span>
-                </div>
-            </div>
 
             <!-- HISTORY TABLE -->
             <div class="admin-card">
@@ -211,41 +249,41 @@
                         <tbody>
                             <!-- Sample Rows -->
                             <tr class="dark:hover:bg-white/5">
-                                <td class="text-slate-400">01</td>
+                                <td class="text-black dark:text-slate-400">01</td>
                                 <td>
                                     <div class="font-bold dark:text-white">12 Apr 2026</div>
-                                    <div class="text-[10px] text-slate-400 uppercase font-black">10:45 AM</div>
+                                    <div class="text-[10px] text-black dark:text-slate-400 uppercase font-black">10:45 AM</div>
                                 </td>
                                 <td>
                                     <div class="font-bold dark:text-white">Rahul Kumar</div>
-                                    <div class="text-[10px] text-slate-400">rahul.kumar@gmail.com</div>
+                                    <div class="text-[10px] text-black dark:text-slate-400">rahul.kumar@gmail.com</div>
                                 </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260001</td>
+                                <td class="font-mono text-xs text-black dark:text-white/70">FNZ20260001</td>
                                 <td><span class="status-badge badge-success">DEPOSIT</span></td>
                                 <td class="font-bold text-emerald-600">+₹5,000.00</td>
                                 <td class="font-bold dark:text-white">₹10,000.00</td>
                                 <td><span class="status-badge badge-success">COMPLETED</span></td>
                                 <td class="text-right">
-                                    <a href="staff-receipt.html" class="p-2 inline-block text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
+                                    <a href="staff-receipt.html" class="p-2 inline-block text-black dark:text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
                                 </td>
                             </tr>
                             <tr class="dark:hover:bg-white/5">
-                                <td class="text-slate-400">02</td>
+                                <td class="text-black dark:text-slate-400">02</td>
                                 <td>
                                     <div class="font-bold dark:text-white">12 Apr 2026</div>
-                                    <div class="text-[10px] text-slate-400 uppercase font-black">10:20 AM</div>
+                                    <div class="text-[10px] text-black dark:text-slate-400 uppercase font-black">10:20 AM</div>
                                 </td>
                                 <td>
                                     <div class="font-bold dark:text-white">Priya Sharma</div>
-                                    <div class="text-[10px] text-slate-400">priya.sharma@gmail.com</div>
+                                    <div class="text-[10px] text-black dark:text-slate-400">priya.sharma@gmail.com</div>
                                 </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260002</td>
+                                <td class="font-mono text-xs text-black dark:text-white/70">FNZ20260002</td>
                                 <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
                                 <td class="font-bold text-red-600">-₹2,000.00</td>
                                 <td class="font-bold dark:text-white">₹8,000.00</td>
                                 <td><span class="status-badge badge-success">COMPLETED</span></td>
                                 <td class="text-right">
-                                    <a href="staff-receipt.html" class="p-2 inline-block text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
+                                    <a href="staff-receipt.html" class="p-2 inline-block text-black dark:text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
                                 </td>
                             </tr>
                             <!-- ... and so on for 6 rows total ... -->
@@ -355,6 +393,39 @@
                 $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
             });
             $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
+
+            // Custom Dropdown Logic
+            $('.dropdown-trigger').on('click', function(e) {
+                e.stopPropagation();
+                const dropdown = $(this).closest('.custom-dropdown');
+                const menu = dropdown.find('.dropdown-menu');
+                const arrow = $(this).find('.dropdown-arrow');
+                
+                $('.dropdown-menu').not(menu).removeClass('show');
+                $('.dropdown-arrow').not(arrow).removeClass('rotate-180');
+                
+                menu.toggleClass('show');
+                arrow.toggleClass('rotate-180');
+            });
+
+            $('.dropdown-menu button').on('click', function() {
+                const val = $(this).data('value');
+                const html = $(this).html();
+                const dropdown = $(this).closest('.custom-dropdown');
+                
+                dropdown.find('.selected-text').text(val);
+                // Option: to keep the icon in the trigger too
+                dropdown.find('.dropdown-trigger .flex.items-center.gap-2').html(html);
+                
+                dropdown.find('input[type="hidden"]').val(val);
+                dropdown.find('.dropdown-menu').removeClass('show');
+                dropdown.find('.dropdown-arrow').removeClass('rotate-180');
+            });
+
+            $(document).on('click', function() {
+                $('.dropdown-menu').removeClass('show');
+                $('.dropdown-arrow').removeClass('rotate-180');
+            });
         });
     </script>
 </body>
