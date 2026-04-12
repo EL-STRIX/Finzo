@@ -252,11 +252,11 @@
         .elevation-premium { box-shadow: var(--finzo-shadow-premium); }
 
         /* Catch-all for Card-like content across the platform (Light Mode Only) */
-        :root:not(.dark) div[class*="rounded-xl"],
-        :root:not(.dark) div[class*="rounded-3xl"] {
-            border: 1px solid #e2e8f0; /* Removed !important to allow specific border overrides like border-l-4 */
-            box-shadow: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02) !important; /* Professional shadow-sm */
-            background-color: #ffffff; /* Removed !important to allow specific backgrounds for states like is-unread */
+        :root:not(.dark) div[class*="rounded-xl"]:not(.no-card-style),
+        :root:not(.dark) div[class*="rounded-3xl"]:not(.no-card-style) {
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02); /* Removed !important */
+            background-color: #ffffff; /* Removed !important */
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
