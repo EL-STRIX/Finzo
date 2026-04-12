@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Finzo | Secure Authentication</title>
+  <title>Finzo | Login to Personal Banking</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -12,10 +12,10 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#002645",
-            "fin-blue": "#1a3c5e",
-            "fin-gray": "#f8fafc",
-            "fin-border": "#e2e8f0"
+            "primary": "#1a3c5e",
+            "accent": "#10b981",
+            "fin-navy": "#0f172a",
+            "fin-slate": "#64748b"
           },
           fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
         }
@@ -23,84 +23,160 @@
     }
   </script>
   <style>
-    .auth-gradient { background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%); }
+    .customer-gradient { 
+      background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);
+    }
     
-    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; position: relative; width: 100%; }
-    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; z-index: 10; position: relative; }
-    .role-item.active { color: #002645; }
-    .role-indicator { position: absolute; top: 4px; left: 4px; height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
+    .role-switcher { 
+      display: flex; 
+      background: #f1f5f9; 
+      padding: 4px; 
+      border-radius: 16px; 
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .role-item { 
+      flex: 1; 
+      text-align: center; 
+      padding: 10px 4px; 
+      font-size: 11px; 
+      font-weight: 800; 
+      text-transform: uppercase; 
+      letter-spacing: 0.1em; 
+      color: #64748b; 
+      cursor: pointer; 
+      border-radius: 10px; 
+      transition: all 0.2s ease; 
+      z-index: 10;
+    }
+    .role-item.active { 
+      background: #1a3c5e; 
+      color: white; 
+      box-shadow: 0 2px 8px rgba(26,60,94,0.3);
+    }
     
-    .fin-input-wrapper { position: relative; width: 100%; }
+    .field-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+      transition: color 0.25s;
+    }
+
+    .fin-input-container { position: relative; width: 100%; transition: all 0.4s ease-out; opacity: 0; transform: translateY(12px); }
+    .fin-input-container.visible { opacity: 1; transform: translateY(0); }
+
     .fin-input { 
       width: 100%; 
-      height: 54px;
-      padding: 0 16px 0 52px;
-      background: #f8fafc; 
-      border: 1.5px solid #e2e8f0; 
-      border-radius: 12px; 
+      height: 56px;
+      padding: 0 18px 0 48px;
+      background: #f1f5f9; 
+      border: 2px solid transparent; 
+      border-radius: 14px; 
       font-size: 14px; 
-      font-weight: 500; 
-      color: #1a1c1e; 
+      font-weight: 600; 
+      color: #0f172a; 
       outline: none; 
-      transition: all 0.2s ease; 
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
     }
+    .fin-input::placeholder { color: #94a3b8; font-weight: 500; }
+    
+    .fin-input:hover { background: #e8edf5; }
+    
     .fin-input:focus { 
-      background: #fff; 
-      border-color: #002645; 
-      box-shadow: 0 0 0 4px rgba(0,38,69,0.06); 
+      background: #ffffff; 
+      border-color: #1a3c5e; 
+      box-shadow: 0 0 0 4px rgba(26,60,94,0.10); 
     }
+    .fin-input-container:focus-within .field-label { color: #1a3c5e; }
+    .fin-input-container:focus-within .input-icon { color: #1a3c5e; }
+
+    .fin-input:not(:placeholder-shown) {
+      background: #ffffff;
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
     .input-icon { 
       position: absolute; 
-      left: 18px; 
+      left: 16px; 
       top: 50%; 
       transform: translateY(-50%); 
       color: #94a3b8; 
       font-size: 20px; 
       pointer-events: none; 
-      transition: color 0.2s; 
+      transition: color 0.25s; 
     }
-    .fin-input:focus + .input-icon { color: #002645; }
 
-    .auth-btn { 
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    .fin-input-container:focus-within .password-toggle { color: #1a3c5e; }
+
+    .customer-btn { 
       width: 100%;
       height: 54px; 
-      border-radius: 12px; 
-      background: #002645; 
+      border-radius: 14px; 
+      background: #1a3c5e; 
       color: white;
       font-size: 15px; 
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.02em;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
       transition: all 0.3s ease; 
+      box-shadow: 0 4px 16px rgba(26,60,94,0.35);
+      opacity: 0; transform: translateY(12px);
     }
-    .auth-btn:hover { background: #003661; transform: translateY(-1px); box-shadow: 0 10px 20px -10px rgba(0,38,69,0.4); }
-    .auth-btn:active { transform: translateY(0); }
+    .customer-btn.visible { opacity: 1; transform: translateY(0); }
+    .customer-btn:hover { background: #0f2a44; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,60,94,0.45); }
+    .customer-btn:active { transform: translateY(0) scale(0.99); }
+    
+    .error-state .fin-input {
+      border-color: #ef4444 !important;
+      background: rgba(239,68,68,0.04) !important;
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.08) !important;
+    }
+    .error-msg {
+      color: #ef4444; font-size: 12px; font-weight: 600; margin-top: 6px; display: none;
+      animation: slideDown 0.3s ease-out forwards;
+    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-    .fade-up { opacity: 0; transform: translateY(15px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
+    .custom-checkbox {
+      width: 18px; height: 18px; border-radius: 4px; border: 2px solid #e2e8f0; background: #f1f5f9;
+      cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .custom-checkbox.checked { background: #1a3c5e; border-color: #1a3c5e; }
+    .custom-checkbox::after {
+      content: 'check'; font-family: 'Material Symbols Outlined'; font-size: 14px; color: white;
+      position: absolute; top: -1px; left: -1px; opacity: 0; transition: opacity 0.2s;
+    }
+    .custom-checkbox.checked::after { opacity: 1; }
 
     ::-webkit-scrollbar { width: 0; display: none; }
-
-    @media (max-width: 768px) {
-      .split-pane { flex-direction: column; }
-      .left-panel { display: none; }
-      .right-panel { width: 100%; padding: 2rem 1.5rem; }
-    }
+    @media (min-width: 1024px) { body { overflow: hidden; } }
   </style>
 </head>
 <body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
-<main class="min-h-screen flex split-pane">
+<main class="min-h-screen flex">
 
-  <!-- LEFT PANEL (Desktop/Tablet) -->
-  <section class="hidden md:flex md:w-[45%] lg:w-[52%] relative auth-gradient flex-col justify-between p-12 lg:p-16 left-panel overflow-hidden">
+  <!-- LEFT PANEL -->
+  <section class="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-16 overflow-hidden">
     <div class="absolute inset-0 z-0">
-      <img src="../../assets/images/auth-bg-premium.png" class="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt=""/>
-      <div class="absolute inset-0 bg-gradient-to-tr from-primary/80 via-transparent"></div>
+      <img src="../../assets/images/customer_bg.png" class="w-full h-full object-cover" alt=""/>
+      <div class="absolute inset-0 customer-gradient"></div>
     </div>
 
     <div class="relative z-10">
@@ -112,98 +188,88 @@
       </div>
       
       <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-green-500/10 border border-green-500/20 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-green-400"></div>
-          <span class="text-[10px] font-black tracking-widest text-green-300">● SECURE BANKING</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-emerald-500/10 border border-emerald-500/25 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-[#10b981]"></div>
+          <span class="text-[10px] font-black tracking-widest text-[#10b981] uppercase">● PERSONAL BANKING</span>
         </div>
-        <h1 class="text-4xl lg:text-5xl font-headline font-extrabold text-white leading-tight mb-6">
-          Your Money,<br/><span class="text-blue-300/80">Fully Protected.</span>
+        <h1 class="text-[48px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
+          Your Money,<br/><span class="text-[#10b981]">Your Control.</span>
         </h1>
-        <p class="text-lg text-blue-100/70 font-medium mb-10">
-          Manage your deposits, transfers and statements — all in one professional workspace.
+        <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
+          Deposit, transfer and track every rupee from your personal Finzo dashboard — simple, secure and always available.
         </p>
 
-        <div class="space-y-4">
+        <div class="space-y-4 mb-12">
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
-            <span class="text-white text-sm font-medium">ACID Safe Fund Transfers</span>
+            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">ACID Safe Fund Transfers</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
-            <span class="text-white text-sm font-medium">Encrypted Session Security</span>
+            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">Encrypted Session Security</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
-            <span class="text-white text-sm font-medium">Real-Time Transaction Alerts</span>
+            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">Real-Time Transaction Alerts</span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Bottom Stat Strip -->
+    <div class="relative z-10 flex items-center gap-12 pt-8 border-t border-white/10">
+      <div class="flex flex-col gap-1">
+        <span class="text-white text-22px font-bold">₹4.2L+</span>
+        <span class="text-white/50 text-[11px] font-bold uppercase tracking-wider">Monthly Transfers</span>
+      </div>
+      <div class="w-[1px] h-8 bg-white/10"></div>
+      <div class="flex flex-col gap-1">
+        <span class="text-white text-22px font-bold">128K+</span>
+        <span class="text-white/50 text-[11px] font-bold uppercase tracking-wider">Active Users</span>
+      </div>
+      <div class="w-[1px] h-8 bg-white/10"></div>
+      <div class="flex flex-col gap-1">
+        <span class="text-white text-22px font-bold">99.9%</span>
+        <span class="text-white/50 text-[11px] font-bold uppercase tracking-wider">Uptime</span>
       </div>
     </div>
   </section>
 
-  <!-- RIGHT PANEL (Form) -->
-  <section class="w-full md:w-[55%] lg:w-[48%] flex flex-col justify-center items-center bg-white right-panel">
+  <!-- RIGHT PANEL -->
+  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white p-6 md:p-12 relative overflow-y-auto">
     
-    <!-- Mobile Brand Header -->
-    <div class="md:hidden w-full flex items-center justify-center mb-10">
-      <div class="flex items-center gap-2">
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-primary">
-          <span class="material-symbols-outlined text-white text-xl">account_balance</span>
-        </div>
-        <span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
-      </div>
-    </div>
-
-    <div class="w-full max-w-[420px] fade-up stagger-1">
+    <div class="w-full max-w-[420px]">
       
       <!-- Role Switcher -->
-      <div class="role-switcher mb-10">
-        <div class="role-indicator" id="indicator"></div>
-        <div class="role-item active" onclick="switchRole('customer', 0)">Customer</div>
-        <div class="role-item" onclick="switchRole('staff', 1)">Staff</div>
-        <div class="role-item" onclick="switchRole('admin', 2)">Admin</div>
+      <div class="role-switcher mb-12">
+        <div class="role-item active" onclick="window.location.href='login.html'">Customer</div>
+        <div class="role-item" onclick="window.location.href='staff-login.html'">Staff</div>
+        <div class="role-item" onclick="window.location.href='admin-login.html'">Admin</div>
       </div>
 
-      <div class="mb-8 text-left w-full">
-        <h2 class="text-3xl lg:text-4xl font-headline font-extrabold tracking-tight text-primary mb-2" id="form-title">Welcome Back</h2>
-        <p class="text-slate-500 font-medium" id="form-subtitle">Sign in to access your Finzo banking dashboard.</p>
+      <div class="mb-10 text-left w-full">
+        <h2 class="text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Welcome Back</h2>
+        <p class="text-slate-500 font-medium leading-relaxed">Sign in to your account and manage your money.</p>
       </div>
 
-      <!-- Error Banner -->
-      <div id="auth-error-banner" class="hidden mb-6">
-        <div class="p-4 rounded-xl flex items-center gap-3 bg-red-50 border border-red-100 text-red-700">
-          <span class="material-symbols-outlined text-lg">error</span>
-          <span id="error-text" class="text-xs font-bold">Invalid credentials.</span>
-        </div>
-      </div>
-
-      <form class="space-y-5 fade-up stagger-2 w-full" novalidate id="loginForm">
-        <!-- Email -->
-        <div class="space-y-2">
-          <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-400">Email Address</label>
-          <div class="fin-input-wrapper">
-            <input id="identity" type="text" placeholder="Enter your email address" class="fin-input" autocomplete="username"/>
+      <form class="space-y-5 w-full" novalidate id="loginForm">
+        <!-- Field: Identity -->
+        <div class="fin-input-container" style="transition-delay: 0ms;">
+          <label class="field-label">Email or Account Number</label>
+          <div class="relative">
+            <input id="identity" type="text" placeholder="e.g. 12345678 or amit@email.com" class="fin-input"/>
             <span class="material-symbols-outlined input-icon">alternate_email</span>
           </div>
         </div>
 
-        <!-- Password -->
-        <div class="space-y-2">
-          <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-400">Password</label>
-          <div class="fin-input-wrapper">
-            <input id="password" type="password" placeholder="Enter your secure password" class="fin-input" style="padding-right:52px;" autocomplete="current-password"/>
+        <!-- Field: Password -->
+        <div class="fin-input-container" style="transition-delay: 80ms;">
+          <div class="flex justify-between items-center pr-1">
+            <label class="field-label">Secure Password</label>
+          </div>
+          <div class="relative group">
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input"/>
             <span class="material-symbols-outlined input-icon">lock</span>
-            <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
-              <span class="material-symbols-outlined">visibility</span>
-            </button>
-          </div>
-          <div class="flex justify-end pt-1">
-            <a href="../auth/forgot-password.html" class="text-[11px] font-bold text-primary hover:underline uppercase tracking-wider">Forgot Password?</a>
-          </div>
-        </div>
-
-        <!-- Extra -->
-        <div class="flex items-center pt-2">
           <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="checkbox" class="h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all cursor-pointer"/>
             <span class="text-sm font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember Me</span>
@@ -233,92 +299,5 @@
       <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
       <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">256-BIT SSL ENCRYPTED CONNECTION</span>
     </div>
-  </section>
-</main>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-  let currentRole = 'customer';
-
-  function switchRole(role, index) {
-    currentRole = role;
-    $('.role-item').removeClass('active');
-    $('.role-item').eq(index).addClass('active');
-    $('#indicator').css('left', `calc(${index * 33.333}% + 4px)`);
-
-    const config = {
-      customer: {
-        title: "Welcome Back",
-        subtitle: "Sign in to access your Finzo banking dashboard.",
-        btn: "Sign In",
-        footerLabel: "Don't have an account?",
-        footerLink: "Register Now"
-      },
-      staff: {
-        title: "Staff Login",
-        subtitle: "Sign in to access the Finzo staff panel.",
-        btn: "Staff Sign In",
-        footerLabel: "Customer?",
-        footerLink: "Login here →"
-      },
-      admin: {
-        title: "Admin Login",
-        subtitle: "Sign in to access the Finzo admin console.",
-        btn: "Admin Sign In",
-        footerLabel: "Customer?",
-        footerLink: "Login here →"
-      }
-    };
-
-    const c = config[role];
-    $('#form-title').text(c.title);
-    $('#form-subtitle').text(c.subtitle);
-    $('#btn-text').text(c.btn);
-    $('#footer-text').html(`${c.footerLabel} <a href="#" class="text-primary font-bold hover:underline" id="footer-link-text">${c.footerLink}</a>`);
-    
-    if(role === 'customer') {
-      $('#footer-link-text').attr('href', '../auth/register.html');
-    } else {
-      $('#footer-link-text').on('click', (e) => { e.preventDefault(); switchRole('customer', 0); });
-    }
-  }
-
-  $(function() {
-    $('#loginForm').on('submit', function(e) {
-      e.preventDefault();
-      const id = $('#identity').val().trim();
-      const pw = $('#password').val().trim();
-      const $banner = $('#auth-error-banner');
-
-      if (!id || !pw) {
-        $banner.removeClass('hidden');
-        return;
-      }
-
-      const btn = $('#login-btn');
-      const original = btn.html();
-      btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
-      btn.prop('disabled', true);
-
-      setTimeout(() => {
-        if ((currentRole === 'customer' && id === 'user@finzo.com' && pw === 'user123') ||
-            (currentRole === 'admin' && id === 'admin@finzo.com' && pw === 'admin123') ||
-            (currentRole === 'staff' && id === 'staff@finzo.com' && pw === 'staff123')) {
-          window.location.href = currentRole === 'customer' ? '../user/dashboard.html' : '../admin/admin-dashboard.html';
-        } else {
-          $banner.removeClass('hidden');
-          btn.html(original).prop('disabled', false);
-        }
-      }, 1000);
-    });
-
-    $('#toggle-password').on('click', function() {
-      const p = $('#password');
-      const isPw = p.attr('type') === 'password';
-      p.attr('type', isPw ? 'text' : 'password');
-      $(this).find('span').text(isPw ? 'visibility_off' : 'visibility');
-    });
-  });
-</script>
-</body>
+  </body>
 </html>
