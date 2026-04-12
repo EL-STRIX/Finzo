@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Staff — New Withdrawal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a3c5e",
+                        "amber-staff": "#f59e0b",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f4f3f6"
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/dark-mode.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .brand-sub-staff { color: #f59e0b !important; }
+        .staff-sidebar-active {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
+            color: #f59e0b !important;
+        }
+        .staff-sidebar-active::before {
+            background: #f59e0b !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
+        }
+        .step-pill.active { background: #1a3c5e; color: white; border-color: #1a3c5e; }
+        .step-pill.completed { background: #10b981; color: white; border-color: #10b981; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar" style="background:#0d1117;">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
+        </div>
+
+        <!-- Staff Info Card -->
+        <div class="px-4 py-6 border-b border-white/5">
+            <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm">AS</div>
+                    <div>
+                        <div class="text-xs font-bold text-white">Amit Sharma</div>
+                        <div class="text-[10px] text-white/50 font-medium">STF001</div>
+                    </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="staff-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Dashboard
+            </a>
+            <a href="staff-deposit.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">add_circle</span> New Deposit
+            </a>
+            <a href="staff-withdraw.html" class="admin-nav-item staff-sidebar-active">
+                <span class="material-symbols-outlined">remove_circle</span> New Withdrawal
+            </a>
+            <a href="staff-history.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">receipt_long</span> Transaction History
+            </a>
+
+            <div class="admin-nav-section">ACCOUNT</div>
+            <button class="admin-nav-item w-full text-left" id="toggle-theme-btn" style="background:none;border:none;cursor:pointer;">
+                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+                <span id="theme-label">Dark Mode</span>
+            </button>
+            <button class="admin-nav-item w-full text-left end-shift-trigger" style="background:none;border:none;cursor:pointer;color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION</div>
+                <div class="font-headline text-2xl font-extrabold tracking-tight">New Withdrawal</div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex flex-col items-end">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
+                    <div class="text-sm font-black text-primary dark:text-white" id="live-clock">10:45:00 AM</div>
+                </div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/10"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block text-xs">
+                        <div class="font-bold dark:text-white">Amit Sharma</div>
+                        <div class="text-slate-400 font-bold">STF001</div>
+                    </div>
+                    <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">
+                        End Shift
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-8 max-w-5xl mx-auto">
+            <!-- PAGE HEADER -->
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-black font-headline text-primary dark:text-white tracking-tight">Debit Money</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Safely withdraw money from customer account.</p>
+                </div>
+                <a href="staff-dashboard.html" class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back
+                </a>
+            </div>
+
+            <!-- STEP INDICATOR -->
+            <div class="flex items-center justify-between mb-10 px-4">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs step-indicator" data-step="1">1</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Find Account</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-white/10 mx-4 mb-8"></div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-400 step-indicator" data-step="2">2</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Enter Details</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-white/10 mx-4 mb-8"></div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-400 step-indicator" data-step="3">3</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Confirm</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-white/10 mx-4 mb-8"></div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-400 step-indicator" data-step="4">4</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Receipt</span>
+                </div>
+            </div>
+
+            <!-- STEP 1: FIND ACCOUNT -->
+            <div id="section-1" class="space-y-6">
+                <div class="admin-card p-10">
+                    <h3 class="text-xl font-black font-headline text-primary dark:text-white mb-8 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary dark:text-amber-500">1</span>
+                        Step 1 — Find Customer Account
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Customer Account Number</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <input type="text" id="account-lookup" placeholder="Enter account number e.g. FNZ20260001" 
+                                    class="w-full h-14 pl-12 pr-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-200 dark:border-white/5 rounded-2xl font-bold dark:text-white focus:outline-none focus:border-red-500 transition-all">
+                            </div>
+                        </div>
+                        <button id="find-btn" class="w-full h-14 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-600/20 hover:translate-y-[-2px] active:scale-95 transition-all">Find Account →</button>
+                    </div>
+                </div>
+
+                <!-- SUCCESS BANNER (HIDDEN) -->
+                <div id="account-success" class="hidden space-y-6 animate-in slide-in-from-top-4 duration-500">
+                    <div class="mt-6 admin-card p-8">
+                        <div class="flex justify-between items-start mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-black">RK</div>
+                                <div>
+                                    <h4 class="text-2xl font-black font-headline text-primary dark:text-white">Rahul Kumar</h4>
+                                    <div class="text-slate-500 font-bold text-sm">FNZ20260001</div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-widest">Active</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 p-6 bg-slate-50 dark:bg-white/5 rounded-[2rem] border border-slate-100 dark:border-white/5">
+                            <div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Type</div>
+                                <div class="font-bold dark:text-white">Savings Account</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Current Balance</div>
+                                <div class="font-black text-primary dark:text-white text-xl">₹5,000.00</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Daily Limit Left</div>
+                                <div class="font-bold text-emerald-600">₹8,500.00</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mt-8">
+                            <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all" onclick="resetForm()">Not the right account?</button>
+                            <button class="flex-1 py-4 bg-primary dark:bg-amber-500 text-white dark:text-primary font-black rounded-2xl shadow-xl shadow-primary/20 dark:shadow-amber-500/10 hover:translate-y-[-2px] transition-all" onclick="goToStep2()">Proceed with Withdrawal →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ERROR / WARNING BANNERS -->
+                <div id="account-error" class="hidden bg-red-50 dark:bg-red-500/10 border border-red-500/20 rounded-2xl p-6 flex flex-col items-center text-center gap-4 animate-in zoom-in duration-300">
+                    <div class="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md">
+                        <span class="material-symbols-outlined text-2xl">close</span>
+                    </div>
+                    <h4 class="text-red-900 dark:text-red-400 font-black">Account Not Found</h4>
+                </div>
+            </div>
+
+            <!-- STEP 2: WITHDRAWAL DETAILS (HIDDEN) -->
+            <div id="section-2" class="hidden space-y-6">
+                <div class="admin-card p-10">
+                    <h3 class="text-xl font-black font-headline text-primary dark:text-white mb-8 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-red-500/5 flex items-center justify-center text-red-600">2</span>
+                        Step 2 — Withdrawal Details
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Withdrawal Amount (₹)</label>
+                                <div class="relative">
+                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-400">₹</span>
+                                    <input type="number" id="with-amount" placeholder="0.00"
+                                        class="w-full h-16 pl-12 pr-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-200 dark:border-white/5 rounded-2xl font-black text-2xl dark:text-white focus:outline-none focus:border-red-500 transition-all">
+                                </div>
+                                <div id="limit-msg" class="mt-3 text-[10px] font-black uppercase tracking-widest hidden"></div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Withdrawal Type</label>
+                                <select id="with-type" class="w-full h-14 bg-slate-50 dark:bg-white/5 border-2 border-slate-200 dark:border-white/5 rounded-2xl font-bold dark:text-white focus:outline-none focus:border-red-500 transition-all">
+                                    <option value="Cash Withdrawal">Cash Withdrawal</option>
+                                    <option value="Cheque Encashment">Cheque Encashment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Staff Notes (Internal Only)</label>
+                                <textarea id="with-notes" placeholder="e.g. Identity verified via Aadhaar Card..." rows="3"
+                                    class="w-full p-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-200 dark:border-white/5 rounded-2xl font-bold dark:text-white focus:outline-none focus:border-red-500 transition-all"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-red-900/90 dark:bg-[#161b22] p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+                                <h4 class="text-white/40 font-black uppercase text-[10px] tracking-widest mb-8">Shift Verification</h4>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-white/40 font-bold uppercase tracking-widest text-[10px]">Daily Limit Remaining</span>
+                                        <span class="text-white font-black">₹8,500.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-white/40 font-bold uppercase tracking-widest text-[10px] pb-1">Withdrawal Amount</span>
+                                        <span class="text-3xl font-black text-red-400" id="sum-amt">₹0.00</span>
+                                    </div>
+                                    <div class="h-px bg-white/5"></div>
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-white font-medium">After Withdrawal</span>
+                                        <span class="text-white font-black" id="sum-after">₹5,000.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 font-bold rounded-2xl" onclick="goToStep1()">← Back</button>
+                                <button id="confirm-step-btn" class="flex-1 py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-600/20 hover:translate-y-[-2px] transition-all" onclick="goToStep3()">Review & Confirm →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: CONFIRMATION (HIDDEN) -->
+            <div id="section-3" class="hidden animate-in zoom-in duration-500">
+                <div class="admin-card p-0 overflow-hidden">
+                    <div class="bg-red-600 p-10 text-center text-white">
+                        <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-6">
+                            <span class="material-symbols-outlined text-4xl">warning</span>
+                        </div>
+                        <h3 class="text-3xl font-black font-headline text-white">Confirm Withdrawal</h3>
+                        <p class="text-white/80 font-bold text-sm mt-2 uppercase tracking-widest">Verify Identity First</p>
+                    </div>
+
+                    <div class="p-10 space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="space-y-6">
+                                <div class="border-b border-slate-100 dark:border-white/5 pb-4">
+                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Customer Name</div>
+                                    <div class="font-bold dark:text-white">Rahul Kumar</div>
+                                </div>
+                                <div class="border-b border-slate-100 dark:border-white/5 pb-4">
+                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Amount to Debit</div>
+                                    <div class="text-2xl font-black text-red-600" id="confirm-amt">₹0.00</div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="p-6 bg-red-50 dark:bg-white/5 rounded-2xl border border-red-100 dark:border-white/5">
+                                    <div class="flex items-center gap-4 text-red-700 dark:text-red-400 mb-4">
+                                        <span class="material-symbols-outlined">verified_user</span>
+                                        <span class="font-bold text-sm">Customer Identity Verification Needed</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Ensure the customer has presented valid ID proof and is the authorized account holder before processing this debit.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 font-bold rounded-2xl" onclick="goToStep2()">← Edit Details</button>
+                            <a href="staff-receipt.html" class="flex-1 py-4 bg-red-600 text-white font-black text-center rounded-2xl shadow-xl shadow-red-600/30 hover:translate-y-[-2px] transition-all">Confirm Withdrawal</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAYS -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div id="logout-modal" class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden">
+            <div class="w-16 h-16 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mb-6 mx-auto">
+                <span class="material-symbols-outlined text-4xl">logout</span>
+            </div>
+            <h3 class="text-2xl font-black font-headline text-center mb-2 dark:text-white">End Shift?</h3>
+            <p class="text-slate-500 dark:text-slate-400 text-center mb-8">Are you sure you want to end your shift and logout?</p>
+            <div class="flex gap-4">
+                <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl modal-close">Cancel</button>
+                <a href="../views/auth/staff-login.html" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30 transition-all">End Shift</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+            function updateClock() {
+                const now = new Date();
+                $('#live-clock').text(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }));
+                $('#live-date').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
+            }
+            setInterval(updateClock, 1000); updateClock();
+
+            $('.end-shift-trigger').on('click', function() {
+                $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
+                $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
+            });
+            $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
+
+            $('#toggle-theme-btn').on('click', function() {
+                const current = localStorage.getItem('finzo-staff-theme') || 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                document.documentElement.classList.toggle('dark', next === 'dark');
+                localStorage.setItem('finzo-staff-theme', next);
+                $('#theme-icon').text(next === 'dark' ? 'light_mode' : 'dark_mode');
+                $('#theme-label').text(next === 'dark' ? 'Light Mode' : 'Dark Mode');
+            });
+
+            // --- Withdrawal Logic ---
+            const steps = $('.step-indicator');
+            function updateSteps(num) {
+                steps.each(function() {
+                    const s = parseInt($(this).data('step'));
+                    $(this).removeClass('active completed border-primary border-slate-200 dark:border-white/10 text-slate-400 text-white');
+                    if (s < num) {
+                        $(this).addClass('completed bg-emerald-500 border-emerald-500 text-white');
+                    } else if (s === num) {
+                        $(this).addClass('active bg-primary text-white border-primary');
+                    } else {
+                        $(this).addClass('border-slate-200 dark:border-white/10 text-slate-400');
+                    }
+                });
+            }
+            updateSteps(1);
+
+            $('#find-btn').on('click', function() {
+                const acc = $('#account-lookup').val().trim();
+                $(this).html('<span class="material-symbols-outlined animate-spin text-sm">sync</span> Searching...');
+                
+                setTimeout(() => {
+                    $(this).html('Find Account →');
+                    if(acc === 'FNZ20260001') {
+                        $('#account-success').removeClass('hidden');
+                        $('#account-error').addClass('hidden');
+                    } else {
+                        $('#account-error').removeClass('hidden');
+                        $('#account-success').addClass('hidden');
+                    }
+                }, 800);
+            });
+
+            window.resetForm = function() {
+                $('#account-lookup').val('');
+                $('#account-success, #account-error').addClass('hidden');
+                updateSteps(1);
+            };
+
+            window.goToStep1 = function() { 
+                $('#section-1').removeClass('hidden'); 
+                $('#section-2, #section-3').addClass('hidden'); 
+                updateSteps(1); 
+            };
+            
+            window.goToStep2 = function() { 
+                $('#section-1, #section-3').addClass('hidden'); 
+                $('#section-2').removeClass('hidden'); 
+                updateSteps(2); 
+            };
+            
+            window.goToStep3 = function() { 
+                const amt = parseFloat($('#with-amount').val()) || 0;
+                if (amt <= 0 || amt > 5000) return;
+                $('#section-2').addClass('hidden'); 
+                $('#section-3').removeClass('hidden'); 
+                updateSteps(3); 
+                $('#confirm-amt').text('₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+            };
+
+            $('#with-amount').on('input', function() {
+                const val = parseFloat($(this).val()) || 0;
+                const balance = 5000;
+                const $msg = $('#limit-msg');
+                const $btn = $('#confirm-step-btn');
+
+                $('#sum-amt, #confirm-amt').text('₹' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+                $('#sum-after').text('₹' + (balance - val).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+
+                $msg.removeClass('hidden text-emerald-500 text-red-600 text-amber-500');
+                $btn.prop('disabled', false).css('opacity', '1');
+
+                if (val <= 0) { 
+                    $msg.addClass('hidden'); 
+                } else if (val > balance) {
+                    $msg.removeClass('hidden').addClass('text-red-600').text('❌ Amount exceeds available balance of ₹5,000');
+                    $btn.prop('disabled', true).css('opacity', '0.5');
+                } else if (val > 2500) { 
+                    $msg.removeClass('hidden').addClass('text-amber-500').text('⚠️ Amount exceeds daily limit. Remaining: ₹2,500');
+                    $btn.prop('disabled', true).css('opacity', '0.5');
+                } else {
+                    $msg.removeClass('hidden').addClass('text-emerald-500').text('✅ Amount is within available balance');
+                }
+            });
+        });
+
+        // Theme Init
+        (function() {
+            const saved = localStorage.getItem('finzo-staff-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            document.documentElement.classList.toggle('dark', saved === 'dark');
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Staff — My Transactions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#1a3c5e", "amber-staff": "#f59e0b", "surface-container-low": "#f4f3f6" },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/dark-mode.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .brand-sub-staff { color: #f59e0b !important; }
+        .staff-sidebar-active {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
+            color: #f59e0b !important;
+        }
+        .staff-sidebar-active::before {
+            background: #f59e0b !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar" style="background:#0d1117;">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
+        </div>
+
+        <!-- Staff Info Card -->
+        <div class="px-4 py-6 border-b border-white/5">
+            <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm">AS</div>
+                    <div>
+                        <div class="text-xs font-bold text-white">Amit Sharma</div>
+                        <div class="text-[10px] text-white/50 font-medium">STF001</div>
+                    </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="staff-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Dashboard
+            </a>
+            <a href="staff-deposit.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">add_circle</span> New Deposit
+            </a>
+            <a href="staff-withdraw.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">remove_circle</span> New Withdrawal
+            </a>
+            <a href="staff-history.html" class="admin-nav-item staff-sidebar-active">
+                <span class="material-symbols-outlined">receipt_long</span> Transaction History
+            </a>
+
+            <div class="admin-nav-section">ACCOUNT</div>
+            <button class="admin-nav-item w-full text-left" id="toggle-theme-btn" style="background:none;border:none;cursor:pointer;">
+                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+                <span id="theme-label">Dark Mode</span>
+            </button>
+            <button class="admin-nav-item w-full text-left end-shift-trigger" style="background:none;border:none;cursor:pointer;color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION HISTORY</div>
+                <div class="font-headline text-2xl font-extrabold tracking-tight">My Transactions</div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex flex-col items-end text-right">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
+                    <div class="text-sm font-black text-primary dark:text-white" id="live-clock">10:45:00 AM</div>
+                </div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/10"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-xs font-bold dark:text-white">Amit Sharma</div>
+                    <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">End Shift</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-8">
+            <!-- STATS ROW -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon" style="background:rgba(16, 185, 129, 0.1);">
+                        <span class="material-symbols-outlined" style="color:#10b981;">add_circle</span>
+                    </div>
+                    <div class="admin-stat-label">TOTAL DEPOSITS DONE</div>
+                    <div class="admin-stat-value">₹5,24,000</div>
+                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500">+12% from last week</span></div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon" style="background:rgba(239, 68, 68, 0.1);">
+                        <span class="material-symbols-outlined" style="color:#ef4444;">remove_circle</span>
+                    </div>
+                    <div class="admin-stat-label">TOTAL WITHDRAWALS DONE</div>
+                    <div class="admin-stat-value">₹3,18,000</div>
+                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500">+8% from last week</span></div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon" style="background:rgba(59, 130, 246, 0.1);">
+                        <span class="material-symbols-outlined" style="color:#3b82f6;">receipt</span>
+                    </div>
+                    <div class="admin-stat-label">TOTAL TRANSACTIONS</div>
+                    <div class="admin-stat-value">342</div>
+                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 uppercase tracking-widest">All Time</span></div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon" style="background:rgba(245, 158, 11, 0.1);">
+                        <span class="material-symbols-outlined" style="color:#f59e0b;">calendar_month</span>
+                    </div>
+                    <div class="admin-stat-label">THIS MONTH</div>
+                    <div class="admin-stat-value">48</div>
+                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-amber-500/10 text-amber-500 uppercase tracking-widest">Apr 2026</span></div>
+                </div>
+            </div>
+
+            <!-- FILTER BAR -->
+            <div class="admin-card p-6 mb-8 space-y-6">
+                <!-- TABS -->
+                <div class="flex gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                    <button class="px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-xs uppercase tracking-widest">All Time</button>
+                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">Today</button>
+                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Week</button>
+                    <button class="px-6 py-2 text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Month</button>
+                </div>
+                
+                <!-- INPUTS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                    <div class="lg:col-span-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
+                        <input type="text" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
+                        <select class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white">
+                            <option>All Types</option>
+                            <option>Deposits</option>
+                            <option>Withdrawals</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
+                        <select class="w-full h-12 px-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-white">
+                            <option>All Status</option>
+                            <option>Completed</option>
+                            <option>Pending</option>
+                            <option>Failed</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end gap-2 lg:col-span-2">
+                        <button class="h-12 flex-1 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl">Apply Filters</button>
+                        <button class="h-12 px-6 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100">Reset</button>
+                    </div>
+                </div>
+
+                <!-- SUMMARY ROW -->
+                <div class="bg-slate-100 dark:bg-white/5 p-4 rounded-xl flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    <div class="flex gap-8">
+                        <span>Deposits: <span class="text-emerald-500">₹5,24,000</span></span>
+                        <span>Withdrawals: <span class="text-red-500">₹3,18,000</span></span>
+                    </div>
+                    <span>Total: 342 transactions</span>
+                </div>
+            </div>
+
+            <!-- HISTORY TABLE -->
+            <div class="admin-card">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead>
+                            <tr class="dark:bg-white/5">
+                                <th class="w-12">#</th>
+                                <th class="text-left">DATE & TIME</th>
+                                <th class="text-left">CUSTOMER</th>
+                                <th class="text-left">ACCOUNT NO</th>
+                                <th class="text-left">TYPE</th>
+                                <th class="text-left">AMOUNT</th>
+                                <th class="text-left">BALANCE AFTER</th>
+                                <th class="text-left">STATUS</th>
+                                <th class="text-right">RECEIPT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Rows -->
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">01</td>
+                                <td>
+                                    <div class="font-bold dark:text-white">12 Apr 2026</div>
+                                    <div class="text-[10px] text-slate-400 uppercase font-black">10:45 AM</div>
+                                </td>
+                                <td>
+                                    <div class="font-bold dark:text-white">Rahul Kumar</div>
+                                    <div class="text-[10px] text-slate-400">rahul.kumar@gmail.com</div>
+                                </td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260001</td>
+                                <td><span class="status-badge badge-success">DEPOSIT</span></td>
+                                <td class="font-bold text-emerald-600">+₹5,000.00</td>
+                                <td class="font-bold dark:text-white">₹10,000.00</td>
+                                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                                <td class="text-right">
+                                    <a href="staff-receipt.html" class="p-2 inline-block text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
+                                </td>
+                            </tr>
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">02</td>
+                                <td>
+                                    <div class="font-bold dark:text-white">12 Apr 2026</div>
+                                    <div class="text-[10px] text-slate-400 uppercase font-black">10:20 AM</div>
+                                </td>
+                                <td>
+                                    <div class="font-bold dark:text-white">Priya Sharma</div>
+                                    <div class="text-[10px] text-slate-400">priya.sharma@gmail.com</div>
+                                </td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260002</td>
+                                <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
+                                <td class="font-bold text-red-600">-₹2,000.00</td>
+                                <td class="font-bold dark:text-white">₹8,000.00</td>
+                                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                                <td class="text-right">
+                                    <a href="staff-receipt.html" class="p-2 inline-block text-slate-400 hover:text-primary"><span class="material-symbols-outlined">print</span></a>
+                                </td>
+                            </tr>
+                            <!-- ... and so on for 6 rows total ... -->
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">03</td>
+                                <td><div class="font-bold dark:text-white">12 Apr 2026</div><div class="text-[10px] text-slate-400 font-black">09:55 AM</div></td>
+                                <td><div class="font-bold dark:text-white">Amit Mondal</div><div class="text-[10px] text-slate-400">amit.mondal@gmail.com</div></td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260003</td>
+                                <td><span class="status-badge badge-success">DEPOSIT</span></td>
+                                <td class="font-bold text-emerald-600">+₹10,000.00</td>
+                                <td class="font-bold dark:text-white">₹15,000.00</td>
+                                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                                <td class="text-right"><a href="staff-receipt.html" class="p-2 inline-block text-slate-400"><span class="material-symbols-outlined">print</span></a></td>
+                            </tr>
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">04</td>
+                                <td><div class="font-bold dark:text-white">11 Apr 2026</div><div class="text-[10px] text-slate-400 font-black">04:30 PM</div></td>
+                                <td><div class="font-bold dark:text-white">Sunita Mehta</div><div class="text-[10px] text-slate-400">sunita.mehta@gmail.com</div></td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260004</td>
+                                <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
+                                <td class="font-bold text-red-600">-₹1,500.00</td>
+                                <td class="font-bold dark:text-white">₹6,500.00</td>
+                                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                                <td class="text-right"><a href="staff-receipt.html" class="p-2 inline-block text-slate-400"><span class="material-symbols-outlined">print</span></a></td>
+                            </tr>
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">05</td>
+                                <td><div class="font-bold dark:text-white">11 Apr 2026</div><div class="text-[10px] text-slate-400 font-black">02:15 PM</div></td>
+                                <td><div class="font-bold dark:text-white">Vikram Gupta</div><div class="text-[10px] text-slate-400">vikram.gupta@gmail.com</div></td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260005</td>
+                                <td><span class="status-badge badge-success">DEPOSIT</span></td>
+                                <td class="font-bold text-emerald-600">+₹3,000.00</td>
+                                <td class="font-bold dark:text-white">₹9,000.00</td>
+                                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                                <td class="text-right"><a href="staff-receipt.html" class="p-2 inline-block text-slate-400"><span class="material-symbols-outlined">print</span></a></td>
+                            </tr>
+                            <tr class="dark:hover:bg-white/5">
+                                <td class="text-slate-400">06</td>
+                                <td><div class="font-bold dark:text-white">10 Apr 2026</div><div class="text-[10px] text-slate-400 font-black">11:00 AM</div></td>
+                                <td><div class="font-bold dark:text-white">Mohan Kumar</div><div class="text-[10px] text-slate-400">mohan.kumar@gmail.com</div></td>
+                                <td class="font-mono text-xs dark:text-white/70">FNZ20260006</td>
+                                <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
+                                <td class="font-bold text-red-600">-₹4,000.00</td>
+                                <td class="font-bold dark:text-white">₹2,000.00</td>
+                                <td><span class="status-badge badge-warn">PENDING</span></td>
+                                <td class="text-right"><a href="staff-receipt.html" class="p-2 inline-block text-slate-400"><span class="material-symbols-outlined">print</span></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="p-6 flex justify-between items-center bg-slate-50/50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5">
+                    <span class="text-xs font-bold text-slate-400">Showing 1-6 of 342 transactions</span>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 border-2 border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100 transition-all text-xs">&larr; Previous</button>
+                        <button class="px-4 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-xs">1</button>
+                        <button class="px-4 py-2 border-2 border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100 transition-all text-xs">2</button>
+                        <button class="px-4 py-2 border-2 border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100 transition-all text-xs">3</button>
+                        <button class="px-4 py-2 border-2 border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-xl hover:bg-slate-100 transition-all text-xs">Next &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div id="logout-modal" class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden">
+            <div class="w-16 h-16 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mb-6 mx-auto">
+                <span class="material-symbols-outlined text-4xl font-black">logout</span>
+            </div>
+            <h3 class="text-2xl font-black font-headline text-center mb-2 dark:text-white">End Shift?</h3>
+            <p class="text-slate-500 dark:text-slate-400 text-center mb-8 font-bold">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
+            <div class="flex gap-4">
+                <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl modal-close">Cancel</button>
+                <a href="../views/auth/staff-login.html" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30">End Shift</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+            function updateClock() {
+                const now = new Date();
+                $('#live-clock').text(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }));
+                $('#live-date').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
+            }
+            setInterval(updateClock, 1000); updateClock();
+
+            $('#toggle-theme-btn').on('click', function() {
+                const cur = localStorage.getItem('finzo-staff-theme') || 'light';
+                const next = cur === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                document.documentElement.classList.toggle('dark', next === 'dark');
+                localStorage.setItem('finzo-staff-theme', next);
+                $('#theme-icon').text(next === 'dark' ? 'light_mode' : 'dark_mode');
+                $('#theme-label').text(next === 'dark' ? 'Light Mode' : 'Dark Mode');
+            });
+
+            const saved = localStorage.getItem('finzo-staff-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            document.documentElement.classList.toggle('dark', saved === 'dark');
+
+            $('.end-shift-trigger').on('click', function() {
+                $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
+                $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
+            });
+            $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
+        });
+    </script>
+</body>
+</html>
