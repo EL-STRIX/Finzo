@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Finzo | Staff Portal Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: { extend: { fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } }
+    }
+  </script>
+  <link rel="stylesheet" href="../../assets/css/custom.css">
+  <style>
+    :root { --staff: #4f46e5; --staff-dark: #312e81; }
+    .staff-gradient { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #4f46e5 100%); }
+    .staff-btn { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .staff-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -6px rgba(79,70,229,0.3); filter: brightness(1.1); }
+    
+    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 14px; margin-bottom: 2rem; position: relative; }
+    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; cursor: pointer; border-radius: 10px; transition: all 0.3s ease; z-index: 1; position: relative; }
+    .role-item.active { color: #4f46e5; }
+    .role-indicator { position: absolute; top: 4px; left: calc(33.333% + 2px); height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
+    
+    .fin-input-wrapper { position: relative; transition: all 0.3s ease; }
+    .fin-input { width: 100%; padding: 14px 14px 14px 48px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 14px; font-weight: 500; color: #1a1c1e; outline: none; transition: all 0.2s; }
+    .fin-input:focus { background: #fff; border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79,70,229,0.06); }
+    .fin-input.input-error { border-color: #ba1a1a !important; background: rgba(186,26,26,0.02) !important; }
+
+    .staff-select { width: 100%; padding: 14px 14px 14px 48px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 14px; font-weight: 500; color: #1a1c1e; outline: none; transition: all 0.2s; appearance: none; cursor: pointer; }
+    .staff-select:focus { background: #fff; border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79,70,229,0.06); }
+
+    .fade-up { opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.15s; }
+    .stagger-3 { animation-delay: 0.2s; }
+    .stagger-4 { animation-delay: 0.25s; }
+    .stagger-5 { animation-delay: 0.3s; }
+
+    ::-webkit-scrollbar { width: 0; display: none; }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<main class="min-h-screen flex items-stretch">
+
+  <!-- LEFT PANEL -->
+  <section class="hidden lg:flex lg:w-[52%] relative staff-gradient flex-col justify-between p-16 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img src="../../assets/images/auth-bg-premium.png" class="w-full h-full object-cover brightness-[0.3] contrast-[1.1] grayscale-[0.5]" alt=""/>
+      <div class="absolute inset-0 bg-gradient-to-tr from-[#1e1b4b]/90 via-[#3730a3]/40 to-transparent"></div>
+      
+      <!-- Premium Mesh Gradients -->
+      <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-indigo-400/10 blur-[120px] animate-pulse"></div>
+      <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[100px]"></div>
+    </div>
+
+    <div class="relative z-10">
+      <div class="flex items-center gap-3 mb-20 cursor-pointer group" onclick="window.location.href='../../index.html'">
+        <div class="w-11 h-11 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 transition-all group-hover:bg-white/20">
+          <span class="material-symbols-outlined text-white" style="font-size:24px;">account_balance</span>
+        </div>
+        <span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
+      </div>
+      
+      <div class="max-w-md">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></div>
+          <span class="text-[11px] font-black tracking-[0.2em] uppercase text-indigo-300">Staff Portal</span>
+        </div>
+        <h1 class="text-5xl font-headline font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+          Empowering Your <br/><span class="text-indigo-400">Daily Operations.</span>
+        </h1>
+        <p class="text-lg leading-relaxed text-indigo-100/70 font-medium max-w-sm">
+          A dedicated workspace for Finzo professionals to deliver exceptional banking services.
+        </p>
+      </div>
+    </div>
+
+    <div class="relative z-10 p-8 rounded-[2rem] bg-white/5 backdrop-blur-xl border border-white/10 max-w-xs shadow-2xl">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">HR</div>
+        <div>
+          <div class="text-white text-sm font-bold">Today's Briefing</div>
+          <div class="text-indigo-300/60 text-[10px] uppercase font-black">Departmental Update</div>
+        </div>
+      </div>
+      <p class="text-xs text-indigo-100/80 leading-relaxed font-medium">
+        "All staff accounts now require mandatory MFA periodic rotation. Please verify your department codes."
+      </p>
+    </div>
+  </section>
+
+  <!-- RIGHT PANEL -->
+  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center p-8 md:p-14 bg-white relative">
+    
+    <div class="lg:hidden absolute top-8 left-8 flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-indigo-600">
+        <span class="material-symbols-outlined text-white" style="font-size:20px;">account_balance</span>
+      </div>
+      <span class="text-2xl font-black tracking-tighter text-indigo-600 font-headline">Finzo</span>
+    </div>
+
+    <div class="w-full max-w-[420px] fade-up stagger-1">
+      
+      <!-- Role Switcher -->
+      <div class="role-switcher">
+        <div class="role-indicator"></div>
+        <div class="role-item" onclick="window.location.href='login.html'">Customer</div>
+        <div class="role-item active" onclick="window.location.href='staff-login.html'">Staff</div>
+        <div class="role-item" onclick="window.location.href='admin-login.html'">Admin</div>
+      </div>
+
+      <div class="mb-10 text-center lg:text-left">
+        <h2 class="text-4xl font-headline font-extrabold tracking-tight text-[#1e1b4b] mb-2">Internal Access</h2>
+        <p class="text-slate-500 font-medium">Authorised staff sign-in required.</p>
+      </div>
+
+      <!-- Error Banner -->
+      <div id="auth-error-banner" class="error-banner mb-6">
+        <div class="p-4 rounded-2xl flex items-center gap-4 bg-red-50 border border-red-100">
+          <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-red-600" style="font-size:20px;">error</span>
+          </div>
+          <span id="error-text" class="text-sm font-bold text-red-700">Invalid staff credentials. access denied.</span>
+        </div>
+      </div>
+
+      <form class="space-y-6 fade-up stagger-3" novalidate id="staffForm">
+        <div class="space-y-2">
+          <label class="block text-[11px] font-black tracking-widest uppercase text-slate-400 ml-1">Staff ID / Email</label>
+          <div class="fin-input-wrapper">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">badge</span>
+            <input id="identity" type="text" placeholder="STF-0001 or staff@finzo.com" class="fin-input"/>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-[11px] font-black tracking-widest uppercase text-slate-400 ml-1">Official Department</label>
+          <div class="fin-input-wrapper">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 z-10" style="font-size:20px;">work</span>
+            <select id="department" class="staff-select">
+              <option value="">Select Department</option>
+              <option value="customer-service">Customer Service</option>
+              <option value="loans">Loans &amp; Credit</option>
+              <option value="operations">Operations</option>
+              <option value="compliance">Compliance</option>
+              <option value="it">IT &amp; Systems</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" style="font-size:20px;">expand_more</span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center ml-1">
+            <label class="text-[11px] font-black tracking-widest uppercase text-slate-400">Password</label>
+            <a href="../auth/forgot-password.html" class="text-[11px] font-bold tracking-tight text-indigo-600 uppercase hover:underline">Reset?</a>
+          </div>
+          <div class="fin-input-wrapper">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">lock</span>
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input" style="padding-right:48px;"/>
+            <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 hover:text-indigo-600 text-slate-300 transition-colors">
+              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex gap-3 stagger-4">
+          <span class="material-symbols-outlined text-amber-600" style="font-size:18px;margin-top:2px;">info</span>
+          <p class="text-[11px] font-semibold text-amber-800 leading-relaxed">
+            Staff sessions are audit-logged. Your IP and actions are recorded for system integrity.
+          </p>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="w-full staff-btn text-white font-headline font-bold py-4 rounded-2xl flex items-center justify-center gap-3 text-[15px] shadow-lg shadow-indigo-200">
+            <span>Sign In to Staff Portal</span>
+            <span class="material-symbols-outlined" style="font-size:20px;">login</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between fade-up stagger-5">
+        <div>
+          <div class="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-1">Staff Demo</div>
+          <div class="text-xs font-mono font-bold text-slate-600">staff@finzo.com / staff123</div>
+        </div>
+        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+          <span class="material-symbols-outlined text-slate-400" style="font-size:16px;">badge</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(function() {
+  const $form = $('#staffForm');
+  const $fields = $('.fin-input, .staff-select');
+  const $banner = $('#auth-error-banner');
+  const $errText = $('#error-text');
+
+  $form.on('submit', function(e) {
+    e.preventDefault();
+    const id = $('#identity').val().trim();
+    const pw = $('#password').val().trim();
+    const dept = $('#department').val();
+
+    $fields.removeClass('input-error');
+    $banner.removeClass('active');
+
+    if (!id || !pw || !dept) {
+      if (!id) $('#identity').addClass('input-error');
+      if (!pw) $('#password').addClass('input-error');
+      if (!dept) $('#department').addClass('input-error');
+      $errText.text('Please provide all professional credentials.');
+      $banner.addClass('active');
+      return;
+    }
+
+    const $btn = $form.find('button[type="submit"]');
+    const original = $btn.html();
+    $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
+    $btn.prop('disabled', true);
+
+    setTimeout(() => {
+      if (id === 'staff@finzo.com' && pw === 'staff123') {
+        window.location.href = '../admin/admin-dashboard.html';
+      } else {
+        $errText.text('Authentication failed. Staff ID or Department mismatch.');
+        $banner.addClass('active');
+        $fields.addClass('input-error');
+        $btn.html(original).prop('disabled', false);
+      }
+    }, 800);
+  });
+
+  $fields.on('input change', function() {
+    $(this).removeClass('input-error');
+    if (!$('.input-error').length) $banner.removeClass('active');
+  });
+
+  $('#toggle-password').on('click', function() {
+    const p = $('#password');
+    const t = p.attr('type') === 'password' ? 'text' : 'password';
+    p.attr('type', t);
+    $(this).find('span').text(t === 'password' ? 'visibility' : 'visibility_off');
+  });
+});
+</script>
+</body>
+</html>
