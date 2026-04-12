@@ -73,15 +73,17 @@
       height: 56px;
       padding: 0 18px 0 48px;
       background: #f1f5f9; 
-      border: 2px solid transparent; 
-      border-radius: 14px; 
+      border: 1.5px solid #e2e8f0; 
+      border-radius: 8px; 
       font-size: 14px; 
       font-weight: 600; 
       color: #0f172a; 
       outline: none; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
     }
-    .fin-input::placeholder { color: #94a3b8; font-weight: 500; }
+    .fin-input::placeholder { color: #94a3b8; font-weight: 500; transition: color 0.2s; }
+    .fin-input:focus::placeholder { color: transparent; }
     .fin-input:hover { background: #e8edf5; }
     
     .fin-input:focus { 
