@@ -101,10 +101,6 @@
 <div class="flex items-center gap-8">
 <span class="text-xl font-bold tracking-tighter text-blue-900">Finzo</span>
 <div class="hidden md:flex items-center gap-6">
-<a class="text-slate-600 hover:text-blue-900 font-['Plus_Jakarta_Sans'] text-sm tracking-tight transition-colors" href="#">Products</a>
-<a class="text-slate-600 hover:text-blue-900 font-['Plus_Jakarta_Sans'] text-sm tracking-tight transition-colors" href="#">Solutions</a>
-<a class="text-slate-600 hover:text-blue-900 font-['Plus_Jakarta_Sans'] text-sm tracking-tight transition-colors" href="#">Security</a>
-<a class="text-slate-600 hover:text-blue-900 font-['Plus_Jakarta_Sans'] text-sm tracking-tight transition-colors" href="#">Support</a>
 </div>
 </div>
 <div class="flex items-center">
@@ -120,24 +116,24 @@
 <div class="absolute -top-12 -left-12 w-48 h-48 bg-tertiary-container/5 rounded-full blur-3xl"></div>
 <div class="relative space-y-8">
 <div class="space-y-2">
-<span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant uppercase opacity-50">ERROR CODE 500</span>
-<h1 class="text-5xl font-extrabold text-primary tracking-tighter leading-tight">System Error</h1>
+<span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant uppercase opacity-50 font-label">ERROR 500</span>
+<h1 class="text-5xl font-extrabold text-primary tracking-tighter leading-tight font-headline">Something Went Wrong.</h1>
 </div>
 <p class="text-lg text-on-surface-variant leading-relaxed font-light">
-                            Our digital ledger is undergoing a brief structural synchronization. Your data remains secure and encrypted within our core vaults.
+                            An unexpected error occurred on our server. Your account and data are completely safe. Please try again in a few moments.
                         </p>
 <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
 <div class="flex items-start gap-4">
-<span class="material-symbols-outlined text-on-tertiary-container" data-icon="verified_user">verified_user</span>
+<span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings:'FILL' 1;">shield_check</span>
 <div>
-<h4 class="text-sm font-bold text-primary">Engineers Notified</h4>
-<p class="text-xs text-on-surface-variant mt-1">An automated high-priority ticket has been generated. Our system root team is currently resolving the latency.</p>
+<h4 class="text-sm font-bold text-primary font-headline">Your Data is Safe</h4>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Your account balance and transaction history are fully protected. This is a temporary server issue only.</p>
 </div>
 </div>
 </div>
 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-<button class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform active:scale-95">
-<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
+<button onclick="window.location.reload()" class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform active:scale-95 whitespace-nowrap">
+<span class="material-symbols-outlined text-lg">refresh</span>
                                 Refresh Page
                             </button>
 <button class="px-8 py-4 bg-surface-container-high text-on-surface text-sm font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
@@ -149,62 +145,25 @@
 </div>
 </div>
 <!-- Imagery (High-End Fintech Aesthetic) -->
-<div class="md:col-span-7 order-1 md:order-2">
-<div class="relative group">
-<!-- Layered Surface Effect -->
-<div class="absolute inset-0 bg-primary/5 rounded-[2rem] transform rotate-3 scale-95 transition-transform group-hover:rotate-1"></div>
-<div class="relative overflow-hidden rounded-[2rem] shadow-2xl">
-<img alt="Digital Security Infrastructure" class="w-full h-[500px] object-cover grayscale opacity-90 mix-blend-multiply" data-alt="abstract close-up of high-tech circuit board with blue glowing data streams and architectural lines in a dark professional studio setting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
-<div class="absolute bottom-8 left-8 right-8">
-<div class="flex items-center gap-4 text-white/80">
-<div class="h-px flex-grow bg-white/20"></div>
-<span class="text-[10px] tracking-[0.3em] font-bold uppercase">Architectural Integrity</span>
-<div class="h-px flex-grow bg-white/20"></div>
-</div>
-</div>
-</div>
-</div>
+<div class="md:col-span-7 flex flex-col items-center justify-center py-12">
+    <div class="relative flex flex-col items-center text-center">
+        <h2 class="text-8xl font-extrabold text-[#e2e8f0] tracking-tighter select-none leading-none">500</h2>
+        <span class="material-symbols-outlined text-7xl text-[#94a3b8] mt-2 mb-4" style="font-variation-settings:'wght' 300;">cloud_off</span>
+        <p class="text-[11px] font-bold text-[#94a3b8] tracking-[0.12em] uppercase">Internal Server Error</p>
+    </div>
 </div>
 </div>
 </main>
 <!-- Support Section (Asymmetric Data Density) -->
-<section class="py-24 px-8 bg-surface-container-low mt-20">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-<div class="space-y-4">
-<span class="inline-block w-8 h-1 bg-tertiary-fixed-dim"></span>
-<h3 class="text-xl font-bold text-primary">Check Status</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">Visit our real-time transparency dashboard to see global system performance metrics.</p>
-<a class="text-sm font-bold text-on-tertiary-container flex items-center gap-2 group" href="#">
-                        System Dashboard
-                        <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
-</a>
-</div>
-<div class="space-y-4">
-<span class="inline-block w-8 h-1 bg-primary"></span>
-<h3 class="text-xl font-bold text-primary">Institutional Security</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">Even during maintenance, your assets are protected by our multi-signature vault architecture.</p>
-<a class="text-sm font-bold text-on-tertiary-container flex items-center gap-2 group" href="#">
-                        Security Protocols
-                        <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
-</a>
-</div>
-<div class="space-y-4">
-<span class="inline-block w-8 h-1 bg-on-primary-container"></span>
-<h3 class="text-xl font-bold text-primary">Emergency Support</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">Priority phone lines remain open 24/7 for our institutional and premium members.</p>
-<a class="text-sm font-bold text-on-tertiary-container flex items-center gap-2 group" href="#">
-                        View Direct Lines
-                        <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
-</a>
-</div>
-</div>
-</div>
+<section class="py-12 px-8 bg-surface-container-low border-t border-slate-100 flex justify-center">
+    <div class="flex items-center gap-10">
+        <a href="javascript:history.back()" class="text-sm font-bold text-[#1a3c5e] no-underline hover:opacity-80 transition-opacity">← Go Back</a>
+        <a href="/" class="text-sm font-bold text-[#1a3c5e] no-underline hover:opacity-80 transition-opacity">Go to Home →</a>
+    </div>
 </section>
 <!-- Footer (Shared Component) -->
 <!-- Modular Footer -->
-<div id="footer-placeholder" class="ml-64 bg-slate-50"></div>
+<div id="footer-placeholder" class="bg-slate-50"></div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
