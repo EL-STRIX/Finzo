@@ -3,274 +3,322 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Finzo | Customer Login</title>
+  <title>Finzo | Secure Authentication</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <script>
     tailwind.config = {
-      darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#002645", "surface": "#faf9fc",
-            "surface-container-low": "#f4f3f6", "surface-container-high": "#e8e8eb",
-            "on-surface": "#1a1c1e", "on-surface-variant": "#43474e",
-            "outline": "#73777f", "outline-variant": "#c3c6cf",
-            "error": "#ba1a1a", "on-tertiary-container": "#00b894",
-            "tertiary-fixed-dim": "#4ae183", "on-primary-container": "#87a7ce",
-            "primary-container": "#1a3c5e", "surface-container-lowest": "#ffffff",
+            "primary": "#002645",
+            "fin-blue": "#1a3c5e",
+            "fin-gray": "#f8fafc",
+            "fin-border": "#e2e8f0"
           },
           fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
         }
       }
     }
   </script>
-  <link rel="stylesheet" href="../../assets/css/custom.css">
   <style>
     .auth-gradient { background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%); }
-    .auth-btn { background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -6px rgba(0,38,69,0.3); filter: brightness(1.1); }
     
-    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 14px; margin-bottom: 2rem; position: relative; }
-    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; cursor: pointer; border-radius: 10px; transition: all 0.3s ease; z-index: 1; position: relative; }
+    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; position: relative; width: 100%; }
+    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; z-index: 10; position: relative; }
     .role-item.active { color: #002645; }
-    .role-indicator { position: absolute; top: 4px; left: 4px; height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
+    .role-indicator { position: absolute; top: 4px; left: 4px; height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
     
-    .fin-input-wrapper { position: relative; transition: all 0.3s ease; }
-    .fin-input { width: 100%; padding: 14px 14px 14px 48px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 14px; font-weight: 500; color: #1a1c1e; outline: none; transition: all 0.2s; }
-    .fin-input:focus { background: #fff; border-color: #002645; box-shadow: 0 0 0 4px rgba(0,38,69,0.06); }
-    .fin-input.input-error { border-color: #ba1a1a !important; background: rgba(186,26,26,0.02) !important; }
+    .fin-input-wrapper { position: relative; width: 100%; }
+    .fin-input { 
+      width: 100%; 
+      height: 54px;
+      padding: 0 16px 0 52px;
+      background: #f8fafc; 
+      border: 1.5px solid #e2e8f0; 
+      border-radius: 12px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      color: #1a1c1e; 
+      outline: none; 
+      transition: all 0.2s ease; 
+    }
+    .fin-input:focus { 
+      background: #fff; 
+      border-color: #002645; 
+      box-shadow: 0 0 0 4px rgba(0,38,69,0.06); 
+    }
+    .input-icon { 
+      position: absolute; 
+      left: 18px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      color: #94a3b8; 
+      font-size: 20px; 
+      pointer-events: none; 
+      transition: color 0.2s; 
+    }
+    .fin-input:focus + .input-icon { color: #002645; }
 
-    .fade-up { opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .auth-btn { 
+      width: 100%;
+      height: 54px; 
+      border-radius: 12px; 
+      background: #002645; 
+      color: white;
+      font-size: 15px; 
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.3s ease; 
+    }
+    .auth-btn:hover { background: #003661; transform: translateY(-1px); box-shadow: 0 10px 20px -10px rgba(0,38,69,0.4); }
+    .auth-btn:active { transform: translateY(0); }
+
+    .fade-up { opacity: 0; transform: translateY(15px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
     .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.15s; }
-    .stagger-3 { animation-delay: 0.2s; }
-    .stagger-4 { animation-delay: 0.25s; }
-    .stagger-5 { animation-delay: 0.3s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
 
-    /* Hide scrollbar */
     ::-webkit-scrollbar { width: 0; display: none; }
+
+    @media (max-width: 768px) {
+      .split-pane { flex-direction: column; }
+      .left-panel { display: none; }
+      .right-panel { width: 100%; padding: 2rem 1.5rem; }
+    }
   </style>
 </head>
-<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
-<main class="min-h-screen flex items-stretch">
+<body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
+<main class="min-h-screen flex split-pane">
 
-  <!-- LEFT PANEL -->
-  <section class="hidden lg:flex lg:w-[52%] relative auth-gradient flex-col justify-between p-16 overflow-hidden">
+  <!-- LEFT PANEL (Desktop/Tablet) -->
+  <section class="hidden md:flex md:w-[45%] lg:w-[52%] relative auth-gradient flex-col justify-between p-12 lg:p-16 left-panel overflow-hidden">
     <div class="absolute inset-0 z-0">
       <img src="../../assets/images/auth-bg-premium.png" class="w-full h-full object-cover brightness-[0.4] contrast-[1.1]" alt=""/>
-      <div class="absolute inset-0 bg-gradient-to-tr from-primary/80 via-primary/40 to-transparent"></div>
-      
-      <!-- Premium Mesh Gradients -->
-      <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-blue-400/10 blur-[120px] animate-pulse"></div>
-      <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[100px]"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-primary/80 via-transparent"></div>
     </div>
 
     <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-20 cursor-pointer group" onclick="window.location.href='../../index.html'">
-        <div class="w-11 h-11 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 transition-all group-hover:bg-white/20">
-          <span class="material-symbols-outlined text-white" style="font-size:24px;">account_balance</span>
+      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='../../index.html'">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
+          <span class="material-symbols-outlined text-white">account_balance</span>
         </div>
-        <span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
+        <span class="text-2xl font-black tracking-tighter text-white font-headline">Finzo</span>
       </div>
       
       <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 bg-green-500/10 border border-green-500/20 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-          <span class="text-[11px] font-black tracking-[0.2em] uppercase text-green-300">Customer Excellence</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-green-500/10 border border-green-500/20 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-green-400"></div>
+          <span class="text-[10px] font-black tracking-widest text-green-300">● SECURE BANKING</span>
         </div>
-        <h1 class="text-5xl font-headline font-extrabold text-white leading-[1.1] tracking-tight mb-6">
-          Intelligence in <br/><span class="text-blue-400">Modern Banking.</span>
+        <h1 class="text-4xl lg:text-5xl font-headline font-extrabold text-white leading-tight mb-6">
+          Your Money,<br/><span class="text-blue-300/80">Fully Protected.</span>
         </h1>
-        <p class="text-lg leading-relaxed text-blue-100/70 font-medium max-w-sm">
-          Experience a financial ecosystem designed for growth, security, and absolute simplicity.
+        <p class="text-lg text-blue-100/70 font-medium mb-10">
+          Manage your deposits, transfers and statements — all in one professional workspace.
         </p>
-      </div>
-    </div>
 
-    <div class="relative z-10 flex items-center gap-12">
-      <div class="flex -space-x-4">
-        <div class="w-12 h-12 rounded-full border-4 border-primary bg-slate-200 flex items-center justify-center overflow-hidden">
-          <img src="https://ui-avatars.com/api/?name=User+One&background=random" alt="User"/>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
+            <span class="text-white text-sm font-medium">ACID Safe Fund Transfers</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
+            <span class="text-white text-sm font-medium">Encrypted Session Security</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
+            <span class="text-white text-sm font-medium">Real-Time Transaction Alerts</span>
+          </div>
         </div>
-        <div class="w-12 h-12 rounded-full border-4 border-primary bg-slate-200 flex items-center justify-center overflow-hidden">
-          <img src="https://ui-avatars.com/api/?name=User+Two&background=random" alt="User"/>
-        </div>
-        <div class="w-12 h-12 rounded-full border-4 border-primary bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">
-          10k+
-        </div>
-      </div>
-      <div class="h-10 w-px bg-white/10"></div>
-      <div>
-        <div class="text-white font-bold">Trusted by Thousands</div>
-        <div class="text-xs text-blue-200/50 uppercase tracking-widest font-black mt-0.5">Global Institutional Standard</div>
       </div>
     </div>
   </section>
 
-  <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center p-8 md:p-14 bg-white relative">
+  <!-- RIGHT PANEL (Form) -->
+  <section class="w-full md:w-[55%] lg:w-[48%] flex flex-col justify-center items-center bg-white right-panel">
     
-    <!-- Mobile logo -->
-    <div class="lg:hidden absolute top-8 left-8 flex items-center gap-2">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-primary">
-        <span class="material-symbols-outlined text-white" style="font-size:20px;">account_balance</span>
+    <!-- Mobile Brand Header -->
+    <div class="md:hidden w-full flex items-center justify-center mb-10">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-primary">
+          <span class="material-symbols-outlined text-white text-xl">account_balance</span>
+        </div>
+        <span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
       </div>
-      <span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
     </div>
 
     <div class="w-full max-w-[420px] fade-up stagger-1">
       
       <!-- Role Switcher -->
-      <div class="role-switcher">
-        <div class="role-indicator"></div>
-        <div class="role-item active" onclick="window.location.href='login.html'">Customer</div>
-        <div class="role-item" onclick="window.location.href='staff-login.html'">Staff</div>
-        <div class="role-item" onclick="window.location.href='admin-login.html'">Admin</div>
+      <div class="role-switcher mb-10">
+        <div class="role-indicator" id="indicator"></div>
+        <div class="role-item active" onclick="switchRole('customer', 0)">Customer</div>
+        <div class="role-item" onclick="switchRole('staff', 1)">Staff</div>
+        <div class="role-item" onclick="switchRole('admin', 2)">Admin</div>
       </div>
 
-      <div class="mb-10 text-center lg:text-left">
-        <h2 class="text-4xl font-headline font-extrabold tracking-tight text-primary mb-2">Welcome Back</h2>
-        <p class="text-slate-500 font-medium">Continue your financial journey with Finzo.</p>
+      <div class="mb-8 text-left w-full">
+        <h2 class="text-3xl lg:text-4xl font-headline font-extrabold tracking-tight text-primary mb-2" id="form-title">Welcome Back</h2>
+        <p class="text-slate-500 font-medium" id="form-subtitle">Sign in to access your Finzo banking dashboard.</p>
       </div>
 
       <!-- Error Banner -->
-      <div id="auth-error-banner" class="error-banner mb-6">
-        <div class="p-4 rounded-2xl flex items-center gap-4 bg-red-50 border border-red-100">
-          <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-red-600" style="font-size:20px;">error</span>
-          </div>
-          <span id="error-text" class="text-sm font-bold text-red-700">Invalid credentials. Please try again.</span>
+      <div id="auth-error-banner" class="hidden mb-6">
+        <div class="p-4 rounded-xl flex items-center gap-3 bg-red-50 border border-red-100 text-red-700">
+          <span class="material-symbols-outlined text-lg">error</span>
+          <span id="error-text" class="text-xs font-bold">Invalid credentials.</span>
         </div>
       </div>
 
-      <form class="space-y-6 fade-up stagger-3" novalidate id="loginForm">
+      <form class="space-y-5 fade-up stagger-2 w-full" novalidate id="loginForm">
+        <!-- Email -->
         <div class="space-y-2">
-          <label class="block text-[11px] font-black tracking-widest uppercase text-slate-400 ml-1">Email or Username</label>
+          <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-400">Email Address</label>
           <div class="fin-input-wrapper">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">person</span>
-            <input id="identity" type="text" placeholder="user@finzo.com" class="fin-input" autocomplete="username"/>
+            <input id="identity" type="text" placeholder="Enter your email address" class="fin-input" autocomplete="username"/>
+            <span class="material-symbols-outlined input-icon">alternate_email</span>
           </div>
         </div>
 
+        <!-- Password -->
         <div class="space-y-2">
-          <div class="flex justify-between items-center ml-1">
-            <label class="text-[11px] font-black tracking-widest uppercase text-slate-400">Password</label>
-            <a href="../auth/forgot-password.html" class="text-[11px] font-bold tracking-tight text-primary uppercase hover:underline">Forgot?</a>
-          </div>
+          <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-400">Password</label>
           <div class="fin-input-wrapper">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">lock</span>
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input" style="padding-right:48px;" autocomplete="current-password"/>
-            <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 hover:text-primary text-slate-300 transition-colors">
-              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            <input id="password" type="password" placeholder="Enter your secure password" class="fin-input" style="padding-right:52px;" autocomplete="current-password"/>
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">visibility</span>
             </button>
           </div>
+          <div class="flex justify-end pt-1">
+            <a href="../auth/forgot-password.html" class="text-[11px] font-bold text-primary hover:underline uppercase tracking-wider">Forgot Password?</a>
+          </div>
         </div>
 
-        <div class="flex items-center">
-          <label class="flex items-center gap-3 cursor-pointer group">
-            <div class="relative flex items-center">
-              <input type="checkbox" class="peer h-5 w-5 appearance-none rounded-lg border-2 border-slate-200 transition-all cursor-pointer checked:bg-primary checked:border-primary"/>
-              <span class="material-symbols-outlined absolute inset-0 text-white text-xs flex items-center justify-center opacity-0 peer-checked:opacity-100 pointer-events-none" style="font-variation-settings:'wght' 700;">check</span>
-            </div>
-            <span class="text-sm font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember this session</span>
+        <!-- Extra -->
+        <div class="flex items-center pt-2">
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input type="checkbox" class="h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all cursor-pointer"/>
+            <span class="text-sm font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember Me</span>
           </label>
         </div>
 
+        <!-- Action -->
         <div class="pt-4">
-          <button type="submit" id="login-btn" class="w-full auth-btn text-white font-headline font-bold py-4 rounded-2xl flex items-center justify-center gap-3 text-[15px] shadow-lg shadow-primary/20">
-            <span>Sign In to Account</span>
-            <span class="material-symbols-outlined" style="font-size:20px;">login</span>
+          <button type="submit" id="login-btn" class="auth-btn">
+            <span id="btn-text">Sign In</span>
+            <span class="material-symbols-outlined text-xl">login</span>
           </button>
         </div>
       </form>
 
-      <div class="mt-10 pt-8 border-t border-slate-100 fade-up stagger-4">
-        <div class="text-center font-medium text-slate-500">
-          New to the platform?
-          <a href="../auth/register.html" class="ml-1 font-bold text-primary hover:underline underline-offset-4">Create Account</a>
-        </div>
-      </div>
-
-      <!-- Demo Badge -->
-      <div class="mt-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between fade-up stagger-5">
-        <div>
-          <div class="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-1">Demo Access</div>
-          <div class="text-xs font-mono font-bold text-slate-600">user@finzo.com / user123</div>
-        </div>
-        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-          <span class="material-symbols-outlined text-slate-400" style="font-size:16px;">key</span>
-        </div>
+      <!-- Footer -->
+      <div class="mt-10 pt-8 border-t border-slate-100 fade-up stagger-3 text-center">
+        <p class="text-sm text-slate-500 font-medium" id="footer-text">
+          Don't have an account? 
+          <a href="../auth/register.html" class="text-primary font-bold hover:underline" id="footer-link-text">Register Now</a>
+        </p>
       </div>
     </div>
 
-    <!-- Security Badge -->
-    <div class="hidden lg:flex fixed bottom-10 right-10 items-center gap-2.5 px-4 py-2 bg-white rounded-full shadow-2xl shadow-slate-200/50 border border-slate-50">
-      <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-      <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">256-bit SSL Encrypted Connection</span>
+    <!-- Security Note (Desktop Only) -->
+    <div class="hidden lg:flex fixed bottom-8 right-8 items-center gap-3 px-4 py-2 bg-white rounded-full shadow-lg border border-slate-50">
+      <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+      <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">256-BIT SSL ENCRYPTED CONNECTION</span>
     </div>
   </section>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-$(function() {
-  const $form = $('#loginForm');
-  const $inputs = $('.fin-input');
-  const $banner = $('#auth-error-banner');
-  const $errText = $('#error-text');
+  let currentRole = 'customer';
 
-  $form.on('submit', function(e) {
-    e.preventDefault();
-    const id = $('#identity').val().trim();
-    const pw = $('#password').val().trim();
-    
-    $inputs.removeClass('input-error');
-    $banner.removeClass('active');
+  function switchRole(role, index) {
+    currentRole = role;
+    $('.role-item').removeClass('active');
+    $('.role-item').eq(index).addClass('active');
+    $('#indicator').css('left', `calc(${index * 33.333}% + 4px)`);
 
-    if (!id || !pw) {
-      if (!id) $('#identity').addClass('input-error');
-      if (!pw) $('#password').addClass('input-error');
-      $errText.text('Please fill in all mandatory fields.'); 
-      $banner.addClass('active');
-      return;
-    }
-
-    // Role-based routing as per original logic but styled
-    const btn = $('#login-btn');
-    const originalContent = btn.html();
-    btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
-    btn.prop('disabled', true);
-
-    setTimeout(() => {
-      if (id === 'user@finzo.com' && pw === 'user123') { 
-        window.location.href = '../user/dashboard.html'; 
-      } else if (id === 'admin@finzo.com' && pw === 'admin123') { 
-        window.location.href = '../admin/admin-dashboard.html'; 
-      } else {
-        $errText.text('Authentication failed. Check your security credentials.');
-        $banner.addClass('active');
-        $inputs.addClass('input-error');
-        btn.html(originalContent);
-        btn.prop('disabled', false);
+    const config = {
+      customer: {
+        title: "Welcome Back",
+        subtitle: "Sign in to access your Finzo banking dashboard.",
+        btn: "Sign In",
+        footerLabel: "Don't have an account?",
+        footerLink: "Register Now"
+      },
+      staff: {
+        title: "Staff Login",
+        subtitle: "Sign in to access the Finzo staff panel.",
+        btn: "Staff Sign In",
+        footerLabel: "Customer?",
+        footerLink: "Login here →"
+      },
+      admin: {
+        title: "Admin Login",
+        subtitle: "Sign in to access the Finzo admin console.",
+        btn: "Admin Sign In",
+        footerLabel: "Customer?",
+        footerLink: "Login here →"
       }
-    }, 800);
-  });
+    };
 
-  $inputs.on('input', function() {
-    $(this).removeClass('input-error');
-    if (!$('.input-error').length) $banner.removeClass('active');
-  });
+    const c = config[role];
+    $('#form-title').text(c.title);
+    $('#form-subtitle').text(c.subtitle);
+    $('#btn-text').text(c.btn);
+    $('#footer-text').html(`${c.footerLabel} <a href="#" class="text-primary font-bold hover:underline" id="footer-link-text">${c.footerLink}</a>`);
+    
+    if(role === 'customer') {
+      $('#footer-link-text').attr('href', '../auth/register.html');
+    } else {
+      $('#footer-link-text').on('click', (e) => { e.preventDefault(); switchRole('customer', 0); });
+    }
+  }
 
-  $('#toggle-password').on('click', function() {
-    const p = $('#password');
-    const t = p.attr('type') === 'password' ? 'text' : 'password';
-    p.attr('type', t);
-    $(this).find('span').text(t === 'password' ? 'visibility' : 'visibility_off');
+  $(function() {
+    $('#loginForm').on('submit', function(e) {
+      e.preventDefault();
+      const id = $('#identity').val().trim();
+      const pw = $('#password').val().trim();
+      const $banner = $('#auth-error-banner');
+
+      if (!id || !pw) {
+        $banner.removeClass('hidden');
+        return;
+      }
+
+      const btn = $('#login-btn');
+      const original = btn.html();
+      btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
+      btn.prop('disabled', true);
+
+      setTimeout(() => {
+        if ((currentRole === 'customer' && id === 'user@finzo.com' && pw === 'user123') ||
+            (currentRole === 'admin' && id === 'admin@finzo.com' && pw === 'admin123') ||
+            (currentRole === 'staff' && id === 'staff@finzo.com' && pw === 'staff123')) {
+          window.location.href = currentRole === 'customer' ? '../user/dashboard.html' : '../admin/admin-dashboard.html';
+        } else {
+          $banner.removeClass('hidden');
+          btn.html(original).prop('disabled', false);
+        }
+      }, 1000);
+    });
+
+    $('#toggle-password').on('click', function() {
+      const p = $('#password');
+      const isPw = p.attr('type') === 'password';
+      p.attr('type', isPw ? 'text' : 'password');
+      $(this).find('span').text(isPw ? 'visibility_off' : 'visibility');
+    });
   });
-});
 </script>
 </body>
 </html>
