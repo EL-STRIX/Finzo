@@ -9,225 +9,212 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <script>
     tailwind.config = {
-      darkMode: "class",
-      theme: { extend: { fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } }
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1a3c5e",
+            "fin-navy": "#002645",
+            "fin-teal": "#00b894",
+            "fin-border": "#e2e8f0"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+        }
+      }
     }
   </script>
-  <link rel="stylesheet" href="../../assets/css/custom.css">
   <style>
-    .admin-gradient-panel { background: linear-gradient(135deg, #0a0f1e 0%, #002645 50%, #0d1a2a 100%); }
-    .admin-btn { background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%); transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color:#fff; }
-    .admin-btn:hover { transform:translateY(-2px); box-shadow:0 12px 24px -6px rgba(0,38,69,0.5); filter: brightness(1.1); }
+    .admin-gradient-panel { background: linear-gradient(135deg, #0a0f1e 0%, #002645 100%); }
     
-    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 14px; margin-bottom: 2rem; position: relative; }
-    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; cursor: pointer; border-radius: 10px; transition: all 0.3s ease; z-index: 1; position: relative; }
-    .role-item.active { color: #002645; }
-    .role-indicator { position: absolute; top: 4px; left: calc(66.666% + 1px); height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
+    .role-switcher { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; position: relative; width: 100%; }
+    .role-item { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; z-index: 10; position: relative; }
+    .role-item.active { color: #1a3c5e; }
+    .role-indicator { position: absolute; top: 4px; left: calc(66.666% + 2px); height: calc(100% - 8px); width: calc(33.333% - 4px); background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
     
-    .fin-input-wrapper { position: relative; transition: all 0.3s ease; }
-    .fin-input { width: 100%; padding: 14px 14px 14px 48px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 14px; font-weight: 500; color: #1a1c1e; outline: none; transition: all 0.2s; }
-    .fin-input:focus { background: #fff; border-color: #00b894; box-shadow: 0 0 0 4px rgba(0,184,148,0.06); }
-    
-    /* MFA Step */
-    .mfa-digit { width:52px; height:56px; text-align:center; background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:12px; font-size:20px; font-weight:800; color:#1a1c1e; outline:none; transition:all 0.2s; }
-    .mfa-digit:focus { background:#fff; border-color:#00b894; box-shadow:0 0 0 4px rgba(0,184,148,0.08); }
-    .step { display:none; }
-    .step.active { display:block; }
-    .otp-bar { display:flex; gap:8px; justify-content:center; }
-    
-    .step-dot { width:10px; height:4px; border-radius:10px; background:#e2e8f0; transition:all 0.3s; }
-    .step-dot.active { background:#00b894; width:24px; }
-    .step-dot.done { background:#00b894; opacity: 0.5; }
+    .fin-input-wrapper { position: relative; width: 100%; }
+    .fin-input { 
+      width: 100%; 
+      height: 52px;
+      padding: 0 16px 0 52px;
+      background: #f8fafc; 
+      border: 1.5px solid #e2e8f0; 
+      border-radius: 12px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      color: #1a1c1e; 
+      outline: none; 
+      transition: all 0.2s ease; 
+    }
+    .fin-input:focus { 
+      background: #fff; 
+      border-color: #1a3c5e; 
+      box-shadow: 0 0 0 3px rgba(26,60,94,0.08); 
+    }
+    .input-icon { 
+      position: absolute; 
+      left: 18px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      color: #94a3b8; 
+      font-size: 20px; 
+      pointer-events: none; 
+      transition: color 0.2s; 
+    }
+    .fin-input:focus + .input-icon { color: #1a3c5e; }
 
-    .fade-up { opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .admin-btn { 
+      width: 100%;
+      height: 52px; 
+      border-radius: 12px; 
+      background: #1a3c5e; 
+      color: white;
+      font-size: 15px; 
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.3s ease; 
+    }
+    .admin-btn:hover { background: #132d46; transform: translateY(-1px); box-shadow: 0 10px 20px -10px rgba(26,60,94,0.4); }
+
+    .fade-up { opacity: 0; transform: translateY(15px); animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
     .stagger-1 { animation-delay: 0.1s; }
     .stagger-2 { animation-delay: 0.15s; }
-    ::-webkit-scrollbar { display: none; }
+    .stagger-3 { animation-delay: 0.2s; }
+
+    ::-webkit-scrollbar { width: 0; display: none; }
+
+    @media (min-width: 1024px) {
+      body { overflow: hidden; }
+    }
   </style>
 </head>
-<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
-<main class="min-h-screen flex items-stretch">
+<body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
+<main class="min-h-screen flex">
 
   <!-- LEFT PANEL -->
   <section class="hidden lg:flex lg:w-[52%] relative admin-gradient-panel flex-col justify-between p-16 overflow-hidden">
     <div class="absolute inset-0 z-0">
       <img src="../../assets/images/auth-bg-premium.png" class="w-full h-full object-cover brightness-[0.25] contrast-[1.2]" alt=""/>
-      <div class="absolute inset-0 bg-gradient-to-tr from-[#0a0f1e]/90 via-[#002645]/40 to-transparent"></div>
-      
-      <!-- Grid overlay -->
-      <div class="absolute inset-0" style="background-image:linear-gradient(rgba(0,184,148,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,184,148,0.05) 1px,transparent 1px);background-size:60px 60px;"></div>
-      
-      <!-- Premium Mesh Gradients -->
-      <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-teal-500/10 blur-[120px] animate-pulse"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-[#0a0f1e]/90 via-transparent"></div>
     </div>
 
     <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-20 cursor-pointer group" onclick="window.location.href='../../index.html'">
-        <div class="w-11 h-11 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 transition-all group-hover:bg-white/20">
-          <span class="material-symbols-outlined text-white" style="font-size:24px;">account_balance</span>
+      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='../../index.html'">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
+          <span class="material-symbols-outlined text-white">account_balance</span>
         </div>
-        <span class="text-3xl font-black tracking-tighter text-white font-headline">Finzo</span>
-        <span class="text-[10px] font-black tracking-widest uppercase px-2 py-1 bg-teal-500/20 text-teal-400 border border-teal-500/30 rounded-md ml-1">ADMIN</span>
+        <span class="text-2xl font-black tracking-tighter text-white font-headline">Finzo</span>
       </div>
       
       <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 bg-teal-500/10 border border-teal-500/20 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
-          <span class="text-[11px] font-black tracking-[0.2em] uppercase text-teal-300">System Core Restricted</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary/10 border border-primary/20 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-primary"></div>
+          <span class="text-[10px] font-black tracking-widest text-primary uppercase">● ADMIN ACCESS</span>
         </div>
-        <h1 class="text-5xl font-headline font-extrabold text-white leading-[1.1] tracking-tight mb-6">
-          Architectural <br/><span class="text-teal-400">Command &amp; Control.</span>
+        <h1 class="text-5xl font-headline font-extrabold text-white leading-tight mb-6">
+          Manage Finzo<br/><span class="text-blue-400">With Full Control.</span>
         </h1>
-        <p class="text-lg leading-relaxed text-teal-100/70 font-medium max-w-sm">
-          Highest level administrative access. All system modifications require dual-factor authentication and are audit-logged.
+        <p class="text-[17px] text-blue-100/70 font-medium mb-10">
+          Login to the Finzo admin console to manage users, accounts, staff and all banking operations.
         </p>
-      </div>
-    </div>
 
-    <div class="relative z-10 flex gap-6">
-      <div class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
-        <div class="text-3xl font-black text-white font-headline">2FA</div>
-        <div class="text-[9px] uppercase tracking-widest text-teal-400/60 font-black mt-1">Enforced</div>
-      </div>
-      <div class="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
-        <div class="text-3xl font-black text-white font-headline">TLS</div>
-        <div class="text-[9px] uppercase tracking-widest text-teal-400/60 font-black mt-1">End-to-End</div>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">Manage All Users & Accounts</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">Monitor All Transactions</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-400 text-xl font-bold">check_circle</span>
+            <span class="text-white text-[13px] font-medium">Full Audit Log Access</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center p-8 md:p-14 bg-white relative">
+  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white p-6 md:p-12 relative">
     
-    <div class="lg:hidden absolute top-8 left-8 flex items-center gap-2">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-primary">
-        <span class="material-symbols-outlined text-white" style="font-size:20px;">account_balance</span>
-      </div>
-      <span class="text-2xl font-black tracking-tighter text-primary font-headline">Finzo</span>
-      <span class="text-[8px] font-black tracking-widest uppercase px-1.5 py-0.5 bg-primary text-teal-400 rounded">ADM</span>
-    </div>
-
     <div class="w-full max-w-[420px] fade-up stagger-1">
       
       <!-- Role Switcher -->
-      <div class="role-switcher">
-        <div class="role-indicator"></div>
+      <div class="role-switcher mb-12">
+        <div class="role-indicator" id="indicator"></div>
         <div class="role-item" onclick="window.location.href='login.html'">Customer</div>
         <div class="role-item" onclick="window.location.href='staff-login.html'">Staff</div>
         <div class="role-item active" onclick="window.location.href='admin-login.html'">Admin</div>
       </div>
 
-      <!-- Step indicator -->
-      <div class="flex items-center gap-2 mb-8">
-        <div class="step-dot active" id="dot-1"></div>
-        <div class="step-dot" id="dot-2"></div>
-        <span class="text-[10px] font-bold text-slate-400 ml-2 uppercase tracking-widest">Security Step</span>
+      <div class="mb-10 text-left w-full">
+        <h2 class="text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Admin Login</h2>
+        <p class="text-slate-500 font-medium leading-relaxed">Sign in to access the <br/>Finzo admin console.</p>
       </div>
 
-      <!-- STEP 1: Credentials -->
-      <div id="step-1" class="step active">
-        <div class="mb-10 text-center lg:text-left">
-          <h2 class="text-4xl font-headline font-extrabold tracking-tight text-primary mb-2">Admin Access</h2>
-          <p class="text-slate-500 font-medium">Authorised system administrators only.</p>
+      <!-- Error Banner -->
+      <div id="auth-error-banner" class="hidden mb-6">
+        <div class="p-4 rounded-xl flex items-center gap-3 bg-red-50 border border-red-100 text-red-700">
+          <span class="material-symbols-outlined text-lg">report</span>
+          <span id="error-text" class="text-xs font-bold">Invalid administrative credentials.</span>
+        </div>
+      </div>
+
+      <form class="space-y-6 fade-up stagger-2 w-full" novalidate id="adminLoginForm">
+        <!-- Field: Email -->
+        <div class="space-y-2">
+          <label class="block text-[11px] font-black tracking-widest uppercase text-slate-400">EMAIL ADDRESS</label>
+          <div class="fin-input-wrapper">
+            <input id="identity" type="text" placeholder="Enter your admin email address" class="fin-input" autocomplete="username"/>
+            <span class="material-symbols-outlined input-icon">admin_panel_settings</span>
+          </div>
         </div>
 
-        <div id="auth-error-banner" class="error-banner mb-6">
-          <div class="p-4 rounded-2xl flex items-center gap-4 bg-red-50 border border-red-100">
-            <span class="material-symbols-outlined text-red-600">report</span>
-            <span id="error-text" class="text-sm font-bold text-red-700">Invalid administrative credentials.</span>
+        <!-- Field: Password -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center px-1">
+            <label class="text-[11px] font-black tracking-widest uppercase text-slate-400">PASSWORD</label>
+            <a href="../auth/forgot-password.html" class="text-[11px] font-bold text-primary hover:underline uppercase tracking-wider">Forgot Password?</a>
           </div>
-        </div>
-
-        <form id="credentials-form" class="space-y-6" novalidate>
-          <div class="space-y-2">
-            <label class="block text-[11px] font-black tracking-widest uppercase text-slate-400 ml-1">Admin Email</label>
-            <div class="fin-input-wrapper">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">admin_panel_settings</span>
-              <input id="identity" type="text" placeholder="admin@finzo.com" class="fin-input"/>
-            </div>
-          </div>
-          <div class="space-y-2">
-            <div class="flex justify-between items-center ml-1">
-              <label class="text-[11px] font-black tracking-widest uppercase text-slate-400">Password</label>
-              <a href="../auth/forgot-password.html" class="text-[11px] font-bold text-primary">Forgot?</a>
-            </div>
-            <div class="fin-input-wrapper">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" style="font-size:20px;">lock</span>
-              <input id="password" type="password" placeholder="••••••••••••" class="fin-input" style="padding-right:48px;"/>
-              <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
-                <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-              </button>
-            </div>
-          </div>
-          <div class="p-4 rounded-2xl bg-teal-50 border border-teal-100 flex gap-3">
-            <span class="material-symbols-outlined text-teal-600" style="font-size:18px;">security</span>
-            <p class="text-[11px] font-semibold text-teal-800 leading-relaxed">
-              This terminal is monitored. Remote IP and hardware ID are linked to this session.
-            </p>
-          </div>
-          <div class="pt-4">
-            <button type="submit" class="w-full admin-btn font-headline font-bold py-4 rounded-2xl flex items-center justify-center gap-3 text-[15px] shadow-lg shadow-primary/20">
-              <span>Continue to Verification</span>
-              <span class="material-symbols-outlined" style="font-size:20px;">arrow_forward</span>
+          <div class="fin-input-wrapper">
+            <input id="password" type="password" placeholder="" class="fin-input" style="padding-right:52px;" autocomplete="current-password"/>
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">visibility</span>
             </button>
           </div>
-        </form>
-      </div>
-
-      <!-- STEP 2: MFA -->
-      <div id="step-2" class="step">
-        <div class="mb-10 text-center lg:text-left">
-          <h2 class="text-4xl font-headline font-extrabold tracking-tight text-primary mb-2">Verify Identity</h2>
-          <p class="text-slate-500 font-medium">Enter the 6-digit MFA security token.</p>
         </div>
 
-        <div id="mfa-error-banner" class="error-banner mb-6">
-          <div class="p-4 rounded-2xl flex items-center gap-4 bg-red-50 border border-red-100">
-            <span class="material-symbols-outlined text-red-600">warning</span>
-            <span class="text-sm font-bold text-red-700">Invalid MFA security code.</span>
-          </div>
+        <!-- Security Warning -->
+        <div class="p-4 rounded-xl bg-slate-50 border-l-4 border-l-primary flex gap-3">
+          <span class="material-symbols-outlined text-primary text-[20px]">shield</span>
+          <p class="text-[11px] font-semibold text-slate-600 leading-relaxed">
+            Admin actions are monitored and recorded in the audit log for security compliance.
+          </p>
         </div>
 
-        <div class="mb-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full border-4 border-white shadow-sm overflow-hidden bg-primary flex items-center justify-center">
-            <span class="material-symbols-outlined text-white">person</span>
-          </div>
-          <div>
-            <div class="text-sm font-bold text-slate-800" id="mfa-user-email">admin@finzo.com</div>
-            <div class="text-[10px] font-black uppercase tracking-widest text-teal-500">System Administrator</div>
-          </div>
-        </div>
-
-        <div class="otp-bar mb-10">
-          <input type="text" maxlength="1" class="mfa-digit" data-index="0"/>
-          <input type="text" maxlength="1" class="mfa-digit" data-index="1"/>
-          <input type="text" maxlength="1" class="mfa-digit" data-index="2"/>
-          <span class="flex items-center text-slate-300 font-bold mx-1">—</span>
-          <input type="text" maxlength="1" class="mfa-digit" data-index="3"/>
-          <input type="text" maxlength="1" class="mfa-digit" data-index="4"/>
-          <input type="text" maxlength="1" class="mfa-digit" data-index="5"/>
-        </div>
-
-        <div class="space-y-4">
-          <button id="verify-btn" class="w-full admin-btn font-headline font-bold py-4 rounded-2xl flex items-center justify-center gap-3 text-[15px] shadow-lg shadow-primary/20 opacity-50 cursor-not-allowed" disabled>
-            <span>Complete Authentication</span>
-            <span class="material-symbols-outlined" style="font-size:20px;">verified_user</span>
-          </button>
-          <button id="back-btn" class="w-full py-4 rounded-2xl text-sm font-bold text-slate-400 hover:bg-slate-50 transition-all border border-transparent">
-            Return to Credentials
+        <!-- Action -->
+        <div class="pt-4">
+          <button type="submit" id="admin-btn" class="admin-btn shadow-lg shadow-primary/20">
+            <span>Admin Sign In</span>
+            <span class="material-symbols-outlined text-xl">login</span>
           </button>
         </div>
+      </form>
+
+      <!-- Switching link -->
+      <div class="mt-8 text-center">
+        <a href="login.html" class="text-sm font-bold text-slate-400 hover:text-primary transition-colors">Customer? Login here →</a>
       </div>
 
-      <div class="mt-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between fade-up stagger-2">
-        <div>
-          <div class="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-1">Admin Demo</div>
-          <div class="text-xs font-mono font-bold text-slate-600">admin@finzo.com / admin123</div>
-        </div>
-        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm text-teal-500">
-          <span class="material-symbols-outlined" style="font-size:16px;">admin_panel_settings</span>
-        </div>
+      <!-- Footer Security Note -->
+      <div class="mt-10 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 fade-up stagger-3">
+        <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">256-BIT SSL ENCRYPTED CONNECTION</span>
       </div>
     </div>
   </section>
@@ -235,81 +222,40 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-$(function() {
-  $('#credentials-form').on('submit', function(e) {
-    e.preventDefault();
-    const id = $('#identity').val().trim();
-    const pw = $('#password').val().trim();
-    const banner = $('#auth-error-banner');
-    
-    $('.fin-input').removeClass('input-error');
-    banner.removeClass('active');
+  $(function() {
+    $('#adminLoginForm').on('submit', function(e) {
+      e.preventDefault();
+      const id = $('#identity').val().trim();
+      const pw = $('#password').val().trim();
+      const $banner = $('#auth-error-banner');
 
-    if (!id || !pw) {
-      if (!id) $('#identity').addClass('input-error');
-      if (!pw) $('#password').addClass('input-error');
-      banner.addClass('active'); return;
-    }
+      if (!id || !pw) {
+        $banner.removeClass('hidden');
+        return;
+      }
 
-    if (id === 'admin@finzo.com' && pw === 'admin123') {
-      $('#mfa-user-email').text(id);
-      $('#step-1').removeClass('active');
-      $('#step-2').addClass('active');
-      $('#dot-1').removeClass('active').addClass('done');
-      $('#dot-2').addClass('active');
-      setTimeout(() => $('.mfa-digit').first().focus(), 100);
-      return;
-    }
-    banner.addClass('active');
-    $('.fin-input').addClass('input-error');
+      const btn = $('#admin-btn');
+      const original = btn.html();
+      btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
+      btn.prop('disabled', true);
+
+      setTimeout(() => {
+        if (id === 'admin@finzo.com' && pw === 'admin123') {
+          window.location.href = '../admin/admin-dashboard.html';
+        } else {
+          $banner.removeClass('hidden');
+          btn.html(original).prop('disabled', false);
+        }
+      }, 1000);
+    });
+
+    $('#toggle-password').on('click', function() {
+      const p = $('#password');
+      const isPw = p.attr('type') === 'password';
+      p.attr('type', isPw ? 'text' : 'password');
+      $(this).find('span').text(isPw ? 'visibility_off' : 'visibility');
+    });
   });
-
-  $(document).on('input', '.mfa-digit', function() {
-    const val = $(this).val().replace(/\D/g,'');
-    $(this).val(val);
-    if (val && $(this).data('index') < 5) {
-      $(this).closest('.otp-bar').find('[data-index="' + ($(this).data('index') + 1) + '"]').focus();
-    }
-    checkMFA();
-  });
-
-  $(document).on('keydown', '.mfa-digit', function(e) {
-    if (e.key === 'Backspace' && !$(this).val() && $(this).data('index') > 0) {
-      $(this).closest('.otp-bar').find('[data-index="' + ($(this).data('index') - 1) + '"]').focus().val('');
-    }
-  });
-
-  function checkMFA() {
-    const code = $('.mfa-digit').map(function(){ return $(this).val(); }).get().join('');
-    const btn = $('#verify-btn');
-    if (code.length === 6) {
-      btn.removeClass('opacity-50 cursor-not-allowed').prop('disabled', false);
-    } else {
-      btn.addClass('opacity-50 cursor-not-allowed').prop('disabled', true);
-    }
-  }
-
-  $('#verify-btn').on('click', function() {
-    $(this).html('<span class="material-symbols-outlined animate-spin">progress_activity</span>');
-    setTimeout(() => {
-      window.location.href = '../admin/admin-dashboard.html';
-    }, 1000);
-  });
-
-  $('#back-btn').on('click', function() {
-    $('#step-2').removeClass('active');
-    $('#step-1').addClass('active');
-    $('#dot-2').removeClass('active');
-    $('#dot-1').removeClass('done').addClass('active');
-  });
-
-  $('#toggle-password').on('click', function() {
-    const p = $('#password');
-    const t = p.attr('type') === 'password' ? 'text' : 'password';
-    p.attr('type', t);
-    $(this).find('span').text(t === 'password' ? 'visibility' : 'visibility_off');
-  });
-});
 </script>
 </body>
 </html>
