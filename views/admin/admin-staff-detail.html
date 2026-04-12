@@ -134,10 +134,10 @@
           </div>
         </div>
         <div class="flex gap-3">
-          <button class="admin-btn-secondary" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;">
+          <button id="deactivate-staff-btn" class="admin-btn-destructive">
              <span class="material-symbols-outlined">block</span> Deactivate Staff
           </button>
-          <button class="admin-btn-secondary">
+          <button id="reset-password-btn" class="admin-btn-secondary">
              <span class="material-symbols-outlined">lock_reset</span> Reset Password
           </button>
         </div>
@@ -333,6 +333,166 @@
     </div>
   </div>
 
-</body>
+  <!-- GOVERNANCE SECURITY MODAL -->
+  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden">
+    <!-- Backdrop -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md opacity-0"></div>
+    
+    <!-- Modal Container -->
+    <div id="modal-container" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg opacity-0">
+      <div class="admin-card !p-0 overflow-hidden shadow-2xl border-none">
+        <!-- Header -->
+        <div id="modal-header" class="p-8 pb-4 text-center">
+          <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300">
+            <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
+          </div>
+          <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
+          <p id="modal-subtitle" class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
+        </div>
 
+        <div class="px-8 py-4 space-y-6">
+          <div id="modal-body-text" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
+            <!-- Custom action text injected here -->
+          </div>
+
+          <!-- Auth Step -->
+          <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Confirm Identity (Admin Password)</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">admin_panel_settings</span>
+              <input type="password" id="admin-password" placeholder="••••••••"
+                class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
+            </div>
+            <p id="auth-error" class="text-[10px] font-black text-rose-500 mt-2 ml-1 hidden">Invalid administrative credentials. Access denied.</p>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-8 pt-4 flex gap-3">
+          <button onclick="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel Action</button>
+          <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Authorize Change</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      let currentAction = '';
+
+      const modalConfigs = {
+        deactivate: {
+          title: 'Deactivate Staff',
+          subtitle: 'Irreversible suspension of access',
+          body: 'You are about to deactivate <b>Amit Sharma</b>. This will revoke all system access immediately and terminate active shift sessions. This action will be logged in the system audit trails.',
+          icon: 'block',
+          color: 'rose',
+          btnText: 'Confirm Deactivation',
+          btnClass: 'bg-rose-600 shadow-rose-600/20'
+        },
+        reset: {
+          title: 'Reset Password',
+          subtitle: 'Security protocol override',
+          body: 'You are about to issue a mandatory password reset for <b>Amit Sharma</b>. A temporary system-generated password will be created, and the staff will be required to change it at next login.',
+          icon: 'lock_reset',
+          color: 'indigo',
+          btnText: 'Confirm Reset',
+          btnClass: 'bg-indigo-600 shadow-indigo-600/20'
+        }
+      };
+
+      function openGovernanceModal(action) {
+        currentAction = action;
+        const config = modalConfigs[action];
+
+        // Reset previous success display if any
+        $('#auth-step').show();
+        $('#modal-body-text').show().html(config.body);
+        $('#modal-subtitle').show().text(config.subtitle);
+
+        // Update UI content
+        $('#modal-title').text(config.title);
+        $('#modal-icon').text(config.icon);
+        
+        // Dynamic styling
+        $('#modal-icon-container').attr('class', `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`);
+        $('#confirm-governance-btn').attr('class', `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`)
+                                  .text(config.btnText).show().prop('disabled', false);
+
+        // Show modal
+        $('#modal-backdrop').css('opacity', '1'); // Ensure opacity is reset
+        $('#modal-container').css('opacity', '1'); // Ensure opacity is reset
+        $('#governance-modal').removeClass('hidden').hide().fadeIn(300);
+        $('body').addClass('overflow-hidden');
+      }
+
+      window.closeGovernanceModal = function() {
+        $('#governance-modal').fadeOut(300, function() {
+          $(this).addClass('hidden');
+          $('body').removeClass('overflow-hidden');
+          $('#admin-password').val('');
+          $('#auth-error').addClass('hidden');
+          $('#admin-password').removeClass('ring-2 ring-rose-500/20');
+        });
+      };
+
+      $('#deactivate-staff-btn').on('click', () => openGovernanceModal('deactivate'));
+      $('#reset-password-btn').on('click', () => openGovernanceModal('reset'));
+
+      $('#confirm-governance-btn').on('click', function() {
+        const $btn = $(this);
+        
+        // If we are already in the "DONE" state, clicking should close the modal
+        if ($btn.text().includes('DONE')) {
+          closeGovernanceModal();
+          return;
+        }
+
+        const password = $('#admin-password').val();
+        if (password !== 'admin123') {
+          $('#auth-error').removeClass('hidden').hide().slideDown(200);
+          $('#admin-password').addClass('ring-2 ring-rose-500/20').focus();
+          return;
+        }
+
+        $btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-sm">refresh</span> AUTHORIZING...');
+
+        setTimeout(() => {
+          if (currentAction === 'reset') {
+            // Show new password screen
+            $('#auth-step').slideUp(300);
+            $('#modal-subtitle').hide();
+            $('#modal-title').text('Temporary Password Generated');
+            $('#modal-body-text').html(`
+              <div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p>
+                <div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">Finzo@Staff#2026</div>
+                <p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p>
+              </div>
+            `);
+            
+            // Re-enable button so user can click "DONE" to close
+            $btn.prop('disabled', false)
+                .html('<span class="material-symbols-outlined">check_circle</span> DONE')
+                .addClass('bg-emerald-500 shadow-emerald-500/20');
+          } else {
+            $btn.html('<span class="material-symbols-outlined">check_circle</span> ACTION LOGGED').addClass('bg-emerald-500 shadow-emerald-500/20');
+            setTimeout(() => {
+              closeGovernanceModal();
+              if(currentAction === 'deactivate') {
+                $('.status-badge').text('Inactive').removeClass('badge-success').addClass('badge-error');
+              }
+            }, 1500);
+          }
+        }, 2000);
+      });
+
+      $(document).on('keydown', (e) => {
+        if (e.key === 'Escape' && !$('#governance-modal').hasClass('hidden')) {
+          closeGovernanceModal();
+        }
+      });
+    });
+  </script>
+</body>
 </html>
