@@ -55,8 +55,9 @@
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
     <!-- SIDEBAR -->
-    <nav class="admin-sidebar" style="background:#0d1117;">
+    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
         <div class="admin-sidebar-brand">
             <div class="brand-name">Finzo</div>
             <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
@@ -114,9 +115,14 @@
     <div class="admin-main">
         <!-- TOP NAVBAR -->
         <div class="admin-topbar">
-            <div>
-                <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF OVERVIEW</div>
-                <div class="font-headline text-2xl font-extrabold tracking-tight" id="page-title">Dashboard</div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF OVERVIEW</div>
+                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight" id="page-title">Dashboard</div>
+                </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="hidden lg:flex flex-col items-end">
@@ -138,11 +144,11 @@
             </div>
         </div>
 
-        <div class="p-8">
+        <div class="p-4 sm:p-6 lg:p-8">
             <!-- PAGE HEADER -->
-            <div class="flex justify-between items-end mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6 lg:mb-8">
                 <div>
-                    <h2 class="text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight">Welcome
+                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight">Welcome
                         back, Amit Sharma</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Here's what's happening in your shift
                         today.</p>
@@ -359,8 +365,8 @@
 
             <!-- SHIFT SUMMARY CARD -->
             <div
-                class="mt-8 bg-white dark:bg-[#ffffff] p-8 rounded-3xl border border-slate-200 dark:border-white/5 shadow-xl transition-all duration-300">
-                <h3 class="admin-section-title dark:text-black mb-6">Today's Shift Summary</h3>
+                class="mt-6 lg:mt-8 bg-white dark:bg-[#ffffff] p-5 sm:p-8 rounded-3xl border border-slate-200 dark:border-white/5 shadow-xl transition-all duration-300">
+                <h3 class="admin-section-title dark:text-black mb-4 sm:mb-6">Today's Shift Summary</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div
                         class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
@@ -459,6 +465,16 @@
 
         // End Shift Modal
         $(function () {
+            // Mobile Sidebar Toggle
+            $('#mobile-menu-btn').on('click', function () {
+                $('#admin-sidebar').addClass('mobile-open');
+                $('#sidebar-overlay').addClass('active');
+            });
+            $('#sidebar-overlay').on('click', function () {
+                $('#admin-sidebar').removeClass('mobile-open');
+                $('#sidebar-overlay').removeClass('active');
+            });
+
             $('.end-shift-trigger').on('click', function () {
                 $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
                 $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');

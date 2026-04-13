@@ -667,3 +667,46 @@
     background: rgba(129, 140, 248, 0.15) !important;
     border-color: rgba(129, 140, 248, 0.4) !important;
 }
+
+/* ============================================================
+   RESPONSIVE / MOBILE SUPPORT
+   ============================================================ */
+
+/* Mobile Sidebar Overlay */
+.admin-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999; /* Just below sidebar (1000) */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.admin-sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .admin-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .admin-main {
+        margin-left: 0;
+    }
+    
+    .admin-topbar {
+        padding: 16px 20px;
+    }
+}
+

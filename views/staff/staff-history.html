@@ -48,8 +48,9 @@
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
     <!-- SIDEBAR -->
-    <nav class="admin-sidebar" style="background:#0d1117;">
+    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
         <div class="admin-sidebar-brand">
             <div class="brand-name">Finzo</div>
             <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
@@ -101,24 +102,29 @@
     <!-- MAIN CONTENT -->
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div class="text-[10px] font-bold tracking-[0.2em] text-black dark:text-amber-500 uppercase mb-1">TRANSACTION HISTORY</div>
-                <div class="font-headline text-2xl font-extrabold tracking-tight">My Transactions</div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-black dark:text-amber-500 uppercase mb-0 sm:mb-1">TRANSACTION HISTORY</div>
+                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight">My Transactions</div>
+                </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="hidden lg:flex flex-col items-end text-right">
                     <div class="text-[11px] font-bold text-black dark:text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
                     <div class="text-sm font-black text-primary dark:text-blue-500" id="live-clock">10:45:00 AM</div>
                 </div>
-                <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/1 hidden sm:block"></div>
                 <div class="flex items-center gap-3">
-                    <div class="text-xs font-bold dark:text-blue-500">Amit Sharma</div>
+                    <div class="text-xs font-bold dark:text-blue-500 hidden sm:block">Amit Sharma</div>
                     <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">End Shift</button>
                 </div>
             </div>
         </div>
 
-        <div class="p-8">
+        <div class="p-4 sm:p-6 lg:p-8">
             <!-- STATS ROW -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="admin-stat-card">
@@ -156,13 +162,13 @@
             </div>
 
             <!-- FILTER BAR -->
-            <div class="admin-card !overflow-visible relative z-[50] p-6 mb-8 space-y-6">
+            <div class="admin-card !overflow-visible relative z-[50] p-4 sm:p-6 mb-8 space-y-6">
                 <!-- TABS -->
-                <div class="flex gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
-                    <button class="time-tab px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-xs uppercase tracking-widest shadow-md">All Time</button>
-                    <button class="time-tab px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">Today</button>
-                    <button class="time-tab px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Week</button>
-                    <button class="time-tab px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-xs uppercase tracking-widest">This Month</button>
+                <div class="flex gap-2 sm:gap-4 border-b border-slate-100 dark:border-white/5 pb-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                    <button class="time-tab px-4 sm:px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-[10px] sm:text-xs uppercase tracking-widest shadow-md flex-shrink-0">All Time</button>
+                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">Today</button>
+                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Week</button>
+                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Month</button>
                 </div>
                 
                 <!-- INPUTS -->
@@ -228,12 +234,12 @@
                         <button id="reset-filters-btn" class="h-12 px-6 border border-slate-200 dark:border-white/2 text-slate-900 dark:text-slate-900 font-bold rounded-xl hover:bg-slate-100 shadow-sm dark:shadow-none dark:hover:bg-transparent text-xs uppercase tracking-widest">Reset</button>
                     </div>
                     <!-- SUMMARY ROW -->
-                <div id="summary-row" class="bg-slate-100 dark:bg-white/5 p-4 rounded-xl flex items-center justify-between text-xs font-bold text-slate-900 dark:text-slate-400 uppercase tracking-widest">
-                    <div class="flex gap-8">
+                <div id="summary-row" class="bg-slate-100 dark:bg-white/5 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between text-[10px] sm:text-xs font-bold text-slate-900 dark:text-slate-400 uppercase tracking-widest gap-2 sm:gap-4">
+                    <div class="flex flex-col sm:flex-row sm:gap-8 gap-2">
                         <span>Deposits: <span id="summary-deposits" class="text-emerald-500">₹0.00</span></span>
                         <span>Withdrawals: <span id="summary-withdrawals" class="text-red-500">₹0.00</span></span>
                     </div>
-                    <span id="summary-count">Total: 0 transactions</span>
+                    <span id="summary-count" class="pt-2 border-t border-slate-200 dark:border-white/5 sm:border-0 sm:pt-0">Total: 0 transactions</span>
                 </div>
             </div>
 
@@ -315,6 +321,15 @@
                 $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
             });
             $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
+
+            $('#mobile-menu-btn').on('click', function () {
+                $('#admin-sidebar').addClass('mobile-open');
+                $('#sidebar-overlay').addClass('active');
+            });
+            $('#sidebar-overlay').on('click', function () {
+                $('#admin-sidebar').removeClass('mobile-open');
+                $('#sidebar-overlay').removeClass('active');
+            });
 
             // Custom Dropdown Logic
             $('.dropdown-trigger').on('click', function(e) {

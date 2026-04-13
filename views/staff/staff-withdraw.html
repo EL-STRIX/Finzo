@@ -42,8 +42,9 @@
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
     <!-- SIDEBAR -->
-    <nav class="admin-sidebar" style="background:#0d1117;">
+    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
         <div class="admin-sidebar-brand">
             <div class="brand-name">Finzo</div>
             <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
@@ -95,9 +96,14 @@
     <!-- MAIN CONTENT -->
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION</div>
-                <div class="font-headline text-2xl font-extrabold tracking-tight">New Withdrawal</div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION</div>
+                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight">New Withdrawal</div>
+                </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="hidden lg:flex flex-col items-end">
@@ -117,11 +123,11 @@
             </div>
         </div>
 
-        <div class="p-8 max-w-5xl mx-auto">
+        <div class="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
             <!-- PAGE HEADER -->
-            <div class="flex justify-between items-end mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 lg:mb-8">
                 <div>
-                    <h2 class="text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight">Debit Money</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight">Debit Money</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Safely withdraw money from customer account.</p>
                 </div>
                 <a href="staff-dashboard.html" class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest hover:bg-slate-200 transition-all">
@@ -131,7 +137,7 @@
             </div>
 
             <!-- STEP INDICATOR -->
-            <div class="flex items-center justify-between mb-10 px-4">
+            <div class="flex items-center justify-between mb-8 sm:mb-10 px-0 sm:px-4 overflow-x-auto pb-4 sm:pb-0 scrollbar-hide">
                 <div class="flex flex-col items-center gap-3">
                     <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs step-indicator" data-step="1">1</div>
                     <span class="text-[10px] font-black uppercase tracking-widest text-slate-900">Find Account</span>
@@ -155,8 +161,8 @@
 
             <!-- STEP 1: FIND ACCOUNT -->
             <div id="section-1" class="space-y-6">
-                <div class="admin-card p-10">
-                    <h3 class="text-xl font-black font-headline text-primary dark:text-blue-500 mb-8 flex items-center gap-3">
+                <div class="admin-card p-5 sm:p-10">
+                    <h3 class="text-lg sm:text-xl font-black font-headline text-primary dark:text-blue-500 mb-6 sm:mb-8 flex items-center gap-3">
                         <span class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary dark:text-amber-500">1</span>
                         Step 1 — Find Customer Account
                     </h3>
@@ -176,16 +182,16 @@
 
                 <!-- SUCCESS BANNER (HIDDEN) -->
                 <div id="account-success" class="hidden space-y-6 animate-in slide-in-from-top-4 duration-500">
-                    <div class="mt-6 admin-card p-8">
-                        <div class="flex justify-between items-start mb-8">
+                    <div class="mt-6 admin-card p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                             <div class="flex items-center gap-4">
-                                <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-black">RK</div>
+                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl sm:text-2xl font-black">RK</div>
                                 <div>
-                                    <h4 class="text-2xl font-black font-headline text-primary dark:text-blue-500">Rahul Kumar</h4>
-                                    <div class="text-slate-500 font-bold text-sm">FNZ20260001</div>
+                                    <h4 class="text-xl sm:text-2xl font-black font-headline text-primary dark:text-blue-500">Rahul Kumar</h4>
+                                    <div class="text-slate-500 font-bold text-xs sm:text-sm">FNZ20260001</div>
                                 </div>
                             </div>
-                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-widest">Active</span>
+                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-widest self-start sm:self-auto">Active</span>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-8 p-6 bg-slate-50 dark:bg-white/1 rounded-[2rem] border border-slate-100 dark:border-white/5">
@@ -203,9 +209,9 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-4 mt-8">
-                            <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all " onclick="resetForm()">Not the right account?</button>
-                            <button class="flex-1 py-4 bg-primary dark:bg-amber-500 text-white dark:text-primary font-black rounded-2xl shadow-xl shadow-primary/20 dark:shadow-amber-500/10 hover:translate-y-[-2px] transition-all" onclick="goToStep2()">Proceed with Withdrawal →</button>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                            <button class="w-full sm:w-auto flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-xs sm:text-sm" onclick="resetForm()">Not the right account?</button>
+                            <button class="w-full sm:w-auto flex-1 py-4 bg-primary dark:bg-amber-500 text-white dark:text-primary font-black rounded-2xl shadow-xl shadow-primary/20 dark:shadow-amber-500/10 hover:translate-y-[-2px] transition-all text-sm" onclick="goToStep2()">Proceed with Withdrawal →</button>
                         </div>
                     </div>
                 </div>
@@ -221,8 +227,8 @@
 
             <!-- STEP 2: WITHDRAWAL DETAILS (HIDDEN) -->
             <div id="section-2" class="hidden space-y-6">
-                <div class="admin-card p-10">
-                    <h3 class="text-xl font-black font-headline text-primary dark:text-blue-500 mb-8 flex items-center gap-3">
+                <div class="admin-card p-5 sm:p-10">
+                    <h3 class="text-lg sm:text-xl font-black font-headline text-primary dark:text-blue-500 mb-6 sm:mb-8 flex items-center gap-3">
                         <span class="w-8 h-8 rounded-lg bg-red-500/5 flex items-center justify-center text-red-600">2</span>
                         Step 2 — Withdrawal Details
                     </h3>
@@ -256,8 +262,8 @@
                         </div>
 
                         <div class="space-y-6">
-                            <div class="bg-red-900/90 dark:bg-[#161b22] p-8 rounded-[2rem] border border-white/5 shadow-2xl">
-                                <h4 class="text-white/40 font-black uppercase text-[10px] tracking-widest mb-8">Shift Verification</h4>
+                            <div class="bg-red-900/90 dark:bg-[#161b22] p-5 sm:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+                                <h4 class="text-white/40 font-black uppercase text-[10px] tracking-widest mb-6 sm:mb-8">Shift Verification</h4>
                                 <div class="space-y-6">
                                     <div class="flex justify-between items-center text-sm">
                                         <span class="text-white/40 font-bold uppercase tracking-widest text-[10px]">Daily Limit Remaining</span>
@@ -275,9 +281,9 @@
                                 </div>
                             </div>
 
-                            <div class="flex gap-4">
-                                <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl" onclick="goToStep1()">← Back</button>
-                                <button id="confirm-step-btn" class="flex-1 py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-600/20 hover:translate-y-[-2px] transition-all" onclick="goToStep3()">Review & Confirm →</button>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="w-full sm:w-auto flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl text-sm" onclick="goToStep1()">← Back</button>
+                                <button id="confirm-step-btn" class="w-full sm:w-auto flex-1 py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-600/20 hover:translate-y-[-2px] transition-all text-sm" onclick="goToStep3()">Review & Confirm →</button>
                             </div>
                         </div>
                     </div>
@@ -295,8 +301,8 @@
                         <p class="text-white/80 font-bold text-sm mt-2 uppercase tracking-widest">Verify Identity First</p>
                     </div>
 
-                    <div class="p-10 space-y-10">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="p-5 sm:p-10 space-y-8 sm:space-y-10">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                             <div class="space-y-6">
                                 <div class="border-b border-slate-100 dark:border-white/1 pb-4">
                                     <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Customer Name</div>
@@ -319,9 +325,9 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-4">
-                            <button class="flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl" onclick="goToStep2()">← Edit Details</button>
-                            <a href="staff-receipt.html" class="flex-1 py-4 bg-red-600 text-white font-black text-center rounded-2xl shadow-xl shadow-red-600/30 hover:translate-y-[-2px] transition-all">Confirm Withdrawal</a>
+                        <div class="flex flex-col sm:flex-row gap-4 text-center">
+                            <button class="w-full sm:w-auto flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl text-sm" onclick="goToStep2()">← Edit Details</button>
+                            <a href="staff-receipt.html" class="w-full sm:w-auto flex-1 py-4 bg-red-600 text-white font-black text-center rounded-2xl shadow-xl shadow-red-600/30 hover:translate-y-[-2px] transition-all text-sm inline-block">Confirm Withdrawal</a>
                         </div>
                     </div>
                 </div>
@@ -357,7 +363,18 @@
                 $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
                 $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
             });
-            $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
+            $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); 
+                $('#logout-modal').removeClass('scale-100').addClass('hidden');
+            });
+            
+            $('#mobile-menu-btn').on('click', function () {
+                $('#admin-sidebar').addClass('mobile-open');
+                $('#sidebar-overlay').addClass('active');
+            });
+            $('#sidebar-overlay').on('click', function () {
+                $('#admin-sidebar').removeClass('mobile-open');
+                $('#sidebar-overlay').removeClass('active');
+            });
 
             $('#toggle-theme-btn').on('click', function() {
                 const current = localStorage.getItem('finzo-staff-theme') || 'light';
