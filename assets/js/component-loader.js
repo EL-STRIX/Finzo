@@ -15,6 +15,11 @@ async function loadComponent(elementId, componentPath) {
             
             // Post-load logic: Active Link Highlighting
             highlightActiveLinks(placeholder);
+
+            // Sync theme icons/labels if theme engine is present
+            if (window.FinzoTheme) {
+                window.FinzoTheme.apply();
+            }
         } else {
             console.error(`Status ${response.status}: Failed to load ${componentPath}`);
         }
@@ -38,8 +43,12 @@ function highlightActiveLinks(container) {
             if (link.classList.contains('nav-link')) {
                 link.classList.add('nav-link-active');
             }
-            // Apply active styles for Sidebar
-            if (link.closest('aside') || container.id === 'sidebar-placeholder') {
+            // Apply active styles for admin-style Sidebar (user panel navy theme)
+            if (link.classList.contains('admin-nav-item')) {
+                link.classList.add('user-sidebar-active');
+            }
+            // Legacy sidebar support
+            else if (link.closest('aside') || container.id === 'sidebar-placeholder') {
                 link.classList.add('sidebar-link-active');
             }
         }

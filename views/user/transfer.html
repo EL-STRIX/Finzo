@@ -1,347 +1,173 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-
-
-    
-    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-    
-<script>
-      
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#e3e2e5",
-                    "on-secondary-fixed": "#111c2a",
-                    "primary-container": "#1a3c5e",
-                    "on-primary": "#ffffff",
-                    "on-primary-fixed": "#001d36",
-                    "on-error": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-container-low": "#f4f3f6",
-                    "surface-tint": "#416084",
-                    "primary": "#002645",
-                    "outline": "#73777f",
-                    "surface-container-high": "#e8e8eb",
-                    "inverse-on-surface": "#f1f0f4",
-                    "outline-variant": "#c3c6cf",
-                    "on-primary-fixed-variant": "#28496b",
-                    "tertiary-fixed": "#6bfe9c",
-                    "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#5a6575",
-                    "on-surface": "#1a1c1e",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#a9c9f2",
-                    "surface-container": "#eeedf1",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#d8e3f6",
-                    "on-secondary-fixed-variant": "#3c4856",
-                    "secondary-container": "#d8e3f6",
-                    "tertiary": "#002b12",
-                    "inverse-surface": "#2f3033",
-                    "surface-bright": "#faf9fc",
-                    "primary-fixed-dim": "#a9c9f2",
-                    "surface-dim": "#dad9dd",
-                    "on-tertiary-fixed-variant": "#005228",
-                    "primary-fixed": "#d1e4ff",
-                    "surface": "#faf9fc",
-                    "tertiary-container": "#004420",
-                    "on-background": "#1a1c1e",
-                    "on-tertiary-container": "#0abc64",
-                    "background": "#faf9fc",
-                    "on-primary-container": "#87a7ce",
-                    "tertiary-fixed-dim": "#4ae183",
-                    "on-tertiary-fixed": "#00210c",
-                    "on-surface-variant": "#43474e",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed-dim": "#bcc7d9"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
-        },
-      }
-    
-</script>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
-    
-<link rel="stylesheet" href="../../assets/css/custom.css">
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<script src="../../assets/js/theme.js"></script>
-
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Finzo — Fund Transfer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+  <link rel="stylesheet" href="../../assets/css/user-panel.css">
+  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/theme.js"></script>
 </head>
-<body class="bg-surface font-body text-on-surface">
-<!-- TopNavBar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/90 dark:bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-transparent">
-<div class="text-xl font-bold tracking-tighter text-blue-900">Finzo</div>
-<nav class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
-<a class="text-slate-600 hover:text-blue-900 transition-colors" href="#">Products</a>
-<a class="text-slate-600 hover:text-blue-900 transition-colors" href="#">Solutions</a>
-<a class="text-slate-600 hover:text-blue-900 transition-colors font-semibold border-b-2 border-blue-600" href="#">Payments</a>
-<a class="text-slate-600 hover:text-blue-900 transition-colors" href="#">Security</a>
-<a class="text-slate-600 hover:text-blue-900 transition-colors" href="#">Support</a>
-</nav>
-<div class="flex items-center gap-4">
-<a href="../auth/login.html" class="bg-primary text-on-primary px-5 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-all" style="display:inline-block;text-align:center;">Log In</a>
-</div>
-</header>
-<div class="flex pt-16">
-<!-- SideNavBar -->
-<!-- Modular Side Sidebar -->
-<div id="sidebar-placeholder"></div>
-<!-- Main Content Canvas -->
-<main class="ml-64 w-full min-h-screen bg-surface p-12">
-<div class="max-w-5xl mx-auto">
-<!-- Header -->
-<header class="mb-12">
-<h1 class="font-headline text-4xl font-extrabold text-primary tracking-tight mb-2">Fund Transfer</h1>
-<p class="text-on-surface-variant font-label text-sm tracking-wide">MOVING CAPITAL WITH ARCHITECTURAL PRECISION</p>
-</header>
-<div class="grid grid-cols-12 gap-8">
-<!-- Transfer Form Column -->
-<div class="col-span-12 lg:col-span-8 space-y-8">
-<!-- Step 1: Origin -->
-<section class="bg-white dark:bg-surface-container-lowest rounded-xl p-8 elevation-md border border-slate-200 dark:border-outline-variant/10 transition-all duration-300">
-<div class="flex items-center justify-between mb-6">
-<h3 class="font-headline text-lg font-bold text-primary flex items-center gap-2">
-<span class="text-xs font-mono bg-indigo-50 dark:bg-primary-container text-primary dark:text-on-primary-container px-2 py-1 rounded">01</span>
-                                    From Account
-                                </h3>
-<span class="text-xs font-label text-slate-500 dark:text-on-surface-variant uppercase tracking-widest">Select Source</span>
-</div>
-<div class="relative group cursor-pointer bg-slate-50 dark:bg-surface-container-low p-4 rounded-lg border border-transparent hover:border-primary-container transition-all">
-<div class="flex justify-between items-center">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
-</div>
-<div>
-<p class="font-headline font-bold text-primary">Premium Checking •• 4208</p>
-<p class="text-xs text-slate-500 dark:text-on-surface-variant">Available Balance</p>
-</div>
-</div>
-<div class="text-right">
-<p class="font-headline text-xl font-extrabold text-primary">$42,080.00</p>
-<span class="text-[10px] text-on-tertiary-container bg-tertiary-container/10 px-2 py-0.5 rounded-full">ACTIVE</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Step 2: Destination -->
-<section class="bg-white dark:bg-surface-container-lowest rounded-xl p-8 elevation-md border border-slate-200 dark:border-outline-variant/10 transition-all duration-300">
-<div class="flex items-center justify-between mb-6">
-<h3 class="font-headline text-lg font-bold text-primary flex items-center gap-2">
-<span class="text-xs font-mono bg-indigo-50 dark:bg-primary-container text-primary dark:text-on-primary-container px-2 py-1 rounded">02</span>
-                                    To Recipient
-                                </h3>
-<button class="text-xs font-label text-on-tertiary-container font-semibold hover:underline">ADD NEW BENEFICIARY</button>
-</div>
-<!-- Saved Recipients Horizontal Grid -->
-<div class="flex gap-4 overflow-x-auto pb-4 mb-8 no-scrollbar">
-<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2 group cursor-pointer">
-<div class="w-16 h-16 rounded-full ring-2 ring-primary ring-offset-2 overflow-hidden bg-surface-container-high transition-all">
-<img class="w-full h-full object-cover" data-alt="portrait of a professional man in a suit with clean office background" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-</div>
-<span class="text-xs font-medium text-primary text-center">Julian R.</span>
-</div>
-<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high">
-<img class="w-full h-full object-cover" data-alt="smiling woman with glasses and professional attire in studio setting" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-</div>
-<span class="text-xs font-medium text-on-surface-variant text-center">Elena S.</span>
-</div>
-<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high">
-<img class="w-full h-full object-cover" data-alt="businessman in casual blue shirt looking at camera confident" src="https://placehold.co/200x60/transparent/333333?text=PARTNER+LOGO&font=Montserrat"/>
-</div>
-<span class="text-xs font-medium text-on-surface-variant text-center">Marcus T.</span>
-</div>
-<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2 group cursor-pointer">
-<div class="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center text-outline transition-colors hover:border-primary hover:text-primary">
-<span class="material-symbols-outlined" data-icon="add">add</span>
-</div>
-<span class="text-xs font-medium text-on-surface-variant text-center">New</span>
-</div>
-</div>
-<!-- Live Lookup -->
-<div class="space-y-4">
-<label class="block text-xs font-label text-slate-500 dark:text-on-surface-variant uppercase tracking-widest mb-2">Recipient Details</label>
-<div class="relative">
-<input class="w-full bg-slate-50 dark:bg-surface-container-low border-none rounded-lg px-4 py-4 text-primary font-bold focus:ring-2 focus:ring-primary-container transition-all" type="text" value="Julian Richards •••• 9921"/>
-<div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-<span class="h-2 w-2 rounded-full bg-tertiary-fixed-dim"></span>
-<span class="text-[10px] font-bold text-on-tertiary-container tracking-wider">VERIFIED RECIPIENT</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Step 3: Transaction Parameters -->
-<section class="bg-white dark:bg-surface-container-lowest rounded-xl p-8 elevation-md border border-slate-200 dark:border-outline-variant/10 transition-all duration-300">
-<div class="flex items-center justify-between mb-8">
-<h3 class="font-headline text-lg font-bold text-primary flex items-center gap-2">
-<span class="text-xs font-mono bg-indigo-50 dark:bg-primary-container text-primary dark:text-on-primary-container px-2 py-1 rounded">03</span>
-                                    Amount &amp; Schedule
-                                </h3>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div>
-<label class="block text-xs font-label text-slate-500 dark:text-on-surface-variant uppercase tracking-widest mb-4">Transfer Amount</label>
-<div class="relative flex items-center">
-<span class="absolute left-0 text-4xl font-headline font-extrabold text-primary-container">$</span>
-<input class="w-full pl-8 py-2 bg-transparent border-b border-outline-variant focus:border-primary focus:ring-0 text-5xl font-headline font-extrabold text-primary placeholder:text-surface-container-high transition-all" placeholder="0.00" type="text"/>
-</div>
-<p class="mt-4 text-xs text-on-surface-variant italic">Standard limit: $10,000.00 daily</p>
-</div>
-<div class="space-y-6">
-<div>
-<label class="block text-xs font-label text-slate-500 dark:text-on-surface-variant uppercase tracking-widest mb-2">Execution Date</label>
-<div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-surface-container-low rounded-lg border border-slate-200 dark:border-outline-variant/30">
-<span class="text-sm font-bold text-primary">Immediate (Today)</span>
-<span class="material-symbols-outlined text-outline text-sm" data-icon="calendar_today">calendar_today</span>
-</div>
-</div>
-<div>
-<label class="block text-xs font-label text-slate-500 dark:text-on-surface-variant uppercase tracking-widest mb-2">Transfer Note</label>
-<input class="w-full bg-slate-50 dark:bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary-container transition-all" placeholder="Add a memo..." type="text"/>
-</div>
-</div>
-</div>
-</section>
-</div>
-<!-- Insights Column -->
-<div class="col-span-12 lg:col-span-4 space-y-8">
-<!-- Summary Card -->
-<div class="bg-primary rounded-xl p-8 text-on-primary elevation-premium relative overflow-hidden transition-all duration-500">
-<div class="absolute -right-12 -top-12 w-48 h-48 bg-primary-container rounded-full opacity-20"></div>
-<h4 class="text-xs font-label text-on-primary-container uppercase tracking-[0.2em] mb-8">Summary Ledger</h4>
-<div class="space-y-6">
-<div class="flex justify-between items-end border-b border-on-primary-container/20 pb-4">
-<span class="text-xs text-on-primary-container">PRINCIPAL</span>
-<span class="text-lg font-headline font-bold">$0.00</span>
-</div>
-<div class="flex justify-between items-end border-b border-on-primary-container/20 pb-4">
-<span class="text-xs text-on-primary-container">NETWORK FEE</span>
-<span class="text-lg font-headline font-bold">$0.00</span>
-</div>
-<div class="flex justify-between items-end pt-4">
-<span class="text-sm font-bold">TOTAL DEBIT</span>
-<span class="text-2xl font-headline font-extrabold">$0.00</span>
-</div>
-</div>
-<button class="w-full mt-12 bg-tertiary-fixed text-on-tertiary-fixed py-4 rounded-lg font-headline font-extrabold text-sm tracking-widest uppercase hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-tertiary-fixed/10">
-                                CONFIRM TRANSFER
-                            </button>
-</div>
-<!-- Security Notice -->
-<div class="bg-indigo-50/50 dark:bg-surface-container-high rounded-xl p-6 border border-indigo-100 dark:border-outline-variant/20 elevation-sm transition-all duration-300">
-<div class="flex gap-4">
-<div class="text-on-tertiary-container">
-<span class="material-symbols-outlined" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
-</div>
-<div>
-<h5 class="text-sm font-bold text-primary mb-2">Vault Protection Active</h5>
-<p class="text-xs text-on-surface-variant leading-relaxed">This transaction is secured by Finzo's 256-bit encryption and real-time fraud monitoring.</p>
-</div>
-</div>
-</div>
-<!-- Recent Recipients (Compact) -->
-<div class="space-y-4">
-<h5 class="text-xs font-label text-on-surface-variant uppercase tracking-widest">Recent Activity</h5>
-<div class="space-y-3">
-<div class="bg-white dark:bg-surface-container-lowest p-3 rounded-lg flex items-center justify-between border border-slate-100 dark:border-transparent hover:bg-slate-50 transition-colors cursor-pointer group">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded bg-indigo-50 dark:bg-secondary-container flex items-center justify-center text-primary dark:text-on-secondary-container">
-<span class="material-symbols-outlined text-sm" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-xs font-bold text-primary">Metropolitan Grid</p>
-<p class="text-[10px] text-slate-500 dark:text-slate-400">Paid 2 days ago</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors text-sm" data-icon="arrow_forward">arrow_forward</span>
-</div>
-<div class="bg-white dark:bg-surface-container-lowest p-3 rounded-lg flex items-center justify-between border border-slate-100 dark:border-transparent hover:bg-slate-50 transition-colors cursor-pointer group">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded bg-indigo-50/50 dark:bg-primary-container/10 flex items-center justify-center text-primary dark:text-primary-container">
-<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
-</div>
-<div>
-<p class="text-xs font-bold text-primary">Sarah Miller</p>
-<p class="text-[10px] text-slate-500 dark:text-slate-400">Paid 1 week ago</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors text-sm" data-icon="arrow_forward">arrow_forward</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-<!-- Confirmation Modal (Hidden by Default Overlay Concept) -->
-<!-- Not visible in the initial render, but designed here for structural completeness -->
-<div class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0">
-<div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"></div>
-<div class="relative bg-white w-full max-w-md rounded-xl p-8 shadow-2xl">
-<div class="text-center mb-8">
-<div class="w-16 h-16 bg-tertiary-fixed-dim/20 text-on-tertiary-container rounded-full flex items-center justify-center mx-auto mb-4">
-<span class="material-symbols-outlined text-3xl" data-icon="task_alt">task_alt</span>
-</div>
-<h3 class="font-headline text-2xl font-extrabold text-primary">Verify Transaction</h3>
-<p class="text-sm text-on-surface-variant">Review the details before final execution</p>
-</div>
-<div class="space-y-4 mb-8">
-<div class="flex justify-between py-2 border-b border-outline-variant/20">
-<span class="text-xs text-on-surface-variant">RECIPIENT</span>
-<span class="text-xs font-bold text-primary">Julian Richards</span>
-</div>
-<div class="flex justify-between py-2 border-b border-outline-variant/20">
-<span class="text-xs text-on-surface-variant">ACCOUNT</span>
-<span class="text-xs font-bold text-primary">•••• 9921</span>
-</div>
-<div class="flex justify-between py-2 border-b border-outline-variant/20">
-<span class="text-xs text-on-surface-variant">TOTAL AMOUNT</span>
-<span class="text-sm font-extrabold text-primary">$450.00</span>
-</div>
-</div>
-<div class="flex gap-4">
-<button class="flex-1 py-3 rounded-lg bg-surface-container-high text-on-surface font-bold text-xs">CANCEL</button>
-<button class="flex-1 py-3 rounded-lg bg-primary text-on-primary font-bold text-xs">AUTHORIZE</button>
-</div>
-</div>
-</div>
-<!-- Footer -->
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../../assets/js/component-loader.js"></script>
-<script src="../../assets/js/main.js"></script>
-<script src="../../assets/js/charts.js"></script>
-</body></html>
+  <div id="sidebar-placeholder"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">MONEY TRANSFER</div>
+        <div class="font-headline text-2xl font-extrabold tracking-tight">Fund Transfer</div>
+      </div>
+      <div class="user-status-pill">
+        <div class="dot"></div>
+        <span>FINZO USER PANEL</span>
+      </div>
+    </div>
+
+    <div style="padding:32px 36px;">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Transfer Form -->
+        <div class="admin-card lg:col-span-2 page-enter">
+          <div class="p-6 border-b border-slate-100 dark:border-white/5">
+            <h3 class="admin-section-title dark:text-white">Transfer Details</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Send money to a saved beneficiary.</p>
+          </div>
+          <div class="p-8">
+            <form id="transfer-form">
+              <!-- From Account -->
+              <div class="mb-6">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">From Account</label>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">RK</div>
+                      <div>
+                        <div class="font-bold text-sm dark:text-white">Savings Account</div>
+                        <div class="text-xs text-slate-400 font-mono">FNZ20260001</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xs text-slate-400">Balance</div>
+                      <div class="font-bold text-emerald-600">₹1,42,080</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Beneficiary -->
+              <div class="mb-6">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Select Beneficiary *</label>
+                <select class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" id="beneficiary-select" required>
+                  <option value="">Choose beneficiary</option>
+                  <option value="priya">Priya Sharma — SBI (XXXX4521)</option>
+                  <option value="amit">Amit Mondal — HDFC (XXXX7892)</option>
+                  <option value="sneha">Sneha Gupta — ICICI (XXXX3310)</option>
+                </select>
+              </div>
+
+              <!-- Amount -->
+              <div class="mb-6">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Amount (₹) *</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-lg">₹</span>
+                  <input type="number" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all text-lg font-bold" id="transfer-amount" placeholder="0.00" min="1" max="200000" required />
+                </div>
+                <div class="text-xs text-slate-400 mt-1">Daily limit: ₹2,00,000</div>
+              </div>
+
+              <!-- Remark -->
+              <div class="mb-6">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Remark (Optional)</label>
+                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="e.g. Rent payment" />
+              </div>
+
+              <!-- Protection Notice -->
+              <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10 mb-6 flex items-center gap-3">
+                <span class="material-symbols-outlined text-emerald-600">verified_user</span>
+                <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Transfer Protection Active — Your transaction is secured with 256-bit encryption.</div>
+              </div>
+
+              <div class="flex gap-4">
+                <a href="dashboard.html" class="user-btn-secondary no-underline" style="padding:12px 24px !important;">Cancel</a>
+                <button type="submit" class="user-btn-primary flex-1" style="padding:12px 32px !important;">
+                  <span class="material-symbols-outlined" style="font-size:18px;">send</span> Confirm Transfer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Transfer Summary Sidebar -->
+        <div class="page-enter page-enter-delay-1">
+          <div class="admin-card mb-6">
+            <div class="p-6 border-b border-slate-100 dark:border-white/5">
+              <h3 class="admin-section-title dark:text-white text-base">Transfer Summary</h3>
+            </div>
+            <div class="p-6 space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transfer Amount</span>
+                <span class="font-bold dark:text-white" id="summary-amount">₹0.00</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Service Fee</span>
+                <span class="font-bold text-emerald-600">FREE</span>
+              </div>
+              <div class="border-t border-slate-100 dark:border-white/5 pt-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Debit</span>
+                  <span class="font-bold text-lg dark:text-white" id="summary-total">₹0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Transfer Tips -->
+          <div class="admin-card">
+            <div class="p-6">
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Tips</div>
+              <div class="space-y-3">
+                <div class="flex items-start gap-2">
+                  <span class="material-symbols-outlined text-blue-500 text-base mt-0.5">tips_and_updates</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">Transfers to saved beneficiaries are processed instantly.</span>
+                </div>
+                <div class="flex items-start gap-2">
+                  <span class="material-symbols-outlined text-amber-500 text-base mt-0.5">warning</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">Maximum daily transfer limit is ₹2,00,000.</span>
+                </div>
+                <div class="flex items-start gap-2">
+                  <span class="material-symbols-outlined text-emerald-500 text-base mt-0.5">shield</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">All transactions are monitored for security.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/component-loader.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <script>
+    // Live summary
+    const amountInput = document.getElementById('transfer-amount');
+    if (amountInput) {
+      amountInput.addEventListener('input', function() {
+        const val = parseFloat(this.value) || 0;
+        const formatted = '₹' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('summary-amount').textContent = formatted;
+        document.getElementById('summary-total').textContent = formatted;
+      });
+    }
+  </script>
+</body>
+</html>

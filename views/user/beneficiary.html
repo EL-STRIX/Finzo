@@ -1,302 +1,163 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Beneficiary Management | Finzo</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-
-    
-    <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-    
-<script>
-      
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#e3e2e5",
-                    "on-secondary-fixed": "#111c2a",
-                    "primary-container": "#1a3c5e",
-                    "on-primary": "#ffffff",
-                    "on-primary-fixed": "#001d36",
-                    "on-error": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-container-low": "#f4f3f6",
-                    "surface-tint": "#416084",
-                    "primary": "#002645",
-                    "outline": "#73777f",
-                    "surface-container-high": "#e8e8eb",
-                    "inverse-on-surface": "#f1f0f4",
-                    "outline-variant": "#c3c6cf",
-                    "on-primary-fixed-variant": "#28496b",
-                    "tertiary-fixed": "#6bfe9c",
-                    "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#5a6575",
-                    "on-surface": "#1a1c1e",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#a9c9f2",
-                    "surface-container": "#eeedf1",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#d8e3f6",
-                    "on-secondary-fixed-variant": "#3c4856",
-                    "secondary-container": "#d8e3f6",
-                    "tertiary": "#002b12",
-                    "inverse-surface": "#2f3033",
-                    "surface-bright": "#faf9fc",
-                    "primary-fixed-dim": "#a9c9f2",
-                    "surface-dim": "#dad9dd",
-                    "on-tertiary-fixed-variant": "#005228",
-                    "primary-fixed": "#d1e4ff",
-                    "surface": "#faf9fc",
-                    "tertiary-container": "#004420",
-                    "on-background": "#1a1c1e",
-                    "on-tertiary-container": "#0abc64",
-                    "background": "#faf9fc",
-                    "on-primary-container": "#87a7ce",
-                    "tertiary-fixed-dim": "#4ae183",
-                    "on-tertiary-fixed": "#00210c",
-                    "on-surface-variant": "#43474e",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed-dim": "#bcc7d9"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
-        },
-      }
-    
-</script>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
-    
-<link rel="stylesheet" href="../../assets/css/custom.css">
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<script src="../../assets/js/theme.js"></script>
-
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Finzo — Beneficiaries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+  <link rel="stylesheet" href="../../assets/css/user-panel.css">
+  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/theme.js"></script>
 </head>
-<body class="bg-surface text-on-surface">
-<!-- Sidebar Navigation (Shared Component Alex Sterling Variant) -->
-<!-- Modular Side Sidebar -->
-<div id="sidebar-placeholder"></div>
-<!-- Main Content Canvas -->
-<main class="ml-64 min-h-screen bg-surface">
-<!-- Header Section -->
-<header class="px-10 pt-12 pb-8 flex justify-between items-end">
-<div class="space-y-1">
-<span class="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant uppercase">Management Console</span>
-<h1 class="text-4xl font-extrabold text-primary tracking-tight">Saved Beneficiaries</h1>
-</div>
-<!-- Add New Beneficiary Button (Primary CTA) -->
-<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity shadow-md">
-<span class="material-symbols-outlined text-xl" data-icon="person_add">person_add</span>
-<span class="font-semibold text-sm">Add New Beneficiary</span>
-</button>
-</header>
-<!-- Content Section: Asymmetric Layout -->
-<div class="px-10 pb-20 grid grid-cols-12 gap-8">
-<!-- Left: Beneficiary Table (8 Columns) -->
-<section class="col-span-8">
-<div class="bg-white dark:bg-surface-container-lowest rounded-xl border border-slate-200 dark:border-transparent elevation-md overflow-hidden transition-all duration-300">
-<div class="p-6 border-b border-slate-100 dark:border-surface-container flex justify-between items-center bg-white dark:bg-surface-container-lowest">
-<div class="flex items-center gap-4 bg-slate-50 dark:bg-surface-container-low px-4 py-2 rounded-lg w-72 border border-slate-200 dark:border-transparent">
-<span class="material-symbols-outlined text-slate-400 dark:text-on-surface-variant" data-icon="search">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400 dark:placeholder:text-on-surface-variant/50" placeholder="Search by name or account..." type="text"/>
-</div>
-<div class="flex gap-2">
-<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
-</button>
-<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left">
-<thead>
-<tr class="bg-slate-50/50 dark:bg-surface-container-low border-b border-slate-100 dark:border-transparent">
-<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Recipient</th>
-<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Account Number</th>
-<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Detail</th>
-<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Last Transfer</th>
-<th class="px-6 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-slate-100 dark:divide-surface-container">
-<!-- Row 1 -->
-<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-secondary-container flex items-center justify-center text-indigo-700 dark:text-primary font-bold text-sm">JS</div>
-<div>
-<div class="font-semibold text-on-surface">Julianne Sterling</div>
-<div class="text-xs text-on-surface-variant">Family</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 8829</td>
-<td class="px-6 py-5">
-<div class="flex flex-col">
-<span class="text-sm font-medium text-on-surface">Finzo Prime</span>
-<span class="text-[10px] text-on-surface-variant">SWIFT: NEXA-GB-22</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-sm text-on-surface">$1,200.00</div>
-<div class="text-[10px] text-on-surface-variant">2 days ago</div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
-<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
-</div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-tertiary-container/10 flex items-center justify-center text-emerald-700 dark:text-on-tertiary-container font-bold text-sm">MC</div>
-<div>
-<div class="font-semibold text-on-surface">Modern Coffee Roasters</div>
-<div class="text-xs text-on-surface-variant">Business</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 0041</td>
-<td class="px-6 py-5">
-<div class="flex flex-col">
-<span class="text-sm font-medium text-on-surface">Standard Chartered</span>
-<span class="text-[10px] text-on-surface-variant">Domestic Transfer</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-sm text-on-surface">$45.80</div>
-<div class="text-[10px] text-on-surface-variant">14 Oct 2023</div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
-<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
-</div>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-slate-50/80 dark:hover:bg-surface-container-low/50 transition-colors group">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-red-50 dark:bg-error-container/20 flex items-center justify-center text-error font-bold text-sm">AT</div>
-<div>
-<div class="font-semibold text-on-surface">Architectural Trust Ltd</div>
-<div class="text-xs text-on-surface-variant">Utility</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface">**** 9901</td>
-<td class="px-6 py-5">
-<div class="flex flex-col">
-<span class="text-sm font-medium text-on-surface">Lloyds Bank</span>
-<span class="text-[10px] text-on-surface-variant">International</span>
-</div>
-</td>
-<td class="px-6 py-5">
-<div class="text-sm text-on-surface">$2,450.00</div>
-<div class="text-[10px] text-on-surface-variant">01 Oct 2023</div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-primary hover:text-primary-container"><span class="material-symbols-outlined" data-icon="send">send</span></button>
-<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<!-- Right: Insights & Quick Stats (4 Columns) -->
-<!-- Modular Side Sidebar -->
-<div id="sidebar-placeholder"></div>
-</div>
-</main>
-<!-- Slide-out Modal Backdrop (Simulated Open State) -->
-<div class="fixed inset-0 bg-primary/20 dark:bg-slate-900/60 backdrop-blur-sm z-50 flex justify-end">
-<!-- Add Beneficiary Slide-out -->
-<div class="w-[450px] h-full bg-white dark:bg-slate-950 elevation-premium p-10 flex flex-col border-l border-slate-200 dark:border-slate-800 transition-all duration-500">
-<div class="flex justify-between items-center mb-12">
-<h2 class="text-2xl font-extrabold text-primary tracking-tight">New Recipient</h2>
-<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
-</button>
-</div>
-<form class="flex-1 space-y-8">
-<div class="space-y-1">
-<label class="text-[10px] font-bold text-slate-500 dark:text-on-surface-variant uppercase tracking-widest">Full Name</label>
-<input class="w-full border-b border-slate-100 dark:border-surface-container py-3 focus:border-primary focus:ring-0 text-indigo-950 dark:text-on-surface placeholder:text-slate-300 dark:placeholder:text-surface-dim transition-colors outline-none font-medium" placeholder="e.g. Sarah Jenkins" type="text"/>
-</div>
-<div class="space-y-1">
-<label class="text-[10px] font-bold text-slate-500 dark:text-on-surface-variant uppercase tracking-widest">Account Number</label>
-<input class="w-full border-b border-slate-100 dark:border-surface-container py-3 focus:border-primary focus:ring-0 text-indigo-950 dark:text-on-surface placeholder:text-slate-300 dark:placeholder:text-surface-dim transition-colors outline-none font-mono" placeholder="0000 0000 0000" type="text"/>
-</div>
-<div class="space-y-1">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Bank Name</label>
-                    <div class="finzo-dropdown">
-                        <input type="hidden" name="bank_name" id="field-bank" value="">
-                        <div class="finzo-dropdown-trigger !border-b !border-t-0 !border-x-0 !rounded-none !bg-transparent !px-0 py-3">
-                            <span class="dropdown-label text-slate-400 dark:text-slate-500 font-medium">Select a bank</span>
-                            <span class="material-symbols-outlined chevron text-lg">expand_more</span>
-                        </div>
-                        <div class="finzo-dropdown-menu">
-                            <div class="finzo-dropdown-option" data-value="Finzo Prime">Finzo Prime</div>
-                            <div class="finzo-dropdown-option" data-value="Barclays PLC">Barclays PLC</div>
-                            <div class="finzo-dropdown-option" data-value="HSBC Global">HSBC Global</div>
-                        </div>
-                    </div>
-</div>
-<div class="space-y-1">
-<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Category</label>
-<div class="pt-2 flex flex-wrap gap-2 text-primary">
-<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Family</button>
-<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Business</button>
-<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Utilities</button>
-<button class="px-4 py-2 rounded-lg bg-slate-50 dark:bg-surface-container-low text-xs font-bold text-indigo-950 dark:text-primary hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-transparent" type="button">Investment</button>
-</div>
-</div>
-<div class="pt-10">
-<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold text-sm tracking-widest uppercase hover:bg-primary-container transition-colors shadow-lg" type="submit">Save Beneficiary</button>
-<p class="text-center text-[10px] text-on-surface-variant mt-4">By saving, you agree to our <a class="underline" href="../user/transfer.html">Transfer Safety Guidelines</a></p>
-</div>
-</form>
-</div>
-</div>
-<!-- Footer Component -->
-<!-- Modular Footer -->
-<div id="footer-placeholder"></div>
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../../assets/js/component-loader.js"></script>
-<script src="../../assets/js/main.js"></script>
-<script src="../../assets/js/charts.js"></script>
-</body></html>
+  <div id="sidebar-placeholder"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">PAYMENTS</div>
+        <div class="font-headline text-2xl font-extrabold tracking-tight">Beneficiaries</div>
+      </div>
+      <div class="user-status-pill">
+        <div class="dot"></div>
+        <span>FINZO USER PANEL</span>
+      </div>
+    </div>
+
+    <div style="padding:32px 36px;">
+
+      <!-- Header Actions -->
+      <div class="flex justify-between items-center mb-6 page-enter">
+        <div>
+          <h2 class="text-xl font-black font-headline dark:text-white">Saved Beneficiaries</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your saved payees for quick transfers.</p>
+        </div>
+        <button onclick="document.getElementById('add-modal').style.display='flex'" class="user-btn-primary" style="padding:10px 20px !important;">
+          <span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Add Beneficiary
+        </button>
+      </div>
+
+      <!-- Beneficiary Table -->
+      <div class="admin-card page-enter page-enter-delay-1">
+        <div class="overflow-x-auto">
+          <table class="admin-table w-full">
+            <thead>
+              <tr>
+                <th>BENEFICIARY</th>
+                <th>BANK</th>
+                <th>ACCOUNT NO.</th>
+                <th>IFSC</th>
+                <th>ADDED ON</th>
+                <th class="text-right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center text-xs font-bold">PS</div>
+                    <span class="font-bold dark:text-white">Priya Sharma</span>
+                  </div>
+                </td>
+                <td class="dark:text-white/70">State Bank of India</td>
+                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 4521</td>
+                <td class="font-mono text-xs dark:text-white/60">SBIN0001234</td>
+                <td class="dark:text-white/70">05 Mar 2026</td>
+                <td class="text-right">
+                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
+                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xs font-bold">AM</div>
+                    <span class="font-bold dark:text-white">Amit Mondal</span>
+                  </div>
+                </td>
+                <td class="dark:text-white/70">HDFC Bank</td>
+                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 7892</td>
+                <td class="font-mono text-xs dark:text-white/60">HDFC0005678</td>
+                <td class="dark:text-white/70">12 Feb 2026</td>
+                <td class="text-right">
+                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
+                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-600 flex items-center justify-center text-xs font-bold">SG</div>
+                    <span class="font-bold dark:text-white">Sneha Gupta</span>
+                  </div>
+                </td>
+                <td class="dark:text-white/70">ICICI Bank</td>
+                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 3310</td>
+                <td class="font-mono text-xs dark:text-white/60">ICIC0009012</td>
+                <td class="dark:text-white/70">28 Jan 2026</td>
+                <td class="text-right">
+                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
+                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:14px 24px;background:var(--dk-surface,#fafbff);border-top:1px solid var(--dk-border,#eef0f5);">
+          <span class="text-xs font-bold text-slate-400">3 beneficiaries saved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Beneficiary Modal -->
+  <div id="add-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden" style="display:none;">
+    <div class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-lg w-full mx-4 shadow-2xl">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-black font-headline dark:text-white">Add New Beneficiary</h3>
+        <button onclick="document.getElementById('add-modal').style.display='none'" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form>
+        <div class="space-y-4">
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Beneficiary Name *</label>
+            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Full name" required />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Account Number *</label>
+            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Account number" required />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">IFSC Code *</label>
+            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none uppercase" placeholder="e.g. SBIN0001234" maxlength="11" required />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Bank Name *</label>
+            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Bank name" required />
+          </div>
+        </div>
+        <div class="flex gap-4 mt-8">
+          <button type="button" onclick="document.getElementById('add-modal').style.display='none'" class="flex-1 py-3 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white font-bold rounded-xl transition-all hover:bg-slate-200 dark:hover:bg-white/10">Cancel</button>
+          <button type="submit" class="user-btn-primary flex-1" style="padding:12px !important;">Save Beneficiary</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/component-loader.js"></script>
+  <script src="../../assets/js/main.js"></script>
+</body>
+</html>

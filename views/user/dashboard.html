@@ -1,786 +1,275 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Dashboard | Finzo</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-
-<script>
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        "colors": {
-          "surface-variant": "#e3e2e5",
-          "on-secondary-fixed": "#111c2a",
-          "primary-container": "#1a3c5e",
-          "on-primary": "#ffffff",
-          "on-primary-fixed": "#001d36",
-          "on-error": "#ffffff",
-          "error": "#ba1a1a",
-          "surface-container-low": "#f4f3f6",
-          "surface-tint": "#416084",
-          "primary": "#002645",
-          "outline": "#73777f",
-          "surface-container-high": "#e8e8eb",
-          "inverse-on-surface": "#f1f0f4",
-          "outline-variant": "#c3c6cf",
-          "on-primary-fixed-variant": "#28496b",
-          "tertiary-fixed": "#6bfe9c",
-          "surface-container-highest": "#e3e2e5",
-          "on-secondary-container": "#5a6575",
-          "on-surface": "#1a1c1e",
-          "surface-container-lowest": "#ffffff",
-          "on-secondary": "#ffffff",
-          "secondary": "#545f6f",
-          "error-container": "#ffdad6",
-          "inverse-primary": "#a9c9f2",
-          "surface-container": "#eeedf1",
-          "on-tertiary": "#ffffff",
-          "secondary-fixed": "#d8e3f6",
-          "on-secondary-fixed-variant": "#3c4856",
-          "secondary-container": "#d8e3f6",
-          "tertiary": "#002b12",
-          "inverse-surface": "#2f3033",
-          "surface-bright": "#faf9fc",
-          "primary-fixed-dim": "#a9c9f2",
-          "surface-dim": "#dad9dd",
-          "on-tertiary-fixed-variant": "#005228",
-          "primary-fixed": "#d1e4ff",
-          "surface": "#faf9fc",
-          "tertiary-container": "#004420",
-          "on-background": "#1a1c1e",
-          "on-tertiary-container": "#0abc64",
-          "background": "#faf9fc",
-          "on-primary-container": "#87a7ce",
-          "tertiary-fixed-dim": "#4ae183",
-          "on-tertiary-fixed": "#00210c",
-          "on-surface-variant": "#43474e",
-          "on-error-container": "#93000a",
-          "secondary-fixed-dim": "#bcc7d9"
-        },
-        "borderRadius": {
-          "DEFAULT": "0.125rem",
-          "lg": "0.25rem",
-          "xl": "0.5rem",
-          "full": "0.75rem"
-        },
-        "fontFamily": {
-          "headline": ["Plus Jakarta Sans"],
-          "body": ["Inter"],
-          "label": ["Inter"]
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Finzo — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1a3c5e", "error": "#ba1a1a",
+            "surface-container-low": "#0d1117", "outline-variant": "#c3c6cf",
+            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
         }
       }
     }
-  }
-</script>
-
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-<link rel="stylesheet" href="../../assets/css/custom.css">
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<script src="../../assets/js/theme.js"></script>
-
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<style>
-  /* ── Unified design tokens matching Notifications page ── */
-
-  /* Cards — same border/shadow language as notifications page */
-  .fin-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  .fin-card:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  }
-  .dark .fin-card {
-    background: rgba(26,28,30,0.8);
-    border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-  }
-  .dark .fin-card:hover {
-    border-color: rgba(255,255,255,0.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  }
-
-  /* Top header — matches notifications page style */
-  .fin-topbar {
-    background: #ffffff;
-    border-bottom: 1px solid #e2e8f0;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
-  }
-  .dark .fin-topbar {
-    background: #0f1117;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  /* Notification dropdown */
-  .notif-dropdown {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .dark .notif-dropdown {
-    background: #1a1c1e;
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-
-  /* Unread notification items in dropdown — matches notifications ledger page */
-  .notif-item.is-unread {
-    background-color: #fef9ee;
-    border-left: 3px solid #f59e0b;
-  }
-  .dark .notif-item.is-unread {
-    background-color: rgba(30, 27, 75, 0.65);
-    border-left: 3px solid #818cf8;
-  }
-  .notif-item:not(.is-unread) {
-    background-color: transparent;
-    border-left: 3px solid transparent;
-  }
-  .notif-item {
-    transition: background 0.15s ease;
-  }
-  .notif-item:hover {
-    background-color: #f8fafc;
-  }
-  .dark .notif-item:hover {
-    background-color: rgba(255,255,255,0.03);
-  }
-
-  /* Icon button hover — unified */
-  .btn-icon-hover {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #43474e;
-    transition: background 0.15s ease, color 0.15s ease;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-  }
-  .btn-icon-hover:hover {
-    background: #f1f5f9;
-    color: #002645;
-  }
-  .dark .btn-icon-hover {
-    color: #9aa0ab;
-  }
-  .dark .btn-icon-hover:hover {
-    background: rgba(255,255,255,0.06);
-    color: #e2e8f0;
-  }
-  .btn-icon-hover:focus { outline: none; }
-
-  /* Dropdown item hover */
-  .dropdown-item-hover {
-    transition: background 0.15s ease;
-  }
-  .dropdown-item-hover:hover {
-    background: #f8fafc;
-  }
-  .dark .dropdown-item-hover:hover {
-    background: rgba(255,255,255,0.04);
-  }
-
-  /* Quick action buttons */
-  .quick-action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    transition: all 0.2s ease;
-    cursor: not-allowed;
-    opacity: 0.55;
-    width: 100%;
-  }
-  .dark .quick-action-btn {
-    background: rgba(26,28,30,0.8);
-    border-color: rgba(255,255,255,0.06);
-  }
-
-  /* Transaction rows */
-  .tx-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    transition: all 0.2s ease;
-  }
-  .tx-row:hover {
-    border-color: #c7d2e0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-  .dark .tx-row {
-    border-color: rgba(255,255,255,0.06);
-  }
-  .dark .tx-row:hover {
-    border-color: rgba(255,255,255,0.10);
-  }
-
-  /* Search input */
-  .fin-search {
-    display: flex;
-    align-items: center;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 8px 12px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .fin-search:focus-within {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 3px rgba(129,140,248,0.12);
-  }
-  .dark .fin-search {
-    background: rgba(255,255,255,0.03);
-    border-color: rgba(255,255,255,0.07);
-  }
-  .dark .fin-search:focus-within {
-    border-color: #818cf8;
-  }
-
-  /* Verification banner */
-  .fin-banner-pending {
-    background: rgba(99,102,241,0.07);
-    border: 1px solid rgba(99,102,241,0.25);
-    border-radius: 14px;
-    transition: all 0.3s ease;
-  }
-  .fin-banner-pending:hover {
-    border-color: rgba(99,102,241,0.35);
-    box-shadow: 0 4px 16px rgba(99,102,241,0.08);
-  }
-  .dark .fin-banner-pending {
-    background: rgba(99,102,241,0.06);
-    border-color: rgba(99,102,241,0.18);
-  }
-
-  /* Account card balance shimmer on locked state */
-  .balance-locked {
-    color: #cbd5e1;
-    letter-spacing: 0.25em;
-  }
-  .dark .balance-locked {
-    color: rgba(255,255,255,0.2);
-  }
-
-  /* Animate dropdown */
-  @keyframes dropIn {
-    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .animate-dropdown {
-    animation: dropIn 0.18s ease forwards;
-  }
-
-  /* Typography alignment with Notifications page */
-  .page-eyebrow {
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #43474e;
-    font-weight: 500;
-  }
-  .page-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 2.25rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #002645;
-    line-height: 1;
-  }
-  .dark .page-title {
-    color: #e2e8f0;
-  }
-
-  /* Spending analytics locked overlay */
-  .locked-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(3px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-  }
-  .dark .locked-overlay {
-    background: rgba(15,17,23,0.75);
-  }
-
-  /* Architectural gradient button — same as notifications CTA */
-  .btn-primary {
-    background: #002645;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-primary:hover {
-    background: #1a3c5e;
-    transform: scale(1.02);
-    box-shadow: 0 4px 16px rgba(0,38,69,0.25);
-  }
-  .btn-primary:active { transform: scale(0.98); }
-
-  /* No-underline helper */
-  .no-underline { text-decoration: none !important; }
-
-  /* Pulse animation for unread badge */
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.8; }
-  }
-  #notif-badge { animation: pulse 2s infinite; }
-</style>
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+  <link rel="stylesheet" href="../../assets/css/user-panel.css">
+  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/theme.js"></script>
 </head>
 
-<body class="bg-surface text-on-surface font-body">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
 
-<!-- Sidebar placeholder -->
-<div id="sidebar-placeholder"></div>
+  <!-- SIDEBAR -->
+  <div id="sidebar-placeholder"></div>
 
-<!-- Main Content -->
-<main class="md:ml-64 min-h-screen bg-surface">
-
-  <!-- ── Top Navigation Bar ── -->
-  <header class="fin-topbar fixed top-0 right-0 left-0 md:left-64 h-16 px-8 flex justify-between items-center z-50 transition-colors duration-300">
-    <div class="flex items-center gap-3">
-      <p class="page-eyebrow mb-0">Overview</p>
-      <span class="text-outline-variant text-xs">·</span>
-      <h1 class="font-headline font-extrabold text-lg tracking-tight text-primary dark:text-on-surface">Dashboard</h1>
+  <!-- MAIN -->
+  <div class="admin-main">
+    <!-- TOP BAR -->
+    <div class="admin-topbar">
+      <div>
+        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">USER DASHBOARD</div>
+        <div class="font-headline text-2xl font-extrabold tracking-tight" id="page-title">Dashboard</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div class="user-status-pill">
+          <div class="dot"></div>
+          <span>FINZO USER PANEL</span>
+        </div>
+        <div class="admin-avatar" style="background:linear-gradient(135deg,#1a3c5e,#2563eb);color:#fff;width:42px;height:42px;box-shadow:0 10px 15px -3px rgba(26,60,94,0.2);">RK</div>
+      </div>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div style="padding:32px 36px;">
 
-      <!-- Notifications Button -->
-      <div class="relative" id="notif-wrapper">
-        <button id="notif-btn" onclick="togglePanel('notif-panel', 'settings-panel')" class="btn-icon-hover no-outline relative">
-          <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
-          <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0f1117]"></span>
-        </button>
+      <!-- WELCOME HEADER -->
+      <div class="flex justify-between items-end mb-8 page-enter">
+        <div>
+          <h2 class="text-3xl font-black font-headline text-primary dark:text-blue-400 tracking-tight" id="greeting-text">Welcome back, Rahul Kumar</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Here's an overview of your account activity.</p>
+        </div>
+        <div class="flex items-center gap-3 px-4 py-2 bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest">
+          <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+          <span id="header-date">13 Apr 2026</span>
+        </div>
+      </div>
 
-        <!-- Notifications Dropdown -->
-        <div id="notif-panel" class="notif-dropdown hidden absolute right-0 top-12 w-80 z-50 overflow-hidden animate-dropdown">
-          <div class="px-5 py-4 border-b border-slate-100 dark:border-white/06 flex justify-between items-center">
-            <span class="font-headline font-bold text-sm text-on-surface">Notifications</span>
-            <button id="mark-all-read" class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline focus:outline-none font-label">Mark all read</button>
+      <!-- STAT CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;" class="page-enter page-enter-delay-1">
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(37,99,235,0.1);">
+            <span class="material-symbols-outlined" style="color:#2563eb;">account_balance_wallet</span>
           </div>
-          <div>
-            <!-- Unread item 1 -->
-            <div class="notif-item flex items-start gap-3 px-5 py-4 cursor-pointer is-unread">
-              <div class="w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span class="material-symbols-outlined text-amber-500" style="font-size:18px;">warning</span>
-              </div>
-              <div class="flex-1">
-                <p class="text-sm font-semibold text-on-surface">Account Pending Approval</p>
-                <p class="text-xs text-secondary mt-0.5 leading-relaxed">Your account is under review. Complete your profile to proceed.</p>
-                <p class="text-[10px] text-on-surface-variant mt-1 font-label uppercase tracking-widest">Just now</p>
-              </div>
-            </div>
-            <!-- Unread item 2 -->
-            <div class="notif-item flex items-start gap-3 px-5 py-4 cursor-pointer is-unread">
-              <div class="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">info</span>
-              </div>
-              <div class="flex-1">
-                <p class="text-sm font-semibold text-on-surface">Welcome to Finzo!</p>
-                <p class="text-xs text-secondary mt-0.5 leading-relaxed">Your account has been registered. Complete your KYC to activate.</p>
-                <p class="text-[10px] text-on-surface-variant mt-1 font-label uppercase tracking-widest">Today</p>
-              </div>
-            </div>
+          <div class="admin-stat-label">ACCOUNT BALANCE</div>
+          <div class="admin-stat-value">₹1,42,080</div>
+          <div class="mt-3">
+            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-blue-500/10 text-blue-600 uppercase tracking-wider">Savings Account</span>
           </div>
-          <div class="px-5 py-3 text-center border-t border-slate-100 dark:border-white/06">
-            <a href="notifications.html" class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline no-underline font-label">View all notifications</a>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(16,185,129,0.1);">
+            <span class="material-symbols-outlined" style="color:#10b981;">trending_up</span>
+          </div>
+          <div class="admin-stat-label">TOTAL CREDITED</div>
+          <div class="admin-stat-value">₹2,45,000</div>
+          <div class="mt-3">
+            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 uppercase tracking-wider">This Month</span>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(239,68,68,0.1);">
+            <span class="material-symbols-outlined" style="color:#ef4444;">trending_down</span>
+          </div>
+          <div class="admin-stat-label">TOTAL DEBITED</div>
+          <div class="admin-stat-value">₹1,02,920</div>
+          <div class="mt-3">
+            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-red-500/10 text-red-500 uppercase tracking-wider">This Month</span>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(59,130,246,0.1);">
+            <span class="material-symbols-outlined" style="color:#3b82f6;">swap_horiz</span>
+          </div>
+          <div class="admin-stat-label">TOTAL TRANSACTIONS</div>
+          <div class="admin-stat-value">24</div>
+          <div class="mt-3">
+            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 uppercase tracking-wider">This Month</span>
           </div>
         </div>
       </div>
 
-      <!-- Dark Mode Toggle -->
-      <button data-toggle-theme class="btn-icon-hover" title="Toggle Theme">
-        <span class="material-symbols-outlined" data-theme-icon style="font-size:22px;">dark_mode</span>
-      </button>
+      <!-- QUICK ACTIONS -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 page-enter page-enter-delay-2">
+        <a href="accounts.html" class="quick-action-card bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 no-underline group">
+          <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/20">
+            <span class="material-symbols-outlined text-3xl">account_balance</span>
+          </div>
+          <div>
+            <h3 class="text-xl font-black font-headline text-blue-900 dark:text-blue-400 mb-1">My Accounts</h3>
+            <p class="text-blue-700/60 dark:text-blue-400/60 font-medium text-sm">View your account details and balances.</p>
+          </div>
+        </a>
 
-      <!-- Settings Button -->
-      <div class="relative" id="settings-wrapper">
-        <button id="settings-btn" onclick="togglePanel('settings-panel', 'notif-panel')" class="btn-icon-hover">
-          <span class="material-symbols-outlined" style="font-size:22px;">settings</span>
-        </button>
-        <!-- Settings Dropdown -->
-        <div id="settings-panel" class="notif-dropdown hidden absolute right-0 top-12 w-72 z-50 overflow-hidden animate-dropdown">
-          <div class="px-5 py-4 border-b border-slate-100 dark:border-white/06">
-            <span class="font-headline font-bold text-sm text-on-surface">Settings</span>
+        <a href="transfer.html" class="quick-action-card bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10 no-underline group">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <span class="material-symbols-outlined text-3xl">send</span>
           </div>
-          <div class="py-2">
-            <a href="complete-profile.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-on-surface no-underline">
-              <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">manage_accounts</span>
-              <div>
-                <p class="text-sm font-semibold">Complete Profile</p>
-                <p class="text-xs text-secondary">Finish your KYC setup</p>
-              </div>
-            </a>
-            <a href="change-password.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-on-surface no-underline">
-              <span class="material-symbols-outlined text-primary dark:text-blue-400" style="font-size:20px;">lock</span>
-              <div>
-                <p class="text-sm font-semibold">Change Password</p>
-                <p class="text-xs text-secondary">Update your login credentials</p>
-              </div>
-            </a>
-            <div class="border-t border-slate-100 dark:border-white/06 mt-1 pt-1">
-              <a href="/views/auth/login.html" class="flex items-center gap-3 px-5 py-3 dropdown-item-hover cursor-pointer text-error no-underline transition-colors hover:bg-red-50 dark:hover:bg-red-900/10">
-                <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
-                <p class="text-sm font-semibold">Logout</p>
-              </a>
-            </div>
+          <div>
+            <h3 class="text-xl font-black font-headline text-emerald-900 dark:text-emerald-400 mb-1">Fund Transfer</h3>
+            <p class="text-emerald-700/60 dark:text-emerald-400/60 font-medium text-sm">Send money to saved beneficiaries.</p>
           </div>
+        </a>
+
+        <a href="statement.html" class="quick-action-card bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10 no-underline group">
+          <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <span class="material-symbols-outlined text-3xl">description</span>
+          </div>
+          <div>
+            <h3 class="text-xl font-black font-headline text-amber-900 dark:text-amber-400 mb-1">Account Statement</h3>
+            <p class="text-amber-700/60 dark:text-amber-400/60 font-medium text-sm">Download or print monthly statements.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- RECENT TRANSACTIONS TABLE -->
+      <div class="admin-card page-enter page-enter-delay-3">
+        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-transparent">
+          <h3 class="admin-section-title dark:text-white">Recent Transactions</h3>
+          <a href="transactions.html" class="text-xs font-bold text-primary dark:text-blue-400 hover:underline uppercase tracking-widest no-underline">View All →</a>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="admin-table w-full">
+            <thead>
+              <tr>
+                <th>DATE</th>
+                <th>DESCRIPTION</th>
+                <th>TYPE</th>
+                <th>AMOUNT</th>
+                <th>STATUS</th>
+                <th class="text-right">RECEIPT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold dark:text-white">13 Apr 2026</td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-[11px] font-bold">
+                      <span class="material-symbols-outlined text-base">arrow_downward</span>
+                    </div>
+                    <span class="font-bold dark:text-white">Salary Credit — ABC Pvt Ltd</span>
+                  </div>
+                </td>
+                <td><span class="status-badge badge-success">CREDIT</span></td>
+                <td class="font-bold text-emerald-600">+₹45,000</td>
+                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                <td class="text-right">
+                  <a href="receipt.html" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
+                    <span class="material-symbols-outlined">print</span>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold dark:text-white">12 Apr 2026</td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 flex items-center justify-center text-[11px] font-bold">
+                      <span class="material-symbols-outlined text-base">arrow_upward</span>
+                    </div>
+                    <span class="font-bold dark:text-white">UPI Transfer — Priya Sharma</span>
+                  </div>
+                </td>
+                <td><span class="status-badge badge-error">DEBIT</span></td>
+                <td class="font-bold text-red-600">-₹2,500</td>
+                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                <td class="text-right">
+                  <a href="receipt.html" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
+                    <span class="material-symbols-outlined">print</span>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold dark:text-white">11 Apr 2026</td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 flex items-center justify-center text-[11px] font-bold">
+                      <span class="material-symbols-outlined text-base">arrow_upward</span>
+                    </div>
+                    <span class="font-bold dark:text-white">Electricity Bill — BSES Rajdhani</span>
+                  </div>
+                </td>
+                <td><span class="status-badge badge-error">DEBIT</span></td>
+                <td class="font-bold text-red-600">-₹1,850</td>
+                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                <td class="text-right">
+                  <a href="receipt.html" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
+                    <span class="material-symbols-outlined">print</span>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold dark:text-white">10 Apr 2026</td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-[11px] font-bold">
+                      <span class="material-symbols-outlined text-base">arrow_downward</span>
+                    </div>
+                    <span class="font-bold dark:text-white">Interest Credit — Savings Account</span>
+                  </div>
+                </td>
+                <td><span class="status-badge badge-success">CREDIT</span></td>
+                <td class="font-bold text-emerald-600">+₹1,240</td>
+                <td><span class="status-badge badge-success">COMPLETED</span></td>
+                <td class="text-right">
+                  <a href="receipt.html" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
+                    <span class="material-symbols-outlined">print</span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
     </div>
-  </header>
+  </div>
 
-  <!-- ── Dashboard Content ── -->
-  <section class="pt-24 pb-12 px-12 max-w-7xl">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/component-loader.js"></script>
+  <script src="../../assets/js/main.js"></script>
 
-    <!-- Page Header — matches Notifications page structure -->
-    <header class="pb-8">
-      <p class="page-eyebrow mb-2">Account Overview</p>
-      <h1 class="page-title">Welcome back, Rahul</h1>
-      <p class="text-xs text-on-surface-variant font-label mt-1">Here's what's happening with your account today.</p>
-    </header>
+  <script>
+    // Dynamic Greeting
+    (function() {
+      const hour = new Date().getHours();
+      let greeting = 'Good Evening';
+      if (hour < 12) greeting = 'Good Morning';
+      else if (hour < 17) greeting = 'Good Afternoon';
+      const el = document.getElementById('greeting-text');
+      if (el) el.textContent = greeting + ', Rahul Kumar';
+    })();
 
-    <div class="space-y-5">
-
-      <!-- ── Verification Banner ── -->
-      <div id="restricted-banner" class="fin-banner-pending p-4 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
-            <span class="material-symbols-outlined" style="font-size:20px;">verified_user</span>
-          </div>
-          <div>
-            <span class="text-xs font-bold text-primary dark:text-on-surface tracking-wide font-headline">Account Verification Pending</span>
-            <p class="text-[11px] text-secondary font-label mt-0.5">Please complete your identity verification to unlock full banking features.</p>
-          </div>
-        </div>
-        <a href="complete-profile.html" class="btn-primary no-underline ml-6 whitespace-nowrap">Complete Setup →</a>
-      </div>
-
-      <!-- ── Approved Banner (hidden by default) ── -->
-      <div id="approved-banner" class="hidden p-4 flex items-center justify-between rounded-xl" style="background:#e8f8f2; border: 1px solid #00b894;">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings:'FILL' 1; font-size:20px;">check_circle</span>
-          <span class="text-sm font-semibold text-[#005228] font-headline">🎉 Welcome to Finzo! Your account FNZ20260001 has been activated.</span>
-        </div>
-        <button onclick="document.getElementById('approved-banner').classList.add('hidden')" class="text-[#00b894] hover:text-[#005228] transition-colors ml-4">
-          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
-        </button>
-      </div>
-
-      <!-- ── Bento Grid ── -->
-      <div class="grid grid-cols-12 gap-5">
-
-        <!-- Account Summary Card -->
-        <div class="col-span-12 lg:col-span-8 fin-card p-8 relative overflow-hidden">
-          <!-- Subtle background decoration -->
-          <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(65,96,132,0.06) 0%, transparent 70%);"></div>
-          <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(65,96,132,0.04) 0%, transparent 70%);"></div>
-
-          <div class="relative z-10 flex flex-col justify-between h-full gap-8">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="page-eyebrow mb-3">Total Available Balance</p>
-                <h2 id="dash-balance" class="font-headline font-black text-4xl balance-locked transition-all duration-500 select-none">₹ ——</h2>
-              </div>
-              <span class="text-[10px] font-black font-label uppercase tracking-widest px-3 py-1.5 rounded-lg" style="background:#eef2f7; color:#28496b;">Savings Account</span>
-            </div>
-            <div>
-              <p class="page-eyebrow mb-2">Account Number</p>
-              <div class="flex items-center gap-3">
-                <p id="dash-account" class="font-mono text-xl font-bold tracking-[0.12em] text-primary dark:text-on-surface">NOT YET ASSIGNED</p>
-                <span class="material-symbols-outlined text-outline text-sm">lock</span>
-              </div>
-              <div id="verification-badge" class="inline-flex items-center gap-2 mt-2 px-3 py-1.5 rounded-full" style="background:rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.18);">
-                <span class="w-2 h-2 rounded-full bg-indigo-500" style="animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(99,102,241,0.8);"></span>
-                <span class="text-[9px] font-black font-label text-indigo-500 uppercase tracking-widest">Awaiting Verification</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Spending Analytics Card -->
-        <div class="col-span-12 lg:col-span-4 fin-card p-6 flex flex-col justify-between opacity-60 cursor-not-allowed select-none pointer-events-none">
-          <div>
-            <div class="flex justify-between items-start mb-1">
-              <h3 class="text-base font-bold font-headline text-primary dark:text-on-surface">Spending Analytics</h3>
-            </div>
-            <p class="text-[11px] text-secondary font-label mb-4">Monthly spending overview</p>
-            <div class="h-28 flex items-end justify-between gap-1.5 px-1 relative overflow-hidden rounded-xl">
-              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[40%]"></div>
-              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[60%]"></div>
-              <div class="w-full rounded-t-lg h-[35%]" style="background:rgba(0,38,69,0.15);"></div>
-              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[75%]"></div>
-              <div class="w-full rounded-t-lg h-[50%]" style="background:rgba(0,38,69,0.3);"></div>
-              <div class="w-full rounded-t-lg h-[90%]" style="background:#002645;"></div>
-              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-t-lg h-[45%]"></div>
-              <!-- Lock overlay -->
-              <div class="locked-overlay">
-                <div class="fin-card px-4 py-3 flex flex-col items-center gap-1.5 text-center">
-                  <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px;">lock</span>
-                  <p class="text-[10px] font-bold text-on-surface font-label leading-tight">Available after activation</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Deposit -->
-          <button class="quick-action-btn" disabled>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
-                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">account_balance_wallet</span>
-              </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-slate-400 font-headline">Deposit</p>
-                <p class="text-[10px] text-slate-400 font-label">Add money</p>
-              </div>
-            </div>
-            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
-          </button>
-
-          <!-- Withdraw -->
-          <button class="quick-action-btn" disabled>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
-                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">payments</span>
-              </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-slate-400 font-headline">Withdraw</p>
-                <p class="text-[10px] text-slate-400 font-label">Withdraw funds</p>
-              </div>
-            </div>
-            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
-          </button>
-
-          <!-- Transfer -->
-          <button class="quick-action-btn" disabled>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/05 flex items-center justify-center text-slate-400">
-                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1;">send</span>
-              </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-slate-400 font-headline">Transfer</p>
-                <p class="text-[10px] text-slate-400 font-label">Send money</p>
-              </div>
-            </div>
-            <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">lock</span>
-          </button>
-        </div>
-
-        <!-- Recent Transactions -->
-        <div class="col-span-12 fin-card p-6">
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <div>
-              <h3 class="text-lg font-bold font-headline text-primary dark:text-on-surface">Recent Transactions</h3>
-              <p class="text-[11px] text-secondary font-label mt-0.5">Your latest account activity</p>
-            </div>
-            <div id="search-wrapper" class="fin-search w-full md:w-64" style="display:none;">
-              <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px;">search</span>
-              <input id="tx-search" class="bg-transparent border-none focus:ring-0 text-xs w-full ml-2 text-on-surface placeholder-on-surface-variant font-label" placeholder="Search transactions..." type="text"/>
-            </div>
-          </div>
-
-          <div id="tx-list" class="space-y-3"></div>
-
-          <!-- Placeholder tx rows (shown when active) -->
-          <div id="tx-rows-static" style="display:none;" class="space-y-3">
-            <div class="tx-row opacity-90">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500">
-                  <span class="material-symbols-outlined" style="font-size:20px;">account_balance</span>
-                </div>
-                <div>
-                  <p class="font-bold text-sm text-on-surface font-headline">Initial Vault Deposit</p>
-                  <p class="text-[10px] text-secondary font-label italic">Held until activation</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-sm text-[#00b894] font-headline">+₹500.00</p>
-                <p class="text-[10px] text-on-surface-variant font-label">06 Apr 2026</p>
-              </div>
-            </div>
-            <div class="tx-row opacity-90">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-                  <span class="material-symbols-outlined" style="font-size:20px;">card_membership</span>
-                </div>
-                <div>
-                  <p class="font-bold text-sm text-on-surface font-headline">Account Issue Fee</p>
-                  <p class="text-[10px] text-secondary font-label italic">Waived (Promotion)</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-sm text-on-surface font-headline">₹0.00</p>
-                <p class="text-[10px] text-on-surface-variant font-label">06 Apr 2026</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Empty state -->
-          <div id="empty-tx-message" class="text-center py-10 border-t border-slate-100 dark:border-white/05 mt-4">
-            <span class="material-symbols-outlined text-on-surface-variant mb-3" style="font-size:32px;">receipt_long</span>
-            <p class="text-xs font-semibold text-secondary mb-3 font-label">Detailed transactions will appear here after activation.</p>
-            <a href="complete-profile.html" class="btn-primary no-underline">Complete Profile →</a>
-          </div>
-        </div>
-
-      </div><!-- /grid -->
-    </div><!-- /space-y -->
-  </section>
-</main>
-
-<!-- Mobile Nav -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0f1117] border-t border-slate-100 dark:border-white/06 flex items-center justify-around px-4 z-50">
-  <button class="flex flex-col items-center gap-1 text-primary">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">dashboard</span>
-    <span class="text-[10px] font-bold font-label">Home</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
-    <span class="material-symbols-outlined" style="font-size:22px;">swap_horiz</span>
-    <span class="text-[10px] font-label">Transfer</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
-    <span class="material-symbols-outlined" style="font-size:22px;">history</span>
-    <span class="text-[10px] font-label">History</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
-    <span class="material-symbols-outlined" style="font-size:22px;">person</span>
-    <span class="text-[10px] font-label">Profile</span>
-  </button>
-</nav>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../../assets/js/component-loader.js"></script>
-<script src="../../assets/js/main.js"></script>
-<script src="../../assets/js/charts.js"></script>
-
-<script>
-// Panel toggle helper
-function togglePanel(openId, closeId) {
-  const openEl  = document.getElementById(openId);
-  const closeEl = document.getElementById(closeId);
-  if (closeEl) closeEl.classList.add('hidden');
-  if (openEl)  openEl.classList.toggle('hidden');
-}
-
-// Close panels when clicking outside
-document.addEventListener('click', function(e) {
-  ['notif-panel', 'settings-panel'].forEach(function(id) {
-    const panel   = document.getElementById(id);
-    const wrapper = document.getElementById(id.replace('panel', 'wrapper'));
-    if (panel && wrapper && !wrapper.contains(e.target)) {
-      panel.classList.add('hidden');
-    }
-  });
-});
-
-$(document).ready(function() {
-
-  // ── Activation State ──
-  var isApproved        = localStorage.getItem('finzo_approved') === 'true';
-  var isProfileComplete = localStorage.getItem('finzo_profile_complete') === 'true';
-  var isActive          = isApproved && isProfileComplete;
-
-  if (isActive) {
-    $('#restricted-banner').addClass('hidden');
-    $('#approved-banner').removeClass('hidden');
-    $('#dash-balance')
-      .text('₹ 42,080.00')
-      .removeClass('balance-locked')
-      .addClass('text-primary dark:text-on-surface');
-    $('#dash-account').text('FNZ20260001');
-    $('#verification-badge').hide();
-    $('#tx-rows-static').show();
-    $('#search-wrapper').show();
-    $('#empty-tx-message').hide();
-    $('#notif-badge').hide();
-  } else {
-    $('#tx-rows-static').hide();
-    $('#search-wrapper').hide();
-    $('#empty-tx-message').show();
-    $('#verification-badge').show();
-  }
-
-  // ── Transaction Search ──
-  $('#tx-search').on('keyup', function() {
-    if (!isActive) return;
-    var val = $(this).val().toLowerCase();
-    var count = 0;
-    $('#tx-rows-static .tx-row').each(function() {
-      var match = $(this).text().toLowerCase().indexOf(val) > -1;
-      $(this).toggle(match);
-      if (match) count++;
-    });
-    if (val === '') {
-      $('#empty-tx-message').hide();
-    } else if (count === 0) {
-      $('#empty-tx-message').show();
-      $('#empty-tx-message p').text('No transactions matching "' + val + '"');
-      $('#empty-tx-message a').hide();
-    } else {
-      $('#empty-tx-message').hide();
-    }
-  });
-
-  // ── Mark all notifications read in dropdown ──
-  $('#mark-all-read').on('click', function() {
-    $('.notif-item.is-unread').removeClass('is-unread');
-    $('#notif-badge').hide();
-  });
-
-  // ── Click individual notification to mark read ──
-  $(document).on('click', '.notif-item.is-unread', function() {
-    $(this).removeClass('is-unread');
-    if ($('.notif-item.is-unread').length === 0) {
-      $('#notif-badge').hide();
-    }
-  });
-
-});
-</script>
+    // Live Date
+    (function() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      const el = document.getElementById('header-date');
+      if (el) el.textContent = dateStr;
+    })();
+  </script>
 </body>
 </html>

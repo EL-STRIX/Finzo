@@ -1,62 +1,68 @@
-<!-- Dashboard Sidebar Component -->
-<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto flex flex-col py-6 font-manrope text-sm z-40 hidden md:flex border-r border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0a0f1e] transition-colors duration-300">
-    <div class="text-xl font-black px-6 py-4 logo-text font-headline text-primary dark:text-white">Finzo</div>
-    <div class="px-5 mb-4">
-        <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm dark:shadow-none">
-            <div class="w-10 h-10 rounded-full bg-primary dark:bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">RK</div>
-            <div class="overflow-hidden">
-                <p class="font-bold text-indigo-950 dark:text-white text-sm truncate">Rahul Kumar</p>
-                <p class="text-[9px] text-slate-500 dark:text-slate-300 truncate uppercase tracking-widest font-black">Type: Savings</p>
-                <p class="text-[9px] text-amber-600 dark:text-amber-400 truncate font-semibold">Status: Incomplete</p>
+<!-- Finzo User Sidebar Component — Navy Theme (matches admin/staff structure) -->
+<nav class="admin-sidebar user-panel" style="background:#0a0f1e;">
+    <div class="admin-sidebar-brand">
+        <div class="brand-name">Finzo</div>
+        <div class="brand-sub brand-sub-user">USER PANEL</div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="px-4 py-6 border-b border-white/5">
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-sm">RK</div>
+                <div>
+                    <div class="text-xs font-bold text-blue-400">Rahul Kumar</div>
+                    <div class="text-[10px] text-white/50 font-medium">FNZ-2026-0001</div>
+                </div>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Savings Account</span>
             </div>
         </div>
     </div>
-    <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/dashboard.html">
-            <span class="material-symbols-outlined text-xl">dashboard</span>
-            <span>Dashboard</span>
+
+    <div class="admin-nav">
+        <div class="admin-nav-section">MAIN</div>
+        <a href="/views/user/dashboard.html" class="admin-nav-item" data-page="dashboard">
+            <span class="material-symbols-outlined">dashboard</span> Dashboard
         </a>
-        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/notifications.html">
-            <span class="material-symbols-outlined text-xl">notifications</span>
-            <span>Notifications</span>
+        <a href="/views/user/accounts.html" class="admin-nav-item" data-page="accounts">
+            <span class="material-symbols-outlined">account_balance</span> My Accounts
         </a>
-        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
-            <span class="material-symbols-outlined text-xl">lock</span>
-            <span>My Accounts</span>
-        </div>
-        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
-            <span class="material-symbols-outlined text-xl">lock</span>
-            <span>Fund Transfer</span>
-        </div>
-        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
-            <span class="material-symbols-outlined text-xl">lock</span>
-            <span>Transactions</span>
-        </div>
-        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
-            <span class="material-symbols-outlined text-xl">lock</span>
-            <span>Statement</span>
-        </div>
-        <div class="flex items-center gap-3 text-slate-300 dark:text-slate-500 mx-3 p-2 rounded-lg opacity-40 cursor-not-allowed">
-            <span class="material-symbols-outlined text-xl">lock</span>
-            <span>Beneficiaries</span>
-        </div>
-        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/profile.html">
-            <span class="material-symbols-outlined text-xl">person</span>
-            <span>Profile</span>
+        <a href="/views/user/transfer.html" class="admin-nav-item" data-page="transfer">
+            <span class="material-symbols-outlined">swap_horiz</span> Fund Transfer
         </a>
-        <a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mx-3 p-2 rounded-lg hover-premium no-underline font-medium hover:text-primary dark:hover:text-blue-400" href="/views/user/change-password.html">
-            <span class="material-symbols-outlined text-xl">security</span>
-            <span>Change Password</span>
+        <a href="/views/user/transactions.html" class="admin-nav-item" data-page="transactions">
+            <span class="material-symbols-outlined">receipt_long</span> Transactions
         </a>
-    </nav>
-    <div class="mt-auto px-4 pt-4 pb-2 border-t border-slate-100 dark:border-white/10">
-        <a href="/views/user/complete-profile.html" class="flex items-center justify-center gap-2 bg-primary dark:bg-blue-600 hover:opacity-90 text-white p-3 rounded-xl font-bold text-xs no-underline mb-1.5 transition-all active:scale-95 shadow-md">
-            <span class="material-symbols-outlined text-lg">person_add</span>
-            <span>Complete Profile</span>
+        <a href="/views/user/beneficiary.html" class="admin-nav-item" data-page="beneficiary">
+            <span class="material-symbols-outlined">group</span> Beneficiaries
         </a>
-        <a class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer font-bold text-slate-500 dark:text-slate-400 no-underline text-xs transition-colors" href="/views/auth/login.html">
-            <span class="material-symbols-outlined text-lg">logout</span>
-            <span>Logout</span>
+        <a href="/views/user/statement.html" class="admin-nav-item" data-page="statement">
+            <span class="material-symbols-outlined">description</span> Statement
+        </a>
+        <a href="/views/user/notifications.html" class="admin-nav-item" data-page="notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span style="flex:1;">Notifications</span>
+            <span class="user-nav-badge">2</span>
+        </a>
+
+        <div class="admin-nav-section">SETTINGS</div>
+        <a href="/views/user/profile.html" class="admin-nav-item" data-page="profile">
+            <span class="material-symbols-outlined">person</span> My Profile
+        </a>
+        <a href="/views/user/change-password.html" class="admin-nav-item" data-page="change-password">
+            <span class="material-symbols-outlined">lock</span> Change Password
+        </a>
+
+        <div class="admin-nav-section">ACCOUNT</div>
+        <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+            <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+            <span data-theme-label>Dark Mode</span>
+        </button>
+        <a href="/views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+            <span class="material-symbols-outlined">logout</span> Logout
         </a>
     </div>
-</aside>
+</nav>

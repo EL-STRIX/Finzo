@@ -1,90 +1,75 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Application Rejected | Finzo</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-
-<!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
-<script>
-    tailwind.config = {
-    darkMode: "class",
-    theme: {
-        extend: {
-        "colors": {
-            "surface-variant": "#e3e2e5",
-            "primary": "#002645",
-            "outline": "#73777f",
-            "outline-variant": "#c3c6cf",
-            "surface-container-highest": "#e3e2e5",
-            "surface-container-low": "#f4f3f6",
-            "surface-container-lowest": "#ffffff",
-            "error": "#ba1a1a",
-            "on-surface": "#1a1c1e"
-        },
-        "fontFamily": {
-            "headline": ["Plus Jakarta Sans"],
-            "body": ["Inter"]
-        }
-        }
-    }
-    }
-</script>
-
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link rel="stylesheet" href="../../assets/css/custom.css">
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<script src="../../assets/js/theme.js"></script>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Finzo — Application Rejected</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+  <link rel="stylesheet" href="../../assets/css/user-panel.css">
+  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/theme.js"></script>
 </head>
-<body class="bg-surface text-on-surface h-screen flex items-center justify-center p-4">
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
 
-    <div class="bg-white dark:bg-[#0a0f1e] rounded-2xl shadow-xl p-10 max-w-lg w-full text-center border border-slate-100 dark:border-slate-800 relative overflow-hidden transition-colors">
-        <div class="absolute inset-0 bg-error/5 pointer-events-none"></div>
+  <div id="sidebar-placeholder"></div>
 
-        <div class="relative z-10 space-y-6">
-            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto text-error">
-                <span class="material-symbols-outlined text-4xl">cancel</span>
-            </div>
-
-            <div>
-                <h1 class="text-2xl font-headline font-extrabold tracking-tight text-error">Application Rejected</h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                    Unfortunately your account application was not approved for the following reason:
-                </p>
-                <div class="mt-4 bg-red-50 dark:bg-red-900/10 border border-error/20 dark:border-error/30 rounded-xl p-4 text-sm font-semibold text-error/80 text-left">
-                    "Identity document provided does not match the personal details entered in the application. Please provide a clear copy of your valid ID."
-                </div>
-            </div>
-
-            <div class="pt-6 pb-4">
-                <div class="text-left space-y-4 max-w-xs mx-auto">
-                    <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
-                        <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
-                        <span class="font-bold text-sm">Registered</span>
-                    </div>
-                    <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
-                        <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
-                        <span class="font-bold text-sm">Profile Submitted</span>
-                    </div>
-                    <div class="flex items-center gap-4 text-error bg-error/10 rounded-lg p-2 -mx-2">
-                        <span class="material-symbols-outlined text-error text-xl">cancel</span>
-                        <span class="font-bold text-sm">Application Rejected</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-4 space-y-4">
-                <a href="complete-profile.html" class="block w-full bg-primary text-white font-bold py-4 rounded-xl hover:opacity-90 shadow-lg transition-opacity">
-                    Update & Resubmit
-                </a>
-                <a href="#" class="inline-block text-xs text-slate-500 font-semibold hover:text-primary">Contact Support</a>
-            </div>
-        </div>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">APPLICATION STATUS</div>
+        <div class="font-headline text-2xl font-extrabold tracking-tight">Rejected</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(239,68,68,0.08);padding:8px 16px;border-radius:12px;border:1px solid rgba(239,68,68,0.15);">
+        <div style="width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 12px rgba(239,68,68,0.6);"></div>
+        <span style="font-size:11px;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:0.08em;">REJECTED</span>
+      </div>
     </div>
 
+    <div style="padding:32px 36px;">
+      <div class="max-w-2xl mx-auto">
+        <!-- Rejection Card -->
+        <div class="admin-card page-enter">
+          <div class="p-10 text-center">
+            <div class="w-20 h-20 rounded-3xl bg-red-100 dark:bg-red-500/10 text-red-600 flex items-center justify-center mx-auto mb-6">
+              <span class="material-symbols-outlined text-5xl">cancel</span>
+            </div>
+            <h2 class="text-2xl font-black font-headline dark:text-white mb-3">Application Rejected</h2>
+            <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-8">Unfortunately, your application could not be approved. Please review the reason below and resubmit.</p>
+
+            <!-- Rejection Reason -->
+            <div class="text-left p-6 rounded-2xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10 mb-8">
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-red-500 mt-0.5">info</span>
+                <div>
+                  <div class="font-bold text-sm text-red-700 dark:text-red-400 mb-1">Rejection Reason</div>
+                  <p class="text-sm text-red-600/80 dark:text-red-400/80">Submitted identity documents were unclear or did not match the provided details. Please re-upload clear, valid copies of your documents.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 justify-center">
+              <a href="dashboard.html" class="user-btn-secondary no-underline" style="padding:12px 24px !important;">
+                <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Dashboard
+              </a>
+              <a href="complete-profile.html" class="user-btn-primary no-underline" style="padding:12px 32px !important;">
+                <span class="material-symbols-outlined" style="font-size:18px;">refresh</span> Update & Resubmit
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/component-loader.js"></script>
+  <script src="../../assets/js/main.js"></script>
 </body>
 </html>

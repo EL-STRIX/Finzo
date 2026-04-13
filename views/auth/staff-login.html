@@ -74,12 +74,12 @@
       padding: 0 18px 0 48px;
       background: #f1f5f9; 
       border: 1.5px solid #e2e8f0; 
-      border-radius: 8px; 
+      border-radius: 6px; 
       font-size: 14px; 
       font-weight: 600; 
       color: #0f172a; 
       outline: none; 
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
     }
     .fin-input::placeholder { color: #94a3b8; font-weight: 500; transition: color 0.2s; }
@@ -108,7 +108,16 @@
       color: #94a3b8; 
       font-size: 20px; 
       pointer-events: none; 
-      transition: color 0.25s; 
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
+      z-index: 2;
+    }
+    .fin-input-container:focus-within .input-icon {
+      top: -2px;
+      transform: translateY(-50%) scale(0.85);
+      background: white;
+      padding: 0 4px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
     .password-toggle {

@@ -1,44 +1,56 @@
 /**
- * Finzo Theme Engine
+ * Finzo Theme Engine v2.1
  * Handles dark/light mode toggle with localStorage persistence.
- * Works for both admin and user panels.
+ * Uses event delegation to support dynamically loaded components (Sidebars/Navbars).
  */
 (function() {
   const STORAGE_KEY = 'finzo-theme';
 
   function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem(STORAGE_KEY, theme);
+    const activeTheme = theme || localStorage.getItem(STORAGE_KEY) || 'light';
+    
+    // Apply to document root
+    document.documentElement.setAttribute('data-theme', activeTheme);
+    document.documentElement.classList.toggle('dark', activeTheme === 'dark');
+    
+    // Persist
+    localStorage.setItem(STORAGE_KEY, activeTheme);
 
-    // Sync all toggle buttons on the page
+    // Sync all icons and labels currently in the DOM
     document.querySelectorAll('[data-theme-icon]').forEach(el => {
-      el.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+      el.textContent = activeTheme === 'dark' ? 'light_mode' : 'dark_mode';
     });
     document.querySelectorAll('[data-theme-label]').forEach(el => {
-      el.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      el.textContent = activeTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
     });
   }
 
   function toggleTheme() {
     const current = localStorage.getItem(STORAGE_KEY) || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
+    const target = current === 'dark' ? 'light' : 'dark';
+    applyTheme(target);
   }
 
-  // Apply saved theme immediately (before DOM paint to prevent flash)
+  // Initial immediate apply (prevents FOUC)
   const saved = localStorage.getItem(STORAGE_KEY) || 'light';
   document.documentElement.setAttribute('data-theme', saved);
   document.documentElement.classList.toggle('dark', saved === 'dark');
 
-  // Expose globally
+  // Expose globally for manual sync if needed
   window.FinzoTheme = { toggle: toggleTheme, apply: applyTheme };
 
-  // Auto-wire buttons after DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
-    applyTheme(saved); // Sync icons
+  // Global Event Delegation for toggle buttons
+  document.addEventListener('click', function(e) {
+    const toggleBtn = e.target.closest('[data-toggle-theme]');
+    if (toggleBtn) {
+      e.preventDefault();
+      toggleTheme();
+    }
+  });
 
-    document.querySelectorAll('[data-toggle-theme]').forEach(btn => {
-      btn.addEventListener('click', toggleTheme);
-    });
+  // Sync icons on DOM Content Loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    applyTheme();
   });
 })();
+
