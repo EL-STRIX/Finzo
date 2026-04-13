@@ -496,15 +496,15 @@
                 // Reset UI dropdowns manually
                 $('#dropdown-type .selected-text').text('All Types');
                 $('#dropdown-status .selected-text').text('All Status');
-                $('.time-tab').removeClass('bg-primary text-white').addClass('text-black dark:text-slate-400');
-                $('.time-tab:first').addClass('bg-primary text-white').removeClass('text-black dark:text-slate-400');
+                $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
+                $('.time-tab:first').addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
                 currentPage = 1;
                 renderTransactions();
             });
 
             $('.time-tab').on('click', function() {
-                $('.time-tab').removeClass('bg-primary text-white shadow-md').addClass('text-black dark:text-slate-400');
-                $(this).addClass('bg-primary text-white shadow-md').removeClass('text-black dark:text-slate-400');
+                $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
+                $(this).addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
                 currentFilters.range = $(this).text().trim();
                 currentPage = 1;
                 renderTransactions();
