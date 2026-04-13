@@ -37,7 +37,8 @@
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <!-- SIDEBAR -->
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -92,22 +93,31 @@
   <div class="admin-main">
     <!-- TOP BAR -->
     <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF MANAGEMENT</div>
-        <div class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Bank Staff</div>
+      <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2 mt-1 sm:mt-0">
+            <span class="material-symbols-outlined force-black">menu</span>
+        </button>
+        <div>
+          <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF MANAGEMENT</div>
+          <div class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Bank Staff</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:20px;">
-        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary"
+      <div class="flex items-center gap-3 sm:gap-5">
+        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary hidden sm:flex"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Staff
+        </button>
+        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary sm:hidden !p-2"
+          style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
+          <span class="material-symbols-outlined">add</span>
         </button>
         <div class="admin-avatar premium-gradient-primary">A</div>
       </div>
     </div>
 
-    <div class="p-10">
+    <div class="p-4 sm:p-6 lg:p-10">
       <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#e0f2fe;">
             <span class="material-symbols-outlined" style="color:#0369a1;">group</span>
@@ -141,9 +151,9 @@
       </div>
 
       <!-- FILTERS -->
-      <div class="admin-card admin-card-dropdown-fix mb-8 relative z-20">
-        <div class="p-6 flex flex-wrap items-center gap-4">
-          <div class="flex-1 min-w-[300px]">
+      <div class="admin-card admin-card-dropdown-fix mb-6 sm:mb-8 relative z-20">
+        <div class="p-4 sm:p-6 flex flex-col lg:flex-row flex-wrap lg:items-center gap-4">
+          <div class="flex-1 min-w-[200px] lg:min-w-[300px]">
             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 block">Search Staff</label>
             <div class="relative">
               <span
@@ -190,10 +200,10 @@
             </div>
           </div>
 
-          <div class="flex items-end pt-5">
-            <button id="apply-filters" class="admin-btn-primary"
+          <div class="flex items-end pt-2 sm:pt-5 gap-2 w-full lg:w-auto">
+            <button id="apply-filters" class="admin-btn-primary flex-1 lg:flex-none justify-center"
               style="padding: 12px 32px !important; border-radius: 12px !important;">Apply</button>
-            <button id="reset-filters" class="admin-btn-secondary ml-2"
+            <button id="reset-filters" class="admin-btn-secondary flex-1 lg:flex-none justify-center"
               style="padding: 12px 28px !important; border-radius: 12px !important;">Reset</button>
           </div>
         </div>
@@ -201,8 +211,9 @@
 
       <!-- TABLE -->
       <div class="admin-card">
-        <table class="admin-table w-full table-fixed text-left">
-          <thead>
+        <div class="overflow-x-auto w-full">
+          <table class="admin-table w-full table-fixed min-w-[1000px] text-left">
+            <thead>
             <tr>
               <th style="width: 4%;">#</th>
               <th style="width: 22%;">Staff</th>
@@ -449,10 +460,11 @@
             </tr>
           </tbody>
         </table>
+        </div>
 
         <!-- PAGINATION -->
         <div
-          class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex justify-between items-center transition-all mt-4">
+          class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
           <div id="pagination-counter" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Showing 1-5
             of 8 staff</div>
           <div class="flex items-center gap-2">
@@ -568,6 +580,15 @@
   <script>
     console.log("Staff Management script initialization...");
     $(document).ready(function () {
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+
       const $searchInput = $('#staff-search-input');
       const $statusInput = $('#filter-status');
       const $branchInput = $('#filter-branch');

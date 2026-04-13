@@ -184,7 +184,8 @@
 
 <body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -238,10 +239,15 @@
   <!-- MAIN -->
   <div class="admin-main">
     <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
-      <div>
-        <div class="text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER
-          MANAGEMENT</div>
-        <div class="user-mgmt-title font-headline text-3xl font-extrabold tracking-tight mt-1">User Management</div>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER
+            MANAGEMENT</div>
+          <div class="user-mgmt-title font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-1">User Management</div>
+        </div>
       </div>
       <div style="display:flex;gap:12px;">
         <button id="open-export-modal" class="admin-btn-secondary"
@@ -251,10 +257,10 @@
       </div>
     </div>
 
-    <div style="padding:32px 36px;">
+    <div class="p-4 sm:p-6 lg:p-8">
 
       <!-- Stats -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8">
         <div class="admin-stat-card !p-6 elevation-md">
           <div class="admin-stat-label">Total Users</div>
           <div class="admin-stat-value !text-2xl">12,842</div>
@@ -275,9 +281,9 @@
 
       <!-- SEARCH & FILTER (Synced with Pending Approvals) -->
       <div class="admin-card mb-8 !overflow-visible relative z-[30]">
-        <div class="p-4 flex flex-wrap items-end gap-3">
+        <div class="p-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-3 sm:gap-4">
           <!-- Search Database -->
-          <div class="flex-1 min-w-[280px]">
+          <div class="w-full sm:flex-1 sm:min-w-[280px]">
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Database</label>
             <div class="relative group">
               <span
@@ -288,7 +294,7 @@
           </div>
 
           <!-- Account Status -->
-          <div class="w-52">
+          <div class="w-full sm:w-52">
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Status</label>
             <div class="finzo-dropdown w-full" id="status-dropdown">
               <input type="hidden" id="filter-status" value="all">
@@ -308,7 +314,7 @@
           </div>
 
           <!-- Account Type -->
-          <div class="w-44">
+          <div class="w-full sm:w-44">
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Type</label>
             <div class="finzo-dropdown w-full" id="type-dropdown">
               <input type="hidden" id="filter-type" value="all">
@@ -327,10 +333,10 @@
           </div>
 
           <!-- Buttons -->
-          <div class="flex gap-2">
-            <button id="apply-filters" class="admin-btn-primary"
+          <div class="flex w-full sm:w-auto gap-2">
+            <button id="apply-filters" class="admin-btn-primary flex-1 sm:flex-none"
               style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
-            <button id="clear-filters" class="admin-btn-secondary"
+            <button id="clear-filters" class="admin-btn-secondary flex-1 sm:flex-none"
               style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
           </div>
         </div>
@@ -338,7 +344,8 @@
 
       <!-- Table -->
       <div class="admin-card elevation-md transition-all duration-300">
-        <table class="admin-table" style="width:100%;" id="users-table">
+        <div class="overflow-x-auto">
+        <table class="admin-table w-full min-w-[900px]" id="users-table">
           <thead>
             <tr>
               <th>User</th>
@@ -401,7 +408,8 @@
             </tr>
           </tbody>
         </table>
-        <div class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex justify-between items-center transition-all">
+        </div>
+        <div class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all">
           <span id="pagination-info" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Showing 1-5 of 8 users</span>
           <div class="flex items-center gap-2">
             <button id="prev-btn" class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">&larr; Previous</button>
@@ -421,10 +429,10 @@
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
     <!-- Modal Content -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md mx-auto">
       <div class="admin-card !border-none shadow-2xl overflow-visible">
-        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
-          <h3 class="export-settings-title text-lg font-bold">Export Settings</h3>
+        <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
+          <h3 class="export-settings-title text-base sm:text-lg font-bold">Export Settings</h3>
           <button class="close-export-modal text-slate-400 hover:text-slate-600 transition-colors">
             <span class="material-symbols-outlined">close</span>
           </button>
@@ -493,6 +501,15 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
     $(function () {
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+
       let currentPage = 1;
       const rowsPerPage = 5;
 

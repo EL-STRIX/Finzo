@@ -36,8 +36,9 @@
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
   <!-- SIDEBAR -->
-  <nav class="admin-sidebar">
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -91,13 +92,17 @@
   <div class="admin-main">
     <!-- TOP BAR -->
     <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">ADMIN OVERVIEW</div>
-        <div class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Dashboard Overview</div>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] opacity-60 uppercase">ADMIN OVERVIEW</div>
+          <div class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Dashboard Overview</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:20px;">
-        <div
-          style="display:flex;align-items:center;gap:10px;background:rgba(0,184,148,0.08);padding:8px 16px;border-radius:12px;border:1px solid rgba(0,184,148,0.15);">
+      <div class="flex items-center gap-3 sm:gap-5">
+        <div class="hidden sm:flex items-center gap-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 px-4 py-2 rounded-xl border border-emerald-500/15">
           <div
             style="width:10px;height:10px;background:#00b894;border-radius:50%;box-shadow:0 0 12px rgba(0,184,148,0.6);animation:pulse 2s infinite;">
           </div>
@@ -105,15 +110,14 @@
             style="font-size:11px;font-weight:800;color:#00b894;text-transform:uppercase;letter-spacing:0.08em;">FINZO
             ADMIN PANEL</span>
         </div>
-        <div class="admin-avatar premium-gradient-primary"
-          style="width:42px;height:42px;box-shadow:0 10px 15px -3px rgba(0,38,69,0.2);">A</div>
+        <div class="admin-avatar premium-gradient-primary w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm shadow-xl">A</div>
       </div>
     </div>
 
-    <div style="padding:32px 36px;">
+    <div class="p-4 sm:p-6 lg:p-8">
 
       <!-- STAT CARDS -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8">
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#ffeef0;">
             <span class="material-symbols-outlined" style="color:#e17055;">arrow_upward</span>
@@ -234,7 +238,7 @@
     </div>
 
     <!-- CHARTS ROW -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px;">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
 
       <!-- User Growth Bar Chart -->
       <div class="admin-card" style="padding:24px;">
@@ -301,7 +305,7 @@
         <div class="admin-stat-label" style="margin-bottom:4px;">ACCOUNT OVERVIEW</div>
         <div class="admin-section-title !text-black dark:!text-white" style="font-size:16px;margin-bottom:24px;">Account Type Split</div>
 
-        <div style="display:flex;align-items:center;gap:32px;">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8">
           <!-- SVG Donut Chart -->
           <div style="position:relative;width:120px;height:120px;flex-shrink:0;">
             <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg);">
@@ -324,7 +328,7 @@
           </div>
 
           <!-- Detailed Breakdown -->
-          <div style="flex:1;display:flex;flex-direction:column;gap:16px;">
+          <div class="flex-1 w-full flex flex-col gap-4">
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <div style="display:flex;align-items:center;gap:10px;">
@@ -352,24 +356,25 @@
     </div>
 
     <!-- RECENT USERS TABLE -->
-    <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix">
+    <div class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix mx-4 sm:mx-6 lg:mx-8 mb-8">
       <div
-        class="p-4 border-b border-slate-100 dark:border-surface-container flex justify-between items-center bg-white dark:bg-surface-container-lowest">
+        class="p-4 border-b border-slate-100 dark:border-surface-container flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-surface-container-lowest rounded-t-2xl">
         <div class="admin-section-title text-black dark:text-white">Recent User Activity</div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
 
           <!-- Search box -->
-          <div style="position:relative;">
+          <div class="relative w-full sm:w-auto">
             <span class="material-symbols-outlined"
               style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;color:#6c63ff;opacity:0.6;pointer-events:none;">search</span>
             <input id="dash-user-search" type="text" placeholder="Filter users..." oninput="filterDashUsers()"
-              style="padding:8px 12px 8px 34px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:10px;font-size:12px;width:200px;outline:none;color:inherit;transition:all 0.2s;"
+              class="w-full sm:w-[200px]"
+              style="padding:8px 12px 8px 34px;background:var(--dk-surface,#f6f8fc);border:1px solid var(--dk-border,#eef0f5);border-radius:10px;font-size:12px;outline:none;color:inherit;transition:all 0.2s;"
               onfocus="this.style.borderColor='#6c63ff';this.style.boxShadow='0 0 0 3px rgba(108,99,255,0.1)'"
               onblur="this.style.borderColor='';this.style.boxShadow=''" />
           </div>
 
           <!-- Status filter dropdown -->
-          <div class="finzo-dropdown" style="width:160px;flex-shrink:0;">
+          <div class="finzo-dropdown w-full sm:w-[160px] flex-shrink-0">
             <input type="hidden" id="dash-status-filter" value="">
             <div class="finzo-dropdown-trigger">
               <span class="dropdown-label">All Status</span>
@@ -386,12 +391,13 @@
           </div>
 
           <!-- All Users link -->
-          <a href="admin-users.html" class="admin-btn-primary" style="padding: 8px 18px !important;">
+          <a href="admin-users.html" class="admin-btn-primary flex justify-center w-full sm:w-auto" style="padding: 8px 18px !important;">
             <span class="material-symbols-outlined" style="font-size:16px;">group</span> All Users
           </a>
         </div>
       </div>
-      <table class="admin-table" style="width:100%;">
+      <div class="overflow-x-auto">
+      <table class="admin-table w-full min-w-[700px]">
         <thead>
           <tr>
             <th>USER</th>
@@ -532,10 +538,9 @@
           </tr>
         </tbody>
       </table>
-      <div
-        style="padding:14px 24px;display:flex;justify-content:space-between;align-items:center;background:#fafbff;border-top:1px solid #eef0f5;">
-        <span id="dash-row-counter" style="font-size:11px;color:#000000;font-weight:600;">Displaying 1-3 of 6
-          users</span>
+      </div>
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5 p-4 rounded-b-2xl">
+        <span id="dash-row-counter" class="text-xs font-bold text-slate-500 dark:text-slate-400">Displaying 1-3 of 6 users</span>
         <div style="display:flex;gap:8px;">
           <button id="dash-pg-prev" onclick="dashGoPage(Math.max(dashCurrentPage-1, 1))" class="admin-btn-secondary"
             style="padding: 6px 14px !important;">&larr; Previous</button>
@@ -637,6 +642,15 @@
     }
     document.addEventListener('DOMContentLoaded', function () {
       renderDashTable();
+      
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
     });
   </script>
 </body>

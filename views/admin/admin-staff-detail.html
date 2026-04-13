@@ -37,7 +37,8 @@
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <!-- SIDEBAR -->
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -91,19 +92,22 @@
   <div class="admin-main">
     <!-- TOP BAR -->
     <div class="admin-topbar">
-      <div class="flex items-center gap-4">
-        <a href="admin-staff.html" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
+      <div class="flex items-center gap-2 sm:gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a href="admin-staff.html" class="hidden sm:flex p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
           <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <div class="flex flex-col">
-          <div class="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] opacity-40 uppercase">
-             <span>Admin</span>
+          <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] font-bold tracking-[0.2em] opacity-40 uppercase">
+             <span class="hidden sm:inline">Admin</span>
+             <span class="material-symbols-outlined text-[10px] hidden sm:inline">chevron_right</span>
+             <span class="whitespace-nowrap">Staff Management</span>
              <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-             <span>Staff Management</span>
-             <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-             <span class="text-primary dark:text-blue-400">Amit Sharma</span>
+             <span class="text-primary dark:text-blue-400 whitespace-nowrap">Amit Sharma</span>
           </div>
-          <div class="font-headline text-2xl font-extrabold tracking-tight">Staff Details</div>
+          <div class="font-headline text-lg sm:text-2xl font-extrabold tracking-tight mt-0.5">Staff Details</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -111,9 +115,9 @@
       </div>
     </div>
 
-    <div class="p-10">
+    <div class="p-4 sm:p-6 lg:p-10">
       <!-- STAFF HEADER CARD -->
-      <div class="admin-card p-8 mb-10 flex flex-wrap justify-between items-center gap-8">
+      <div class="admin-card p-5 sm:p-8 mb-6 sm:mb-10 flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-6 sm:gap-8">
         <div class="flex items-center gap-6">
           <div class="w-20 h-20 rounded-full premium-gradient-primary flex items-center justify-center font-black text-3xl shadow-lg border-4 border-white dark:border-slate-800">AS</div>
           <div>
@@ -133,18 +137,18 @@
             </div>
           </div>
         </div>
-        <div class="flex gap-3">
-          <button id="deactivate-staff-btn" class="admin-btn-destructive">
+        <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+          <button id="deactivate-staff-btn" class="admin-btn-destructive w-full sm:w-auto justify-center">
              <span class="material-symbols-outlined">block</span> Deactivate Staff
           </button>
-          <button id="reset-password-btn" class="admin-btn-secondary">
+          <button id="reset-password-btn" class="admin-btn-secondary w-full sm:w-auto justify-center">
              <span class="material-symbols-outlined">lock_reset</span> Reset Password
           </button>
         </div>
       </div>
 
       <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card">
           <div class="admin-stat-label">TOTAL DEPOSITS DONE</div>
           <div class="admin-stat-value">₹5,24,000 <span class="admin-stat-delta positive">+12%</span></div>
@@ -164,15 +168,15 @@
       </div>
 
       <!-- TWO COLUMN LAYOUT -->
-      <div class="flex flex-col lg:flex-row gap-10">
+      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <!-- LEFT COLUMN: INFO -->
-        <div class="lg:w-[40%] space-y-10">
+        <div class="lg:w-[40%] space-y-6 sm:space-y-10">
           <div class="admin-card">
-            <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary dark:text-blue-400">info</span>
               <h3 class="admin-section-title" style="font-size:16px;">Staff Information</h3>
             </div>
-            <div class="p-8 space-y-6">
+            <div class="p-5 sm:p-8 space-y-4 sm:space-y-6">
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</span>
                 <span class="font-bold">Amit Sharma</span>
@@ -205,11 +209,11 @@
           </div>
 
           <div class="admin-card" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-            <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3 dark:border-slate-800">
               <span class="material-symbols-outlined text-primary dark:text-blue-400">summarize</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Today's Shift Summary</h3>
+              <h3 class="admin-section-title dark:text-slate-900" style="font-size:16px;">Today's Shift Summary</h3>
             </div>
-            <div class="p-8 space-y-6">
+            <div class="p-5 sm:p-8 space-y-4 sm:space-y-6 dark:text-slate-800">
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Shift Start</span>
                 <span class="font-bold px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-sm">09:00 AM</span>
@@ -237,19 +241,19 @@
         <!-- RIGHT COLUMN: HISTORY -->
         <div class="lg:w-[60%]">
           <div class="admin-card h-full flex flex-col">
-            <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-[#1c2128]">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1c2128]">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-primary dark:text-blue-400">history</span>
                 <h3 class="admin-section-title" style="font-size:16px;">All Transactions by This Staff</h3>
               </div>
-              <div class="flex gap-2">
-                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2">
-                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2">
+              <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2 flex-1 sm:flex-none">
+                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2 flex-1 sm:flex-none">
               </div>
             </div>
             
-            <div class="flex-1 overflow-x-auto">
-              <table class="admin-table w-full text-left">
+            <div class="flex-1 overflow-x-auto w-full">
+              <table class="admin-table w-full text-left min-w-[700px]">
                 <thead>
                   <tr>
                     <th>Receipt No</th>
@@ -318,7 +322,7 @@
               </table>
             </div>
 
-            <div class="p-6 border-t border-slate-50 dark:border-white/5 flex justify-center items-center bg-slate-50/30 dark:bg-white/5">
+            <div class="p-4 sm:p-6 border-t border-slate-50 dark:border-white/5 flex justify-center items-center bg-slate-50/30 dark:bg-white/5 overflow-x-auto w-full">
               <div class="flex items-center gap-2">
                 <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Previous</button>
                 <button class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
@@ -378,6 +382,16 @@
 
   <script>
     $(document).ready(function() {
+      // Mobile Navigation
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+
       let currentAction = '';
 
       const modalConfigs = {

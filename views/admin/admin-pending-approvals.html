@@ -37,7 +37,8 @@
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <!-- SIDEBAR -->
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -91,18 +92,23 @@
   <div class="admin-main">
     <!-- TOP BAR -->
     <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">ACCOUNT APPROVALS</div>
-        <div class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">Pending Approvals</div>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">ACCOUNT APPROVALS</div>
+          <div class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Pending Approvals</div>
+        </div>
       </div>
       <div class="flex items-center gap-4">
         <div class="admin-avatar premium-gradient-primary">A</div>
       </div>
     </div>
 
-    <div class="p-10">
+    <div class="p-4 sm:p-6 lg:p-8">
       <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card">
           <div class="admin-stat-label">PENDING REVIEW</div>
           <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Action Required</span></div>
@@ -122,19 +128,19 @@
       </div>
 
       <!-- FILTER TABS -->
-      <div id="status-tabs" class="flex items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl self-start">
-        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Applications</button>
-        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="pending">Pending</button>
-        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="under review">Under Review</button>
-        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="approved">Approved</button>
-        <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="rejected">Rejected</button>
+      <div id="status-tabs" class="flex flex-wrap items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-full sm:w-auto">
+        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Applications</button>
+        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="pending">Pending</button>
+        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="under review">Under Review</button>
+        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="approved">Approved</button>
+        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="rejected">Rejected</button>
       </div>
 
       <!-- SEARCH & FILTER -->
       <div class="admin-card mb-8 !overflow-visible relative z-[30]">
-        <div class="p-4 flex flex-wrap items-end gap-3">
+        <div class="p-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-3 sm:gap-4">
           <!-- Multi-search -->
-          <div class="flex-1 min-w-[280px]">
+          <div class="w-full sm:flex-1 sm:min-w-[280px]">
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Applicant</label>
             <div class="relative group">
               <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
@@ -144,19 +150,19 @@
           </div>
           
           <!-- Date Range -->
-          <div class="flex items-center gap-2">
-             <div class="flex flex-col">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+             <div class="flex flex-col flex-1 sm:flex-none">
                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">From</label>
-               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
+               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 w-full focus:ring-2 focus:ring-primary/10">
              </div>
-             <div class="flex flex-col">
+             <div class="flex flex-col flex-1 sm:flex-none">
                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">To</label>
-               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10">
+               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 w-full focus:ring-2 focus:ring-primary/10">
              </div>
           </div>
 
           <!-- ID Type -->
-          <div class="flex flex-col">
+          <div class="flex flex-col w-full sm:w-auto">
             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">ID Type</label>
             <div class="finzo-dropdown" id="filter-id-dropdown">
               <input type="hidden" id="filter-id-type" value="all">
@@ -175,16 +181,17 @@
           </div>
 
           <!-- Buttons -->
-          <div class="flex gap-2">
-            <button id="apply-filters" class="admin-btn-primary" style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
-            <button id="reset-filters" class="admin-btn-secondary" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button id="apply-filters" class="admin-btn-primary flex-1 sm:flex-none" style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
+            <button id="reset-filters" class="admin-btn-secondary flex-1 sm:flex-none" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
           </div>
         </div>
       </div>
 
       <!-- APPLICATIONS TABLE -->
       <div class="admin-card">
-        <table class="admin-table w-full text-left">
+        <div class="overflow-x-auto">
+        <table class="admin-table min-w-[900px] w-full text-left">
           <thead>
             <tr>
               <th class="w-16">#</th>
@@ -272,9 +279,10 @@
             </tr>
           </tbody>
         </table>
+        </div>
 
         <!-- PAGINATION -->
-        <div class="p-6 border-t border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/30 dark:bg-white/5">
+        <div class="p-6 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/30 dark:bg-white/5">
           <div class="text-xs font-bold opacity-40">Showing 1-3 of 3 applications</div>
           <div class="flex items-center gap-2">
             <button id="prev-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>
@@ -291,6 +299,16 @@
        FILTERING LOGIC
        ═══════════════════════════════════════════════ */
     $(function() {
+      // Mobile Navigation
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+
       const $statusBtns = $('.tab-btn');
       const $searchInput = $('#filter-search');
       const $dateFrom = $('#filter-date-from');

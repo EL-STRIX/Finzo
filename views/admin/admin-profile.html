@@ -68,7 +68,8 @@
 </head>
 <body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub" style="font-weight:700;color:#00b894;">ADMIN CONSOLE</div>
@@ -119,17 +120,22 @@
 
 <div class="admin-main">
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
-    <div style="flex:1;">
-      <div class="text-[11px] font-bold tracking-widest force-black uppercase">ACCOUNT SETTINGS</div>
-      <div class="font-headline text-3xl font-extrabold force-black tracking-tight mt-1">Admin Profile</div>
-      <div class="text-xs force-black mt-1 font-medium">Manage your admin account details and preferences</div>
+    <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
+      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2 mt-1 sm:mt-0">
+          <span class="material-symbols-outlined force-black">menu</span>
+      </button>
+      <div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-widest force-black uppercase">ACCOUNT SETTINGS</div>
+        <div class="font-headline text-xl sm:text-3xl font-extrabold force-black tracking-tight mt-1">Admin Profile</div>
+        <div class="text-xs sm:text-sm force-black mt-1 font-medium">Manage your admin account details and preferences</div>
+      </div>
     </div>
   </div>
 
-  <div style="padding:32px 36px;">
+  <div class="p-4 sm:p-6 lg:p-8">
     
     <!-- STATS ROW -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px;">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8">
       <div class="admin-stat-card">
         <div class="admin-stat-icon" style="background:#e8f8f2;"><span class="material-symbols-outlined" style="color:#00b894;">check_circle</span></div>
         <div class="admin-stat-label">TOTAL APPROVALS</div>
@@ -152,20 +158,20 @@
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:32px;align-items:start;">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
       
       <!-- LEFT COLUMN -->
-      <div style="display:flex;flex-direction:column;gap:32px;">
+      <div class="lg:col-span-3 flex flex-col gap-6 lg:gap-8">
         
         <!-- PROFILE INFO CARD -->
-        <div class="admin-card force-white-bg !overflow-visible relative z-[30]" style="padding:32px;">
+        <div class="admin-card force-white-bg !overflow-visible relative z-[30] p-5 sm:p-8">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
             <span class="material-symbols-outlined force-black" style="font-size:24px;">person</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Profile Information</div>
           </div>
 
           <!-- Avatar Section -->
-          <div style="display:flex;align-items:center;gap:32px;margin-bottom:32px;">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 mb-8">
             <div style="position:relative;">
               <div id="avatar-preview-container" class="premium-gradient-primary" style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:white;box-shadow:0 10px 20px rgba(0,38,69,0.15);overflow:hidden;">
                 <span id="avatar-initials">AS</span>
@@ -177,7 +183,7 @@
                 <div class="force-black" style="font-size:20px;font-weight:800;">Arjun Sharma</div>
                 <span style="font-size:10px;font-weight:800;background:rgba(0,38,69,0.05);color:#002645;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,38,69,0.1);" class="dark:!bg-slate-800 dark:!text-slate-300 dark:!border-slate-700">SUPER ADMIN</span>
               </div>
-              <div style="color:#64748b;font-size:13px;margin-bottom:12px;">arjun.sharma@finzobank.com • Member since 01 Jan 2026</div>
+              <div style="color:#64748b;font-size:13px;margin-bottom:12px;" class="leading-relaxed">arjun.sharma@finzobank.com<br class="sm:hidden"> <span class="hidden sm:inline">•</span> Member since 01 Jan 2026</div>
               <div style="display:flex;align-items:center;gap:12px;">
                 <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
                 <button onclick="document.getElementById('photo-upload').click()" class="admin-btn-secondary" style="padding: 8px 16px !important; display:flex; align-items:center; gap:8px;">
@@ -191,7 +197,7 @@
           <div style="height:1px;background:rgba(0,0,0,0.05);margin-bottom:32px;" class="dark:bg-slate-800"></div>
 
           <!-- Edit Form -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <div>
               <label class="profile-label">Full Name</label>
               <input type="text" class="profile-input w-full" value="Arjun Sharma">
@@ -211,7 +217,7 @@
               <label class="profile-label">Phone Number</label>
               <input type="text" class="profile-input w-full" value="+91 98765 43210">
             </div>
-            <div style="grid-column: span 2;">
+            <div class="sm:col-span-2">
               <label class="profile-label">Role</label>
               <div style="position:relative;">
                 <input type="text" class="profile-input locked-input w-full" value="Super Administrator" readonly style="padding-right: 48px !important;">
@@ -258,7 +264,7 @@
         </div>
 
         <!-- CHANGE PASSWORD CARD -->
-        <div class="admin-card force-white-bg" style="padding:32px;">
+        <div class="admin-card force-white-bg p-5 sm:p-8">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
             <span class="material-symbols-outlined force-black" style="font-size:24px;">lock</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Change Password</div>
@@ -293,10 +299,10 @@
       </div>
 
       <!-- RIGHT COLUMN -->
-      <div style="display:flex;flex-direction:column;gap:32px;">
+      <div class="lg:col-span-2 flex flex-col gap-6 lg:gap-8">
         
         <!-- SECURITY OVERVIEW CARD -->
-        <div class="admin-card force-white-bg" style="padding:32px;">
+        <div class="admin-card force-white-bg p-5 sm:p-8">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
             <span class="material-symbols-outlined force-black" style="font-size:24px;">shield</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Security Overview</div>
@@ -486,7 +492,7 @@
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1.5fr; gap:12px;">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <button onclick="closeVerifyModal()" class="modal-btn" style="background:rgba(148,163,184,0.1); color:#64748b;">Cancel</button>
         <button onclick="handleProfileSave()" class="modal-btn" style="background:#002645; color:white; box-shadow:0 10px 15px -3px rgba(0,38,69,0.2);">Confirm & Update</button>
       </div>
@@ -495,6 +501,17 @@
 </div>
 
 <script>
+  $(function () {
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+  });
+
   function showToast(message, type) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');

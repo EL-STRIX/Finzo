@@ -99,7 +99,6 @@
     .chart-card {
       background: var(--bg-card);
       border-radius: 20px;
-      padding: 28px;
       border: 1px solid var(--border-color);
       box-shadow: var(--shadow-card);
     }
@@ -169,14 +168,6 @@
       background: #002645;
       color: #fff;
       box-shadow: 0 4px 12px rgba(0, 38, 69, 0.2);
-    }
-
-    .filter-row {
-      display: grid;
-      grid-template-columns: 2fr 1.2fr 1.2fr 1.1fr 1.1fr 1.1fr auto auto;
-      gap: 12px;
-      align-items: end;
-      padding: 0 12px 12px;
     }
 
     .filter-item {
@@ -344,10 +335,6 @@
       .stat-grid {
         grid-template-columns: repeat(2, 1fr) !important;
       }
-
-      .charts-grid {
-        grid-template-columns: 1fr !important;
-      }
     }
   </style>
 </head>
@@ -355,7 +342,8 @@
 <body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
   <!-- SIDEBAR (Standardized) -->
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub">ADMIN CONSOLE</div>
@@ -409,22 +397,24 @@
   <!-- MAIN AREA -->
   <div class="admin-main">
     <header class="admin-topbar">
-      <div class="flex items-center gap-5">
-        <div class="mobile-burger lg:hidden p-2"><span class="material-symbols-outlined">menu</span></div>
+      <div class="flex items-center gap-3 sm:gap-5 flex-1">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2 text-slate-500">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
         <div>
           <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">Transaction Management</div>
-          <h1 class="font-headline text-3xl font-extrabold tracking-tight mt-0.5">All Transactions</h1>
+          <h1 class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">All Transactions</h1>
         </div>
       </div>
       <button
-        class="hidden md:flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20">
+        class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20">
         <span class="material-symbols-outlined text-xl">description</span> Export CSV
       </button>
     </header>
 
-    <main class="p-10">
+    <main class="p-4 sm:p-6 lg:p-10">
       <!-- STAT CARDS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 stat-grid">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10 stat-grid">
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--primary-soft); color:var(--primary)"><span
               class="material-symbols-outlined">currency_rupee</span></div>
@@ -456,16 +446,16 @@
       </div>
 
       <!-- CHARTS -->
-      <div class="charts-grid">
-        <div class="chart-card">
-          <div class="flex justify-between items-center mb-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-6 mb-6 sm:mb-10">
+        <div class="chart-card p-5 sm:p-7">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
               <h3 class="font-bold">Transaction Volume</h3>
               <p class="text-sm opacity-50">Monthly overview — 2026</p>
             </div>
-            <div class="seg-control">
-              <button class="seg-btn">Today</button><button class="seg-btn">Week</button><button
-                class="seg-btn active">Month</button><button class="seg-btn">Year</button>
+            <div class="seg-control overflow-x-auto w-full sm:w-auto flex-nowrap shrink-0">
+              <button class="seg-btn min-w-max">Today</button><button class="seg-btn min-w-max">Week</button><button
+                class="seg-btn active min-w-max">Month</button><button class="seg-btn min-w-max">Year</button>
             </div>
           </div>
           <div class="relative h-[240px] w-full">
@@ -479,11 +469,11 @@
             </svg>
           </div>
         </div>
-        <div class="chart-card flex flex-col items-center">
+        <div class="chart-card flex flex-col items-center p-5 sm:p-7">
           <div class="w-full mb-6">
             <h3 class="font-bold">Breakdown</h3>
           </div>
-          <div class="donut-wrap mb-8">
+          <div class="donut-wrap mb-6 sm:mb-8">
             <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
               <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--border-color)" stroke-width="3" />
               <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#10b981" stroke-width="4"
@@ -519,17 +509,17 @@
       </div>
 
       <!-- PREMIUM FILTERS -->
-      <div class="premium-filter-container">
-        <div class="filter-tab-box">
-          <button class="filter-tab-btn active tab-btn" data-type="all">All Transactions</button>
-          <button class="filter-tab-btn tab-btn" data-type="deposit">Deposits</button>
-          <button class="filter-tab-btn tab-btn" data-type="withdrawal">Withdrawals</button>
-          <button class="filter-tab-btn tab-btn" data-type="transfer">Transfers</button>
-          <button class="filter-tab-btn tab-btn" data-type="pending">Pending</button>
+      <div class="premium-filter-container p-3 sm:p-4">
+        <div class="filter-tab-box overflow-x-auto overflow-y-hidden flex-nowrap whitespace-nowrap">
+          <button class="filter-tab-btn active tab-btn flex-shrink-0" data-type="all">All Transactions</button>
+          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="deposit">Deposits</button>
+          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="withdrawal">Withdrawals</button>
+          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="transfer">Transfers</button>
+          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="pending">Pending</button>
         </div>
 
-        <div class="filter-row">
-          <div class="filter-item">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(200px,2fr)_1fr_1fr_1.2fr_1.2fr_1.2fr_auto_auto] gap-4 items-end px-2 pb-2">
+          <div class="filter-item sm:col-span-2 lg:col-span-1">
             <span class="filter-label">Search Activity</span>
             <div class="search-wrap">
               <span class="material-symbols-outlined search-icon">search</span>
@@ -597,18 +587,19 @@
             </div>
           </div>
 
-          <button id="apply-filters" class="btn-apply-main">Apply</button>
-          <button id="reset-filters" class="btn-reset-main">Reset</button>
+          <button id="apply-filters" class="btn-apply-main flex-1 items-center justify-center">Apply</button>
+          <button id="reset-filters" class="btn-reset-main flex-1 items-center justify-center">Reset</button>
         </div>
       </div>
 
       <!-- TABLE -->
-      <div class="admin-card">
-        <div class="p-6 border-b border-slate-50 dark:border-white/5">
+      <div class="admin-card overflow-hidden">
+        <div class="p-5 sm:p-6 border-b border-slate-50 dark:border-white/5">
           <h3 class="font-black text-sm uppercase opacity-40 tracking-widest">Recent Activity</h3>
         </div>
-        <table class="admin-table w-full text-left">
-          <thead>
+        <div class="overflow-x-auto w-full">
+          <table class="admin-table w-full text-left min-w-[1000px]">
+            <thead>
             <tr>
               <th class="w-16">#</th>
               <th>User</th>
@@ -623,8 +614,9 @@
           </thead>
           <tbody id="txn-table-body"></tbody>
         </table>
-        <div class="p-6 flex justify-between items-center bg-slate-50/20 dark:bg-white/5">
-          <div class="text-xs font-bold opacity-40" id="pag-info">Showing 1-6 of 6</div>
+        </div>
+        <div class="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/20 dark:bg-white/5 w-full">
+          <div class="text-[11px] font-bold opacity-40 uppercase tracking-widest" id="pag-info">Showing 1-6 of 6</div>
           <div class="flex items-center gap-2">
             <button id="prev-page"
               class="px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-lg text-xs font-bold opacity-50 cursor-not-allowed">←
@@ -708,6 +700,15 @@
     }
 
     $(function () {
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open');
+          $('#sidebar-overlay').removeClass('active');
+      });
+
       $('.tab-btn').on('click', function () {
         $('.tab-btn').removeClass('active bg-primary text-white shadow-lg').addClass('text-slate-500');
         $(this).addClass('active bg-primary text-white shadow-lg').removeClass('text-slate-500');
@@ -742,7 +743,6 @@
       $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; applyFilters(); } });
       $('#next-page').on('click', () => { if (currentPage < Math.ceil(data.length / rowsPerPage)) { currentPage++; applyFilters(); } });
 
-      $('.mobile-burger').on('click', () => $('.admin-sidebar').toggleClass('active'));
       applyFilters();
     });
   </script>

@@ -40,8 +40,8 @@
 <script src="../../assets/js/theme.js"></script>
 </head>
 <body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
-
-  <nav class="admin-sidebar">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
       <div class="brand-sub" style="font-weight:700;color:#00b894;">ADMIN CONSOLE</div>
@@ -94,21 +94,26 @@
 <!-- MAIN -->
 <div class="admin-main">
   <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
-    <div>
-      <div class="text-[11px] font-bold tracking-widest force-black uppercase">INTEREST MANAGEMENT</div>
-      <div class="font-headline text-3xl font-extrabold force-black tracking-tight mt-1">Savings Interest Management</div>
-      <div class="text-xs force-black mt-1 font-medium">Configure and manage monthly interest rates for savings accounts</div>
+    <div class="flex items-start sm:items-center gap-3 sm:gap-4">
+      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2 mt-1 sm:mt-0">
+          <span class="material-symbols-outlined force-black">menu</span>
+      </button>
+      <div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-widest force-black uppercase">INTEREST MANAGEMENT</div>
+        <div class="font-headline text-xl sm:text-3xl font-extrabold force-black tracking-tight mt-1">Savings Interest Management</div>
+        <div class="text-xs sm:text-sm force-black mt-1 font-medium">Configure and manage monthly interest rates for savings accounts</div>
+      </div>
     </div>
   </div>
 
-  <div style="padding:32px 36px;">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:24px;margin-bottom:24px;">
+  <div class="p-4 sm:p-6 lg:p-8">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 sm:gap-6 mb-6">
 
       <!-- LEFT: Current Rate + Update Form -->
-      <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="lg:col-span-2 flex flex-col gap-5">
 
         <!-- Live Rate Card -->
-        <div class="admin-card elevation-md transition-all duration-300" style="padding:28px;position:relative;overflow:hidden;">
+        <div class="admin-card elevation-md transition-all duration-300 p-5 sm:p-7 relative overflow-hidden">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
             <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">Live Savings Rate</div>
             <div style="display:flex;align-items:center;gap:6px;background:#e8f8f2;padding:4px 12px;border-radius:20px;">
@@ -129,7 +134,7 @@
         </div>
 
         <!-- Update Form -->
-        <div id="update-rate-card" class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix dark:!bg-slate-800/40" style="padding:28px;">
+        <div id="update-rate-card" class="admin-card elevation-md transition-all duration-300 admin-card-dropdown-fix dark:!bg-slate-800/40 p-5 sm:p-7">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
             <span class="material-symbols-outlined force-black" style="font-size:20px;">edit</span>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Update Interest Rate</div>
@@ -142,7 +147,7 @@
                 <span class="force-black" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:700;">%</span>
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Effective Date</label>
                 <input type="date" value="2026-07-01" class="force-black dark:bg-surface-container-low" style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;outline:none;box-sizing:border-box;"/>
@@ -172,7 +177,7 @@
       </div>
 
       <!-- RIGHT: History + Analysis -->
-      <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="lg:col-span-3 flex flex-col gap-5">
 
         <!-- History Table -->
         <div class="admin-card elevation-md transition-all duration-300">
@@ -183,7 +188,8 @@
               <button class="force-black dark:bg-surface-container-low" style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Print</button>
             </div>
           </div>
-          <table class="admin-table" style="width:100%;">
+          <div class="overflow-x-auto">
+          <table class="admin-table w-full min-w-[600px]">
             <thead>
               <tr id="history-header-row">
                 <th class="force-black table-header-theme dark:!bg-slate-800/60" style="backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">EFFECTIVE DATE</th>
@@ -219,18 +225,19 @@
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
         <!-- Analysis Row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div id="metrics-interest-total" class="admin-card force-white-bg" style="padding:22px;">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <div id="metrics-interest-total" class="admin-card force-white-bg p-5 sm:p-6">
             <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px; color:rgba(0,0,0,0.6);">Total Interest Credited</div>
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;margin-bottom:8px;">₹12,400</div>
             <div style="display:flex;align-items:center;gap:6px;color:#10b981;font-size:11px;font-weight:700;">
               <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> +4.5% from last month
             </div>
           </div>
-          <div class="admin-card" style="padding:22px;">
+          <div class="admin-card p-5 sm:p-6">
             <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Accounts Earning Interest</div>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
               <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;">1,536</div>
@@ -241,7 +248,7 @@
         </div>
 
         <!-- Volatility Chart -->
-        <div class="admin-card" style="padding:24px;">
+        <div class="admin-card p-5 sm:p-6 flex-1 flex flex-col justify-end min-h-[220px]">
           <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px;">Monthly Interest Credited (12 Months)</div>
           <div style="display:flex;align-items:flex-end;gap:4px;height:100px;">
             <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:30%;opacity:0.6;"></div>
@@ -290,6 +297,17 @@
 
 <script src="../../assets/js/main.js"></script>
 <script>
+$(function () {
+  $('#mobile-menu-btn').on('click', function () {
+      $('#admin-sidebar').addClass('mobile-open');
+      $('#sidebar-overlay').addClass('active');
+  });
+  $('#sidebar-overlay').on('click', function () {
+      $('#admin-sidebar').removeClass('mobile-open');
+      $('#sidebar-overlay').removeClass('active');
+  });
+});
+
 function checkRateChange() {
   const newRate = document.getElementById('new-rate').value;
   document.getElementById('live-rate').textContent = newRate || '—';
