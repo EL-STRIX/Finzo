@@ -105,7 +105,8 @@ function buildSidebar(activePage) {
   }
 
   const html = `
-    <aside class="sidebar">
+    <div id="user-sidebar-overlay" class="sidebar-overlay"></div>
+    <aside class="sidebar" id="user-sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-name">Finzo</div>
         <div class="sidebar-brand-sub">Customer Portal</div>
@@ -166,6 +167,15 @@ function buildSidebar(activePage) {
   const container = document.getElementById('sidebar-root');
   if (container) container.innerHTML = html;
   updateThemeIcon();
+
+  // Bind mobile sidebar overlay dismiss
+  const overlay = document.getElementById('user-sidebar-overlay');
+  if(overlay) {
+    overlay.addEventListener('click', () => {
+      document.getElementById('user-sidebar').classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    });
+  }
 }
 
 function getStatusLabel(status) {
@@ -185,8 +195,13 @@ function buildNavbar(eyebrow, title) {
   const html = `
     <nav class="navbar">
       <div class="navbar-left">
-        <div class="navbar-eyebrow">${eyebrow}</div>
-        <div class="navbar-title">${title}</div>
+        <button class="nav-icon-btn nav-mobile-toggle" onclick="document.getElementById('user-sidebar').classList.add('mobile-open'); document.getElementById('user-sidebar-overlay').classList.add('active');" style="margin-right:4px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="navbar-title-wrap">
+          <div class="navbar-eyebrow">${eyebrow}</div>
+          <div class="navbar-title">${title}</div>
+        </div>
       </div>
       <div class="navbar-right">
         <div style="position:relative">

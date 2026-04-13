@@ -18,7 +18,11 @@
 <button onclick="openModal('add-modal')" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px">add</span>Add Beneficiary</button>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 380px;gap:20px">
+<style>
+.beneficiary-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+@media(max-width:1024px) { .beneficiary-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="beneficiary-grid">
 <!-- LIST -->
 <div class="card animate-in animate-delay-1" style="overflow:hidden">
 <div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-input)">

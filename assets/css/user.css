@@ -444,3 +444,41 @@ tbody td { padding: 14px 16px; font-size: 13px; color: var(--text-primary); vert
 .text-secondary-color { color: var(--text-secondary); }
 .text-success { color: #10b981; } .text-danger { color: #f43f5e; } .text-warning { color: #f59e0b; }
 .rounded-full { border-radius: 9999px; }
+
+/* ── MOBILE RESPONSIVENESS OVERRIDES ── */
+.sidebar-overlay {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+.navbar-left { display: flex; align-items: center; gap: 12px; flex-direction: row; }
+.navbar-title-wrap { display: flex; flex-direction: column; gap: 2px; }
+
+@media (max-width: 1024px) {
+  .sidebar { 
+    transform: translateX(-100%); 
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+    box-shadow: 5px 0 25px rgba(0,0,0,0.2) !important;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .main { margin-left: 0; min-width: 100vw; }
+  .navbar { padding: 0 16px; height: 60px; }
+  .page-content { padding: 16px 12px; }
+  .page-title { font-size: 22px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
+  .card-p { padding: 16px; }
+}
+
+@media (max-width: 640px) {
+  .stat-grid { grid-template-columns: 1fr !important; }
+  .banner { flex-direction: column; align-items: flex-start; text-align: left; padding: 14px; gap: 14px; }
+  .banner .btn, .banner button, .banner .badge { width: 100%; text-align: center; justify-content: center; }
+  .card-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px 16px; }
+  .btn.btn-outline.hidden { display: none !important; } /* Safeguard hidden */
+  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; padding: 0 12px; }
+  .steps { flex-direction: column; align-items: flex-start; position: relative; padding-left: 16px; gap: 16px; }
+  .step-line { width: 2px; height: 24px; margin: 0 0 0 15px; position: absolute; left: 0; }
+  .account-card-balance { font-size: 26px; }
+}

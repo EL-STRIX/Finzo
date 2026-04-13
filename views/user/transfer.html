@@ -32,7 +32,11 @@
       <div class="page-subtitle">Send money securely to any Finzo account — ACID protected</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+    <style>
+      .transfer-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+      @media (max-width: 1024px) { .transfer-grid { grid-template-columns: 1fr; } }
+    </style>
+    <div class="transfer-grid">
       <!-- LEFT: FORM -->
       <div>
         <!-- FROM ACCOUNT -->

@@ -23,7 +23,11 @@
 </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+<style>
+.detail-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+@media (max-width: 1024px) { .detail-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="detail-grid">
 <!-- LEFT -->
 <div>
 <!-- Account Card -->
