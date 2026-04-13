@@ -437,6 +437,7 @@ tbody td { padding: 14px 16px; font-size: 13px; color: var(--text-primary); vert
 .text-center { text-align: center; } .text-right { text-align: right; }
 .hidden { display: none !important; }
 .w-full { width: 100%; }
+.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .divider { height: 1px; background: var(--border); margin: 20px 0; }
 .text-sm { font-size: 13px; } .text-xs { font-size: 11px; } .text-lg { font-size: 16px; }
 .font-bold { font-weight: 700; } .font-semibold { font-weight: 600; } .font-black { font-weight: 800; }
@@ -477,7 +478,7 @@ tbody td { padding: 14px 16px; font-size: 13px; color: var(--text-primary); vert
   .banner .btn, .banner button, .banner .badge { width: 100%; text-align: center; justify-content: center; }
   .card-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px 16px; }
   .btn.btn-outline.hidden { display: none !important; } /* Safeguard hidden */
-  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; padding: 0 12px; }
+  .table-wrap { width: 100%; }
   .steps { flex-direction: column; align-items: flex-start; position: relative; padding-left: 16px; gap: 16px; }
   .step-line { width: 2px; height: 24px; margin: 0 0 0 15px; position: absolute; left: 0; }
   .account-card-balance { font-size: 26px; }

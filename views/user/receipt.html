@@ -22,7 +22,7 @@
 <div id="navbar-root"></div>
 <div class="page-content" style="max-width:620px">
 
-<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-end">
+<div class="page-header animate-in" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end">
 <div><div class="page-eyebrow">Transaction</div><div class="page-title">Receipt</div><div class="page-subtitle">Your transaction has been processed successfully</div></div>
 <div style="display:flex;gap:8px" class="no-print">
 <a href="transactions.html" class="btn btn-ghost">← History</a>
@@ -71,7 +71,7 @@
 <div class="receipt-row"><span class="r-label">Description</span><span class="r-value" id="rcpt-desc">Fund Transfer</span></div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="form-grid form-grid-2" style="gap:12px;margin-bottom:16px">
 <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">From</div>
 <div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-from-name">Rahul Kumar</div>
@@ -106,10 +106,10 @@
 </div>
 
 <!-- Actions -->
-<div class="flex gap-3 mt-5 no-print animate-in animate-delay-3">
-<a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
-<a href="transfer.html" class="btn btn-outline" style="flex:1;justify-content:center">New Transfer</a>
-<a href="transactions.html" class="btn btn-primary" style="flex:1;justify-content:center">View History</a>
+<div class="flex gap-2 mt-5 no-print animate-in animate-delay-3" style="flex-wrap: wrap;">
+<a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center;min-width:140px;">← Dashboard</a>
+<a href="transfer.html" class="btn btn-outline" style="flex:1;justify-content:center;min-width:140px;">New Transfer</a>
+<a href="transactions.html" class="btn btn-primary" style="flex:1;justify-content:center;min-width:140px;">View History</a>
 </div>
 </div>
 </div>

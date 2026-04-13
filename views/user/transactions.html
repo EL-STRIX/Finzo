@@ -25,7 +25,7 @@
 
 <!-- FILTER BAR -->
 <div class="card animate-in animate-delay-1" style="margin-bottom:20px;overflow:hidden">
-<div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:4px;background:var(--bg-input)">
+<div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:4px;background:var(--bg-input)">
 <button class="filter-tab active" onclick="filterTxns('all',this)">All</button>
 <button class="filter-tab" onclick="filterTxns('credit',this)">Credits</button>
 <button class="filter-tab" onclick="filterTxns('debit',this)">Debits</button>
@@ -36,15 +36,15 @@
 <div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">Search</div>
 <div style="position:relative"><span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--text-placeholder)">search</span><input type="text" id="search" placeholder="Search transactions..." style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 14px 0 40px;outline:none;font-family:inherit" oninput="renderTable()"/></div>
 </div>
-<div>
+<div style="flex:1;min-width:130px;">
 <div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">From Date</div>
-<input type="date" id="from-date" style="height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" onchange="renderTable()"/>
+<input type="date" id="from-date" style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" onchange="renderTable()"/>
 </div>
-<div>
+<div style="flex:1;min-width:130px;">
 <div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">To Date</div>
-<input type="date" id="to-date" style="height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" onchange="renderTable()"/>
+<input type="date" id="to-date" style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" onchange="renderTable()"/>
 </div>
-<button class="btn btn-ghost btn-sm" onclick="resetFilters()" style="align-self:flex-end">Reset</button>
+<button class="btn btn-ghost btn-sm" onclick="resetFilters()" style="align-self:flex-end;height:42px;">Reset</button>
 </div>
 </div>
 
@@ -60,7 +60,7 @@
 <tbody id="txn-body"></tbody>
 </table>
 </div>
-<div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+<div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center">
 <span id="pag-info" style="font-size:11px;font-weight:700;color:var(--text-secondary)"></span>
 <div class="pagination" id="pag-nums"></div>
 </div>
