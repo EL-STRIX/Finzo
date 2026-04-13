@@ -48,6 +48,21 @@
 </div>
 </div>
 
+<!-- View Notification Modal -->
+<div id="viewNotifModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div id="viewNotifIcon" class="modal-icon"></div>
+    <div id="viewNotifTitle" class="modal-title">Notification Title</div>
+    <div id="viewNotifDate" style="text-align:center;font-size:11px;font-weight:600;color:var(--text-placeholder);margin-bottom:20px;text-transform:uppercase;letter-spacing:0.05em">Date</div>
+    <div id="viewNotifBody" class="modal-text" style="text-align:left;font-size:14px;color:var(--text-primary);line-height:1.6;padding:16px;background:var(--bg-input);border-radius:var(--radius-md)">
+      Message body goes here.
+    </div>
+    <div class="modal-actions" style="margin-top:24px">
+      <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="width:100%">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 buildSidebar('notifications'); buildNavbar('Activity','Notifications');
 let activeFilter = 'all';
@@ -70,7 +85,7 @@ function renderNotifs() {
     return;
   }
   container.innerHTML = filtered.map(n => `
-    <div class="notif-list-item ${n.unread?'unread':''}" onclick="markRead(${n.id})">
+    <div class="notif-list-item ${n.unread?'unread':''}" onclick="viewNotif(${n.id})">
       <div class="notif-type-icon" style="background:${n.iconBg}">
         <span class="material-symbols-outlined" style="font-size:20px;color:${n.iconColor}">${n.icon}</span>
       </div>
@@ -82,6 +97,22 @@ function renderNotifs() {
     </div>`).join('');
 }
 
+function viewNotif(id) {
+  const n = notifs.find(x => x.id === id);
+  if (n) {
+    n.unread = false;
+    document.getElementById('viewNotifTitle').textContent = n.title;
+    document.getElementById('viewNotifBody').textContent = n.body;
+    document.getElementById('viewNotifDate').textContent = n.time;
+    
+    const iconContainer = document.getElementById('viewNotifIcon');
+    iconContainer.style.background = n.iconBg;
+    iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:28px;color:${n.iconColor}">${n.icon}</span>`;
+    
+    renderNotifs();
+    openModal('viewNotifModal');
+  }
+}
 function markRead(id) { const n=notifs.find(x=>x.id===id); if(n){n.unread=false;} renderNotifs(); }
 function markAllRead() { notifs.forEach(n=>n.unread=false); renderNotifs(); showToast('All notifications marked as read','success'); }
 function clearAll() { openConfirm('Clear All Notifications','This will remove all notifications. This cannot be undone.',()=>{notifs=[];renderNotifs();showToast('All notifications cleared','success');},false); }
