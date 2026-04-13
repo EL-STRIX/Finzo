@@ -1,124 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Notifications | Finzo</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="../../assets/css/user.css"/>
-<style>
-.notif-list-item{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer}
-.notif-list-item:hover{background:var(--bg-input)}
-.notif-list-item.unread{background:rgba(8,145,178,0.04);border-left:3px solid var(--primary)}
-.notif-list-item:not(.unread){border-left:3px solid transparent}
-.notif-list-item:last-child{border-bottom:none}
-.notif-type-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.notif-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:3px}
-.notif-body{font-size:12px;color:var(--text-secondary);line-height:1.5}
-.notif-time{font-size:10px;font-weight:700;color:var(--text-placeholder);text-transform:uppercase;letter-spacing:0.08em;margin-top:6px}
-.filter-chip{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border);cursor:pointer;transition:var(--transition);background:transparent;color:var(--text-secondary)}
-.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications | Finzo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/user.css" />
+  <style>
+    .notif-list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      cursor: pointer
+    }
+
+    .notif-list-item:hover {
+      background: var(--bg-input)
+    }
+
+    .notif-list-item.unread {
+      background: rgba(8, 145, 178, 0.04);
+      border-left: 3px solid var(--primary)
+    }
+
+    .notif-list-item:not(.unread) {
+      border-left: 3px solid transparent
+    }
+
+    .notif-list-item:last-child {
+      border-bottom: none
+    }
+
+    .notif-type-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .notif-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px
+    }
+
+    .notif-body {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5
+    }
+
+    .notif-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-placeholder);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 6px
+    }
+
+    .filter-chip {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+      background: transparent;
+      color: var(--text-secondary)
+    }
+
+    .filter-chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary)
+    }
+  </style>
 </head>
+
 <body>
-<script src="../../assets/js/user-shared.js"></script>
-<div id="sidebar-root"></div>
-<div class="main">
-<div id="navbar-root"></div>
-<div class="page-content" style="max-width:700px;margin:auto;">
-<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
-<div><div class="page-eyebrow">Activity</div><div class="page-title">Notifications</div><div class="page-subtitle">Stay updated on all your account activity</div></div>
-<button onclick="markAllRead()" class="btn btn-outline btn-sm no-print">Mark all read</button>
-</div>
+  <script src="../../assets/js/user-shared.js"></script>
+  <div id="sidebar-root"></div>
+  <div class="main">
+    <div id="navbar-root"></div>
+    <div class="page-content" style="max-width:700px;margin:auto;">
+      <div class="page-header animate-in"
+        style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="page-eyebrow">Activity</div>
+          <div class="page-title">Notifications</div>
+          <div class="page-subtitle">Stay updated on all your account activity</div>
+        </div>
+        <button onclick="markAllRead()" class="btn btn-outline btn-sm no-print">Mark all read</button>
+      </div>
 
-<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" class="animate-in animate-delay-1">
-<button class="filter-chip active" onclick="filterNotifs('all',this)">All</button>
-<button class="filter-chip" onclick="filterNotifs('transaction',this)">Transactions</button>
-<button class="filter-chip" onclick="filterNotifs('security',this)">Security</button>
-<button class="filter-chip" onclick="filterNotifs('system',this)">System</button>
-</div>
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" class="animate-in animate-delay-1">
+        <button class="filter-chip active" onclick="filterNotifs('all',this)">All</button>
+        <button class="filter-chip" onclick="filterNotifs('transaction',this)">Transactions</button>
+        <button class="filter-chip" onclick="filterNotifs('security',this)">Security</button>
+        <button class="filter-chip" onclick="filterNotifs('system',this)">System</button>
+      </div>
 
-<div class="card animate-in animate-delay-2" style="overflow:hidden">
-<div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg-input)">
-<span id="notif-summary" style="font-size:12px;font-weight:700;color:var(--text-secondary)">2 unread notifications</span>
-<button onclick="clearAll()" class="btn btn-ghost btn-sm">Clear All</button>
-</div>
-<div id="notif-container"></div>
-</div>
-</div>
-</div>
-
-<!-- View Notification Modal -->
-<div id="viewNotifModal" class="modal-overlay hidden">
-  <div class="modal-card">
-    <div id="viewNotifIcon" class="modal-icon"></div>
-    <div id="viewNotifTitle" class="modal-title">Notification Title</div>
-    <div id="viewNotifDate" style="text-align:center;font-size:11px;font-weight:600;color:var(--text-placeholder);margin-bottom:20px;text-transform:uppercase;letter-spacing:0.05em">Date</div>
-    <div id="viewNotifBody" class="modal-text" style="text-align:left;font-size:14px;color:var(--text-primary);line-height:1.6;padding:16px;background:var(--bg-input);border-radius:var(--radius-md)">
-      Message body goes here.
-    </div>
-    <div class="modal-actions" style="margin-top:24px">
-      <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="width:100%">Close</button>
+      <div class="card animate-in animate-delay-2" style="overflow:hidden">
+        <div
+          style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg-input)">
+          <span id="notif-summary" style="font-size:12px;font-weight:700;color:var(--text-secondary)">2 unread
+            notifications</span>
+          <button onclick="clearAll()" class="btn btn-ghost btn-sm">Clear All</button>
+        </div>
+        <div id="notif-container"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-buildSidebar('notifications'); buildNavbar('Activity','Notifications');
-let activeFilter = 'all';
+  <!-- View Notification Modal -->
+  <div id="viewNotifModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div id="viewNotifIcon" class="modal-icon"></div>
+      <div id="viewNotifTitle" class="modal-title">Notification Title</div>
+      <div id="viewNotifDate"
+        style="text-align:center;font-size:11px;font-weight:600;color:var(--text-placeholder);margin-bottom:20px;text-transform:uppercase;letter-spacing:0.05em">
+        Date</div>
+      <div id="viewNotifBody" class="modal-text"
+        style="text-align:left;font-size:14px;color:var(--text-primary);line-height:1.6;padding:16px;background:var(--bg-input);border-radius:var(--radius-md)">
+        Message body goes here.
+      </div>
+      <div class="modal-actions" style="margin-top:24px; display:flex; gap:8px;">
+        <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="flex:1">Close</button>
+        <button class="btn btn-danger" onclick="deleteCurrentNotif()" style="flex:1">Delete</button>
+      </div>
+    </div>
+  </div>
 
-const notifications = [
-  {id:1,type:'system',icon:'account_balance',iconBg:'rgba(8,145,178,0.1)',iconColor:'#0891b2',title:'Welcome to Finzo!',body:'Your account has been registered. Complete your profile to activate your full banking features.',time:'Today, 10:30 AM',unread:true},
-  {id:2,type:'security',icon:'pending',iconBg:'rgba(245,158,11,0.1)',iconColor:'#f59e0b',title:'Profile Incomplete',body:'Please complete your identity verification to unlock deposits, transfers and all banking features.',time:'Today, 10:31 AM',unread:true},
-  {id:3,type:'system',icon:'info',iconBg:'rgba(59,130,246,0.1)',iconColor:'#3b82f6',title:'Finzo Banking System',body:'You have been successfully registered on the Finzo Online Banking System. Your account is currently pending activation.',time:'Today',unread:false},
-];
+  <script>
+    buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
+    let activeFilter = 'all';
 
-let notifs = [...notifications];
+    const notifications = [
+      { id: 1, type: 'system', icon: 'account_balance', iconBg: 'rgba(8,145,178,0.1)', iconColor: '#0891b2', title: 'Welcome to Finzo!', body: 'Your account has been registered. Complete your profile to activate your full banking features.', time: 'Today, 10:30 AM', unread: true },
+      { id: 2, type: 'security', icon: 'pending', iconBg: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b', title: 'Profile Incomplete', body: 'Please complete your identity verification to unlock deposits, transfers and all banking features.', time: 'Today, 10:31 AM', unread: true },
+      { id: 3, type: 'system', icon: 'info', iconBg: 'rgba(59,130,246,0.1)', iconColor: '#3b82f6', title: 'Finzo Banking System', body: 'You have been successfully registered on the Finzo Online Banking System. Your account is currently pending activation.', time: 'Today', unread: false },
+    ];
 
-function renderNotifs() {
-  const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
-  const container = document.getElementById('notif-container');
-  const unreadCount = notifs.filter(n=>n.unread).length;
-  document.getElementById('notif-summary').textContent = unreadCount > 0 ? `${unreadCount} unread notification${unreadCount>1?'s':''}` : 'All caught up!';
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">notifications_off</span><div class="empty-state-title">No notifications</div><div class="empty-state-text">You\'re all caught up!</div></div>';
-    return;
-  }
-  container.innerHTML = filtered.map(n => `
-    <div class="notif-list-item ${n.unread?'unread':''}" onclick="viewNotif(${n.id})">
+    let notifs = [...notifications];
+
+    function renderNotifs() {
+      const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
+      const container = document.getElementById('notif-container');
+      const unreadCount = notifs.filter(n => n.unread).length;
+      document.getElementById('notif-summary').textContent = unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!';
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">notifications_off</span><div class="empty-state-title">No notifications</div><div class="empty-state-text">You\'re all caught up!</div></div>';
+        return;
+      }
+      container.innerHTML = filtered.map(n => `
+    <div class="notif-list-item ${n.unread ? 'unread' : ''}" onclick="viewNotif(${n.id})">
       <div class="notif-type-icon" style="background:${n.iconBg}">
         <span class="material-symbols-outlined" style="font-size:20px;color:${n.iconColor}">${n.icon}</span>
       </div>
       <div style="flex:1">
-        <div class="notif-title">${n.title}${n.unread?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-left:8px;vertical-align:middle"></span>':''}</div>
+        <div class="notif-title">${n.title}${n.unread ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-left:8px;vertical-align:middle"></span>' : ''}</div>
         <div class="notif-body">${n.body}</div>
         <div class="notif-time">${n.time}</div>
       </div>
     </div>`).join('');
-}
+    }
 
-function viewNotif(id) {
-  const n = notifs.find(x => x.id === id);
-  if (n) {
-    n.unread = false;
-    document.getElementById('viewNotifTitle').textContent = n.title;
-    document.getElementById('viewNotifBody').textContent = n.body;
-    document.getElementById('viewNotifDate').textContent = n.time;
-    
-    const iconContainer = document.getElementById('viewNotifIcon');
-    iconContainer.style.background = n.iconBg;
-    iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:28px;color:${n.iconColor}">${n.icon}</span>`;
-    
+    let currentViewNotifId = null;
+
+    function viewNotif(id) {
+      const n = notifs.find(x => x.id === id);
+      if (n) {
+        n.unread = false;
+        currentViewNotifId = id;
+        document.getElementById('viewNotifTitle').textContent = n.title;
+        document.getElementById('viewNotifBody').textContent = n.body;
+        document.getElementById('viewNotifDate').textContent = n.time;
+
+        const iconContainer = document.getElementById('viewNotifIcon');
+        iconContainer.style.background = n.iconBg;
+        iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:28px;color:${n.iconColor}">${n.icon}</span>`;
+
+        renderNotifs();
+        openModal('viewNotifModal');
+      }
+    }
+
+    function deleteCurrentNotif() {
+      if (currentViewNotifId !== null) {
+        notifs = notifs.filter(n => n.id !== currentViewNotifId);
+        currentViewNotifId = null;
+        renderNotifs();
+        closeModal('viewNotifModal');
+        showToast('Notification deleted', 'success');
+      }
+    }
+
+    function markRead(id) { const n = notifs.find(x => x.id === id); if (n) { n.unread = false; } renderNotifs(); }
+    function markAllRead() { notifs.forEach(n => n.unread = false); renderNotifs(); showToast('All notifications marked as read', 'success'); }
+    function clearAll() { openConfirm('Clear All Notifications', 'This will remove all notifications. This cannot be undone.', () => { notifs = []; renderNotifs(); showToast('All notifications cleared', 'success'); }, false); }
+    function filterNotifs(type, el) { activeFilter = type; document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active')); el.classList.add('active'); renderNotifs(); }
+
     renderNotifs();
-    openModal('viewNotifModal');
-  }
-}
-function markRead(id) { const n=notifs.find(x=>x.id===id); if(n){n.unread=false;} renderNotifs(); }
-function markAllRead() { notifs.forEach(n=>n.unread=false); renderNotifs(); showToast('All notifications marked as read','success'); }
-function clearAll() { openConfirm('Clear All Notifications','This will remove all notifications. This cannot be undone.',()=>{notifs=[];renderNotifs();showToast('All notifications cleared','success');},false); }
-function filterNotifs(type,el) { activeFilter=type; document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderNotifs(); }
-
-renderNotifs();
-</script>
+  </script>
 </body>
+
 </html>
