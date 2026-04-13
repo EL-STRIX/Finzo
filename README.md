@@ -52,6 +52,9 @@ Finzo is architected around three distinct operational pillars:
 - **Dual-Engine Theming**: Seamless transition between high-contrast light mode and an elite dark mode.
 - **Component Architecture**: Modular injection system for consistent Navigation, Sidebar, and Footer experiences.
 - **Toast & Modal Systems**: Intelligent feedback loop for all user interactions and critical authorizations.
+- **Transactional Email Suite**: A collection of high-fidelity responsive email templates for status updates (Welcome, Under Review, Approved, Rejected).
+- **Institutional Error Suite**: Custom-designed 404 (Not Found) and 500 (Internal Server Error) pages for maintaining brand integrity during failures.
+
 
 ---
 
@@ -59,9 +62,10 @@ Finzo is architected around three distinct operational pillars:
 
 - **Structure**: Semantic HTML5 with component-based modular architecture.
 - **Styling**: Vanilla CSS3 utilizing Custom Properties (Variables), Flexbox, and CSS Grid.
-- **Logic**: ES6+ JavaScript for state simulation and dynamic UI updates.
+- **Logic**: ES6+ JavaScript & **jQuery 3.7.1** for DOM manipulation and state simulation.
 - **Fonts**: [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) for a premium typographic feel.
 - **Iconography**: [Material Symbols Outlined](https://fonts.google.com/icons) for institutional visual language.
+
 
 ---
 
