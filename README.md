@@ -108,11 +108,22 @@ Open your browser and navigate to `http://localhost:3000` (or the respective por
 ### 3. Demo Credentials
 Finzo uses role-based authentication simulation. Use the following credentials to access the respective dashboards:
 
-| Role | Username / ID | Password | Access Link |
+| Role | Identity (Email / Account #) | Password | Access Link |
 | :--- | :--- | :--- | :--- |
 | **Admin** | `admin@finzo.com` | `admin123` | [Admin Portal](views/auth/admin-login.html) |
 | **Staff** | `staff@finzo.com` | `staff123` | [Staff Portal](views/auth/staff-login.html) |
-| **Customer** | `user@finzo.com` | `user123` | [Customer Portal](views/auth/login.html) |
+| **Customer** | `user@finzo.com` **OR** `12345678` | `user123` | [Customer Portal](views/auth/login.html) |
+
+### 💳 Institutional Account Reference ![Demo Data](https://img.shields.io/badge/Value-Demo--Data-0891b2?style=flat-square)
+Use these specific account numbers and security pins within the portals to simulate transactions:
+
+| Account Holder | Account Type | Account Number | Security PIN |
+| :--- | :--- | :--- | :--- |
+| **Rahul Kumar** | **Savings (Primary)** | `FNZ-SAV-12345678` | `1234` |
+| **Rahul Kumar** | **Current (Secondary)** | `FNZ-CUR-87654321` | `1234` |
+| **Priya Sharma** | Beneficiary Node | `FNZ20260002` | N/A |
+| **Amit Mondal** | Beneficiary Node | `FNZ20260003` | N/A |
+| **Sunita Mehta** | Beneficiary Node | `FNZ20260004` | N/A |
 
 ---
 
