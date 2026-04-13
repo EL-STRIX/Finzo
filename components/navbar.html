@@ -1,16 +1,20 @@
 <!-- Landing Navbar Component -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-12 h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm transition-colors duration-300">
-    <div class="flex items-center gap-16">
-        <span class="text-2xl logo-text font-headline font-black text-primary">Finzo</span>
-        <div class="hidden md:flex items-center gap-10">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-5 sm:px-8 lg:px-12 h-16 sm:h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm transition-colors duration-300">
+    <div class="flex items-center gap-8 sm:gap-12 lg:gap-16">
+        <span class="text-xl sm:text-2xl logo-text font-headline font-black text-primary">Finzo</span>
+        <div class="hidden md:flex items-center gap-6 lg:gap-10">
             <a class="nav-link nav-link-active" href="/">Products</a>
             <a class="nav-link" href="/#benefits">Solutions</a>
             <a class="nav-link" href="/#features">Security</a>
             <a class="nav-link" href="#">Support</a>
         </div>
     </div>
-    <div class="flex items-center gap-6">
-        <a href="/views/auth/login.html" class="text-sm font-bold text-indigo-950 hover:opacity-70 transition-opacity no-underline">Log In</a>
-        <a href="/views/auth/register.html" class="architectural-gradient px-6 py-3 text-sm text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all no-underline">Open Account</a>
+    <div class="flex items-center gap-4 sm:gap-6">
+        <a href="/views/auth/login.html" class="hidden sm:inline-block text-sm font-bold text-indigo-950 hover:opacity-70 transition-opacity no-underline">Log In</a>
+        <a href="/views/auth/register.html" class="hidden sm:inline-block architectural-gradient px-4 sm:px-6 py-2.5 sm:py-3 text-sm text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all no-underline">Open Account</a>
+        <!-- Mobile Hamburger -->
+        <button id="mobile-hamburger" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Open menu">
+            <span class="material-symbols-outlined text-primary text-[26px]">menu</span>
+        </button>
     </div>
 </nav>
