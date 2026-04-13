@@ -106,15 +106,13 @@ python -m http.server 8000
 Open your browser and navigate to `http://localhost:3000` (or the respective port).
 
 ### 3. Demo Credentials
-The demo is pre-loaded with simulated session data. You can access the panels using the following logic:
-- **Customer**: Access any `/user/` page (Defaults to Rahul Kumar).
-- **Admin**: Access any `/admin/` page.
-- **Staff**: Access any `/staff/` page.
+Finzo uses role-based authentication simulation. Use the following credentials to access the respective dashboards:
 
-> [!TIP]
-> **Developer Console Controls**: Use the hidden `FinzoDemo` object in your browser console to test different account states:
-> - `FinzoDemo.setActive()` — Unlocks full banking features.
-> - `FinzoDemo.setRejected(reason)` — Simulates an application rejection.
+| Role | Username / ID | Password | Access Link |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@finzo.com` | `admin123` | [Admin Portal](views/auth/admin-login.html) |
+| **Staff** | `staff@finzo.com` | `staff123` | [Staff Portal](views/auth/staff-login.html) |
+| **Customer** | `user@finzo.com` | `user123` | [Customer Portal](views/auth/login.html) |
 
 ---
 
@@ -138,5 +136,5 @@ This project is for **demonstration purposes only**. All rights reserved to the 
 
 ---
 
-**Author**: [Your Name/Handle Placeholder]
+**Author**: **Sujay Paul**  
 *Built with passion for premium user experiences.*
