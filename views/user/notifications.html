@@ -1,221 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notifications | Finzo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="../../assets/css/user.css" />
-  <style>
-    .notif-list-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-      cursor: pointer
-    }
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Notifications | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+  /* Professional Notifications Design */
+  .notif-container { max-width: 1140px; margin: 0 auto; }
+  
+  .notif-grid-premium { 
+    display: grid; grid-template-columns: 340px 1fr; gap: 32px; 
+    margin-top: 24px;
+  }
+  
+  @media (max-width: 1024px) {
+    .notif-grid-premium { grid-template-columns: 1fr; gap: 24px; }
+  }
 
-    .notif-list-item:hover {
-      background: var(--bg-input)
-    }
+  /* Management Sidebar */
+  .notif-sidebar-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 24px; position: sticky; top: 80px;
+  }
+  
+  /* Notification Item Redesign */
+  .notif-ledger-item {
+    display: flex; align-items: flex-start; gap: 20px; padding: 20px 28px;
+    border-bottom: 1px solid var(--border); cursor: pointer; transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .notif-ledger-item:last-child { border-bottom: none; }
+  .notif-ledger-item:hover { background: var(--bg-input); }
+  
+  .notif-ledger-item.unread { background: rgba(8, 145, 178, 0.03); }
+  .notif-ledger-item.unread::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary);
+  }
 
-    .notif-list-item.unread {
-      background: rgba(8, 145, 178, 0.04);
-      border-left: 3px solid var(--primary)
-    }
+  .notif-icon-box {
+    width: 44px; height: 44px; border-radius: 12px; display: flex; 
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
 
-    .notif-list-item:not(.unread) {
-      border-left: 3px solid transparent
-    }
+  /* Filter Chips Premium */
+  .filter-stack { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+  .filter-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-radius: var(--radius-lg); border: 1px solid transparent;
+    cursor: pointer; transition: var(--transition); font-size: 13px; font-weight: 700; color: var(--text-secondary);
+  }
+  .filter-item:hover { background: var(--bg-input); color: var(--text-primary); }
+  .filter-item.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary-light); }
+  .filter-count { font-size: 10px; opacity: 0.6; background: var(--border); padding: 2px 8px; border-radius: 10px; }
 
-    .notif-list-item:last-child {
-      border-bottom: none
-    }
-
-    .notif-type-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0
-    }
-
-    .notif-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 3px
-    }
-
-    .notif-body {
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.5
-    }
-
-    .notif-time {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-placeholder);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 6px
-    }
-
-    .filter-chip {
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: var(--transition);
-      background: transparent;
-      color: var(--text-secondary)
-    }
-
-    .filter-chip.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary)
-    }
-  </style>
+  @media (max-width: 480px) {
+    .notif-ledger-item { padding: 16px 20px; gap: 14px; }
+    .notif-icon-box { width: 36px; height: 36px; }
+    .filter-stack { flex-direction: row; flex-wrap: wrap; }
+    .filter-item { padding: 8px 14px; flex-grow: 1; justify-content: center; }
+  }
+</style>
 </head>
-
 <body>
-  <script src="../../assets/js/user-shared.js"></script>
-  <div id="sidebar-root"></div>
-  <div class="main">
-    <div id="navbar-root"></div>
-    <div class="page-content" style="max-width:700px;margin:auto;">
-      <div class="page-header animate-in"
-        style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
-        <div>
-          <div class="page-eyebrow">Activity</div>
-          <div class="page-title">Notifications</div>
-          <div class="page-subtitle">Stay updated on all your account activity</div>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+<div id="navbar-root"></div>
+
+<div class="page-content">
+  <div class="notif-container">
+    <div class="page-header animate-in" style="display:flex; justify-content:space-between; align-items:flex-end">
+      <div>
+        <div class="page-eyebrow">Communication Center</div>
+        <h1 class="page-title">Activity Feed</h1>
+        <p class="page-subtitle">Unified broadcast from the Finzo ecosystem</p>
+      </div>
+      <button onclick="markAllRead()" class="btn btn-outline btn-sm no-print" style="margin-bottom:8px">Mark all as acknowledged</button>
+    </div>
+
+    <div class="notif-grid-premium">
+      <!-- LEFT: MANAGEMENT SIDEBAR -->
+      <div class="animate-in animate-delay-1">
+        <div class="notif-sidebar-card">
+          <div style="font-size:11px; font-weight:800; color:var(--text-placeholder); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px">Signal Distribution</div>
+          
+          <div style="padding:16px; background:var(--bg-input); border-radius:var(--radius-lg); border:1px solid var(--border); margin-bottom:24px">
+            <div style="font-size:10px; font-weight:800; color:var(--text-secondary); margin-bottom:4px">UNREAD ALERTS</div>
+            <div style="font-size:24px; font-weight:800; color:var(--primary)" id="unread-stat">0</div>
+          </div>
+
+          <div class="filter-stack">
+            <div class="filter-item active" onclick="filterNotifs('all',this)">
+              <div style="display:flex; align-items:center; gap:10px"><span class="material-symbols-outlined" style="font-size:18px">grid_view</span> All Broadcasts</div>
+              <span class="filter-count" id="count-all">0</span>
+            </div>
+            <div class="filter-item" onclick="filterNotifs('transaction',this)">
+              <div style="display:flex; align-items:center; gap:10px"><span class="material-symbols-outlined" style="font-size:18px">payments</span> Transactions</div>
+              <span class="filter-count" id="count-transaction">0</span>
+            </div>
+            <div class="filter-item" onclick="filterNotifs('security',this)">
+              <div style="display:flex; align-items:center; gap:10px"><span class="material-symbols-outlined" style="font-size:18px">security</span> Security</div>
+              <span class="filter-count" id="count-security">0</span>
+            </div>
+            <div class="filter-item" onclick="filterNotifs('system',this)">
+              <div style="display:flex; align-items:center; gap:10px"><span class="material-symbols-outlined" style="font-size:18px">settings</span> System</div>
+              <span class="filter-count" id="count-system">0</span>
+            </div>
+          </div>
+
+          <div style="margin-top:32px; padding-top:24px; border-top:1px dashed var(--border)">
+            <button onclick="clearAll()" class="btn btn-ghost btn-full" style="color:var(--danger)">
+              <span class="material-symbols-outlined">delete_sweep</span> Purge All Records
+            </button>
+          </div>
         </div>
-        <button onclick="markAllRead()" class="btn btn-outline btn-sm no-print">Mark all read</button>
       </div>
 
-      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" class="animate-in animate-delay-1">
-        <button class="filter-chip active" onclick="filterNotifs('all',this)">All</button>
-        <button class="filter-chip" onclick="filterNotifs('transaction',this)">Transactions</button>
-        <button class="filter-chip" onclick="filterNotifs('security',this)">Security</button>
-        <button class="filter-chip" onclick="filterNotifs('system',this)">System</button>
-      </div>
-
-      <div class="card animate-in animate-delay-2" style="overflow:hidden">
-        <div
-          style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg-input)">
-          <span id="notif-summary" style="font-size:12px;font-weight:700;color:var(--text-secondary)">2 unread
-            notifications</span>
-          <button onclick="clearAll()" class="btn btn-ghost btn-sm">Clear All</button>
+      <!-- RIGHT: NOTIFICATION LIST -->
+      <div class="animate-in animate-delay-2">
+        <div class="card" style="overflow:hidden; min-height:400px">
+          <div id="notif-container"></div>
         </div>
-        <div id="notif-container"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- View Notification Modal -->
-  <div id="viewNotifModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div id="viewNotifIcon" class="modal-icon"></div>
-      <div id="viewNotifTitle" class="modal-title">Notification Title</div>
-      <div id="viewNotifDate"
-        style="text-align:center;font-size:11px;font-weight:600;color:var(--text-placeholder);margin-bottom:20px;text-transform:uppercase;letter-spacing:0.05em">
-        Date</div>
-      <div id="viewNotifBody" class="modal-text"
-        style="text-align:left;font-size:14px;color:var(--text-primary);line-height:1.6;padding:16px;background:var(--bg-input);border-radius:var(--radius-md)">
-        Message body goes here.
-      </div>
-      <div class="modal-actions" style="margin-top:24px; display:flex; gap:8px;">
-        <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="flex:1">Close</button>
-        <button class="btn btn-danger" onclick="deleteCurrentNotif()" style="flex:1">Delete</button>
-      </div>
+<!-- View Notification Modal -->
+<div id="viewNotifModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div id="viewNotifIcon" class="modal-icon"></div>
+    <div id="viewNotifTitle" class="modal-title">Broadcast Subject</div>
+    <div id="viewNotifDate" style="text-align:center; font-size:11px; font-weight:700; color:var(--text-placeholder); margin-bottom:24px; text-transform:uppercase; letter-spacing:0.05em">TIMESTAMP</div>
+    <div id="viewNotifBody" class="modal-text" style="text-align:left; font-size:14px; color:var(--text-primary); line-height:1.7; padding:24px; background:var(--bg-input); border-radius:var(--radius-xl); border:1px solid var(--border)">
+      Message body content.
+    </div>
+    <div class="modal-actions" style="margin-top:32px; display:flex; gap:12px;">
+      <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="flex:1">Acknowledge</button>
+      <button class="btn btn-danger" onclick="deleteCurrentNotif()" style="flex:1">Delete Record</button>
     </div>
   </div>
+</div>
 
-  <script>
-    buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
-    let activeFilter = 'all';
+<script>
+  buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
+  let activeFilter = 'all';
 
-    const notifications = [
-      { id: 1, type: 'system', icon: 'account_balance', iconBg: 'rgba(8,145,178,0.1)', iconColor: '#0891b2', title: 'Welcome to Finzo!', body: 'Your account has been registered. Complete your profile to activate your full banking features.', time: 'Today, 10:30 AM', unread: true },
-      { id: 2, type: 'security', icon: 'pending', iconBg: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b', title: 'Profile Incomplete', body: 'Please complete your identity verification to unlock deposits, transfers and all banking features.', time: 'Today, 10:31 AM', unread: true },
-      { id: 3, type: 'system', icon: 'info', iconBg: 'rgba(59,130,246,0.1)', iconColor: '#3b82f6', title: 'Finzo Banking System', body: 'You have been successfully registered on the Finzo Online Banking System. Your account is currently pending activation.', time: 'Today', unread: false },
-    ];
+  const notifications = [
+    { id: 1, type: 'system', icon: 'account_balance', iconBg: 'rgba(8,145,178,0.1)', iconColor: '#0891b2', title: 'Institutional Access Verified', body: 'Universal authentication successful. Your Finzo Platinum Profile is now active and ready for portfolio management.', time: 'Today, 10:30 AM', unread: true },
+    { id: 2, type: 'security', icon: 'pending', iconBg: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b', title: 'KYC Protocol Pending', body: 'Please complete your advanced identity verification to unlock higher liquidity thresholds and cross-border settlements.', time: 'Today, 10:31 AM', unread: true },
+    { id: 3, type: 'system', icon: 'info', iconBg: 'rgba(59,130,246,0.1)', iconColor: '#3b82f6', title: 'Ecosystem Broadcast', body: 'You have been successfully registered on the Finzo Institutional Banking interface. All secure nodes are synchronized.', time: 'Yesterday', unread: false },
+  ];
 
-    let notifs = [...notifications];
+  let notifs = [...notifications];
 
-    function renderNotifs() {
-      const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
-      const container = document.getElementById('notif-container');
-      const unreadCount = notifs.filter(n => n.unread).length;
-      document.getElementById('notif-summary').textContent = unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!';
-      if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">notifications_off</span><div class="empty-state-title">No notifications</div><div class="empty-state-text">You\'re all caught up!</div></div>';
-        return;
-      }
-      container.innerHTML = filtered.map(n => `
-    <div class="notif-list-item ${n.unread ? 'unread' : ''}" onclick="viewNotif(${n.id})">
-      <div class="notif-type-icon" style="background:${n.iconBg}">
-        <span class="material-symbols-outlined" style="font-size:20px;color:${n.iconColor}">${n.icon}</span>
-      </div>
-      <div style="flex:1">
-        <div class="notif-title">${n.title}${n.unread ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-left:8px;vertical-align:middle"></span>' : ''}</div>
-        <div class="notif-body">${n.body}</div>
-        <div class="notif-time">${n.time}</div>
-      </div>
-    </div>`).join('');
+  function renderNotifs() {
+    const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
+    const container = document.getElementById('notif-container');
+    const unreadCount = notifs.filter(n => n.unread).length;
+    
+    // Update Stats
+    document.getElementById('unread-stat').textContent = unreadCount;
+    document.getElementById('count-all').textContent = notifs.length;
+    document.getElementById('count-transaction').textContent = notifs.filter(n=>n.type==='transaction').length;
+    document.getElementById('count-security').textContent = notifs.filter(n=>n.type==='security').length;
+    document.getElementById('count-system').textContent = notifs.filter(n=>n.type==='system').length;
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="empty-state" style="padding:80px 0">
+        <span class="material-symbols-outlined" style="font-size:64px; color:var(--text-placeholder); margin-bottom:20px">notifications_off</span>
+        <div class="empty-state-title">Quiet Environment</div>
+        <div class="empty-state-text">No active broadcasts found for this segment.</div>
+      </div>`;
+      return;
     }
 
-    let currentViewNotifId = null;
+    container.innerHTML = filtered.map(n => `
+      <div class="notif-ledger-item ${n.unread ? 'unread' : ''}" onclick="viewNotif(${n.id})">
+        <div class="notif-icon-box" style="background:${n.iconBg}">
+          <span class="material-symbols-outlined" style="font-size:20px; color:${n.iconColor}">${n.icon}</span>
+        </div>
+        <div style="flex:1">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start">
+            <div style="font-size:14px; font-weight:800; color:var(--text-primary); margin-bottom:4px">
+              ${n.title} ${n.unread ? '<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--primary); margin-left:8px; vertical-align:middle"></span>' : ''}
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--text-placeholder); text-transform:uppercase; letter-spacing:0.04em">${n.time}</div>
+          </div>
+          <div style="font-size:12px; color:var(--text-secondary); line-height:1.6; max-width:600px">${n.body}</div>
+        </div>
+      </div>`).join('');
+  }
 
-    function viewNotif(id) {
-      const n = notifs.find(x => x.id === id);
-      if (n) {
-        n.unread = false;
-        currentViewNotifId = id;
-        document.getElementById('viewNotifTitle').textContent = n.title;
-        document.getElementById('viewNotifBody').textContent = n.body;
-        document.getElementById('viewNotifDate').textContent = n.time;
+  let currentViewNotifId = null;
 
-        const iconContainer = document.getElementById('viewNotifIcon');
-        iconContainer.style.background = n.iconBg;
-        iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:28px;color:${n.iconColor}">${n.icon}</span>`;
+  function viewNotif(id) {
+    const n = notifs.find(x => x.id === id);
+    if (n) {
+      n.unread = false;
+      currentViewNotifId = id;
+      document.getElementById('viewNotifTitle').textContent = n.title;
+      document.getElementById('viewNotifBody').textContent = n.body;
+      document.getElementById('viewNotifDate').textContent = n.time;
 
-        renderNotifs();
-        openModal('viewNotifModal');
-      }
+      const iconContainer = document.getElementById('viewNotifIcon');
+      iconContainer.style.background = n.iconBg;
+      iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:32px; color:${n.iconColor}">${n.icon}</span>`;
+
+      renderNotifs();
+      openModal('viewNotifModal');
     }
+  }
 
-    function deleteCurrentNotif() {
-      if (currentViewNotifId !== null) {
-        notifs = notifs.filter(n => n.id !== currentViewNotifId);
-        currentViewNotifId = null;
-        renderNotifs();
-        closeModal('viewNotifModal');
-        showToast('Notification deleted', 'success');
-      }
+  function deleteCurrentNotif() {
+    if (currentViewNotifId !== null) {
+      notifs = notifs.filter(n => n.id !== currentViewNotifId);
+      currentViewNotifId = null;
+      renderNotifs();
+      closeModal('viewNotifModal');
+      showToast('Record purged from ledger', 'success');
     }
+  }
 
-    function markRead(id) { const n = notifs.find(x => x.id === id); if (n) { n.unread = false; } renderNotifs(); }
-    function markAllRead() { notifs.forEach(n => n.unread = false); renderNotifs(); showToast('All notifications marked as read', 'success'); }
-    function clearAll() { openConfirm('Clear All Notifications', 'This will remove all notifications. This cannot be undone.', () => { notifs = []; renderNotifs(); showToast('All notifications cleared', 'success'); }, false); }
-    function filterNotifs(type, el) { activeFilter = type; document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active')); el.classList.add('active'); renderNotifs(); }
-
+  function markAllRead() {
+    notifs.forEach(n => n.unread = false);
     renderNotifs();
-  </script>
-</body>
+    showToast('All broadcasts acknowledged', 'success');
+  }
 
+  function clearAll() {
+    openConfirm('Purge All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
+      notifs = [];
+      renderNotifs();
+      showToast('Activity feed cleared', 'success');
+    }, false);
+  }
+
+  function filterNotifs(type, el) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-item').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    renderNotifs();
+  }
+
+  renderNotifs();
+</script>
+</body>
 </html>
