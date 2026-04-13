@@ -239,20 +239,20 @@
   <!-- MAIN -->
   <div class="admin-main">
     <div class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent">
-      <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
         <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase">USER
+        <div class="min-w-0">
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase truncate">USER
             MANAGEMENT</div>
-          <div class="user-mgmt-title font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-1">User Management</div>
+          <div class="user-mgmt-title font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-1 truncate">User Management</div>
         </div>
       </div>
-      <div style="display:flex;gap:12px;">
-        <button id="open-export-modal" class="admin-btn-secondary"
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <button id="open-export-modal" class="admin-btn-secondary whitespace-nowrap flex-shrink-0"
           style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">
-          <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> Export Excel
+          <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> <span class="hidden sm:inline">Export Excel</span>
         </button>
       </div>
     </div>

@@ -102,16 +102,13 @@
           <div class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Bank Staff</div>
         </div>
       </div>
-      <div class="flex items-center gap-3 sm:gap-5">
-        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary hidden sm:flex"
+      <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
+        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Staff
         </button>
-        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary sm:hidden !p-2"
-          style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
-          <span class="material-symbols-outlined">add</span>
-        </button>
-        <div class="admin-avatar premium-gradient-primary">A</div>
+        
+        <div class="admin-avatar premium-gradient-primary flex-shrink-0">A</div>
       </div>
     </div>
 
@@ -496,9 +493,9 @@
         </button>
       </div>
       <div class="p-8">
-        <form class="space-y-6">
-          <div class="grid grid-cols-2 gap-6">
-            <div class="col-span-2">
+        <form class="space-y-4 sm:space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div class="col-span-1 sm:col-span-2">
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full
                 Name</label>
               <input type="text" placeholder="Enter full name"
@@ -517,7 +514,7 @@
                 <span
                   class="inline-flex items-center px-4 bg-slate-100 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 rounded-l-xl text-xs font-bold text-slate-500 font-Manrope">+91</span>
                 <input type="text" placeholder="98765 43210"
-                  class="flex-1 px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-r-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+                  class="flex-1 w-full min-w-0 px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-r-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
               </div>
             </div>
             <div>
@@ -548,10 +545,10 @@
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 pt-4">
+          <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
             <button type="button" onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"
-              class="admin-btn-secondary">Cancel</button>
-            <button type="submit" class="admin-btn-primary" style="background:#002645 !important;">Create Staff
+              class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
+            <button type="submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">Create Staff
               Account</button>
           </div>
         </form>

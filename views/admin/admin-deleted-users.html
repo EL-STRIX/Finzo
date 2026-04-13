@@ -529,9 +529,9 @@
   <!-- RECOVERY MODAL -->
   <div id="recoverModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('recoverModal')"></div>
-    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter shadow-2xl p-0 overflow-hidden">
-      <div class="p-8 text-center bg-white dark:bg-surface-container-high">
-        <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center shadow-inner">
+    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-8 text-center bg-white dark:bg-surface-container-high overflow-y-auto">
+        <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center shadow-inner shrink-0">
           <span class="material-symbols-outlined text-4xl">restore</span>
         </div>
         <h3 class="font-headline text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Recover User Account</h3>
@@ -571,14 +571,14 @@
   <!-- DETAILS MODAL -->
   <div id="detailsModal" class="fixed inset-0 z-[2030] hidden items-center justify-center p-4">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('detailsModal')"></div>
-    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter shadow-2xl overflow-hidden p-0">
-      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-surface-container-high">
+    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter shadow-2xl overflow-hidden p-0 flex flex-col max-h-[90vh]">
+      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-surface-container-high shrink-0">
         <h3 class="font-headline text-xl font-extrabold text-slate-900 dark:text-white">Deleted User Details</h3>
         <button onclick="closeModal('detailsModal')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <div class="p-8 bg-white dark:bg-surface-container-high">
+      <div class="p-8 bg-white dark:bg-surface-container-high overflow-y-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
           <!-- Left Column -->
           <div class="space-y-8">
@@ -736,10 +736,10 @@
         });
 
         if (visibleCount === 0) {
-          $('.admin-table').parent().hide();
+          $('.du-table').parent().hide();
           $('#empty-state').removeClass('hidden').addClass('flex');
         } else {
-          $('.admin-table').parent().show();
+          $('.du-table').parent().show();
           $('#empty-state').addClass('hidden').removeClass('flex');
         }
       }
