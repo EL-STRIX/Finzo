@@ -6,148 +6,234 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+  /* Professional Account Details Design */
+  .details-container { max-width: 1140px; margin: 0 auto; }
+  
+  /* Split Pane Layout */
+  .details-grid-premium { 
+    display: grid; grid-template-columns: 380px 1fr; gap: 32px; 
+    margin-top: 24px;
+  }
+  
+  @media (max-width: 1024px) {
+    .details-grid-premium { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  /* Asset Identity Card */
+  .luxury-asset-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff; border-radius: var(--radius-xl); padding: 32px;
+    position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .luxury-asset-card::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* Stats Grid */
+  .stats-grid-mini { 
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; 
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .stat-mini-label { font-size: 9px; font-weight: 800; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .stat-mini-value { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+
+  /* Limit Dashboard */
+  .limit-control-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 28px;
+  }
+  .limit-progress-bg { height: 10px; background: var(--bg-input); border-radius: 5px; overflow: hidden; margin: 16px 0; border: 1px solid var(--border); }
+  .limit-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #0e7490); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* Transaction Ledger */
+  .ledger-container {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+  }
+  .ledger-header { padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .ledger-row { padding: 18px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
+  .ledger-row:last-child { border-bottom: none; }
+  .ledger-row:hover { background: var(--bg-input); }
+
+  /* Meta Item Phone view reflow */
+  @media (max-width: 480px) {
+    .stats-grid-mini { grid-template-columns: 1fr 1fr; }
+    .ledger-row { padding: 16px 20px; }
+    .limit-control-card { padding: 20px; }
+  }
+</style>
 </head>
 <body>
 <script src="../../assets/js/user-shared.js"></script>
 <div id="sidebar-root"></div>
 <div class="main">
 <div id="navbar-root"></div>
-<div class="page-content" style="max-width:860px; margin: 0 auto;">
 
-<div class="page-header animate-in" style="display:flex;align-items:center;gap:14px">
-<a href="accounts.html" class="btn btn-ghost btn-icon-only"><span class="material-symbols-outlined" style="font-size:20px">arrow_back</span></a>
-<div>
-<div class="page-eyebrow">Banking</div>
-<div class="page-title">Account Details</div>
-<div class="page-subtitle">View and manage your account settings</div>
-</div>
-</div>
+<div class="page-content">
+  <div class="details-container">
+    <div class="page-header animate-in" style="display:flex; align-items:center; gap:20px">
+      <a href="accounts.html" class="btn btn-ghost btn-icon-only"><span class="material-symbols-outlined" style="font-size:22px">arrow_back</span></a>
+      <div>
+        <div class="page-eyebrow">Portfolio Analytics</div>
+        <h1 class="page-title">Asset Dossier</h1>
+      </div>
+    </div>
 
-<style>
-.detail-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
-@media (max-width: 1024px) { .detail-grid { grid-template-columns: 1fr; } }
-</style>
-<div class="detail-grid">
-<!-- LEFT -->
-<div>
-<!-- Account Card -->
-<div style="background:linear-gradient(135deg,#0f172a,#0c2d48,#0891b2);border-radius:20px;padding:28px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px" class="animate-in animate-delay-1">
-<div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05)"></div>
-<div style="position:absolute;bottom:-40px;left:-20px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.03)"></div>
-<div style="position:relative;z-index:1">
-<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px">
-<div>
-<div style="font-size:10px;font-weight:800;letter-spacing:0.16em;color:rgba(255,255,255,0.5);text-transform:uppercase" id="acc-type-label">Savings Account</div>
-<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px">Primary Account</div>
-</div>
-<span style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7;font-size:9px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:0.1em" id="acc-status-badge">ACTIVE</span>
-</div>
-<div style="font-size:30px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px" id="acc-balance-big">₹500.00</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Available Balance</div>
-<div style="font-size:15px;font-weight:700;letter-spacing:0.14em;font-family:monospace;color:rgba(255,255,255,0.7);margin-top:12px" id="acc-no-big">FNZ20260001</div>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1)">
-<div><div style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Opened</div><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7)">12 Apr 2026</div></div>
-<div><div style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Interest Rate</div><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7)">4.25% p.a.</div></div>
-<div><div style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Type</div><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7)" id="acc-type-small">Savings</div></div>
-</div>
-</div>
-</div>
+    <div class="details-grid-premium">
+      <!-- LEFT: ASSET IDENTITY -->
+      <div class="animate-in animate-delay-1">
+        <div class="luxury-asset-card mb-6">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px">
+            <div>
+              <div style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px" id="acc-type-label">Savings Account</div>
+              <div style="font-size:32px; font-weight:800; letter-spacing:-1px" id="acc-balance-big">₹0.00</div>
+              <div style="font-size:10px; opacity:0.5; font-weight:700; margin-top:4px">CURRENT PORTFOLIO VALUE</div>
+            </div>
+            <span class="badge badge-green" style="padding:4px 12px; font-size:10px; letter-spacing:0.05em">SECURED</span>
+          </div>
 
-<!-- Daily Limit Settings -->
-<div class="card card-p animate-in animate-delay-2">
-<div class="card-title" style="margin-bottom:4px">Daily Spending Limit</div>
-<div style="font-size:12px;color:var(--text-secondary);margin-bottom:18px">Control how much can be transferred or withdrawn daily from this account</div>
-<div style="margin-bottom:16px">
-<div style="display:flex;justify-content:space-between;margin-bottom:8px">
-<div style="font-size:12px;font-weight:700;color:var(--text-secondary)">Today's Usage</div>
-<div style="font-size:12px;font-weight:700;color:var(--text-primary)"><span id="used-amount">₹0</span> / <span id="limit-amount">₹10,000</span></div>
-</div>
-<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-<div id="limit-bar" style="height:100%;background:linear-gradient(90deg,var(--primary),#0e7490);border-radius:4px;transition:width 0.5s ease;width:0%"></div>
-</div>
-<div style="font-size:10px;color:var(--text-placeholder);margin-top:6px" id="limit-remaining">₹10,000 remaining today</div>
-</div>
-<div class="form-group">
-<label class="form-label">Update Daily Limit</label>
-<div style="display:flex;gap:8px">
-<div class="input-wrap" style="flex:1"><span class="input-icon material-symbols-outlined">currency_rupee</span><input type="number" class="form-input with-icon" id="new-limit" placeholder="Enter new daily limit" min="1000" max="100000" step="500"/></div>
-<button class="btn btn-primary" onclick="updateLimit()">Update</button>
-</div>
-<div style="font-size:11px;color:var(--text-secondary);margin-top:6px">Minimum ₹1,000 · Maximum ₹1,00,000</div>
-</div>
-</div>
-</div>
+          <div style="font-size:16px; font-weight:700; font-family:'Courier New', monospace; letter-spacing:0.1em; color:rgba(255,255,255,0.8)" id="acc-no-big">FNZ — — —</div>
+          <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:2px">ACCOUNT REFERENCE IDENTIFIER</div>
 
-<!-- RIGHT -->
-<div>
-<!-- Mini Statement -->
-<div class="card animate-in animate-delay-2" style="margin-bottom:16px;overflow:hidden">
-<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-<div class="card-title">Recent Activity</div>
-<a href="transactions.html" style="font-size:12px;font-weight:700;color:var(--primary);text-decoration:none">View All</a>
-</div>
-<div id="mini-txns">
-<div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-<div style="display:flex;align-items:center;gap:10px">
-<div style="width:36px;height:36px;border-radius:8px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">arrow_downward</span></div>
-<div><div style="font-size:12px;font-weight:700;color:var(--text-primary)">Initial Deposit</div><div style="font-size:10px;color:var(--text-secondary)">12 Apr 2026</div></div>
-</div>
-<div class="amount-pos">+₹500.00</div>
-</div>
-<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
-<div style="display:flex;align-items:center;gap:10px">
-<div style="width:36px;height:36px;border-radius:8px;background:rgba(8,145,178,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#0891b2">account_balance</span></div>
-<div><div style="font-size:12px;font-weight:700;color:var(--text-primary)">Account Opened</div><div style="font-size:10px;color:var(--text-secondary)">12 Apr 2026</div></div>
-</div>
-<div style="font-size:12px;font-weight:700;color:var(--text-secondary)">—</div>
-</div>
-</div>
-</div>
+          <div class="stats-grid-mini">
+            <div>
+              <div class="stat-mini-label">Trust Score</div>
+              <div class="stat-mini-value" style="color:var(--green)">100%</div>
+            </div>
+            <div>
+              <div class="stat-mini-label">Yield Rate</div>
+              <div class="stat-mini-value">4.25% PA</div>
+            </div>
+            <div>
+              <div class="stat-mini-label">Tier</div>
+              <div class="stat-mini-value">PLATINUM</div>
+            </div>
+          </div>
+        </div>
 
-<!-- Quick Actions -->
-<div class="card card-p animate-in animate-delay-3">
-<div class="card-title" style="margin-bottom:14px">Actions</div>
-<div style="display:flex;flex-direction:column;gap:8px">
-<a href="transfer.html" class="btn btn-primary btn-full"><span class="material-symbols-outlined" style="font-size:18px">swap_horiz</span>New Transfer</a>
-<a href="statement.html" class="btn btn-outline btn-full"><span class="material-symbols-outlined" style="font-size:18px">description</span>Download Statement</a>
-<a href="transactions.html" class="btn btn-ghost btn-full"><span class="material-symbols-outlined" style="font-size:18px">receipt_long</span>Full History</a>
-</div>
-</div>
-</div>
-</div>
+        <div class="card card-p mb-6">
+          <div class="card-title mb-4">Operations Hub</div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <a href="transfer.html" class="btn btn-primary btn-full">
+              <span class="material-symbols-outlined">send</span> Initialize Transfer
+            </a>
+            <a href="statement.html" class="btn btn-outline btn-full">
+              <span class="material-symbols-outlined">description</span> Export Statement
+            </a>
+            <a href="beneficiary.html" class="btn btn-ghost btn-full">
+              <span class="material-symbols-outlined">group</span> Beneficiary Registry
+            </a>
+          </div>
+        </div>
+      </div>
 
-</div>
+      <!-- RIGHT: ANALYTICS & LEDGER -->
+      <div class="animate-in animate-delay-2">
+        <!-- Daily Limit Management -->
+        <div class="limit-control-card mb-8">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px">
+            <div>
+              <div class="card-title" style="margin-bottom:2px">Daily Threshold Control</div>
+              <div style="font-size:12px; color:var(--text-secondary)">Manage your daily consolidated exposure</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px; font-weight:800; color:var(--text-secondary); text-transform:uppercase">Used Today</div>
+              <div style="font-size:18px; font-weight:800; color:var(--text-primary)" id="used-amount">₹0</div>
+            </div>
+          </div>
+
+          <div class="limit-progress-bg">
+            <div id="limit-bar" class="limit-progress-fill" style="width:0%"></div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px">
+            <div style="font-size:11px; color:var(--text-placeholder); font-weight:600" id="limit-remaining">₹0.00 Remaining</div>
+            <div style="font-size:11px; font-weight:800; color:var(--text-primary)">Total Limit: <span id="limit-amount">₹0</span></div>
+          </div>
+
+          <div class="form-group" style="padding-top:20px; border-top:1px dashed var(--border)">
+            <label class="form-label" style="font-size:10px; opacity:0.7">Configure New Daily Threshold</label>
+            <div style="display:flex; gap:12px">
+              <div class="input-wrap" style="flex:1">
+                <span class="input-icon material-symbols-outlined" style="font-size:18px">currency_rupee</span>
+                <input type="number" class="form-input with-icon" id="new-limit" placeholder="Adjust exposure limit" min="1000" max="100000" step="1000"/>
+              </div>
+              <button class="btn btn-primary" onclick="updateLimit()" style="padding:0 24px">Apply Change</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Transaction Ledger -->
+        <div class="ledger-container">
+          <div class="ledger-header">
+            <div class="card-title" style="font-size:15px">Consolidated Activity Ledger</div>
+            <a href="transactions.html" class="btn btn-ghost btn-sm" style="font-size:11px; font-weight:800">VIEW FULL HISTORY <span class="material-symbols-outlined" style="font-size:14px; margin-left:4px">open_in_new</span></a>
+          </div>
+          <div id="mini-txns">
+            <div class="ledger-row">
+              <div style="display:flex; align-items:center; gap:16px">
+                <div style="width:40px; height:40px; border-radius:12px; background:rgba(16,185,129,0.1); display:flex; align-items:center; justify-content:center"><span class="material-symbols-outlined" style="color:#10b981; font-size:20px">arrow_downward</span></div>
+                <div>
+                  <div style="font-size:13px; font-weight:700; color:var(--text-primary)">Opening Liquidity Event</div>
+                  <div style="font-size:10px; color:var(--text-secondary); font-weight:600">Initial Core Deposit</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:14px; font-weight:800; color:var(--green)">+₹500.00</div>
+                <div style="font-size:10px; color:var(--text-placeholder)">12 APR 2026</div>
+              </div>
+            </div>
+            <div class="ledger-row">
+              <div style="display:flex; align-items:center; gap:16px">
+                <div style="width:40px; height:40px; border-radius:12px; background:rgba(8,145,178,0.1); display:flex; align-items:center; justify-content:center"><span class="material-symbols-outlined" style="color:#0891b2; font-size:20px">account_balance</span></div>
+                <div>
+                  <div style="font-size:13px; font-weight:700; color:var(--text-primary)">Asset Deployment</div>
+                  <div style="font-size:10px; color:var(--text-secondary); font-weight:600">Dossier Initialization</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:14px; font-weight:800; color:var(--text-secondary)">—</div>
+                <div style="font-size:10px; color:var(--text-placeholder)">12 APR 2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-buildSidebar('accounts'); buildNavbar('Banking','Account Details');
-handleStatusRedirect('accounts');
+  buildSidebar('accounts'); buildNavbar('Banking','Account Details');
+  handleStatusRedirect('accounts');
 
-document.getElementById('acc-balance-big').textContent = '₹' + parseFloat(UserState.balance||'0').toLocaleString('en-IN',{minimumFractionDigits:2});
-document.getElementById('acc-no-big').textContent = UserState.accountNo || 'FNZ20260001';
-const accType = UserState.accountType || 'savings';
-document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account';
-document.getElementById('acc-type-small').textContent = accType.charAt(0).toUpperCase()+accType.slice(1);
+  document.getElementById('acc-balance-big').textContent = '₹' + parseFloat(UserState.balance||'0').toLocaleString('en-IN',{minimumFractionDigits:2});
+  document.getElementById('acc-no-big').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+  const accType = UserState.accountType || 'savings';
+  document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';
 
-// Daily limit
-const dailyLimit = parseInt(localStorage.getItem('finzo_daily_limit') || '10000');
-const usedToday = parseInt(localStorage.getItem('finzo_used_today') || '0');
-const remaining = dailyLimit - usedToday;
-document.getElementById('limit-amount').textContent = '₹'+dailyLimit.toLocaleString('en-IN');
-document.getElementById('used-amount').textContent = '₹'+usedToday.toLocaleString('en-IN');
-document.getElementById('limit-remaining').textContent = '₹'+remaining.toLocaleString('en-IN')+' remaining today';
-document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/dailyLimit)*100)+'%';
-document.getElementById('new-limit').value = dailyLimit;
+  // Daily limit
+  const dailyLimit = parseInt(localStorage.getItem('finzo_daily_limit') || '10000');
+  const usedToday = parseInt(localStorage.getItem('finzo_used_today') || '0');
+  const remaining = dailyLimit - usedToday;
+  document.getElementById('limit-amount').textContent = '₹'+dailyLimit.toLocaleString('en-IN');
+  document.getElementById('used-amount').textContent = '₹'+usedToday.toLocaleString('en-IN');
+  document.getElementById('limit-remaining').textContent = '₹'+remaining.toLocaleString('en-IN')+' Available';
+  document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/dailyLimit)*100)+'%';
+  document.getElementById('new-limit').value = dailyLimit;
 
-function updateLimit(){
-  const val = parseInt(document.getElementById('new-limit').value);
-  if (!val || val < 1000 || val > 100000){ showToast('Limit must be between ₹1,000 and ₹1,00,000','error'); return; }
-  // PHP_BACKEND: POST /api/accounts/update-limit.php
-  localStorage.setItem('finzo_daily_limit', val);
-  document.getElementById('limit-amount').textContent = '₹'+val.toLocaleString('en-IN');
-  document.getElementById('limit-remaining').textContent = '₹'+(val-usedToday).toLocaleString('en-IN')+' remaining today';
-  showToast('Daily limit updated to ₹'+val.toLocaleString('en-IN'),'success');
-}
+  function updateLimit(){
+    const val = parseInt(document.getElementById('new-limit').value);
+    if (!val || val < 1000 || val > 100000){ showToast('Exposure limit must be between ₹1,000 and ₹1,00,000','error'); return; }
+    localStorage.setItem('finzo_daily_limit', val);
+    document.getElementById('limit-amount').textContent = '₹'+val.toLocaleString('en-IN');
+    document.getElementById('limit-remaining').textContent = '₹'+(val-usedToday).toLocaleString('en-IN')+' Available';
+    document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/val)*100)+'%';
+    showToast('Exposure threshold updated','success');
+  }
 </script>
 </body>
 </html>
