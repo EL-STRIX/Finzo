@@ -69,36 +69,36 @@
     .fin-input-container.visible { opacity: 1; transform: translateY(0); }
 
     .fin-input { 
-      width: 100%; 
-      height: 56px;
-      padding: 0 18px 0 48px;
-      background: #f1f5f9; 
-      border: 1.5px solid #e2e8f0; 
-      border-radius: 6px; 
-      font-size: 14px; 
+      width: 100% !important; 
+      height: 56px !important;
+      padding: 0 18px 0 56px !important;
+      background: #f1f5f9 !important; 
+      border: 1.5px solid #e2e8f0 !important; 
+      border-radius: 8px !important; 
+      font-size: 14px !important; 
       font-weight: 600; 
-      color: #0f172a; 
-      outline: none; 
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      color: #0f172a !important; 
+      outline: none !important; 
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08) !important;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
     }
     .fin-input::placeholder { color: #94a3b8; font-weight: 500; transition: color 0.2s; }
     .fin-input:focus::placeholder { color: transparent; }
     
-    .fin-input:hover { background: #e8edf5; }
+    .fin-input:hover { background: #e8edf5 !important; }
     
     .fin-input:focus { 
-      background: #ffffff; 
-      border-color: #1a3c5e; 
-      box-shadow: 0 0 0 4px rgba(26,60,94,0.10); 
+      background: #ffffff !important; 
+      border-color: #1a3c5e !important; 
+      box-shadow: 0 0 0 4px rgba(26,60,94,0.10) !important;
+      --tw-ring-shadow: none !important;
     }
     .fin-input-container:focus-within .field-label { color: #1a3c5e; }
-    .fin-input-container:focus-within .input-icon { color: #1a3c5e; }
 
     .fin-input:not(:placeholder-shown) {
-      background: #ffffff;
-      border-color: rgba(0,0,0,0.08);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      background: #ffffff !important;
+      border-color: rgba(0,0,0,0.08) !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
     }
 
     .input-icon { 
@@ -112,7 +112,8 @@
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
       z-index: 2;
     }
-    .fin-input-container:focus-within .input-icon {
+    .fin-input-container:focus-within .input-icon,
+    .input-icon.icon-up {
       top: -2px;
       transform: translateY(-50%) scale(0.85);
       background: white;
@@ -304,6 +305,16 @@
     setTimeout(() => {
       $('.fin-input-container, .customer-btn').addClass('visible');
     }, 100);
+
+    // Icon float: up when focused or has value, down when empty & unfocused
+    $('.fin-input').on('input focus blur', function() {
+      const $icon = $(this).siblings('.input-icon');
+      if ($(this).val().trim().length > 0) {
+        $icon.addClass('icon-up');
+      } else {
+        $icon.removeClass('icon-up');
+      }
+    });
 
     const $form = $('#loginForm');
     const $btn = $('#login-btn');
