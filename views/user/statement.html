@@ -1,196 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Account Statement</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Account Statement | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+@media print{.sidebar,.navbar,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important}}
+.print-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid var(--primary);margin-bottom:20px}
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+<div id="navbar-root"></div>
+<div class="page-content">
+<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-end">
+<div><div class="page-eyebrow">Banking</div><div class="page-title">Account Statement</div><div class="page-subtitle">Download or print your transaction statement</div></div>
+<div style="display:flex;gap:8px" class="no-print">
+<button onclick="window.print()" class="btn btn-ghost"><span class="material-symbols-outlined" style="font-size:18px">print</span>Print</button>
+<button onclick="downloadStatement()" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px">download</span>Download PDF</button>
+</div>
+</div>
 
-  <div id="sidebar-placeholder"></div>
+<!-- FILTER -->
+<div class="card card-p animate-in animate-delay-1 no-print" style="margin-bottom:20px">
+<div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap">
+<div class="form-group" style="flex:0 0 200px"><label class="form-label">From Date</label><input type="date" class="form-input" id="stmt-from"/></div>
+<div class="form-group" style="flex:0 0 200px"><label class="form-label">To Date</label><input type="date" class="form-input" id="stmt-to"/></div>
+<button class="btn btn-primary" onclick="generateStatement()">Generate Statement</button>
+</div>
+</div>
 
-  <div class="admin-main">
-    <div class="admin-topbar no-print">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">BANKING</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Account Statement</div>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="window.print()" class="user-btn-secondary" style="padding:8px 18px !important;">
-          <span class="material-symbols-outlined" style="font-size:16px;">print</span> Print
-        </button>
-        <button class="user-btn-primary" style="padding:8px 18px !important;">
-          <span class="material-symbols-outlined" style="font-size:16px;">download</span> Download PDF
-        </button>
-      </div>
-    </div>
-
-    <div style="padding:32px 36px;">
-
-      <!-- Date Range Filter -->
-      <div class="admin-card mb-6 page-enter">
-        <div class="p-6 flex items-center gap-6 flex-wrap">
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">From Date</label>
-            <input type="date" value="2026-04-01" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" />
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">To Date</label>
-            <input type="date" value="2026-04-13" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" />
-          </div>
-          <div class="self-end">
-            <button class="user-btn-primary" style="padding:10px 20px !important;">
-              <span class="material-symbols-outlined" style="font-size:16px;">filter_alt</span> Generate
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Statement Document -->
-      <div class="admin-card page-enter page-enter-delay-1" id="statement-doc">
-        <!-- Letterhead -->
-        <div class="p-8 border-b border-slate-100 dark:border-white/5" style="background:linear-gradient(135deg,#1a3c5e,#2563eb);">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="text-2xl font-black text-white font-headline">Finzo</div>
-              <div class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">BANKING SYSTEM</div>
-            </div>
-            <div class="text-right">
-              <div class="text-xs font-bold text-white/80">Account Statement</div>
-              <div class="text-[10px] text-white/50 mt-1">Generated: 13 Apr 2026</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Account Info -->
-        <div class="p-8 border-b border-slate-100 dark:border-white/5">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Account Holder</div>
-              <div class="font-bold dark:text-white">Rahul Kumar</div>
-            </div>
-            <div>
-              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Account No.</div>
-              <div class="font-bold dark:text-white font-mono">FNZ20260001</div>
-            </div>
-            <div>
-              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Period</div>
-              <div class="font-bold dark:text-white">01 Apr — 13 Apr 2026</div>
-            </div>
-            <div>
-              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Account Type</div>
-              <div class="font-bold dark:text-white">Savings</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Opening / Closing Balance -->
-        <div class="p-8 border-b border-slate-100 dark:border-white/5">
-          <div class="grid grid-cols-2 gap-6">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
-              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Opening Balance</div>
-              <div class="text-xl font-black dark:text-white font-headline">₹85,180.00</div>
-            </div>
-            <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10">
-              <div class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Closing Balance</div>
-              <div class="text-xl font-black text-emerald-600 font-headline">₹1,42,080.00</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Statement Table -->
-        <table class="admin-table w-full">
-          <thead>
-            <tr>
-              <th>DATE</th>
-              <th>DESCRIPTION</th>
-              <th>REF NO.</th>
-              <th class="text-right">DEBIT (₹)</th>
-              <th class="text-right">CREDIT (₹)</th>
-              <th class="text-right">BALANCE (₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="font-bold dark:text-white">01 Apr</td>
-              <td class="dark:text-white/80">Opening Balance</td>
-              <td class="font-mono text-xs dark:text-white/60">—</td>
-              <td class="text-right">—</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold dark:text-white">85,180.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">05 Apr</td>
-              <td class="dark:text-white/80">Freelance Payment — Upwork</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240405002</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold text-emerald-600">18,500.00</td>
-              <td class="text-right font-bold dark:text-white">1,03,680.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">08 Apr</td>
-              <td class="dark:text-white/80">Amazon Shopping</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240408005</td>
-              <td class="text-right font-bold text-red-600">3,490.00</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold dark:text-white">1,00,190.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">10 Apr</td>
-              <td class="dark:text-white/80">Interest Credit — Savings</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240410001</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold text-emerald-600">1,240.00</td>
-              <td class="text-right font-bold dark:text-white">1,01,430.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">11 Apr</td>
-              <td class="dark:text-white/80">Electricity Bill — BSES</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240411002</td>
-              <td class="text-right font-bold text-red-600">1,850.00</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold dark:text-white">99,580.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">12 Apr</td>
-              <td class="dark:text-white/80">UPI Transfer — Priya Sharma</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240412003</td>
-              <td class="text-right font-bold text-red-600">2,500.00</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold dark:text-white">97,080.00</td>
-            </tr>
-            <tr>
-              <td class="font-bold dark:text-white">13 Apr</td>
-              <td class="dark:text-white/80">Salary Credit — ABC Pvt Ltd</td>
-              <td class="font-mono text-xs dark:text-white/60">TXN240413001</td>
-              <td class="text-right">—</td>
-              <td class="text-right font-bold text-emerald-600">45,000.00</td>
-              <td class="text-right font-bold dark:text-white">1,42,080.00</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Footer -->
-        <div class="p-6 text-center border-t border-slate-100 dark:border-white/5">
-          <p class="text-xs text-slate-400">This is a computer-generated statement and does not require a signature.</p>
-          <p class="text-xs text-slate-400 mt-1">© 2026 Finzo. All rights reserved.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+<!-- STATEMENT PREVIEW -->
+<div class="card card-p animate-in animate-delay-2 print-card" id="statement-preview">
+<!-- Header -->
+<div class="print-header">
+<div>
+<div style="font-size:24px;font-weight:800;color:var(--primary)">Finzo</div>
+<div style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:2px">FINZO BANKING SYSTEM</div>
+<div style="font-size:11px;color:var(--text-secondary)">support@finzobank.com</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:14px;font-weight:800;color:var(--text-primary)">ACCOUNT STATEMENT</div>
+<div style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="stmt-period">Period: All Transactions</div>
+<div style="font-size:11px;color:var(--text-secondary)">Generated: <span id="stmt-generated"></span></div>
+</div>
+</div>
+<!-- Account Info -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px;background:var(--bg-input);border-radius:var(--radius-md);margin-bottom:20px">
+<div>
+<div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Account Holder</div>
+<div style="font-size:15px;font-weight:800;color:var(--text-primary)" id="stmt-name">Rahul Kumar</div>
+<div style="font-size:12px;color:var(--text-secondary)" id="stmt-email">rahul.kumar@gmail.com</div>
+</div>
+<div>
+<div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Account Details</div>
+<div style="font-size:13px;font-weight:700;font-family:monospace;color:var(--text-primary)" id="stmt-acc-no">FNZ20260001</div>
+<div style="font-size:12px;color:var(--text-secondary)" id="stmt-acc-type">Savings Account</div>
+</div>
+</div>
+<!-- Summary -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+<div style="text-align:center;padding:14px;background:rgba(16,185,129,0.06);border-radius:var(--radius-md);border:1px solid rgba(16,185,129,0.15)">
+<div style="font-size:10px;font-weight:800;color:#10b981;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Total Credits</div>
+<div style="font-size:20px;font-weight:800;color:#10b981" id="stmt-credits">₹500.00</div>
+</div>
+<div style="text-align:center;padding:14px;background:rgba(244,63,94,0.06);border-radius:var(--radius-md);border:1px solid rgba(244,63,94,0.15)">
+<div style="font-size:10px;font-weight:800;color:#f43f5e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Total Debits</div>
+<div style="font-size:20px;font-weight:800;color:#f43f5e" id="stmt-debits">₹0.00</div>
+</div>
+<div style="text-align:center;padding:14px;background:rgba(8,145,178,0.06);border-radius:var(--radius-md);border:1px solid rgba(8,145,178,0.15)">
+<div style="font-size:10px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Closing Balance</div>
+<div style="font-size:20px;font-weight:800;color:var(--primary)" id="stmt-closing">₹500.00</div>
+</div>
+</div>
+<!-- Table -->
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date</th><th>Transaction ID</th><th>Description</th><th>Type</th><th>Amount</th><th>Balance After</th></tr></thead>
+<tbody>
+<tr><td style="font-size:12px;font-weight:600">12 Apr 2026</td><td class="td-mono">TXN20260001</td><td style="font-size:12px">Initial Deposit</td><td><span class="badge badge-green">Credit</span></td><td class="amount-pos">+₹500.00</td><td style="font-size:12px;font-weight:700">₹500.00</td></tr>
+</tbody>
+</table>
+</div>
+<!-- Footer -->
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center">
+<div style="font-size:10px;color:var(--text-placeholder)">This is a computer-generated statement from Finzo Banking System. No signature required.</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+buildSidebar('statement'); buildNavbar('Banking','Account Statement');
+handleStatusRedirect('statement');
+document.getElementById('stmt-generated').textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+document.getElementById('stmt-name').textContent = UserState.name;
+document.getElementById('stmt-email').textContent = UserState.email;
+document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'FNZ20260001';
+document.getElementById('stmt-acc-type').textContent = (UserState.accountType||'savings').charAt(0).toUpperCase()+(UserState.accountType||'savings').slice(1)+' Account';
+document.getElementById('stmt-closing').textContent = '₹'+parseFloat(UserState.balance||'0').toLocaleString('en-IN',{minimumFractionDigits:2});
+function generateStatement(){const f=document.getElementById('stmt-from').value,t=document.getElementById('stmt-to').value;if(f&&t){document.getElementById('stmt-period').textContent=`Period: ${f} to ${t}`;}showToast('Statement generated','success');}
+function downloadStatement(){showToast('Downloading PDF... (PHP_BACKEND: TCPDF)','info');window.print();}
+</script>
 </body>
 </html>

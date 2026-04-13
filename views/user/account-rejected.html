@@ -1,75 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Application Rejected</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Application Rejected | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+.top-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
-
-  <div id="sidebar-placeholder"></div>
-
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">APPLICATION STATUS</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Rejected</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;background:rgba(239,68,68,0.08);padding:8px 16px;border-radius:12px;border:1px solid rgba(239,68,68,0.15);">
-        <div style="width:10px;height:10px;background:#ef4444;border-radius:50%;box-shadow:0 0 12px rgba(239,68,68,0.6);"></div>
-        <span style="font-size:11px;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:0.08em;">REJECTED</span>
-      </div>
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <nav class="top-nav">
+    <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#fff">account_balance</span></div>
+      <span style="font-size:18px;font-weight:800;color:var(--text-primary)">Finzo</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="nav-icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" data-theme-icon style="font-size:20px">dark_mode</span></button>
+      <a href="../auth/login.html" class="btn btn-ghost btn-sm">Logout</a>
     </div>
+  </nav>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px">
+    <div style="width:100%;max-width:520px">
+      <div style="text-align:center;margin-bottom:28px" class="animate-in">
+        <div style="width:80px;height:80px;border-radius:50%;background:rgba(244,63,94,0.1);border:2px solid rgba(244,63,94,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <span class="material-symbols-outlined" style="font-size:40px;color:#f43f5e">cancel</span>
+        </div>
+        <div style="font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:8px">Application Rejected</div>
+        <div style="font-size:14px;color:var(--text-secondary);line-height:1.6">Your account application was not approved.<br>Please review the reason below and resubmit.</div>
+      </div>
 
-    <div style="padding:32px 36px;">
-      <div class="max-w-2xl mx-auto">
-        <!-- Rejection Card -->
-        <div class="admin-card page-enter">
-          <div class="p-10 text-center">
-            <div class="w-20 h-20 rounded-3xl bg-red-100 dark:bg-red-500/10 text-red-600 flex items-center justify-center mx-auto mb-6">
-              <span class="material-symbols-outlined text-5xl">cancel</span>
-            </div>
-            <h2 class="text-2xl font-black font-headline dark:text-white mb-3">Application Rejected</h2>
-            <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-8">Unfortunately, your application could not be approved. Please review the reason below and resubmit.</p>
+      <div class="card card-p animate-in animate-delay-1" style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:12px">Rejection Reason</div>
+        <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-md);padding:16px;display:flex;gap:12px">
+          <span class="material-symbols-outlined" style="color:#f43f5e;font-size:20px;flex-shrink:0;margin-top:2px">warning</span>
+          <div id="rejection-reason-text" style="font-size:13px;color:var(--text-primary);line-height:1.6">ID document not clear. Please resubmit with a high-quality scan of your identity document.</div>
+        </div>
+      </div>
 
-            <!-- Rejection Reason -->
-            <div class="text-left p-6 rounded-2xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10 mb-8">
-              <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-red-500 mt-0.5">info</span>
-                <div>
-                  <div class="font-bold text-sm text-red-700 dark:text-red-400 mb-1">Rejection Reason</div>
-                  <p class="text-sm text-red-600/80 dark:text-red-400/80">Submitted identity documents were unclear or did not match the provided details. Please re-upload clear, valid copies of your documents.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex gap-4 justify-center">
-              <a href="dashboard.html" class="user-btn-secondary no-underline" style="padding:12px 24px !important;">
-                <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Dashboard
-              </a>
-              <a href="complete-profile.html" class="user-btn-primary no-underline" style="padding:12px 32px !important;">
-                <span class="material-symbols-outlined" style="font-size:18px;">refresh</span> Update & Resubmit
-              </a>
-            </div>
+      <div class="card card-p animate-in animate-delay-2" style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px">Steps to Resubmit</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">1</div>
+            <div style="font-size:13px;color:var(--text-secondary)">Click "Update & Resubmit" below to go back to your profile form</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">2</div>
+            <div style="font-size:13px;color:var(--text-secondary)">Fix the issue mentioned in the rejection reason</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">3</div>
+            <div style="font-size:13px;color:var(--text-secondary)">Submit again — our team will review within 24 hours</div>
           </div>
         </div>
       </div>
+
+      <div class="flex gap-3 animate-in animate-delay-3">
+        <a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
+        <a href="complete-profile.html" class="btn btn-primary" style="flex:1;justify-content:center" onclick="resetForResubmit()">
+          <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
+          Update & Resubmit
+        </a>
+      </div>
+      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-placeholder)">Need help? <a href="mailto:support@finzobank.com" style="color:var(--primary);font-weight:600">Contact Support</a></div>
     </div>
   </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+</div>
+<script>
+if (UserState.status === 'active') window.location.href = 'dashboard.html';
+if (UserState.status === 'pending') window.location.href = 'complete-profile.html';
+if (UserState.status === 'under_review') window.location.href = 'account-pending.html';
+const reason = UserState.rejectionReason;
+if (reason) document.getElementById('rejection-reason-text').textContent = reason;
+function resetForResubmit() {
+  // PHP_BACKEND: Allow user to edit and resubmit profile
+  localStorage.setItem('finzo_status', 'pending');
+}
+</script>
 </body>
 </html>

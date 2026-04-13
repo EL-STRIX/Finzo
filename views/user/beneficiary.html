@@ -1,163 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Beneficiaries</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beneficiaries | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+<div id="navbar-root"></div>
+<div class="page-content">
+<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-end">
+<div><div class="page-eyebrow">Banking</div><div class="page-title">Beneficiaries</div><div class="page-subtitle">Manage your saved transfer recipients</div></div>
+<button onclick="openModal('add-modal')" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px">add</span>Add Beneficiary</button>
+</div>
 
-  <div id="sidebar-placeholder"></div>
+<div style="display:grid;grid-template-columns:1fr 380px;gap:20px">
+<!-- LIST -->
+<div class="card animate-in animate-delay-1" style="overflow:hidden">
+<div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-input)">
+<div style="font-size:13px;font-weight:800;color:var(--text-primary);letter-spacing:0.08em;text-transform:uppercase">Saved Beneficiaries</div>
+</div>
+<div id="beneficiary-list"></div>
+</div>
 
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">PAYMENTS</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Beneficiaries</div>
-      </div>
-      <div class="user-status-pill">
-        <div class="dot"></div>
-        <span>FINZO USER PANEL</span>
-      </div>
-    </div>
+<!-- ADD FORM -->
+<div class="card card-p animate-in animate-delay-2" style="height:fit-content">
+<div class="card-title" style="margin-bottom:4px">Add New Beneficiary</div>
+<div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Save an account for quick future transfers</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="form-group"><label class="form-label">Nick Name *</label><input type="text" class="form-input" id="new-nick" placeholder="e.g. Mom, Office Rent"/></div>
+<div class="form-group">
+<label class="form-label">Account Number *</label>
+<div style="display:flex;gap:8px"><input type="text" class="form-input" id="new-acc" placeholder="e.g. FNZ20260002" style="flex:1;font-family:monospace"/><button class="btn btn-outline" onclick="lookupBen()"><span class="material-symbols-outlined" style="font-size:18px">search</span></button></div>
+<div id="ben-result" class="hidden" style="margin-top:8px;font-size:12px;font-weight:700;color:#10b981"></div>
+</div>
+<div class="form-group"><label class="form-label">Bank Name</label><input type="text" class="form-input" id="new-bank" value="Finzo Banking System" readonly style="color:var(--text-secondary)"/></div>
+<button class="btn btn-primary btn-full" onclick="addBeneficiary()">Save Beneficiary</button>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <div style="padding:32px 36px;">
+<script>
+buildSidebar('beneficiary'); buildNavbar('Banking','Beneficiaries');
+handleStatusRedirect('beneficiary');
 
-      <!-- Header Actions -->
-      <div class="flex justify-between items-center mb-6 page-enter">
-        <div>
-          <h2 class="text-xl font-black font-headline dark:text-white">Saved Beneficiaries</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your saved payees for quick transfers.</p>
-        </div>
-        <button onclick="document.getElementById('add-modal').style.display='flex'" class="user-btn-primary" style="padding:10px 20px !important;">
-          <span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Add Beneficiary
-        </button>
-      </div>
+const demoAccounts={'FNZ20260002':'Priya Sharma','FNZ20260003':'Amit Mondal','FNZ20260004':'Sunita Mehta','FNZ20260005':'Vikram Gupta'};
+let beneficiaries=JSON.parse(localStorage.getItem('finzo_beneficiaries')||'[]');
+if(!beneficiaries.length) beneficiaries=[{id:1,nick:'Priya Sharma',account:'FNZ20260002',holder:'Priya Sharma',bank:'Finzo Banking System',added:'12 Apr 2026'},{id:2,nick:'Amit Mondal',account:'FNZ20260003',holder:'Amit Mondal',bank:'Finzo Banking System',added:'12 Apr 2026'}];
 
-      <!-- Beneficiary Table -->
-      <div class="admin-card page-enter page-enter-delay-1">
-        <div class="overflow-x-auto">
-          <table class="admin-table w-full">
-            <thead>
-              <tr>
-                <th>BENEFICIARY</th>
-                <th>BANK</th>
-                <th>ACCOUNT NO.</th>
-                <th>IFSC</th>
-                <th>ADDED ON</th>
-                <th class="text-right">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center text-xs font-bold">PS</div>
-                    <span class="font-bold dark:text-white">Priya Sharma</span>
-                  </div>
-                </td>
-                <td class="dark:text-white/70">State Bank of India</td>
-                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 4521</td>
-                <td class="font-mono text-xs dark:text-white/60">SBIN0001234</td>
-                <td class="dark:text-white/70">05 Mar 2026</td>
-                <td class="text-right">
-                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xs font-bold">AM</div>
-                    <span class="font-bold dark:text-white">Amit Mondal</span>
-                  </div>
-                </td>
-                <td class="dark:text-white/70">HDFC Bank</td>
-                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 7892</td>
-                <td class="font-mono text-xs dark:text-white/60">HDFC0005678</td>
-                <td class="dark:text-white/70">12 Feb 2026</td>
-                <td class="text-right">
-                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-600 flex items-center justify-center text-xs font-bold">SG</div>
-                    <span class="font-bold dark:text-white">Sneha Gupta</span>
-                  </div>
-                </td>
-                <td class="dark:text-white/70">ICICI Bank</td>
-                <td class="font-mono text-xs dark:text-white/60">XXXX XXXX 3310</td>
-                <td class="font-mono text-xs dark:text-white/60">ICIC0009012</td>
-                <td class="dark:text-white/70">28 Jan 2026</td>
-                <td class="text-right">
-                  <a href="transfer.html" class="user-btn-secondary no-underline" style="padding:6px 14px !important;font-size:11px !important;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">send</span> Transfer
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div style="padding:14px 24px;background:var(--dk-surface,#fafbff);border-top:1px solid var(--dk-border,#eef0f5);">
-          <span class="text-xs font-bold text-slate-400">3 beneficiaries saved</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Beneficiary Modal -->
-  <div id="add-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden" style="display:none;">
-    <div class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-lg w-full mx-4 shadow-2xl">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-black font-headline dark:text-white">Add New Beneficiary</h3>
-        <button onclick="document.getElementById('add-modal').style.display='none'" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <form>
-        <div class="space-y-4">
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Beneficiary Name *</label>
-            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Full name" required />
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Account Number *</label>
-            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Account number" required />
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">IFSC Code *</label>
-            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none uppercase" placeholder="e.g. SBIN0001234" maxlength="11" required />
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Bank Name *</label>
-            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white outline-none" placeholder="Bank name" required />
-          </div>
-        </div>
-        <div class="flex gap-4 mt-8">
-          <button type="button" onclick="document.getElementById('add-modal').style.display='none'" class="flex-1 py-3 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white font-bold rounded-xl transition-all hover:bg-slate-200 dark:hover:bg-white/10">Cancel</button>
-          <button type="submit" class="user-btn-primary flex-1" style="padding:12px !important;">Save Beneficiary</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+let verifiedHolder='';
+function lookupBen(){const acc=document.getElementById('new-acc').value.trim().toUpperCase();const res=document.getElementById('ben-result');if(!acc)return;if(demoAccounts[acc]){verifiedHolder=demoAccounts[acc];res.textContent='✅ '+verifiedHolder;res.style.color='#10b981';res.classList.remove('hidden');}else{verifiedHolder='';res.textContent='❌ Account not found';res.style.color='#f43f5e';res.classList.remove('hidden');}}
+function addBeneficiary(){
+const nick=document.getElementById('new-nick').value.trim();
+const acc=document.getElementById('new-acc').value.trim().toUpperCase();
+if(!nick||!acc){showToast('Please fill in all fields','error');return;}
+if(!verifiedHolder){showToast('Please verify the account number first','error');return;}
+beneficiaries.push({id:Date.now(),nick,account:acc,holder:verifiedHolder,bank:'Finzo Banking System',added:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})});
+localStorage.setItem('finzo_beneficiaries',JSON.stringify(beneficiaries));
+document.getElementById('new-nick').value='';document.getElementById('new-acc').value='';document.getElementById('ben-result').classList.add('hidden');verifiedHolder='';
+showToast('Beneficiary saved successfully','success');renderList();}
+function deleteBen(id){openConfirm('Remove Beneficiary','Are you sure you want to remove this beneficiary?',()=>{beneficiaries=beneficiaries.filter(b=>b.id!==id);localStorage.setItem('finzo_beneficiaries',JSON.stringify(beneficiaries));renderList();showToast('Beneficiary removed','success');},true);}
+function renderList(){
+const list=document.getElementById('beneficiary-list');
+if(!beneficiaries.length){list.innerHTML='<div class="empty-state"><span class="material-symbols-outlined">group</span><div class="empty-state-title">No saved beneficiaries</div><div class="empty-state-text">Add your first beneficiary using the form on the right.</div></div>';return;}
+list.innerHTML=beneficiaries.map(b=>`
+<div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg-input)'" onmouseout="this.style.background='transparent'">
+<div style="width:44px;height:44px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">${b.nick.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:700;color:var(--text-primary)">${b.nick}</div>
+<div style="font-size:11px;color:var(--text-secondary);margin-top:2px;font-family:monospace">${b.account}</div>
+<div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Added ${b.added}</div>
+</div>
+<div style="display:flex;gap:6px">
+<a href="transfer.html" class="btn btn-primary btn-sm">Transfer</a>
+<button class="btn btn-ghost btn-sm btn-icon-only" onclick="deleteBen(${b.id})" title="Remove"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+</div>
+</div>`).join('');}
+renderList();
+</script>
 </body>
 </html>

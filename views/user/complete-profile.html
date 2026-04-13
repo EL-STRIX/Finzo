@@ -1,131 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Complete Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Complete Profile | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+.step-content { display: none; animation: slideUp 0.3s ease; }
+.step-content.active { display: block; }
+.upload-box {
+  border: 2px dashed var(--border); border-radius: var(--radius-lg);
+  padding: 32px; text-align: center; cursor: pointer;
+  transition: var(--transition); background: var(--bg-input);
+}
+.upload-box:hover { border-color: var(--primary); background: var(--primary-light); }
+.upload-box.has-file { border-color: #10b981; border-style: solid; }
+.preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: var(--radius-md); }
+.progress-bar-outer { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 28px; }
+.progress-bar-inner { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.4s ease; }
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+  <div id="navbar-root"></div>
+  <div class="page-content" style="max-width:760px">
 
-  <div id="sidebar-placeholder"></div>
+    <div class="page-header animate-in">
+      <div class="page-eyebrow">Account Setup</div>
+      <div class="page-title">Complete Your Profile</div>
+      <div class="page-subtitle">Fill in your details to activate your Finzo account. This takes about 5 minutes.</div>
+    </div>
 
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">PROFILE SETUP</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Complete Profile</div>
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar" style="width:25%"></div>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="steps animate-in animate-delay-1">
+      <div class="step">
+        <div class="step-circle done" id="sc1"><span class="material-symbols-outlined" style="font-size:14px">person</span></div>
+        <div class="step-label active" id="sl1">Personal</div>
       </div>
-      <div class="user-status-pill">
-        <div class="dot"></div>
-        <span>FINZO USER PANEL</span>
+      <div class="step-line" id="line1"></div>
+      <div class="step">
+        <div class="step-circle inactive" id="sc2">2</div>
+        <div class="step-label" id="sl2">Address</div>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step">
+        <div class="step-circle inactive" id="sc3">3</div>
+        <div class="step-label" id="sl3">Identity</div>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step">
+        <div class="step-circle inactive" id="sc4">4</div>
+        <div class="step-label" id="sl4">Account</div>
       </div>
     </div>
 
-    <div style="padding:32px 36px;">
-
-      <!-- Progress Steps -->
-      <div class="admin-card mb-8 page-enter">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Step 1 of 3</span>
-            <span class="text-xs font-bold text-blue-600">33% Complete</span>
-          </div>
-          <div class="admin-progress mb-6">
-            <div class="admin-progress-fill" style="width:33%;background:linear-gradient(90deg,#1a3c5e,#2563eb);"></div>
-          </div>
-          <div class="flex justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">1</div>
-              <span class="text-xs font-bold text-blue-600">Personal Info</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-white/40 flex items-center justify-center text-xs font-bold">2</div>
-              <span class="text-xs font-bold text-slate-400">Identity</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-white/40 flex items-center justify-center text-xs font-bold">3</div>
-              <span class="text-xs font-bold text-slate-400">Review</span>
-            </div>
-          </div>
+    <!-- STEP 1: PERSONAL INFO -->
+    <div class="card card-p animate-in animate-delay-2 step-content active" id="step1">
+      <div style="margin-bottom:20px">
+        <div class="card-title">Personal Information</div>
+        <div class="card-subtitle">Tell us about yourself</div>
+      </div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Date of Birth *</label>
+          <input type="date" class="form-input" id="dob" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender *</label>
+          <select class="form-input" id="gender" required>
+            <option value="">Select gender</option>
+            <option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Father's Name *</label>
+          <input type="text" class="form-input" id="father-name" placeholder="Enter father's name" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Occupation *</label>
+          <select class="form-input" id="occupation" required>
+            <option value="">Select occupation</option>
+            <option>Student</option><option>Employed</option><option>Self-Employed</option><option>Business</option><option>Retired</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group form-grid-2" style="grid-column:span 2">
+          <label class="form-label">Annual Income *</label>
+          <select class="form-input" id="income" required>
+            <option value="">Select income range</option>
+            <option>Below ₹1 Lakh</option><option>₹1L – ₹5L</option><option>₹5L – ₹10L</option><option>Above ₹10L</option>
+          </select>
         </div>
       </div>
-
-      <!-- Form Card -->
-      <div class="admin-card page-enter page-enter-delay-1">
-        <div class="p-6 border-b border-slate-100 dark:border-white/5">
-          <h3 class="admin-section-title dark:text-white">Personal Information</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Please fill in your details to complete account verification.</p>
-        </div>
-        <div class="p-8">
-          <form id="profile-form">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Full Name *</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="Enter your full name" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Date of Birth *</label>
-                <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Phone Number *</label>
-                <input type="tel" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="+91 00000 00000" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">PAN Number *</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all uppercase" placeholder="ABCDE1234F" maxlength="10" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Aadhaar Number *</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="0000 0000 0000" maxlength="14" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Gender *</label>
-                <select class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" required>
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div class="md:col-span-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Address *</label>
-                <textarea rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all resize-none" placeholder="Enter your full address" required></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">City *</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="e.g. New Delhi" required />
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">PIN Code *</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="110001" maxlength="6" required />
-              </div>
-            </div>
-
-            <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-slate-100 dark:border-white/5">
-              <a href="dashboard.html" class="user-btn-secondary no-underline" style="padding:12px 24px !important;">Cancel</a>
-              <button type="submit" class="user-btn-primary" style="padding:12px 32px !important;">
-                <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span> Continue to Step 2
-              </button>
-            </div>
-          </form>
-        </div>
+      <div class="flex justify-between mt-6">
+        <div></div>
+        <button class="btn btn-primary" onclick="nextStep(1)">Continue → Address</button>
       </div>
     </div>
+
+    <!-- STEP 2: ADDRESS -->
+    <div class="card card-p animate-in step-content" id="step2">
+      <div style="margin-bottom:20px">
+        <div class="card-title">Address Details</div>
+        <div class="card-subtitle">Your residential address for account records</div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Street Address *</label>
+          <input type="text" class="form-input" id="street" placeholder="House no., building, street" required/>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">City *</label>
+            <input type="text" class="form-input" id="city" placeholder="e.g. Kolkata" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">State *</label>
+            <select class="form-input" id="state" required>
+              <option value="">Select state</option>
+              <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">PIN Code *</label>
+            <input type="text" class="form-input" id="pincode" placeholder="6-digit PIN" maxlength="6" pattern="\d{6}" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-input" value="India" readonly style="color:var(--text-secondary)"/>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between mt-6">
+        <button class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep(2)">Continue → Identity</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: IDENTITY -->
+    <div class="card card-p animate-in step-content" id="step3">
+      <div style="margin-bottom:20px">
+        <div class="card-title">Identity Verification</div>
+        <div class="card-subtitle">Required for KYC compliance — your data is encrypted and secure</div>
+      </div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group">
+          <label class="form-label">ID Type *</label>
+          <select class="form-input" id="id-type" required>
+            <option value="">Select document type</option>
+            <option>Aadhaar Card</option><option>PAN Card</option><option>Passport</option><option>Voter ID</option><option>Driving License</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID Number *</label>
+          <input type="text" class="form-input" id="id-number" placeholder="Enter document number" required/>
+        </div>
+      </div>
+      <div class="form-grid form-grid-2 mt-4">
+        <div class="form-group">
+          <label class="form-label">Front Side of Document *</label>
+          <div class="upload-box" id="front-box" onclick="document.getElementById('front-input').click()">
+            <input type="file" id="front-input" accept="image/*" style="display:none" onchange="handleUpload(this,'front-box','front-preview')"/>
+            <div id="front-preview-wrap">
+              <span class="material-symbols-outlined" style="font-size:32px;color:var(--text-placeholder);display:block;margin-bottom:8px">upload_file</span>
+              <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Click to upload front side</div>
+              <div style="font-size:11px;color:var(--text-placeholder);margin-top:4px">JPG or PNG, max 5MB</div>
+            </div>
+            <img id="front-preview" class="preview-img hidden"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Back Side of Document *</label>
+          <div class="upload-box" id="back-box" onclick="document.getElementById('back-input').click()">
+            <input type="file" id="back-input" accept="image/*" style="display:none" onchange="handleUpload(this,'back-box','back-preview')"/>
+            <div id="back-preview-wrap">
+              <span class="material-symbols-outlined" style="font-size:32px;color:var(--text-placeholder);display:block;margin-bottom:8px">upload_file</span>
+              <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Click to upload back side</div>
+              <div style="font-size:11px;color:var(--text-placeholder);margin-top:4px">JPG or PNG, max 5MB</div>
+            </div>
+            <img id="back-preview" class="preview-img hidden"/>
+          </div>
+        </div>
+      </div>
+      <div class="banner banner-info mt-4" style="padding:12px 16px">
+        <div class="banner-left">
+          <span class="material-symbols-outlined" style="color:#3b82f6;font-size:18px;flex-shrink:0">shield</span>
+          <div class="banner-text" style="margin:0">Your documents are encrypted and only visible to our verification team. They are never shared with third parties.</div>
+        </div>
+      </div>
+      <div class="flex justify-between mt-6">
+        <button class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep(3)">Continue → Account Setup</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: ACCOUNT PREFERENCE -->
+    <div class="card card-p animate-in step-content" id="step4">
+      <div style="margin-bottom:20px">
+        <div class="card-title">Account Preferences</div>
+        <div class="card-subtitle">Choose your account type and set up your security PIN</div>
+      </div>
+
+      <!-- Account Type -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">Account Type *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px">
+          <label id="savings-card" style="border:2px solid var(--primary);background:var(--primary-light);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:var(--transition)" onclick="selectAccountType('savings')">
+            <input type="radio" name="account-type" value="savings" style="display:none" checked/>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <span class="material-symbols-outlined" style="color:var(--primary);font-size:24px">savings</span>
+              <div style="font-size:14px;font-weight:800;color:var(--text-primary)">Savings Account</div>
+            </div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Earn monthly interest on your balance. Best for personal savings and regular transactions.</div>
+            <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--primary)">Interest Rate: 4.25% p.a.</div>
+          </label>
+          <label id="current-card" style="border:2px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:var(--transition)" onclick="selectAccountType('current')">
+            <input type="radio" name="account-type" value="current" style="display:none"/>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <span class="material-symbols-outlined" style="color:#3b82f6;font-size:24px">account_balance</span>
+              <div style="font-size:14px;font-weight:800;color:var(--text-primary)">Current Account</div>
+            </div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Unlimited daily transactions. Best for business use and high-volume payments.</div>
+            <div style="margin-top:10px;font-size:11px;font-weight:700;color:#3b82f6">No transaction limits</div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Initial Deposit -->
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">Initial Deposit Amount *</label>
+        <div class="input-wrap">
+          <span class="input-icon material-symbols-outlined">currency_rupee</span>
+          <input type="number" class="form-input with-icon" id="initial-deposit" placeholder="Minimum ₹500" min="500" step="1" required/>
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:6px">Minimum initial deposit is ₹500. This amount will be credited to your account upon approval.</div>
+      </div>
+
+      <!-- Transaction PIN -->
+      <div class="form-grid form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Transaction PIN (4-digit) *</label>
+          <input type="password" class="form-input" id="txn-pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required/>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:6px">Required to authorize all transactions</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Transaction PIN *</label>
+          <input type="password" class="form-input" id="txn-pin-confirm" placeholder="Re-enter 4-digit PIN" maxlength="4" pattern="\d{4}" required/>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-6">
+        <button class="btn btn-ghost" onclick="prevStep(4)">← Back</button>
+        <button class="btn btn-primary btn-lg" id="submit-btn" onclick="submitProfile()">
+          <span class="material-symbols-outlined" style="font-size:18px">send</span>
+          Submit for Approval
+        </button>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+<script>
+buildSidebar('complete-profile');
+buildNavbar('Account Setup', 'Complete Profile');
+
+// Redirect if already under review or active
+const s = UserState.status;
+if (s === 'active') window.location.href = 'dashboard.html';
+if (s === 'under_review') window.location.href = 'account-pending.html';
+
+let currentStep = 1;
+const totalSteps = 4;
+
+function updateStepUI(step) {
+  document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  const pct = (step / totalSteps) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  for (let i = 1; i <= totalSteps; i++) {
+    const circle = document.getElementById('sc' + i);
+    const label = document.getElementById('sl' + i);
+    if (i < step) { circle.className = 'step-circle done'; circle.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px">check</span>'; }
+    else if (i === step) { circle.className = 'step-circle active'; circle.innerHTML = i; }
+    else { circle.className = 'step-circle inactive'; circle.innerHTML = i; }
+    label.className = 'step-label' + (i <= step ? ' active' : '');
+    if (i < step) label.className = 'step-label done';
+    const line = document.getElementById('line' + i);
+    if (line) line.className = 'step-line' + (i < step ? ' done' : '');
+  }
+}
+
+function nextStep(from) {
+  if (from === 1) {
+    if (!validateStep1()) return;
+  } else if (from === 2) {
+    if (!validateStep2()) return;
+  } else if (from === 3) {
+    if (!validateStep3()) return;
+  }
+  currentStep = from + 1;
+  updateStepUI(currentStep);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep(from) {
+  currentStep = from - 1;
+  updateStepUI(currentStep);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep1() {
+  const dob = document.getElementById('dob').value;
+  const gender = document.getElementById('gender').value;
+  const father = document.getElementById('father-name').value;
+  const occ = document.getElementById('occupation').value;
+  const income = document.getElementById('income').value;
+  if (!dob || !gender || !father || !occ || !income) {
+    showToast('Please fill in all required fields', 'error');
+    return false;
+  }
+  return true;
+}
+
+function validateStep2() {
+  const street = document.getElementById('street').value;
+  const city = document.getElementById('city').value;
+  const state = document.getElementById('state').value;
+  const pin = document.getElementById('pincode').value;
+  if (!street || !city || !state || !pin) {
+    showToast('Please fill in all address fields', 'error');
+    return false;
+  }
+  if (!/^\d{6}$/.test(pin)) { showToast('PIN code must be 6 digits', 'error'); return false; }
+  return true;
+}
+
+function validateStep3() {
+  const idType = document.getElementById('id-type').value;
+  const idNum = document.getElementById('id-number').value;
+  if (!idType || !idNum) {
+    showToast('Please fill in your ID details', 'error');
+    return false;
+  }
+  return true;
+}
+
+function handleUpload(input, boxId, previewId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('File too large. Max 5MB.', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById(previewId);
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+    const box = document.getElementById(boxId);
+    box.classList.add('has-file');
+    const wrap = boxId === 'front-box' ? 'front-preview-wrap' : 'back-preview-wrap';
+    document.getElementById(wrap).classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectAccountType(type) {
+  const savings = document.getElementById('savings-card');
+  const current = document.getElementById('current-card');
+  if (type === 'savings') {
+    savings.style.borderColor = 'var(--primary)';
+    savings.style.background = 'var(--primary-light)';
+    current.style.borderColor = 'var(--border)';
+    current.style.background = 'transparent';
+    savings.querySelector('input').checked = true;
+  } else {
+    current.style.borderColor = '#3b82f6';
+    current.style.background = 'rgba(59,130,246,0.06)';
+    savings.style.borderColor = 'var(--border)';
+    savings.style.background = 'transparent';
+    current.querySelector('input').checked = true;
+  }
+}
+
+function submitProfile() {
+  const deposit = parseFloat(document.getElementById('initial-deposit').value);
+  const pin = document.getElementById('txn-pin').value;
+  const pinConfirm = document.getElementById('txn-pin-confirm').value;
+  if (!deposit || deposit < 500) { showToast('Minimum initial deposit is ₹500', 'error'); return; }
+  if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) { showToast('Transaction PIN must be exactly 4 digits', 'error'); return; }
+  if (pin !== pinConfirm) { showToast('Transaction PINs do not match', 'error'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:18px">autorenew</span> Submitting...';
+
+  // PHP_BACKEND: POST /api/profile/submit.php with all form data
+  // Update $_SESSION['user_status'] = 'under_review'
+  setTimeout(() => {
+    const accountType = document.querySelector('input[name="account-type"]:checked').value;
+    localStorage.setItem('finzo_status', 'under_review');
+    localStorage.setItem('finzo_account_type', accountType);
+    showToast('Profile submitted! Redirecting...', 'success');
+    setTimeout(() => { window.location.href = 'account-pending.html'; }, 1500);
+  }, 2000);
+}
+
+updateStepUI(1);
+</script>
 </body>
 </html>

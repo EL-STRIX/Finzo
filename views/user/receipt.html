@@ -1,110 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Transaction Receipt</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Transaction Receipt | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+@media print{.sidebar,.navbar,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important}.print-card{box-shadow:none!important;border:1px solid #e2e8f0!important}}
+.receipt-divider{height:1px;background:var(--border);margin:16px 0}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.receipt-row:last-child{border-bottom:none}
+.r-label{font-size:12px;color:var(--text-secondary);font-weight:600}
+.r-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right}
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+<div id="navbar-root"></div>
+<div class="page-content" style="max-width:620px">
 
-  <div id="sidebar-placeholder"></div>
+<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-end">
+<div><div class="page-eyebrow">Transaction</div><div class="page-title">Receipt</div><div class="page-subtitle">Your transaction has been processed successfully</div></div>
+<div style="display:flex;gap:8px" class="no-print">
+<a href="transactions.html" class="btn btn-ghost">← History</a>
+<button onclick="window.print()" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px">print</span>Print</button>
+</div>
+</div>
 
-  <div class="admin-main">
-    <div class="admin-topbar no-print">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">TRANSACTION</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Receipt</div>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="window.print()" class="user-btn-secondary" style="padding:8px 18px !important;">
-          <span class="material-symbols-outlined" style="font-size:16px;">print</span> Print
-        </button>
-        <a href="transactions.html" class="user-btn-secondary no-underline" style="padding:8px 18px !important;">
-          <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span> Back
-        </a>
-      </div>
-    </div>
+<!-- SUCCESS BANNER -->
+<div class="banner banner-success animate-in animate-delay-1 no-print" style="margin-bottom:20px">
+<div class="banner-left">
+<div class="banner-icon" style="background:rgba(16,185,129,0.15)">
+<span class="material-symbols-outlined" style="color:#10b981;font-size:22px">check_circle</span>
+</div>
+<div>
+<div class="banner-title">Transaction Successful!</div>
+<div class="banner-text">Your transaction has been processed and a receipt has been generated.</div>
+</div>
+</div>
+</div>
 
-    <div style="padding:32px 36px;">
-      <div class="max-w-2xl mx-auto">
-        <div class="admin-card page-enter" id="receipt-card">
-          <!-- Receipt Header -->
-          <div class="p-8 text-center border-b border-slate-100 dark:border-white/5" style="background:linear-gradient(135deg,#1a3c5e,#2563eb);">
-            <div class="text-2xl font-black text-white font-headline mb-1">Finzo</div>
-            <div class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Official Transaction Receipt</div>
-          </div>
+<!-- RECEIPT CARD -->
+<div class="card card-p animate-in animate-delay-2 print-card">
+<!-- Letterhead -->
+<div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid var(--primary);margin-bottom:20px">
+<div>
+<div style="font-size:22px;font-weight:800;color:var(--primary)">Finzo</div>
+<div style="font-size:10px;font-weight:700;color:var(--text-secondary);letter-spacing:0.12em;margin-top:2px">FINZO BANKING SYSTEM</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:13px;font-weight:800;color:var(--text-primary)">TRANSACTION RECEIPT</div>
+<div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-top:4px" id="rcpt-no">RCP20260001</div>
+</div>
+</div>
 
-          <!-- Status Badge -->
-          <div class="p-6 text-center border-b border-slate-100 dark:border-white/5">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/15">
-              <span class="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
-              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">Transaction Successful</span>
-            </div>
-          </div>
+<!-- Status badge -->
+<div style="text-align:center;margin-bottom:20px">
+<span class="badge badge-green" style="font-size:11px;padding:6px 16px">✅ TRANSACTION SUCCESSFUL</span>
+</div>
 
-          <!-- Receipt Details -->
-          <div class="p-8">
-            <div class="space-y-5">
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaction ID</span>
-                <span class="font-bold font-mono text-sm dark:text-white">TXN240413001</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Date & Time</span>
-                <span class="font-bold text-sm dark:text-white">13 Apr 2026, 10:45 AM</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Type</span>
-                <span class="status-badge badge-success">CREDIT</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Description</span>
-                <span class="font-bold text-sm dark:text-white">Salary Credit — ABC Pvt Ltd</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">From</span>
-                <span class="font-bold text-sm dark:text-white">ABC Private Limited</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">To Account</span>
-                <span class="font-bold text-sm font-mono dark:text-white">FNZ20260001</span>
-              </div>
+<!-- Receipt details -->
+<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:16px;margin-bottom:16px">
+<div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px">Transaction Details</div>
+<div class="receipt-row"><span class="r-label">Transaction ID</span><span class="r-value td-mono" id="rcpt-txn-id">TXN20260001</span></div>
+<div class="receipt-row"><span class="r-label">Date & Time</span><span class="r-value" id="rcpt-datetime">12 Apr 2026 — 10:30 AM IST</span></div>
+<div class="receipt-row"><span class="r-label">Transaction Type</span><span class="r-value" id="rcpt-type"><span class="badge badge-teal">Transfer</span></span></div>
+<div class="receipt-row"><span class="r-label">Description</span><span class="r-value" id="rcpt-desc">Fund Transfer</span></div>
+</div>
 
-              <!-- Amount Highlight -->
-              <div class="p-6 rounded-2xl text-center mt-4" style="background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02));">
-                <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">Amount Credited</div>
-                <div class="text-4xl font-black text-emerald-600 font-headline">₹45,000.00</div>
-              </div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
+<div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">From</div>
+<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-from-name">Rahul Kumar</div>
+<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-from-acc">FNZ20260001</div>
+<div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Savings Account</div>
+</div>
+<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
+<div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">To</div>
+<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-to-name">Priya Sharma</div>
+<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-to-acc">FNZ20260002</div>
+<div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Savings Account</div>
+</div>
+</div>
 
-              <div class="flex justify-between items-center py-2">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Closing Balance</span>
-                <span class="font-black text-lg dark:text-white">₹1,42,080.00</span>
-              </div>
-            </div>
-          </div>
+<div style="background:rgba(8,145,178,0.06);border:1px solid rgba(8,145,178,0.15);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;text-align:center">
+<div style="font-size:10px;font-weight:800;color:var(--primary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">Amount Transferred</div>
+<div style="font-size:36px;font-weight:800;color:var(--text-primary)" id="rcpt-amount">₹500.00</div>
+</div>
 
-          <!-- Footer -->
-          <div class="p-6 text-center border-t border-slate-100 dark:border-white/5">
-            <p class="text-xs text-slate-400">This is a system-generated receipt. No signature required.</p>
-            <p class="text-xs text-slate-400 mt-1">© 2026 Finzo. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;margin-bottom:16px">
+<div class="receipt-row"><span class="r-label">Amount</span><span class="r-value" id="rcpt-amount2">₹500.00</span></div>
+<div class="receipt-row"><span class="r-label">Transfer Charges</span><span class="r-value text-success">₹0.00 (Free)</span></div>
+<div class="receipt-row" style="border-bottom:none"><span style="font-size:13px;font-weight:800;color:var(--text-primary)">Balance After</span><span style="font-size:14px;font-weight:800;color:#10b981" id="rcpt-balance-after">₹0.00</span></div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+<!-- Footer note -->
+<div style="text-align:center;padding-top:16px;border-top:1px solid var(--border)">
+<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">Thank you for banking with Finzo.</div>
+<div style="font-size:10px;color:var(--text-placeholder)">This is a computer-generated receipt. No signature required.</div>
+<div style="font-size:10px;color:var(--text-placeholder);margin-top:4px">Finzo Banking System — finzobank.com</div>
+</div>
+</div>
+
+<!-- Actions -->
+<div class="flex gap-3 mt-5 no-print animate-in animate-delay-3">
+<a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
+<a href="transfer.html" class="btn btn-outline" style="flex:1;justify-content:center">New Transfer</a>
+<a href="transactions.html" class="btn btn-primary" style="flex:1;justify-content:center">View History</a>
+</div>
+</div>
+</div>
+
+<script>
+buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
+
+// Load last transaction from localStorage
+// PHP_BACKEND: GET /api/transactions/latest.php or from URL param ?txn_id=
+const lastTxn = JSON.parse(localStorage.getItem('finzo_last_txn') || '{}');
+const now = new Date();
+const dateStr = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+const timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
+
+document.getElementById('rcpt-no').textContent = 'RCP' + Date.now().toString().slice(-8);
+document.getElementById('rcpt-txn-id').textContent = lastTxn.id || 'TXN20260001';
+document.getElementById('rcpt-datetime').textContent = dateStr + ' — ' + timeStr;
+document.getElementById('rcpt-from-name').textContent = UserState.name;
+document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'FNZ20260001';
+
+if (lastTxn.type === 'transfer') {
+  document.getElementById('rcpt-type').innerHTML = '<span class="badge badge-teal">Transfer</span>';
+  document.getElementById('rcpt-to-name').textContent = lastTxn.recipient || 'Recipient';
+  document.getElementById('rcpt-to-acc').textContent = lastTxn.to || '—';
+} else if (lastTxn.type === 'credit') {
+  document.getElementById('rcpt-type').innerHTML = '<span class="badge badge-green">Deposit</span>';
+  document.getElementById('rcpt-to-name').textContent = UserState.name;
+  document.getElementById('rcpt-to-acc').textContent = UserState.accountNo;
+}
+
+const amt = lastTxn.amount || 0;
+document.getElementById('rcpt-amount').textContent = '₹' + parseFloat(amt).toLocaleString('en-IN',{minimumFractionDigits:2});
+document.getElementById('rcpt-amount2').textContent = '₹' + parseFloat(amt).toLocaleString('en-IN',{minimumFractionDigits:2});
+document.getElementById('rcpt-desc').textContent = lastTxn.desc || 'Fund Transfer';
+const balAfter = parseFloat(UserState.balance || '0');
+document.getElementById('rcpt-balance-after').textContent = '₹' + balAfter.toLocaleString('en-IN',{minimumFractionDigits:2});
+</script>
 </body>
 </html>

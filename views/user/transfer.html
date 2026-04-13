@@ -1,173 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo — Fund Transfer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#1a3c5e", "error": "#ba1a1a", "surface-container-low": "#0d1117" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] } } } }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/user-panel.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fund Transfer | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/css/user.css"/>
+<style>
+.account-lookup-result { border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:16px; transition:var(--transition); }
+.account-lookup-result.found { border-color:#10b981; background:rgba(16,185,129,0.04); }
+.account-lookup-result.not-found { border-color:#f43f5e; background:rgba(244,63,94,0.04); }
+.beneficiary-chip { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:20px; cursor:pointer; transition:var(--transition); font-size:12px; font-weight:600; color:var(--text-secondary); }
+.beneficiary-chip:hover { border-color:var(--primary); color:var(--primary); background:var(--primary-light); }
+.summary-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); }
+.summary-row:last-child { border-bottom:none; }
+.summary-label { font-size:12px; color:var(--text-secondary); font-weight:600; }
+.summary-value { font-size:13px; font-weight:700; color:var(--text-primary); }
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-white antialiased">
+<body>
+<script src="../../assets/js/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+  <div id="navbar-root"></div>
+  <div class="page-content" style="max-width:900px">
 
-  <div id="sidebar-placeholder"></div>
-
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">MONEY TRANSFER</div>
-        <div class="font-headline text-2xl font-extrabold tracking-tight">Fund Transfer</div>
-      </div>
-      <div class="user-status-pill">
-        <div class="dot"></div>
-        <span>FINZO USER PANEL</span>
-      </div>
+    <div class="page-header animate-in">
+      <div class="page-eyebrow">Banking</div>
+      <div class="page-title">Fund Transfer</div>
+      <div class="page-subtitle">Send money securely to any Finzo account — ACID protected</div>
     </div>
 
-    <div style="padding:32px 36px;">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Transfer Form -->
-        <div class="admin-card lg:col-span-2 page-enter">
-          <div class="p-6 border-b border-slate-100 dark:border-white/5">
-            <h3 class="admin-section-title dark:text-white">Transfer Details</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Send money to a saved beneficiary.</p>
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+      <!-- LEFT: FORM -->
+      <div>
+        <!-- FROM ACCOUNT -->
+        <div class="card card-p animate-in animate-delay-1" style="margin-bottom:16px">
+          <div class="card-title" style="margin-bottom:16px">From Account</div>
+          <div style="background:linear-gradient(135deg,#0f172a,#0c2d48,#0891b2);border-radius:var(--radius-lg);padding:20px;color:#fff;margin-bottom:14px">
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:4px" id="from-acc-type">Savings Account</div>
+            <div style="font-size:20px;font-weight:800;letter-spacing:0.1em;font-family:monospace;margin-bottom:8px" id="from-acc-no">FNZ20260001</div>
+            <div style="font-size:22px;font-weight:800" id="from-balance">₹500.00</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px">Available Balance</div>
           </div>
-          <div class="p-8">
-            <form id="transfer-form">
-              <!-- From Account -->
-              <div class="mb-6">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">From Account</label>
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">RK</div>
-                      <div>
-                        <div class="font-bold text-sm dark:text-white">Savings Account</div>
-                        <div class="text-xs text-slate-400 font-mono">FNZ20260001</div>
-                      </div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-xs text-slate-400">Balance</div>
-                      <div class="font-bold text-emerald-600">₹1,42,080</div>
-                    </div>
+        </div>
+
+        <!-- TO ACCOUNT -->
+        <div class="card card-p animate-in animate-delay-2" style="margin-bottom:16px">
+          <div class="card-title" style="margin-bottom:4px">To Account</div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Enter account number or select a saved beneficiary</div>
+
+          <!-- Saved Beneficiaries -->
+          <div style="margin-bottom:14px">
+            <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Saved Beneficiaries</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px" id="beneficiary-chips">
+              <div class="beneficiary-chip" onclick="useBeneficiary('FNZ20260002','Priya Sharma')">
+                <span class="material-symbols-outlined" style="font-size:14px">person</span>Priya Sharma
+              </div>
+              <div class="beneficiary-chip" onclick="useBeneficiary('FNZ20260003','Amit Mondal')">
+                <span class="material-symbols-outlined" style="font-size:14px">person</span>Amit Mondal
+              </div>
+              <div class="beneficiary-chip" onclick="useBeneficiary('FNZ20260004','Sunita Mehta')">
+                <span class="material-symbols-outlined" style="font-size:14px">person</span>Sunita Mehta
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">Account Number *</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" class="form-input" id="to-account" placeholder="e.g. FNZ20260002" oninput="resetLookup()" style="flex:1;font-family:monospace"/>
+              <button class="btn btn-primary" onclick="lookupAccount()">
+                <span class="material-symbols-outlined" style="font-size:18px">search</span>
+                Find
+              </button>
+            </div>
+          </div>
+
+          <!-- Lookup Result -->
+          <div id="lookup-result" class="hidden">
+            <div id="lookup-found" class="account-lookup-result found hidden">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="material-symbols-outlined" style="color:#10b981;font-size:22px">check_circle</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text-primary)">✅ Account Verified</div>
+                  <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">
+                    <span id="recipient-name"></span> · <span id="recipient-type"></span>
                   </div>
                 </div>
               </div>
-
-              <!-- Beneficiary -->
-              <div class="mb-6">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Select Beneficiary *</label>
-                <select class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" id="beneficiary-select" required>
-                  <option value="">Choose beneficiary</option>
-                  <option value="priya">Priya Sharma — SBI (XXXX4521)</option>
-                  <option value="amit">Amit Mondal — HDFC (XXXX7892)</option>
-                  <option value="sneha">Sneha Gupta — ICICI (XXXX3310)</option>
-                </select>
+            </div>
+            <div id="lookup-not-found" class="account-lookup-result not-found hidden">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="material-symbols-outlined" style="color:#f43f5e;font-size:22px">cancel</span>
+                <div style="font-size:13px;font-weight:700;color:#f43f5e">Account not found. Please check the number.</div>
               </div>
-
-              <!-- Amount -->
-              <div class="mb-6">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Amount (₹) *</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-lg">₹</span>
-                  <input type="number" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all text-lg font-bold" id="transfer-amount" placeholder="0.00" min="1" max="200000" required />
-                </div>
-                <div class="text-xs text-slate-400 mt-1">Daily limit: ₹2,00,000</div>
-              </div>
-
-              <!-- Remark -->
-              <div class="mb-6">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Remark (Optional)</label>
-                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm font-medium dark:text-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all" placeholder="e.g. Rent payment" />
-              </div>
-
-              <!-- Protection Notice -->
-              <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/10 mb-6 flex items-center gap-3">
-                <span class="material-symbols-outlined text-emerald-600">verified_user</span>
-                <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Transfer Protection Active — Your transaction is secured with 256-bit encryption.</div>
-              </div>
-
-              <div class="flex gap-4">
-                <a href="dashboard.html" class="user-btn-secondary no-underline" style="padding:12px 24px !important;">Cancel</a>
-                <button type="submit" class="user-btn-primary flex-1" style="padding:12px 32px !important;">
-                  <span class="material-symbols-outlined" style="font-size:18px;">send</span> Confirm Transfer
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
 
-        <!-- Transfer Summary Sidebar -->
-        <div class="page-enter page-enter-delay-1">
-          <div class="admin-card mb-6">
-            <div class="p-6 border-b border-slate-100 dark:border-white/5">
-              <h3 class="admin-section-title dark:text-white text-base">Transfer Summary</h3>
+        <!-- AMOUNT & DETAILS -->
+        <div class="card card-p animate-in animate-delay-3" style="margin-bottom:16px">
+          <div class="card-title" style="margin-bottom:16px">Transfer Details</div>
+          <div class="form-grid form-grid-2">
+            <div class="form-group" style="grid-column:span 2">
+              <label class="form-label">Amount *</label>
+              <div class="input-wrap">
+                <span class="input-icon material-symbols-outlined">currency_rupee</span>
+                <input type="number" class="form-input with-icon" id="transfer-amount" placeholder="Enter amount" min="1" oninput="updateSummary()" style="font-size:18px;font-weight:700"/>
+              </div>
+              <div id="amount-words" style="font-size:11px;color:var(--text-secondary);margin-top:6px;font-style:italic"></div>
+              <div id="amount-error" class="hidden" style="font-size:12px;color:#f43f5e;margin-top:6px;font-weight:600"></div>
             </div>
-            <div class="p-6 space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Transfer Amount</span>
-                <span class="font-bold dark:text-white" id="summary-amount">₹0.00</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Service Fee</span>
-                <span class="font-bold text-emerald-600">FREE</span>
-              </div>
-              <div class="border-t border-slate-100 dark:border-white/5 pt-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Debit</span>
-                  <span class="font-bold text-lg dark:text-white" id="summary-total">₹0.00</span>
-                </div>
-              </div>
+            <div class="form-group" style="grid-column:span 2">
+              <label class="form-label">Description (Optional)</label>
+              <input type="text" class="form-input" id="transfer-desc" placeholder="e.g. Monthly rent payment" maxlength="100"/>
+            </div>
+            <div class="form-group" style="grid-column:span 2">
+              <label class="form-label">Transaction PIN *</label>
+              <input type="password" class="form-input" id="transfer-pin" placeholder="Enter your 4-digit transaction PIN" maxlength="4" pattern="\d{4}"/>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full btn-lg mt-5" onclick="confirmTransfer()" id="transfer-btn">
+            <span class="material-symbols-outlined" style="font-size:18px">send</span>
+            Review Transfer
+          </button>
+          <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-secondary)">
+            <span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle">lock</span>
+            ACID protected — money moves completely or not at all
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div>
+        <div class="card card-p animate-in animate-delay-2" style="position:sticky;top:80px">
+          <div class="card-title" style="margin-bottom:16px">Transfer Summary</div>
+          <div id="summary-content">
+            <div class="summary-row">
+              <span class="summary-label">From</span>
+              <span class="summary-value" id="sum-from">FNZ20260001</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">To</span>
+              <span class="summary-value" id="sum-to">—</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Recipient</span>
+              <span class="summary-value" id="sum-recipient">—</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Amount</span>
+              <span class="summary-value" id="sum-amount" style="font-size:18px;color:var(--primary)">₹0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Transfer Charges</span>
+              <span class="summary-value text-success">₹0.00 (Free)</span>
+            </div>
+            <div class="summary-row" style="border-top:2px solid var(--border);padding-top:12px;margin-top:4px">
+              <span style="font-size:13px;font-weight:800;color:var(--text-primary)">Total Deducted</span>
+              <span style="font-size:18px;font-weight:800;color:#f43f5e" id="sum-total">₹0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Balance After</span>
+              <span class="summary-value text-success" id="sum-after">—</span>
             </div>
           </div>
 
-          <!-- Quick Transfer Tips -->
-          <div class="admin-card">
-            <div class="p-6">
-              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Tips</div>
-              <div class="space-y-3">
-                <div class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-blue-500 text-base mt-0.5">tips_and_updates</span>
-                  <span class="text-xs text-slate-500 dark:text-slate-400">Transfers to saved beneficiaries are processed instantly.</span>
-                </div>
-                <div class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-amber-500 text-base mt-0.5">warning</span>
-                  <span class="text-xs text-slate-500 dark:text-slate-400">Maximum daily transfer limit is ₹2,00,000.</span>
-                </div>
-                <div class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-emerald-500 text-base mt-0.5">shield</span>
-                  <span class="text-xs text-slate-500 dark:text-slate-400">All transactions are monitored for security.</span>
-                </div>
-              </div>
+          <div class="divider"></div>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary)">
+              <span class="material-symbols-outlined" style="font-size:14px;color:#10b981">check</span>
+              No transfer charges
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary)">
+              <span class="material-symbols-outlined" style="font-size:14px;color:#10b981">check</span>
+              Instant processing
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary)">
+              <span class="material-symbols-outlined" style="font-size:14px;color:#10b981">check</span>
+              Receipt generated automatically
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/component-loader.js"></script>
-  <script src="../../assets/js/main.js"></script>
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal-card">
+    <div class="modal-icon" style="background:rgba(8,145,178,0.1)">
+      <span class="material-symbols-outlined" style="color:var(--primary);font-size:30px">send</span>
+    </div>
+    <div class="modal-title">Confirm Transfer</div>
+    <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:16px;margin-bottom:20px">
+      <div class="summary-row"><span class="summary-label">From</span><span class="summary-value" id="cm-from"></span></div>
+      <div class="summary-row"><span class="summary-label">To</span><span class="summary-value" id="cm-to"></span></div>
+      <div class="summary-row"><span class="summary-label">Recipient</span><span class="summary-value" id="cm-recipient"></span></div>
+      <div class="summary-row" style="border-bottom:none"><span style="font-size:14px;font-weight:800">Amount</span><span style="font-size:20px;font-weight:800;color:#f43f5e" id="cm-amount"></span></div>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:20px">This action cannot be undone. Please verify all details before confirming.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn btn-primary" id="final-transfer-btn" onclick="processTransfer()">
+        <span class="material-symbols-outlined" style="font-size:16px">check</span>
+        Confirm Transfer
+      </button>
+    </div>
+  </div>
+</div>
 
-  <script>
-    // Live summary
-    const amountInput = document.getElementById('transfer-amount');
-    if (amountInput) {
-      amountInput.addEventListener('input', function() {
-        const val = parseFloat(this.value) || 0;
-        const formatted = '₹' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-        document.getElementById('summary-amount').textContent = formatted;
-        document.getElementById('summary-total').textContent = formatted;
-      });
+<script>
+buildSidebar('transfer');
+buildNavbar('Banking', 'Fund Transfer');
+handleStatusRedirect('transfer');
+
+// Init from account
+document.getElementById('from-acc-no').textContent = UserState.accountNo || 'FNZ20260001';
+document.getElementById('from-acc-type').textContent = UserState.accountType === 'current' ? 'Current Account' : 'Savings Account';
+document.getElementById('from-balance').textContent = '₹' + parseFloat(UserState.balance || '0').toLocaleString('en-IN', {minimumFractionDigits:2});
+document.getElementById('sum-from').textContent = UserState.accountNo || 'FNZ20260001';
+
+let recipientVerified = false;
+let recipientName = '';
+let recipientAccNo = '';
+
+// Demo accounts database
+const demoAccounts = {
+  'FNZ20260002': { name: 'Priya Sharma', type: 'Savings Account' },
+  'FNZ20260003': { name: 'Amit Mondal', type: 'Savings Account' },
+  'FNZ20260004': { name: 'Sunita Mehta', type: 'Current Account' },
+  'FNZ20260005': { name: 'Vikram Gupta', type: 'Savings Account' },
+};
+
+function lookupAccount() {
+  const accNo = document.getElementById('to-account').value.trim().toUpperCase();
+  if (!accNo) { showToast('Please enter an account number', 'warning'); return; }
+  if (accNo === (UserState.accountNo || 'FNZ20260001')) { showToast('Cannot transfer to your own account', 'error'); return; }
+  
+  // PHP_BACKEND: POST /api/lookup-account.php {account_number: accNo}
+  setTimeout(() => {
+    const result = document.getElementById('lookup-result');
+    result.classList.remove('hidden');
+    if (demoAccounts[accNo]) {
+      document.getElementById('lookup-found').classList.remove('hidden');
+      document.getElementById('lookup-not-found').classList.add('hidden');
+      document.getElementById('recipient-name').textContent = demoAccounts[accNo].name;
+      document.getElementById('recipient-type').textContent = demoAccounts[accNo].type;
+      recipientVerified = true; recipientName = demoAccounts[accNo].name; recipientAccNo = accNo;
+      document.getElementById('sum-to').textContent = accNo;
+      document.getElementById('sum-recipient').textContent = recipientName;
+    } else {
+      document.getElementById('lookup-not-found').classList.remove('hidden');
+      document.getElementById('lookup-found').classList.add('hidden');
+      recipientVerified = false;
     }
-  </script>
+  }, 500);
+}
+
+function resetLookup() {
+  recipientVerified = false;
+  document.getElementById('lookup-result').classList.add('hidden');
+  document.getElementById('sum-to').textContent = '—';
+  document.getElementById('sum-recipient').textContent = '—';
+}
+
+function useBeneficiary(accNo, name) {
+  document.getElementById('to-account').value = accNo;
+  lookupAccount();
+}
+
+function updateSummary() {
+  const amount = parseFloat(document.getElementById('transfer-amount').value) || 0;
+  const balance = parseFloat(UserState.balance || '0');
+  document.getElementById('sum-amount').textContent = formatINR(amount);
+  document.getElementById('sum-total').textContent = formatINR(amount);
+  const after = balance - amount;
+  document.getElementById('sum-after').textContent = after >= 0 ? formatINR(after) : '—';
+  document.getElementById('sum-after').style.color = after >= 0 ? '#10b981' : '#f43f5e';
+  const words = amountToWords(amount);
+  document.getElementById('amount-words').textContent = words ? words : '';
+  const err = document.getElementById('amount-error');
+  if (amount > balance) { err.textContent = 'Insufficient balance'; err.classList.remove('hidden'); }
+  else { err.classList.add('hidden'); }
+}
+
+function confirmTransfer() {
+  if (!recipientVerified) { showToast('Please verify recipient account first', 'error'); return; }
+  const amount = parseFloat(document.getElementById('transfer-amount').value);
+  const balance = parseFloat(UserState.balance || '0');
+  const pin = document.getElementById('transfer-pin').value;
+  if (!amount || amount <= 0) { showToast('Please enter a valid amount', 'error'); return; }
+  if (amount > balance) { showToast('Insufficient balance', 'error'); return; }
+  if (!pin || pin.length !== 4) { showToast('Please enter your 4-digit transaction PIN', 'error'); return; }
+  document.getElementById('cm-from').textContent = UserState.accountNo;
+  document.getElementById('cm-to').textContent = recipientAccNo;
+  document.getElementById('cm-recipient').textContent = recipientName;
+  document.getElementById('cm-amount').textContent = formatINR(amount);
+  openModal('confirm-modal');
+}
+
+function processTransfer() {
+  const btn = document.getElementById('final-transfer-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...';
+  // PHP_BACKEND: POST /api/transfer.php — wrapped in MySQL BEGIN/COMMIT/ROLLBACK (ACID)
+  setTimeout(() => {
+    const amount = parseFloat(document.getElementById('transfer-amount').value);
+    const newBalance = parseFloat(UserState.balance || '0') - amount;
+    localStorage.setItem('finzo_balance', newBalance.toFixed(2));
+    closeModal('confirm-modal');
+    localStorage.setItem('finzo_last_txn', JSON.stringify({
+      type:'transfer', amount, to: recipientAccNo, recipient: recipientName,
+      date: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+      time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      id: 'TXN' + Date.now()
+    }));
+    showToast('Transfer successful!', 'success');
+    setTimeout(() => { window.location.href = 'receipt.html'; }, 1000);
+  }, 2000);
+}
+</script>
 </body>
 </html>
