@@ -72,22 +72,96 @@ const UserState = {
         el.textContent = el.getAttribute('data-real-value');
       }
     });
+    // Update icons
+    document.querySelectorAll('.reveal-balance-btn .material-symbols-outlined').forEach(icon => {
+      icon.textContent = 'visibility_off';
+    });
+  },
+  lockBalance() {
+    sessionStorage.removeItem('finzo_balance_unlocked');
+    document.querySelectorAll('[data-real-value]').forEach(el => {
+      el.classList.add('balance-hidden-mask');
+      el.textContent = '₹ ••••';
+    });
+    // Update icons
+    document.querySelectorAll('.reveal-balance-btn .material-symbols-outlined').forEach(icon => {
+      icon.textContent = 'visibility';
+    });
   },
   set(key, val) { localStorage.setItem(STATE_KEYS[key], val); },
 };
 
 // ── BALANCE SECURITY (PIN) ──
 const DEMO_PIN = '1234';
+
+function injectRevealButton(el) {
+  // Prevent duplicate wrappers
+  if (el.closest('.balance-reveal-wrapper')) return;
+
+  const wrapper = document.createElement('span');
+  wrapper.className = 'balance-reveal-wrapper';
+
+  const btn = document.createElement('button');
+  btn.className = 'reveal-balance-btn';
+  btn.type = 'button';
+  
+  const isUnlocked = UserState.isBalanceUnlocked;
+  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px">${isUnlocked ? 'visibility_off' : 'visibility'}</span>`;
+  btn.title = isUnlocked ? 'Hide balance' : 'Enter PIN to reveal';
+
+  const toggleVisibility = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (UserState.isBalanceUnlocked) {
+      UserState.lockBalance();
+    } else {
+      showPINModal();
+    }
+  };
+
+  el.addEventListener('click', (e) => {
+    if (!UserState.isBalanceUnlocked) toggleVisibility(e);
+  });
+  btn.addEventListener('click', toggleVisibility);
+
+  // Layout: Put them in the wrapper
+  el.after(wrapper);
+  wrapper.appendChild(el);
+  wrapper.appendChild(btn);
+}
+
 function initBalanceMasking() {
-  document.querySelectorAll('.balance-hidden-mask').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!UserState.isBalanceUnlocked) {
-        showPINModal();
+  // Initial scan
+  document.querySelectorAll('.balance-hidden-mask').forEach(injectRevealButton);
+
+  // Set up observer for dynamic content
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === 1) { // Element node
+          if (node.classList.contains('balance-hidden-mask')) {
+            injectRevealButton(node);
+          }
+          node.querySelectorAll('.balance-hidden-mask').forEach(injectRevealButton);
+        }
+      });
+      // Also watch for class changes on existing nodes
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (mutation.target.classList.contains('balance-hidden-mask')) {
+          injectRevealButton(mutation.target);
+        }
       }
     });
   });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class']
+  });
 }
+
 
 function showPINModal() {
   const existing = document.getElementById('pin-entry-modal');

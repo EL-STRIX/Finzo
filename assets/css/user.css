@@ -549,3 +549,58 @@ tbody td { padding: 14px 16px; font-size: 13px; color: var(--text-primary); vert
   .balance-hidden-mask { filter: blur(6px); }
   .balance-hidden-mask:hover { filter: blur(5px); }
 }
+
+/* ── BALANCE PIN REVEAL ── */
+.reveal-balance-btn {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-glow);
+  color: var(--primary);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin-left: 8px;
+  padding: 0;
+  border: none;
+  background: rgba(8,145,178,0.1);
+}
+
+.reveal-balance-btn:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.reveal-balance-btn:active {
+  transform: scale(0.95);
+}
+
+.balance-hidden-mask {
+  cursor: pointer;
+  user-select: none;
+  filter: blur(8px);
+  transition: filter 0.3s ease;
+  display: inline-block;
+}
+
+.balance-hidden-mask:hover {
+  filter: blur(4px);
+}
+
+.dark .reveal-balance-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.balance-reveal-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  vertical-align: middle;
+}
