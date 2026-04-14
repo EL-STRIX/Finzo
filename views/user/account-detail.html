@@ -210,7 +210,16 @@
   buildSidebar('accounts'); buildNavbar('Banking','Account Details');
   handleStatusRedirect('accounts');
 
-  document.getElementById('acc-balance-big').textContent = '₹' + parseFloat(UserState.balance||'0').toLocaleString('en-IN',{minimumFractionDigits:2});
+  const realBalance = formatINR(UserState.balance);
+  const balEl = document.getElementById('acc-balance-big');
+  
+  if (UserState.isBalanceUnlocked) {
+    balEl.textContent = realBalance;
+  } else {
+    balEl.textContent = '₹ ••••';
+    balEl.classList.add('balance-hidden-mask');
+    balEl.setAttribute('data-real-value', realBalance);
+  }
   document.getElementById('acc-no-big').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
   const accType = UserState.accountType || 'savings';
   document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';

@@ -374,6 +374,14 @@
       // Demo auth
       setTimeout(() => {
         if ((id === '12345678' || id === 'user@finzo.com') && pw === 'user123') {
+          // Force active state for demo account to unlock all features
+          localStorage.setItem('finzo_status', 'active');
+          localStorage.setItem('finzo_user_name', 'Rahul Kumar');
+          localStorage.setItem('finzo_user_email', 'user@finzo.com');
+          localStorage.setItem('finzo_account_no', 'FNZ20260001');
+          localStorage.setItem('finzo_account_type', 'savings');
+          localStorage.setItem('finzo_balance', '500.00');
+          
           window.location.href = '../user/dashboard.html';
         } else {
           $form.addClass('error-state');

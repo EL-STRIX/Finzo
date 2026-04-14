@@ -227,7 +227,19 @@
   document.getElementById('profile-name').textContent = UserState.name;
   document.getElementById('avatar-circle').textContent = UserState.initials;
   document.getElementById('info-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
-  document.getElementById('info-balance').textContent = UserState.isActive ? '₹'+parseFloat(UserState.balance).toLocaleString('en-IN',{minimumFractionDigits:2}) : '₹0.00';
+  if (UserState.isActive) {
+    const realBalance = formatINR(UserState.balance);
+    const balEl = document.getElementById('info-balance');
+    if (UserState.isBalanceUnlocked) {
+      balEl.textContent = realBalance;
+    } else {
+      balEl.textContent = '₹ ••••';
+      balEl.classList.add('balance-hidden-mask');
+      balEl.setAttribute('data-real-value', realBalance);
+    }
+  } else {
+    document.getElementById('info-balance').textContent = '₹0.00';
+  }
   
   const sMap = {pending:'badge-amber',under_review:'badge-teal',active:'badge-green',rejected:'badge-red'};
   const sLabel = {pending:'PENDING',under_review:'IN REVIEW',active:'ACTIVE',rejected:'REJECTED'};

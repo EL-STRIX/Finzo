@@ -8,7 +8,7 @@
 -------------------------------- */
 [data-theme="dark"] {
   /* Layer hierarchy */
-  --dk-bg:        #0d1117;   /* page background — deepest */
+  --dk-bg:        #000000;   /* page background — deepest */
   --dk-surface:   #161b22;   /* card surface */
   --dk-raised:    #1c2128;   /* elevated / hover */
   --dk-border:    rgba(255,255,255,0.08);
@@ -63,7 +63,7 @@
    ADMIN: SIDEBAR
 -------------------------------- */
 [data-theme="dark"] .admin-sidebar {
-  background: #010409 !important;
+  background: #000000 !important;
   border-right: 1px solid rgba(255,255,255,0.05) !important;
 }
 [data-theme="dark"] .admin-sidebar-brand {
@@ -430,7 +430,7 @@
 }
 
 [data-theme="dark"] {
-  --user-bg:          #0d1117;
+  --user-bg:          #000000;
   --user-surface:     #161b22;
   --user-surface-alt: #1c2128;
   --user-border:      rgba(255,255,255,0.08);

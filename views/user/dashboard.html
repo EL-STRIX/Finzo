@@ -271,8 +271,17 @@ else if (status === 'active') {
 
 // Update balance card
 if (status === 'active') {
-  document.getElementById('dash-balance').textContent = '₹' + parseFloat(UserState.balance).toLocaleString('en-IN', {minimumFractionDigits:2});
-  document.getElementById('dash-balance').classList.remove('locked');
+  const realBalance = formatINR(UserState.balance);
+  const balEl = document.getElementById('dash-balance');
+  
+  if (UserState.isBalanceUnlocked) {
+    balEl.textContent = realBalance;
+  } else {
+    balEl.textContent = '₹ ••••';
+    balEl.classList.add('balance-hidden-mask');
+    balEl.setAttribute('data-real-value', realBalance);
+  }
+
   document.getElementById('dash-account').textContent = UserState.accountNo;
   document.getElementById('lock-icon').style.display = 'none';
   document.getElementById('account-status-text').textContent = UserState.accountType.charAt(0).toUpperCase() + UserState.accountType.slice(1) + ' Account · Active';

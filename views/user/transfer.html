@@ -228,7 +228,16 @@
 
   document.getElementById('from-acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
   document.getElementById('from-acc-type').textContent = UserState.accountType === 'current' ? 'Corporate Current Account' : 'Finzo Platinum Savings';
-  document.getElementById('from-balance').textContent = '₹' + parseFloat(UserState.balance || '0').toLocaleString('en-IN', {minimumFractionDigits:2});
+  const realBalance = formatINR(UserState.balance);
+  const balEl = document.getElementById('from-balance');
+  
+  if (UserState.isBalanceUnlocked) {
+    balEl.textContent = realBalance;
+  } else {
+    balEl.textContent = '₹ ••••';
+    balEl.classList.add('balance-hidden-mask');
+    balEl.setAttribute('data-real-value', realBalance);
+  }
 
   const demoAccounts = {
     'FNZ20260002': { name: 'Priya Sharma', type: 'Savings Account' },

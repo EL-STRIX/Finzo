@@ -61,8 +61,124 @@ const UserState = {
   get initials() { 
     return this.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase(); 
   },
+  get isBalanceUnlocked() {
+    return sessionStorage.getItem('finzo_balance_unlocked') === 'true';
+  },
+  unlockBalance() {
+    sessionStorage.setItem('finzo_balance_unlocked', 'true');
+    document.querySelectorAll('.balance-hidden-mask').forEach(el => {
+      el.classList.remove('balance-hidden-mask');
+      if (el.hasAttribute('data-real-value')) {
+        el.textContent = el.getAttribute('data-real-value');
+      }
+    });
+  },
   set(key, val) { localStorage.setItem(STATE_KEYS[key], val); },
 };
+
+// ── BALANCE SECURITY (PIN) ──
+const DEMO_PIN = '1234';
+function initBalanceMasking() {
+  document.querySelectorAll('.balance-hidden-mask').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!UserState.isBalanceUnlocked) {
+        showPINModal();
+      }
+    });
+  });
+}
+
+function showPINModal() {
+  const existing = document.getElementById('pin-entry-modal');
+  if (existing) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'pin-entry-modal';
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-card pin-modal-card">
+      <div class="modal-icon" style="background:rgba(8,145,178,0.1)">
+        <span class="material-symbols-outlined" style="color:#0891b2;font-size:28px">lock</span>
+      </div>
+      <div class="modal-title">Security Verification</div>
+      <div class="modal-text">Please enter your 4-digit PIN to reveal financial information.</div>
+      
+      <div class="pin-display" id="pin-dots">
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+      </div>
+
+      <input type="password" id="pin-input" class="pin-hidden-input" maxlength="4" autofocus readonly>
+      
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 240px; margin: 0 auto 24px;">
+        ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="btn btn-ghost pin-key" data-val="${n}">${n}</button>`).join('')}
+        <button class="btn btn-ghost pin-key" onclick="clearPIN()">C</button>
+        <button class="btn btn-ghost pin-key" data-val="0">0</button>
+        <button class="btn btn-ghost pin-key" onclick="closePINModal()">✕</button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-full" onclick="closePINModal()">Cancel</button>
+      </div>
+    </div>`;
+  
+  document.body.appendChild(modal);
+  
+  let currentPin = '';
+  const dots = modal.querySelectorAll('.pin-dot');
+  
+  const updateDots = () => {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i < currentPin.length);
+    });
+  };
+
+  modal.querySelectorAll('.pin-key[data-val]').forEach(btn => {
+    btn.onclick = () => {
+      if (currentPin.length < 4) {
+        currentPin += btn.getAttribute('data-val');
+        updateDots();
+        if (currentPin.length === 4) {
+          setTimeout(() => {
+            if (currentPin === DEMO_PIN) {
+              UserState.unlockBalance();
+              showToast('Security Verified', 'success');
+              closePINModal();
+            } else {
+              currentPin = '';
+              updateDots();
+              showToast('Incorrect PIN', 'error');
+              // Optional: Add a shake animation to the dots
+              document.getElementById('pin-dots').style.animation = 'none';
+              void document.getElementById('pin-dots').offsetWidth;
+              document.getElementById('pin-dots').style.animation = 'shake 0.4s';
+            }
+          }, 200);
+        }
+      }
+    };
+  });
+
+  window.clearPIN = () => { currentPin = ''; updateDots(); };
+  window.closePINModal = () => { modal.remove(); };
+}
+
+// Add shake animation if not in CSS
+if (!document.getElementById('security-animations')) {
+  const style = document.createElement('style');
+  style.id = 'security-animations';
+  style.innerHTML = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 // Demo: Initialize demo state if not set
 if (!localStorage.getItem(STATE_KEYS.STATUS)) {
@@ -246,6 +362,9 @@ function buildNavbar(eyebrow, title) {
   const container = document.getElementById('navbar-root');
   if (container) container.innerHTML = html;
   updateThemeIcon();
+  
+  // Re-initialize masking whenever navbar (and thus page) is ready
+  initBalanceMasking();
 }
 
 let notifOpen = false;
