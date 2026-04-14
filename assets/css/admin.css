@@ -710,3 +710,129 @@
     }
 }
 
+
+/* ── BRANCH MANAGEMENT COMPONENTS ── */
+
+/* Document Upload Box */
+.branch-upload-box {
+  border: 2px dashed var(--dk-border, #e2e8f0);
+  background: var(--dk-surface, #f8fafc);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.branch-upload-box:hover {
+  border-color: #002645;
+  background: rgba(0, 38, 69, 0.02);
+}
+
+.dark .branch-upload-box {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.branch-upload-box.has-file {
+  border: 2px solid #10b981;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.dark .branch-upload-box.has-file {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* Custom Manager Dropdown */
+.manager-option-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.manager-option-item:hover {
+  background: var(--dk-surface, #f1f5f9);
+}
+
+.manager-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.manager-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.manager-name {
+  font-weight: 700;
+  font-size: 13px;
+  display: block;
+}
+
+.manager-meta {
+  font-size: 10px;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.branch-tag {
+  background: rgba(108, 99, 255, 0.1);
+  color: #6c63ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+.dark .branch-tag {
+  background: rgba(108, 99, 255, 0.2);
+  color: #a5a1ff;
+}
+
+/* Character Counter */
+.char-counter {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-top: 4px;
+  text-align: right;
+  transition: color 0.2s;
+}
+
+.char-counter.warning { color: #f59e0b; }
+.char-counter.danger { color: #ef4444; }
+
+/* Info Banner */
+.info-banner-premium {
+  background: #f0f7ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dark .info-banner-premium {
+  background: rgba(59, 130, 246, 0.05);
+  border-color: #3b82f6;
+}
