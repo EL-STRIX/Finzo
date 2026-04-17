@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button onclick="$('#addBranchModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
+        <button onclick="openAddModal()" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Branch
         </button>
@@ -201,7 +201,8 @@
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('01')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="viewBranch('01')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="editBranch('01')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
                   </div>
                 </td>
               </tr>
@@ -223,8 +224,9 @@
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('02')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="deleteBranch('North Branch', 'FNZ-NB-102')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+                    <button onclick="viewBranch('02')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="editBranch('02')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+                    <button onclick="deleteBranch('North Branch', 'FNZ-NB-102')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
                   </div>
                 </td>
               </tr>
@@ -246,8 +248,9 @@
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="deleteBranch('South Branch', 'FNZ-SB-103')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+                    <button onclick="viewBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="editBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+                    <button onclick="deleteBranch('South Branch', 'FNZ-SB-103')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
                   </div>
                 </td>
               </tr>
@@ -269,8 +272,9 @@
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('04')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="deleteBranch('East Branch', 'FNZ-EB-482')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+                    <button onclick="viewBranch('04')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="editBranch('04')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+                    <button onclick="deleteBranch('East Branch', 'FNZ-EB-482')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
                   </div>
                 </td>
               </tr>
@@ -292,8 +296,9 @@
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="deleteBranch('Airport Branch', 'FNZ-AB-982')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+                    <button onclick="viewBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                    <button onclick="editBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+                    <button onclick="deleteBranch('Airport Branch', 'FNZ-AB-982')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
                   </div>
                 </td>
               </tr>
@@ -342,9 +347,9 @@
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Code *</label>
-                <input type="text" id="add-branch-code" placeholder="e.g. FNZ-WB-001" required
-                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold">
-                <p class="text-[9px] text-slate-400 mt-1 font-bold">Auto-generated. You can edit this.</p>
+                <input type="text" id="add-branch-code" placeholder="FNZ-XX-000" required readonly
+                  class="w-full px-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary/60">
+                <p class="text-[9px] text-slate-400 mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">City *</label>
@@ -569,7 +574,7 @@
         </div>
       </div>
       <div class="p-6 border-t border-slate-100 dark:border-white/5 flex gap-3 justify-end">
-         <button class="admin-btn-secondary px-6">Edit Branch Info</button>
+         <button onclick="editBranch('01')" class="admin-btn-secondary px-6">Edit Branch Info</button>
          <a href="admin-staff.html" class="admin-btn-primary px-6" style="background:#002644 !important;">View Staff List</a>
       </div>
     </div>
@@ -629,6 +634,7 @@
 
       // Branch Code Auto-generator
       $('#add-branch-name').on('input', function() {
+        if (window.isEditMode) return; // Don't auto-generate or change code during edit
         const name = $(this).val();
         if (!name) return;
         const words = name.split(' ');
@@ -666,8 +672,56 @@
         $('#file-preview').addClass('hidden');
       });
 
-      // Modal Triggers
-      window.viewBranch = (id) => { $('#viewBranchModal').removeClass('hidden').addClass('flex'); };
+      // Modal State Logic
+      window.isEditMode = false;
+      window.currentEditId = null;
+
+      window.openAddModal = () => {
+        window.isEditMode = false;
+        window.currentEditId = null;
+        $('#addBranchForm')[0].reset();
+        $('#addBranchModal h3').text('Add New Branch');
+        $('#addBranchModal p.text-\\[11px\\]').text('Fill in all details to register a new Finzo branch');
+        $('#submit-branch-btn').text('Create Branch');
+        $('#addBranchModal').removeClass('hidden').addClass('flex');
+        
+        // Custom reset for manager dropdown
+        $('.dropdown-label').text('Select Staff Member');
+        $('#manager-id').val('');
+      };
+
+      window.viewBranch = (id) => { 
+        // Populate view modal (mock logic)
+        $('#viewBranchModal').removeClass('hidden').addClass('flex'); 
+      };
+
+      window.editBranch = (id) => {
+        window.isEditMode = true;
+        window.currentEditId = id;
+        
+        // Find data from table row (mock logic for demo)
+        const row = $(`#branches-table-body tr`).filter(function() {
+          const firstTd = $(this).find('td').first().text().trim();
+          return firstTd === id;
+        });
+
+        if (row.length) {
+          const name = row.find('.font-bold').first().text().trim();
+          const location = row.find('td').eq(2).text().trim();
+          const managerName = row.find('.manager-name').length ? row.find('.manager-name').text() : row.find('td').eq(3).find('.text-\\[12px\\]').text().trim();
+          
+          $('#add-branch-name').val(name);
+          $('#add-branch-code').val(name.toUpperCase().substring(0,3) + "-MOD-" + id); // Mocking existing code
+          
+          // Set modal to Edit mode
+          $('#addBranchModal h3').text('Edit Branch Information');
+          $('#addBranchModal p.text-\\[11px\\]').text('Modify the existing branch details. Branch code remains locked for security.');
+          $('#submit-branch-btn').text('Update Branch');
+          
+          $('#viewBranchModal').addClass('hidden').removeClass('flex');
+          $('#addBranchModal').removeClass('hidden').addClass('flex');
+        }
+      };
       
       // toggleBranch functionality removed as branches are always active
       window.toggleBranch = (name, isActive) => {
@@ -724,13 +778,24 @@
       // Form Submission Toast
       $('#addBranchForm').on('submit', function(e) {
         e.preventDefault();
+        
+        // Verify admin password (mock check)
+        const pw = $('#admin-confirm-pw').val();
+        if (!pw) {
+           alert('❌ Please enter your admin password to verify this action.');
+           return;
+        }
+
         const btn = $('#submit-branch-btn');
-        btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin" style="font-size:16px;margin-right:8px;">sync</span> Creating Branch...');
+        const actionText = window.isEditMode ? 'Updating' : 'Creating';
+        const successText = window.isEditMode ? 'updated' : 'created';
+        
+        btn.prop('disabled', true).html(`<span class="material-symbols-outlined animate-spin" style="font-size:16px;margin-right:8px;">sync</span> ${actionText} Branch...`);
         
         setTimeout(() => {
           $('#addBranchModal').addClass('hidden').removeClass('flex');
-          btn.prop('disabled', false).text('Create Branch');
-          alert('✅ Branch created successfully!');
+          btn.prop('disabled', false).text(window.isEditMode ? 'Update Branch' : 'Create Branch');
+          alert(`✅ Branch ${successText} successfully!`);
           location.reload();
         }, 1500);
       });
