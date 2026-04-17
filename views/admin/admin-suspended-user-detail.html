@@ -149,9 +149,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
     <a href="admin-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">badge</span>Staff Management</a>
     <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
     <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
+    <div class="nav-section">System</div>
     <a href="admin-suspended-users.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge-warn">2</span></a>
     <a href="admin-suspended-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">work_off</span>Suspended Staff</a>
-    <div class="nav-section">System</div>
 
     <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
     <a href="admin-interest.html" class="nav-item"><span class="material-symbols-outlined nav-icon">percent</span>Interest Management</a>
@@ -199,22 +199,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <span style="color:var(--text-primary);font-weight:700" id="bc-name">Rahul Kumar</span>
     </div>
 
-    <!-- STATUS BANNER -->
-    <div style="background:var(--red-soft);border:1.5px solid var(--red-border);border-radius:var(--radius-lg);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(244,63,94,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <span class="material-symbols-outlined" style="color:var(--red);font-size:20px">person_off</span>
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:800;color:var(--text-primary)">This account is currently <span style="color:var(--red)">Suspended</span></div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">The customer cannot access any banking features until this suspension is removed.</div>
-        </div>
-      </div>
-      <button class="btn btn-success" onclick="openReinstateModal()">
-        <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
-        Remove Suspension
-      </button>
-    </div>
+
 
     <!-- TWO COLUMN LAYOUT: Stacks on Tablet (lg:grid-cols), 1fr 360px on Desktop -->
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8">
