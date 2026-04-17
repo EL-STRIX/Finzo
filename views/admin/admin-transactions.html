@@ -372,9 +372,7 @@
       </a>
 
       <div class="admin-nav-section">System</div>
-      <a href="admin-audit-log.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">manage_search</span> Audit Logs
-      </a>
+
       <a href="admin-suspended-users.html" class="admin-nav-item">
         <span class="material-symbols-outlined">person_off</span> Suspended Users
       </a>
@@ -415,10 +413,7 @@
           <h1 class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">All Transactions</h1>
         </div>
       </div>
-      <button
-        class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20">
-        <span class="material-symbols-outlined text-xl">description</span> Export CSV
-      </button>
+
     </header>
 
     <main class="p-4 sm:p-6 lg:p-10">
@@ -527,7 +522,7 @@
           <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="pending">Pending</button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(200px,2fr)_1fr_1fr_1.2fr_1.2fr_1.2fr_auto_auto] gap-4 items-end px-2 pb-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(200px,2fr)_1fr_1fr_1.2fr_1.2fr_auto_auto] gap-4 items-end px-2 pb-2">
           <div class="filter-item sm:col-span-2 lg:col-span-1">
             <span class="filter-label">Search Activity</span>
             <div class="search-wrap">
@@ -547,22 +542,7 @@
             <input type="date" id="date-to" class="pill-input">
           </div>
 
-          <div class="filter-item">
-            <span class="filter-label">Type</span>
-            <div class="finzo-dropdown" id="type-dropdown">
-              <input type="hidden" id="filter-type" value="all">
-              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
-                <span class="dropdown-label font-bold text-xs">All Types</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Types</div>
-                <div class="finzo-dropdown-option" data-value="deposit">Deposit</div>
-                <div class="finzo-dropdown-option" data-value="withdrawal">Withdrawal</div>
-                <div class="finzo-dropdown-option" data-value="transfer">Transfer</div>
-              </div>
-            </div>
-          </div>
+
 
           <div class="filter-item">
             <span class="filter-label">Status</span>
@@ -659,7 +639,6 @@
     function applyFilters() {
       const search = $('#filter-search').val().toLowerCase();
       const status = $('#filter-status').val();
-      const type = $('#filter-type').val();
       const account = $('#filter-account').val();
       const from = $('#date-from').val();
       const to = $('#date-to').val();
@@ -672,7 +651,6 @@
           matchesCategory = r.type.toLowerCase() === currentType;
         }
 
-        const matchesType = type === 'all' || r.type.toLowerCase() === type;
         const matchesStatus = status === 'all' || r.status.toLowerCase() === status;
         const matchesSearch = !search || r.name.toLowerCase().includes(search) || r.txId.toLowerCase().includes(search) || r.acc.toLowerCase().includes(search);
 
@@ -680,7 +658,7 @@
         if (from && r.date < from) matchesDate = false;
         if (to && r.date > to) matchesDate = false;
 
-        return matchesCategory && matchesType && matchesStatus && matchesSearch && matchesDate;
+        return matchesCategory && matchesStatus && matchesSearch && matchesDate;
       });
 
       const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
@@ -730,9 +708,6 @@
         $('#date-from, #date-to').val('');
         $('.filter-tab-btn').removeClass('active').first().addClass('active');
         // Reset each dropdown individually with correct labels
-        $('#type-dropdown input[type="hidden"]').val('all');
-        $('#type-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
-        $('#type-dropdown .dropdown-label').text('All Types');
         $('#status-dropdown input[type="hidden"]').val('all');
         $('#status-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
         $('#status-dropdown .dropdown-label').text('All Status');
@@ -744,7 +719,7 @@
       $('#filter-search').on('keyup input', () => { currentPage = 1; applyFilters(); });
       
       // Live Filtering for Premium Dropdowns
-      $('#filter-type, #filter-status, #filter-account, #date-from, #date-to').on('change', () => {
+      $('#filter-status, #filter-account, #date-from, #date-to').on('change', () => {
         currentPage = 1;
         applyFilters();
       });
