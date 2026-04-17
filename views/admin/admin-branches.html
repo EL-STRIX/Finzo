@@ -574,8 +574,49 @@
         </div>
       </div>
       <div class="p-6 border-t border-slate-100 dark:border-white/5 flex gap-3 justify-end">
-         <button onclick="editBranch('01')" class="admin-btn-secondary px-6">Edit Branch Info</button>
-         <a href="admin-staff.html" class="admin-btn-primary px-6" style="background:#002644 !important;">View Staff List</a>
+         <button onclick="editBranch(window.lastViewedBranchId)" class="admin-btn-secondary px-6">Edit Branch Info</button>
+         <button onclick="showBranchStaff(window.lastViewedBranchName)" class="admin-btn-primary px-6" style="background:#002644 !important;">View Staff List</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRANCH STAFF MODAL -->
+  <div id="branchStaffModal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="admin-card w-full max-w-4xl relative z-10 animate-modal-enter overflow-y-auto max-h-[85vh]">
+      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center sticky top-0 bg-white dark:bg-surface-container-lowest z-10">
+        <div>
+          <h3 id="staff-modal-title" class="admin-section-title">Branch Staff List</h3>
+          <p id="staff-modal-subtitle" class="text-[11px] opacity-60 uppercase font-bold tracking-wider">Loading staff members...</p>
+        </div>
+        <button onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-0">
+        <div class="overflow-x-auto">
+          <table class="admin-table w-full text-left">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-white/5">
+                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Staff ID</th>
+                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Name & Role</th>
+                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Contact</th>
+                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Status</th>
+                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="branch-staff-table-body">
+              <!-- Staff rows injected here -->
+            </tbody>
+          </table>
+        </div>
+        <div id="no-staff-error" class="hidden p-12 text-center">
+           <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">person_off</span>
+           <div class="text-sm font-bold text-slate-500">No staff members assigned to this branch yet.</div>
+        </div>
+      </div>
+      <div class="p-6 border-t border-slate-100 dark:border-white/5 flex justify-end bg-slate-50/50 dark:bg-white/5">
+         <button onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary px-8">Close List</button>
       </div>
     </div>
   </div>
@@ -690,9 +731,77 @@
         $('#manager-id').val('');
       };
 
+      window.lastViewedBranchId = null;
+      window.lastViewedBranchName = '';
+
       window.viewBranch = (id) => { 
-        // Populate view modal (mock logic)
+        window.lastViewedBranchId = id;
+        // Dynamically find branch name from table
+        const row = $(`#branches-table-body tr`).filter(function() {
+          return $(this).find('td').first().text().trim() === id;
+        });
+        const branchName = row.find('.font-bold').first().text().trim();
+        window.lastViewedBranchName = branchName;
+
+        $('#view-branch-title').text(branchName);
         $('#viewBranchModal').removeClass('hidden').addClass('flex'); 
+      };
+
+      // Mock Staff Data
+      const mockStaff = [
+        { id: 'STF001', name: 'Amit Sharma', role: 'Branch Manager', email: 'amit.sharma@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AS', color: '#1d4ed8', bg: '#dbeafe' },
+        { id: 'STF002', name: 'Priya Singh', role: 'Loan Officer', email: 'priya.s@finzobank.com', status: 'Active', branch: 'North Branch', avatar: 'PS', color: '#be185d', bg: '#fce7f3' },
+        { id: 'STF003', name: 'Raj Kumar', role: 'Cashier', email: 'raj.k@finzobank.com', status: 'Active', branch: 'South Branch', avatar: 'RK', color: '#b45309', bg: '#fef3c7' },
+        { id: 'STF007', name: 'Sanjay Dutt', role: 'Assistant Manager', email: 'sanjay.d@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'SD', color: '#047857', bg: '#ecfdf5' },
+        { id: 'STF009', name: 'Ananya Roy', role: 'Customer Service', email: 'ananya.r@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AR', color: '#6d28d9', bg: '#f5f3ff' },
+        { id: 'STF012', name: 'Vikram Seth', role: 'Security Head', email: 'vikram.s@finzobank.com', status: 'Suspend', branch: 'North Branch', avatar: 'VS', color: '#111827', bg: '#f1f5f9' }
+      ];
+
+      window.showBranchStaff = (branchName) => {
+        const filteredStaff = mockStaff.filter(s => s.branch === branchName);
+        const $tbody = $('#branch-staff-table-body');
+        $tbody.empty();
+        
+        $('#staff-modal-title').text(`Staff Directory — ${branchName}`);
+        $('#staff-modal-subtitle').text(`${filteredStaff.length} Team Members assigned`);
+
+        if (filteredStaff.length === 0) {
+          $('#no-staff-error').removeClass('hidden');
+          $('.admin-table').addClass('hidden');
+        } else {
+          $('#no-staff-error').addClass('hidden');
+          $('.admin-table').removeClass('hidden');
+          
+          filteredStaff.forEach(staff => {
+            const statusClass = staff.status === 'Active' ? 'badge-success' : 'badge-danger';
+            const row = `
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors border-b border-slate-100 dark:border-white/5 last:border-0">
+                <td class="px-6 py-4 font-mono font-bold text-[11px] opacity-40">${staff.id}</td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="admin-avatar sm" style="background:${staff.bg};color:${staff.color};">${staff.avatar}</div>
+                    <div>
+                      <div class="font-bold text-sm">${staff.name}</div>
+                      <div class="text-[10px] opacity-60 uppercase font-black tracking-tighter">${staff.role}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-[12px] font-medium opacity-70">${staff.email}</td>
+                <td class="px-6 py-4"><span class="status-badge ${statusClass}">${staff.status.toUpperCase()}</span></td>
+                <td class="px-6 py-4 text-right">
+                  <a href="admin-staff-detail.html" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1">
+                    <span class="text-[10px] font-black uppercase tracking-widest">Detail</span>
+                    <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+                  </a>
+                </td>
+              </tr>
+            `;
+            $tbody.append(row);
+          });
+        }
+
+        $('#viewBranchModal').addClass('hidden').removeClass('flex');
+        $('#branchStaffModal').removeClass('hidden').addClass('flex');
       };
 
       window.editBranch = (id) => {
