@@ -197,36 +197,11 @@
 
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#fff8e1;">
-            <span class="material-symbols-outlined" style="color:#f39c12;">warning</span>
-          </div>
-          <div class="admin-stat-label">Daily Limit Breaches</div>
-          <div class="admin-stat-value">7 <span class="admin-stat-delta negative">Alert</span></div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:#f3e8ff;">
-            <span class="material-symbols-outlined" style="color:#9333ea;">lock_reset</span>
-          </div>
-          <div class="admin-stat-label">Password Resets Today</div>
-          <div class="admin-stat-value">24 <span class="admin-stat-delta"
-              style="background:#f3e8ff;color:#9333ea;">Today</span></div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:#fff8e1;">
             <span class="material-symbols-outlined" style="color:#f39c12;">restore</span>
           </div>
           <div class="admin-stat-label">SOFT DELETED USERS</div>
           <div class="admin-stat-value">5 <span class="admin-stat-delta"
               style="background:#fff3cd;color:#b07d00;">Recoverable</span></div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:#e0f2f1;">
-            <span class="material-symbols-outlined" style="color:#00897b;">assignment</span>
-          </div>
-          <div class="admin-stat-label">AUDIT LOG ENTRIES</div>
-          <div class="admin-stat-value">4,821 <span class="admin-stat-delta positive">Tracked</span></div>
         </div>
 
         <div class="admin-stat-card">
@@ -384,22 +359,7 @@
               onblur="this.style.borderColor='';this.style.boxShadow=''" />
           </div>
 
-          <!-- Status filter dropdown -->
-          <div class="finzo-dropdown w-full sm:w-[160px] flex-shrink-0">
-            <input type="hidden" id="dash-status-filter" value="">
-            <div class="finzo-dropdown-trigger">
-              <span class="dropdown-label">All Status</span>
-              <span class="material-symbols-outlined chevron" style="font-size:18px;">expand_more</span>
-            </div>
-            <div class="finzo-dropdown-menu">
-              <div class="finzo-dropdown-option is-selected" data-value="">All Status</div>
-              <div class="finzo-dropdown-option" data-value="low risk">Low Risk</div>
-              <div class="finzo-dropdown-option" data-value="medium risk">Medium Risk</div>
-              <div class="finzo-dropdown-option" data-value="elevated">Elevated</div>
-              <div class="finzo-dropdown-option" data-value="inactive">Inactive</div>
-              <div class="finzo-dropdown-option" data-value="flagged">Flagged</div>
-            </div>
-          </div>
+
 
           <!-- All Users link -->
           <a href="admin-users.html" class="admin-btn-primary flex justify-center w-full sm:w-auto" style="padding: 8px 18px !important;">
@@ -568,8 +528,7 @@
   </div>
   <script src="../../assets/js/main.js"></script>
   <style>
-    [data-theme="dark"] #dash-user-search,
-    [data-theme="dark"] .finzo-dropdown-trigger {
+    [data-theme="dark"] #dash-user-search {
       background: #1c2128 !important;
       border-color: rgba(255, 255, 255, 0.1) !important;
       color: #e6edf3 !important;
@@ -579,15 +538,13 @@
       color: #484f58 !important;
     }
 
-    #dash-user-search:focus,
-    .finzo-dropdown-trigger.is-open {
+    #dash-user-search:focus {
       border-color: #002645 !important;
       box-shadow: 0 0 0 3px rgba(0, 38, 69, 0.12) !important;
       outline: none;
     }
 
-    [data-theme="dark"] #dash-user-search:focus,
-    [data-theme="dark"] .finzo-dropdown-trigger.is-open {
+    [data-theme="dark"] #dash-user-search:focus {
       border-color: #58a6ff !important;
       box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12) !important;
     }
@@ -595,26 +552,17 @@
     /* Pagination and Buttons handled by global .admin-btn classes in admin.css */
   </style>
   <script>
-    /* ═══════════════════════════════════════════════
-       TABLE REFRESH LOGIC — DASHBOARD SPECIFIC
-       ═══════════════════════════════════════════════ */
-    // Trigger table refresh when status change
-    $(document).on('change', '#dash-status-filter', function () {
-      filterDashUsers();
-    });
+
 
     var dashCurrentPage = 1, dashRowsPerPage = 3;
     function dashGoPage(p) { dashCurrentPage = p; renderDashTable(); }
     function filterDashUsers() { dashCurrentPage = 1; renderDashTable(); }
     function renderDashTable() {
       var q = (document.getElementById('dash-user-search').value || '').toLowerCase().trim();
-      var s = (document.getElementById('dash-status-filter').value || '').toLowerCase().trim();
       var all = Array.from(document.querySelectorAll('#dash-user-tbody tr'));
       var filtered = all.filter(function (r) {
         var t = r.innerText.toLowerCase();
-        var b = r.querySelector('.status-badge');
-        var bt = b ? b.innerText.toLowerCase() : '';
-        return (!q || t.includes(q)) && (!s || bt.includes(s));
+        return (!q || t.includes(q));
       });
       all.forEach(function (r) { r.style.display = 'none'; });
       var start = (dashCurrentPage - 1) * dashRowsPerPage;
