@@ -171,18 +171,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
         <span class="material-symbols-outlined force-black">arrow_back</span>
       </a>
       <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">SUSPENSION DETAIL</div>
-        <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">User Suspension Record</div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-slate-400 dark:text-slate-500 uppercase">SUSPENSION DETAIL</div>
+        <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">User Suspension Record</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <a href="admin-suspended-users.html" class="btn btn-ghost" style="height:38px;font-size:12px">
-        <span class="material-symbols-outlined" style="font-size:16px">arrow_back</span>Back to List
+    
+    <!-- RESPONSIVE CONTROLS: Hidden on Laptop (lg), visible on Mobile/Tablet -->
+    <div class="flex lg:hidden items-center gap-2">
+      <a href="admin-suspended-users.html" class="flex w-9 h-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
+        <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
       </a>
-      <button class="icon-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
-        <span class="material-symbols-outlined">menu</span>
+      <button onclick="$('#sidebar').addClass('open')" class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500">
+        <span class="material-symbols-outlined" style="font-size:20px;">menu</span>
       </button>
-      <button class="icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" id="theme-icon2">dark_mode</span></button>
+      <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500">
+        <span class="material-symbols-outlined" id="theme-icon2" style="font-size:20px;">dark_mode</span>
+      </button>
     </div>
   </header>
 
@@ -212,8 +216,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       </button>
     </div>
 
-    <!-- TWO COLUMN LAYOUT -->
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:20px" class="two-col">
+    <!-- TWO COLUMN LAYOUT: Stacks on Tablet (lg:grid-cols), 1fr 360px on Desktop -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8">
 
       <!-- LEFT -->
       <div style="display:flex;flex-direction:column;gap:20px">
@@ -255,8 +259,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
           <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="detail-by">Arjun Sharma (Admin)</span></div>
           <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date">10 Apr 2026</span></div>
           <div class="info-row"><span class="info-label">Suspension Time</span><span class="info-value">02:30 PM IST</span></div>
-          <div class="info-row"><span class="info-label">Days Suspended</span><span class="info-value"><span class="badge badge-amber" id="detail-duration">8 days</span></span></div>
-          <div class="info-row" style="border-bottom:none"><span class="info-label">Audit Log Reference</span><span class="info-value mono">AUD20260841</span></div>
+
+
         </div>
 
         <!-- RECENT TRANSACTIONS BEFORE SUSPENSION -->
@@ -314,57 +318,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
               <div style="font-size:24px;font-weight:800;color:var(--red)" id="snap-balance">₹42,080.00</div>
               <div style="font-size:10px;color:var(--text-placeholder);margin-top:4px">Cannot be transacted until reinstated</div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
-                <div style="font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Total Txns</div>
-                <div style="font-size:18px;font-weight:800;color:var(--text-primary)">42</div>
-              </div>
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
-                <div style="font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Days Active</div>
-                <div style="font-size:18px;font-weight:800;color:var(--text-primary)">28</div>
-              </div>
-            </div>
+
           </div>
         </div>
 
-        <!-- SUSPENSION TIMELINE -->
-        <div class="card card-p">
-          <div class="section-label">Suspension Timeline</div>
-          <div class="timeline">
-            <div class="tl-item">
-              <div class="tl-dot-wrap">
-                <div class="tl-dot" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--green)">how_to_reg</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-content">
-                <div class="tl-title">Account Activated</div>
-                <div class="tl-sub">Account FNZ20260001 approved and activated</div>
-                <div class="tl-time">12 Apr 2026 — 10:30 AM</div>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot-wrap">
-                <div class="tl-dot" style="background:var(--amber-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--amber)">warning</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div class="tl-content">
-                <div class="tl-title">Suspicious Activity Flagged</div>
-                <div class="tl-sub">Large unusual transactions detected on 09 Apr 2026</div>
-                <div class="tl-time">09 Apr 2026 — 11:45 PM</div>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot-wrap">
-                <div class="tl-dot" style="background:var(--red-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--red)">person_off</span></div>
-              </div>
-              <div class="tl-content" style="padding-bottom:0">
-                <div class="tl-title" style="color:var(--red)">Account Suspended</div>
-                <div class="tl-sub">Manually suspended by Arjun Sharma (Admin)</div>
-                <div class="tl-time">10 Apr 2026 — 02:30 PM</div>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <!-- ADMIN NOTES -->
         <div class="card card-p">
@@ -385,7 +343,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
               <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
               Reinstate Account
             </button>
-            <div style="margin-top:10px;font-size:11px;color:var(--text-secondary)">This action is recorded in the Audit Log</div>
+
           </div>
         </div>
 
@@ -403,10 +361,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
     </div>
     <div class="modal-title">Confirm Reinstatement</div>
     <div class="modal-text">You are removing the suspension from <strong id="modal-name">Rahul Kumar</strong>'s account <strong id="modal-acc">FNZ20260001</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
-    <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;margin-bottom:20px;font-size:12px;color:var(--text-secondary);text-align:center">
-      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px">info</span>
-      This action will be recorded in the Audit Log.
-    </div>
+
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">
