@@ -27,16 +27,52 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
   <style>
-    /* Table specific overrides for this page */
+    /* Premium Table Styling */
     .admin-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
     .table-wrap { overflow-x: auto; background: white; border-radius: 12px; }
     .dark .table-wrap { background: #1c2128; }
+    
+    /* Improved User Cell */
+    .user-cell { display: flex; align-items: center; gap: 12px; }
+    .avatar-circle { 
+      width: 40px; height: 40px; border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 14px; font-weight: 800; color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .user-name { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .user-email { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-top: 1px; }
+
+    /* Action Buttons Styling */
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid transparent; cursor: pointer;
+    }
+    .btn-view { 
+      background: rgba(0, 38, 69, 0.05); color: #002645; 
+      border-color: rgba(0, 38, 69, 0.1);
+    }
+    .btn-view:hover { background: #002645; color: white; transform: translateY(-1px); }
+    
+    .btn-reinstate {
+      background: rgba(16, 185, 129, 0.1); color: #10b981;
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+    .btn-reinstate:hover { background: #10b981; color: white; transform: translateY(-1px); }
+
+    .dark .btn-view { background: rgba(255,255,255,0.05); color: #cbd5e1; border-color: rgba(255,255,255,0.1); }
+    .dark .btn-view:hover { background: white; color: #002645; }
+
+    /* Status Badges */
     .status-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
-    .badge-red { background: rgba(244,63,94,0.1); color: #f43f5e; }
-    .badge-amber { background: rgba(245,158,11,0.1); color: #f59e0b; }
-    .badge-green { background: rgba(16,185,129,0.1); color: #10b981; }
-    .badge-blue { background: rgba(59,130,246,0.1); color: #3b82f6; }
-    .badge-gray { background: rgba(100,116,139,0.1); color: #64748b; }
+    .badge-red { background: rgba(244,63,94,0.1); color: #f43f5e; border: 1px solid rgba(244,63,94,0.1); }
+    .badge-amber { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.1); }
+    .badge-green { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.1); }
+    .badge-blue { background: rgba(59,130,246,0.1); color: #3b82f6; border: 1px solid rgba(59,130,246,0.1); }
+    .badge-gray { background: rgba(100,116,139,0.1); color: #64748b; border: 1px solid rgba(100,116,139,0.1); }
   </style>
 </head>
 <body>
@@ -122,38 +158,6 @@
 
     <div class="p-4 sm:p-6 lg:p-8">
 
-      <!-- STAT CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(244,63,94,0.1);">
-            <span class="material-symbols-outlined" style="color:#f43f5e;">person_off</span>
-          </div>
-          <div class="admin-stat-label">Total Suspended</div>
-          <div class="admin-stat-value">5 <span class="admin-stat-delta neutral">All Time</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(245,158,11,0.1);">
-            <span class="material-symbols-outlined" style="color:#f59e0b;">schedule</span>
-          </div>
-          <div class="admin-stat-label">Suspended This Month</div>
-          <div class="admin-stat-value">2 <span class="admin-stat-delta neutral">Apr 2026</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(16,185,129,0.1);">
-            <span class="material-symbols-outlined" style="color:#10b981;">how_to_reg</span>
-          </div>
-          <div class="admin-stat-label">Reinstated This Month</div>
-          <div class="admin-stat-value">1 <span class="admin-stat-delta neutral">Restored</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(59,130,246,0.1);">
-            <span class="material-symbols-outlined" style="color:#3b82f6;">warning</span>
-          </div>
-          <div class="admin-stat-label">Pending Review</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta neutral">Active</span></div>
-        </div>
-      </div>
-
       <!-- TABLE CARD -->
       <div class="admin-card">
         <div class="flex flex-wrap items-end gap-4 p-6 border-b border-slate-200 dark:border-white/5">
@@ -164,29 +168,18 @@
               <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Name, email or account number..." oninput="renderTable()">
             </div>
           </div>
-          <div class="min-w-[180px]">
-            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Suspension Reason</div>
-            <select id="reason-filter" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer" onchange="renderTable()">
-              <option value="">All Reasons</option>
-              <option>Suspicious Activity</option>
-              <option>Daily Limit Breach</option>
-              <option>Failed Login Attempts</option>
-              <option>Policy Violation</option>
-              <option>Manual Review</option>
-            </select>
+          <!-- Date Range Filters -->
+          <div class="min-w-[160px]">
+            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Start Date</div>
+            <input type="date" id="start-date" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
           </div>
           <div class="min-w-[160px]">
-            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Suspended On</div>
-            <input type="date" id="date-filter" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" onchange="renderTable()">
+            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">End Date</div>
+            <input type="date" id="end-date" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
           </div>
-          <button class="px-6 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="resetFilters()">Reset</button>
-        </div>
-
-        <div class="p-6 border-b border-slate-200 dark:border-white/5">
           <div class="flex gap-2">
-            <button class="px-4 py-2 rounded-xl text-[11px] font-bold tracking-wider uppercase transition-all bg-primary text-white shadow-lg" onclick="switchTab('all',this)">All Suspended</button>
-            <button class="px-4 py-2 rounded-xl text-[11px] font-bold tracking-wider uppercase transition-all bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-primary dark:hover:text-white" onclick="switchTab('suspicious',this)">Suspicious Activity</button>
-            <button class="px-4 py-2 rounded-xl text-[11px] font-bold tracking-wider uppercase transition-all bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-primary dark:hover:text-white" onclick="switchTab('limit',this)">Limit Breach</button>
+            <button class="px-6 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all" onclick="renderTable()">Apply</button>
+            <button class="px-6 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="resetFilters()">Reset</button>
           </div>
         </div>
 
@@ -277,6 +270,19 @@ function reasonBadge(r){
   const map={'Suspicious Activity':'badge-red','Daily Limit Breach':'badge-amber','Failed Login Attempts':'badge-amber','Policy Violation':'badge-red','Manual Review':'badge-blue'};
   return `<span class="badge ${map[r]||'badge-gray'}">${r}</span>`;
 }
+function getAvatarGradient(initials) {
+  const gradients = [
+    'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', // Slate
+    'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', // Sky
+    'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)', // Indigo
+    'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)', // Amber
+    'linear-gradient(135deg, #10b981 0%, #047857 100%)', // Emerald
+    'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'  // Rose
+  ];
+  let hash = 0;
+  for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
+  return gradients[Math.abs(hash) % gradients.length];
+}
 function switchTab(key,el){
   activeTab=key; currentPage=1;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -285,16 +291,16 @@ function switchTab(key,el){
 }
 function resetFilters(){
   document.getElementById('search-input').value='';
-  document.getElementById('reason-filter').value='';
-  document.getElementById('date-filter').value='';
+  document.getElementById('start-date').value='';
+  document.getElementById('end-date').value='';
   activeTab='all'; currentPage=1;
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   renderTable();
 }
 function renderTable(){
   const search=document.getElementById('search-input').value.toLowerCase();
-  const reason=document.getElementById('reason-filter').value;
-  const date=document.getElementById('date-filter').value;
+  const startDate=document.getElementById('start-date').value;
+  const endDate=document.getElementById('end-date').value;
   filtered=allData.filter(r=>{
     if(activeTab!=='all'){
       if(activeTab==='suspicious'&&r.tabKey!=='suspicious')return false;
@@ -302,8 +308,13 @@ function renderTable(){
       if(activeTab==='login'&&r.tabKey!=='login')return false;
     }
     if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.accNo.toLowerCase().includes(search))return false;
-    if(reason&&r.reason!==reason)return false;
-    if(date&&!r.date.includes(date))return false;
+    
+    // Date Range Filtering
+    if(startDate || endDate) {
+      const rowDate = new Date(r.date);
+      if(startDate && rowDate < new Date(startDate)) return false;
+      if(endDate && rowDate > new Date(endDate)) return false;
+    }
     return true;
   });
   const total=filtered.length;
@@ -319,10 +330,10 @@ function renderTable(){
         <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*ROWS_PP+i+1).padStart(2,'0')}</td>
         <td>
           <div class="user-cell">
-            <div class="avatar">${r.initials}</div>
-            <div>
-              <div class="user-name">${r.name}</div>
-              <div class="user-email">${r.email}</div>
+            <div class="avatar-circle" style="background: ${getAvatarGradient(r.initials)}">${r.initials}</div>
+            <div style="display:flex; flex-direction:column;">
+              <span class="user-name">${r.name}</span>
+              <span class="user-email">${r.email}</span>
             </div>
           </div>
         </td>
@@ -333,12 +344,14 @@ function renderTable(){
         <td style="font-size:12px;color:var(--text-secondary)">${r.by}</td>
         <td><span class="badge badge-gray">${r.duration}</span></td>
         <td>
-          <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-            <a href="admin-suspended-user-detail.html?id=${r.id}" class="btn btn-ghost btn-sm">
-              <span class="material-symbols-outlined" style="font-size:14px">visibility</span>View
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+            <a href="admin-suspended-user-detail.html?id=${r.id}" class="action-btn btn-view" title="View Details">
+              <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
+              View
             </a>
-            <button class="btn btn-success btn-sm" onclick="openReinstate('${r.id}','${r.name}')">
-              <span class="material-symbols-outlined" style="font-size:14px">lock_open</span>Reinstate
+            <button class="action-btn btn-reinstate" onclick="openReinstate('${r.id}','${r.name}')" title="Restore Account">
+              <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
+              Reinstate
             </button>
           </div>
         </td>
