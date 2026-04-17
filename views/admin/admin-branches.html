@@ -151,8 +151,8 @@
       <div class="info-banner-premium animate-in">
         <span class="material-symbols-outlined text-blue-500" style="font-size:24px;">info</span>
         <div>
-          <div class="text-[13px] font-bold text-slate-800 dark:text-blue-100">System Branches Note</div>
-          <div class="text-[12px] opacity-70 mt-0.5">Finzo's primary branch is <b>Barasat</b>. This is the system-critical hub and cannot be deleted. All other branches can be managed or removed as needed.</div>
+          <div class="text-[13px] font-bold text-slate-800 dark:text-blue-100">Main Branch Note</div>
+          <div class="text-[12px] opacity-70 mt-0.5">Finzo's main branch is <b>Barasat</b>. This is the primary hub and cannot be deleted. All other branches can be managed or removed as needed.</div>
         </div>
       </div>
       <!-- SEARCH -->
@@ -187,7 +187,7 @@
                 <td class="font-bold opacity-40">01</td>
                 <td>
                   <div class="font-bold">Barasat</div>
-                  <div class="text-[10px] opacity-60">Primary operational hub and system branch</div>
+                  <div class="text-[10px] opacity-60">Primary hub and main branch of the network</div>
                 </td>
                 <td class="text-sm font-medium">Kolkata, West Bengal</td>
                 <td>
@@ -197,7 +197,7 @@
                   </div>
                 </td>
                 <td class="text-center font-bold">3</td>
-                <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">SYSTEM</span></td>
+                <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">MAIN</span></td>
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
@@ -220,7 +220,7 @@
                   </div>
                 </td>
                 <td class="text-center font-bold">2</td>
-                <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">SYSTEM</span></td>
+                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
@@ -244,7 +244,7 @@
                   </div>
                 </td>
                 <td class="text-center font-bold">2</td>
-                <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">SYSTEM</span></td>
+                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
@@ -355,6 +355,13 @@
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">City *</label>
                 <input type="text" placeholder="e.g. Kolkata" required
                   class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+              </div>
+              <div class="col-span-1">
+                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Type *</label>
+                <select class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold">
+                  <option value="Custom">Custom Branch</option>
+                </select>
+                <p class="text-[9px] text-slate-400 mt-1 font-bold">Only one Main Branch (Barasat) is allowed by the system.</p>
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">State *</label>
@@ -877,7 +884,7 @@
       let branchToDelete = null;
       window.deleteBranch = (name, code) => {
         if (name.toLowerCase() === 'barasat') {
-          alert("Unauthorized Action: The primary hub 'Barasat' is protected by the system and cannot be deleted.");
+          alert("Unauthorized Action: The main branch 'Barasat' is protected by the system and cannot be deleted.");
           return;
         }
         
