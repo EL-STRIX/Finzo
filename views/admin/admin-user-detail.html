@@ -262,6 +262,54 @@
         </div>
       </section>
 
+      <!-- TRANSACTION HISTORY SECTION -->
+      <section class="admin-card overflow-hidden">
+        <div class="p-5 sm:p-8 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/20 dark:bg-white/5">
+          <div>
+            <h3 class="font-headline text-xl font-bold text-black dark:text-white">Transaction History</h3>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
+          </div>
+          <a href="admin-transactions.html" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
+            <span class="material-symbols-outlined text-lg">open_in_new</span>
+            Full Statement
+          </a>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="admin-table w-full text-left min-w-[1000px]">
+            <thead>
+              <tr class="bg-slate-50/50 dark:bg-white/5">
+                <th class="py-5 px-8 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5 w-16 text-center">#</th>
+                <th class="py-5 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5">TXN ID</th>
+                <th class="py-5 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Type</th>
+                <th class="py-5 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Date & Time</th>
+                <th class="py-5 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right">Amount</th>
+                <th class="py-5 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Status</th>
+                <th class="py-5 px-8 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="user-transactions-body" class="divide-y divide-slate-50 dark:divide-white/5">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="p-6 bg-slate-50/20 dark:bg-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Showing last 5 account activities</div>
+          <div class="flex items-center gap-2">
+            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all cursor-not-allowed">
+              <span class="material-symbols-outlined text-lg">chevron_left</span>
+            </button>
+            <div class="flex gap-1.5">
+              <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-primary text-white text-[11px] font-black shadow-lg shadow-primary/20">1</button>
+            </div>
+            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all cursor-not-allowed">
+              <span class="material-symbols-outlined text-lg">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -331,6 +379,9 @@
           $('#admin-sidebar').removeClass('mobile-open');
           $('#sidebar-overlay').removeClass('active');
       });
+
+      // Render transactions
+      renderUserTransactions();
     });
 
     let currentMode = '';
@@ -439,6 +490,57 @@
           location.href = 'admin-users.html';
         }, 1500);
       }, 2000);
+    }
+
+    const userTransactions = [
+      { id: '01', txId: 'TXN30291882', type: 'UPI_DEPOSIT', rawType: 'deposit', date: '10 May 2026 — 02:45 PM', amount: '+₹25,000.00', status: 'COMPLETED', statusClass: 'badge-green' },
+      { id: '02', txId: 'TXN30291551', type: 'WITHDRAWAL', rawType: 'withdrawal', date: '08 May 2026 — 11:15 AM', amount: '-₹5,200.00', status: 'COMPLETED', statusClass: 'badge-green' },
+      { id: '03', txId: 'TXN30291440', type: 'TRANSFER', rawType: 'transfer', date: '07 May 2026 — 09:30 AM', amount: '-₹1,500.00', status: 'COMPLETED', statusClass: 'badge-green' },
+      { id: '04', txId: 'TXN30291229', type: 'DEPOSIT', rawType: 'deposit', date: '05 May 2026 — 10:45 AM', amount: '+₹1,42,500.12', status: 'COMPLETED', statusClass: 'badge-green' },
+      { id: '05', txId: 'TXN30291001', type: 'ACCOUNT_OPEN', rawType: 'special', date: '05 May 2026 — 10:45 AM', amount: '₹0.00', status: 'ACTIVATED', statusClass: 'badge-blue' }
+    ];
+
+    function renderUserTransactions() {
+      const html = userTransactions.map(t => {
+        const isPositive = t.amount.startsWith('+');
+        const isSpecial = t.rawType === 'special';
+        
+        return `
+        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all group">
+          <td class="py-5 px-8 text-center font-black opacity-20 text-[10px] group-hover:opacity-100 transition-opacity">${t.id}</td>
+          <td class="py-5 px-6">
+            <div class="font-mono text-[11px] font-black tracking-widest text-primary dark:text-blue-400 bg-primary/5 dark:bg-blue-400/5 px-3 py-1.5 rounded-lg w-fit">
+              ${t.txId}
+            </div>
+          </td>
+          <td class="py-5 px-6">
+            <div class="flex items-center gap-2">
+              <div class="w-1.5 h-1.5 rounded-full ${t.rawType === 'deposit' ? 'bg-emerald-500' : t.rawType === 'withdrawal' ? 'bg-rose-500' : t.rawType === 'transfer' ? 'bg-blue-500' : 'bg-slate-400 animate-pulse'}"></div>
+              <span class="text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">${t.type.replace('_', ' ')}</span>
+            </div>
+          </td>
+          <td class="py-5 px-6">
+            <div class="text-[11px] font-bold text-slate-500">${t.date}</div>
+          </td>
+          <td class="py-5 px-6 text-right">
+            <div class="text-sm font-black ${isPositive ? 'text-emerald-500' : isSpecial ? 'text-slate-400' : 'text-rose-500'} font-mono">
+              ${t.amount}
+            </div>
+          </td>
+          <td class="py-5 px-6">
+            <span class="badge ${t.rawType === 'deposit' ? 'badge-green' : t.rawType === 'withdrawal' ? 'badge-red' : t.rawType === 'transfer' ? 'badge-blue' : 'badge-gray'} !text-[9px] !px-3 !py-1 !rounded-full !border-none !font-black !tracking-tighter shadow-sm">
+              ${t.status}
+            </span>
+          </td>
+          <td class="py-5 px-8 text-right">
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-primary dark:hover:text-blue-400 transition-all">
+              <span class="material-symbols-outlined text-[18px]">print</span>
+            </button>
+          </td>
+        </tr>
+        `;
+      }).join('');
+      $('#user-transactions-body').html(html);
     }
   </script>
 </body>
