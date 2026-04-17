@@ -110,7 +110,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button onclick="$('#addStaffModal').removeClass('hidden').addClass('flex')" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
+        <button onclick="openAddStaffModal()" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Staff
         </button>
@@ -535,8 +535,15 @@
             </div>
             <div>
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Staff ID</label>
-              <input type="text" value="STF006" readonly
-                class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-xl font-bold opacity-60">
+              <div class="relative">
+                <input type="text" id="new-staff-id" value="STF009" readonly
+                  class="w-full pl-4 pr-10 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-xl font-bold opacity-60 cursor-not-allowed">
+                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">lock</span>
+              </div>
+              <p class="text-[9px] text-slate-400 mt-1.5 font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[10px]">info</span>
+                System Generated — Cannot be manualy edited.
+              </p>
             </div>
           </div>
 
@@ -544,7 +551,7 @@
             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Temporary
               Password</label>
             <div class="flex items-center justify-between">
-              <code class="text-lg font-black tracking-widest text-primary dark:text-blue-400">FINZO-9821</code>
+              <code id="temp-password-display" class="text-lg font-black tracking-widest text-primary dark:text-blue-400">FINZO-9821</code>
               <button type="button" class="p-2 text-primary hover:bg-white rounded-lg transition-all"
                 title="Copy Password">
                 <span class="material-symbols-outlined text-xl">content_copy</span>
@@ -583,6 +590,20 @@
 
   <script>
     console.log("Staff Management script initialization...");
+
+    function openAddStaffModal() {
+      // Auto-generate Staff ID based on total rows + 1
+      const totalStaff = $('#staff-table-body tr').length;
+      const nextId = "STF" + String(totalStaff + 1).padStart(3, '0');
+      $('#new-staff-id').val(nextId);
+      
+      // Auto-generate Temporary Password
+      const randomPass = "FINZO-" + Math.floor(1000 + Math.random() * 9000);
+      $('#temp-password-display').text(randomPass);
+
+      $('#addStaffModal').removeClass('hidden').addClass('flex');
+    }
+
     $(document).ready(function () {
       $('#mobile-menu-btn').on('click', function () {
           $('#admin-sidebar').addClass('mobile-open');
