@@ -155,21 +155,13 @@
           <div class="text-[12px] opacity-70 mt-0.5">Finzo's primary branch is <b>Barasat</b>. This is the system-critical hub and cannot be deleted. All other branches can be managed or removed as needed.</div>
         </div>
       </div>
-
-      <!-- SEARCH AND FILTER -->
+      <!-- SEARCH -->
       <div class="admin-card mb-6 sm:mb-8 relative z-20">
         <div class="p-4 sm:p-6">
-          <div class="relative mb-6">
+          <div class="relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
             <input type="text" id="branch-search" placeholder="Search by branch name, location or manager..."
               class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm">
-          </div>
-          
-          <div class="flex flex-wrap gap-2">
-            <button class="filter-tab active" data-filter="all">All Branches</button>
-            <button class="filter-tab" data-filter="active">Active</button>
-            <button class="filter-tab" data-filter="system">System Branches</button>
-            <button class="filter-tab" data-filter="custom">Custom Branches</button>
           </div>
         </div>
       </div>
@@ -612,20 +604,7 @@
     }
     .animate-modal-enter { animation: modal-enter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
     
-    .filter-tab {
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #94a3b8;
-      background: transparent;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .filter-tab:hover { background: var(--dk-surface, #f1f5f9); color: #64748b; }
-    .filter-tab.active { background: #002645; color: white; box-shadow: 0 4px 12px rgba(0,38,69,0.2); }
-    .dark .filter-tab.active { background: #3b82f6; box-shadow: 0 4px 12px rgba(59,130,246,0.2); }
+
   </style>
 
   <script>
@@ -633,34 +612,20 @@
       // Sidebar Toggle
       $('#mobile-menu-btn').on('click', () => { $('#admin-sidebar, #sidebar-overlay').addClass('mobile-open active'); });
       $('#sidebar-overlay').on('click', () => { $('#admin-sidebar, #sidebar-overlay').removeClass('mobile-open active'); });
-
-      // Search & Tabs Filtering
+      // Search Filtering
       function filterBranches() {
         const query = $('#branch-search').val().toLowerCase();
-        const tab = $('.filter-tab.active').data('filter');
         
         $('#branches-table-body tr').each(function() {
           const name = $(this).find('.font-bold').first().text().toLowerCase();
           const manager = $(this).find('.text-\\[12px\\]').text().toLowerCase();
-          const type = $(this).data('type');
-          const status = $(this).data('status');
           
           const matchesQuery = name.includes(query) || manager.includes(query);
-          let matchesTab = true;
-          if (tab === 'active') matchesTab = (status === 'active');
-          else if (tab === 'system') matchesTab = (type === 'system');
-          else if (tab === 'custom') matchesTab = (type === 'custom');
-          
-          $(this).toggle(matchesQuery && matchesTab);
+          $(this).toggle(matchesQuery);
         });
       }
 
       $('#branch-search').on('keyup', filterBranches);
-      $('.filter-tab').on('click', function() {
-        $('.filter-tab').removeClass('active');
-        $(this).addClass('active');
-        filterBranches();
-      });
 
       // Branch Code Auto-generator
       $('#add-branch-name').on('input', function() {
