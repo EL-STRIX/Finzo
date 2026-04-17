@@ -419,7 +419,7 @@ interest_rates      → Interest rate history
 ## 👤 Author
 
 **Sujay Paul**  
-📧 [GitHub: Rajdeep-Nemo](https://github.com/Rajdeep-Nemo)  
+📧 [GitHub: Sujay Paul](https://github.com/EL-STRIX)  
 📍 Kolkata, West Bengal, India  
 🎓 Student Project — Online Banking System Frontend
 
