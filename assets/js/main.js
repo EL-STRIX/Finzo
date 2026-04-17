@@ -86,7 +86,7 @@ $(document).ready(function() {
 
     // Toasts placeholder
     window.showToast = function(message, type = 'success') {
-        // Audit log logic initialized.
+
         // Optionally create a visible toast element here
     }
 
