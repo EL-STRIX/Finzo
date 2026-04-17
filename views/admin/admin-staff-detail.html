@@ -341,15 +341,15 @@
   </div>
 
   <!-- GOVERNANCE SECURITY MODAL -->
-  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden">
+  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
     <!-- Backdrop -->
     <div id="modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md opacity-0"></div>
     
     <!-- Modal Container -->
-    <div id="modal-container" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg opacity-0">
-      <div class="admin-card !p-0 overflow-hidden shadow-2xl border-none">
-        <!-- Header -->
-        <div id="modal-header" class="p-8 pb-4 text-center">
+    <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300">
+      <div class="admin-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
+        <!-- Header (Fixed) -->
+        <div id="modal-header" class="p-8 pb-4 text-center shrink-0">
           <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300">
             <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
           </div>
@@ -357,9 +357,22 @@
           <p id="modal-subtitle" class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
         </div>
 
-        <div class="px-8 py-4 space-y-6">
+        <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
           <div id="modal-body-text" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
             <!-- Custom action text injected here -->
+          </div>
+
+          <!-- Reason Step (Only for Deactivation) -->
+          <div id="reason-step" class="hidden">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Select Deactivation Reason</label>
+            <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Dynamically Injected -->
+            </div>
+            <div id="custom-reason-container" class="mt-4 hidden animate-in fade-in slide-in-from-top-1 duration-300">
+              <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Additional Observations (Internal Audit)</label>
+              <textarea id="custom-reason-notes" rows="2" placeholder="Elaborate on the reason for deactivation..." 
+                class="w-full bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
+            </div>
           </div>
 
           <!-- Auth Step -->
@@ -374,8 +387,8 @@
           </div>
         </div>
 
-        <!-- Footer Actions -->
-        <div class="p-8 pt-4 flex gap-3">
+        <!-- Footer Actions (Fixed) -->
+        <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-50 dark:border-white/5">
           <button onclick="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel Action</button>
           <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Authorize Change</button>
         </div>
@@ -398,15 +411,6 @@
       let currentAction = '';
 
       const modalConfigs = {
-        deactivate: {
-          title: 'Deactivate Staff',
-          subtitle: 'Irreversible suspension of access',
-          body: 'You are about to deactivate <b>Amit Sharma</b>. This will revoke all system access immediately and terminate active shift sessions. This action will be logged in the system audit trails.',
-          icon: 'block',
-          color: 'rose',
-          btnText: 'Confirm Deactivation',
-          btnClass: 'bg-rose-600 shadow-rose-600/20'
-        },
         reset: {
           title: 'Reset Password',
           subtitle: 'Security protocol override',
@@ -414,7 +418,26 @@
           icon: 'lock_reset',
           color: 'indigo',
           btnText: 'Confirm Reset',
-          btnClass: 'bg-indigo-600 shadow-indigo-600/20'
+          btnClass: 'bg-indigo-600 shadow-indigo-600/20',
+          reasons: []
+        },
+        deactivate: {
+          title: 'Deactivate Staff',
+          subtitle: 'Irreversible suspension of access',
+          body: 'You are about to deactivate <b>Amit Sharma</b>. This will revoke all system access immediately and terminate active sessions.',
+          icon: 'block',
+          color: 'rose',
+          btnText: 'Confirm Deactivation',
+          btnClass: 'bg-rose-600 shadow-rose-600/20',
+          reasons: [
+            'Unauthorized Data Access',
+            'Financial Discrepancy Found',
+            'Policy Violation / Misconduct',
+            'Performance Related Termination',
+            'Voluntary Resignation',
+            'Security Breach Suspected',
+            'Other'
+          ]
         }
       };
 
@@ -431,25 +454,59 @@
         $('#modal-title').text(config.title);
         $('#modal-icon').text(config.icon);
         
+        // dynamic style
+        $('#modal-icon-container').attr('class', `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`);
+        $('#confirm-governance-btn').attr('class', `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`)
+                                  .text(config.btnText).show().prop('disabled', false);
+
+        // Inject Reasons if applicable
+        if (config.reasons && config.reasons.length > 0) {
+          let reasonsHtml = '';
+          config.reasons.forEach(r => {
+            reasonsHtml += `
+              <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border-2 border-transparent hover:border-slate-200 dark:hover:border-white/10 cursor-pointer transition-all group">
+                <input type="radio" name="suspension_reason" value="${r}" class="text-primary focus:ring-primary/10">
+                <span class="text-[10px] font-black text-slate-500 group-hover:text-black dark:group-hover:text-white leading-tight">${r}</span>
+              </label>
+            `;
+          });
+          $('#reason-grid').html(reasonsHtml);
+          $('#reason-step').slideDown(300);
+          
+          // Other handler
+          $('input[name="suspension_reason"]').on('change', function() {
+            if ($(this).val() === 'Other') {
+              $('#custom-reason-container').slideDown(300);
+            } else {
+              $('#custom-reason-container').slideUp(300);
+            }
+          });
+        } else {
+          $('#reason-step').hide();
+        }
+
         // Dynamic styling
         $('#modal-icon-container').attr('class', `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`);
         $('#confirm-governance-btn').attr('class', `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`)
                                   .text(config.btnText).show().prop('disabled', false);
 
         // Show modal
-        $('#modal-backdrop').css('opacity', '1'); // Ensure opacity is reset
-        $('#modal-container').css('opacity', '1'); // Ensure opacity is reset
-        $('#governance-modal').removeClass('hidden').hide().fadeIn(300);
+        $('#modal-backdrop').css('opacity', '1');
+        $('#modal-container').removeClass('scale-95').css('opacity', '1');
+        $('#governance-modal').removeClass('hidden').hide().fadeIn(300).css('display', 'flex');
         $('body').addClass('overflow-hidden');
       }
 
       window.closeGovernanceModal = function() {
+        $('#modal-container').addClass('scale-95').css('opacity', '0');
         $('#governance-modal').fadeOut(300, function() {
           $(this).addClass('hidden');
           $('body').removeClass('overflow-hidden');
           $('#admin-password').val('');
           $('#auth-error').addClass('hidden');
           $('#admin-password').removeClass('ring-2 ring-rose-500/20');
+          $('#reason-step').hide();
+          $('#custom-reason-container').hide();
         });
       };
 
