@@ -14,6 +14,9 @@
   --sidebar-shadow: 10px 0 30px -10px rgba(0, 0, 0, 0.25);
 }
 
+.force-black { color: #000000 !important; opacity: 1 !important; }
+.dark .force-black { color: #ffffff !important; opacity: 1 !important; }
+
 .admin-sidebar {
     position: fixed;
     left: 0;

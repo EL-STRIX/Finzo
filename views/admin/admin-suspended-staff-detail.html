@@ -6,6 +6,22 @@
 <title>Staff Suspension Detail | Finzo Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1a3c5e", "error": "#ba1a1a",
+            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
+            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+        }
+      }
+    }
+</script>
 <style>
 :root{--primary:#1a3c5e;--red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);--amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);--green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);--blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);--bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;--text-primary:#0f172a;--text-secondary:#64748b;--text-placeholder:#94a3b8;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);--sidebar-width:248px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--transition:all 0.2s ease;}
 .dark{--bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;--border:rgba(255,255,255,0.06);--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);--red-soft:rgba(244,63,94,0.12);--green-soft:rgba(16,185,129,0.12);}
@@ -93,10 +109,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 </nav>
 
 <div class="main">
-  <header class="topbar">
-    <div>
-      <div style="font-size:10px;font-weight:800;letter-spacing:.18em;color:var(--red);text-transform:uppercase;">Staff Suspension</div>
-      <div style="font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;">Staff Suspension Record</div>
+  <header class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
+    <div class="flex items-center gap-3 sm:gap-4 flex-1">
+      <a href="admin-suspended-staff.html" class="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
+        <span class="material-symbols-outlined force-black">arrow_back</span>
+      </a>
+      <div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">STAFF SUSPENSION</div>
+        <div class="font-headline text-xl sm:text-3xl font-extrabold force-black tracking-tight mt-1">Staff Suspension Record</div>
+      </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="admin-suspended-staff.html" class="btn btn-ghost" style="height:38px;font-size:12px"><span class="material-symbols-outlined" style="font-size:16px">arrow_back</span>Back to List</a>

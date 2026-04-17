@@ -11,7 +11,21 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
-  <script>tailwind.config = { darkMode: "class", theme: { extend: {} } }</script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#002645", "error": "#ba1a1a",
+            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
+            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
@@ -251,9 +265,8 @@
             <span class="material-symbols-outlined">menu</span>
         </button>
         <div class="min-w-0">
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 dark:text-on-surface-variant uppercase truncate">USER
-            MANAGEMENT</div>
-          <div class="user-mgmt-title font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-1 truncate">User Management</div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase truncate">USER MANAGEMENT</div>
+          <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1 truncate">User Management</div>
         </div>
       </div>
       <div class="flex items-center gap-3 flex-shrink-0">

@@ -6,7 +6,21 @@
 <title>Finzo Admin — Admin Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script>tailwind.config={darkMode:"class",theme:{extend:{}}}</script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#002645", "error": "#ba1a1a",
+            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
+            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+        }
+      }
+    }
+  </script>
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
@@ -132,9 +146,8 @@
           <span class="material-symbols-outlined force-black">menu</span>
       </button>
       <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-widest force-black uppercase">ACCOUNT SETTINGS</div>
-        <div class="font-headline text-xl sm:text-3xl font-extrabold force-black tracking-tight mt-1">Admin Profile</div>
-        <div class="text-xs sm:text-sm force-black mt-1 font-medium">Manage your admin account details and preferences</div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">ACCOUNT SETTINGS</div>
+        <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Admin Profile</div>
       </div>
     </div>
   </div>
