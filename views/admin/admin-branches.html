@@ -141,7 +141,7 @@
           <div class="admin-stat-icon" style="background:#f1f3f5;">
             <span class="material-symbols-outlined" style="color:#6c757d;">do_not_disturb</span>
           </div>
-          <div class="admin-stat-label">INACTIVE BRANCHES</div>
+          <div class="admin-stat-label">SUSPEND BRANCHES</div>
           <div class="admin-stat-value">2 <span class="admin-stat-delta neutral"
               style="background:#f1f5f9;color:#64748b;">Disabled</span></div>
         </div>
@@ -176,7 +176,7 @@
           <div class="flex flex-wrap gap-2">
             <button class="filter-tab active" data-filter="all">All Branches</button>
             <button class="filter-tab" data-filter="active">Active</button>
-            <button class="filter-tab" data-filter="inactive">Inactive</button>
+            <button class="filter-tab" data-filter="suspend">Suspend</button>
             <button class="filter-tab" data-filter="system">System Branches</button>
             <button class="filter-tab" data-filter="custom">Custom Branches</button>
           </div>
@@ -246,7 +246,7 @@
                   </div>
                 </td>
               </tr>
-              <tr data-type="system" data-status="inactive">
+              <tr data-type="system" data-status="suspend">
                 <td class="font-bold opacity-40">03</td>
                 <td>
                   <div class="font-bold">South Branch</div>
@@ -261,7 +261,7 @@
                 </td>
                 <td class="text-center font-bold">2</td>
                 <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">SYSTEM</span></td>
-                <td><span class="status-badge badge-neutral">INACTIVE</span></td>
+                <td><span class="status-badge badge-neutral">SUSPEND</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
                     <button onclick="viewBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
@@ -293,7 +293,7 @@
                   </div>
                 </td>
               </tr>
-              <tr data-type="custom" data-status="inactive">
+              <tr data-type="custom" data-status="suspend">
                 <td class="font-bold opacity-40">05</td>
                 <td>
                   <div class="font-bold">Airport Branch</div>
@@ -308,7 +308,7 @@
                 </td>
                 <td class="text-center font-bold">0</td>
                 <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
-                <td><span class="status-badge badge-neutral">INACTIVE</span></td>
+                <td><span class="status-badge badge-neutral">SUSPEND</span></td>
                 <td class="text-right">
                   <div class="flex justify-end gap-2">
                     <button onclick="viewBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
@@ -667,7 +667,7 @@
           const matchesQuery = name.includes(query) || manager.includes(query);
           let matchesTab = true;
           if (tab === 'active') matchesTab = (status === 'active');
-          else if (tab === 'inactive') matchesTab = (status === 'inactive');
+          else if (tab === 'suspend') matchesTab = (status === 'suspend');
           else if (tab === 'system') matchesTab = (type === 'system');
           else if (tab === 'custom') matchesTab = (type === 'custom');
           
@@ -765,7 +765,7 @@
         const active = $(this).is(':checked');
         $('#toggle-label-text').text(active 
           ? "Branch will be set as Active and operational immediately" 
-          : "Branch will be created as Inactive — activate later");
+          : "Branch will be created as Suspend — activate later");
         $('#toggle-label-text').toggleClass('text-emerald-600 text-slate-400', active);
       });
 
