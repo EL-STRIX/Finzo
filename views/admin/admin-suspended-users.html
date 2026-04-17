@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Suspended Users | Finzo Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<style>
+/* ── CSS Variables ── */
+:root {
+  --primary: #1a3c5e;
+  --primary-soft: rgba(26,60,94,0.08);
+  --red: #f43f5e; --red-soft: rgba(244,63,94,0.08); --red-border: rgba(244,63,94,0.2);
+  --amber: #f59e0b; --amber-soft: rgba(245,158,11,0.08); --amber-border: rgba(245,158,11,0.2);
+  --green: #10b981; --green-soft: rgba(16,185,129,0.08); --green-border: rgba(16,185,129,0.2);
+  --blue: #3b82f6; --blue-soft: rgba(59,130,246,0.08);
+  --bg-page: #f1f5f9; --bg-card: #ffffff; --bg-input: #f1f5f9; --bg-sidebar: #0d1117;
+  --text-primary: #0f172a; --text-secondary: #64748b; --text-placeholder: #94a3b8;
+  --border: #e2e8f0; --shadow: 0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --sidebar-width: 248px; --navbar-h: 64px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px;
+  --transition: all 0.2s ease;
+}
+.dark {
+  --bg-page:#0d1117; --bg-card:#161b22; --bg-input:rgba(255,255,255,0.04);
+  --text-primary:#f0f6fc; --text-secondary:#8b949e; --text-placeholder:#484f58;
+  --border:rgba(255,255,255,0.06); --shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --red-soft:rgba(244,63,94,0.12); --amber-soft:rgba(245,158,11,0.12);
+  --green-soft:rgba(16,185,129,0.12); --blue-soft:rgba(59,130,246,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-sidebar);display:flex;flex-direction:column;z-index:100;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-brand{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.brand-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;}
+.brand-sub{font-size:9px;font-weight:800;letter-spacing:.2em;color:#10b981;margin-top:2px;text-transform:uppercase;}
+.nav-section{font-size:9px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,0.28);padding:16px 20px 6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;margin:2px 8px;border-radius:var(--radius-md);font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);text-decoration:none;transition:var(--transition);border:1px solid transparent;cursor:pointer;background:none;width:calc(100% - 16px);text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#e2e8f0;}
+.nav-item.active{background:rgba(26,60,94,0.5);color:#fff;border-color:rgba(26,60,94,0.7);}
+.nav-item.danger{color:rgba(244,63,94,0.7);}
+.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
+.nav-icon{font-size:18px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:rgba(244,63,94,0.15);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
+.nav-badge-warn{margin-left:auto;background:rgba(244,63,94,0.12);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
+.sidebar-bottom{padding-bottom:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;flex-shrink:0;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:var(--navbar-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.topbar-left .eyebrow{font-size:10px;font-weight:800;letter-spacing:.18em;color:var(--primary);text-transform:uppercase;}
+.dark .topbar-left .eyebrow{color:#60a5fa;}
+.topbar-left .title{font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;transition:var(--transition);}
+.icon-btn:hover{background:var(--bg-input);color:var(--text-primary);}
+.icon-btn .material-symbols-outlined{font-size:20px;}
+
+/* ── PAGE CONTENT ── */
+.page-content{padding:28px 32px;flex:1;}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:1200px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.stat-grid{grid-template-columns:1fr;}}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:20px;box-shadow:var(--shadow);transition:var(--transition);}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
+.dark .stat-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+.stat-icon{width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.stat-icon .material-symbols-outlined{font-size:22px;}
+.stat-label{font-size:9px;font-weight:800;letter-spacing:.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-size:24px;font-weight:800;color:var(--text-primary);letter-spacing:-.5px;display:flex;align-items:baseline;gap:8px;}
+.stat-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+
+/* ── CARD ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);}
+.card-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:800;color:var(--text-primary);letter-spacing:.04em;text-transform:uppercase;}
+.card-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;font-weight:500;}
+
+/* ── FILTER BAR ── */
+.filter-bar{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;}
+.filter-group{display:flex;flex-direction:column;gap:5px;}
+.filter-label{font-size:9px;font-weight:800;letter-spacing:.14em;color:var(--text-secondary);text-transform:uppercase;}
+.filter-input{height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);font-size:13px;font-weight:600;font-family:inherit;padding:0 14px;outline:none;transition:var(--transition);}
+.filter-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,60,94,0.08);}
+.filter-input::placeholder{color:var(--text-placeholder);font-weight:500;}
+.filter-input.with-icon{padding-left:38px;}
+.input-wrap{position:relative;}
+.input-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--text-placeholder);pointer-events:none;transition:color .2s;}
+.input-wrap:focus-within .input-icon{color:var(--primary);}
+.filter-select{height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);font-size:13px;font-weight:600;font-family:inherit;padding:0 36px 0 12px;outline:none;transition:var(--transition);appearance:none;cursor:pointer;min-width:140px;}
+.filter-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,60,94,0.08);}
+.select-wrap{position:relative;}
+.select-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--text-placeholder);pointer-events:none;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 18px;height:40px;border-radius:var(--radius-md);font-size:12px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(26,60,94,0.25);}
+.btn-primary:hover{background:#0f2a44;transform:translateY(-1px);}
+.btn-danger{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(244,63,94,0.2);}
+.btn-danger:hover{background:#e11d48;transform:translateY(-1px);}
+.btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}
+.btn-success:hover{background:#059669;transform:translateY(-1px);}
+.btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text-primary);background:var(--border);}
+.btn-sm{height:34px;padding:0 14px;font-size:11px;border-radius:var(--radius-sm);}
+.btn .material-symbols-outlined{font-size:15px;}
+
+/* ── TABS ── */
+.tabs{display:flex;padding:5px;background:var(--bg-input);border-radius:var(--radius-lg);border:1px solid var(--border);gap:3px;}
+.tab-btn{padding:8px 18px;border-radius:10px;font-size:11px;font-weight:800;letter-spacing:.06em;border:none;cursor:pointer;transition:var(--transition);color:var(--text-secondary);background:transparent;font-family:inherit;}
+.tab-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,60,94,0.25);}
+.tab-btn:not(.active):hover{color:var(--text-primary);}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;white-space:nowrap;}
+thead tr{background:var(--bg-input);}
+thead th{padding:11px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.14em;color:var(--text-primary);text-transform:uppercase;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg-input);}
+tbody td{padding:14px 16px;font-size:13px;color:var(--text-primary);vertical-align:middle;}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
+.badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red-border);}
+.badge-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border);}
+.badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green-border);}
+.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:rgba(59,130,246,.2);}
+.badge-gray{background:rgba(100,116,139,.08);color:#64748b;border-color:rgba(100,116,139,.2);}
+.badge-dot{width:6px;height:6px;border-radius:50%;}
+
+/* ── USER CELL ── */
+.user-cell{display:flex;align-items:center;gap:11px;}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:rgba(26,60,94,0.12);color:var(--primary);}
+.dark .avatar{background:rgba(26,60,94,0.4);color:#90cdf4;}
+.user-name{font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.2;}
+.user-email{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+
+/* ── MONO ── */
+.mono{font-family:'Courier New',monospace;font-size:11px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;}
+
+/* ── PAGINATION ── */
+.pag-bar{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.pag-info{font-size:11px;font-weight:700;color:var(--text-secondary);letter-spacing:.06em;text-transform:uppercase;}
+.pag-controls{display:flex;align-items:center;gap:5px;}
+.pag-btn{height:32px;padding:0 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:11px;font-weight:700;cursor:pointer;transition:var(--transition);font-family:inherit;}
+.pag-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary);}
+.pag-btn:disabled{opacity:.35;cursor:not-allowed;}
+.pag-num{width:32px;height:32px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:11px;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.pag-num.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.pag-num:hover:not(.active){border-color:var(--primary);color:var(--primary);}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,0.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:280px;animation:slideInRight .3s ease;}
+.toast-success{border-left:4px solid #10b981;}
+.toast-error{border-left:4px solid #f43f5e;}
+.toast-info{border-left:4px solid #3b82f6;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
+.modal-overlay.hidden{display:none!important;}
+.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:90%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
+.modal-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.modal-title{font-size:18px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.6;margin-bottom:22px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 24px;}
+.empty-state .material-symbols-outlined{font-size:48px;color:var(--text-placeholder);display:block;margin-bottom:14px;}
+.empty-title{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--text-secondary);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .topbar{padding:0 16px;}
+  .page-content{padding:16px;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .filter-bar{flex-direction:column;align-items:stretch;}
+  .filter-input,.filter-select{width:100%;}
+}
+@media(max-width:480px){.stat-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-name">Finzo</div>
+    <div class="brand-sub">Admin Console</div>
+  </div>
+  <div style="flex:1;padding-top:8px;">
+    <div class="nav-section">Main</div>
+    <a href="admin-dashboard.html" class="nav-item"><span class="material-symbols-outlined nav-icon">analytics</span>Overview</a>
+    <a href="admin-pending-approvals.html" class="nav-item"><span class="material-symbols-outlined nav-icon">rule</span><span style="flex:1">Pending Approvals</span><span class="nav-badge">03</span></a>
+    <a href="admin-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">group</span>User Management</a>
+    <a href="admin-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">badge</span>Staff Management</a>
+    <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
+    <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
+    <a href="admin-suspended-users.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge-warn">2</span></a>
+    <a href="admin-suspended-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">work_off</span><span style="flex:1">Suspended Staff</span></a>
+
+    <div class="nav-section">System</div>
+    <a href="admin-audit-log.html" class="nav-item"><span class="material-symbols-outlined nav-icon">manage_search</span>Audit Logs</a>
+    <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
+    <a href="admin-interest.html" class="nav-item"><span class="material-symbols-outlined nav-icon">percent</span>Interest Management</a>
+
+    <div class="nav-section">Account</div>
+  </div>
+  <div class="sidebar-bottom">
+    <a href="admin-profile.html" class="nav-item"><span class="material-symbols-outlined nav-icon">account_circle</span>Admin Profile</a>
+    <button class="nav-item" onclick="toggleTheme()">
+      <span class="material-symbols-outlined nav-icon" id="theme-icon">dark_mode</span>
+      <span id="theme-label">Dark Mode</span>
+    </button>
+    <a href="../../views/auth/login.html" class="nav-item danger"><span class="material-symbols-outlined nav-icon">logout</span>Logout</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="eyebrow">Account Control</div>
+      <div class="title">Suspended Users</div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="mob-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <button class="icon-btn" onclick="toggleTheme()">
+        <span class="material-symbols-outlined" id="theme-icon2">dark_mode</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="page-content">
+
+    <!-- PAGE HEADER -->
+    <div style="margin-bottom:24px">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.18em;color:var(--red);text-transform:uppercase;margin-bottom:6px">Account Control</div>
+      <div style="font-size:26px;font-weight:800;color:var(--text-primary);letter-spacing:-.4px">Suspended Customer Accounts</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:5px;font-weight:500">View and manage all customer accounts that have been suspended by an admin.</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--red-soft)"><span class="material-symbols-outlined" style="color:var(--red)">person_off</span></div>
+        <div class="stat-label">Total Suspended</div>
+        <div class="stat-value">5 <span class="stat-badge" style="background:var(--red-soft);color:var(--red)">All Time</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--amber-soft)"><span class="material-symbols-outlined" style="color:var(--amber)">schedule</span></div>
+        <div class="stat-label">Suspended This Month</div>
+        <div class="stat-value">2 <span class="stat-badge" style="background:var(--amber-soft);color:var(--amber)">Apr 2026</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="color:var(--green)">how_to_reg</span></div>
+        <div class="stat-label">Reinstated This Month</div>
+        <div class="stat-value">1 <span class="stat-badge" style="background:var(--green-soft);color:var(--green)">Restored</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--blue-soft)"><span class="material-symbols-outlined" style="color:var(--blue)">warning</span></div>
+        <div class="stat-label">Pending Review</div>
+        <div class="stat-value">3 <span class="stat-badge" style="background:var(--blue-soft);color:var(--blue)">Active</span></div>
+      </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="card">
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="filter-group" style="flex:1;min-width:200px;">
+          <div class="filter-label">Search User</div>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined input-icon">search</span>
+            <input type="text" class="filter-input with-icon" id="search-input" placeholder="Name, email or account number..." oninput="renderTable()" style="width:100%"/>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Suspension Reason</div>
+          <div class="select-wrap">
+            <select class="filter-select" id="reason-filter" onchange="renderTable()">
+              <option value="">All Reasons</option>
+              <option>Suspicious Activity</option>
+              <option>Daily Limit Breach</option>
+              <option>Failed Login Attempts</option>
+              <option>Policy Violation</option>
+              <option>Manual Review</option>
+            </select>
+            <span class="material-symbols-outlined select-arrow">expand_more</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Suspended On</div>
+          <input type="date" class="filter-input" id="date-filter" onchange="renderTable()"/>
+        </div>
+        <div class="filter-group" style="align-self:flex-end">
+          <button class="btn btn-ghost" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div style="padding:14px 22px;border-bottom:1px solid var(--border);">
+        <div class="tabs" style="display:inline-flex;">
+          <button class="tab-btn active" onclick="switchTab('all',this)">All Suspended</button>
+          <button class="tab-btn" onclick="switchTab('suspicious',this)">Suspicious Activity</button>
+          <button class="tab-btn" onclick="switchTab('limit',this)">Limit Breach</button>
+          <button class="tab-btn" onclick="switchTab('login',this)">Login Attempts</button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Account No</th>
+              <th>Account Type</th>
+              <th>Suspension Reason</th>
+              <th>Suspended On</th>
+              <th>Suspended By</th>
+              <th>Duration</th>
+              <th style="text-align:center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pag-bar">
+        <span class="pag-info" id="pag-info">Loading...</span>
+        <div class="pag-controls" id="pag-controls"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REINSTATE CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="reinstate-modal">
+  <div class="modal-card">
+    <div class="modal-icon" style="background:var(--green-soft)">
+      <span class="material-symbols-outlined" style="color:var(--green);font-size:28px">how_to_reg</span>
+    </div>
+    <div class="modal-title">Reinstate Account</div>
+    <div class="modal-text" id="reinstate-modal-text">You are reinstating this customer account. The account status will be returned to <strong>Active</strong> immediately and the customer will regain full access to all banking features.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" id="reinstate-confirm-btn" onclick="confirmReinstate()">
+        <span class="material-symbols-outlined" style="font-size:15px">check_circle</span>
+        Reinstate Account
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ── THEME ── */
+const THEME_KEY='finzo-admin-theme';
+function initTheme(){
+  const saved=localStorage.getItem(THEME_KEY);
+  const dark=saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(dark)document.documentElement.classList.add('dark');
+  updateThemeIcons();
+}
+function toggleTheme(){
+  const dark=document.documentElement.classList.toggle('dark');
+  localStorage.setItem(THEME_KEY,dark?'dark':'light');
+  updateThemeIcons();
+}
+function updateThemeIcons(){
+  const dark=document.documentElement.classList.contains('dark');
+  ['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});
+  const lbl=document.getElementById('theme-label');
+  if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';
+}
+initTheme();
+
+/* ── DATA ── */
+const allData=[
+  {id:'01',name:'Rahul Kumar',email:'rahul.kumar@gmail.com',initials:'RK',accNo:'FNZ20260001',accType:'Savings',reason:'Suspicious Activity',date:'10 Apr 2026',by:'Arjun Sharma (Admin)',duration:'8 days',tabKey:'suspicious'},
+  {id:'02',name:'Sneha Patel',email:'sneha.patel@gmail.com',initials:'SP',accNo:'FNZ20260009',accType:'Current',reason:'Daily Limit Breach',date:'08 Apr 2026',by:'Arjun Sharma (Admin)',duration:'10 days',tabKey:'limit'},
+  {id:'03',name:'Vikram Gupta',email:'vikram.gupta@gmail.com',initials:'VG',accNo:'FNZ20260005',accType:'Savings',reason:'Failed Login Attempts',date:'05 Apr 2026',by:'System (Auto)',duration:'13 days',tabKey:'login'},
+  {id:'04',name:'Mohan Kumar',email:'mohan.kumar@gmail.com',initials:'MK',accNo:'FNZ20260006',accType:'Savings',reason:'Policy Violation',date:'01 Apr 2026',by:'Priya Singh (Admin)',duration:'17 days',tabKey:'suspicious'},
+  {id:'05',name:'Nisha Rao',email:'nisha.rao@gmail.com',initials:'NR',accNo:'FNZ20260007',accType:'Current',reason:'Manual Review',date:'28 Mar 2026',by:'Arjun Sharma (Admin)',duration:'21 days',tabKey:'suspicious'},
+];
+
+const ROWS_PP=5;
+let currentPage=1,activeTab='all',pendingReinstateId=null;
+let filtered=[...allData];
+
+function reasonBadge(r){
+  const map={'Suspicious Activity':'badge-red','Daily Limit Breach':'badge-amber','Failed Login Attempts':'badge-amber','Policy Violation':'badge-red','Manual Review':'badge-blue'};
+  return `<span class="badge ${map[r]||'badge-gray'}">${r}</span>`;
+}
+function switchTab(key,el){
+  activeTab=key; currentPage=1;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
+}
+function resetFilters(){
+  document.getElementById('search-input').value='';
+  document.getElementById('reason-filter').value='';
+  document.getElementById('date-filter').value='';
+  activeTab='all'; currentPage=1;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  renderTable();
+}
+function renderTable(){
+  const search=document.getElementById('search-input').value.toLowerCase();
+  const reason=document.getElementById('reason-filter').value;
+  const date=document.getElementById('date-filter').value;
+  filtered=allData.filter(r=>{
+    if(activeTab!=='all'){
+      if(activeTab==='suspicious'&&r.tabKey!=='suspicious')return false;
+      if(activeTab==='limit'&&r.tabKey!=='limit')return false;
+      if(activeTab==='login'&&r.tabKey!=='login')return false;
+    }
+    if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.accNo.toLowerCase().includes(search))return false;
+    if(reason&&r.reason!==reason)return false;
+    if(date&&!r.date.includes(date))return false;
+    return true;
+  });
+  const total=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(total/ROWS_PP));
+  if(currentPage>totalPages)currentPage=totalPages;
+  const slice=filtered.slice((currentPage-1)*ROWS_PP,currentPage*ROWS_PP);
+  const tbody=document.getElementById('table-body');
+  if(!slice.length){
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
+  } else {
+    tbody.innerHTML=slice.map((r,i)=>`
+      <tr>
+        <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*ROWS_PP+i+1).padStart(2,'0')}</td>
+        <td>
+          <div class="user-cell">
+            <div class="avatar">${r.initials}</div>
+            <div>
+              <div class="user-name">${r.name}</div>
+              <div class="user-email">${r.email}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="mono">${r.accNo}</span></td>
+        <td><span class="badge ${r.accType==='Savings'?'badge-green':'badge-blue'}">${r.accType}</span></td>
+        <td>${reasonBadge(r.reason)}</td>
+        <td style="font-size:12px;font-weight:600">${r.date}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${r.by}</td>
+        <td><span class="badge badge-gray">${r.duration}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+            <a href="admin-suspended-user-detail.html?id=${r.id}" class="btn btn-ghost btn-sm">
+              <span class="material-symbols-outlined" style="font-size:14px">visibility</span>View
+            </a>
+            <button class="btn btn-success btn-sm" onclick="openReinstate('${r.id}','${r.name}')">
+              <span class="material-symbols-outlined" style="font-size:14px">lock_open</span>Reinstate
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+  const s=(currentPage-1)*ROWS_PP+1,e=Math.min(currentPage*ROWS_PP,total);
+  document.getElementById('pag-info').textContent=total?`Showing ${s}–${e} of ${total} suspended accounts`:'No results found';
+  const pc=document.getElementById('pag-controls');
+  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Prev</button>`;
+  for(let i=1;i<=Math.min(totalPages,5);i++)pc.innerHTML+=`<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
+  pc.innerHTML+=`<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
+}
+function goPage(d){currentPage=Math.max(1,Math.min(Math.ceil(filtered.length/ROWS_PP),currentPage+d));renderTable();}
+
+/* ── REINSTATE ── */
+function openReinstate(id,name){
+  pendingReinstateId=id;
+  document.getElementById('reinstate-modal-text').innerHTML=`You are reinstating <strong>${name}</strong>'s account. Their status will immediately return to <strong>Active</strong> and they will regain full access to all Finzo banking features.`;
+  document.getElementById('reinstate-modal').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('reinstate-modal').classList.add('hidden');}
+function confirmReinstate(){
+  const btn=document.getElementById('reinstate-confirm-btn');
+  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...';
+  // PHP_BACKEND: POST /api/admin/reinstate-user.php {user_id, action:'reinstate', new_status:'active'}
+  setTimeout(()=>{
+    closeModal();
+    const idx=allData.findIndex(r=>r.id===pendingReinstateId);
+    if(idx>-1)allData.splice(idx,1);
+    btn.disabled=false;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Account';
+    renderTable();
+    showToast('Account reinstated successfully. Status set to Active.','success');
+  },1500);
+}
+
+/* ── TOAST ── */
+function showToast(msg,type='success'){
+  const wrap=document.getElementById('toast-wrap');
+  const t=document.createElement('div');
+  const icons={success:'check_circle',error:'cancel',info:'info'};
+  const colors={success:'#10b981',error:'#f43f5e',info:'#3b82f6'};
+  t.className=`toast toast-${type}`;
+  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(16px)';t.style.transition='.3s';setTimeout(()=>t.remove(),300)},3500);
+}
+
+renderTable();
+</script>
+</body>
+</html>

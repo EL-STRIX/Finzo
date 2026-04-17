@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Suspension Detail | Finzo Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#1a3c5e;--red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);
+  --amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);
+  --green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);
+  --blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);
+  --bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;
+  --text-primary:#0f172a;--text-secondary:#64748b;--text-placeholder:#94a3b8;
+  --border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --sidebar-width:248px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+  --transition:all 0.2s ease;
+}
+.dark{
+  --bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);
+  --text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;
+  --border:rgba(255,255,255,0.06);--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --red-soft:rgba(244,63,94,0.12);--amber-soft:rgba(245,158,11,0.12);--green-soft:rgba(16,185,129,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-sidebar);display:flex;flex-direction:column;z-index:100;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-brand{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.brand-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;}
+.brand-sub{font-size:9px;font-weight:800;letter-spacing:.2em;color:#10b981;margin-top:2px;text-transform:uppercase;}
+.nav-section{font-size:9px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,0.28);padding:16px 20px 6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;margin:2px 8px;border-radius:var(--radius-md);font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);text-decoration:none;transition:var(--transition);border:1px solid transparent;cursor:pointer;background:none;width:calc(100% - 16px);text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#e2e8f0;}
+.nav-item.active{background:rgba(26,60,94,0.5);color:#fff;border-color:rgba(26,60,94,0.7);}
+.nav-item.danger{color:rgba(244,63,94,0.7);}
+.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
+.nav-icon{font-size:18px;flex-shrink:0;}
+.nav-badge-warn{margin-left:auto;background:rgba(244,63,94,0.12);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
+.nav-badge{margin-left:auto;background:rgba(244,63,94,0.15);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
+.sidebar-bottom{padding-bottom:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;flex-shrink:0;}
+.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.topbar-left .eyebrow{font-size:10px;font-weight:800;letter-spacing:.18em;color:var(--red);text-transform:uppercase;}
+.topbar-left .title{font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;transition:var(--transition);}
+.icon-btn:hover{background:var(--bg-input);color:var(--text-primary);}
+.page-content{padding:28px 32px;flex:1;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);}
+.card-p{padding:24px;}
+.section-label{font-size:9px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:14px;}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.info-label{font-size:12px;font-weight:600;color:var(--text-secondary);}
+.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;max-width:60%;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
+.badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red-border);}
+.badge-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border);}
+.badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green-border);}
+.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:rgba(59,130,246,.2);}
+.badge-gray{background:rgba(100,116,139,.08);color:#64748b;border-color:rgba(100,116,139,.2);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 20px;height:44px;border-radius:var(--radius-md);font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(26,60,94,0.25);}
+.btn-primary:hover{background:#0f2a44;transform:translateY(-1px);}
+.btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}
+.btn-success:hover{background:#059669;transform:translateY(-1px);}
+.btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text-primary);}
+.btn-lg{height:50px;font-size:14px;border-radius:var(--radius-lg);}
+.btn .material-symbols-outlined{font-size:16px;}
+.mono{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;}
+.avatar-lg{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;background:rgba(244,63,94,0.1);color:var(--red);}
+.dark .avatar-lg{background:rgba(244,63,94,0.15);}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:14px;}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tl-line{width:2px;flex:1;min-height:24px;background:var(--border);margin:4px 0;}
+.tl-content{padding-bottom:20px;flex:1;}
+.tl-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.tl-sub{font-size:12px;color:var(--text-secondary);line-height:1.5;}
+.tl-time{font-size:10px;color:var(--text-placeholder);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:5px;}
+.reason-box{background:var(--red-soft);border:1.5px solid var(--red-border);border-radius:var(--radius-lg);padding:20px;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
+.modal-overlay.hidden{display:none!important;}
+.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
+.modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.modal-title{font-size:20px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.7;margin-bottom:24px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;height:46px;}
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:280px;animation:slideInR .3s ease;}
+.toast-success{border-left:4px solid var(--green);}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInR{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .3s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.topbar{padding:0 16px;}.page-content{padding:16px;}.two-col{grid-template-columns:1fr!important;}}
+</style>
+</head>
+<body>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-name">Finzo</div>
+    <div class="brand-sub">Admin Console</div>
+  </div>
+  <div style="flex:1;padding-top:8px;">
+    <div class="nav-section">Main</div>
+    <a href="admin-dashboard.html" class="nav-item"><span class="material-symbols-outlined nav-icon">analytics</span>Overview</a>
+    <a href="admin-pending-approvals.html" class="nav-item"><span class="material-symbols-outlined nav-icon">rule</span><span style="flex:1">Pending Approvals</span><span class="nav-badge">03</span></a>
+    <a href="admin-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">group</span>User Management</a>
+    <a href="admin-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">badge</span>Staff Management</a>
+    <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
+    <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
+    <a href="admin-suspended-users.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge-warn">2</span></a>
+    <a href="admin-suspended-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">work_off</span>Suspended Staff</a>
+    <div class="nav-section">System</div>
+    <a href="admin-audit-log.html" class="nav-item"><span class="material-symbols-outlined nav-icon">manage_search</span>Audit Logs</a>
+    <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
+    <a href="admin-interest.html" class="nav-item"><span class="material-symbols-outlined nav-icon">percent</span>Interest Management</a>
+    <div class="nav-section">Account</div>
+  </div>
+  <div class="sidebar-bottom">
+    <a href="admin-profile.html" class="nav-item"><span class="material-symbols-outlined nav-icon">account_circle</span>Admin Profile</a>
+    <button class="nav-item" onclick="toggleTheme()"><span class="material-symbols-outlined nav-icon" id="theme-icon">dark_mode</span><span id="theme-label">Dark Mode</span></button>
+    <a href="../../views/auth/login.html" class="nav-item danger"><span class="material-symbols-outlined nav-icon">logout</span>Logout</a>
+  </div>
+</nav>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="eyebrow">Suspension Detail</div>
+      <div class="title">User Suspension Record</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a href="admin-suspended-users.html" class="btn btn-ghost" style="height:38px;font-size:12px">
+        <span class="material-symbols-outlined" style="font-size:16px">arrow_back</span>Back to List
+      </a>
+      <button class="icon-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <button class="icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" id="theme-icon2">dark_mode</span></button>
+    </div>
+  </header>
+
+  <div class="page-content">
+
+    <!-- BREADCRUMB -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:12px;color:var(--text-secondary)">
+      <a href="admin-suspended-users.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600">Suspended Users</a>
+      <span class="material-symbols-outlined" style="font-size:14px">chevron_right</span>
+      <span style="color:var(--text-primary);font-weight:700" id="bc-name">Rahul Kumar</span>
+    </div>
+
+    <!-- STATUS BANNER -->
+    <div style="background:var(--red-soft);border:1.5px solid var(--red-border);border-radius:var(--radius-lg);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(244,63,94,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <span class="material-symbols-outlined" style="color:var(--red);font-size:20px">person_off</span>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:var(--text-primary)">This account is currently <span style="color:var(--red)">Suspended</span></div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">The customer cannot access any banking features until this suspension is removed.</div>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="openReinstateModal()">
+        <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
+        Remove Suspension
+      </button>
+    </div>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:20px" class="two-col">
+
+      <!-- LEFT -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- CUSTOMER PROFILE -->
+        <div class="card card-p">
+          <div class="section-label">Customer Information</div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+            <div class="avatar-lg" id="detail-avatar">RK</div>
+            <div>
+              <div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="detail-name">Rahul Kumar</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px" id="detail-email">rahul.kumar@gmail.com</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+                <span class="badge badge-red">Suspended</span>
+                <span class="badge badge-green" id="detail-acc-type">Savings</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="detail-acc-no">FNZ20260001</span></div>
+          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="detail-phone">+91 98765 43210</span></div>
+          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="detail-type">Savings Account</span></div>
+          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value">12 Apr 2026</span></div>
+          <div class="info-row"><span class="info-label">Balance (Frozen)</span><span class="info-value" style="color:var(--red)" id="detail-balance">₹42,080.00</span></div>
+        </div>
+
+        <!-- SUSPENSION REASON -->
+        <div class="card card-p">
+          <div class="section-label">Suspension Details</div>
+          <div class="reason-box" style="margin-bottom:18px">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span class="material-symbols-outlined" style="color:var(--red);font-size:22px;flex-shrink:0;margin-top:2px">warning</span>
+              <div>
+                <div style="font-size:12px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Suspension Reason</div>
+                <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:8px" id="detail-reason">Suspicious Activity</div>
+                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6" id="detail-reason-detail">Multiple large transactions were detected in a short period that are inconsistent with the customer's normal banking behaviour and income profile. The account was flagged by the system and manually reviewed by the admin team.</div>
+              </div>
+            </div>
+          </div>
+          <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="detail-by">Arjun Sharma (Admin)</span></div>
+          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date">10 Apr 2026</span></div>
+          <div class="info-row"><span class="info-label">Suspension Time</span><span class="info-value">02:30 PM IST</span></div>
+          <div class="info-row"><span class="info-label">Days Suspended</span><span class="info-value"><span class="badge badge-amber" id="detail-duration">8 days</span></span></div>
+          <div class="info-row" style="border-bottom:none"><span class="info-label">Audit Log Reference</span><span class="info-value mono">AUD20260841</span></div>
+        </div>
+
+        <!-- RECENT TRANSACTIONS BEFORE SUSPENSION -->
+        <div class="card">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--text-primary)">Recent Transactions</div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Last 3 transactions before suspension</div>
+            </div>
+            <a href="admin-transactions.html" style="font-size:12px;font-weight:700;color:var(--primary);text-decoration:none">View All →</a>
+          </div>
+          <div style="padding:0 4px">
+            <table style="width:100%;border-collapse:collapse">
+              <thead><tr style="background:var(--bg-input)">
+                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Date</th>
+                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Description</th>
+                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Type</th>
+                <th style="padding:10px 16px;text-align:right;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Amount</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--border)">
+                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">09 Apr 2026</td>
+                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Transfer to FNZ20260099</td>
+                  <td style="padding:12px 16px"><span class="badge badge-red">Debit</span></td>
+                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--red)">-₹25,000</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border)">
+                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">09 Apr 2026</td>
+                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Transfer to FNZ20260088</td>
+                  <td style="padding:12px 16px"><span class="badge badge-red">Debit</span></td>
+                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--red)">-₹18,500</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">08 Apr 2026</td>
+                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Cash Deposit</td>
+                  <td style="padding:12px 16px"><span class="badge badge-green">Credit</span></td>
+                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--green)">+₹85,580</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- QUICK STATS -->
+        <div class="card card-p">
+          <div class="section-label">Account Snapshot</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;text-align:center">
+              <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Frozen Balance</div>
+              <div style="font-size:24px;font-weight:800;color:var(--red)" id="snap-balance">₹42,080.00</div>
+              <div style="font-size:10px;color:var(--text-placeholder);margin-top:4px">Cannot be transacted until reinstated</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
+                <div style="font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Total Txns</div>
+                <div style="font-size:18px;font-weight:800;color:var(--text-primary)">42</div>
+              </div>
+              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
+                <div style="font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Days Active</div>
+                <div style="font-size:18px;font-weight:800;color:var(--text-primary)">28</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUSPENSION TIMELINE -->
+        <div class="card card-p">
+          <div class="section-label">Suspension Timeline</div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot-wrap">
+                <div class="tl-dot" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--green)">how_to_reg</span></div>
+                <div class="tl-line"></div>
+              </div>
+              <div class="tl-content">
+                <div class="tl-title">Account Activated</div>
+                <div class="tl-sub">Account FNZ20260001 approved and activated</div>
+                <div class="tl-time">12 Apr 2026 — 10:30 AM</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot-wrap">
+                <div class="tl-dot" style="background:var(--amber-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--amber)">warning</span></div>
+                <div class="tl-line"></div>
+              </div>
+              <div class="tl-content">
+                <div class="tl-title">Suspicious Activity Flagged</div>
+                <div class="tl-sub">Large unusual transactions detected on 09 Apr 2026</div>
+                <div class="tl-time">09 Apr 2026 — 11:45 PM</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot-wrap">
+                <div class="tl-dot" style="background:var(--red-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--red)">person_off</span></div>
+              </div>
+              <div class="tl-content" style="padding-bottom:0">
+                <div class="tl-title" style="color:var(--red)">Account Suspended</div>
+                <div class="tl-sub">Manually suspended by Arjun Sharma (Admin)</div>
+                <div class="tl-time">10 Apr 2026 — 02:30 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN NOTES -->
+        <div class="card card-p">
+          <div class="section-label">Admin Notes</div>
+          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.7">
+            Customer's banking pattern suddenly changed with 3 large transfers in under 24 hours. All recipients are unknown accounts not in the beneficiary list. Account flagged for manual review pending customer verification.
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-placeholder);font-weight:600">— Arjun Sharma (Admin) · 10 Apr 2026</div>
+        </div>
+
+        <!-- ACTION CARD -->
+        <div class="card card-p" style="background:var(--green-soft);border:1.5px solid var(--green-border)">
+          <div style="text-align:center">
+            <span class="material-symbols-outlined" style="font-size:36px;color:var(--green);display:block;margin-bottom:10px">lock_open</span>
+            <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Remove Suspension</div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:18px">Once removed, the account returns to <strong>Active</strong> status immediately and the customer regains full banking access.</div>
+            <button class="btn btn-success btn-lg" style="width:100%" onclick="openReinstateModal()">
+              <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
+              Reinstate Account
+            </button>
+            <div style="margin-top:10px;font-size:11px;color:var(--text-secondary)">This action is recorded in the Audit Log</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REINSTATE MODAL -->
+<div class="modal-overlay hidden" id="reinstate-modal">
+  <div class="modal-card">
+    <div class="modal-icon" style="background:var(--green-soft)">
+      <span class="material-symbols-outlined" style="color:var(--green);font-size:30px">lock_open</span>
+    </div>
+    <div class="modal-title">Confirm Reinstatement</div>
+    <div class="modal-text">You are removing the suspension from <strong id="modal-name">Rahul Kumar</strong>'s account <strong id="modal-acc">FNZ20260001</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
+    <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;margin-bottom:20px;font-size:12px;color:var(--text-secondary);text-align:center">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px">info</span>
+      This action will be recorded in the Audit Log.
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">
+        <span class="material-symbols-outlined" style="font-size:16px">check</span>
+        Confirm & Reinstate
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ── THEME ── */
+function initTheme(){const s=localStorage.getItem('finzo-admin-theme');const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(dark)document.documentElement.classList.add('dark');updateIcons();}
+function toggleTheme(){const dark=document.documentElement.classList.toggle('dark');localStorage.setItem('finzo-admin-theme',dark?'dark':'light');updateIcons();}
+function updateIcons(){const dark=document.documentElement.classList.contains('dark');['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});const lbl=document.getElementById('theme-label');if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';}
+initTheme();
+
+/* ── LOAD DATA from URL param ── */
+// PHP_BACKEND: GET /api/admin/suspension-detail.php?user_id=X
+const urlParams=new URLSearchParams(window.location.search);
+const suspId=urlParams.get('id')||'01';
+const suspData={
+  '01':{name:'Rahul Kumar',email:'rahul.kumar@gmail.com',initials:'RK',accNo:'FNZ20260001',accType:'Savings',phone:'+91 98765 43210',balance:'₹42,080.00',reason:'Suspicious Activity',reasonDetail:'Multiple large transactions were detected in a short period inconsistent with the customer\'s normal banking behaviour and income profile. The account was flagged by the system and manually reviewed.',by:'Arjun Sharma (Admin)',date:'10 Apr 2026',duration:'8 days'},
+  '02':{name:'Sneha Patel',email:'sneha.patel@gmail.com',initials:'SP',accNo:'FNZ20260009',accType:'Current',phone:'+91 88776 65544',balance:'₹8,200.00',reason:'Daily Limit Breach',reasonDetail:'Customer exceeded the ₹10,000 daily transfer limit on multiple consecutive days. Account was automatically flagged and suspended by the system for admin review.',by:'System (Auto)',date:'08 Apr 2026',duration:'10 days'},
+  '03':{name:'Vikram Gupta',email:'vikram.gupta@gmail.com',initials:'VG',accNo:'FNZ20260005',accType:'Savings',phone:'+91 55443 32211',balance:'₹3,150.00',reason:'Failed Login Attempts',reasonDetail:'Account was automatically locked after 5 consecutive failed login attempts in under 10 minutes. This is a standard security measure to prevent unauthorised access.',by:'System (Auto)',date:'05 Apr 2026',duration:'13 days'},
+};
+const d=suspData[suspId]||suspData['01'];
+document.getElementById('bc-name').textContent=d.name;
+document.getElementById('detail-avatar').textContent=d.initials;
+document.getElementById('detail-name').textContent=d.name;
+document.getElementById('detail-email').textContent=d.email;
+document.getElementById('detail-acc-no').textContent=d.accNo;
+document.getElementById('detail-phone').textContent=d.phone;
+document.getElementById('detail-type').textContent=d.accType+' Account';
+document.getElementById('detail-acc-type').textContent=d.accType;
+document.getElementById('detail-balance').textContent=d.balance;
+document.getElementById('snap-balance').textContent=d.balance;
+document.getElementById('detail-reason').textContent=d.reason;
+document.getElementById('detail-reason-detail').textContent=d.reasonDetail;
+document.getElementById('detail-by').textContent=d.by;
+document.getElementById('detail-date').textContent=d.date;
+document.getElementById('detail-duration').textContent=d.duration;
+document.getElementById('modal-name').textContent=d.name;
+document.getElementById('modal-acc').textContent=d.accNo;
+
+/* ── MODAL ── */
+function openReinstateModal(){document.getElementById('reinstate-modal').classList.remove('hidden');}
+function closeModal(){document.getElementById('reinstate-modal').classList.add('hidden');}
+
+function processReinstate(){
+  const btn=document.getElementById('confirm-btn');
+  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...';
+  // PHP_BACKEND: POST /api/admin/reinstate-user.php {user_id, new_status:'active'}
+  // Also: INSERT INTO audit_log (action:'REINSTATE', entity_id, admin_id, description)
+  setTimeout(()=>{
+    closeModal();
+    showToast('Account reinstated. '+d.name+' is now Active.','success');
+    setTimeout(()=>{window.location.href='admin-suspended-users.html';},2000);
+  },1800);
+}
+
+function showToast(msg,type='success'){
+  const wrap=document.getElementById('toast-wrap');
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  const colors={success:'#10b981',error:'#f43f5e'};
+  const icons={success:'check_circle',error:'cancel'};
+  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3500);
+}
+</script>
+</body>
+</html>
