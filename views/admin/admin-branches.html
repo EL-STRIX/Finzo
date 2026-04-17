@@ -668,21 +668,47 @@
   <!-- TOGGLE/DELETE CONFIRM MODALS -->
   <div id="confirmModal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
      <div class="absolute inset-0 bg-primary/60 backdrop-blur-md"></div>
-     <div class="admin-card w-full max-w-sm relative z-10 p-8 text-center animate-modal-enter">
-        <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-amber-50 text-amber-500">
-           <span class="material-symbols-outlined text-4xl">warning</span>
+     <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
+        <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-red-50 text-red-500">
+           <span class="material-symbols-outlined text-4xl">close</span>
         </div>
-        <h3 id="confirm-title" class="font-headline text-xl font-extrabold mb-2">Deactivate Branch</h3>
-        <p id="confirm-text" class="text-sm opacity-60 leading-relaxed mb-8">Are you sure you want to proceed with <span class="font-bold text-black" id="target-branch-name">Barasat</span>?</p>
+        <h3 id="confirm-title" class="font-headline text-xl font-extrabold mb-2">Delete Branch</h3>
+        <p id="confirm-text" class="text-sm opacity-60 leading-relaxed mb-6">You are permanently deleting <span class="font-bold text-black" id="target-branch-name">Barasat</span>. This action cannot be undone.</p>
         
-        <div id="confirm-input-area" class="hidden mb-6">
-           <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 text-left">Type branch name to confirm</label>
-           <input type="text" id="confirm-branch-name-input" placeholder="Enter branch name" class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl font-bold">
+        <div id="confirm-input-area" class="hidden space-y-5 text-left mb-8">
+           <div>
+              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Confirm Branch Name *</label>
+              <input type="text" id="confirm-branch-name-input" placeholder="Type name here" class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl font-bold">
+           </div>
+           
+           <div>
+              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Admin Security Password *</label>
+              <input type="password" id="confirm-admin-pw" placeholder="Enter admin password" class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl font-bold">
+           </div>
+
+           <div>
+              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Official Closure Document *</label>
+              <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-center">
+                 <span class="material-symbols-outlined text-slate-400 mb-1">upload_file</span>
+                 <div class="text-[10px] font-bold text-slate-500 uppercase">Click to upload document</div>
+                 <div class="text-[9px] opacity-40">PDF, JPG or PNG (Max 5MB)</div>
+              </div>
+              <input type="file" id="delete-file-input" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
+              <div id="delete-file-preview" class="hidden flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
+                 <span class="material-symbols-outlined text-blue-500">description</span>
+                 <div class="flex-1 min-w-0">
+                    <div id="delete-file-name" class="text-[11px] font-bold truncate">document.pdf</div>
+                 </div>
+                 <button type="button" id="remove-delete-file" class="p-1.5 hover:bg-white dark:hover:bg-surface-container rounded-lg transition-colors text-red-500">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                 </button>
+              </div>
+           </div>
         </div>
 
         <div class="flex flex-col gap-3">
-           <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3">Confirm Action</button>
-           <button onclick="$('#confirmModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary w-full justify-center !py-3">Cancel</button>
+           <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3 bg-red-500 !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
+           <button onclick="$('#confirmModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
         </div>
      </div>
   </div>
@@ -882,11 +908,24 @@
       };
 
       let branchToDelete = null;
+      let currentDeleteBranchName = '';
+      let isDeleteFileUploaded = false;
+
       window.deleteBranch = (name, code) => {
         if (name.toLowerCase() === 'barasat') {
           alert("Unauthorized Action: The main branch 'Barasat' is protected by the system and cannot be deleted.");
           return;
         }
+        
+        currentDeleteBranchName = name;
+        isDeleteFileUploaded = false;
+
+        // Reset fields
+        $('#confirm-branch-name-input').val('');
+        $('#confirm-admin-pw').val('');
+        $('#delete-file-input').val('');
+        $('#delete-upload-trigger').removeClass('hidden');
+        $('#delete-file-preview').addClass('hidden');
         
         // Find the row to delete later
         $('#branches-table-body tr').each(function() {
@@ -896,33 +935,59 @@
         });
 
         $('#target-branch-name').text(`${name} (${code})`);
-        $('#confirm-title').text('Delete Branch');
-        $('#confirm-text').text(`You are permanently deleting ${name}. This action cannot be undone.`);
-        $('#confirm-btn-action').text('Delete Branch').css('background', '#ef4444').prop('disabled', true).css('opacity', '0.5');
-        $('#confirm-icon-box').css('background', 'rgba(239,68,68,0.1)').css('color', '#ef4444');
-        $('#confirm-icon-box span').text('close');
         $('#confirm-input-area').removeClass('hidden');
-        $('#confirm-branch-name-input').val('');
-        
-        $('#confirm-branch-name-input').off('input').on('input', function() {
-           if ($(this).val().toLowerCase() === name.toLowerCase()) {
-             $('#confirm-btn-action').prop('disabled', false).css('opacity', '1');
-           } else {
-             $('#confirm-btn-action').prop('disabled', true).css('opacity', '0.5');
-           }
-        });
-        
+        $('#confirm-btn-action').prop('disabled', true).css('opacity', '0.5').css('cursor', 'not-allowed');
         $('#confirmModal').removeClass('hidden').addClass('flex');
       };
 
+      // Deletion Validation Logic
+      function validateDeletion() {
+        const nameMatch = $('#confirm-branch-name-input').val().toLowerCase() === currentDeleteBranchName.toLowerCase();
+        const pwEntered = $('#confirm-admin-pw').val().length > 0;
+        const fileUploaded = isDeleteFileUploaded;
+
+        if (nameMatch && pwEntered && fileUploaded) {
+          $('#confirm-btn-action').prop('disabled', false).css('opacity', '1').css('cursor', 'pointer');
+        } else {
+          $('#confirm-btn-action').prop('disabled', true).css('opacity', '0.5').css('cursor', 'not-allowed');
+        }
+      }
+
+      $('#confirm-branch-name-input, #confirm-admin-pw').on('input', validateDeletion);
+
+      // Deletion File Handler
+      $('#delete-upload-trigger').on('click', () => $('#delete-file-input').click());
+      $('#delete-file-input').on('change', function() {
+        if (this.files && this.files[0]) {
+          $('#delete-file-name').text(this.files[0].name);
+          $('#delete-upload-trigger').addClass('hidden');
+          $('#delete-file-preview').removeClass('hidden');
+          isDeleteFileUploaded = true;
+          validateDeletion();
+        }
+      });
+      $('#remove-delete-file').on('click', () => {
+        $('#delete-file-input').val('');
+        $('#delete-upload-trigger').removeClass('hidden');
+        $('#delete-file-preview').addClass('hidden');
+        isDeleteFileUploaded = false;
+        validateDeletion();
+      });
+
       $('#confirm-btn-action').on('click', function() {
         if (branchToDelete) {
-          branchToDelete.fadeOut(300, function() {
-            $(this).remove();
-            alert('✅ Branch deleted successfully!');
-          });
-          $('#confirmModal').addClass('hidden').removeClass('flex');
-          branchToDelete = null;
+          const btn = $(this);
+          btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin" style="font-size:16px;margin-right:8px;">sync</span> Processing Deletion...');
+          
+          setTimeout(() => {
+            branchToDelete.fadeOut(300, function() {
+              $(this).remove();
+              alert('✅ Administrative Action Complete: Branch has been permanently deleted.');
+            });
+            $('#confirmModal').addClass('hidden').removeClass('flex');
+            branchToDelete = null;
+            btn.html('Permanently Delete Branch');
+          }, 1500);
         }
       });
 
