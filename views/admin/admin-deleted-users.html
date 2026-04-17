@@ -106,7 +106,6 @@
         <div>
           <div class="text-[10px] font-bold tracking-[0.2em] opacity-60 uppercase">SOFT DELETE MANAGEMENT</div>
           <div class="font-headline text-xl sm:text-3xl font-extrabold tracking-tight mt-0.5">Deleted Users</div>
-          <div class="text-xs sm:text-sm text-slate-500 font-medium hov-opacity">View and restore soft deleted user accounts</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -115,58 +114,7 @@
     </div>
 
     <div class="p-4 sm:p-6 lg:p-8">
-      <!-- INFO BANNER -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-6 mb-10 flex gap-5 items-start animate-fade-in">
-        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0 shadow-sm">
-          <span class="material-symbols-outlined">info</span>
-        </div>
-        <div>
-          <h4 class="font-bold text-blue-900 dark:text-blue-300 mb-1">Soft Delete Policy</h4>
-          <p class="text-sm text-blue-800/70 dark:text-blue-400/70 leading-relaxed max-w-3xl">
-            Soft deleted users are not permanently removed from the database. All their account data, transaction history and documents are fully preserved and can be recovered by the admin at any time.
-          </p>
-        </div>
-      </div>
 
-      <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="admin-stat-card flex items-start gap-5">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style="background:#fff7ed; color:#f59e0b;">
-            <span class="material-symbols-outlined">person_remove</span>
-          </div>
-          <div>
-            <div class="admin-stat-label">TOTAL DELETED</div>
-            <div class="admin-stat-value">5 <span class="admin-stat-delta neutral" style="background:#fff3cd; color:#b07d00;">Recoverable</span></div>
-          </div>
-        </div>
-        <div class="admin-stat-card flex items-start gap-5">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style="background:#eff6ff; color:#3b82f6;">
-            <span class="material-symbols-outlined">calendar_month</span>
-          </div>
-          <div>
-            <div class="admin-stat-label">DELETED THIS MONTH</div>
-            <div class="admin-stat-value">2 <span class="admin-stat-delta neutral" style="background:#e0f2fe; color:#0369a1;">Apr 2026</span></div>
-          </div>
-        </div>
-        <div class="admin-stat-card flex items-start gap-5">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style="background:#f0fdf4; color:#22c55e;">
-            <span class="material-symbols-outlined">person_add</span>
-          </div>
-          <div>
-            <div class="admin-stat-label">RECOVERED THIS MONTH</div>
-            <div class="admin-stat-value">1 <span class="admin-stat-delta positive">Restored</span></div>
-          </div>
-        </div>
-        <div class="admin-stat-card flex items-start gap-5">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style="background:#f8fafc; color:#64748b;">
-            <span class="material-symbols-outlined">admin_panel_settings</span>
-          </div>
-          <div>
-            <div class="admin-stat-label">DELETED BY ADMIN</div>
-            <div class="admin-stat-value">4 <span class="admin-stat-delta neutral" style="background:#f1f3f5; color:#6c757d;">Manual</span></div>
-          </div>
-        </div>
-      </div>
 
       <!-- FILTER TABS -->
       <div id="status-tabs" class="flex flex-wrap items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-full sm:w-auto">
@@ -201,23 +149,7 @@
              </div>
           </div>
 
-          <!-- Deleted By -->
-          <div class="flex flex-col w-full sm:w-auto">
-            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">DELETED BY</label>
-            <div class="finzo-dropdown" id="filter-deleted-by-dropdown">
-              <input type="hidden" id="filter-deleted-by" value="all">
-              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[140px]">
-                <span class="material-symbols-outlined text-lg opacity-60">person</span>
-                <span class="dropdown-label font-bold text-xs">All</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All</div>
-                <div class="finzo-dropdown-option" data-value="admin">Admin</div>
-                <div class="finzo-dropdown-option" data-value="system">System</div>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Buttons -->
           <div class="flex gap-2 w-full sm:w-auto">
@@ -355,7 +287,7 @@
                 <th>PHONE</th>
                 <th>ACCOUNT NO</th>
                 <th>ACCOUNT TYPE</th>
-                <th>DELETED BY</th>
+
                 <th>DELETED ON</th>
                 <th>REASON</th>
                 <th style="text-align:right;">ACTIONS</th>
@@ -376,7 +308,7 @@
                 <td><span class="du-phone">+91 99887 76655</span></td>
                 <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260010</span></td>
                 <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-                <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+
                 <td><span class="du-date-main">05 Apr 2026 — 11:30 AM</span></td>
                 <td>
                   <div class="du-reason">
@@ -387,7 +319,7 @@
                 <td>
                   <div style="display:flex;justify-content:flex-end;gap:8px;">
                     <button onclick="openRecoverModal('Mohan Kumar','FNZ20260010')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Row 01')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                    <button onclick="openDetailsModal('Mohan Kumar','FNZ20260010','mohan.kumar@gmail.com','+91 99887 76655','Savings','15 Jan 2026','₹5,000.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
                   </div>
                 </td>
               </tr>
@@ -405,7 +337,7 @@
                 <td><span class="du-phone">+91 88776 65544</span></td>
                 <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260015</span></td>
                 <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
-                <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+
                 <td><span class="du-date-main">03 Apr 2026 — 02:15 PM</span></td>
                 <td>
                   <div class="du-reason">
@@ -416,7 +348,7 @@
                 <td>
                   <div style="display:flex;justify-content:flex-end;gap:8px;">
                     <button onclick="openRecoverModal('Sneha Patel','FNZ20260015')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Row 02')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                    <button onclick="openDetailsModal('Sneha Patel','FNZ20260015','sneha.patel@gmail.com','+91 88776 65544','Current','02 Feb 2026','₹12,450.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
                   </div>
                 </td>
               </tr>
@@ -434,7 +366,7 @@
                 <td><span class="du-phone">+91 77665 54433</span></td>
                 <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260018</span></td>
                 <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-                <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+
                 <td><span class="du-date-main">01 Apr 2026 — 10:00 AM</span></td>
                 <td>
                   <div class="du-reason">
@@ -445,7 +377,7 @@
                 <td>
                   <div style="display:flex;justify-content:flex-end;gap:8px;">
                     <button onclick="openRecoverModal('Arjun Khanna','FNZ20260018')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Row 03')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                    <button onclick="openDetailsModal('Arjun Khanna','FNZ20260018','arjun.khanna@gmail.com','+91 77665 54433','Savings','20 Jan 2026','₹2,800.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
                   </div>
                 </td>
               </tr>
@@ -463,7 +395,7 @@
                 <td><span class="du-phone">+91 66554 43322</span></td>
                 <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260022</span></td>
                 <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-                <td><span class="du-deleted-by"><span class="material-symbols-outlined">computer</span>System</span></td>
+
                 <td><span class="du-date-main">28 Mar 2026 — 09:45 AM</span></td>
                 <td>
                   <div class="du-reason">
@@ -474,7 +406,7 @@
                 <td>
                   <div style="display:flex;justify-content:flex-end;gap:8px;">
                     <button onclick="openRecoverModal('Nisha Rao','FNZ20260022')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Row 04')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                    <button onclick="openDetailsModal('Nisha Rao','FNZ20260022','nisha.rao@gmail.com','+91 66554 43322','Savings','10 Feb 2026','₹1,200.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
                   </div>
                 </td>
               </tr>
@@ -492,7 +424,7 @@
                 <td><span class="du-phone">+91 55443 32211</span></td>
                 <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260025</span></td>
                 <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
-                <td><span class="du-deleted-by"><span class="material-symbols-outlined">manage_accounts</span>Admin</span></td>
+
                 <td><span class="du-date-main">25 Mar 2026 — 04:30 PM</span></td>
                 <td>
                   <div class="du-reason">
@@ -503,7 +435,7 @@
                 <td>
                   <div style="display:flex;justify-content:flex-end;gap:8px;">
                     <button onclick="openRecoverModal('Vikram Gupta','FNZ20260025')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Row 05')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                    <button onclick="openDetailsModal('Vikram Gupta','FNZ20260025','vikram.gupta@gmail.com','+91 55443 32211','Current','05 Mar 2026','₹8,900.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
                   </div>
                 </td>
               </tr>
@@ -594,27 +526,27 @@
               <div class="space-y-4">
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Full Name</span>
-                  <span class="text-sm font-bold dark:text-white">Mohan Kumar</span>
+                  <span class="text-sm font-bold dark:text-white details-name">Mohan Kumar</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Email</span>
-                  <span class="text-sm font-bold dark:text-white">mohan.kumar@gmail.com</span>
+                  <span class="text-sm font-bold dark:text-white details-email">mohan.kumar@gmail.com</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Phone</span>
-                  <span class="text-sm font-bold dark:text-white">+91 99887 76655</span>
+                  <span class="text-sm font-bold dark:text-white details-phone">+91 99887 76655</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Account No</span>
-                  <span class="text-sm font-code font-bold text-indigo-600 dark:text-indigo-400">FNZ20260010</span>
+                  <span class="text-sm font-code font-bold text-indigo-600 dark:text-indigo-400 details-acc">FNZ20260010</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Account Type</span>
-                  <span class="text-sm font-bold dark:text-white">Savings</span>
+                  <span class="text-sm font-bold dark:text-white details-type">Savings</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-slate-400 uppercase">Registration Date</span>
-                  <span class="text-sm font-bold dark:text-white">15 Jan 2026</span>
+                  <span class="text-sm font-bold dark:text-white details-reg">15 Jan 2026</span>
                 </div>
               </div>
             </div>
@@ -645,7 +577,7 @@
               <div class="space-y-6">
                 <div class="flex justify-between items-end">
                   <span class="text-[11px] font-bold text-slate-500 uppercase">Last Balance</span>
-                  <span class="text-2xl font-black text-slate-900 dark:text-white">₹5,000.00</span>
+                  <span class="text-2xl font-black text-slate-900 dark:text-white details-balance">₹5,000.00</span>
                 </div>
                 <div class="h-px bg-slate-200 dark:bg-white/10"></div>
                 <div class="grid grid-cols-2 gap-4">
@@ -666,7 +598,7 @@
             </div>
 
             <div class="space-y-4 pt-10">
-              <button onclick="confirmRecovery()" class="w-full px-6 py-4 bg-green-500 text-white rounded-xl text-sm font-extrabold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover This Account</button>
+              <button onclick="recoverFromDetails()" class="w-full px-6 py-4 bg-green-500 text-white rounded-xl text-sm font-extrabold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover This Account</button>
               <button onclick="closeModal('detailsModal')" class="w-full px-6 py-4 border-2 border-slate-100 dark:border-white/10 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Close</button>
             </div>
           </div>
@@ -713,15 +645,14 @@
         $('#filter-search').val('');
         $('#filter-date-from').val('');
         $('#filter-date-to').val('');
-        $('#filter-deleted-by').val('all');
-        $('#filter-deleted-by-dropdown .dropdown-label').text('All');
+
         $('.tab-btn').first().click();
         applyFilters();
       });
 
       function applyFilters() {
         const search = $('#filter-search').val().toLowerCase();
-        const deletedBy = $('#filter-deleted-by').val();
+
         const tab = $('.tab-btn.bg-primary').data('status');
         
         let visibleCount = 0;
@@ -729,10 +660,10 @@
           const name = $(this).find('.user-name').text().toLowerCase();
           const email = $(this).find('.user-email').text().toLowerCase();
           const acc = $(this).find('.font-code').text().toLowerCase();
-          const by = $(this).data('deleted-by');
+
           
           let matches = (name.includes(search) || email.includes(search) || acc.includes(search));
-          if (deletedBy !== 'all' && by !== deletedBy) matches = false;
+
           
           if (matches) {
             $(this).show();
@@ -752,14 +683,31 @@
       }
     });
 
+    let currentDetailName = '';
+    let currentDetailAcc = '';
+
     function openRecoverModal(name, acc) {
       $('#recover-user-name').text(name);
       $('#recover-user-acc').text(acc);
       $('#recoverModal').removeClass('hidden').addClass('flex');
     }
 
-    function openDetailsModal(row) {
+    function openDetailsModal(name, acc, email, phone, type, reg, balance) {
+      currentDetailName = name;
+      currentDetailAcc = acc;
+      $('.details-name').text(name);
+      $('.details-acc').text(acc);
+      $('.details-email').text(email);
+      $('.details-phone').text(phone);
+      $('.details-type').text(type);
+      $('.details-reg').text(reg);
+      $('.details-balance').text(balance);
       $('#detailsModal').removeClass('hidden').addClass('flex');
+    }
+
+    function recoverFromDetails() {
+      closeModal('detailsModal');
+      openRecoverModal(currentDetailName, currentDetailAcc);
     }
 
     function closeModal(id) {
