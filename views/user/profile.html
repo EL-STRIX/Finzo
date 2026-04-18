@@ -104,36 +104,11 @@
           </div>
         </div>
       </div>
-      
-      <div style="padding-bottom:12px" class="no-mobile">
-        <button class="btn btn-primary" onclick="saveProfile()">
-          <span class="material-symbols-outlined">save</span> Save All Changes
-        </button>
-      </div>
     </div>
 
     <div class="profile-grid-premium">
       <!-- LEFT: STATS & SUMMARY -->
       <div class="animate-in animate-delay-1">
-        <div class="card card-p mb-6">
-          <div class="card-title mb-6" style="display:flex;align-items:center;gap:10px">
-            <span class="material-symbols-outlined" style="color:var(--primary)">verified_user</span>
-            Trust Profile
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-label">Member Since</span>
-            <span class="stat-value">Apr 2026</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">Security Score</span>
-            <span class="stat-value" style="color:var(--green)">High Integrity</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">Customer Tier</span>
-            <span class="stat-value">Platinum Priority</span>
-          </div>
-        </div>
 
         <div class="card card-p">
           <div class="card-title mb-6" style="display:flex;align-items:center;gap:10px">
@@ -171,8 +146,10 @@
               <label class="form-label">Full Name</label>
               <div class="input-wrap">
                 <span class="material-symbols-outlined input-icon">person</span>
-                <input type="text" class="form-input with-icon" id="edit-name" placeholder="Legal full name"/>
+                <input type="text" class="form-input with-icon" id="edit-name" readonly tabindex="-1" style="cursor:not-allowed; background:var(--bg-card); border-style:dashed" placeholder="Legal full name"/>
+                <span class="material-symbols-outlined" style="position:absolute; right:12px; top:12px; font-size:18px; color:var(--green); opacity:0.8" title="Identity Verified">verified</span>
               </div>
+              <div style="font-size:10px; color:var(--text-placeholder); margin-top:6px; font-weight:600">Verified legal name cannot be changed</div>
             </div>
             <div class="form-group">
               <label class="form-label">Phone Number</label>
