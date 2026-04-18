@@ -58,7 +58,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 .tl-line{width:2px;flex:1;min-height:20px;background:var(--border);margin:4px auto;}
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
 .modal-overlay.hidden{display:none!important;}
-.hidden{display:none!important;}
 .modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
 .modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
 .modal-title{font-size:20px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
@@ -307,8 +306,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       </button>
     </div>
     <div class="modal-actions hidden" id="modal-action-2">
-      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">Close</button>
-      <button class="btn btn-success" style="flex:1" onclick="location.href='admin-locked-accounts.html'">
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+      <button class="btn btn-success" onclick="closeModal()">
         <span class="material-symbols-outlined" style="font-size:15px;">check</span>
         Done
       </button>
@@ -398,7 +397,6 @@ function doGenerate(){
 
     document.getElementById('modal-pass-val').textContent=generatedPass;
     document.getElementById('modal-pass-area').classList.remove('hidden');
-    document.getElementById('modal-desc').classList.add('hidden'); // Hide desc to focus on password
     document.getElementById('modal-action-1').classList.add('hidden');
     document.getElementById('modal-action-2').classList.remove('hidden');
 
