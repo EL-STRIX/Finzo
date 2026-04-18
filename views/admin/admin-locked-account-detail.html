@@ -232,66 +232,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <!-- RIGHT -->
       <div style="display:flex;flex-direction:column;gap:20px;">
 
-        <!-- ACCOUNT SNAPSHOT -->
-        <div class="card card-p">
-          <div class="section-label">Account Snapshot</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;text-align:center;">
-              <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px;">Account Balance</div>
-              <div style="font-size:24px;font-weight:800;color:var(--text-primary);" id="snap-balance">₹18,500.00</div>
-              <div style="font-size:10px;color:var(--text-placeholder);margin-top:4px;">Balance is safe. Account is locked, not frozen.</div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center;">
-                <div style="font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px;letter-spacing:.1em;">Total Txns</div>
-                <div style="font-size:18px;font-weight:800;color:var(--text-primary);">28</div>
-              </div>
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center;">
-                <div style="font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px;letter-spacing:.1em;">Days Active</div>
-                <div style="font-size:18px;font-weight:800;color:var(--text-primary);">35</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- LOCK TIMELINE -->
-        <div class="card card-p">
-          <div class="section-label">Lock Timeline</div>
-          <div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--green-soft);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--green);">login</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div style="flex:1;padding-left:10px;padding-bottom:18px;">
-                <div style="font-size:13px;font-weight:700;color:var(--text-primary);">Last Successful Login</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">Customer logged in successfully</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;" id="tl-last-login">16 Apr 2026 — 08:40 PM</div>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--red-soft);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--red);">key_off</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div style="flex:1;padding-left:10px;padding-bottom:18px;">
-                <div style="font-size:13px;font-weight:700;color:var(--text-primary);">5 Failed Attempts</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">Wrong password entered 5 consecutive times</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;" id="tl-attempts">17 Apr 2026 — 09:20 AM</div>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--amber-soft);border:2px solid var(--amber-border);"><span class="material-symbols-outlined lock-pulse" style="font-size:16px;color:var(--amber);">lock_person</span></div>
-              </div>
-              <div style="flex:1;padding-left:10px;">
-                <div style="font-size:13px;font-weight:700;color:var(--amber);">Account Locked by System</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">Automatically locked for security protection</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;" id="tl-locked">17 Apr 2026 — 09:22 AM</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- UNLOCK ACTION CARD -->
         <div class="card card-p" id="unlock-action-card" style="background:var(--amber-soft);border:1.5px solid var(--amber-border);">
@@ -406,14 +346,6 @@ document.getElementById('d-phone').textContent=d.phone;
 document.getElementById('d-acc-type').textContent=d.accType+' Account';
 document.getElementById('d-acc-type-badge').textContent=d.accType;
 document.getElementById('d-balance').textContent=d.balance;
-document.getElementById('snap-balance').textContent=d.balance;
-document.getElementById('d-locked-date').textContent=d.lockedDate;
-document.getElementById('d-lock-time').textContent=d.lockTime;
-document.getElementById('d-ip').textContent=d.ip;
-document.getElementById('d-device').textContent=d.device;
-document.getElementById('tl-locked').textContent=d.lockedDate+' — '+d.lockTime.replace(' IST','');
-document.getElementById('tl-attempts').textContent=d.lockedDate+' — 09:20 AM';
-document.getElementById('tl-last-login').textContent=(parseInt(d.lockedDate.split(' ')[0])-1)+' '+d.lockedDate.split(' ').slice(1).join(' ')+' — 08:40 PM';
 document.getElementById('modal-name').textContent=d.name;
 document.getElementById('modal-acc').textContent=d.accNo;
 
