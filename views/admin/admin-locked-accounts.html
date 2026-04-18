@@ -278,7 +278,6 @@ tbody td{padding:14px 16px;font-size:13px;color:var(--text-primary);vertical-ali
         <div class="tabs" style="display:inline-flex;">
           <button class="tab-btn active" onclick="switchTab('all',this)">All Locked</button>
           <button class="tab-btn" onclick="switchTab('no-temp',this)">Awaiting Unlock</button>
-          <button class="tab-btn" onclick="switchTab('temp-sent',this)">Temp Password Sent</button>
         </div>
       </div>
 
@@ -294,7 +293,6 @@ tbody td{padding:14px 16px;font-size:13px;color:var(--text-primary);vertical-ali
               <th>Failed Attempts</th>
               <th>Locked On</th>
               <th>Lock Time</th>
-              <th>Temp Password</th>
               <th style="text-align:center;">Actions</th>
             </tr>
           </thead>
@@ -474,6 +472,9 @@ function renderTable(){
   const search=document.getElementById('search-input').value.toLowerCase();
   const type=document.getElementById('type-filter').value;
   filtered=allData.filter(r=>{
+    // Queue logic: Only show accounts waiting for unlock
+    if(r.tempSent) return false;
+    
     if(activeTab!=='all'&&r.tabKey!==activeTab)return false;
     if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.accNo.toLowerCase().includes(search))return false;
     if(type&&r.accType!==type)return false;
@@ -504,12 +505,6 @@ function renderTable(){
         <td>${attemptsDisplay()}</td>
         <td style="font-size:12px;font-weight:600;">${r.lockedDate}</td>
         <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
-        <td>
-          ${r.tempSent
-            ? `<div><span class="badge badge-indigo">Sent</span><div style="font-size:10px;color:var(--text-placeholder);margin-top:4px;">Exp: ${r.tempExp}</div></div>`
-            : `<span class="badge badge-amber">Not Generated</span>`
-          }
-        </td>
         <td>
           <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
             <a href="admin-locked-account-detail.html?id=${r.id}" class="btn btn-ghost btn-sm">
