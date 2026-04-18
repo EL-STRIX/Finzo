@@ -167,26 +167,67 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
           </div>
 
           <div class="info-row"><span class="info-label">Locked On</span><span class="info-value" id="d-locked-date">17 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Lock Time</span><span class="info-value" id="d-lock-time">09:22 AM IST</span></div>
+          <div class="info-row"><span class="info-label">Lock Date & Time</span><span class="info-value" id="d-lock-time">17 Apr 2026 — 09:22 AM IST</span></div>
           <div class="info-row"><span class="info-label">Locked By</span><span class="info-value">System (Auto-Lock)</span></div>
           <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip">192.168.1.205</span></div>
           <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device">Chrome on Windows 11</span></div>
           <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><span class="badge badge-amber">Not Generated</span></span></div>
-          <div class="info-row" id="d-expiry-row" style="display:none;border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
+          <div class="info-row" id="d-expiry-row" style="display:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
           <div class="info-row" id="d-normal-row" style="border-bottom:none;"><span class="info-label">Audit Log Reference</span><span class="info-value mono" id="d-audit">AUD20260914</span></div>
         </div>
 
         <!-- RECENT LOGIN ATTEMPTS -->
-        <div class="card">
-          <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
-            <div style="font-size:13px;font-weight:800;color:var(--text-primary);">Recent Login Attempts</div>
-            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Last 5 failed attempts that triggered the lock</div>
+        <div class="card overflow-hidden" style="margin-top:20px;">
+          <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-input)">
+            <div>
+              <div style="font-size:15px;font-weight:800;color:var(--text-primary)">Recent Login Attempts</div>
+              <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.12em;margin-top:2px">Last 5 failed events triggering security lock</div>
+            </div>
+            <span class="badge badge-amber" style="font-size:10px;padding:4px 10px;">Security Audit</span>
           </div>
-          <div>
-            <div id="attempt-log"></div>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; min-width:600px;">
+              <thead>
+                <tr style="background:rgba(0,0,0,0.02)">
+                  <th style="padding:12px 20px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">IP Address</th>
+                  <th style="padding:12px 20px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Date & Time</th>
+                  <th style="padding:12px 20px;text-align:center;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Outcome</th>
+                </tr>
+              </thead>
+              <tbody id="attempts-body">
+                <!-- Data for Sunita Mehta -->
+                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
+                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
+                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:22:14 AM</td>
+                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-red">Final Block</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
+                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
+                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:21:55 AM</td>
+                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (5/5)</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
+                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
+                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:18:22 AM</td>
+                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (4/5)</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
+                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
+                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:15:01 AM</td>
+                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (3/5)</span></td>
+                </tr>
+                <tr style="border-bottom:none" class="hover:bg-slate-50/50">
+                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
+                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 08:44:12 AM</td>
+                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (2/5)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-input);text-align:center;">
+             <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Vault Audit Reference: #VAULT-2026-LM914</div>
           </div>
         </div>
-
       </div>
 
       <!-- RIGHT -->
