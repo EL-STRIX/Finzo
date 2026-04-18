@@ -231,7 +231,7 @@ tbody td{padding:14px 16px;font-size:13px;color:var(--text-primary);vertical-ali
     <div style="background:var(--amber-soft);border:1.5px solid var(--amber-border);border-radius:var(--radius-lg);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;">
       <span class="material-symbols-outlined lock-pulse" style="color:var(--amber);font-size:20px;flex-shrink:0;margin-top:1px;">info</span>
       <div style="font-size:13px;color:var(--text-primary);line-height:1.6;">
-        <strong>How account locking works:</strong> When a customer enters the wrong password 5 times in a row, their account is automatically locked by the system for security. The customer cannot log in until an admin generates a temporary password (valid for 24 hours). The customer logs in with this temp password and is forced to set a new password immediately.
+        <strong>How account locking works:</strong> If a user enters the wrong password 5 times within 24 hours, their account is automatically locked and added to this queue. Once an administrator generates and sends a temporary password via email, the account is automatically removed from this list. This interface only displays accounts that are <strong>awaiting unlock</strong>.
       </div>
     </div>
 
@@ -273,13 +273,7 @@ tbody td{padding:14px 16px;font-size:13px;color:var(--text-primary);vertical-ali
         </div>
       </div>
 
-      <!-- TABS -->
-      <div style="padding:14px 22px;border-bottom:1px solid var(--border);">
-        <div class="tabs" style="display:inline-flex;">
-          <button class="tab-btn active" onclick="switchTab('all',this)">All Locked</button>
-          <button class="tab-btn" onclick="switchTab('no-temp',this)">Awaiting Unlock</button>
-        </div>
-      </div>
+      <!-- REMOVED TABS AS PER QUEUE LOGIC -->
 
       <!-- TABLE -->
       <div class="table-wrap">
