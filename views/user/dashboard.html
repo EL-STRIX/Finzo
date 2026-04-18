@@ -133,29 +133,13 @@
         </div>
       </div>
 
-      <!-- SPENDING CHART -->
-      <div class="col-4 card card-p animate-in animate-delay-3" style="position:relative">
+      <!-- QUICK ACTIONS SIDEBAR -->
+      <div class="col-4 animate-in animate-delay-3">
         <div style="margin-bottom:16px">
-          <div class="card-title">Spending Analytics</div>
-          <div class="card-subtitle">Monthly overview</div>
+          <div class="card-title">Quick Actions</div>
+          <div class="card-subtitle">Common banking tasks</div>
         </div>
-        <div class="chart-container" id="chart-container">
-          <canvas id="spending-chart"></canvas>
-          <div class="locked-overlay-chart" id="chart-lock">
-            <span class="material-symbols-outlined" style="font-size:28px;color:var(--text-placeholder)">lock</span>
-            <div style="font-size:12px;font-weight:700;color:var(--text-secondary);text-align:center">Available after<br>account activation</div>
-          </div>
-        </div>
-        <div id="chart-legend" class="hidden" style="display:flex;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:#0891b2"></span>Transfers</div>
-          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:#10b981"></span>Savings</div>
-          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b"></span>Bills</div>
-        </div>
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="col-12 animate-in animate-delay-4">
-        <div class="form-grid form-grid-3" style="gap:14px">
+        <div class="flex flex-col gap-3">
           <a id="qa-transfer" href="transfer.html" class="quick-action locked">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="quick-action-icon" style="background:rgba(8,145,178,0.1)">
@@ -194,6 +178,8 @@
           </a>
         </div>
       </div>
+
+
 
       <!-- RECENT TRANSACTIONS -->
       <div class="col-12 card animate-in animate-delay-4">
@@ -301,19 +287,8 @@ if (status === 'active') {
   document.getElementById('tx-empty').classList.add('hidden');
   document.getElementById('tx-list').classList.remove('hidden');
   document.getElementById('view-all-txns').classList.remove('hidden');
-  // Chart
-  document.getElementById('chart-lock').classList.add('hidden');
-  document.getElementById('chart-legend').classList.remove('hidden');
-  document.getElementById('chart-legend').style.display = 'flex';
-  const ctx = document.getElementById('spending-chart').getContext('2d');
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Transfers', 'Savings', 'Food & Bills'],
-      datasets: [{ data: [35, 40, 25], backgroundColor: ['#0891b2','#10b981','#f59e0b'], borderWidth: 0, hoverOffset: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '70%' }
-  });
+  // Cleanup: Spending Analytics (removed)
+
 } else {
   document.getElementById('dash-balance').textContent = '₹ — — —';
   document.getElementById('dash-balance').classList.add('locked');
