@@ -1240,10 +1240,9 @@
           style="color:var(--amber);font-size:20px;flex-shrink:0;margin-top:1px;">info</span>
         <div style="font-size:13px;color:var(--text-primary);line-height:1.6;">
           <strong>How account locking works:</strong> If a user enters the wrong password 5 times within 24 hours, their
-          account is automatically locked for security and added to this queue. Once an administrator generates a
-          temporary password (valid for 24 hours) and sends it via email, the account is automatically removed from this
-          list. To regain full access, the customer must log in with the temporary password and set a new one
-          immediately.
+          account is automatically locked for security and added to this queue. Administrators can generate a 24-hour
+          temporary password to restore access. Processed accounts move to the bottom of the list with a
+          <strong>'Generated Done'</strong> status, while pending requests are prioritized at the top.
         </div>
       </div>
 
@@ -1297,6 +1296,7 @@
                 <th>Customer</th>
                 <th>Account No</th>
                 <th>Account Type</th>
+                <th>Status</th>
                 <th>Failed Attempts</th>
                 <th>Locked On</th>
                 <th>Lock Time</th>
@@ -1485,24 +1485,31 @@
     function renderTable() {
       const search = document.getElementById('search-input').value.toLowerCase();
       const type = document.getElementById('type-filter').value;
+      
+      // Filter logic
       filtered = allData.filter(r => {
-        // Queue logic: Only show accounts waiting for unlock
-        if (r.tempSent) return false;
-
         if (search && !r.name.toLowerCase().includes(search) && !r.email.toLowerCase().includes(search) && !r.accNo.toLowerCase().includes(search)) return false;
         if (type && r.accType !== type) return false;
         return true;
       });
+
+      // SORT: Pending (tempSent=false) at top, Generated Done (tempSent=true) at bottom
+      filtered.sort((a, b) => {
+        if (!a.tempSent && b.tempSent) return -1;
+        if (a.tempSent && !b.tempSent) return 1;
+        return 0; // Maintain original locked date order for items with same status
+      });
+
       const total = filtered.length;
       const totalPages = Math.max(1, Math.ceil(total / ROWS_PP));
       if (currentPage > totalPages) currentPage = totalPages;
       const slice = filtered.slice((currentPage - 1) * ROWS_PP, currentPage * ROWS_PP);
       const tbody = document.getElementById('table-body');
       if (!slice.length) {
-        tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">All accounts are currently accessible.</div></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">All accounts are currently accessible.</div></div></td></tr>`;
       } else {
         tbody.innerHTML = slice.map((r, i) => `
-      <tr>
+      <tr style="${r.tempSent ? 'opacity:0.85; background:rgba(0,0,0,0.01)' : ''}">
         <td style="font-size:11px;font-weight:800;color:var(--text-secondary);">${String((currentPage - 1) * ROWS_PP + i + 1).padStart(2, '0')}</td>
         <td>
           <div class="user-cell">
@@ -1515,6 +1522,12 @@
         </td>
         <td><span class="mono">${r.accNo}</span></td>
         <td><span class="badge ${r.accType === 'Savings' ? 'badge-green' : 'badge-blue'}">${r.accType}</span></td>
+        <td>
+          <span class="badge ${r.tempSent ? 'badge-indigo' : 'badge-amber'}">
+            <span class="material-symbols-outlined" style="font-size:10px;">${r.tempSent ? 'check_circle' : 'pending'}</span>
+            ${r.tempSent ? 'Generated Done' : 'Pending'}
+          </span>
+        </td>
         <td>${attemptsDisplay()}</td>
         <td style="font-size:12px;font-weight:600;">${r.lockedDate}</td>
         <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
@@ -1523,9 +1536,13 @@
             <a href="admin-locked-account-detail.html?id=${r.id}" class="btn btn-ghost btn-sm">
               <span class="material-symbols-outlined" style="font-size:14px;">visibility</span>View
             </a>
+            ${!r.tempSent ? `
             <button class="btn btn-amber btn-sm" onclick="openUnlock('${r.id}','${r.name}','${r.accNo}')">
               <span class="material-symbols-outlined" style="font-size:14px;">key</span>Unlock
             </button>
+            ` : `
+            <div style="width:78px; text-align:center;"><span class="material-symbols-outlined" style="color:var(--green);font-size:18px;">check_circle</span></div>
+            `}
           </div>
         </td>
       </tr>`).join('');
