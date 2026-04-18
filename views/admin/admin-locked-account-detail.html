@@ -108,11 +108,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <div style="font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;">Account Lock Detail</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
-      <a href="admin-locked-accounts.html" class="btn btn-ghost" style="height:38px;font-size:12px;">
-        <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>Back to List
-      </a>
-      <button class="icon-btn" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
-      <button class="icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" id="theme-icon2">dark_mode</span></button>
     </div>
   </header>
 
@@ -125,22 +120,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <span style="color:var(--text-primary);font-weight:700;" id="bc-name">Sunita Mehta</span>
     </div>
 
-    <!-- STATUS BANNER -->
-    <div style="background:var(--amber-soft);border:1.5px solid var(--amber-border);border-radius:var(--radius-lg);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <span class="material-symbols-outlined lock-pulse" style="color:var(--amber);font-size:20px;">lock_person</span>
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:800;color:var(--text-primary);">This account is <span style="color:var(--amber);">Locked</span> — Customer cannot login</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Account was automatically locked after 5 consecutive failed login attempts. Generate a temporary password to unlock.</div>
-        </div>
-      </div>
-      <button class="btn btn-amber" onclick="openUnlockModal()">
-        <span class="material-symbols-outlined" style="font-size:16px;">key</span>
-        Generate Temp Password
-      </button>
-    </div>
 
     <!-- TWO COLUMN -->
     <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" class="two-col">
