@@ -146,9 +146,12 @@
             <span style="font-family:'Plus Jakarta Sans';font-size:36px;font-weight:700;">%</span>
             <span class="force-black" style="font-size:13px;margin-left:4px;">p.a.</span>
           </div>
-          <div style="border-top:1px solid #eef0f5;padding-top:20px;display:flex;justify-content:space-between;">
-            <div><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Effective Since</div><div class="force-black" style="font-weight:600;">01 Apr 2026</div></div>
-            <div style="text-align:right;"><div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px;">Next Review</div><div class="force-black" style="font-weight:600;">01 Jul 2026</div></div>
+          <div style="border-top:1px solid #eef0f5;padding-top:20px;display:flex;align-items:center;gap:10px;">
+            <span class="material-symbols-outlined" style="font-size:18px;color:#64748b;">history</span>
+            <div>
+              <div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:2px;">Last Rate Change</div>
+              <div class="force-black" style="font-size:13px;font-weight:700;">12 Apr 2026</div>
+            </div>
           </div>
           <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:#002645;opacity:0.1;border-radius:50%;"></div>
         </div>
@@ -167,28 +170,29 @@
                 <span class="force-black" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:700;">%</span>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Effective Date</label>
-                <input type="date" value="2026-07-01" class="force-black dark:bg-surface-container-low" style="width:100%;padding:10px 12px;background:white;border:1px solid #eef0f5;border-radius:8px;font-size:12px;outline:none;box-sizing:border-box;"/>
-              </div>
-              <div>
-                <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Apply From</label>
-                <div class="finzo-dropdown" style="width:100%;">
-                  <input type="hidden" name="lock_period" value="Immediately">
-                  <div class="finzo-dropdown-trigger">
-                    <span class="dropdown-label force-black">Immediately</span>
-                    <span class="material-symbols-outlined chevron force-black" style="font-size:18px;">expand_more</span>
-                  </div>
-                  <div class="finzo-dropdown-menu">
-                    <div class="finzo-dropdown-option is-selected" data-value="Immediately">Immediately</div>
-                    <div class="finzo-dropdown-option" data-value="Next Month">Next Month</div>
-                    <div class="finzo-dropdown-option" data-value="Custom Date">Custom Date</div>
-                  </div>
+            <div>
+              <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Apply From</label>
+              <div class="finzo-dropdown" style="width:100%;" id="apply-from-dropdown">
+                <input type="hidden" id="lock_period_input" value="Immediately" onchange="handleApplyFromChange(this.value)">
+                <div class="finzo-dropdown-trigger">
+                  <span class="dropdown-label force-black">Immediately</span>
+                  <span class="material-symbols-outlined chevron force-black" style="font-size:18px;">expand_more</span>
+                </div>
+                <div class="finzo-dropdown-menu">
+                  <div class="finzo-dropdown-option is-selected" data-value="Immediately">Immediately</div>
+                  <div class="finzo-dropdown-option" data-value="Next Month">Next Month (1st Date)</div>
+                  <div class="finzo-dropdown-option" data-value="Custom Date">Custom Date</div>
                 </div>
               </div>
+
+              <!-- Custom Date Picker (Hidden by default) -->
+              <div id="custom-date-container" style="display:none;margin-top:16px;animation:fadeIn 0.3s ease-out;">
+                <label class="force-black" style="display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Select Effective Date</label>
+                <input type="date" id="custom-apply-date" class="force-black dark:bg-surface-container-low" style="width:100%;padding:12px;background:white;border:1px solid #eef0f5;border-radius:12px;font-size:13px;outline:none;box-sizing:border-box;"/>
+              </div>
             </div>
-            <button onclick="applyRate()" style="width:100%;padding:14px;background:#002645;color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;">
+            
+            <button onclick="applyRate()" style="width:100%;padding:14px;background:#002645;color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans';font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:8px;">
               Apply Rate Update
             </button>
             <p class="force-black" style="font-size:11px;text-align:center;line-height:1.6;">* Updating rate triggers immediate customer notifications on all active savings accounts.</p>
@@ -204,8 +208,6 @@
           <div style="padding:20px 24px;border-bottom:1px solid #eef0f5;display:flex;justify-content:space-between;align-items:center;">
             <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:16px;font-weight:800;">Interest Rate History</div>
             <div style="display:flex;gap:8px;">
-              <button class="force-black dark:bg-surface-container-low" style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Export CSV</button>
-              <button class="force-black dark:bg-surface-container-low" style="padding:6px 14px;background:#f6f8fc;border:1px solid #eef0f5;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Print</button>
             </div>
           </div>
           <div class="overflow-x-auto">
@@ -328,6 +330,14 @@ $(function () {
   });
 });
 
+function handleApplyFromChange(value) {
+  if (value === 'Custom Date') {
+    $('#custom-date-container').slideDown(200);
+  } else {
+    $('#custom-date-container').slideUp(200);
+  }
+}
+
 function checkRateChange() {
   const newRate = document.getElementById('new-rate').value;
   document.getElementById('live-rate').textContent = newRate || '—';
@@ -335,9 +345,30 @@ function checkRateChange() {
 
 function applyRate() {
   const newRate = document.getElementById('new-rate').value.trim();
+  const applyType = document.getElementById('lock_period_input').value;
+  let effectiveDate = '';
+
+  if (applyType === 'Immediately') {
+    effectiveDate = 'Immediately';
+  } else if (applyType === 'Next Month') {
+    const d = new Date();
+    const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+    effectiveDate = nextMonth.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  } else {
+    const customDate = document.getElementById('custom-apply-date').value;
+    if (!customDate) { 
+      alert('Please select a custom date.'); 
+      document.getElementById('custom-apply-date').focus();
+      return; 
+    }
+    effectiveDate = new Date(customDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
   if (!newRate || isNaN(parseFloat(newRate))) { alert('Please enter a valid rate.'); return; }
+  
   document.getElementById('modal-msg').textContent =
-    `You are about to adjust the global savings rate to ${newRate}%. This action is irreversible and will update all active savings accounts immediately.`;
+    `You are about to adjust the global savings rate to ${newRate}%. This update is scheduled to take effect ${applyType === 'Immediately' ? 'immediately' : 'on ' + effectiveDate}.`;
+  
   const modal = document.getElementById('confirm-modal');
   modal.style.display = 'flex';
 }
@@ -348,9 +379,17 @@ function closeModal() {
 
 function confirmRate() {
   const newRate = document.getElementById('new-rate').value;
+  const applyType = document.getElementById('lock_period_input').value;
+  
+  // In a real app, this would be an AJAX call
   document.getElementById('live-rate').textContent = newRate;
   closeModal();
-  alert(`✅ Rate successfully updated to ${newRate}% p.a. Customer notifications dispatched.`);
+  
+  const successMsg = applyType === 'Immediately' 
+    ? `✅ Rate successfully updated to ${newRate}% p.a. and applied immediately.`
+    : `✅ Rate update to ${newRate}% scheduled successfully.`;
+    
+  alert(successMsg);
 }
 </script>
 </body>
