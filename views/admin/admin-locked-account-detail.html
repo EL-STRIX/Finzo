@@ -4,13 +4,34 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Locked Account Detail | Finzo Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <style>
-:root{--primary:#1a3c5e;--red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);--amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);--green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);--blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);--indigo:#6366f1;--indigo-soft:rgba(99,102,241,0.08);--indigo-border:rgba(99,102,241,0.2);--bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;--text-primary:#0f172a;--text-secondary:#64748b;--text-placeholder:#94a3b8;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);--sidebar-width:248px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--transition:all 0.2s ease;}
-.dark{--bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;--border:rgba(255,255,255,0.06);--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);--red-soft:rgba(244,63,94,0.12);--amber-soft:rgba(245,158,11,0.12);--green-soft:rgba(16,185,129,0.12);--indigo-soft:rgba(99,102,241,0.12);}
+:root{
+  --primary:#1a3c5e;
+  --red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);
+  --amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);
+  --green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);
+  --blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);--blue-border:rgba(59,130,246,0.2);
+  --indigo:#6366f1;--indigo-soft:rgba(99,102,241,0.08);--indigo-border:rgba(99,102,241,0.2);
+  --bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;
+  --text-primary:#0f172a;--text-secondary:#64748b;--border:#e2e8f0;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --sidebar-width:248px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+  --transition:all 0.2s ease;
+}
+.dark{
+  --bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);
+  --text-primary:#f0f6fc;--text-secondary:#8b949e;--border:rgba(255,255,255,0.06);
+  --shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --red-soft:rgba(244,63,94,0.12);--amber-soft:rgba(245,158,11,0.12);
+  --green-soft:rgba(16,185,129,0.12);--indigo-soft:rgba(99,102,241,0.12);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
+
+/* SIDEBAR */
 .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-sidebar);display:flex;flex-direction:column;z-index:100;overflow-y:auto;scrollbar-width:none;}
 .sidebar::-webkit-scrollbar{display:none;}
 .sidebar-brand{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
@@ -23,92 +44,178 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 .nav-item.danger{color:rgba(244,63,94,0.7);}.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
 .nav-icon{font-size:18px;flex-shrink:0;}
 .nav-badge{margin-left:auto;background:rgba(244,63,94,0.15);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
-.nav-badge-warn{margin-left:auto;background:rgba(244,63,94,0.12);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
 .nav-badge-amber{margin-left:auto;background:rgba(245,158,11,0.12);color:#f59e0b;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(245,158,11,0.2);}
 .sidebar-bottom{padding-bottom:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;flex-shrink:0;}
-.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
-.topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
-.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;transition:var(--transition);}
-.icon-btn:hover{background:var(--bg-input);}
+
+/* LAYOUT */
+.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
 .page-content{padding:28px 32px;flex:1;}
+
+/* CARD */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);}
 .card-p{padding:24px;}
-.section-label{font-size:9px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:14px;}
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.section-label{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;}
+
+/* INFO ROWS */
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border);gap:16px;}
 .info-row:last-child{border-bottom:none;}
-.info-label{font-size:12px;font-weight:600;color:var(--text-secondary);}
-.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
+.info-label{font-size:12px;font-weight:500;color:var(--text-secondary);flex-shrink:0;}
+.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;word-break:break-word;max-width:62%;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:7px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
 .badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red-border);}
 .badge-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border);}
 .badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green-border);}
-.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:rgba(59,130,246,.2);}
+.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-border);}
 .badge-indigo{background:var(--indigo-soft);color:var(--indigo);border-color:var(--indigo-border);}
-.badge-gray{background:rgba(100,116,139,.08);color:#64748b;border-color:rgba(100,116,139,.2);}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 20px;height:44px;border-radius:var(--radius-md);font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 20px;height:46px;border-radius:var(--radius-md);font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
 .btn-amber{background:var(--amber);color:#fff;box-shadow:0 4px 12px rgba(245,158,11,0.3);}.btn-amber:hover{background:#d97706;transform:translateY(-1px);}
 .btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}.btn-success:hover{background:#059669;transform:translateY(-1px);}
 .btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text-primary);}
 .btn-lg{height:50px;font-size:14px;border-radius:var(--radius-lg);}
-.btn .material-symbols-outlined{font-size:16px;}
-.attempt-dot-lg{width:16px;height:16px;border-radius:50%;background:var(--red);box-shadow:0 0 6px rgba(244,63,94,0.5);}
-.tl-item{display:flex;gap:14px;}
-.tl-dot-col{display:flex;flex-direction:column;align-items:center;}
-.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tl-line{width:2px;flex:1;min-height:20px;background:var(--border);margin:4px auto;}
-.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
+
+/* ATTEMPT DOTS */
+.attempt-dot{width:15px;height:15px;border-radius:50%;background:var(--red);box-shadow:0 0 6px rgba(244,63,94,0.3);flex-shrink:0;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;padding:16px;}
 .modal-overlay.hidden{display:none!important;}
 .hidden{display:none!important;}
-.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:95%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
-.modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
-.modal-title{font-size:20px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
-.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.7;margin-bottom:20px;}
-.modal-actions{display:flex;gap:10px;}.modal-actions .btn{flex:1;height:46px;}
-@media(max-width:480px){.modal-actions{flex-direction:column;}.modal-card{padding:24px;}}
+.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
+.modal-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.modal-title{font-size:19px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.6;margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;height:46px;font-size:13px;}
+
+/* TOAST */
 .toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:300px;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 14px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:260px;}
 .toast-success{border-left:4px solid var(--green);}
-.mono{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;}
+.toast-error{border-left:4px solid var(--red);}
+
+/* MONO */
+.mono{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;overflow-wrap:break-word;}
+
+/* PAGE GRID — desktop: 2 col */
+.page-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+.col-left{display:flex;flex-direction:column;gap:20px;}
+.col-right{display:flex;flex-direction:column;gap:16px;position:sticky;top:88px;}
+
+/* PROFILE HEADER */
+.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.profile-avatar{width:52px;height:52px;border-radius:50%;background:rgba(245,158,11,0.12);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
+
+/* SECURITY NOTICE */
+.security-notice{background:rgba(244,63,94,0.04);border:1px solid rgba(244,63,94,0.12);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;display:flex;gap:18px;align-items:flex-start;}
+.security-notice-icon{width:44px;height:44px;min-width:44px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.15);}
+
+/* AUDIT TABLE */
+.audit-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg-input);}
+.audit-footer{padding:10px 18px;border-top:1px solid var(--border);background:var(--bg-input);text-align:center;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.table-scroll::-webkit-scrollbar{display:none;}
+.audit-table{width:100%;border-collapse:collapse;min-width:400px;}
+.audit-table th{padding:9px 14px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.015);}
+.audit-table td{padding:11px 14px;font-size:12px;border-bottom:1px solid var(--border);}
+.audit-table tbody tr:last-child td{border-bottom:none;}
+.audit-table .ip-cell{font-family:'Courier New',monospace;color:var(--text-primary);}
+.audit-table .time-cell{color:var(--text-secondary);}
+.audit-table .outcome-cell{text-align:center;}
+
+/* ANIMATIONS */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.lock-pulse{animation:pulse 2s infinite;}
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);transition:transform .3s;width:280px;}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-overlay{display:block!important;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
-  .sidebar-overlay.visible{opacity:1;pointer-events:auto;}
-  .main{margin-left:0;}
-  .topbar{padding:0 16px;}
-  .menu-btn{display:flex!important;width:38px;height:38px;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;margin-right:12px;}
-  .page-content{padding:16px;}
-  .two-col{grid-template-columns:1fr!important;}
-}
+@keyframes successPop{0%{transform:scale(0.8);opacity:0}50%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.success-pop{animation:successPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
+.shimmer-card{background:linear-gradient(90deg,var(--bg-input) 25%,rgba(16,185,129,0.05) 50%,var(--bg-input) 75%);background-size:200% 100%;animation:shimmer 2s infinite linear;}
+
+/* MOBILE SIDEBAR OVERLAY */
 .sidebar-overlay{display:none;}
 .menu-btn{display:none;}
 
-/* PREMIUM ANIMATIONS */
-@keyframes successPop {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
+/* ───────────── TABLET ≤ 1024px ───────────── */
+@media(max-width:1024px){
+  .page-grid{grid-template-columns:1fr;}
+  /* Action card moves to TOP on single-column layout */
+  .col-right{position:static;order:-1;}
+  /* Horizontal layout for action card on tablet */
+  .action-inner{flex-direction:row!important;text-align:left!important;align-items:center;gap:20px!important;}
+  .action-icon{flex-shrink:0;}
+  .action-body{flex:1;}
+  .action-btn{width:auto!important;min-width:180px;}
+  .action-hint{text-align:left!important;}
 }
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+
+/* ───────────── MOBILE ≤ 768px ───────────── */
+@media(max-width:768px){
+  /* Sidebar off-canvas */
+  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay{display:block!important;position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .sidebar-overlay.visible{opacity:1;pointer-events:auto;}
+
+  .main{margin-left:0;}
+  .topbar{padding:0 14px;height:58px;}
+  .menu-btn{display:flex!important;width:36px;height:36px;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;margin-right:8px;flex-shrink:0;}
+  .page-content{padding:14px!important;}
+  .card-p{padding:16px!important;}
+
+  /* Profile stays horizontal — just tighter */
+  .profile-header{gap:12px;margin-bottom:14px;padding-bottom:14px;}
+  .profile-avatar{width:44px;height:44px;font-size:16px;}
+
+  /* Security notice — stack */
+  .security-notice{flex-direction:column;gap:12px;padding:14px;margin-bottom:14px;}
+  .security-notice-icon{width:38px;height:38px;min-width:38px;border-radius:8px;}
+  .security-notice-icon .material-symbols-outlined{font-size:20px!important;}
+
+  /* Info rows — label on top, value below */
+  .info-row{flex-direction:column;align-items:flex-start;gap:2px;padding:10px 0;}
+  .info-label{font-size:11px;}
+  .info-value{font-size:13px;text-align:left;max-width:100%;}
+
+  /* Audit header wrap */
+  .audit-header{flex-wrap:wrap;padding:12px 14px;gap:8px;}
+
+  /* Action card — back to vertical on mobile */
+  .action-inner{flex-direction:column!important;text-align:center!important;gap:10px!important;}
+  .action-btn{width:100%!important;min-width:unset;}
+  .action-hint{text-align:center!important;}
+
+  /* Attempt dots */
+  .attempt-dot{width:12px;height:12px;}
+
+  /* Modal */
+  .modal-card{padding:20px 16px;border-radius:var(--radius-lg);}
+  .modal-icon{width:48px;height:48px;}
+  .modal-title{font-size:17px;}
 }
-.success-pop { animation: successPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.shimmer-card {
-  background: linear-gradient(90deg, var(--bg-input) 25%, rgba(16, 185, 129, 0.05) 50%, var(--bg-input) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite linear;
+
+/* ───────────── SMALL MOBILE ≤ 480px ───────────── */
+@media(max-width:480px){
+  .modal-actions{flex-direction:column-reverse;}
+  .modal-actions .btn{width:100%;height:50px;}
+  .modal-pass-grid{grid-template-columns:1fr!important;}
+  .toast-wrap{right:10px;left:10px;top:10px;}
+  .toast{min-width:0;width:100%;}
 }
 </style>
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
-  <div class="sidebar-brand"><div class="brand-name">Finzo</div><div class="brand-sub">Admin Console</div></div>
+  <div class="sidebar-brand">
+    <div class="brand-name">Finzo</div>
+    <div class="brand-sub">Admin Console</div>
+  </div>
   <div style="flex:1;padding-top:8px;">
     <div class="nav-section">Main</div>
     <a href="admin-dashboard.html" class="nav-item"><span class="material-symbols-outlined nav-icon">analytics</span>Overview</a>
@@ -118,7 +225,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
     <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
     <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
     <div class="nav-section">System</div>
-    <a href="admin-suspended-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge-warn">2</span></a>
+    <a href="admin-suspended-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge">2</span></a>
     <a href="admin-suspended-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">work_off</span>Suspended Staff</a>
     <a href="admin-locked-accounts.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">lock_person</span><span style="flex:1">Locked Accounts</span><span class="nav-badge-amber">4</span></a>
     <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
@@ -132,246 +239,211 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
   </div>
 </nav>
 
+<!-- MAIN -->
 <div class="main">
   <header class="topbar">
-    <div style="display:flex;align-items:center;">
+    <div style="display:flex;align-items:center;min-width:0;gap:0;">
       <button class="menu-btn" onclick="toggleSidebar()"><span class="material-symbols-outlined">menu</span></button>
-      <div>
-        <div style="font-size:9px;font-weight:800;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;">Security Control</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;">Account Lock Detail</div>
+      <div style="min-width:0;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;line-height:1;">Security Control</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Account Lock Detail</div>
       </div>
     </div>
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;flex-shrink:0;box-shadow:0 4px 10px rgba(26,60,94,0.25);">AD</div>
   </header>
+
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
   <div class="page-content">
 
     <!-- BREADCRUMB -->
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:12px;color:var(--text-secondary);">
-      <a href="admin-locked-accounts.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600;">Locked Accounts</a>
-      <span class="material-symbols-outlined" style="font-size:14px;">chevron_right</span>
-      <span style="color:var(--text-primary);font-weight:700;" id="bc-name">Sunita Mehta</span>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;font-size:12px;color:var(--text-secondary);">
+      <a href="admin-locked-accounts.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600;white-space:nowrap;">Locked Accounts</a>
+      <span class="material-symbols-outlined" style="font-size:14px;flex-shrink:0;">chevron_right</span>
+      <span style="color:var(--text-primary);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="bc-name">Sunita Mehta</span>
     </div>
 
+    <!-- PAGE GRID -->
+    <div class="page-grid">
 
-    <!-- TWO COLUMN -->
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;" class="two-col">
+      <!-- LEFT COLUMN -->
+      <div class="col-left">
 
-      <!-- LEFT -->
-      <div style="display:flex;flex-direction:column;gap:20px;">
-
-        <!-- PROFILE -->
+        <!-- Customer Info Card -->
         <div class="card card-p">
           <div class="section-label">Customer Information</div>
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-            <div style="width:64px;height:64px;border-radius:50%;background:rgba(245,158,11,0.12);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;" id="d-avatar">SM</div>
-            <div>
-              <div style="font-size:18px;font-weight:800;color:var(--text-primary);" id="d-name">Sunita Mehta</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;" id="d-email">sunita.mehta@gmail.com</div>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+          <div class="profile-header">
+            <div class="profile-avatar" id="d-avatar">SM</div>
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:16px;font-weight:800;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-name">Sunita Mehta</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-email">sunita.mehta@gmail.com</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
                 <span class="badge badge-amber" id="d-main-badge">Locked</span>
                 <span class="badge badge-green" id="d-acc-type-badge">Savings</span>
               </div>
             </div>
           </div>
           <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="d-acc-no">FNZ20260004</span></div>
-          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="d-phone">+91 98765 43210</span></div>
+          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="d-phone">+91 94455 33221</span></div>
           <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="d-acc-type">Savings Account</span></div>
           <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value">12 Apr 2026</span></div>
-          <div class="info-row" style="border-bottom:none;"><span class="info-label">Balance</span><span class="info-value" id="d-balance" style="color:var(--primary);font-size:14px;">₹18,500.00</span></div>
+          <div class="info-row"><span class="info-label">Balance</span><span class="info-value" id="d-balance" style="color:var(--primary);font-size:14px;">₹18,500.00</span></div>
         </div>
 
-        <!-- LOCK DETAILS -->
+        <!-- Lock Details Card -->
         <div class="card card-p">
           <div class="section-label">Lock Details</div>
-          <div style="background:var(--amber-soft);border:1.5px solid var(--amber-border);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;">
-            <div style="font-size:11px;font-weight:800;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;">Failed Login Attempts</div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <div style="display:flex;gap:6px;">
-                <div class="attempt-dot-lg"></div>
-                <div class="attempt-dot-lg"></div>
-                <div class="attempt-dot-lg"></div>
-                <div class="attempt-dot-lg"></div>
-                <div class="attempt-dot-lg"></div>
-              </div>
-              <span style="font-size:13px;font-weight:800;color:var(--red);">5 of 5 — Account Locked</span>
+          <div class="security-notice">
+            <div class="security-notice-icon">
+              <span class="material-symbols-outlined" style="color:var(--red);font-size:24px;">error</span>
             </div>
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">The customer entered an incorrect password 5 times in a row. The system automatically locked the account as a security measure to protect the customer's funds from unauthorised access attempts.</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Official Security Log</div>
+              <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:10px;">Failed Login Threshold Reached</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                <div style="display:flex;gap:4px;">
+                  <div class="attempt-dot"></div>
+                  <div class="attempt-dot"></div>
+                  <div class="attempt-dot"></div>
+                  <div class="attempt-dot"></div>
+                  <div class="attempt-dot"></div>
+                </div>
+                <span style="font-size:13px;font-weight:800;color:var(--red);">5 of 5 Attempts</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">The customer entered an incorrect password 5 times in a row. The system automatically locked the account as a security measure to protect funds from unauthorised access.</div>
+            </div>
           </div>
-
           <div class="info-row"><span class="info-label">Locked On</span><span class="info-value" id="d-locked-date">17 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Lock Date & Time</span><span class="info-value" id="d-lock-time">17 Apr 2026 — 09:22 AM IST</span></div>
+          <div class="info-row"><span class="info-label">Lock Date &amp; Time</span><span class="info-value" id="d-lock-time">17 Apr 2026 — 09:22 AM IST</span></div>
           <div class="info-row"><span class="info-label">Locked By</span><span class="info-value">System (Auto-Lock)</span></div>
           <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip">192.168.1.205</span></div>
           <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device">Chrome on Windows 11</span></div>
           <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><span class="badge badge-amber">Not Generated</span></span></div>
-          <div class="info-row" id="d-expiry-row" style="display:none; border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
+          <div class="info-row" id="d-expiry-row" style="display:none;border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
         </div>
 
-        <!-- RECENT LOGIN ATTEMPTS -->
-        <div class="card overflow-hidden" style="margin-top:20px;">
-          <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-input)">
+        <!-- Recent Login Attempts -->
+        <div class="card" style="overflow:hidden;">
+          <div class="audit-header" style="border-radius:var(--radius-xl) var(--radius-xl) 0 0;">
             <div>
-              <div style="font-size:15px;font-weight:800;color:var(--text-primary)">Recent Login Attempts</div>
-              <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.12em;margin-top:2px">Last 5 failed events triggering security lock</div>
+              <div style="font-size:14px;font-weight:800;color:var(--text-primary);">Recent Login Attempts</div>
+              <div style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">Last 5 failed events · lock triggered</div>
             </div>
-            <span class="badge badge-amber" style="font-size:10px;padding:4px 10px;">Security Audit</span>
+            <span class="badge badge-amber" style="flex-shrink:0;">Security Audit</span>
           </div>
-          <div class="table-wrap" style="overflow-x:auto;">
-            <table style="width:100%; border-collapse:collapse; min-width:600px;">
+          <div class="table-scroll">
+            <table class="audit-table">
               <thead>
-                <tr style="background:rgba(0,0,0,0.02)">
-                  <th style="padding:12px 20px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">IP Address</th>
-                  <th style="padding:12px 20px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Date & Time</th>
-                  <th style="padding:12px 20px;text-align:center;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Outcome</th>
+                <tr>
+                  <th>IP Address</th>
+                  <th>Date &amp; Time</th>
+                  <th style="text-align:center;">Outcome</th>
                 </tr>
               </thead>
-              <tbody id="attempts-body">
-                <!-- Data for Sunita Mehta -->
-                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
-                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
-                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:22:14 AM</td>
-                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-red">Final Block</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
-                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
-                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:21:55 AM</td>
-                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (5/5)</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
-                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
-                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:18:22 AM</td>
-                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (4/5)</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50">
-                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
-                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 09:15:01 AM</td>
-                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (3/5)</span></td>
-                </tr>
-                <tr style="border-bottom:none" class="hover:bg-slate-50/50">
-                  <td style="padding:14px 20px;font-family:monospace;font-size:12px;color:var(--text-primary)">192.168.1.205</td>
-                  <td style="padding:14px 20px;font-size:12px;color:var(--text-secondary)">17 Apr, 08:44:12 AM</td>
-                  <td style="padding:14px 20px;text-align:center"><span class="badge badge-amber">Failed (2/5)</span></td>
-                </tr>
+              <tbody>
+                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:22:14 AM</td><td class="outcome-cell"><span class="badge badge-red">Final Block</span></td></tr>
+                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:21:55 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (5/5)</span></td></tr>
+                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:18:22 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (4/5)</span></td></tr>
+                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:15:01 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (3/5)</span></td></tr>
+                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 08:44:12 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (2/5)</span></td></tr>
               </tbody>
             </table>
           </div>
-          <div style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-input);text-align:center;">
-             <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Vault Audit Reference: #VAULT-2026-LM914</div>
+          <div class="audit-footer" style="border-radius:0 0 var(--radius-xl) var(--radius-xl);">
+            <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;">Vault Audit Reference: #VAULT-2026-LM914</div>
           </div>
         </div>
-      </div>
 
-      <!-- RIGHT -->
-      <div style="display:flex;flex-direction:column;gap:20px;">
+      </div><!-- /col-left -->
 
+      <!-- RIGHT COLUMN — action cards -->
+      <div class="col-right">
 
-        <!-- UNLOCK ACTION CARD -->
+        <!-- Generate Password Card -->
         <div class="card card-p" id="unlock-action-card" style="background:var(--amber-soft);border:1.5px solid var(--amber-border);">
-          <div style="text-align:center;">
-            <span class="material-symbols-outlined" style="font-size:36px;color:var(--amber);display:block;margin-bottom:10px;">key</span>
-            <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">Generate Temporary Password</div>
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:18px;">Create a secure 12-character temporary password for this customer. Valid for <strong>24 hours</strong> only. Customer must reset their password on first login.</div>
-            <button class="btn btn-amber btn-lg" style="width:100%;" onclick="openUnlockModal()">
-              <span class="material-symbols-outlined" style="font-size:18px;">key</span>
-              Generate & Unlock
-            </button>
-            <div style="margin-top:10px;font-size:11px;color:var(--text-secondary);">Temp password expires automatically after 24 hours</div>
+          <div class="action-inner" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;">
+            <span class="action-icon material-symbols-outlined" style="font-size:30px;color:var(--amber);display:block;margin-bottom:8px;">key</span>
+            <div class="action-body" style="width:100%;">
+              <div style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:5px;">Generate Temporary Password</div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;">Create a secure 12-character temporary password. Valid for <strong>24 hours</strong> only. Customer must reset on first login.</div>
+              <button class="btn btn-amber btn-lg action-btn" style="width:100%;" onclick="openUnlockModal()">
+                <span class="material-symbols-outlined" style="font-size:16px;">key</span>
+                Generate &amp; Unlock
+              </button>
+              <div class="action-hint" style="margin-top:8px;font-size:11px;color:var(--text-secondary);">Expires automatically after 24 hours</div>
+            </div>
           </div>
         </div>
 
-        <!-- GENERATED PASSWORD CARD (Persistent Security Dashboard) -->
+        <!-- Temp Password Display Card (shown after generation) -->
         <div class="card card-p hidden" id="temp-pass-card" style="background:var(--green-soft);border:1.5px solid var(--green-border);">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-            <div style="font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;">Security Credentials</div>
-            <span class="badge badge-green" style="font-size:9px;">Active</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-size:10px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.05em;">Security Credentials</div>
+            <span class="badge badge-green">Active</span>
           </div>
-          
-          <div class="shimmer-card" style="background:var(--bg-card);border:1.5px solid var(--green-border);border-radius:var(--radius-md);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-            <span class="material-symbols-outlined" style="color:var(--green);font-size:22px;flex-shrink:0;">key</span>
-            <code id="display-pass" style="font-size:18px;font-weight:800;letter-spacing:.14em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;"></code>
-            <button onclick="copyDisplayPass()" id="copy-btn-sidebar" style="background:none;border:none;cursor:pointer;color:var(--green);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:.2s;" class="hover:bg-green-100" title="Copy">
-              <span class="material-symbols-outlined" id="copy-icon2" style="font-size:20px;">content_copy</span>
+          <div style="background:var(--bg-card);border:1.5px solid var(--green-border);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+            <span class="material-symbols-outlined" style="color:var(--green);font-size:18px;flex-shrink:0;">key</span>
+            <code id="display-pass" style="font-size:15px;font-weight:800;letter-spacing:.1em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;word-break:break-all;"></code>
+            <button onclick="copyDisplayPass()" style="background:none;border:none;cursor:pointer;color:var(--green);width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;" title="Copy">
+              <span class="material-symbols-outlined" id="copy-icon2" style="font-size:17px;">content_copy</span>
             </button>
           </div>
-
-          <!-- Mini Security Grid -->
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
-            <div style="background:rgba(244,63,94,0.06); border:1px solid rgba(244,63,94,0.1); border-radius:var(--radius-sm); padding:8px; display:flex; gap:8px; align-items:center;">
-              <span class="material-symbols-outlined" style="color:var(--red); font-size:16px;">schedule</span>
-              <div style="line-height:1.1;">
-                <div style="font-size:9px; font-weight:800; color:var(--red); text-transform:uppercase;">24h</div>
-                <div style="font-size:8px; color:var(--text-secondary);">Validity</div>
-              </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">
+            <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.12);border-radius:var(--radius-sm);padding:7px 9px;display:flex;gap:6px;align-items:center;">
+              <span class="material-symbols-outlined" style="color:var(--red);font-size:14px;">schedule</span>
+              <div><div style="font-size:9px;font-weight:800;color:var(--red);text-transform:uppercase;">24h</div><div style="font-size:8px;color:var(--text-secondary);">Validity</div></div>
             </div>
-            <div style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.1); border-radius:var(--radius-sm); padding:8px; display:flex; gap:8px; align-items:center;">
-              <span class="material-symbols-outlined" style="color:var(--blue); font-size:16px;">verified_user</span>
-              <div style="line-height:1.1;">
-                <div style="font-size:9px; font-weight:800; color:var(--blue); text-transform:uppercase;">Verified</div>
-                <div style="font-size:8px; color:var(--text-secondary);">Channel</div>
-              </div>
+            <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.12);border-radius:var(--radius-sm);padding:7px 9px;display:flex;gap:6px;align-items:center;">
+              <span class="material-symbols-outlined" style="color:var(--blue);font-size:14px;">verified_user</span>
+              <div><div style="font-size:9px;font-weight:800;color:var(--blue);text-transform:uppercase;">Verified</div><div style="font-size:8px;color:var(--text-secondary);">Channel</div></div>
             </div>
           </div>
-
-          <div style="padding-top:12px; border-top:1px solid rgba(16,185,129,0.1); display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-secondary);">
-            <span class="material-symbols-outlined" style="font-size:14px; color:var(--green);">info</span>
-            <span>Record will remain in queue until first login.</span>
+          <div style="padding-top:10px;border-top:1px solid rgba(16,185,129,0.15);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);">
+            <span class="material-symbols-outlined" style="font-size:13px;color:var(--green);flex-shrink:0;">info</span>
+            <span>Record stays in queue until first login.</span>
           </div>
         </div>
 
-      </div>
-    </div>
-  </div>
-</div>
+      </div><!-- /col-right -->
 
-<!-- GENERATE TEMP PASSWORD MODAL -->
+    </div><!-- /page-grid -->
+  </div><!-- /page-content -->
+</div><!-- /main -->
+
+<!-- MODAL -->
 <div class="modal-overlay hidden" id="unlock-modal">
   <div class="modal-card">
-    <div class="modal-icon" id="modal-icon-box" style="background:var(--amber-soft); transition: all 0.4s ease;">
-      <span class="material-symbols-outlined" id="modal-icon" style="color:var(--amber);font-size:30px;">key</span>
+    <div class="modal-icon" id="modal-icon-box" style="background:var(--amber-soft);transition:all 0.35s ease;">
+      <span class="material-symbols-outlined" id="modal-icon" style="color:var(--amber);font-size:26px;">key</span>
     </div>
     <div class="modal-title" id="modal-title">Generate Temporary Password</div>
-    <div class="modal-text" id="modal-desc">A secure 12-character one-time temporary password will be generated for <strong id="modal-name">Sunita Mehta</strong> (<strong id="modal-acc">FNZ20260004</strong>). This password will be valid for <strong>24 hours only</strong> and the customer will be required to change their password on the very first login.</div>
+    <div class="modal-text" id="modal-desc">A secure 12-character one-time password will be generated for <strong id="modal-name">Sunita Mehta</strong> (<strong id="modal-acc">FNZ20260004</strong>). Valid for <strong>24 hours only</strong>. Customer must change on first login.</div>
 
-    <!-- Password display area -->
-    <div id="modal-pass-area" class="hidden" style="margin-bottom:20px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:8px;">Temporary Password</div>
-      <div style="display:flex;align-items:center;gap:10px;background:var(--bg-input);border:1.5px solid var(--amber-border);border-radius:var(--radius-md);padding:14px 16px;">
-        <span class="material-symbols-outlined" style="color:var(--amber);font-size:20px;flex-shrink:0;">key</span>
-        <code id="modal-pass-val" style="font-size:18px;font-weight:800;letter-spacing:.14em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;"></code>
-        <button onclick="copyModalPass()" style="background:none;border:none;cursor:pointer;color:var(--amber);" title="Copy">
-          <span class="material-symbols-outlined" id="modal-copy-icon" style="font-size:20px;">content_copy</span>
+    <div id="modal-pass-area" class="hidden" style="margin-bottom:18px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:7px;">Temporary Password</div>
+      <div style="display:flex;align-items:center;gap:10px;background:var(--bg-input);border:1.5px solid var(--amber-border);border-radius:var(--radius-md);padding:12px 14px;">
+        <span class="material-symbols-outlined" style="color:var(--amber);font-size:18px;flex-shrink:0;">key</span>
+        <code id="modal-pass-val" style="font-size:16px;font-weight:800;letter-spacing:.1em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;word-break:break-all;"></code>
+        <button onclick="copyModalPass()" style="background:none;border:none;cursor:pointer;color:var(--amber);flex-shrink:0;" title="Copy">
+          <span class="material-symbols-outlined" id="modal-copy-icon" style="font-size:18px;">content_copy</span>
         </button>
       </div>
-      <!-- Security Metadata Grid -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
-        <div style="background:var(--red-soft); border:1px solid var(--red-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--red); font-size:18px;">schedule</span>
-          <div style="line-height:1.2;">
-            <div style="font-size:11px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:0.02em;">24 Hours</div>
-            <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Validity Period</div>
-          </div>
+      <div class="modal-pass-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;">
+        <div style="background:var(--red-soft);border:1px solid var(--red-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
+          <span class="material-symbols-outlined" style="color:var(--red);font-size:16px;">schedule</span>
+          <div><div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;">24 Hours</div><div style="font-size:9px;color:var(--text-secondary);">Validity Period</div></div>
         </div>
-        <div style="background:var(--amber-soft); border:1px solid var(--amber-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--amber); font-size:18px;">security</span>
-          <div style="line-height:1.2;">
-            <div style="font-size:11px; font-weight:800; color:var(--amber); text-transform:uppercase; letter-spacing:0.02em;">Force Reset</div>
-            <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">On First Login</div>
-          </div>
+        <div style="background:var(--amber-soft);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
+          <span class="material-symbols-outlined" style="color:var(--amber);font-size:16px;">security</span>
+          <div><div style="font-size:10px;font-weight:800;color:var(--amber);text-transform:uppercase;">Force Reset</div><div style="font-size:9px;color:var(--text-secondary);">On First Login</div></div>
         </div>
-        <div style="background:var(--blue-soft); border:1px solid var(--blue-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--blue); font-size:18px;">verified_user</span>
-          <div style="line-height:1.2;">
-            <div style="font-size:11px; font-weight:800; color:var(--blue); text-transform:uppercase; letter-spacing:0.02em;">Verified</div>
-            <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Sharing Policy</div>
-          </div>
+        <div style="background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
+          <span class="material-symbols-outlined" style="color:var(--blue);font-size:16px;">verified_user</span>
+          <div><div style="font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;">Verified</div><div style="font-size:9px;color:var(--text-secondary);">Sharing Policy</div></div>
         </div>
-        <div style="background:var(--green-soft); border:1px solid var(--green-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--green); font-size:18px;">history_edu</span>
-          <div style="line-height:1.2;">
-            <div style="font-size:11px; font-weight:800; color:var(--green); text-transform:uppercase; letter-spacing:0.02em;">Logged</div>
-            <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Audit Trail</div>
-          </div>
+        <div style="background:var(--green-soft);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
+          <span class="material-symbols-outlined" style="color:var(--green);font-size:16px;">history_edu</span>
+          <div><div style="font-size:10px;font-weight:800;color:var(--green);text-transform:uppercase;">Logged</div><div style="font-size:9px;color:var(--text-secondary);">Audit Trail</div></div>
         </div>
       </div>
     </div>
@@ -380,7 +452,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn btn-amber" id="gen-btn" onclick="doGenerate()">
         <span class="material-symbols-outlined" style="font-size:15px;">key</span>
-        Generate & Unlock
+        Generate &amp; Unlock
       </button>
     </div>
     <div class="modal-actions hidden" id="modal-action-2">
@@ -396,16 +468,32 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-/* ── THEME ── */
-function initTheme(){const s=localStorage.getItem('finzo-admin-theme');const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(dark)document.documentElement.classList.add('dark');updateIcons();}
-function toggleTheme(){const dark=document.documentElement.classList.toggle('dark');localStorage.setItem('finzo-admin-theme',dark?'dark':'light');updateIcons();}
-function updateIcons(){const dark=document.documentElement.classList.contains('dark');['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});const lbl=document.getElementById('theme-label');if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';}
+/* THEME */
+function initTheme(){
+  const s=localStorage.getItem('finzo-admin-theme');
+  const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(dark)document.documentElement.classList.add('dark');
+  updateIcons();
+}
+function toggleTheme(){
+  const dark=document.documentElement.classList.toggle('dark');
+  localStorage.setItem('finzo-admin-theme',dark?'dark':'light');
+  updateIcons();
+}
+function updateIcons(){
+  const dark=document.documentElement.classList.contains('dark');
+  const el=document.getElementById('theme-icon');
+  if(el)el.textContent=dark?'light_mode':'dark_mode';
+  const lbl=document.getElementById('theme-label');
+  if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';
+}
 initTheme();
 
-/* ── LOAD DATA ── */
+/* DATA */
 const urlP=new URLSearchParams(window.location.search);
 const accId=urlP.get('id')||'L01';
-// PHP_BACKEND: GET /api/admin/locked-account-detail.php?id=
+var generatedPass='';
+
 const records={
   'L01':{name:'Sunita Mehta',email:'sunita.mehta@gmail.com',initials:'SM',accNo:'FNZ20260004',accType:'Savings',phone:'+91 94455 33221',balance:'₹18,500.00',lockedDate:'17 Apr 2026',lockTime:'09:22 AM IST',ip:'192.168.1.205',device:'Chrome on Windows 11'},
   'L02':{name:'Dev Gupta',email:'dev.gupta@gmail.com',initials:'DG',accNo:'FNZ20260008',accType:'Savings',phone:'+91 88776 44332',balance:'₹6,200.00',lockedDate:'16 Apr 2026',lockTime:'11:45 PM IST',ip:'10.0.0.88',device:'Safari on iPhone 15'},
@@ -414,7 +502,7 @@ const records={
 };
 const d=records[accId]||records['L01'];
 
-/* Populate page */
+/* POPULATE */
 document.getElementById('bc-name').textContent=d.name;
 document.getElementById('d-avatar').textContent=d.initials;
 document.getElementById('d-name').textContent=d.name;
@@ -424,119 +512,96 @@ document.getElementById('d-phone').textContent=d.phone;
 document.getElementById('d-acc-type').textContent=d.accType+' Account';
 document.getElementById('d-acc-type-badge').textContent=d.accType;
 document.getElementById('d-balance').textContent=d.balance;
+document.getElementById('d-locked-date').textContent=d.lockedDate;
+document.getElementById('d-lock-time').textContent=d.lockedDate+' — '+d.lockTime;
+document.getElementById('d-ip').textContent=d.ip;
+document.getElementById('d-device').textContent=d.device;
 document.getElementById('modal-name').textContent=d.name;
 document.getElementById('modal-acc').textContent=d.accNo;
 
-/* Attempt log */
-const times=['09:20:51 AM','09:19:38 AM','09:17:22 AM','09:15:04 AM','09:12:47 AM'];
-const attemptHTML=times.map((t,i)=>`
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);${i===4?'border-bottom:none':''}">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div style="width:28px;height:28px;border-radius:50%;background:var(--red-soft);display:flex;align-items:center;justify-content:center;">
-        <span class="material-symbols-outlined" style="font-size:14px;color:var(--red);">close</span>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Attempt ${i+1} — Wrong Password</div>
-        <div style="font-size:11px;color:var(--text-secondary);">${d.lockedDate} · ${t} IST</div>
-      </div>
-    </div>
-    <span class="badge badge-red">Failed</span>
-  </div>`).join('');
-document.getElementById('attempt-log').innerHTML=attemptHTML;
-
-/* ── MODAL ── */
-let generatedPass='',unlockDone=false;
-
+/* MODAL OPEN/CLOSE */
 function openUnlockModal(){
-  // Reset for Premium transition
-  const iconBox = document.getElementById('modal-icon-box');
-  const icon = document.getElementById('modal-icon');
-  const title = document.getElementById('modal-title');
-  const desc = document.getElementById('modal-desc');
-
-  iconBox.style.background = 'var(--amber-soft)';
-  iconBox.classList.remove('success-pop');
-  icon.textContent = 'key';
-  icon.style.color = 'var(--amber)';
-  title.textContent = 'Generate Temporary Password';
-  title.style.color = '';
-  desc.innerHTML = `A secure 12-character one-time temporary password will be generated for <strong>${d.name}</strong> (${d.accNo}). This password will be valid for <strong>24 hours only</strong> and the customer will be required to change their password on the very first login.`;
-
+  const ib=document.getElementById('modal-icon-box');
+  ib.style.background='var(--amber-soft)';
+  ib.classList.remove('success-pop');
+  document.getElementById('modal-icon').textContent='key';
+  document.getElementById('modal-icon').style.color='var(--amber)';
+  document.getElementById('modal-title').textContent='Generate Temporary Password';
+  document.getElementById('modal-title').style.color='';
+  document.getElementById('modal-desc').innerHTML=`A secure 12-character one-time password will be generated for <strong>${d.name}</strong> (${d.accNo}). Valid for <strong>24 hours only</strong>. Customer must change on first login.`;
   document.getElementById('modal-pass-area').classList.add('hidden');
   document.getElementById('modal-pass-area').classList.remove('shimmer-card');
   document.getElementById('modal-action-1').classList.remove('hidden');
   document.getElementById('modal-action-2').classList.add('hidden');
-  
   const btn=document.getElementById('gen-btn');
-  btn.disabled=false;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
+  btn.disabled=false;
+  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate &amp; Unlock';
   document.getElementById('unlock-modal').classList.remove('hidden');
 }
+function closeModal(){
+  document.getElementById('unlock-modal').classList.add('hidden');
+}
 
-function closeModal(){document.getElementById('unlock-modal').classList.add('hidden');}
-
+/* GENERATE */
 function doGenerate(){
   const btn=document.getElementById('gen-btn');
-  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px;">autorenew</span> Generating...';
-  // PHP_BACKEND: POST /api/admin/generate-temp-password.php
-  // {user_id, account_id} → returns {temp_password, expires_at}
-  // Also: UPDATE accounts SET status='active', lock_count=0 WHERE account_id=X
-  // Also: INSERT INTO audit_log (action:'UNLOCK', description:'Generated temp password...')
+  btn.disabled=true;
+  btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px;">autorenew</span> Generating...';
   setTimeout(()=>{
-    const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
-    let p='ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)];
-    p+='23456789'[Math.floor(Math.random()*8)];
-    p+='@#$!'[Math.floor(Math.random()*4)];
-    for(let i=3;i<12;i++)p+=chars[Math.floor(Math.random()*chars.length)];
-    generatedPass=p.split('').sort(()=>Math.random()-.5).join('');
+    try{
+      const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
+      let p='ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)];
+      p+='23456789'[Math.floor(Math.random()*8)];
+      p+='@#$!'[Math.floor(Math.random()*4)];
+      for(let i=3;i<12;i++)p+=chars[Math.floor(Math.random()*chars.length)];
+      generatedPass=p.split('').sort(()=>Math.random()-.5).join('');
 
-    // Premium Header Transition
-    const iconBox = document.getElementById('modal-icon-box');
-    const icon = document.getElementById('modal-icon');
-    const title = document.getElementById('modal-title');
-    const desc = document.getElementById('modal-desc');
+      const $=id=>document.getElementById(id);
+      const set=(id,p,v)=>{const e=$(id);if(e)e[p]=v;};
+      const sty=(id,p,v)=>{const e=$(id);if(e)e.style[p]=v;};
+      const cls=(id,op,c)=>{const e=$(id);if(e)e.classList[op](c);};
 
-    iconBox.style.background = 'var(--green-soft)';
-    iconBox.classList.add('success-pop');
-    icon.textContent = 'task_alt';
-    icon.style.color = 'var(--green)';
-    title.textContent = 'Account Unlocked';
-    title.style.color = 'var(--green)';
-    desc.innerHTML = `Access has been restored for <strong>${d.name}</strong>. A temporary password was generated and logged in the system.`;
+      sty('modal-icon-box','background','var(--green-soft)');
+      cls('modal-icon-box','add','success-pop');
+      set('modal-icon','textContent','task_alt');
+      sty('modal-icon','color','var(--green)');
+      set('modal-title','textContent','Account Unlocked');
+      sty('modal-title','color','var(--green)');
+      set('modal-desc','innerHTML',`Access restored for <strong>${d.name}</strong>. Temporary password generated and logged in the system.`);
+      set('modal-pass-val','textContent',generatedPass);
+      cls('modal-pass-area','remove','hidden');
+      cls('modal-pass-area','add','shimmer-card');
+      cls('modal-action-1','add','hidden');
+      cls('modal-action-2','remove','hidden');
 
-    document.getElementById('modal-pass-val').textContent=generatedPass;
-    const passArea = document.getElementById('modal-pass-area');
-    passArea.classList.remove('hidden');
-    passArea.classList.add('shimmer-card');
-    
-    document.getElementById('modal-action-1').classList.add('hidden');
-    document.getElementById('modal-action-2').classList.remove('hidden');
+      set('display-pass','textContent',generatedPass);
+      cls('unlock-action-card','add','hidden');
+      cls('temp-pass-card','remove','hidden');
 
-    /* Update right card */
-    document.getElementById('display-pass').textContent=generatedPass;
-    document.getElementById('unlock-action-card').classList.add('hidden');
-    document.getElementById('temp-pass-card').classList.remove('hidden');
+      const exp=new Date(Date.now()+86400000);
+      const expStr=exp.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+exp.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      set('d-temp-status','innerHTML','<span class="badge badge-indigo">Generated &amp; Sent</span>');
+      const mb=$('d-main-badge');
+      if(mb){mb.textContent='Unlocked';mb.className='badge badge-green';}
+      sty('d-expiry-row','display','flex');
+      set('d-expiry','textContent',expStr);
 
-    /* Update badge */
-    const now=new Date();
-    const exp=new Date(now.getTime()+24*60*60*1000);
-    const expStr=exp.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+exp.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('d-temp-status').innerHTML='<span class="badge badge-indigo">Generated & Sent</span>';
-    document.getElementById('d-main-badge').textContent = 'Unlocked';
-    document.getElementById('d-main-badge').className = 'badge badge-green';
-    document.getElementById('d-expiry-row').style.display='flex';
-    document.getElementById('d-expiry').textContent=expStr;
-
-    showToast('Temp password generated. Account unlocked. Valid 24 hours.','success');
-    unlockDone=true;
+      showToast('Account unlocked. Temp password valid 24 hours.','success');
+    }catch(e){
+      console.error(e);
+      btn.disabled=false;
+      btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px;">key</span>Try Again';
+      showToast('Error. Please try again.','error');
+    }
   },1800);
 }
 
-let passCopied=false;
+/* COPY */
 function copyModalPass(){
   navigator.clipboard.writeText(generatedPass).then(()=>{
     document.getElementById('modal-copy-icon').textContent='check';
     document.getElementById('modal-copy-icon').style.color='var(--green)';
-    showToast('Password copied to clipboard','success');
+    showToast('Password copied','success');
     setTimeout(()=>{document.getElementById('modal-copy-icon').textContent='content_copy';document.getElementById('modal-copy-icon').style.color='';},2000);
   });
 }
@@ -544,26 +609,27 @@ function copyDisplayPass(){
   navigator.clipboard.writeText(generatedPass).then(()=>{
     document.getElementById('copy-icon2').textContent='check';
     document.getElementById('copy-icon2').style.color='var(--green)';
-    showToast('Password copied to clipboard','success');
+    showToast('Password copied','success');
     setTimeout(()=>{document.getElementById('copy-icon2').textContent='content_copy';document.getElementById('copy-icon2').style.color='';},2000);
   });
 }
 
+/* TOAST */
 function showToast(msg,type='success'){
   const wrap=document.getElementById('toast-wrap');
   const t=document.createElement('div');
-  const icons={success:'check_circle',error:'cancel',info:'info'};
-  const colors={success:'#10b981',error:'#f43f5e',info:'#f59e0b'};
+  const icons={success:'check_circle',error:'cancel'};
+  const colors={success:'#10b981',error:'#f43f5e'};
   t.className=`toast toast-${type}`;
-  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
+  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:17px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
   wrap.appendChild(t);
   setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},4000);
 }
+
+/* SIDEBAR TOGGLE */
 function toggleSidebar(){
-  const s=document.getElementById('sidebar');
-  const o=document.getElementById('sidebar-overlay');
-  s.classList.toggle('open');
-  o.classList.toggle('visible');
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('visible');
 }
 </script>
 </body>
