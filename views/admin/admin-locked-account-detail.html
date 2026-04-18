@@ -169,7 +169,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
               <div style="font-size:18px;font-weight:800;color:var(--text-primary);" id="d-name">Sunita Mehta</div>
               <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;" id="d-email">sunita.mehta@gmail.com</div>
               <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
-                <span class="badge badge-amber">Locked</span>
+                <span class="badge badge-amber" id="d-main-badge">Locked</span>
                 <span class="badge badge-green" id="d-acc-type-badge">Savings</span>
               </div>
             </div>
@@ -280,23 +280,42 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
           </div>
         </div>
 
-        <!-- GENERATED PASSWORD CARD (hidden until generated) -->
+        <!-- GENERATED PASSWORD CARD (Persistent Security Dashboard) -->
         <div class="card card-p hidden" id="temp-pass-card" style="background:var(--green-soft);border:1.5px solid var(--green-border);">
-          <div class="section-label" style="color:var(--green);">Temporary Password Generated</div>
-          <div style="background:var(--bg-card);border:1.5px solid var(--green-border);border-radius:var(--radius-md);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-            <span class="material-symbols-outlined" style="color:var(--green);font-size:20px;flex-shrink:0;">key</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;">Security Credentials</div>
+            <span class="badge badge-green" style="font-size:9px;">Active</span>
+          </div>
+          
+          <div class="shimmer-card" style="background:var(--bg-card);border:1.5px solid var(--green-border);border-radius:var(--radius-md);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+            <span class="material-symbols-outlined" style="color:var(--green);font-size:22px;flex-shrink:0;">key</span>
             <code id="display-pass" style="font-size:18px;font-weight:800;letter-spacing:.14em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;"></code>
-            <button onclick="copyDisplayPass()" style="background:none;border:none;cursor:pointer;color:var(--green);" title="Copy">
-              <span class="material-symbols-outlined" id="copy-icon2" style="font-size:18px;">content_copy</span>
+            <button onclick="copyDisplayPass()" id="copy-btn-sidebar" style="background:none;border:none;cursor:pointer;color:var(--green);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:.2s;" class="hover:bg-green-100" title="Copy">
+              <span class="material-symbols-outlined" id="copy-icon2" style="font-size:20px;">content_copy</span>
             </button>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
-            <span class="material-symbols-outlined" style="font-size:14px;color:var(--red);">schedule</span>
-            Expires in <strong style="color:var(--red);" id="expiry-countdown">24 hours</strong>
+
+          <!-- Mini Security Grid -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+            <div style="background:rgba(244,63,94,0.06); border:1px solid rgba(244,63,94,0.1); border-radius:var(--radius-sm); padding:8px; display:flex; gap:8px; align-items:center;">
+              <span class="material-symbols-outlined" style="color:var(--red); font-size:16px;">schedule</span>
+              <div style="line-height:1.1;">
+                <div style="font-size:9px; font-weight:800; color:var(--red); text-transform:uppercase;">24h</div>
+                <div style="font-size:8px; color:var(--text-secondary);">Validity</div>
+              </div>
+            </div>
+            <div style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.1); border-radius:var(--radius-sm); padding:8px; display:flex; gap:8px; align-items:center;">
+              <span class="material-symbols-outlined" style="color:var(--blue); font-size:16px;">verified_user</span>
+              <div style="line-height:1.1;">
+                <div style="font-size:9px; font-weight:800; color:var(--blue); text-transform:uppercase;">Verified</div>
+                <div style="font-size:8px; color:var(--text-secondary);">Channel</div>
+              </div>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-secondary);">
-            <span class="material-symbols-outlined" style="font-size:14px;color:var(--green);">check_circle</span>
-            Account unlocked — customer can now login
+
+          <div style="padding-top:12px; border-top:1px solid rgba(16,185,129,0.1); display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-secondary);">
+            <span class="material-symbols-outlined" style="font-size:14px; color:var(--green);">info</span>
+            <span>Record will remain in queue until first login.</span>
           </div>
         </div>
 
@@ -501,8 +520,9 @@ function doGenerate(){
     const now=new Date();
     const exp=new Date(now.getTime()+24*60*60*1000);
     const expStr=exp.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+exp.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('expiry-countdown').textContent=expStr;
     document.getElementById('d-temp-status').innerHTML='<span class="badge badge-indigo">Generated & Sent</span>';
+    document.getElementById('d-main-badge').textContent = 'Unlocked';
+    document.getElementById('d-main-badge').className = 'badge badge-green';
     document.getElementById('d-expiry-row').style.display='flex';
     document.getElementById('d-expiry').textContent=expStr;
 
