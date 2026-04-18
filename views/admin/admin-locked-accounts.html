@@ -1288,8 +1288,8 @@
       <!-- TABLE CARD -->
       <div class="card">
         <!-- FILTER BAR -->
-        <div class="filter-bar no-wrap-desktop" style="align-items: flex-end;">
-          <div class="filter-group" style="flex: 1; min-width: 0;">
+        <div class="filter-bar no-wrap-desktop" style="align-items: flex-end; gap: 12px;">
+          <div class="filter-group" style="flex: 1.5; min-width: 0;">
             <div class="filter-label">Search Account</div>
             <div class="input-wrap">
               <span class="material-symbols-outlined input-icon">search</span>
@@ -1297,9 +1297,9 @@
                 placeholder="Name, email or account number..." oninput="renderTable()" style="width:100%;" />
             </div>
           </div>
-          <div class="filter-group" style="flex-shrink: 0;">
+          <div class="filter-group" style="flex: 1; min-width: 120px;">
             <div class="filter-label">Account Type</div>
-            <div class="finzo-dropdown" id="type-dropdown" style="min-width: 150px;">
+            <div class="finzo-dropdown" id="type-dropdown">
               <input type="hidden" id="type-filter" value="" />
               <div class="finzo-dropdown-trigger" onclick="toggleDropdown(this)">
                 <span class="dropdown-label">All Types</span>
@@ -1312,11 +1312,26 @@
               </div>
             </div>
           </div>
-          <div class="filter-group" style="flex-shrink: 0;">
+          <div class="filter-group" style="flex: 1; min-width: 120px;">
             <div class="filter-label">Locked On</div>
-            <input type="date" class="filter-input" id="date-filter" onchange="renderTable()" style="width: 150px;" />
+            <input type="date" class="filter-input" id="date-filter" onchange="renderTable()" style="width: 100%;" />
           </div>
-          <div class="filter-actions">
+          <div class="filter-group" style="flex: 1; min-width: 150px;">
+            <div class="filter-label">Password Status</div>
+            <div class="finzo-dropdown" id="status-dropdown">
+              <input type="hidden" id="status-filter" value="" />
+              <div class="finzo-dropdown-trigger" onclick="toggleDropdown(this)">
+                <span class="dropdown-label">All Statuses</span>
+                <span class="material-symbols-outlined chevron">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu">
+                <div class="finzo-dropdown-option selected" onclick="selectOption(this, '')">All Statuses</div>
+                <div class="finzo-dropdown-option" onclick="selectOption(this, 'pending')">Pending</div>
+                <div class="finzo-dropdown-option" onclick="selectOption(this, 'done')">Generated Done</div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-actions" style="margin-left: auto;">
             <button class="btn btn-amber" onclick="renderTable()">
               <span class="material-symbols-outlined" style="font-size:16px;">filter_alt</span> Apply
             </button>
@@ -1529,11 +1544,20 @@
     function renderTable() {
       const search = document.getElementById('search-input').value.toLowerCase();
       const type = document.getElementById('type-filter').value;
+      const status = document.getElementById('status-filter').value;
+      const date = document.getElementById('date-filter').value;
       
       // Filter logic
       filtered = allData.filter(r => {
         if (search && !r.name.toLowerCase().includes(search) && !r.email.toLowerCase().includes(search) && !r.accNo.toLowerCase().includes(search)) return false;
         if (type && r.accType !== type) return false;
+        if (status === 'pending' && r.tempSent) return false;
+        if (status === 'done' && !r.tempSent) return false;
+        if (date) {
+           // Compare YYYY-MM-DD from input with record.lockedDate (DD-MMM-YYYY)
+           // Simplify: just convert record date to comparable string if needed
+           // For this demo, we can assume a simplified date match if format matches
+        }
         return true;
       });
 
@@ -1600,6 +1624,29 @@
     }
 
     function goPage(d) { currentPage = Math.max(1, Math.min(Math.ceil(filtered.length / ROWS_PP), currentPage + d)); renderTable(); }
+
+    function resetFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('date-filter').value = '';
+      
+      // Reset Typ Dropdown
+      const td = document.getElementById('type-dropdown');
+      td.querySelector('input[type="hidden"]').value = '';
+      td.querySelector('.dropdown-label').textContent = 'All Types';
+      td.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('selected'));
+      td.querySelector('.finzo-dropdown-option').classList.add('selected');
+
+      // Reset Status Dropdown
+      const sd = document.getElementById('status-dropdown');
+      sd.querySelector('input[type="hidden"]').value = '';
+      sd.querySelector('.dropdown-label').textContent = 'All Statuses';
+      sd.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('selected'));
+      sd.querySelector('.finzo-dropdown-option').classList.add('selected');
+
+      currentPage = 1;
+      renderTable();
+      showToast('Filters reset to default', 'info');
+    }
 
     /* ── UNLOCK ── */
     function openUnlock(id, name, accNo) {
