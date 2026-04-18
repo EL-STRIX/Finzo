@@ -199,16 +199,55 @@ $(document).ready(function() {
     // Smooth Scroll for anchor links
     $(document).on('click', 'a[href^="#"]', function(e) {
         const targetId = $(this).attr('href');
-        if (targetId === '#' || !targetId.startsWith('#')) return;
+        if (targetId === '#' || targetId === '') return;
         
         const target = $(targetId);
         if (target.length) {
             e.preventDefault();
-            $('html, body').animate({
-                scrollTop: target.offset().top - 100
+            
+            // Remove active class from all links and add to clicked link
+            $('.nav-link').removeClass('nav-link-active');
+            $(this).addClass('nav-link-active');
+
+            const navbarHeight = $('nav').outerHeight() || 80;
+            $('html, body').stop().animate({
+                scrollTop: target.offset().top - navbarHeight + 10 // Slight offset for better vision
             }, 800);
         }
     });
+
+    // --- NEW: Scrollspy (Underline follows page view) ---
+    function initScrollspy() {
+        const sections = ['home', 'benefits', 'features'];
+        const navLinks = $('.nav-link');
+        const navbarHeight = $('nav').outerHeight() || 80;
+
+        $(window).on('scroll', function() {
+            const scrollPos = $(window).scrollTop() + navbarHeight + 120; // Offset for focus
+
+            sections.forEach(id => {
+                const section = $('#' + id);
+                if (section.length) {
+                    const top = section.offset().top;
+                    const bottom = top + section.outerHeight();
+
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        navLinks.removeClass('nav-link-active');
+                        $(`.nav-link[href="#${id}"]`).addClass('nav-link-active');
+                    }
+                }
+            });
+            
+            // Special case: Top of page
+            if ($(window).scrollTop() < 100) {
+                navLinks.removeClass('nav-link-active');
+                $('.nav-link[href="#home"]').addClass('nav-link-active');
+            }
+        });
+    }
+
+    // Initialize Scrollspy after a small delay to ensure elements are ready
+    setTimeout(initScrollspy, 500);
 
     // --- NEW: Sidebar Auto-Highlighting (Extension-Aware) ---
     function highlightActiveSidebar() {
