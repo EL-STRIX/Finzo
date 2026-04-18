@@ -8,36 +8,107 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../../assets/css/user.css"/>
 <style>
-.grid-12 { display: grid; grid-template-columns: repeat(12,1fr); gap: 20px; }
+/* --- Premium Typography & Grid System --- */
+:root {
+  --card-radius: 20px;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
 .col-8 { grid-column: span 8; }
 .col-4 { grid-column: span 4; }
 .col-12 { grid-column: span 12; }
-@media(max-width:1024px){.col-8,.col-4{grid-column:span 12;}}
-.balance-card {
-  background: linear-gradient(135deg, #0f172a 0%, #0c2d48 50%, #0891b2 100%);
-  border-radius: 20px; padding: 28px; color: #fff;
-  position: relative; overflow: hidden; min-height: 180px;
-  display: flex; flex-direction: column; justify-content: space-between;
+
+@media (max-width: 1100px) {
+  .col-8, .col-4 { grid-column: span 12; }
+  .grid-12 { gap: 16px; }
 }
-.balance-card::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.04); }
-.balance-card::after { content:''; position:absolute; bottom:-60px; left:-20px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.02); }
-.balance-amount { font-size: 36px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-.balance-amount.locked { color: rgba(255,255,255,0.3); letter-spacing: 0.2em; font-size: 28px; }
+
+/* --- Institutional Balance Card --- */
+.balance-card {
+  background: linear-gradient(135deg, #0d121f 0%, #064e3b 50%, #0891b2 100%);
+  border-radius: 24px; padding: 32px; color: #fff;
+  position: relative; overflow: hidden; min-height: 240px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: 0 20px 50px rgba(0, 38, 69, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.balance-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); }
+
+/* Decorative Elements (Fixed Syntax) */
+.balance-card::before { 
+  content: ''; position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; 
+  border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); 
+}
+.balance-card::after { 
+  content: ''; position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; 
+  border-radius: 50%; background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, transparent 60%); 
+}
+
+.balance-amount { 
+  font-size: 48px; font-weight: 800; letter-spacing: -2.5px; 
+  background: linear-gradient(to bottom, #ffffff 60%, rgba(255,255,255,0.7)); 
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1.1; margin: 8px 0;
+}
+.balance-amount.locked { 
+  color: rgba(255,255,255,0.2); -webkit-text-fill-color: initial; background: none; filter: blur(4px); 
+}
+
+.account-status-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px; border-radius: 20px; backdrop-filter: blur(10px);
+}
+
+/* --- Premium Glass Quick Actions --- */
+.quick-action-list { display: flex; flex-direction: column; gap: 16px; }
+
 .quick-action {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); transition: var(--transition); cursor: pointer;
+  padding: 20px; background: #fff; border: 1px solid var(--border);
+  border-radius: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none; color: var(--text-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
-.quick-action:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(8,145,178,0.1); transform: translateY(-1px); }
-.quick-action.locked { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-.quick-action-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
-.tx-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+
+.dark .quick-action { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.06); }
+
+.quick-action:hover { 
+  border-color: var(--primary); transform: translateX(8px);
+  background: #fff; box-shadow: 0 10px 25px rgba(8, 145, 178, 0.08);
+}
+.dark .quick-action:hover { background: rgba(255, 255, 255, 0.05); }
+
+.quick-action.locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; pointer-events: none; }
+
+.quick-action-icon { 
+  width: 52px; height: 52px; border-radius: 16px; 
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s ease;
+}
+.quick-action:hover .quick-action-icon { transform: scale(1.1) rotate(-5deg); }
+
+/* --- Transactions List --- */
+.tx-item { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 20px 0; border-bottom: 1px solid var(--border); transition: transform 0.2s ease;
+}
+.tx-item:hover { transform: scale(1.005); }
 .tx-item:last-child { border-bottom: none; }
-.tx-icon { width: 42px; height: 42px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.chart-container { position: relative; height: 200px; }
-.locked-overlay-chart { position: absolute; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--radius-lg); gap: 8px; }
-.dark .locked-overlay-chart { background: rgba(22,27,34,0.85); }
+.tx-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* --- Responsive Polish --- */
+.page-header { margin-bottom: 40px; }
+.card-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; color: var(--text-primary); }
+
+@media (max-width: 640px) {
+  .balance-amount { font-size: 36px; }
+  .balance-card { padding: 24px; min-height: 220px; }
+  .page-header { margin-bottom: 24px; }
+}
 </style>
 </head>
 <body>
@@ -123,10 +194,10 @@
               <div id="dash-account" style="font-size:16px;font-weight:700;letter-spacing:0.14em;font-family:monospace;color:rgba(255,255,255,0.8)">NOT YET ASSIGNED</div>
               <span class="material-symbols-outlined" id="lock-icon" style="font-size:16px;color:rgba(255,255,255,0.4)">lock</span>
             </div>
-            <div id="account-badge" style="margin-top:10px">
-              <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(8,145,178,0.25);border:1px solid rgba(8,145,178,0.4);padding:4px 12px;border-radius:20px">
-                <span style="width:6px;height:6px;border-radius:50%;background:#0891b2;animation:pulse 2s infinite"></span>
-                <span style="font-size:9px;font-weight:800;letter-spacing:0.14em;color:#67e8f9;text-transform:uppercase" id="account-status-text">Awaiting Verification</span>
+            <div id="account-badge" style="margin-top:12px">
+              <span class="account-status-badge">
+                <span style="width:8px;height:8px;border-radius:50%;background:#0891b2;box-shadow: 0 0 10px #0891b2;"></span>
+                <span style="font-size:10px;font-weight:800;letter-spacing:0.1em;color:#fff;text-transform:uppercase;opacity:0.9" id="account-status-text">Awaiting Verification</span>
               </span>
             </div>
           </div>
@@ -135,46 +206,46 @@
 
       <!-- QUICK ACTIONS SIDEBAR -->
       <div class="col-4 animate-in animate-delay-3">
-        <div style="margin-bottom:16px">
+        <div style="margin-bottom:20px; padding-left: 4px;">
           <div class="card-title">Quick Actions</div>
           <div class="card-subtitle">Common banking tasks</div>
         </div>
-        <div class="flex flex-col gap-3">
+        <div class="quick-action-list">
           <a id="qa-transfer" href="transfer.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:12px">
-              <div class="quick-action-icon" style="background:rgba(8,145,178,0.1)">
-                <span class="material-symbols-outlined" style="color:#0891b2;font-size:22px">swap_horiz</span>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div class="quick-action-icon" style="background:rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.15);">
+                <span class="material-symbols-outlined" style="color:#0891b2;font-size:24px">swap_horiz</span>
               </div>
               <div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-primary)">Fund Transfer</div>
-                <div style="font-size:11px;color:var(--text-secondary)">Send money instantly</div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Fund Transfer</div>
+                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Send money instantly</div>
               </div>
             </div>
-            <span class="material-symbols-outlined" id="qa-transfer-icon" style="font-size:18px;color:var(--text-placeholder)">lock</span>
+            <span class="material-symbols-outlined" id="qa-transfer-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
           </a>
           <a id="qa-txns" href="transactions.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:12px">
-              <div class="quick-action-icon" style="background:rgba(16,185,129,0.1)">
-                <span class="material-symbols-outlined" style="color:#10b981;font-size:22px">receipt_long</span>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div class="quick-action-icon" style="background:rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);">
+                <span class="material-symbols-outlined" style="color:#10b981;font-size:24px">receipt_long</span>
               </div>
               <div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-primary)">Transactions</div>
-                <div style="font-size:11px;color:var(--text-secondary)">View full history</div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Transactions</div>
+                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">View full history</div>
               </div>
             </div>
-            <span class="material-symbols-outlined" id="qa-txns-icon" style="font-size:18px;color:var(--text-placeholder)">lock</span>
+            <span class="material-symbols-outlined" id="qa-txns-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
           </a>
           <a id="qa-stmt" href="statement.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:12px">
-              <div class="quick-action-icon" style="background:rgba(245,158,11,0.1)">
-                <span class="material-symbols-outlined" style="color:#f59e0b;font-size:22px">description</span>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div class="quick-action-icon" style="background:rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);">
+                <span class="material-symbols-outlined" style="color:#f59e0b;font-size:24px">description</span>
               </div>
               <div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-primary)">Statement</div>
-                <div style="font-size:11px;color:var(--text-secondary)">Download PDF</div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Statement</div>
+                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Download PDF</div>
               </div>
             </div>
-            <span class="material-symbols-outlined" id="qa-stmt-icon" style="font-size:18px;color:var(--text-placeholder)">lock</span>
+            <span class="material-symbols-outlined" id="qa-stmt-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
           </a>
         </div>
       </div>
@@ -233,7 +304,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 buildSidebar('dashboard');
 buildNavbar('Account Overview', 'Dashboard');
