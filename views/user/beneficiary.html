@@ -42,7 +42,11 @@
 <div style="display:flex;gap:8px"><input type="text" class="form-input" id="new-acc" placeholder="e.g. FNZ20260002" style="flex:1;font-family:monospace"/><button class="btn btn-outline" onclick="lookupBen()"><span class="material-symbols-outlined" style="font-size:18px">search</span></button></div>
 <div id="ben-result" class="hidden" style="margin-top:8px;font-size:12px;font-weight:700;color:#10b981"></div>
 </div>
-<div class="form-group"><label class="form-label">Bank Name</label><input type="text" class="form-input" id="new-bank" value="Finzo Banking System" readonly style="color:var(--text-secondary)"/></div>
+<div class="form-group">
+  <label class="form-label">Bank Name</label>
+  <input type="text" class="form-input" id="new-bank" value="Finzo Banking System" readonly tabindex="-1" style="color:var(--text-secondary); cursor:not-allowed; background:var(--bg-card)"/>
+  <div style="font-size:10px; color:var(--text-placeholder); margin-top:4px; font-weight:600">Only Finzo-to-Finzo transfers available</div>
+</div>
 <button class="btn btn-primary btn-full" onclick="addBeneficiary()">Save Beneficiary</button>
 </div>
 </div>
@@ -59,12 +63,28 @@ let beneficiaries=JSON.parse(localStorage.getItem('finzo_beneficiaries')||'[]');
 if(!beneficiaries.length) beneficiaries=[{id:1,nick:'Priya Sharma',account:'FNZ20260002',holder:'Priya Sharma',bank:'Finzo Banking System',added:'12 Apr 2026'},{id:2,nick:'Amit Mondal',account:'FNZ20260003',holder:'Amit Mondal',bank:'Finzo Banking System',added:'12 Apr 2026'}];
 
 let verifiedHolder='';
-function lookupBen(){const acc=document.getElementById('new-acc').value.trim().toUpperCase();const res=document.getElementById('ben-result');if(!acc)return;if(demoAccounts[acc]){verifiedHolder=demoAccounts[acc];res.textContent='✅ '+verifiedHolder;res.style.color='#10b981';res.classList.remove('hidden');}else{verifiedHolder='';res.textContent='❌ Account not found';res.style.color='#f43f5e';res.classList.remove('hidden');}}
+function lookupBen(){
+  const acc=document.getElementById('new-acc').value.trim().toUpperCase();
+  const res=document.getElementById('ben-result');
+  if(!acc)return;
+  if(demoAccounts[acc]){
+    verifiedHolder=demoAccounts[acc];
+    res.textContent='✅ Verified: '+verifiedHolder;
+    res.style.color='#10b981';
+    res.classList.remove('hidden');
+  }else{
+    verifiedHolder='';
+    res.textContent='❌ Finzo account not found';
+    res.style.color='#f43f5e';
+    res.classList.remove('hidden');
+  }
+}
 function addBeneficiary(){
 const nick=document.getElementById('new-nick').value.trim();
 const acc=document.getElementById('new-acc').value.trim().toUpperCase();
 if(!nick||!acc){showToast('Please fill in all fields','error');return;}
-if(!verifiedHolder){showToast('Please verify the account number first','error');return;}
+if(!verifiedHolder){showToast('Please verify the Finzo account number first','error');return;}
+
 beneficiaries.push({id:Date.now(),nick,account:acc,holder:verifiedHolder,bank:'Finzo Banking System',added:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})});
 localStorage.setItem('finzo_beneficiaries',JSON.stringify(beneficiaries));
 document.getElementById('new-nick').value='';document.getElementById('new-acc').value='';document.getElementById('ben-result').classList.add('hidden');verifiedHolder='';
