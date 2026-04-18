@@ -50,7 +50,9 @@
 .balance-amount { 
   font-size: 48px; font-weight: 800; letter-spacing: -2.5px; 
   background: linear-gradient(to bottom, #ffffff 60%, rgba(255,255,255,0.7)); 
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1.1; margin: 8px 0;
 }
 .balance-amount.locked { 
@@ -335,63 +337,103 @@
 buildSidebar('dashboard');
 buildNavbar('Account Overview', 'Dashboard');
 
-// Greeting
+// 1. Initial Identity & Status
 document.getElementById('page-greeting').textContent = getGreeting() + ', ' + UserState.name + ' 👋';
-
 const status = UserState.status;
 
-// Show correct banner
-if (status === 'pending') document.getElementById('banner-pending').classList.remove('hidden');
-else if (status === 'under_review') document.getElementById('banner-review').classList.remove('hidden');
-else if (status === 'rejected') document.getElementById('banner-rejected').classList.remove('hidden');
-else if (status === 'active') {
-  const b = document.getElementById('banner-approved');
-  b.classList.remove('hidden');
-  document.getElementById('approved-msg').textContent = '🎉 Your Finzo account ' + UserState.accountNo + ' has been activated!';
-  // Auto hide after 8 seconds
-  setTimeout(() => b.classList.add('hidden'), 8000);
-}
+// 2. Comprehensive Status Management
+const banners = {
+  pending: document.getElementById('banner-pending'),
+  review: document.getElementById('banner-review'),
+  rejected: document.getElementById('banner-rejected'),
+  approved: document.getElementById('banner-approved')
+};
 
-// Update balance card
+// Reset Banners
+Object.values(banners).forEach(b => b && b.classList.add('hidden'));
+
 if (status === 'active') {
-  const realBalance = formatINR(UserState.balance);
-  const balEl = document.getElementById('dash-balance');
-  
-  if (UserState.isBalanceUnlocked) {
-    balEl.textContent = realBalance;
-  } else {
-    balEl.textContent = '₹ ••••';
-    balEl.classList.add('balance-hidden-mask');
-    balEl.setAttribute('data-real-value', realBalance);
+  // --- ACTIVE STATE ---
+  if (banners.approved) {
+    banners.approved.classList.remove('hidden');
+    const msgEl = document.getElementById('approved-msg');
+    if (msgEl) msgEl.textContent = '🎉 Your Finzo account ' + UserState.accountNo + ' has been activated!';
+    setTimeout(() => banners.approved.classList.add('hidden'), 8000);
   }
 
-  document.getElementById('dash-account').textContent = UserState.accountNo;
-  document.getElementById('lock-icon').style.display = 'none';
-  document.getElementById('account-status-text').textContent = UserState.accountType.charAt(0).toUpperCase() + UserState.accountType.slice(1) + ' Account · Active';
-  document.getElementById('account-badge').querySelector('span').style.background = 'rgba(16,185,129,0.25)';
-  document.getElementById('account-badge').querySelector('span').style.borderColor = 'rgba(16,185,129,0.4)';
-  document.getElementById('account-badge').querySelector('span').style.color = '#6ee7b7';
-  // Unlock quick actions
+  // Update Balance
+  const balEl = document.getElementById('dash-balance');
+  if (balEl) {
+    const realBalance = formatINR(UserState.balance);
+    if (UserState.isBalanceUnlocked) {
+      balEl.textContent = realBalance;
+    } else {
+      balEl.textContent = '₹ ••••';
+      balEl.classList.add('balance-hidden-mask');
+      balEl.setAttribute('data-real-value', realBalance);
+    }
+  }
+
+  // Update Account Info
+  const accEl = document.getElementById('dash-account');
+  if (accEl) accEl.textContent = UserState.accountNo;
+  
+  const lockEl = document.getElementById('lock-icon');
+  if (lockEl) lockEl.style.display = 'none';
+
+  // Update Status Badge
+  const badgeEl = document.getElementById('account-badge');
+  if (badgeEl) {
+    const mainSpan = badgeEl.querySelector('.account-status-badge');
+    const statusText = document.getElementById('account-status-text');
+    if (mainSpan) {
+      mainSpan.style.background = 'rgba(16,185,129,0.1)';
+      mainSpan.style.borderColor = 'rgba(16,185,129,0.2)';
+    }
+    if (statusText) {
+      statusText.textContent = UserState.accountType.charAt(0).toUpperCase() + UserState.accountType.slice(1) + ' Account · Active';
+      statusText.style.color = '#10b981';
+    }
+  }
+
+  // Unlock Actions
   ['qa-transfer','qa-txns','qa-stmt'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.classList.remove('locked'); }
+    if (el) el.classList.remove('locked');
   });
   ['qa-transfer-icon','qa-txns-icon','qa-stmt-icon'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.textContent = 'chevron_right'; el.style.color = 'var(--text-placeholder)'; }
+    if (el) { 
+      el.textContent = 'chevron_right'; 
+      el.style.color = 'var(--text-placeholder)'; 
+    }
   });
-  // Show tx
-  document.getElementById('tx-empty').classList.add('hidden');
-  document.getElementById('tx-list').classList.remove('hidden');
-  document.getElementById('view-all-txns').classList.remove('hidden');
-  // Cleanup: Spending Analytics (removed)
+
+  // Show Lists
+  const txEmpty = document.getElementById('tx-empty');
+  const txList = document.getElementById('tx-list');
+  const viewAll = document.getElementById('view-all-txns');
+  if (txEmpty) txEmpty.classList.add('hidden');
+  if (txList) txList.classList.remove('hidden');
+  if (viewAll) viewAll.classList.remove('hidden');
 
 } else {
-  document.getElementById('dash-balance').textContent = '₹ — — —';
-  document.getElementById('dash-balance').classList.add('locked');
-  document.getElementById('empty-cta').textContent = status === 'under_review' ? 'View Status' : status === 'rejected' ? 'Resubmit Profile' : 'Complete Profile →';
-  if (status === 'under_review') document.getElementById('empty-cta').href = 'account-pending.html';
-  if (status === 'rejected') document.getElementById('empty-cta').href = 'account-rejected.html';
+  // --- INACTIVE STATE ---
+  const banner = banners[status === 'under_review' ? 'review' : status];
+  if (banner) banner.classList.remove('hidden');
+
+  const balEl = document.getElementById('dash-balance');
+  if (balEl) {
+    balEl.textContent = '₹ — — —';
+    balEl.classList.add('locked');
+  }
+
+  const cta = document.getElementById('empty-cta');
+  if (cta) {
+    cta.textContent = status === 'under_review' ? 'View Status' : status === 'rejected' ? 'Resubmit Profile' : 'Complete Profile →';
+    if (status === 'under_review') cta.href = 'account-pending.html';
+    if (status === 'rejected') cta.href = 'account-rejected.html';
+  }
 }
 </script>
 </body>
