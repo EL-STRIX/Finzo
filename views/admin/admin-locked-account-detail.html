@@ -172,8 +172,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
           <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip">192.168.1.205</span></div>
           <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device">Chrome on Windows 11</span></div>
           <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><span class="badge badge-amber">Not Generated</span></span></div>
-          <div class="info-row" id="d-expiry-row" style="display:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
-          <div class="info-row" id="d-normal-row" style="border-bottom:none;"><span class="info-label">Audit Log Reference</span><span class="info-value mono" id="d-audit">AUD20260914</span></div>
+          <div class="info-row" id="d-expiry-row" style="display:none; border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
         </div>
 
         <!-- RECENT LOGIN ATTEMPTS -->
@@ -390,10 +389,10 @@ const urlP=new URLSearchParams(window.location.search);
 const accId=urlP.get('id')||'L01';
 // PHP_BACKEND: GET /api/admin/locked-account-detail.php?id=
 const records={
-  'L01':{name:'Sunita Mehta',email:'sunita.mehta@gmail.com',initials:'SM',accNo:'FNZ20260004',accType:'Savings',phone:'+91 94455 33221',balance:'₹18,500.00',lockedDate:'17 Apr 2026',lockTime:'09:22 AM IST',ip:'192.168.1.205',device:'Chrome on Windows 11',audit:'AUD20260914'},
-  'L02':{name:'Dev Gupta',email:'dev.gupta@gmail.com',initials:'DG',accNo:'FNZ20260008',accType:'Savings',phone:'+91 88776 44332',balance:'₹6,200.00',lockedDate:'16 Apr 2026',lockTime:'11:45 PM IST',ip:'10.0.0.88',device:'Safari on iPhone 15',audit:'AUD20260887'},
-  'L03':{name:'Arjun Khanna',email:'arjun.khanna@gmail.com',initials:'AK',accNo:'FNZ20260010',accType:'Current',phone:'+91 77665 54433',balance:'₹42,000.00',lockedDate:'15 Apr 2026',lockTime:'03:10 PM IST',ip:'172.16.0.44',device:'Chrome on Android',audit:'AUD20260855'},
-  'L04':{name:'Mohan Kumar',email:'mohan.kumar@gmail.com',initials:'MK',accNo:'FNZ20260006',accType:'Savings',phone:'+91 66554 43322',balance:'₹3,800.00',lockedDate:'14 Apr 2026',lockTime:'07:55 AM IST',ip:'192.168.0.21',device:'Firefox on Windows 10',audit:'AUD20260832'},
+  'L01':{name:'Sunita Mehta',email:'sunita.mehta@gmail.com',initials:'SM',accNo:'FNZ20260004',accType:'Savings',phone:'+91 94455 33221',balance:'₹18,500.00',lockedDate:'17 Apr 2026',lockTime:'09:22 AM IST',ip:'192.168.1.205',device:'Chrome on Windows 11'},
+  'L02':{name:'Dev Gupta',email:'dev.gupta@gmail.com',initials:'DG',accNo:'FNZ20260008',accType:'Savings',phone:'+91 88776 44332',balance:'₹6,200.00',lockedDate:'16 Apr 2026',lockTime:'11:45 PM IST',ip:'10.0.0.88',device:'Safari on iPhone 15'},
+  'L03':{name:'Arjun Khanna',email:'arjun.khanna@gmail.com',initials:'AK',accNo:'FNZ20260010',accType:'Current',phone:'+91 77665 54433',balance:'₹42,000.00',lockedDate:'15 Apr 2026',lockTime:'03:10 PM IST',ip:'172.16.0.44',device:'Chrome on Android'},
+  'L04':{name:'Mohan Kumar',email:'mohan.kumar@gmail.com',initials:'MK',accNo:'FNZ20260006',accType:'Savings',phone:'+91 66554 43322',balance:'₹3,800.00',lockedDate:'14 Apr 2026',lockTime:'07:55 AM IST',ip:'192.168.0.21',device:'Firefox on Windows 10'},
 };
 const d=records[accId]||records['L01'];
 
@@ -412,7 +411,6 @@ document.getElementById('d-locked-date').textContent=d.lockedDate;
 document.getElementById('d-lock-time').textContent=d.lockTime;
 document.getElementById('d-ip').textContent=d.ip;
 document.getElementById('d-device').textContent=d.device;
-document.getElementById('d-audit').textContent=d.audit;
 document.getElementById('tl-locked').textContent=d.lockedDate+' — '+d.lockTime.replace(' IST','');
 document.getElementById('tl-attempts').textContent=d.lockedDate+' — 09:20 AM';
 document.getElementById('tl-last-login').textContent=(parseInt(d.lockedDate.split(' ')[0])-1)+' '+d.lockedDate.split(' ').slice(1).join(' ')+' — 08:40 PM';
@@ -483,7 +481,6 @@ function doGenerate(){
     document.getElementById('d-temp-status').innerHTML='<span class="badge badge-indigo">Generated & Sent</span>';
     document.getElementById('d-expiry-row').style.display='flex';
     document.getElementById('d-expiry').textContent=expStr;
-    document.getElementById('d-normal-row').style.borderBottom='none';
 
     showToast('Temp password generated. Account unlocked. Valid 24 hours.','success');
     unlockDone=true;
