@@ -376,6 +376,11 @@
       gap: 5px;
     }
 
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+    }
+
     .filter-label {
       font-size: 9px;
       font-weight: 800;
@@ -1015,6 +1020,17 @@
         flex: none !important;
       }
 
+      .filter-actions {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .filter-actions .btn {
+        flex: 1;
+        justify-content: center;
+        height: 44px; /* Slightly larger targets for mobile */
+      }
+
       .filter-input,
       .filter-select,
       .finzo-dropdown {
@@ -1262,7 +1278,7 @@
             <div class="filter-label">Locked On</div>
             <input type="date" class="filter-input" id="date-filter" onchange="renderTable()" style="width: 150px;" />
           </div>
-          <div class="filter-group" style="flex-shrink: 0; display: flex; flex-direction: row; gap: 8px;">
+          <div class="filter-actions">
             <button class="btn btn-amber" onclick="renderTable()">
               <span class="material-symbols-outlined" style="font-size:16px;">filter_alt</span> Apply
             </button>
