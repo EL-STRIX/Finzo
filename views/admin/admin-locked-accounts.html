@@ -61,6 +61,10 @@
       --indigo-soft: rgba(99, 102, 241, 0.12);
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -1156,13 +1160,48 @@
       .filter-bar {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
+      }
+
+      .filter-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
       }
 
       .filter-input,
       .filter-select,
       .finzo-dropdown {
-        width: 100%;
+        width: 100% !important;
       }
+      
+      .modal-card {
+        padding: 24px;
+        width: 95%;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+
+    /* PREMIUM ANIMATIONS */
+    @keyframes successPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .success-pop { animation: successPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .shimmer-card {
+      background: linear-gradient(90deg, var(--bg-input) 25%, rgba(16, 185, 129, 0.05) 50%, var(--bg-input) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite linear;
     }
   </style>
 </head>
@@ -1320,13 +1359,11 @@
   <!-- UNLOCK MODAL -->
   <div class="modal-overlay hidden" id="unlock-modal">
     <div class="modal-card">
-      <div class="modal-icon" style="background:var(--amber-soft);">
-        <span class="material-symbols-outlined" style="color:var(--amber);font-size:28px;">key</span>
+      <div class="modal-icon" id="unlock-modal-icon-box" style="background:var(--amber-soft); transition: all 0.4s ease;">
+        <span class="material-symbols-outlined" id="unlock-modal-icon" style="color:var(--amber);font-size:28px;">key</span>
       </div>
-      <div class="modal-title">Generate Temporary Password</div>
-      <div class="modal-text" id="unlock-modal-text">A secure 12-character temporary password will be generated for this
-        account. It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and
-        will be required to set a new password immediately.</div>
+      <div class="modal-title" id="unlock-modal-title">Generate Temporary Password</div>
+      <div class="modal-text" id="unlock-modal-text">A secure 12-character temporary password will be generated for <strong id="unlock-user-name">this account</strong>. It will be valid for <strong>24 hours only</strong>. The customer must change it on first login.</div>
 
       <!-- Generated password display (hidden until generated) -->
       <div id="gen-pass-section" class="hidden" style="margin-bottom:20px;">
@@ -1343,15 +1380,22 @@
             <span class="material-symbols-outlined" style="font-size:20px;">content_copy</span>
           </button>
         </div>
-        <div
-          style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--text-secondary);">
-          <span class="material-symbols-outlined" style="font-size:14px;color:var(--red);">schedule</span>
-          Valid for <strong style="color:var(--red);">24 hours</strong> from the time of generation. Expires
-          automatically.
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--text-secondary);">
-          <span class="material-symbols-outlined" style="font-size:14px;color:var(--amber);">info</span>
-          Share this password with the customer through a verified channel only.
+        <!-- Security Metadata Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+          <div style="background:var(--red-soft); border:1px solid var(--red-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
+            <span class="material-symbols-outlined" style="color:var(--red); font-size:18px;">schedule</span>
+            <div style="line-height:1.2;">
+              <div style="font-size:11px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:0.02em;">24 Hours</div>
+              <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Validity Period</div>
+            </div>
+          </div>
+          <div style="background:var(--blue-soft); border:1px solid var(--blue-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
+            <span class="material-symbols-outlined" style="color:var(--blue); font-size:18px;">verified_user</span>
+            <div style="line-height:1.2;">
+              <div style="font-size:11px; font-weight:800; color:var(--blue); text-transform:uppercase; letter-spacing:0.02em;">Verified Channel</div>
+              <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Sharing Policy</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1560,13 +1604,32 @@
     /* ── UNLOCK ── */
     function openUnlock(id, name, accNo) {
       pendingId = id;
-      document.getElementById('unlock-modal-text').innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and will be required to set a new password immediately.`;
+      
+      // Reset Modal State (Premium transition reset)
+      const iconBox = document.getElementById('unlock-modal-icon-box');
+      const icon = document.getElementById('unlock-modal-icon');
+      const title = document.getElementById('unlock-modal-title');
+      const desc = document.getElementById('unlock-modal-text');
+
+      iconBox.style.background = 'var(--amber-soft)';
+      iconBox.classList.remove('success-pop');
+      icon.textContent = 'key';
+      icon.style.color = 'var(--amber)';
+      title.textContent = 'Generate Temporary Password';
+      title.style.color = '';
+      desc.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and will be required to set a new password immediately.`;
+
       document.getElementById('gen-pass-section').classList.add('hidden');
+      const card = document.getElementById('gen-pass-section').querySelector('div[style*="background"]');
+      if (card) card.classList.remove('shimmer-card');
+
       document.getElementById('unlock-modal-actions').classList.remove('hidden');
       document.getElementById('unlock-done-actions').classList.add('hidden');
+      
       const btn = document.getElementById('generate-btn');
       btn.disabled = false;
       btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
+      
       document.getElementById('unlock-modal').classList.remove('hidden');
     }
 
@@ -1593,22 +1656,43 @@
         // Shuffle
         generatedPass = pass.split('').sort(() => Math.random() - .5).join('');
 
-        document.getElementById('gen-pass-value').textContent = generatedPass;
-        document.getElementById('gen-pass-section').classList.remove('hidden');
-        document.getElementById('unlock-modal-actions').classList.add('hidden');
-        document.getElementById('unlock-done-actions').classList.remove('hidden');
-
         // Update record
         const rec = allData.find(r => r.id === pendingId);
+
+        // Transition Header to Success State
+        const iconBox = document.getElementById('unlock-modal-icon-box');
+        const icon = document.getElementById('unlock-modal-icon');
+        const title = document.getElementById('unlock-modal-title');
+        const desc = document.getElementById('unlock-modal-text');
+
         if (rec) {
+          iconBox.style.background = 'var(--green-soft)';
+          iconBox.classList.add('success-pop');
+          icon.textContent = 'task_alt';
+          icon.style.color = 'var(--green)';
+          title.textContent = 'Account Unlocked';
+          title.style.color = 'var(--green)';
+          desc.innerHTML = `Access has been restored for <strong>${rec.name}</strong>. A temporary password was generated and logged in the system.`;
+
+          document.getElementById('gen-pass-value').textContent = generatedPass;
+          const passArea = document.getElementById('gen-pass-section');
+          passArea.classList.remove('hidden');
+          const passCard = passArea.querySelector('div[style*="background"]');
+          if (passCard) passCard.classList.add('shimmer-card');
+          
+          document.getElementById('unlock-modal-actions').classList.add('hidden');
+          document.getElementById('unlock-done-actions').classList.remove('hidden');
+
+          /* Update record */
           rec.tempSent = true;
           rec.tabKey = 'temp-sent';
           const now = new Date();
           const exp = new Date(now.getTime() + 24 * 60 * 60 * 1000);
           rec.tempExp = exp.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + exp.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          
+          renderTable();
+          showToast('Account unlocked. Temporary password generated — valid 24 hours.', 'success');
         }
-        renderTable();
-        showToast('Account unlocked. Temporary password generated — valid 24 hours.', 'success');
       }, 1800);
     }
 
@@ -1631,6 +1715,13 @@
       t.innerHTML = `<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
       wrap.appendChild(t);
       setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(16px)'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
+    }
+
+    function toggleSidebar() {
+      const s = document.getElementById('sidebar');
+      const o = document.getElementById('sidebar-overlay');
+      s.classList.toggle('open');
+      o.classList.toggle('visible');
     }
 
     renderTable();
