@@ -165,28 +165,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 </nav>
 
 <div class="main">
-  <header class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active');"></div>
+
+  <header class="topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
     <div class="flex items-center gap-3 sm:gap-4 flex-1">
-      <a href="admin-suspended-users.html" class="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
-        <span class="material-symbols-outlined force-black">arrow_back</span>
-      </a>
+      <button id="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active');" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+          <span class="material-symbols-outlined force-black" style="font-size:24px;">menu</span>
+      </button>
       <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-slate-400 dark:text-slate-500 uppercase">SUSPENSION DETAIL</div>
-        <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">User Suspension Record</div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ACCOUNT CONTROL</div>
+        <div class="text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Suspended Users</div>
       </div>
     </div>
     
-    <!-- RESPONSIVE CONTROLS: Hidden on Laptop (lg), visible on Mobile/Tablet -->
-    <div class="flex lg:hidden items-center gap-2">
-      <a href="admin-suspended-users.html" class="flex w-9 h-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
-        <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
-      </a>
-      <button onclick="$('#sidebar').addClass('open')" class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500">
-        <span class="material-symbols-outlined" style="font-size:20px;">menu</span>
-      </button>
-      <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500">
-        <span class="material-symbols-outlined" id="theme-icon2" style="font-size:20px;">dark_mode</span>
-      </button>
+    <div class="flex items-center gap-3">
+      <!-- Avatar 'A' on the right -->
+      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#002645] text-white font-bold text-sm" style="box-shadow: 0 4px 12px rgba(0,38,69,0.2);">A</div>
     </div>
   </header>
 
@@ -257,8 +251,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
             </div>
             <a href="admin-transactions.html" style="font-size:12px;font-weight:700;color:var(--primary);text-decoration:none">View All →</a>
           </div>
-          <div style="padding:0 4px">
-            <table style="width:100%;border-collapse:collapse">
+          <div style="padding:0 4px; overflow-x: auto;" class="selection:bg-[#002645]/10">
+            <table style="width:100%; min-width: 500px; border-collapse:collapse">
               <thead><tr style="background:var(--bg-input)">
                 <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Date</th>
                 <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Description</th>
