@@ -90,6 +90,65 @@
     .btn-ghost { background: #f1f5f9; color: #64748b; }
     .dark .btn-ghost { background: rgba(255,255,255,0.05); color: #8b949e; }
 
+    /* Pagination Premium Upgrade */
+    #pag-controls { display: flex; align-items: center; gap: 6px; }
+    @media (min-width: 640px) { #pag-controls { gap: 12px; } }
+
+    .pag-btn {
+      padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 700;
+      background: rgba(108, 99, 255, 0.05); color: #6c63ff;
+      border: 1.5px solid rgba(108, 99, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+      .pag-btn { padding: 10px 24px; border-radius: 14px; font-size: 13px; }
+    }
+
+    .pag-btn:hover:not(:disabled) {
+      background: rgba(108, 99, 255, 0.1);
+      border-color: rgba(108, 99, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    .pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .pag-num {
+      width: 32px; height: 32px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; color: #6c63ff;
+      border: 1.5px solid rgba(108, 99, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    @media (min-width: 640px) {
+      .pag-num { width: 44px; height: 44px; border-radius: 14px; font-size: 14px; }
+    }
+    .pag-num:hover:not(.active) {
+      background: rgba(108, 99, 255, 0.08);
+      border-color: rgba(108, 99, 255, 0.3);
+    }
+    .pag-num.active {
+      background: #6c63ff;
+      color: white;
+      border-color: #6c63ff;
+      box-shadow: 0 10px 15px -3px rgba(108, 99, 255, 0.3);
+    }
+
+    .dark .pag-btn, .dark .pag-num {
+      background: rgba(255,255,255,0.03);
+      color: #a5b4fc;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .dark .pag-btn:hover:not(:disabled), .dark .pag-num:hover:not(.active) {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .dark .pag-num.active {
+      background: #818cf8;
+      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.4);
+    }
+
     /* Toast Styling */
     .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
     .toast { display: flex; align-items: center; gap: 10px; background: white; border-left: 4px solid #10b981; border-radius: 12px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.12); font-size: 13px; font-weight: 600; color: #002645; min-width: 280px; animation: slideInR .3s ease; }
@@ -108,7 +167,7 @@
 <!-- SIDEBAR -->
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+
   <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
@@ -167,11 +226,11 @@
   </nav>
 
   <!-- MAIN -->
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="$('#admin-sidebar').removeClass('mobile-open'); $('#sidebar-overlay').removeClass('active');"></div>
+  <div class="admin-sidebar-overlay" id="sidebar-overlay" onclick="$('#admin-sidebar').removeClass('mobile-open'); $('#sidebar-overlay').removeClass('active');"></div>
 
   <div class="admin-main flex-1 flex flex-col min-w-0">
     <!-- TOPBAR -->
-    <header class="topbar flex items-center justify-between px-6 sm:px-8 h-16 sm:h-20 !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300 sticky top-0 z-50">
+    <header class="admin-topbar flex items-center justify-between px-6 sm:px-8 py-5 !h-auto !bg-white dark:!bg-[#161b22] !border-slate-200 dark:!border-white/5 transition-all duration-300 sticky top-0 z-50">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
         <button id="mobile-menu-btn" onclick="$('#admin-sidebar').addClass('mobile-open'); $('#sidebar-overlay').addClass('active');" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
             <span class="material-symbols-outlined force-black" style="font-size:24px;">menu</span>
@@ -236,9 +295,9 @@
           </table>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-4 p-6 bg-slate-50/50 dark:bg-white/[0.02]">
-          <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase" id="pag-info">Loading...</span>
-          <div class="flex items-center gap-2" id="pag-controls"></div>
+        <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 p-6 bg-slate-50/50 dark:bg-white/[0.02]">
+          <span class="text-[9px] sm:text-[11px] font-bold tracking-widest text-slate-400 uppercase text-center sm:text-left w-full sm:w-auto" id="pag-info">Loading...</span>
+          <div class="flex items-center justify-center" id="pag-controls"></div>
         </div>
       </div>
     </div>
@@ -271,11 +330,18 @@ const THEME_KEY='finzo-admin-theme';
 function initTheme(){
   const saved=localStorage.getItem(THEME_KEY);
   const dark=saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme:dark)').matches);
-  if(dark)document.documentElement.classList.add('dark');
+  if(dark) {
+    document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
   updateThemeIcons();
 }
 function toggleTheme(){
   const dark=document.documentElement.classList.toggle('dark');
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   localStorage.setItem(THEME_KEY,dark?'dark':'light');
   updateThemeIcons();
 }
@@ -394,8 +460,10 @@ function renderTable(){
   const s=(currentPage-1)*ROWS_PP+1,e=Math.min(currentPage*ROWS_PP,total);
   document.getElementById('pag-info').textContent=total?`Showing ${s}–${e} of ${total} suspended accounts`:'No results found';
   const pc=document.getElementById('pag-controls');
-  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Prev</button>`;
-  for(let i=1;i<=Math.min(totalPages,5);i++)pc.innerHTML+=`<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
+  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Previous</button>`;
+  for(let i=1;i<=Math.min(totalPages,5);i++) {
+    pc.innerHTML+=`<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
+  }
   pc.innerHTML+=`<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
 }
 function goPage(d){currentPage=Math.max(1,Math.min(Math.ceil(filtered.length/ROWS_PP),currentPage+d));renderTable();}

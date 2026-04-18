@@ -132,6 +132,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin 1s linear infinite;}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .3s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.topbar{padding:0 16px;}.page-content{padding:16px;}.two-col{grid-template-columns:1fr!important;}}
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 </style>
 </head>
 <body>
@@ -167,20 +181,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 <div class="main">
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active');"></div>
 
-  <header class="topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
-    <div class="flex items-center gap-3 sm:gap-4 flex-1">
-      <button id="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active');" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-          <span class="material-symbols-outlined force-black" style="font-size:24px;">menu</span>
-      </button>
-      <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ACCOUNT CONTROL</div>
-        <div class="text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Suspended Users</div>
+  <header class="admin-topbar !px-6 sm:!px-10 lg:!px-16 !bg-white dark:!bg-[#161b22] !border-slate-200 dark:!border-white/5 transition-all duration-300 sticky top-0 z-50 mb-6">
+    <div class="flex items-center justify-between w-full py-2">
+      <div class="flex items-center gap-4 sm:gap-6 flex-1">
+        <button id="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active');" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined force-black" style="font-size:24px;">menu</span>
+        </button>
+        <div class="py-1">
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase opacity-80">ACCOUNT CONTROL</div>
+          <div class="text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Suspended Users</div>
+        </div>
       </div>
-    </div>
-    
-    <div class="flex items-center gap-3">
-      <!-- Avatar 'A' on the right -->
-      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#002645] text-white font-bold text-sm" style="box-shadow: 0 4px 12px rgba(0,38,69,0.2);">A</div>
+      
+      <div class="flex items-center gap-4">
+        <!-- Avatar 'A' on the right -->
+        <div class="flex items-center justify-center w-11 h-11 rounded-full bg-[#002645] text-white font-bold text-base shadow-lg shadow-[#002645]/20 ring-4 ring-slate-50 dark:ring-white/5">A</div>
+      </div>
     </div>
   </header>
 
@@ -355,9 +371,33 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 
 <script>
 /* ── THEME ── */
-function initTheme(){const s=localStorage.getItem('finzo-admin-theme');const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(dark)document.documentElement.classList.add('dark');updateIcons();}
-function toggleTheme(){const dark=document.documentElement.classList.toggle('dark');localStorage.setItem('finzo-admin-theme',dark?'dark':'light');updateIcons();}
-function updateIcons(){const dark=document.documentElement.classList.contains('dark');['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});const lbl=document.getElementById('theme-label');if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';}
+function initTheme(){
+  const s=localStorage.getItem('finzo-admin-theme');
+  const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(dark) {
+    document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+  updateIcons();
+}
+function toggleTheme(){
+  const dark=document.documentElement.classList.toggle('dark');
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  localStorage.setItem('finzo-admin-theme',dark?'dark':'light');
+  updateIcons();
+}
+function updateIcons(){
+  const dark=document.documentElement.classList.contains('dark');
+  ['theme-icon','theme-icon2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=dark?'light_mode':'dark_mode';
+  });
+  const lbl=document.getElementById('theme-label');
+  if(lbl) lbl.textContent=dark?'Light Mode':'Dark Mode';
+}
 initTheme();
 
 /* ── LOAD DATA from URL param ── */
