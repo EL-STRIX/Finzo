@@ -6,6 +6,7 @@
 <title>Staff Suspension Detail | Finzo Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <script>
     tailwind.config = {
@@ -23,8 +24,23 @@
     }
 </script>
 <style>
-:root{--primary:#1a3c5e;--red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);--amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);--green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);--blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);--bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;--text-primary:#0f172a;--text-secondary:#64748b;--text-placeholder:#94a3b8;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);--sidebar-width:248px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--transition:all 0.2s ease;}
-.dark{--bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;--border:rgba(255,255,255,0.06);--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);--red-soft:rgba(244,63,94,0.12);--green-soft:rgba(16,185,129,0.12);}
+:root{
+  --primary:#1a3c5e;--red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);
+  --amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);
+  --green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);
+  --blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);
+  --bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;
+  --text-primary:#0f172a;--text-secondary:#64748b;--text-placeholder:#94a3b8;
+  --border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --sidebar-width:248px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+  --transition:all 0.2s ease;
+}
+.dark{
+  --bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);
+  --text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;
+  --border:rgba(255,255,255,0.06);--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --red-soft:rgba(244,63,94,0.12);--amber-soft:rgba(245,158,11,0.12);--green-soft:rgba(16,185,129,0.12);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
 .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-sidebar);display:flex;flex-direction:column;z-index:100;overflow-y:auto;scrollbar-width:none;}
@@ -36,55 +52,83 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 .nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;margin:2px 8px;border-radius:var(--radius-md);font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);text-decoration:none;transition:var(--transition);border:1px solid transparent;cursor:pointer;background:none;width:calc(100% - 16px);text-align:left;}
 .nav-item:hover{background:rgba(255,255,255,0.06);color:#e2e8f0;}
 .nav-item.active{background:rgba(26,60,94,0.5);color:#fff;border-color:rgba(26,60,94,0.7);}
-.nav-item.danger{color:rgba(244,63,94,0.7);}.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
+.nav-item.danger{color:rgba(244,63,94,0.7);}
+.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
 .nav-icon{font-size:18px;flex-shrink:0;}
 .nav-badge{margin-left:auto;background:rgba(244,63,94,0.15);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
-.nav-badge-warn{margin-left:auto;background:rgba(244,63,94,0.12);color:#f43f5e;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid rgba(244,63,94,0.2);}
 .sidebar-bottom{padding-bottom:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;flex-shrink:0;}
 .main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
 .topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.topbar-left .eyebrow{font-size:9px;font-weight:800;letter-spacing:.18em;color:var(--red);text-transform:uppercase;}
+.topbar-left .title{font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:2px;}
+@media(max-width:640px){.topbar-left .title{font-size:15px;}.topbar{height:70px;}}
 .icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;transition:var(--transition);}
-.icon-btn:hover{background:var(--bg-input);}
+.icon-btn:hover{background:var(--bg-input);color:var(--text-primary);}
 .page-content{padding:28px 32px;flex:1;}
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);}
 .card-p{padding:24px;}
+.section-label{font-size:9px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:14px;}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.info-label{font-size:12px;font-weight:600;color:var(--text-secondary);}
+.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;max-width:60%;}
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
 .badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red-border);}
 .badge-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border);}
 .badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green-border);}
-.badge-gray{background:rgba(100,116,139,.08);color:#64748b;border-color:rgba(100,116,139,.2);}
+.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:rgba(59,130,246,.2);}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 20px;height:44px;border-radius:var(--radius-md);font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
-.btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}.btn-success:hover{background:#059669;transform:translateY(-1px);}
-.btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text-primary);}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(26,60,94,0.25);}
+.btn-primary:hover{background:#0f2a44;transform:translateY(-1px);}
+.btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}
+.btn-success:hover{background:#059669;transform:translateY(-1px);}
+.btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text-primary);}
 .btn-lg{height:50px;font-size:14px;border-radius:var(--radius-lg);}
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
-.info-row:last-child{border-bottom:none;}
-.info-label{font-size:12px;font-weight:600;color:var(--text-secondary);}
-.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;}
-.section-label{font-size:9px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:14px;}
-.avatar-xl{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;background:rgba(245,158,11,0.12);color:var(--amber);}
-.tl-item{display:flex;gap:14px;margin-bottom:0;}
-.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tl-line{width:2px;flex:1;min-height:20px;background:var(--border);margin:4px auto;}
-.tl-dot-col{display:flex;flex-direction:column;align-items:center;}
-.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.btn .material-symbols-outlined{font-size:16px;}
+.mono{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;}
+.avatar-lg{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;flex-shrink:0;background:rgba(26,60,94,0.1);color:var(--primary);box-shadow:inset 0 2px 4px rgba(0,0,0,0.05);}
+.dark .avatar-lg{background:rgba(255,255,255,0.05);color:#fff;}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:14px;}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:12px;height:12px;border-radius:50%;background:var(--border);margin-top:4px;flex-shrink:0;}
+.tl-dot.active{background:var(--red);box-shadow:0 0 0 4px var(--red-soft);}
+.tl-dot.success{background:var(--green);box-shadow:0 0 0 4px var(--green-soft);}
+.tl-line{width:2px;flex:1;min-height:24px;background:var(--border);margin:4px 0;}
+.tl-content{padding-bottom:20px;flex:1;}
+.tl-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.tl-sub{font-size:12px;color:var(--text-secondary);line-height:1.5;}
+.tl-time{font-size:10px;color:var(--text-placeholder);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:5px;}
+.reason-box{background:var(--red-soft);border:1.5px solid var(--red-border);border-radius:var(--radius-lg);padding:20px;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
 .modal-overlay.hidden{display:none!important;}
-.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
 .modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
 .modal-title{font-size:20px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
-.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.7;margin-bottom:22px;}
-.modal-actions{display:flex;gap:10px;}.modal-actions .btn{flex:1;height:46px;}
+.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.7;margin-bottom:24px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;height:46px;}
 .toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:280px;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:280px;animation:slideInR .3s ease;}
 .toast-success{border-left:4px solid var(--green);}
-@keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;}
-@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .3s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.topbar{padding:0 16px;}.page-content{padding:16px;}.two-col{grid-template-columns:1fr!important;}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInR{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;}
+@media(max-width:1024px){.sidebar{transform:translateX(-100%);transition:transform .3s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.topbar{padding:0 16px;}.page-content{padding:16px;}}
+.sidebar-overlay {position: fixed;inset: 0;background: rgba(0,0,0,0.4);z-index: 90;opacity: 0;pointer-events: none;transition: opacity 0.3s ease;backdrop-filter: blur(2px);}
+.sidebar-overlay.active {opacity: 1;pointer-events: auto;}
 </style>
 </head>
-<body>
+<body class="selection:bg-[#1a3c5e]/10">
 
 <nav class="sidebar" id="sidebar">
-  <div class="sidebar-brand"><div class="brand-name">Finzo</div><div class="brand-sub">Admin Console</div></div>
+  <div class="sidebar-brand">
+    <div class="brand-name">Finzo</div>
+    <div class="brand-sub">Admin Console</div>
+  </div>
   <div style="flex:1;padding-top:8px;">
     <div class="nav-section">Main</div>
     <a href="admin-dashboard.html" class="nav-item"><span class="material-symbols-outlined nav-icon">analytics</span>Overview</a>
@@ -94,12 +138,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
     <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
     <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
     <div class="nav-section">System</div>
-    <a href="admin-suspended-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span><span class="nav-badge-warn">2</span></a>
+    <a href="admin-suspended-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_off</span>Suspended Users</a>
     <a href="admin-suspended-staff.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">work_off</span>Suspended Staff</a>
-
     <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
     <a href="admin-interest.html" class="nav-item"><span class="material-symbols-outlined nav-icon">percent</span>Interest Management</a>
-    <div class="nav-section">Account</div>
   </div>
   <div class="sidebar-bottom">
     <a href="admin-profile.html" class="nav-item"><span class="material-symbols-outlined nav-icon">account_circle</span>Admin Profile</a>
@@ -109,225 +151,263 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 </nav>
 
 <div class="main">
-  <header class="admin-topbar !bg-white dark:!bg-surface-container-lowest !border-slate-200 dark:!border-transparent transition-all duration-300">
-    <div class="flex items-center gap-3 sm:gap-4 flex-1">
-      <a href="admin-suspended-staff.html" class="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
-        <span class="material-symbols-outlined force-black">arrow_back</span>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active');"></div>
+
+  <header class="topbar">
+    <div class="topbar-left flex items-center gap-4">
+      <button class="lg:hidden icon-btn" onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active');">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <a href="admin-suspended-staff.html" class="icon-btn hidden sm:flex">
+        <span class="material-symbols-outlined">arrow_back</span>
       </a>
       <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">STAFF SUSPENSION</div>
-        <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Staff Suspension Record</div>
+        <div class="eyebrow" style="color:var(--red);opacity:0.8">Staff Control</div>
+        <div class="title">Staff Suspension Record</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <a href="admin-suspended-staff.html" class="btn btn-ghost" style="height:38px;font-size:12px"><span class="material-symbols-outlined" style="font-size:16px">arrow_back</span>Back to List</a>
-      <button class="icon-btn" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
-      <button class="icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" id="theme-icon2">dark_mode</span></button>
+    
+    <div class="flex items-center gap-4">
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-full">
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+        <span class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest">Suspended</span>
+      </div>
+      <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white font-bold text-base shadow-lg shadow-primary/20" id="top-avatar">RP</div>
     </div>
   </header>
 
   <div class="page-content">
     <!-- BREADCRUMB -->
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:12px;color:var(--text-secondary)">
-      <a href="admin-suspended-staff.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600">Suspended Staff</a>
-      <span class="material-symbols-outlined" style="font-size:14px">chevron_right</span>
-      <span style="color:var(--text-primary);font-weight:700" id="bc-name">Ravi Patel</span>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary)">
+      <a href="admin-suspended-staff.html" style="color:var(--text-secondary);text-decoration:none" class="hover:text-primary transition-colors">Staff List</a>
+      <span class="material-symbols-outlined" style="font-size:14px;opacity:0.5">chevron_right</span>
+      <span style="color:var(--text-primary)" id="bc-name">Ravi Patel</span>
     </div>
 
-
-
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px" class="two-col">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 lg:gap-8 items-start">
       <!-- LEFT -->
       <div style="display:flex;flex-direction:column;gap:20px">
+
         <!-- STAFF PROFILE -->
         <div class="card card-p">
           <div class="section-label">Staff Information</div>
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
-            <div class="avatar-xl" id="d-avatar">RP</div>
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+            <div class="avatar-lg" id="detail-avatar">RP</div>
             <div>
-              <div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="d-name">Ravi Patel</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px" id="d-email">ravi.patel@finzobank.com</div>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-                <span class="badge badge-red">Suspended</span>
+              <div style="font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-0.5px" id="detail-name">Ravi Patel</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:2px" id="detail-email">ravi.patel@finzobank.com</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
                 <span class="badge badge-amber">Bank Staff</span>
+                <span class="badge badge-blue" id="detail-staff-id-badge">STF006</span>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Staff ID</span><span class="info-value" style="font-family:monospace" id="d-staff-id">STF006</span></div>
-          <div class="info-row"><span class="info-label">Phone</span><span class="info-value" id="d-phone">+91 77665 54433</span></div>
-          <div class="info-row"><span class="info-label">Assigned Branch</span><span class="info-value" id="d-branch">East Branch</span></div>
-          <div class="info-row"><span class="info-label">Join Date</span><span class="info-value">01 Jan 2026</span></div>
-          <div class="info-row" style="border-bottom:none"><span class="info-label">Total Transactions Processed</span><span class="info-value">284</span></div>
+          <div class="info-row"><span class="info-label">Employee ID</span><span class="info-value mono text-primary" id="detail-staff-id" style="color:var(--primary)">STF006</span></div>
+          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="detail-phone">+91 77665 54433</span></div>
+          <div class="info-row"><span class="info-label">Branch Assignment</span><span class="info-value font-headline" id="detail-branch">East Branch</span></div>
+          <div class="info-row"><span class="info-label">Onboarding Date</span><span class="info-value">01 Jan 2026</span></div>
+          <div class="info-row"><span class="info-label">Lifetime Processing Volume</span><span class="info-value" style="color:var(--green)">₹28,40,000.00</span></div>
         </div>
 
-        <!-- SUSPENSION REASON -->
+        <!-- SUSPENSION DETAILS -->
         <div class="card card-p">
-          <div class="section-label">Suspension Details</div>
-          <div style="background:var(--red-soft);border:1.5px solid var(--red-border);border-radius:var(--radius-lg);padding:18px;margin-bottom:18px">
-            <div style="display:flex;align-items:flex-start;gap:12px">
-              <span class="material-symbols-outlined" style="color:var(--red);font-size:22px;flex-shrink:0;margin-top:2px">warning</span>
+          <div class="section-label">Suspension Analysis</div>
+          <div class="reason-box" style="margin-bottom:20px">
+            <div style="display:flex;align-items:flex-start;gap:16px">
+              <div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:white;box-shadow:0 4px 12px rgba(244,63,94,0.15);flex-shrink:0">
+                <span class="material-symbols-outlined" style="color:var(--red);font-size:24px">report</span>
+              </div>
               <div>
-                <div style="font-size:12px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Suspension Reason</div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:8px" id="d-reason">Policy Violation</div>
-                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6" id="d-reason-detail">Staff member was found processing transactions without following the mandatory dual-verification procedure required for amounts above ₹5,000. This is a direct violation of Finzo's internal banking operations policy.</div>
+                <div style="font-size:11px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px">Official Suspension Reason</div>
+                <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:8px" id="detail-reason">Policy Violation</div>
+                <div style="font-size:13px;color:var(--text-secondary);line-height:1.7" id="detail-reason-detail">Staff member was found processing transactions without following the mandatory dual-verification procedure required for amounts above ₹5,000.</div>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="d-by">Arjun Sharma (Admin)</span></div>
-          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="d-date">11 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Duration So Far</span><span class="info-value"><span class="badge badge-amber" id="d-duration">7 days</span></span></div>
-          <div class="info-row" style="border-bottom:none"><span class="info-label">Audit Log Reference</span><span class="info-value" style="font-family:monospace;font-size:11px">AUD20260862</span></div>
+          <div class="info-row"><span class="info-label">Authorized By</span><span class="info-value" id="detail-by">Arjun Sharma</span></div>
+          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date">11 Apr 2026</span></div>
+          <div class="info-row"><span class="info-label">Current Duration</span><span class="info-value" id="detail-duration">7 days</span></div>
         </div>
 
-        <!-- ADMIN NOTES -->
-        <div class="card card-p">
-          <div class="section-label">Admin Notes</div>
-          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.7">
-            Staff was processing multiple large withdrawals without completing the required security checklist. The pattern was flagged during a routine audit. Staff has been notified and must attend compliance training before reinstatement.
+        <!-- PROCESSING HISTORY -->
+        <div class="card overflow-hidden">
+          <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:between;background:var(--bg-input)">
+            <div>
+              <div style="font-size:15px;font-weight:800;color:var(--text-primary)">Processing History</div>
+            </div>
+            <a href="admin-transactions.html" style="font-size:12px;font-weight:700;color:var(--primary);text-decoration:none;margin-left:auto" class="hover:underline">View All Actions →</a>
           </div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text-placeholder);font-weight:600">— Arjun Sharma (Admin) · 11 Apr 2026</div>
+          <div class="overflow-x-auto scrollbar-hide">
+            <table style="width:100%; min-width: 600px; border-collapse:collapse">
+              <thead><tr style="background:rgba(255,255,255,0.02)">
+                <th style="padding:12px 24px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Operation</th>
+                <th style="padding:12px 24px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Timestamp</th>
+                <th style="padding:12px 24px;text-align:right;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Amount</th>
+                <th style="padding:12px 24px;text-align:center;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Status</th>
+              </tr></thead>
+              <tbody id="staff-transactions-body">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
 
       <!-- RIGHT -->
       <div style="display:flex;flex-direction:column;gap:20px">
-        <!-- QUICK STATS -->
-        <div class="card card-p">
-          <div class="section-label">Staff Snapshot</div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
-              <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Last Shift Total</div>
-              <div style="font-size:22px;font-weight:800;color:var(--text-primary)">₹84,500</div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
-                <div style="font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Deposits</div>
-                <div style="font-size:18px;font-weight:800;color:var(--green)">142</div>
-              </div>
-              <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;text-align:center">
-                <div style="font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Withdrawals</div>
-                <div style="font-size:18px;font-weight:800;color:var(--red)">142</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- TIMELINE -->
+        <!-- PERFORMANCE SNAPSHOT -->
         <div class="card card-p">
-          <div class="section-label">Suspension Timeline</div>
-          <div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--green)">badge</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div style="padding-bottom:18px;flex:1;padding-left:10px">
-                <div style="font-size:13px;font-weight:700;color:var(--text-primary)">Staff Account Created</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">STF006 created and assigned to East Branch</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">01 Jan 2026</div>
-              </div>
+          <div class="section-label">Performance Snapshot</div>
+          <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:20px;text-align:center;border:1px solid var(--border)">
+            <div style="font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:8px">Avg. Daily Volume</div>
+            <div style="font-size:28px;font-weight:800;color:var(--primary);letter-spacing:-1px">₹84,500</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:6px;font-weight:600">Based on last 30 active days</div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div style="background:var(--green-soft);border:1px solid var(--green-border);border-radius:12px;padding:12px;text-align:center">
+              <div style="font-size:9px;font-weight:800;color:var(--green);text-transform:uppercase;margin-bottom:4px">Deposits</div>
+              <div style="font-size:16px;font-weight:800">142</div>
             </div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--amber-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--amber)">flag</span></div>
-                <div class="tl-line"></div>
-              </div>
-              <div style="padding-bottom:18px;flex:1;padding-left:10px">
-                <div style="font-size:13px;font-weight:700;color:var(--text-primary)">Policy Violation Detected</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">Routine audit flagged non-compliant transaction processing</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">10 Apr 2026</div>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot-col">
-                <div class="tl-dot" style="background:var(--red-soft)"><span class="material-symbols-outlined" style="font-size:16px;color:var(--red)">work_off</span></div>
-              </div>
-              <div style="flex:1;padding-left:10px">
-                <div style="font-size:13px;font-weight:700;color:var(--red)">Account Suspended</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">Manually suspended by admin pending review</div>
-                <div style="font-size:10px;color:var(--text-placeholder);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">11 Apr 2026</div>
-              </div>
+            <div style="background:var(--red-soft);border:1px solid var(--red-border);border-radius:12px;padding:12px;text-align:center">
+              <div style="font-size:9px;font-weight:800;color:var(--red);text-transform:uppercase;margin-bottom:4px">Withdrawals</div>
+              <div style="font-size:16px;font-weight:800">96</div>
             </div>
           </div>
         </div>
 
         <!-- REINSTATE ACTION -->
-        <div class="card card-p" style="background:var(--green-soft);border:1.5px solid var(--green-border)">
-          <div style="text-align:center">
-            <span class="material-symbols-outlined" style="font-size:36px;color:var(--green);display:block;margin-bottom:10px">lock_open</span>
-            <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Remove Suspension</div>
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:18px">Once removed, the staff account returns to <strong>Active</strong> status and the staff member can log in and process customer transactions again.</div>
-            <button class="btn btn-success btn-lg" style="width:100%" onclick="document.getElementById('reinstate-modal').classList.remove('hidden')">
-              <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>Reinstate Staff
-            </button>
-            <div style="margin-top:10px;font-size:11px;color:var(--text-secondary)">This action is recorded in the Audit Log</div>
+        <div class="card card-p" style="background:var(--green-soft);border:1.5px solid var(--green-border);text-align:center">
+          <div style="width:56px;height:56px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 24px rgba(16,185,129,0.15)">
+            <span class="material-symbols-outlined" style="font-size:28px;color:var(--green)">verified_user</span>
           </div>
+          <div style="font-size:16px;font-weight:800;color:var(--text-primary);margin-bottom:8px">Authorize Reinstatement</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px">Restore operational access and system privileges for this staff member. This action is auditable.</div>
+          <button class="btn btn-success btn-lg" style="width:100%" onclick="openReinstateModal()">
+            <span class="material-symbols-outlined">check_circle</span>
+            Reinstate Staff
+          </button>
         </div>
+
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- REINSTATE MODAL -->
 <div class="modal-overlay hidden" id="reinstate-modal">
   <div class="modal-card">
-    <div class="modal-icon" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="color:var(--green);font-size:30px">lock_open</span></div>
+    <div class="modal-icon" style="background:var(--green-soft)">
+      <span class="material-symbols-outlined" style="color:var(--green);font-size:32px">verified_user</span>
+    </div>
     <div class="modal-title">Confirm Reinstatement</div>
-    <div class="modal-text">You are removing the suspension from <strong id="modal-name">Ravi Patel</strong>'s staff account <strong id="modal-id">STF006</strong>. Their account will immediately return to <strong>Active</strong> status and they can resume processing customer transactions at their assigned branch.</div>
-    <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:12px;margin-bottom:20px;font-size:12px;color:var(--text-secondary);text-align:center"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px">info</span>This action will be recorded in the Audit Log.</div>
+    <div class="modal-text">You are removing the suspension from <strong id="modal-name">Ravi Patel</strong>'s staff account <strong id="modal-id" class="mono">STF006</strong>. Their system privileges will be restored immediately.</div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="document.getElementById('reinstate-modal').classList.add('hidden')">Cancel</button>
-      <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()"><span class="material-symbols-outlined" style="font-size:16px">check</span>Confirm & Reinstate</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">Confirm & Authorize</button>
     </div>
   </div>
 </div>
+
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-function initTheme(){const s=localStorage.getItem('finzo-admin-theme');const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(dark)document.documentElement.classList.add('dark');updateIcons();}
-function toggleTheme(){const dark=document.documentElement.classList.toggle('dark');localStorage.setItem('finzo-admin-theme',dark?'dark':'light');updateIcons();}
-function updateIcons(){const dark=document.documentElement.classList.contains('dark');['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});const lbl=document.getElementById('theme-label');if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';}
+function initTheme(){
+  const s=localStorage.getItem('finzo-admin-theme');
+  const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(dark) document.documentElement.classList.add('dark');
+  updateIcons();
+}
+function toggleTheme(){
+  const dark=document.documentElement.classList.toggle('dark');
+  localStorage.setItem('finzo-admin-theme',dark?'dark':'light');
+  updateIcons();
+}
+function updateIcons(){
+  const dark=document.documentElement.classList.contains('dark');
+  const el=document.getElementById('theme-icon');
+  if(el) el.textContent=dark?'light_mode':'dark_mode';
+  const lbl=document.getElementById('theme-label');
+  if(lbl) lbl.textContent=dark?'Light Mode':'Dark Mode';
+}
 initTheme();
 
 const urlP=new URLSearchParams(window.location.search);
 const id=urlP.get('id')||'S01';
 const data={
-  'S01':{name:'Ravi Patel',email:'ravi.patel@finzobank.com',initials:'RP',staffId:'STF006',phone:'+91 77665 54433',branch:'East Branch',reason:'Policy Violation',reasonDetail:'Staff member was found processing transactions without following the mandatory dual-verification procedure required for amounts above ₹5,000. This is a direct violation of Finzo\'s internal banking operations policy.',by:'Arjun Sharma (Admin)',date:'11 Apr 2026',duration:'7 days'},
-  'S02':{name:'Mohan Das',email:'mohan.das@finzobank.com',initials:'MD',staffId:'STF007',phone:'+91 66554 43322',branch:'North Branch',reason:'Suspicious Activity',reasonDetail:'Staff member was observed processing multiple large cash withdrawals for the same customer across different accounts in a short period, raising concerns about compliance with anti-money laundering guidelines.',by:'Arjun Sharma (Admin)',date:'06 Apr 2026',duration:'12 days'},
-  'S03':{name:'Anita Roy',email:'anita.roy@finzobank.com',initials:'AR',staffId:'STF008',phone:'+91 55443 32211',branch:'Barasat',reason:'Failed Login Attempts',reasonDetail:'Staff account was automatically locked by the system after 5 consecutive failed login attempts within a 10-minute window. This is a standard security protocol to prevent unauthorised access to the staff portal.',by:'System (Auto)',date:'02 Apr 2026',duration:'16 days'},
+  'S01':{name:'Ravi Patel',email:'ravi.patel@finzobank.com',initials:'RP',staffId:'STF006',phone:'+91 77665 54433',branch:'East Branch',reason:'Policy Violation',reasonDetail:'Staff member was found processing transactions without following the mandatory dual-verification procedure required for amounts above ₹5,000.',by:'Arjun Sharma',date:'11 Apr 2026',duration:'7 days'},
+  'S02':{name:'Mohan Das',email:'mohan.das@finzobank.com',initials:'MD',staffId:'STF007',phone:'+91 66554 43322',branch:'North Branch',reason:'Suspicious Activity',reasonDetail:'Staff member was observed processing multiple large cash withdrawals for the same customer across different accounts.',by:'Arjun Sharma',date:'06 Apr 2026',duration:'12 days'},
+  'S03':{name:'Anita Roy',email:'anita.roy@finzobank.com',initials:'AR',staffId:'STF008',phone:'+91 55443 32211',branch:'Barasat',reason:'Failed Logins',reasonDetail:'Staff account was automatically locked after 5 consecutive failed login attempts within a 10-minute window.',by:'System (Auto)',date:'02 Apr 2026',duration:'16 days'},
 };
 const d=data[id]||data['S01'];
-document.getElementById('bc-name').textContent=d.name;
-document.getElementById('d-avatar').textContent=d.initials;
-document.getElementById('d-name').textContent=d.name;
-document.getElementById('d-email').textContent=d.email;
-document.getElementById('d-staff-id').textContent=d.staffId;
-document.getElementById('d-phone').textContent=d.phone;
-document.getElementById('d-branch').textContent=d.branch;
-document.getElementById('d-reason').textContent=d.reason;
-document.getElementById('d-reason-detail').textContent=d.reasonDetail;
-document.getElementById('d-by').textContent=d.by;
-document.getElementById('d-date').textContent=d.date;
-document.getElementById('d-duration').textContent=d.duration;
-document.getElementById('modal-name').textContent=d.name;
-document.getElementById('modal-id').textContent=d.staffId;
+
+// Data Mapping
+document.getElementById('bc-name').textContent = d.name;
+document.getElementById('detail-avatar').textContent = d.initials;
+document.getElementById('top-avatar').textContent = d.initials;
+document.getElementById('detail-name').textContent = d.name;
+document.getElementById('detail-email').textContent = d.email;
+document.getElementById('detail-staff-id').textContent = d.staffId;
+document.getElementById('detail-staff-id-badge').textContent = d.staffId;
+document.getElementById('detail-phone').textContent = d.phone;
+document.getElementById('detail-branch').textContent = d.branch;
+document.getElementById('detail-reason').textContent = d.reason;
+document.getElementById('detail-reason-detail').textContent = d.reasonDetail;
+document.getElementById('detail-by').textContent = d.by;
+document.getElementById('detail-date').textContent = d.date;
+document.getElementById('detail-duration').textContent = d.duration;
+document.getElementById('modal-name').textContent = d.name;
+document.getElementById('modal-id').textContent = d.staffId;
+
+function openReinstateModal(){document.getElementById('reinstate-modal').classList.remove('hidden');}
+function closeModal(){document.getElementById('reinstate-modal').classList.add('hidden');}
 
 function processReinstate(){
   const btn=document.getElementById('confirm-btn');
-  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...';
-  // PHP_BACKEND: POST /api/admin/reinstate-staff.php {staff_id, new_status:'active'}
+  btn.disabled=true;
+  btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...';
   setTimeout(()=>{
-    document.getElementById('reinstate-modal').classList.add('hidden');
-    showToast(d.name+' reinstated successfully. Status set to Active.','success');
-    setTimeout(()=>{window.location.href='admin-suspended-staff.html';},2000);
+    closeModal();
+    showToast('Staff account reinstated successfully.','success');
+    setTimeout(()=>{ window.location.href='admin-suspended-staff.html'; }, 2000);
   },1800);
 }
+
 function showToast(msg,type='success'){
-  const wrap=document.getElementById('toast-wrap');const t=document.createElement('div');
+  const wrap=document.getElementById('toast-wrap');
+  const t=document.createElement('div');
   t.className=`toast toast-${type}`;
-  t.innerHTML=`<span class="material-symbols-outlined" style="color:#10b981;font-size:20px;flex-shrink:0">check_circle</span><span>${msg}</span>`;
-  wrap.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3500);
+  const colors={success:'#10b981',error:'#f43f5e'};
+  const icons={success:'check_circle',error:'cancel'};
+  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3500);
 }
+
+const staffTransactions = [
+  { id: '#TRX-8291', type: 'CUSTOMER DEPOSIT', time: '11:42 AM', amount: '₹12,400.00', status: 'VERIFIED' },
+  { id: '#TRX-8104', type: 'CASH WITHDRAWAL', time: '09:15 AM', amount: '₹5,000.00', status: 'VERIFIED' },
+  { id: '#TRX-7992', type: 'NODE TRANSFER', time: '08:02 AM', amount: '₹42,000.00', status: 'DENIED' },
+  { id: '#TRX-7856', type: 'KYC VERIFICATION', time: 'Yesterday', amount: '—', status: 'VERIFIED' },
+  { id: '#TRX-7741', type: 'CUSTOMER DEPOSIT', time: 'Yesterday', amount: '₹1,500.00', status: 'VERIFIED' }
+];
+
+function renderStaffTransactions() {
+  const tbody = document.getElementById('staff-transactions-body');
+  if(!tbody) return;
+  tbody.innerHTML = staffTransactions.map(t => `
+    <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02]">
+      <td style="padding:16px 24px;font-size:13px;font-weight:700;color:var(--text-primary)">${t.type}</td>
+      <td style="padding:16px 24px;font-size:12px;color:var(--text-secondary);font-weight:600">${t.time}</td>
+      <td style="padding:16px 24px;text-align:right;font-size:13px;font-weight:800;color:var(--text-primary)">${t.amount}</td>
+      <td style="padding:16px 24px;text-align:center">
+        <span class="badge ${t.status === 'VERIFIED' ? 'badge-green' : t.status === 'DENIED' ? 'badge-red' : 'badge-amber'}">${t.status}</span>
+      </td>
+    </tr>
+  `).join('');
+}
+renderStaffTransactions();
 </script>
 </body>
 </html>
