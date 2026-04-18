@@ -383,18 +383,11 @@ const allData=[
 ];
 
 const ROWS_PP=6;
-let currentPage=1,activeTab='all',pendingId=null,generatedPass='';
+let currentPage=1,pendingId=null,generatedPass='';
 let filtered=[...allData];
 
 function attemptsDisplay(){
   return `<div class="attempt-dots">${Array(5).fill('<div class="attempt-dot"></div>').join('')}<span style="font-size:11px;font-weight:800;color:var(--red);margin-left:6px;">5/5</span></div>`;
-}
-
-function switchTab(key,el){
-  activeTab=key;currentPage=1;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderTable();
 }
 
 function resetFilters(){
@@ -408,8 +401,7 @@ function resetFilters(){
     opt.classList.toggle('selected', i === 0);
   });
   
-  activeTab='all';currentPage=1;
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  currentPage=1;
   renderTable();
 }
 
@@ -469,7 +461,6 @@ function renderTable(){
     // Queue logic: Only show accounts waiting for unlock
     if(r.tempSent) return false;
     
-    if(activeTab!=='all'&&r.tabKey!==activeTab)return false;
     if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.accNo.toLowerCase().includes(search))return false;
     if(type&&r.accType!==type)return false;
     return true;
