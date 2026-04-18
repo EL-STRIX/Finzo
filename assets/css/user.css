@@ -180,6 +180,11 @@ input, select, textarea { font-family: inherit; }
 }
 .nav-icon-btn:hover { background: var(--bg-input); color: var(--text-primary); }
 .nav-icon-btn .material-symbols-outlined { font-size: 22px; }
+.nav-mobile-toggle { display: none !important; }
+
+@media (max-width: 1024px) {
+  .nav-mobile-toggle { display: flex !important; }
+}
 
 /* ── PAGE CONTENT ── */
 .page-content { padding: 32px; flex: 1; }
