@@ -6,7 +6,8 @@
 <title>Suspended Staff | Finzo Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -26,6 +27,7 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/admin-dropdowns.js"></script>
   <style>
     /* Table specific overrides for this page */
     .admin-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
@@ -37,6 +39,85 @@
     .badge-green { background: rgba(16,185,129,0.1); color: #10b981; }
     .badge-blue { background: rgba(59,130,246,0.1); color: #3b82f6; }
     .badge-gray { background: rgba(100,116,139,0.1); color: #64748b; }
+
+    /* Action Buttons Standard */
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid transparent; cursor: pointer; text-decoration: none;
+    }
+    .btn-view { 
+      background: rgba(0, 38, 69, 0.05); color: #002645; 
+      border-color: rgba(0, 38, 69, 0.1);
+    }
+    .btn-view:hover { background: #002645; color: white; transform: translateY(-1px); }
+    
+    .btn-reinstate {
+      background: rgba(16, 185, 129, 0.1); color: #10b981;
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+    .btn-reinstate:hover { background: #10b981; color: white; transform: translateY(-1px); }
+
+    .dark .btn-view { background: rgba(255,255,255,0.05); color: #cbd5e1; border-color: rgba(255,255,255,0.1); }
+    .dark .btn-view:hover { background: white; color: #002645; }
+
+    /* Premium Pagination */
+    .pag-btn {
+      padding: 8px 16px; border-radius: 12px; font-size: 11px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      background: white; color: #6c63ff;
+      border: 1.5px solid rgba(108, 99, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+      .pag-btn { padding: 10px 24px; border-radius: 14px; font-size: 13px; }
+    }
+
+    .pag-btn:hover:not(:disabled) {
+      background: rgba(108, 99, 255, 0.1);
+      border-color: rgba(108, 99, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    .pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .pag-num {
+      width: 32px; height: 32px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; color: #6c63ff;
+      border: 1.5px solid rgba(108, 99, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    @media (min-width: 640px) {
+      .pag-num { width: 44px; height: 44px; border-radius: 14px; font-size: 14px; }
+    }
+    .pag-num:hover:not(.active) {
+      background: rgba(108, 99, 255, 0.08);
+      border-color: rgba(108, 99, 255, 0.3);
+    }
+    .pag-num.active {
+      background: #6c63ff;
+      color: white;
+      border-color: #6c63ff;
+      box-shadow: 0 10px 15px -3px rgba(108, 99, 255, 0.3);
+    }
+
+    .dark .pag-btn, .dark .pag-num {
+      background: rgba(255,255,255,0.03);
+      color: #a5b4fc;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .dark .pag-btn:hover:not(:disabled), .dark .pag-num:hover:not(.active) {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .dark .pag-num.active {
+      background: #818cf8;
+      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.4);
+    }
   </style>
 </head>
 <body>
@@ -121,70 +202,46 @@
 
     <div class="p-4 sm:p-6 lg:p-8">
 
-      <!-- STAT CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(244,63,94,0.1);">
-            <span class="material-symbols-outlined" style="color:#f43f5e;">work_off</span>
-          </div>
-          <div class="admin-stat-label">Total Suspended Staff</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta neutral">All Time</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(245,158,11,0.1);">
-            <span class="material-symbols-outlined" style="color:#f59e0b;">schedule</span>
-          </div>
-          <div class="admin-stat-label">Currently Suspended</div>
-          <div class="admin-stat-value">2 <span class="admin-stat-delta neutral">Active</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(16,185,129,0.1);">
-            <span class="material-symbols-outlined" style="color:#10b981;">how_to_reg</span>
-          </div>
-          <div class="admin-stat-label">Reinstated This Month</div>
-          <div class="admin-stat-value">1 <span class="admin-stat-delta neutral">Restored</span></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-icon" style="background:rgba(59,130,246,0.1);">
-            <span class="material-symbols-outlined" style="color:#3b82f6;">groups</span>
-          </div>
-          <div class="admin-stat-label">Total Active Staff</div>
-          <div class="admin-stat-value">6 <span class="admin-stat-delta neutral">Operational</span></div>
-        </div>
-      </div>
-
       <!-- TABLE CARD -->
       <div class="admin-card">
-        <div class="flex flex-wrap items-end gap-4 p-6 border-b border-slate-200 dark:border-white/5">
-          <div class="flex-1 min-w-[200px]">
-            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Search Staff</div>
+        <div class="flex flex-wrap items-end gap-4 p-6 border-b border-slate-200 dark:border-white/5 bg-slate-50/20">
+          <div class="flex-1 min-w-[240px]">
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Search Staff</div>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium" placeholder="Name, staff ID or email..." oninput="renderTable()">
+              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, staff ID or email..." oninput="renderTable()">
             </div>
           </div>
-          <div class="min-w-[180px]">
-            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Suspension Reason</div>
-            <select id="reason-filter" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer font-medium" onchange="renderTable()">
-              <option value="">All Reasons</option>
-              <option>Compliance Violation</option>
-              <option>Unauthorized Access</option>
-              <option>Missing Documents</option>
-              <option>Performance Issues</option>
-              <option>Manual Review</option>
-            </select>
+          <div class="min-w-[160px]">
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Start Date</div>
+            <input type="date" id="start-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+          </div>
+          <div class="min-w-[160px]">
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">End Date</div>
+            <input type="date" id="end-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
           </div>
           <div class="min-w-[180px]">
-            <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Branch</div>
-            <select id="branch-filter" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer font-medium" onchange="renderTable()">
-              <option value="">All Branches</option>
-              <option>Mumbai Main</option>
-              <option>Delhi North</option>
-              <option>Bangalore IT City</option>
-              <option>Chennai Central</option>
-            </select>
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Reason</div>
+            <div class="finzo-dropdown w-full" id="reason-dropdown">
+              <input type="hidden" id="reason-filter" value="">
+              <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-slate-200 dark:!border-white/10 !rounded-xl !py-2 !px-4">
+                <span class="material-symbols-outlined text-lg opacity-60">filter_alt</span>
+                <span class="dropdown-label font-bold text-sm">All Reasons</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
+                <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
+                <div class="finzo-dropdown-option" data-value="Policy Violation">Policy Violation</div>
+                <div class="finzo-dropdown-option" data-value="Suspicious Activity">Suspicious Activity</div>
+                <div class="finzo-dropdown-option" data-value="Failed Login Attempts">Failed Login Attempts</div>
+                <div class="finzo-dropdown-option" data-value="Manual Review">Manual Review</div>
+              </div>
+            </div>
           </div>
-          <button class="px-6 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="resetFilters()">Reset</button>
+          <div class="flex gap-2">
+            <button class="px-7 py-2.5 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-black shadow-lg shadow-primary/20 transition-all" onclick="renderTable()">Apply</button>
+            <button class="px-6 py-2.5 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-500 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 transition-all" onclick="resetFilters()">Reset</button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -205,9 +262,9 @@
           </table>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-4 p-6 bg-slate-50/50 dark:bg-white/[0.02]">
-          <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase" id="pag-info">Loading...</span>
-          <div class="flex items-center gap-2" id="pag-controls"></div>
+        <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 p-6 bg-slate-50/50 dark:bg-white/[0.02]">
+          <span class="text-[9px] sm:text-[11px] font-bold tracking-widest text-slate-400 uppercase text-center sm:text-left w-full sm:w-auto" id="pag-info">Loading...</span>
+          <div class="flex items-center justify-center" id="pag-controls"></div>
         </div>
       </div>
     </div>
@@ -218,7 +275,7 @@
   <div class="modal-card">
     <div class="modal-icon" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="color:var(--green);font-size:28px">how_to_reg</span></div>
     <div class="modal-title">Reinstate Staff Account</div>
-    <div class="modal-text" id="modal-text">You are reinstating this staff account. The account status will return to <strong>Active</strong> immediately and the staff member can resume processing transactions at their branch.</div>
+    <div class="modal-text" id="modal-text">You are reinstating this staff account.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="document.getElementById('reinstate-modal').classList.add('hidden')">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" onclick="confirmReinstate()">
@@ -248,17 +305,47 @@ let filtered=[...allData];
 
 function reasonBadge(r){const map={'Policy Violation':'badge-red','Suspicious Activity':'badge-amber','Failed Login Attempts':'badge-amber','Manual Review':'badge-blue'};return `<span class="badge ${map[r]||'badge-gray'}">${r}</span>`;}
 function switchTab(key,el){activeTab=key;currentPage=1;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
-function resetFilters(){document.getElementById('search-input').value='';document.getElementById('reason-filter').value='';document.getElementById('branch-filter').value='';activeTab='all';currentPage=1;document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderTable();}
+function resetFilters(){
+  document.getElementById('search-input').value='';
+  document.getElementById('start-date').value='';
+  document.getElementById('end-date').value='';
+  document.getElementById('reason-filter').value='';
+  activeTab='all';
+  currentPage=1;
+  renderTable();
+}
+
+function getAvatarGradient(initials) {
+  const gradients = [
+    'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', // Slate
+    'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', // Sky
+    'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)', // Indigo
+    'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)', // Amber
+    'linear-gradient(135deg, #10b981 0%, #047857 100%)', // Emerald
+    'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'  // Rose
+  ];
+  let hash = 0;
+  for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
+  return gradients[Math.abs(hash) % gradients.length];
+}
 
 function renderTable(){
   const search=document.getElementById('search-input').value.toLowerCase();
   const reason=document.getElementById('reason-filter').value;
-  const branch=document.getElementById('branch-filter').value;
+  const startDate=document.getElementById('start-date').value;
+  const endDate=document.getElementById('end-date').value;
+  
   filtered=allData.filter(r=>{
     if(activeTab!=='all'&&r.tabKey!==activeTab)return false;
     if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.staffId.toLowerCase().includes(search))return false;
     if(reason&&r.reason!==reason)return false;
-    if(branch&&r.branch!==branch)return false;
+    
+    // Date Range Filtering
+    if(startDate || endDate) {
+      const rowDate = new Date(r.date);
+      if(startDate && rowDate < new Date(startDate)) return false;
+      if(endDate && rowDate > new Date(endDate)) return false;
+    }
     return true;
   });
   const total=filtered.length;
@@ -270,27 +357,56 @@ function renderTable(){
     tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">work_off</span><div class="empty-title">No suspended staff found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
   } else {
     tbody.innerHTML=slice.map((r,i)=>`
-      <tr>
+      <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
         <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*ROWS_PP+i+1).padStart(2,'0')}</td>
-        <td><div class="staff-cell"><div class="avatar-staff">${r.initials}</div><div><div class="user-name">${r.name}</div><div class="user-sub">${r.email}</div></div></div></td>
+        <td class="py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg" style="background: ${getAvatarGradient(r.initials)}">
+              ${r.initials}
+            </div>
+            <div>
+              <div class="font-headline font-bold text-sm text-black dark:text-white">${r.name}</div>
+              <div class="text-[11px] font-bold text-slate-400 -mt-0.5">${r.email}</div>
+            </div>
+          </div>
+        </td>
         <td><span class="mono">${r.staffId}</span></td>
         <td style="font-size:12px;font-weight:600">${r.branch}</td>
         <td>${reasonBadge(r.reason)}</td>
         <td style="font-size:12px;font-weight:600">${r.date}</td>
         <td style="font-size:12px;color:var(--text-secondary)">${r.by}</td>
         <td><span class="badge badge-gray">${r.duration}</span></td>
-        <td><div style="display:flex;align-items:center;justify-content:center;gap:6px">
-          <a href="admin-suspended-staff-detail.html?id=${r.id}" class="btn btn-ghost btn-sm"><span class="material-symbols-outlined" style="font-size:14px">visibility</span>View</a>
-          <button class="btn btn-success btn-sm" onclick="openReinstate('${r.id}','${r.name}')"><span class="material-symbols-outlined" style="font-size:14px">lock_open</span>Reinstate</button>
-        </div></td>
+        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <div class="flex items-center justify-end gap-2">
+            <a href="admin-suspended-staff-detail.html?id=${r.id}" class="action-btn btn-view">
+              <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
+              View
+            </a>
+            <button onclick="openReinstate('${r.id}','${r.name}')" class="action-btn btn-reinstate">
+              <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
+              Reinstate
+            </button>
+          </div>
+        </td>
       </tr>`).join('');
   }
   const s=(currentPage-1)*ROWS_PP+1,e=Math.min(currentPage*ROWS_PP,total);
   document.getElementById('pag-info').textContent=total?`Showing ${s}–${e} of ${total} suspended staff`:'No results';
   const pc=document.getElementById('pag-controls');
-  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Prev</button>`;
-  for(let i=1;i<=Math.min(totalPages,5);i++)pc.innerHTML+=`<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
-  pc.innerHTML+=`<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
+  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Previous</button>`;
+  
+  // Compact page numbers for mobile
+  let startPage = Math.max(1, currentPage - 1);
+  let endPage = Math.min(totalPages, startPage + 2);
+  if (endPage - startPage < 2) startPage = Math.max(1, endPage - 2);
+
+  pc.innerHTML += `<div class="flex items-center gap-1.5 mx-2 sm:mx-4">`;
+  for(let i=startPage; i<=endPage; i++) {
+    pc.innerHTML += `<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
+  }
+  pc.innerHTML += `</div>`;
+  
+  pc.innerHTML += `<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
 }
 function goPage(d){currentPage=Math.max(1,Math.min(Math.ceil(filtered.length/ROWS_PP),currentPage+d));renderTable();}
 
