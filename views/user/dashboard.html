@@ -181,7 +181,7 @@
     </div>
 
     <div class="grid-12">
-      <!-- BALANCE CARD -->
+      <!-- ROW 1: BALANCE & STATS -->
       <div class="col-8 animate-in animate-delay-2">
         <div class="balance-card">
           <div style="position:relative;z-index:1">
@@ -204,55 +204,80 @@
         </div>
       </div>
 
-      <!-- QUICK ACTIONS SIDEBAR -->
-      <div class="col-4 animate-in animate-delay-3">
-        <div style="margin-bottom:20px; padding-left: 4px;">
-          <div class="card-title">Quick Actions</div>
-          <div class="card-subtitle">Common banking tasks</div>
-        </div>
-        <div class="quick-action-list">
-          <a id="qa-transfer" href="transfer.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:16px">
-              <div class="quick-action-icon" style="background:rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.15);">
-                <span class="material-symbols-outlined" style="color:#0891b2;font-size:24px">swap_horiz</span>
-              </div>
-              <div>
-                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Fund Transfer</div>
-                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Send money instantly</div>
-              </div>
+      <div class="col-4 animate-in animate-delay-2">
+        <div class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center; padding: 32px; background:linear-gradient(135deg, rgba(8,145,178,0.05) 0%, rgba(16,185,129,0.05) 100%);">
+          <div style="margin-bottom:20px">
+            <div class="card-title" style="font-size:14px; color:var(--text-secondary)">Monthly Activity</div>
+            <div style="font-size:24px; font-weight:800; color:var(--text-primary); margin: 4px 0;">₹0.00</div>
+            <div style="font-size:12px; color:#10b981; font-weight:600">↑ 0% from last month</div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:11px; color:var(--text-placeholder); text-transform:uppercase; font-weight:700">Income</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary)">₹0.00</div>
             </div>
-            <span class="material-symbols-outlined" id="qa-transfer-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
-          </a>
-          <a id="qa-txns" href="transactions.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:16px">
-              <div class="quick-action-icon" style="background:rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);">
-                <span class="material-symbols-outlined" style="color:#10b981;font-size:24px">receipt_long</span>
-              </div>
-              <div>
-                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Transactions</div>
-                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">View full history</div>
-              </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-placeholder); text-transform:uppercase; font-weight:700">Expenses</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary)">₹0.00</div>
             </div>
-            <span class="material-symbols-outlined" id="qa-txns-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
-          </a>
-          <a id="qa-stmt" href="statement.html" class="quick-action locked">
-            <div style="display:flex;align-items:center;gap:16px">
-              <div class="quick-action-icon" style="background:rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);">
-                <span class="material-symbols-outlined" style="color:#f59e0b;font-size:24px">description</span>
-              </div>
-              <div>
-                <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Statement</div>
-                <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Download PDF</div>
-              </div>
-            </div>
-            <span class="material-symbols-outlined" id="qa-stmt-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
-          </a>
+          </div>
         </div>
       </div>
 
+      <!-- ROW 2: QUICK ACTIONS (HORIZONTAL) -->
+      <div class="col-12 animate-in animate-delay-3">
+        <div style="margin: 12px 0 20px; padding-left: 4px; display:flex; align-items:center; gap:12px">
+          <div class="card-title">Quick Actions</div>
+          <div style="width:1px; height:14px; background:var(--border)"></div>
+          <div class="card-subtitle">One-tap banking</div>
+        </div>
+        <div class="grid-12" style="gap:20px">
+          <div class="col-4">
+            <a id="qa-transfer" href="transfer.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.15);">
+                  <span class="material-symbols-outlined" style="color:#0891b2;font-size:24px">swap_horiz</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Fund Transfer</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Send money instantly</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-transfer-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+          <div class="col-4">
+            <a id="qa-txns" href="transactions.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);">
+                  <span class="material-symbols-outlined" style="color:#10b981;font-size:24px">receipt_long</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Transactions</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">View full history</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-txns-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+          <div class="col-4">
+            <a id="qa-stmt" href="statement.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);">
+                  <span class="material-symbols-outlined" style="color:#f59e0b;font-size:24px">description</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Statement</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Download PDF</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-stmt-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+        </div>
+      </div>
 
-
-      <!-- RECENT TRANSACTIONS -->
+      <!-- ROW 3: RECENT TRANSACTIONS -->
       <div class="col-12 card animate-in animate-delay-4">
         <div class="card-header">
           <div>
@@ -301,6 +326,7 @@
         </div>
       </div>
     </div><!-- /grid -->
+
   </div>
 </div>
 
