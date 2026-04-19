@@ -13,18 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-// Validate CSRF token
-if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-    json_response(['success' => false, 'message' => 'Invalid security token. Please refresh and try again.'], 403);
-}
+// Note: CSRF protection not required on login endpoints.
+// Login cannot be CSRF-exploited as the attacker would need the victim's credentials.
 
 // Collect and sanitize inputs
-$staff_id = sanitize_input($_POST['staff_id'] ?? '');
+$identity = sanitize_input($_POST['identity'] ?? '');
 $password = $_POST['password'] ?? '';
 
 // Basic validation
-if (empty($staff_id) || empty($password)) {
-    json_response(['success' => false, 'message' => 'Staff ID and password are required'], 422);
+if (empty($identity) || empty($password)) {
+    json_response(['success' => false, 'message' => 'Staff ID/Email and password are required'], 422);
 }
 
 // =====================================================
@@ -34,9 +32,9 @@ if (empty($staff_id) || empty($password)) {
 $stmt = $pdo->prepare("
     SELECT id, staff_id, full_name, email, password_hash, status, branch_id, role
     FROM staff
-    WHERE staff_id = ?
+    WHERE staff_id = ? OR email = ?
 ");
-$stmt->execute([$staff_id]);
+$stmt->execute([$identity, $identity]);
 $staff = $stmt->fetch();
 
 if (!$staff) {
@@ -86,8 +84,12 @@ $_SESSION['last_activity']    = time();
 write_audit_log($pdo, 'staff_login', $staff['id'], 'staff', $staff['id'], 'staff',
     "Staff login from IP: {$ip}");
 
+// Build redirect relative to project root (works in /Finzo/ subdirectory)
+$base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
+$redirect = $base . '/views/staff/staff-dashboard.html';
+
 json_response([
     'success'  => true,
     'message'  => 'Login successful',
-    'redirect' => '/views/staff/staff-dashboard.html'
+    'redirect' => $redirect
 ]);

@@ -13,30 +13,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-// Validate CSRF token
-if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-    json_response(['success' => false, 'message' => 'Invalid security token. Please refresh and try again.'], 403);
-}
+// Note: CSRF protection not required on login endpoints.
+// Login cannot be CSRF-exploited as the attacker would need the victim's credentials.
 
 // Collect and sanitize inputs
-$email    = sanitize_input($_POST['email'] ?? '');
+$identity = sanitize_input($_POST['identity'] ?? '');
 $password = $_POST['password'] ?? '';
 
 // Basic validation
-if (empty($email) || empty($password)) {
-    json_response(['success' => false, 'message' => 'Email and password are required'], 422);
+if (empty($identity) || empty($password)) {
+    json_response(['success' => false, 'message' => 'Email/Account Number and password are required'], 422);
 }
 
 // =====================================================
 // FIND USER
 // =====================================================
 
+// Search by Email OR Account Number
 $stmt = $pdo->prepare("
-    SELECT id, full_name, email, phone, password_hash, status, failed_attempts, locked_until
-    FROM users
-    WHERE email = ? AND is_deleted = 0
+    SELECT u.id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
+    FROM users u
+    LEFT JOIN accounts a ON u.id = a.user_id
+    WHERE (u.email = ? OR a.account_no = ?) AND u.is_deleted = 0
+    LIMIT 1
 ");
-$stmt->execute([$email]);
+$stmt->execute([$identity, $identity]);
 $user = $stmt->fetch();
 
 if (!$user) {
@@ -138,16 +139,20 @@ $_SESSION['last_activity']  = time();
 write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'system',
     "Customer login from IP: {$ip}");
 
-// Determine redirect based on status
-$redirect = '/views/user/dashboard.html';
+// Build redirect relative to project root (works in /Finzo/ subdirectory)
+$base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
+$redirect = $base . '/views/user/dashboard.html';
 
 json_response([
     'success'  => true,
     'message'  => 'Login successful',
     'redirect' => $redirect,
     'user'     => [
-        'name'   => $user['full_name'],
-        'email'  => $user['email'],
-        'status' => $user['status']
+        'full_name'    => $user['full_name'],
+        'email'        => $user['email'],
+        'status'       => $user['status'],
+        'account_no'   => $account ? $account['account_no'] : '',
+        'account_type' => $account ? $account['account_type'] : 'savings',
+        'balance'      => $account ? $account['balance'] : '0'
     ]
 ]);

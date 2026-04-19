@@ -3,7 +3,14 @@
    Centralised fetch wrapper for all portals
    ═══════════════════════════════════════════ */
 
-const API_BASE = '/api';
+// Dynamically resolve project base so it works in any subdirectory (e.g. /Finzo/)
+const _scriptEl = document.currentScript || (() => {
+  const scripts = document.getElementsByTagName('script');
+  return scripts[scripts.length - 1];
+})();
+const _scriptSrc = _scriptEl ? _scriptEl.src : '';
+const _baseMatch = _scriptSrc.match(/^(https?:\/\/[^/]+)(\/.*?)\/assets\/js\/api\.js/);
+const API_BASE = (_baseMatch ? _baseMatch[2] : '') + '/api';
 
 /**
  * Core API caller. Handles JSON and FormData.

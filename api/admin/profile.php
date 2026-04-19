@@ -15,7 +15,7 @@ $admin_id = $_SESSION['admin_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare("
-            SELECT id, full_name, email, status, last_login_at, last_login_ip, created_at
+            SELECT id, admin_id, full_name, email, phone, status, last_login_at, last_login_ip, created_at
             FROM admin_users WHERE id = ?
         ");
         $stmt->execute([$admin_id]);

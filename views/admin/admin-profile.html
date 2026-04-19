@@ -364,28 +364,31 @@
   async function loadAdminProfile() {
     try {
       const data = await api.get('/admin/profile.php');
-      if (data.status === 'success') {
-        const admin = data.data;
-        
-        // Update Displays
-        $('#profile-name-display').text(admin.name);
-        $('#profile-email-meta').html(`${admin.email}<br class="sm:hidden"> <span class="hidden sm:inline">•</span> ${admin.designation || 'System Architect'}`);
-        $('#avatar-initials').text(admin.initials);
-        
-        if (admin.avatar) {
-          $('#avatar-img-preview').attr('src', admin.avatar).show();
-          $('#avatar-initials').hide();
-        }
+      if (data.success) {
+        const admin = data.admin;
 
-        // Update Form Inputs
-        $('#profile-name-input').val(admin.name);
-        $('#profile-id-input').val(admin.admin_id);
-        $('#profile-email-input').val(admin.email);
-        $('#profile-phone-input').val(admin.phone);
+        // Compute initials from full_name
+        const nameParts = (admin.full_name || '').trim().split(' ');
+        const initials = nameParts.length >= 2
+          ? (nameParts[0][0] + nameParts[1][0]).toUpperCase()
+          : (admin.full_name || 'A').substring(0, 2).toUpperCase();
+
+        // Update header displays
+        $('#profile-name-display').text(admin.full_name || '—');
+        $('#profile-email-meta').html(`${admin.email}`);
+        $('#avatar-initials').text(initials);
+
+        // Update form fields
+        $('#profile-name-input').val(admin.full_name || '');
+        $('#profile-id-input').val(admin.admin_id || '');
+        $('#profile-email-input').val(admin.email || '');
+        $('#profile-phone-input').val(admin.phone || '');
+      } else {
+        showToast('Failed to load profile: ' + (data.message || 'Unknown error'), 'error');
       }
     } catch (error) {
       console.error('Failed to load admin profile:', error);
-      showToast('❌ Failed to load profile data', 'error');
+      showToast('Failed to load profile data', 'error');
     }
   }
 

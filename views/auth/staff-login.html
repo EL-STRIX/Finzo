@@ -347,6 +347,13 @@
     const $form = $('#staffLoginForm');
     const $btn = $('#login-btn');
     const $error = $('#error-box');
+    let CSRF_TOKEN = '';
+
+    // Fetch CSRF Token on load
+    fetch('../../api/auth/get-csrf-token.php')
+      .then(res => res.json())
+      .then(data => { if(data.csrf_token) CSRF_TOKEN = data.csrf_token; })
+      .catch(err => console.error('Token fetch error:', err));
 
     $form.on('submit', function(e) {
       e.preventDefault();
@@ -367,13 +374,16 @@
       $btn.prop('disabled', true);
 
       // Real API authentication
-      fetch('/api/auth/staff-login.php', {
+      fetch('../../api/auth/staff-login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',
-        body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw)
+        body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422) throw new Error('Server Error');
+        return res.json();
+      })
       .then(data => {
         if (data.success) {
           window.location.href = data.redirect || '../staff/staff-dashboard.html';
