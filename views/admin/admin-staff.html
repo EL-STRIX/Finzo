@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/api.js"></script>
   <script src="../../assets/js/theme.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
@@ -310,7 +311,7 @@
             <div>
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Staff ID</label>
               <div class="relative">
-                <input type="text" id="new-staff-id" value="STF009" readonly
+                <input type="text" id="new-staff-id" value="" placeholder="Generating..." readonly
                   class="w-full pl-4 pr-10 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-xl font-bold opacity-60 cursor-not-allowed">
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">lock</span>
               </div>
@@ -363,11 +364,21 @@
   </style>
 
   <script>
-    function openAddStaffModal() {
-      // Auto-generate Staff ID based on total rows + 1
-      const totalStaff = $('#staff-table-body tr').length;
-      const nextId = "STF" + String(totalStaff + 1).padStart(3, '0');
-      $('#new-staff-id').val(nextId);
+    async function openAddStaffModal() {
+      // Fetch the actual next Staff ID from the backend
+      try {
+        const response = await api.get('/admin/staff.php', { action: 'next_id' });
+        if (response.success) {
+          $('#new-staff-id').val(response.next_id);
+        } else {
+          // Fallback if API fails
+          const totalStaff = $('#staff-table-body tr').length;
+          const nextId = "STF" + String(totalStaff + 1).padStart(3, '0');
+          $('#new-staff-id').val(nextId);
+        }
+      } catch (error) {
+        console.error('Failed to fetch next Staff ID:', error);
+      }
       
       // Auto-generate Temporary Password
       const randomPass = "FINZO-" + Math.floor(1000 + Math.random() * 9000);

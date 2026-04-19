@@ -78,7 +78,14 @@ async function apiCall(endpoint, options = {}) {
 
 // ── Convenience methods ──
 const api = {
-  get:  (endpoint) => apiCall(endpoint, { method: 'GET' }),
+  get: (endpoint, params = null) => {
+    let url = endpoint;
+    if (params) {
+      const qs = objectToURLParams(params);
+      url += (url.includes('?') ? '&' : '?') + qs;
+    }
+    return apiCall(url, { method: 'GET' });
+  },
   post: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'POST', body, isForm }),
   upload: (endpoint, formData) => apiCall(endpoint, { method: 'POST', body: formData, isForm: true }),
 };

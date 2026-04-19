@@ -12,6 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
+    // Action: Get Next Staff ID
+    if (isset($_GET['action']) && $_GET['action'] === 'next_id') {
+        require_once dirname(__DIR__, 2) . '/config/functions.php';
+        $next_id = generate_staff_id($pdo);
+        json_response(['success' => true, 'next_id' => $next_id]);
+    }
+
     $search    = sanitize_input($_GET['search'] ?? '');
     $status    = sanitize_input($_GET['status'] ?? 'all');
     $branch_id = intval($_GET['branch_id'] ?? 0);
