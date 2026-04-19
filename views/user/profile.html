@@ -87,7 +87,7 @@
     
     <div class="profile-id-section animate-in">
       <div class="premium-avatar-wrap">
-        <div id="avatar-circle">RK</div>
+        <div id="avatar-circle"></div>
         <button onclick="document.getElementById('avatar-input').click()" style="position:absolute;bottom:8px;right:8px;width:36px;height:36px;border-radius:50%;background:var(--primary);border:3px solid var(--bg-card);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow: 0 4px 12px rgba(0,0,0,0.2)">
           <span class="material-symbols-outlined" style="font-size:18px">photo_camera</span>
         </button>
@@ -96,7 +96,7 @@
       
       <div style="flex:1">
         <div class="profile-main-meta">
-          <div class="profile-name-big" id="profile-name">Rahul Kumar</div>
+          <div class="profile-name-big" id="profile-name"><span class="skeleton" style="width: 200px; height: 32px;"></span></div>
           <div class="profile-badges">
             <span class="badge badge-teal">Premium Client</span>
             <span class="badge badge-green">Identity Verified</span>
@@ -222,15 +222,39 @@
   const sLabel = {pending:'PENDING',under_review:'IN REVIEW',active:'ACTIVE',rejected:'REJECTED'};
   document.getElementById('info-status').innerHTML = `<span class="badge ${sMap[UserState.status]||'badge-gray'}">${sLabel[UserState.status]||'OFFLINE'}</span>`;
   
-  function handleAvatarChange(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const c=document.getElementById('avatar-circle');c.style.backgroundImage=`url(${e.target.result})`;c.style.backgroundSize='cover';c.textContent='';};r.readAsDataURL(f);}
+  function handleAvatarChange(input){
+    const f=input.files[0];if(!f)return;
+    // Show preview immediately
+    const r=new FileReader();r.onload=e=>{const c=document.getElementById('avatar-circle');c.style.backgroundImage=`url(${e.target.result})`;c.style.backgroundSize='cover';c.textContent='';};r.readAsDataURL(f);
+    // Upload to backend
+    const fd = new FormData();
+    fd.append('avatar', f);
+    fetch('/api/user/upload-avatar.php', { method: 'POST', credentials: 'same-origin', body: fd })
+    .then(r=>r.json()).then(data=>{
+      if(data.success) showToast('Avatar updated','success');
+      else showToast(data.message||'Upload failed','error');
+    }).catch(()=>showToast('Upload failed','error'));
+  }
   function saveProfile(){
-    const name=document.getElementById('edit-name').value.trim();
-    if(!name){showToast('Enter valid identifier','error');return;}
-    localStorage.setItem('finzo_user_name',name);
-    localStorage.setItem('finzo_user_phone',document.getElementById('edit-phone').value);
-    document.getElementById('profile-name').textContent=name;
-    document.getElementById('avatar-circle').textContent=name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-    showToast('Vault credentials updated','success');
+    const phone=document.getElementById('edit-phone').value.trim();
+    const email=document.getElementById('edit-email').value.trim();
+    if(!email){showToast('Email is required','error');return;}
+    
+    fetch('/api/user/profile.php',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      credentials:'same-origin',
+      body:'phone='+encodeURIComponent(phone)+'&email='+encodeURIComponent(email)
+    })
+    .then(r=>r.json())
+    .then(data=>{
+      if(data.success){
+        showToast('Profile updated successfully','success');
+      } else {
+        showToast(data.message||'Update failed','error');
+      }
+    })
+    .catch(()=>showToast('Connection error','error'));
   }
 </script>
 </div>

@@ -50,6 +50,7 @@
   html:not(.dark) .admin-main { background: #ffffff !important; }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
@@ -145,7 +146,7 @@
             </div>
           </div>
           <div class="force-black" style="display:flex;align-items:baseline;gap:6px;margin-bottom:24px;">
-            <span id="live-rate" style="font-family:'Plus Jakarta Sans';font-size:72px;font-weight:800;letter-spacing:-3px;line-height:1;">4.25</span>
+            <span id="live-rate" style="font-family:'Plus Jakarta Sans';font-size:72px;font-weight:800;letter-spacing:-3px;line-height:1;"><div class="skeleton w-32 h-16"></div></span>
             <span style="font-family:'Plus Jakarta Sans';font-size:36px;font-weight:700;">%</span>
             <span class="force-black" style="font-size:13px;margin-left:4px;">p.a.</span>
           </div>
@@ -153,7 +154,7 @@
             <span class="material-symbols-outlined" style="font-size:18px;color:#64748b;">history</span>
             <div>
               <div class="force-black" style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:2px;">Last Rate Change</div>
-              <div class="force-black" style="font-size:13px;font-weight:700;">12 Apr 2026</div>
+              <div id="last-change-date" class="force-black" style="font-size:13px;font-weight:700;"><div class="skeleton w-24 h-4"></div></div>
             </div>
           </div>
           <div style="position:absolute;top:-10px;right:-10px;width:100px;height:100px;background:#002645;opacity:0.1;border-radius:50%;"></div>
@@ -224,29 +225,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="force-black" style="font-weight:600;">12 Apr 2026</td>
-                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">4.25%</td>
-                <td class="force-black">Arjun Sharma (Admin)</td>
-                <td style="text-align:right;"><span class="status-badge badge-success"><span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>Active</span></td>
+            <tbody id="interest-history-body">
+              <tr class="skeleton-row">
+                <td><div class="skeleton w-24 h-4"></div></td>
+                <td><div class="skeleton w-16 h-6"></div></td>
+                <td><div class="skeleton w-32 h-4"></div></td>
+                <td style="text-align:right;"><div class="skeleton w-20 h-6 ml-auto rounded-full"></div></td>
               </tr>
-              <tr>
-                <td class="force-black" style="font-weight:600;">01 Jan 2026</td>
-                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">4.10%</td>
-                <td class="force-black">Admin</td>
-                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
-              </tr>
-              <tr>
-                <td class="force-black" style="font-weight:600;">01 Oct 2025</td>
-                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.75%</td>
-                <td class="force-black">Priya Singh (Admin)</td>
-                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
-              </tr>
-              <tr>
-                <td class="force-black" style="font-weight:600;">01 Jul 2025</td>
-                <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">3.50%</td>
-                <td class="force-black">Admin</td>
-                <td style="text-align:right;"><span class="status-badge force-black force-status-bg">Archived</span></td>
+              <tr class="skeleton-row">
+                <td><div class="skeleton w-24 h-4"></div></td>
+                <td><div class="skeleton w-16 h-6"></div></td>
+                <td><div class="skeleton w-32 h-4"></div></td>
+                <td style="text-align:right;"><div class="skeleton w-20 h-6 ml-auto rounded-full"></div></td>
               </tr>
             </tbody>
           </table>
@@ -257,15 +247,15 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <div id="metrics-interest-total" class="admin-card force-white-bg p-5 sm:p-6">
             <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px; color:rgba(0,0,0,0.6);">Total Interest Credited</div>
-            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;margin-bottom:8px;">₹12,400</div>
-            <div style="display:flex;align-items:center;gap:6px;color:#10b981;font-size:11px;font-weight:700;">
-              <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> +4.5% from last month
+            <div id="stat-total-interest" class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;margin-bottom:8px;"><div class="skeleton w-24 h-8"></div></div>
+            <div id="stat-interest-delta" style="display:flex;align-items:center;gap:6px;color:#10b981;font-size:11px;font-weight:700;">
+              <div class="skeleton w-32 h-4"></div>
             </div>
           </div>
           <div class="admin-card p-5 sm:p-6">
             <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Accounts Earning Interest</div>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
-              <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;">1,536</div>
+              <div id="stat-earning-accounts" class="force-black" style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;"><div class="skeleton w-16 h-8"></div></div>
               <span style="background:rgba(16,185,129,0.1);color:#10b981;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;border:1px solid rgba(16,185,129,0.2);">Savings Accounts</span>
             </div>
             <div class="force-black" style="font-size:11px;line-height:1.5; font-weight: 500;">Auto-credited every 30 days</div>
@@ -275,19 +265,8 @@
         <!-- Volatility Chart -->
         <div class="admin-card p-5 sm:p-6 flex-1 flex flex-col justify-end min-h-[220px]">
           <div class="force-black" style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px;">Monthly Interest Credited (12 Months)</div>
-          <div style="display:flex;align-items:flex-end;gap:4px;height:100px;">
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:30%;opacity:0.6;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:35%;opacity:0.65;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:40%;opacity:0.7;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:38%;opacity:0.68;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:45%;opacity:0.75;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:52%;opacity:0.8;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:55%;opacity:0.85;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:52%;opacity:0.82;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:65%;opacity:0.9;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:72%;opacity:0.95;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:78%;"></div>
-            <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:100%;box-shadow:0 -4px 12px rgba(16,185,129,0.2);"></div>
+          <div id="interest-chart-container" style="display:flex;align-items:flex-end;gap:4px;height:100px;">
+            <div class="skeleton w-full h-full opacity-20"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;">
             <span class="force-black" style="font-size:9px;font-weight:700;">JAN 2026</span>
@@ -331,7 +310,55 @@ $(function () {
       $('#admin-sidebar').removeClass('mobile-open');
       $('#sidebar-overlay').removeClass('active');
   });
+
+  loadInterestData();
 });
+
+async function loadInterestData() {
+  try {
+    const data = await api.get('/admin/interest.php');
+    if (data.status === 'success') {
+      const info = data.data;
+      
+      // Update Live Rate
+      $('#live-rate').text(info.current_rate);
+      $('#last-change-date').text(info.last_change_date);
+      $('#new-rate').val(info.current_rate);
+
+      // Update Stats
+      $('#stat-total-interest').text(info.stats.total_interest_credited);
+      $('#stat-interest-delta').html(`
+        <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> 
+        ${info.stats.interest_delta} from last month
+      `);
+      $('#stat-earning-accounts').text(info.stats.earning_accounts);
+
+      // Update History Table
+      const historyHtml = info.history.map(h => `
+        <tr>
+          <td class="force-black" style="font-weight:600;">${h.effective_date}</td>
+          <td class="force-black" style="font-weight:800;font-family:'Plus Jakarta Sans';font-size:16px;">${h.rate}%</td>
+          <td class="force-black">${h.updated_by}</td>
+          <td style="text-align:right;">
+            <span class="status-badge ${h.status === 'Active' ? 'badge-success' : 'force-status-bg'}">
+              ${h.status === 'Active' ? '<span style="width:6px;height:6px;background:#00b894;border-radius:50%;"></span>' : ''}
+              ${h.status}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+      $('#interest-history-body').html(historyHtml);
+
+      // Render Chart (Simulated bars based on real data)
+      const chartHtml = info.chart_data.map(val => `
+        <div style="flex:1;background:#10b981;border-radius:3px 3px 0 0;height:${val}%;opacity:${0.6 + (val/250)}; ${val === 100 ? 'box-shadow:0 -4px 12px rgba(16,185,129,0.2); opacity:1;' : ''}"></div>
+      `).join('');
+      $('#interest-chart-container').html(chartHtml);
+    }
+  } catch (error) {
+    console.error('Failed to load interest data:', error);
+  }
+}
 
 function handleApplyFromChange(value) {
   if (value === 'Custom Date') {
@@ -343,7 +370,8 @@ function handleApplyFromChange(value) {
 
 function checkRateChange() {
   const newRate = document.getElementById('new-rate').value;
-  document.getElementById('live-rate').textContent = newRate || '—';
+  // Don't update live rate immediately anymore to prevent confusion
+  // document.getElementById('live-rate').textContent = newRate || '—';
 }
 
 function applyRate() {
@@ -380,19 +408,29 @@ function closeModal() {
   document.getElementById('confirm-modal').style.display = 'none';
 }
 
-function confirmRate() {
+async function confirmRate() {
   const newRate = document.getElementById('new-rate').value;
   const applyType = document.getElementById('lock_period_input').value;
+  const customDate = document.getElementById('custom-apply-date').value;
   
-  // In a real app, this would be an AJAX call
-  document.getElementById('live-rate').textContent = newRate;
-  closeModal();
-  
-  const successMsg = applyType === 'Immediately' 
-    ? `✅ Rate successfully updated to ${newRate}% p.a. and applied immediately.`
-    : `✅ Rate update to ${newRate}% scheduled successfully.`;
-    
-  alert(successMsg);
+  try {
+    const response = await api.post('/admin/interest.php', {
+      action: 'update_rate',
+      rate: newRate,
+      apply_type: applyType,
+      custom_date: customDate
+    });
+
+    if (response.status === 'success') {
+      closeModal();
+      alert(response.message);
+      loadInterestData(); // Reload to show updated history/live rate
+    } else {
+      alert('Error: ' + response.message);
+    }
+  } catch (error) {
+    alert('Failed to update rate. Please try again.');
+  }
 }
 </script>
 </body>

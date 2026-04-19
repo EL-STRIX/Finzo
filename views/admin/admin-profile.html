@@ -77,6 +77,7 @@
   }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
@@ -178,16 +179,16 @@
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 mb-8">
             <div style="position:relative;">
               <div id="avatar-preview-container" class="premium-gradient-primary" style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:white;box-shadow:0 10px 20px rgba(0,38,69,0.15);overflow:hidden;">
-                <span id="avatar-initials">AS</span>
+                <span id="avatar-initials"><div class="skeleton w-full h-full rounded-full"></div></span>
                 <img id="avatar-img-preview" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
               </div>
             </div>
             <div style="flex:1;">
               <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
-                <div class="force-black" style="font-size:20px;font-weight:800;">Arjun Sharma</div>
+                <div id="profile-name-display" class="force-black" style="font-size:20px;font-weight:800;"><div class="skeleton w-48 h-6"></div></div>
                 <span style="font-size:10px;font-weight:800;background:rgba(0,38,69,0.05);color:#002645;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,38,69,0.1);" class="dark:!bg-slate-800 dark:!text-slate-300 dark:!border-slate-700">PROJECT ADMIN</span>
               </div>
-              <div style="color:#64748b;font-size:13px;margin-bottom:12px;" class="leading-relaxed">arjun.sharma@finzobank.com<br class="sm:hidden"> <span class="hidden sm:inline">•</span> System Architect</div>
+              <div id="profile-email-meta" style="color:#64748b;font-size:13px;margin-bottom:12px;" class="leading-relaxed"><div class="skeleton w-64 h-4"></div></div>
               <div style="display:flex;align-items:center;gap:12px;">
                 <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
                 <button onclick="document.getElementById('photo-upload').click()" class="admin-btn-secondary" style="padding: 8px 16px !important; display:flex; align-items:center; gap:8px;">
@@ -203,22 +204,22 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <div>
               <label class="profile-label">Full Name</label>
-              <input type="text" class="profile-input w-full" value="Arjun Sharma">
+              <input type="text" id="profile-name-input" class="profile-input w-full" value="" placeholder="Loading...">
             </div>
             <div>
               <label class="profile-label">Unique Admin ID</label>
               <div style="position:relative;">
-                <input type="text" class="profile-input locked-input w-full" value="ADM-FINZO-001" readonly style="padding-right: 48px !important; font-family:monospace; letter-spacing:1px;">
+                <input type="text" id="profile-id-input" class="profile-input locked-input w-full" value="" readonly style="padding-right: 48px !important; font-family:monospace; letter-spacing:1px;">
                 <span class="material-symbols-outlined" style="position:absolute; right:16px; top:12px; font-size:20px; color:#94a3b8;">key</span>
               </div>
             </div>
             <div>
               <label class="profile-label">Email Address</label>
-              <input type="email" class="profile-input w-full" value="arjun.sharma@finzobank.com">
+              <input type="email" id="profile-email-input" class="profile-input w-full" value="" placeholder="Loading...">
             </div>
             <div>
               <label class="profile-label">Phone Number</label>
-              <input type="text" class="profile-input w-full" value="+91 98765 43210">
+              <input type="text" id="profile-phone-input" class="profile-input w-full" value="" placeholder="Loading...">
             </div>
             <div class="sm:col-span-2">
               <label class="profile-label">Authority Role</label>
@@ -356,7 +357,37 @@
           $('#admin-sidebar').removeClass('mobile-open');
           $('#sidebar-overlay').removeClass('active');
       });
+
+      loadAdminProfile();
   });
+
+  async function loadAdminProfile() {
+    try {
+      const data = await api.get('/admin/profile.php');
+      if (data.status === 'success') {
+        const admin = data.data;
+        
+        // Update Displays
+        $('#profile-name-display').text(admin.name);
+        $('#profile-email-meta').html(`${admin.email}<br class="sm:hidden"> <span class="hidden sm:inline">•</span> ${admin.designation || 'System Architect'}`);
+        $('#avatar-initials').text(admin.initials);
+        
+        if (admin.avatar) {
+          $('#avatar-img-preview').attr('src', admin.avatar).show();
+          $('#avatar-initials').hide();
+        }
+
+        // Update Form Inputs
+        $('#profile-name-input').val(admin.name);
+        $('#profile-id-input').val(admin.admin_id);
+        $('#profile-email-input').val(admin.email);
+        $('#profile-phone-input').val(admin.phone);
+      }
+    } catch (error) {
+      console.error('Failed to load admin profile:', error);
+      showToast('❌ Failed to load profile data', 'error');
+    }
+  }
 
   function showToast(message, type) {
     const container = document.getElementById('toast-container');
@@ -432,16 +463,32 @@
     document.getElementById('verify-pass').value = '';
   }
 
-  function handleProfileSave() {
+  async function handleProfileSave() {
     const pass = document.getElementById('verify-pass').value;
     if (!pass) {
       showToast('❌ Admin password is required', 'error');
       return;
     }
     
-    // Simulate verification
-    closeVerifyModal();
-    showToast('✅ Profile information updated successfully', 'success');
+    try {
+      const response = await api.post('/admin/profile.php', {
+        action: 'update_profile',
+        name: $('#profile-name-input').val(),
+        email: $('#profile-email-input').val(),
+        phone: $('#profile-phone-input').val(),
+        password: pass
+      });
+
+      if (response.status === 'success') {
+        closeVerifyModal();
+        showToast('✅ Profile information updated successfully', 'success');
+        loadAdminProfile(); // Refresh displays
+      } else {
+        showToast('❌ ' + response.message, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Network error. Please try again.', 'error');
+    }
   }
 
   // Close modal on escape key

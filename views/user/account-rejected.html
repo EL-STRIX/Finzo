@@ -62,7 +62,7 @@
 
       <div class="flex gap-3 animate-in animate-delay-3">
         <a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
-        <a href="complete-profile.html" class="btn btn-primary" style="flex:1;justify-content:center" onclick="resetForResubmit()">
+        <a href="complete-profile.html" class="btn btn-primary" style="flex:1;justify-content:center">
           <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
           Update & Resubmit
         </a>
@@ -77,10 +77,6 @@ if (UserState.status === 'pending') window.location.href = 'complete-profile.htm
 if (UserState.status === 'under_review') window.location.href = 'account-pending.html';
 const reason = UserState.rejectionReason;
 if (reason) document.getElementById('rejection-reason-text').textContent = reason;
-function resetForResubmit() {
-  // PHP_BACKEND: Allow user to edit and resubmit profile
-  localStorage.setItem('finzo_status', 'pending');
-}
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>Locked Account Detail | Finzo Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/admin-shared.js"></script>
 <style>
 :root{
   --primary:#1a3c5e;
@@ -249,7 +252,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
         <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Account Lock Detail</div>
       </div>
     </div>
-    <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;flex-shrink:0;box-shadow:0 4px 10px rgba(26,60,94,0.25);">AD</div>
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;flex-shrink:0;box-shadow:0 4px 10px rgba(26,60,94,0.25);" id="top-admin-avatar">AD</div>
   </header>
 
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -273,21 +276,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
         <div class="card card-p">
           <div class="section-label">Customer Information</div>
           <div class="profile-header">
-            <div class="profile-avatar" id="d-avatar">SM</div>
+            <div class="profile-avatar" id="d-avatar"><div class="skeleton w-full h-full rounded-full"></div></div>
             <div style="min-width:0;flex:1;">
-              <div style="font-size:16px;font-weight:800;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-name">Sunita Mehta</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-email">sunita.mehta@gmail.com</div>
+              <div style="font-size:16px;font-weight:800;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-name"><div class="skeleton w-32 h-4"></div></div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-email"><div class="skeleton w-40 h-3"></div></div>
               <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
-                <span class="badge badge-amber" id="d-main-badge">Locked</span>
-                <span class="badge badge-green" id="d-acc-type-badge">Savings</span>
+                <span class="badge" id="d-main-badge"><div class="skeleton w-12 h-3"></div></span>
+                <span class="badge" id="d-acc-type-badge"><div class="skeleton w-12 h-3"></div></span>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="d-acc-no">FNZ20260004</span></div>
-          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="d-phone">+91 94455 33221</span></div>
-          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="d-acc-type">Savings Account</span></div>
-          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value">12 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Balance</span><span class="info-value" id="d-balance" style="color:var(--primary);font-size:14px;">₹18,500.00</span></div>
+          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="d-acc-no"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="d-phone"><div class="skeleton w-28 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="d-acc-type"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value" id="d-opened"><div class="skeleton w-20 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Balance</span><span class="info-value" id="d-balance" style="color:var(--primary);font-size:14px;"><div class="skeleton w-24 h-5"></div></span></div>
         </div>
 
         <!-- Lock Details Card -->
@@ -313,12 +316,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
               <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">The customer entered an incorrect password 5 times in a row. The system automatically locked the account as a security measure to protect funds from unauthorised access.</div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Locked On</span><span class="info-value" id="d-locked-date">17 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Lock Date &amp; Time</span><span class="info-value" id="d-lock-time">17 Apr 2026 — 09:22 AM IST</span></div>
-          <div class="info-row"><span class="info-label">Locked By</span><span class="info-value">System (Auto-Lock)</span></div>
-          <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip">192.168.1.205</span></div>
-          <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device">Chrome on Windows 11</span></div>
-          <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><span class="badge badge-amber">Not Generated</span></span></div>
+          <div class="info-row"><span class="info-label">Locked On</span><span class="info-value" id="d-locked-date"><div class="skeleton w-20 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Lock Date &amp; Time</span><span class="info-value" id="d-lock-time"><div class="skeleton w-40 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Locked By</span><span class="info-value" id="d-locked-by"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device"><div class="skeleton w-32 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><div class="skeleton w-20 h-4 rounded-full"></div></span></div>
           <div class="info-row" id="d-expiry-row" style="display:none;border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
         </div>
 
@@ -340,12 +343,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
                   <th style="text-align:center;">Outcome</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:22:14 AM</td><td class="outcome-cell"><span class="badge badge-red">Final Block</span></td></tr>
-                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:21:55 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (5/5)</span></td></tr>
-                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:18:22 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (4/5)</span></td></tr>
-                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 09:15:01 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (3/5)</span></td></tr>
-                <tr><td class="ip-cell">192.168.1.205</td><td class="time-cell">17 Apr, 08:44:12 AM</td><td class="outcome-cell"><span class="badge badge-amber">Failed (2/5)</span></td></tr>
+              <tbody id="audit-logs-body">
+                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
+                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
+                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
               </tbody>
             </table>
           </div>
@@ -468,168 +469,157 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-/* THEME */
-function initTheme(){
-  const s=localStorage.getItem('finzo-admin-theme');
-  const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);
-  if(dark)document.documentElement.classList.add('dark');
-  updateIcons();
-}
-function toggleTheme(){
-  const dark=document.documentElement.classList.toggle('dark');
-  localStorage.setItem('finzo-admin-theme',dark?'dark':'light');
-  updateIcons();
-}
-function updateIcons(){
-  const dark=document.documentElement.classList.contains('dark');
-  const el=document.getElementById('theme-icon');
-  if(el)el.textContent=dark?'light_mode':'dark_mode';
-  const lbl=document.getElementById('theme-label');
-  if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';
-}
-initTheme();
+    $(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
 
-/* DATA */
-const urlP=new URLSearchParams(window.location.search);
-const accId=urlP.get('id')||'L01';
-var generatedPass='';
+        if (!userId) {
+            alert('User ID missing');
+            window.location.href = 'admin-locked-accounts.html';
+            return;
+        }
 
-const records={
-  'L01':{name:'Sunita Mehta',email:'sunita.mehta@gmail.com',initials:'SM',accNo:'FNZ20260004',accType:'Savings',phone:'+91 94455 33221',balance:'₹18,500.00',lockedDate:'17 Apr 2026',lockTime:'09:22 AM IST',ip:'192.168.1.205',device:'Chrome on Windows 11'},
-  'L02':{name:'Dev Gupta',email:'dev.gupta@gmail.com',initials:'DG',accNo:'FNZ20260008',accType:'Savings',phone:'+91 88776 44332',balance:'₹6,200.00',lockedDate:'16 Apr 2026',lockTime:'11:45 PM IST',ip:'10.0.0.88',device:'Safari on iPhone 15'},
-  'L03':{name:'Arjun Khanna',email:'arjun.khanna@gmail.com',initials:'AK',accNo:'FNZ20260010',accType:'Current',phone:'+91 77665 54433',balance:'₹42,000.00',lockedDate:'15 Apr 2026',lockTime:'03:10 PM IST',ip:'172.16.0.44',device:'Chrome on Android'},
-  'L04':{name:'Mohan Kumar',email:'mohan.kumar@gmail.com',initials:'MK',accNo:'FNZ20260006',accType:'Savings',phone:'+91 66554 43322',balance:'₹3,800.00',lockedDate:'14 Apr 2026',lockTime:'07:55 AM IST',ip:'192.168.0.21',device:'Firefox on Windows 10'},
-};
-const d=records[accId]||records['L01'];
+        async function loadDetail() {
+            try {
+                const response = await api.get(`/admin/locked-account-detail.php?id=${userId}`);
+                if (response.status === 'success') {
+                    populateUI(response.data.user);
+                    renderAuditLogs(response.data.logs);
+                } else {
+                    alert(response.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-/* POPULATE */
-document.getElementById('bc-name').textContent=d.name;
-document.getElementById('d-avatar').textContent=d.initials;
-document.getElementById('d-name').textContent=d.name;
-document.getElementById('d-email').textContent=d.email;
-document.getElementById('d-acc-no').textContent=d.accNo;
-document.getElementById('d-phone').textContent=d.phone;
-document.getElementById('d-acc-type').textContent=d.accType+' Account';
-document.getElementById('d-acc-type-badge').textContent=d.accType;
-document.getElementById('d-balance').textContent=d.balance;
-document.getElementById('d-locked-date').textContent=d.lockedDate;
-document.getElementById('d-lock-time').textContent=d.lockedDate+' — '+d.lockTime;
-document.getElementById('d-ip').textContent=d.ip;
-document.getElementById('d-device').textContent=d.device;
-document.getElementById('modal-name').textContent=d.name;
-document.getElementById('modal-acc').textContent=d.accNo;
+        function populateUI(user) {
+            $('#bc-name').text(user.full_name);
+            $('#d-avatar').text(user.initials).addClass('premium-gradient-primary').css('background', '');
+            $('#d-name').text(user.full_name);
+            $('#d-email').text(user.email);
+            
+            $('#d-acc-no').text(user.account_no || 'N/A');
+            $('#d-phone').text(user.phone || 'N/A');
+            $('#d-acc-type').text(user.account_type ? (user.account_type + ' Account') : 'N/A');
+            $('#d-acc-type-badge').text(user.account_type || 'N/A').attr('class', 'badge badge-green');
+            $('#d-opened').text(user.opened_at || 'N/A');
+            
+            const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            $('#d-balance').text(balance);
+            
+            const isLocked = user.is_locked;
+            $('#d-main-badge').text(isLocked ? 'Locked' : 'Unlocked').attr('class', `badge ${isLocked ? 'badge-red' : 'badge-green'}`);
+            
+            // Lock Info
+            $('#d-locked-date').text(user.locked_on_date || 'N/A');
+            $('#d-lock-time').text(user.locked_on_ts || 'N/A');
+            $('#d-locked-by').text(user.locked_by || 'System');
+            $('#d-ip').text(user.ip_address || 'N/A');
+            $('#d-device').text(user.device || 'N/A');
+            
+            const hasPass = user.temp_password_active;
+            $('#d-temp-status').html(hasPass ? '<span class="badge badge-green">Generated</span>' : '<span class="badge badge-amber">Not Generated</span>');
+            
+            if(hasPass && user.temp_password) {
+                $('#temp-pass-card').removeClass('hidden');
+                $('#unlock-action-card').addClass('hidden');
+                $('#display-pass').text(user.temp_password);
+            }
 
-/* MODAL OPEN/CLOSE */
-function openUnlockModal(){
-  const ib=document.getElementById('modal-icon-box');
-  ib.style.background='var(--amber-soft)';
-  ib.classList.remove('success-pop');
-  document.getElementById('modal-icon').textContent='key';
-  document.getElementById('modal-icon').style.color='var(--amber)';
-  document.getElementById('modal-title').textContent='Generate Temporary Password';
-  document.getElementById('modal-title').style.color='';
-  document.getElementById('modal-desc').innerHTML=`A secure 12-character one-time password will be generated for <strong>${d.name}</strong> (${d.accNo}). Valid for <strong>24 hours only</strong>. Customer must change on first login.`;
-  document.getElementById('modal-pass-area').classList.add('hidden');
-  document.getElementById('modal-pass-area').classList.remove('shimmer-card');
-  document.getElementById('modal-action-1').classList.remove('hidden');
-  document.getElementById('modal-action-2').classList.add('hidden');
-  const btn=document.getElementById('gen-btn');
-  btn.disabled=false;
-  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate &amp; Unlock';
-  document.getElementById('unlock-modal').classList.remove('hidden');
-}
-function closeModal(){
-  document.getElementById('unlock-modal').classList.add('hidden');
-}
+            $('#modal-name').text(user.full_name);
+            $('#modal-acc').text(user.account_no || 'N/A');
+        }
 
-/* GENERATE */
-function doGenerate(){
-  const btn=document.getElementById('gen-btn');
-  btn.disabled=true;
-  btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px;">autorenew</span> Generating...';
-  setTimeout(()=>{
-    try{
-      const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
-      let p='ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)];
-      p+='23456789'[Math.floor(Math.random()*8)];
-      p+='@#$!'[Math.floor(Math.random()*4)];
-      for(let i=3;i<12;i++)p+=chars[Math.floor(Math.random()*chars.length)];
-      generatedPass=p.split('').sort(()=>Math.random()-.5).join('');
+        function renderAuditLogs(logs) {
+            if (!logs || logs.length === 0) {
+                $('#audit-logs-body').html('<tr><td colspan="3" class="text-center py-8 opacity-40">No failed attempts logged</td></tr>');
+                return;
+            }
+            const html = logs.map(log => `
+                <tr>
+                    <td class="ip-cell">${log.ip}</td>
+                    <td class="time-cell">${log.time}</td>
+                    <td class="outcome-cell"><span class="badge ${log.outcome === 'Block' ? 'badge-red' : 'badge-amber'}">${log.outcome}</span></td>
+                </tr>
+            `).join('');
+            $('#audit-logs-body').html(html);
+        }
 
-      const $=id=>document.getElementById(id);
-      const set=(id,p,v)=>{const e=$(id);if(e)e[p]=v;};
-      const sty=(id,p,v)=>{const e=$(id);if(e)e.style[p]=v;};
-      const cls=(id,op,c)=>{const e=$(id);if(e)e.classList[op](c);};
+        window.toggleSidebar = () => {
+          $('#sidebar').toggleClass('open');
+          $('#sidebar-overlay').toggleClass('visible');
+        };
 
-      sty('modal-icon-box','background','var(--green-soft)');
-      cls('modal-icon-box','add','success-pop');
-      set('modal-icon','textContent','task_alt');
-      sty('modal-icon','color','var(--green)');
-      set('modal-title','textContent','Account Unlocked');
-      sty('modal-title','color','var(--green)');
-      set('modal-desc','innerHTML',`Access restored for <strong>${d.name}</strong>. Temporary password generated and logged in the system.`);
-      set('modal-pass-val','textContent',generatedPass);
-      cls('modal-pass-area','remove','hidden');
-      cls('modal-pass-area','add','shimmer-card');
-      cls('modal-action-1','add','hidden');
-      cls('modal-action-2','remove','hidden');
+        window.openUnlockModal = () => $('#unlock-modal').removeClass('hidden');
+        window.closeModal = () => $('#unlock-modal').addClass('hidden');
 
-      set('display-pass','textContent',generatedPass);
-      cls('unlock-action-card','add','hidden');
-      cls('temp-pass-card','remove','hidden');
+        window.doGenerate = async () => {
+            const $btn = $('#gen-btn');
+            $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Generating...');
+            
+            try {
+                const response = await api.post('/admin/unlock-account.php', { id: userId });
+                if (response.status === 'success') {
+                    const pass = response.temp_password;
+                    
+                    $('#modal-icon-box').css('background', 'var(--green-soft)').addClass('success-pop');
+                    $('#modal-icon').text('task_alt').css('color', 'var(--green)');
+                    $('#modal-title').text('Account Unlocked').css('color', 'var(--green)');
+                    $('#modal-desc').text('Access restored. Temporary password generated.');
+                    
+                    $('#modal-pass-val').text(pass);
+                    $('#modal-pass-area').removeClass('hidden');
+                    $('#modal-action-1').addClass('hidden');
+                    $('#modal-action-2').removeClass('hidden');
+                    
+                    $('#display-pass').text(pass);
+                    $('#unlock-action-card').addClass('hidden');
+                    $('#temp-pass-card').removeClass('hidden');
+                    
+                    showToast('Account unlocked successfully', 'success');
+                    loadDetail();
+                } else {
+                    alert(response.message);
+                    $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">key</span> Generate & Unlock');
+                }
+            } catch (error) {
+                alert('Action failed.');
+                $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">key</span> Generate & Unlock');
+            }
+        };
 
-      const exp=new Date(Date.now()+86400000);
-      const expStr=exp.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+exp.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-      set('d-temp-status','innerHTML','<span class="badge badge-indigo">Generated &amp; Sent</span>');
-      const mb=$('d-main-badge');
-      if(mb){mb.textContent='Unlocked';mb.className='badge badge-green';}
-      sty('d-expiry-row','display','flex');
-      set('d-expiry','textContent',expStr);
+        window.copyModalPass = () => {
+            navigator.clipboard.writeText($('#modal-pass-val').text()).then(() => {
+                $('#modal-copy-icon').text('check').css('color', 'var(--green)');
+                setTimeout(() => $('#modal-copy-icon').text('content_copy').css('color', ''), 2000);
+            });
+        };
 
-      showToast('Account unlocked. Temp password valid 24 hours.','success');
-    }catch(e){
-      console.error(e);
-      btn.disabled=false;
-      btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px;">key</span>Try Again';
-      showToast('Error. Please try again.','error');
-    }
-  },1800);
-}
+        window.copyDisplayPass = () => {
+            navigator.clipboard.writeText($('#display-pass').text()).then(() => {
+                $('#copy-icon2').text('check').css('color', 'var(--green)');
+                setTimeout(() => $('#copy-icon2').text('content_copy').css('color', ''), 2000);
+            });
+        };
 
-/* COPY */
-function copyModalPass(){
-  navigator.clipboard.writeText(generatedPass).then(()=>{
-    document.getElementById('modal-copy-icon').textContent='check';
-    document.getElementById('modal-copy-icon').style.color='var(--green)';
-    showToast('Password copied','success');
-    setTimeout(()=>{document.getElementById('modal-copy-icon').textContent='content_copy';document.getElementById('modal-copy-icon').style.color='';},2000);
-  });
-}
-function copyDisplayPass(){
-  navigator.clipboard.writeText(generatedPass).then(()=>{
-    document.getElementById('copy-icon2').textContent='check';
-    document.getElementById('copy-icon2').style.color='var(--green)';
-    showToast('Password copied','success');
-    setTimeout(()=>{document.getElementById('copy-icon2').textContent='content_copy';document.getElementById('copy-icon2').style.color='';},2000);
-  });
-}
+        loadDetail();
+    });
 
-/* TOAST */
-function showToast(msg,type='success'){
-  const wrap=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  const icons={success:'check_circle',error:'cancel'};
-  const colors={success:'#10b981',error:'#f43f5e'};
-  t.className=`toast toast-${type}`;
-  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:17px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
-  wrap.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},4000);
+function showToast(msg, type = 'success') {
+    const wrap = document.getElementById('toast-wrap');
+    const t = document.createElement('div');
+    const icons = { success: 'check_circle', error: 'cancel' };
+    const colors = { success: '#10b981', error: '#f43f5e' };
+    t.className = `toast toast-${type}`;
+    t.innerHTML = `<span class="material-symbols-outlined" style="color:${colors[type]};font-size:17px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
+    wrap.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
 }
 
-/* SIDEBAR TOGGLE */
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('visible');
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('visible');
 }
 </script>
 </body>

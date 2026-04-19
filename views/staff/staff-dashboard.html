@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <link rel="stylesheet" href="../../assets/css/dark-mode.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../assets/js/staff-shared.js"></script>
     <style>
         .brand-sub-staff {
             color: #f59e0b !important;
@@ -68,17 +69,19 @@
             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div class="flex items-center gap-3 mb-3">
                     <div
-                        class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm">
-                        AS</div>
+                        class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">
+                        --</div>
                     <div>
-                        <div class="text-xs font-bold text-amber-700">Amit Sharma</div>
-                        <div class="text-[10px] text-white/50 font-medium">STF001</div>
+                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
                     </div>
                 </div>
-                <div
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                <div class="flex flex-col gap-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                    </div>
+                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
                 </div>
             </div>
         </div>
@@ -133,8 +136,8 @@
                 <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
                 <div class="flex items-center gap-3">
                     <div class="text-right hidden sm:block">
-                        <div class="text-xs font-bold text-black dark:text-blue-500">Amit Sharma</div>
-                        <div class="text-[10px] text-slate-400 font-bold">STF001</div>
+                        <div class="text-xs font-bold text-black dark:text-blue-500 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-slate-400 font-bold staff-id-display">STF---</div>
                     </div>
                     <button
                         class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300 end-shift-trigger">
@@ -148,8 +151,8 @@
             <!-- PAGE HEADER -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6 lg:mb-8">
                 <div>
-                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight">Welcome
-                        back, Amit Sharma</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight" id="welcome-text">Welcome
+                        back</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Here's what's happening in your shift
                         today.</p>
                 </div>
@@ -219,90 +222,9 @@
                                 <th class="text-right dark:text-white/60">RECEIPT</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="dark:hover:bg-white/5">
-                                <td class="font-bold dark:text-white">10:45 AM</td>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[11px] font-bold">
-                                            RK</div>
-                                        <span class="font-bold dark:text-white">Rahul Kumar</span>
-                                    </div>
-                                </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260001</td>
-                                <td><span class="status-badge badge-success">DEPOSIT</span></td>
-                                <td class="font-bold text-emerald-600">+₹5,000</td>
-                                <td><span class="status-badge badge-success">COMPLETED</span></td>
-                                <td class="text-right">
-                                    <a href="staff-receipt.html"
-                                        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
-                                        <span class="material-symbols-outlined">print</span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr class="dark:hover:bg-white/5">
-                                <td class="font-bold dark:text-white">10:20 AM</td>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[11px] font-bold">
-                                            PS</div>
-                                        <span class="font-bold dark:text-white">Priya Sharma</span>
-                                    </div>
-                                </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260002</td>
-                                <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
-                                <td class="font-bold text-red-600">-₹2,000</td>
-                                <td><span class="status-badge badge-success">COMPLETED</span></td>
-                                <td class="text-right">
-                                    <a href="staff-receipt.html"
-                                        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
-                                        <span class="material-symbols-outlined">print</span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr class="dark:hover:bg-white/5">
-                                <td class="font-bold dark:text-white">09:55 AM</td>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[11px] font-bold">
-                                            AM</div>
-                                        <span class="font-bold dark:text-white">Amit Mondal</span>
-                                    </div>
-                                </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260003</td>
-                                <td><span class="status-badge badge-success">DEPOSIT</span></td>
-                                <td class="font-bold text-emerald-600">+₹10,000</td>
-                                <td><span class="status-badge badge-success">COMPLETED</span></td>
-                                <td class="text-right">
-                                    <a href="staff-receipt.html"
-                                        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
-                                        <span class="material-symbols-outlined">print</span>
-                                    </a>
-                                </td>
-                            </tr>
+                        <tbody id="txn-tbody">
                             <tr class="dark:hover:bg-white/5 border-none">
-                                <td class="font-bold dark:text-white">09:30 AM</td>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[11px] font-bold">
-                                            SM</div>
-                                        <span class="font-bold dark:text-white">Sunita Mehta</span>
-                                    </div>
-                                </td>
-                                <td class="font-mono text-xs dark:text-white/70">FNZ20260004</td>
-                                <td><span class="status-badge badge-error">WITHDRAWAL</span></td>
-                                <td class="font-bold text-red-600">-₹1,500</td>
-                                <td><span class="status-badge badge-success">COMPLETED</span></td>
-                                <td class="text-right">
-                                    <a href="staff-receipt.html"
-                                        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block">
-                                        <span class="material-symbols-outlined">print</span>
-                                    </a>
-                                </td>
+                                <td colspan="7" class="text-center py-8 font-bold text-slate-400">Loading today's transactions...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -318,24 +240,24 @@
                         class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ">Total Deposits
                         </div>
-                        <div class="text-2xl font-black text-emerald-600">₹28,000.00</div>
+                        <div class="text-2xl font-black text-emerald-600" id="stat-deposits">₹0.00</div>
                     </div>
                     <div
                         class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total
                             Withdrawals</div>
-                        <div class="text-2xl font-black text-red-600">₹14,000.00</div>
+                        <div class="text-2xl font-black text-red-600" id="stat-withdrawals">₹0.00</div>
                     </div>
                     <div
                         class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total
                             Transactions</div>
-                        <div class="text-2xl font-black text-primary dark:text-blue-500">20</div>
+                        <div class="text-2xl font-black text-primary dark:text-blue-500" id="stat-transactions">0</div>
                     </div>
                     <div
                         class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Net Flow</div>
-                        <div class="text-2xl font-black text-emerald-500">+₹14,000.00</div>
+                        <div class="text-2xl font-black text-emerald-500" id="stat-netflow">₹0.00</div>
                     </div>
                 </div>
             </div>
@@ -357,82 +279,91 @@
             <div class="flex gap-4">
                 <button
                     class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
-                <a href="../auth/staff-login.html"
+                <a href="/api/auth/logout.php"
                     class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl hover:bg-red-700 shadow-lg shadow-red-600/30 transition-all">End
                     Shift</a>
             </div>
         </div>
     </div>
 
-    <!-- SHARED JS LOGIC -->
     <script>
-            // Theme Engine
-            (function () {
-                const STORAGE_KEY = 'finzo-staff-theme';
-                const html = document.documentElement;
+        $(document).ready(async function () {
+            const session = await fetchStaffSession();
+            if (!session) return;
 
-                function applyTheme(theme) {
-                    html.setAttribute('data-theme', theme);
-                    html.classList.toggle('dark', theme === 'dark');
-                    localStorage.setItem(STORAGE_KEY, theme);
+            // Update welcome text
+            $('#welcome-text').text(`Welcome back, ${StaffState.name}`);
 
-                    const icon = document.getElementById('theme-icon');
-                    const label = document.getElementById('theme-label');
-                    if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-                    if (label) label.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+            // Populate dashboard data
+            if (session.shift_stats) {
+                const s = session.shift_stats;
+                $('#stat-deposits').text(formatINR(s.deposits_total));
+                $('#stat-withdrawals').text(formatINR(s.withdrawals_total));
+                $('#stat-transactions').text(s.total_transactions);
+                
+                const netFlow = $('#stat-netflow');
+                netFlow.text((s.net_cash_flow > 0 ? '+' : '') + formatINR(s.net_cash_flow));
+                if (s.net_cash_flow < 0) {
+                    netFlow.removeClass('text-emerald-500').addClass('text-red-500');
                 }
+            }
 
-                function toggleTheme() {
-                    const current = localStorage.getItem(STORAGE_KEY) || 'light';
-                    applyTheme(current === 'dark' ? 'light' : 'dark');
-                }
-
-                // Initial load
-                const saved = localStorage.getItem(STORAGE_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                applyTheme(saved);
-
-                $(function () {
-                    $('#toggle-theme-btn').on('click', toggleTheme);
-                });
-            })();
-
-        // Live Clock
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-
-            $('#live-clock').text(timeStr);
-            $('#live-date').text(dateStr);
-            $('#header-date').text(dateStr);
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // End Shift Modal
-        $(function () {
-            // Mobile Sidebar Toggle
-            $('#mobile-menu-btn').on('click', function () {
-                $('#admin-sidebar').addClass('mobile-open');
-                $('#sidebar-overlay').addClass('active');
-            });
-            $('#sidebar-overlay').on('click', function () {
-                $('#admin-sidebar').removeClass('mobile-open');
-                $('#sidebar-overlay').removeClass('active');
-            });
-
-            $('.end-shift-trigger').on('click', function () {
-                $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
-                $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
-            });
-
-            $('.modal-close, #modal-overlay').on('click', function (e) {
-                if (e.target === this || $(this).hasClass('modal-close')) {
-                    $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none');
-                    $('#logout-modal').removeClass('scale-100').addClass('hidden');
-                }
-            });
+            // Render Recent Activity
+            renderTransactions(session.recent_activity);
         });
+
+        function renderTransactions(txns) {
+            const tbody = $('#txn-tbody');
+            tbody.empty();
+
+            if (!txns || txns.length === 0) {
+                tbody.html(`<tr><td colspan="7" class="text-center py-8 font-bold text-slate-400">No transactions processed today.</td></tr>`);
+                return;
+            }
+
+            txns.forEach((txn, index) => {
+                const isDeposit = txn.type === 'deposit';
+                const time = new Date(txn.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                const am = formatINR(txn.amount);
+                
+                // Colors
+                const typeBadge = isDeposit ? 'badge-success' : 'badge-error';
+                const typeText = txn.type.toUpperCase();
+                const sign = isDeposit ? '+' : '-';
+                const amtColor = isDeposit ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
+                const iconColor = isDeposit ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600';
+                
+                // Extract customer Initials
+                const parts = (txn.customer_name || 'Unknown').split(' ');
+                const initials = (parts[0]?.[0] || '') + (parts[1]?.[0] || '');
+
+                const trClass = index === txns.length - 1 ? 'dark:hover:bg-white/5 border-none' : 'dark:hover:bg-white/5';
+
+                tbody.append(`
+                    <tr class="${trClass}">
+                        <td class="font-bold dark:text-white">${time}</td>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full ${iconColor} flex items-center justify-center text-[11px] font-bold">
+                                    ${initials.toUpperCase()}
+                                </div>
+                                <span class="font-bold dark:text-white">${txn.customer_name || 'N/A'}</span>
+                            </div>
+                        </td>
+                        <td class="font-mono text-xs dark:text-white/70">${txn.account_no || 'N/A'}</td>
+                        <td><span class="status-badge ${typeBadge}">${typeText}</span></td>
+                        <td class="font-bold ${amtColor}">${sign}${am}</td>
+                        <td><span class="status-badge badge-success">COMPLETED</span></td>
+                        <td class="text-right">
+                            <a href="staff-receipt.html?id=${txn.txn_id}"
+                                class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block" title="View Receipt">
+                                <span class="material-symbols-outlined">print</span>
+                            </a>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
     </script>
 </body>
 

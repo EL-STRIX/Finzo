@@ -839,3 +839,34 @@
   background: rgba(59, 130, 246, 0.05);
   border-color: #3b82f6;
 }
+/* ============================================================
+   SKELETON LOADING EFFECTS
+   ============================================================ */
+
+@keyframes skeleton-pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+}
+
+.skeleton {
+    background: rgba(0, 38, 69, 0.05);
+    border-radius: 8px;
+    animation: skeleton-pulse 2s infinite ease-in-out;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .skeleton {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.skeleton-text { height: 1em; width: 100%; margin-bottom: 0.5em; }
+.skeleton-title { height: 1.5em; width: 60%; margin-bottom: 1em; }
+.skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; }
+.skeleton-row { height: 60px; width: 100%; margin-bottom: 1px; }
+
+/* Table Cleanup - Hide tbody while loading if needed */
+.table-loading tbody {
+    opacity: 0.5;
+    pointer-events: none;
+}

@@ -239,16 +239,25 @@
     balEl.setAttribute('data-real-value', realBalance);
   }
 
-  const demoAccounts = {
-    'FNZ20260002': { name: 'Priya Sharma', type: 'Savings Account' },
-    'FNZ20260003': { name: 'Amit Mondal', type: 'Savings Account' },
-    'FNZ20260004': { name: 'Sunita Mehta', type: 'Current Account' },
-    'FNZ20260005': { name: 'Vikram Gupta', type: 'Savings Account' },
-  };
-
   let recipientVerified = false;
   let recipientName = '';
   let recipientAccNo = '';
+
+  // Load beneficiaries from API
+  (async function loadBeneficiaries() {
+    try {
+      const res = await fetch('/api/user/beneficiary.php', { credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
+        const container = document.getElementById('beneficiary-chips');
+        container.innerHTML = data.beneficiaries.map(b => 
+          `<div class="beneficiary-pill" onclick="useBeneficiary('${b.account_no}','${b.name}')">
+            <span class="material-symbols-outlined" style="font-size:15px">star</span> ${b.name}
+          </div>`
+        ).join('');
+      }
+    } catch (e) { console.warn('Failed to load beneficiaries:', e); }
+  })();
 
   function useBeneficiary(acc, name) {
     document.getElementById('to-account').value = acc;
@@ -261,27 +270,33 @@
     updateSummary();
   }
 
-  function lookupAccount() {
+  async function lookupAccount() {
     const accNo = document.getElementById('to-account').value.trim().toUpperCase();
     if (!accNo) { showToast('Please enter an account number', 'warning'); return; }
-    if (accNo === (UserState.accountNo || 'FNZ20260001')) { showToast('Cannot transfer to your own account', 'error'); return; }
+    if (accNo === UserState.accountNo) { showToast('Cannot transfer to your own account', 'error'); return; }
     
-    const acc = demoAccounts[accNo];
-    document.getElementById('lookup-result').classList.remove('hidden');
-    if (acc) {
-      recipientVerified = true;
-      recipientName = acc.name;
-      recipientAccNo = accNo;
-      document.getElementById('lookup-found').classList.remove('hidden');
-      document.getElementById('lookup-not-found').classList.add('hidden');
-      document.getElementById('recipient-name').textContent = acc.name;
-      document.getElementById('recipient-type').textContent = acc.type;
-      showToast('Recipient identity verified', 'success');
-      updateSummary();
-    } else {
-      recipientVerified = false;
-      document.getElementById('lookup-found').classList.add('hidden');
-      document.getElementById('lookup-not-found').classList.remove('hidden');
+    try {
+      const res = await fetch('/api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
+      const data = await res.json();
+      document.getElementById('lookup-result').classList.remove('hidden');
+      
+      if (data.success && data.account) {
+        recipientVerified = true;
+        recipientName = data.account.holder_name;
+        recipientAccNo = accNo;
+        document.getElementById('lookup-found').classList.remove('hidden');
+        document.getElementById('lookup-not-found').classList.add('hidden');
+        document.getElementById('recipient-name').textContent = data.account.holder_name;
+        document.getElementById('recipient-type').textContent = data.account.account_type || 'Savings Account';
+        showToast('Recipient identity verified', 'success');
+        updateSummary();
+      } else {
+        recipientVerified = false;
+        document.getElementById('lookup-found').classList.add('hidden');
+        document.getElementById('lookup-not-found').classList.remove('hidden');
+      }
+    } catch (err) {
+      showToast('Lookup failed. Please try again.', 'error');
     }
   }
 
@@ -330,48 +345,45 @@
     openModal('confirm-modal');
   }
 
-  function processTransfer() {
+  async function processTransfer() {
     const amount = parseFloat(document.getElementById('transfer-amount').value);
     const desc = document.getElementById('transfer-desc').value;
+    const pin = document.getElementById('transfer-pin').value;
     
     const btn = document.getElementById('final-transfer-btn');
     btn.disabled = true;
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Authorizing...';
 
-    setTimeout(() => {
-      const balance = parseFloat(UserState.balance || 0);
-      const newBalance = balance - amount;
-      UserState.balance = newBalance;
-      saveUserState();
-
-      const txnId = 'TXN' + Date.now().toString().slice(-8);
-      
-      const newTxn = {
-        id: txnId,
-        type: 'transfer',
-        category: 'debit',
-        title: 'Transfer to ' + recipientName,
-        desc: desc || 'Fund transfer via Finzo',
-        amount: amount,
-        account: recipientAccNo,
-        date: new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}),
-        status: 'success'
-      };
-
-      const transactions = JSON.parse(localStorage.getItem('finzo_transactions') || '[]');
-      transactions.unshift(newTxn);
-      localStorage.setItem('finzo_transactions', JSON.stringify(transactions.slice(0, 50)));
-
-      // Notify
-      addNotification({
-        type: 'transaction',
-        title: 'Transfer Successful',
-        body: '₹' + amount.toLocaleString() + ' successfully sent to ' + recipientName,
-        icon: 'check_circle', iconBg: 'rgba(16,185,129,0.1)', iconColor: '#10b981'
+    try {
+      const res = await fetch('/api/user/transfer.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'to_account=' + encodeURIComponent(recipientAccNo) +
+              '&amount=' + encodeURIComponent(amount) +
+              '&description=' + encodeURIComponent(desc || 'Fund transfer via Finzo') +
+              '&pin=' + encodeURIComponent(pin) +
+              '&csrf_token=' + encodeURIComponent(typeof getCSRFToken === 'function' ? getCSRFToken() : '')
       });
-
-      location.href = 'receipt.html?id=' + txnId;
-    }, 1800);
+      const data = await res.json();
+      
+      if (data.success) {
+        showToast('Transfer successful!', 'success');
+        closeModal('confirm-modal');
+        // Redirect to receipt
+        const txnId = data.transaction_id || data.reference_id || '';
+        setTimeout(() => { location.href = 'receipt.html?id=' + txnId; }, 800);
+      } else {
+        showToast(data.message || 'Transfer failed', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Authorize & Send';
+      }
+    } catch (err) {
+      console.error('Transfer error:', err);
+      showToast('Connection error. Please try again.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Authorize & Send';
+    }
   }
 
   function numberToWords(n) {

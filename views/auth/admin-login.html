@@ -367,16 +367,29 @@
       $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Authenticating...</span>');
       $btn.prop('disabled', true);
 
-      // Demo auth
-      setTimeout(() => {
-        if (id === 'admin@finzo.com' && pw === 'admin123') {
-          window.location.href = '../admin/admin-dashboard.html';
+      // Real API authentication
+      fetch('/api/auth/admin-login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'email=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect || '../admin/admin-dashboard.html';
         } else {
           $form.addClass('error-state');
-          $error.text("Invalid credentials").show();
+          $error.text(data.message || "Invalid credentials").show();
           $btn.html(original).prop('disabled', false);
         }
-      }, 1200);
+      })
+      .catch(err => {
+        console.error('Admin login error:', err);
+        $form.addClass('error-state');
+        $error.text("Connection error. Please try again.").show();
+        $btn.html(original).prop('disabled', false);
+      });
     });
 
     $('#toggle-password').on('click', function() {

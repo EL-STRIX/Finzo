@@ -24,9 +24,9 @@
     }
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
   <style>
     /* Table specific overrides for this page */
@@ -262,7 +262,13 @@
                 <th class="text-center px-6">Actions</th>
               </tr>
             </thead>
-            <tbody id="table-body"></tbody>
+            <tbody id="table-body">
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+            </tbody>
           </table>
         </div>
 
@@ -292,146 +298,136 @@
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-function initTheme(){const s=localStorage.getItem('finzo-admin-theme');const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(dark)document.documentElement.classList.add('dark');updateIcons();}
-function toggleTheme(){const dark=document.documentElement.classList.toggle('dark');localStorage.setItem('finzo-admin-theme',dark?'dark':'light');updateIcons();}
-function updateIcons(){const dark=document.documentElement.classList.contains('dark');['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});const lbl=document.getElementById('theme-label');if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';}
-initTheme();
+$(function() {
+    let currentPage = 1;
 
-const allData=[
-  {id:'S01',name:'Ravi Patel',email:'ravi.patel@finzobank.com',initials:'RP',staffId:'STF006',branch:'East Branch',reason:'Policy Violation',date:'11 Apr 2026',by:'Arjun Sharma (Admin)',duration:'7 days',tabKey:'policy'},
-  {id:'S02',name:'Mohan Das',email:'mohan.das@finzobank.com',initials:'MD',staffId:'STF007',branch:'North Branch',reason:'Suspicious Activity',date:'06 Apr 2026',by:'Arjun Sharma (Admin)',duration:'12 days',tabKey:'suspicious'},
-  {id:'S03',name:'Anita Roy',email:'anita.roy@finzobank.com',initials:'AR',staffId:'STF008',branch:'Barasat',reason:'Failed Login Attempts',date:'02 Apr 2026',by:'System (Auto)',duration:'16 days',tabKey:'suspicious'},
-];
+    async function loadSuspendedStaff() {
+        $('#table-body').html(`
+            <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+            <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+            <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+        `);
 
-const ROWS_PP=5;
-let currentPage=1,activeTab='all',pendingId=null;
-let filtered=[...allData];
+        try {
+            const response = await api.get('/admin/suspended-staff.php', {
+                search: $('#search-input').val(),
+                page: currentPage,
+                per_page: 10
+            });
 
-function reasonBadge(r){const map={'Policy Violation':'badge-red','Suspicious Activity':'badge-amber','Failed Login Attempts':'badge-amber','Manual Review':'badge-blue'};return `<span class="badge ${map[r]||'badge-gray'}">${r}</span>`;}
-function switchTab(key,el){activeTab=key;currentPage=1;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
-function resetFilters(){
-  document.getElementById('search-input').value='';
-  document.getElementById('start-date').value='';
-  document.getElementById('end-date').value='';
-  document.getElementById('reason-filter').value='';
-  activeTab='all';
-  currentPage=1;
-  renderTable();
-}
-
-function getAvatarGradient(initials) {
-  const gradients = [
-    'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', // Slate
-    'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', // Sky
-    'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)', // Indigo
-    'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)', // Amber
-    'linear-gradient(135deg, #10b981 0%, #047857 100%)', // Emerald
-    'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'  // Rose
-  ];
-  let hash = 0;
-  for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
-  return gradients[Math.abs(hash) % gradients.length];
-}
-
-function renderTable(){
-  const search=document.getElementById('search-input').value.toLowerCase();
-  const reason=document.getElementById('reason-filter').value;
-  const startDate=document.getElementById('start-date').value;
-  const endDate=document.getElementById('end-date').value;
-  
-  filtered=allData.filter(r=>{
-    if(activeTab!=='all'&&r.tabKey!==activeTab)return false;
-    if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.staffId.toLowerCase().includes(search))return false;
-    if(reason&&r.reason!==reason)return false;
-    
-    // Date Range Filtering
-    if(startDate || endDate) {
-      const rowDate = new Date(r.date);
-      if(startDate && rowDate < new Date(startDate)) return false;
-      if(endDate && rowDate > new Date(endDate)) return false;
+            if (response.status === 'success') {
+                renderTable(response.data.staff);
+                updatePagination(response.data.total, response.data.pages);
+            } else {
+                $('#table-body').html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">${response.message || 'No suspended staff found.'}</td></tr>`);
+                $('#pag-info').text('No results');
+                $('#pag-controls').empty();
+            }
+        } catch (error) {
+            console.error('Failed to load suspended staff:', error);
+            $('#table-body').html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
+        }
     }
-    return true;
-  });
-  const total=filtered.length;
-  const totalPages=Math.max(1,Math.ceil(total/ROWS_PP));
-  if(currentPage>totalPages)currentPage=totalPages;
-  const slice=filtered.slice((currentPage-1)*ROWS_PP,currentPage*ROWS_PP);
-  const tbody=document.getElementById('table-body');
-  if(!slice.length){
-    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">work_off</span><div class="empty-title">No suspended staff found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
-  } else {
-    tbody.innerHTML=slice.map((r,i)=>`
-      <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
-        <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*ROWS_PP+i+1).padStart(2,'0')}</td>
-        <td class="py-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg" style="background: ${getAvatarGradient(r.initials)}">
-              ${r.initials}
-            </div>
-            <div>
-              <div class="font-headline font-bold text-sm text-black dark:text-white">${r.name}</div>
-              <div class="text-[11px] font-bold text-slate-400 -mt-0.5">${r.email}</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="mono">${r.staffId}</span></td>
-        <td style="font-size:12px;font-weight:600">${r.branch}</td>
-        <td>${reasonBadge(r.reason)}</td>
-        <td style="font-size:12px;font-weight:600">${r.date}</td>
-        <td style="font-size:12px;color:var(--text-secondary)">${r.by}</td>
-        <td><span class="badge badge-gray">${r.duration}</span></td>
-        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-          <div class="flex items-center justify-center gap-2">
-            <a href="admin-suspended-staff-detail.html?id=${r.id}" class="action-btn btn-view">
-              <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
-              View
-            </a>
-            <button onclick="openReinstate('${r.id}','${r.name}')" class="action-btn btn-reinstate">
-              <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
-              Reinstate
-            </button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  const s=(currentPage-1)*ROWS_PP+1,e=Math.min(currentPage*ROWS_PP,total);
-  document.getElementById('pag-info').textContent=total?`Showing ${s}–${e} of ${total} suspended staff`:'No results';
-  const pc=document.getElementById('pag-controls');
-  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Previous</button>`;
-  
-  // Compact page numbers for mobile
-  let startPage = Math.max(1, currentPage - 1);
-  let endPage = Math.min(totalPages, startPage + 2);
-  if (endPage - startPage < 2) startPage = Math.max(1, endPage - 2);
 
-  pc.innerHTML += `<div class="flex items-center gap-1.5 mx-2 sm:mx-4">`;
-  for(let i=startPage; i<=endPage; i++) {
-    pc.innerHTML += `<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
-  }
-  pc.innerHTML += `</div>`;
-  
-  pc.innerHTML += `<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
-}
-function goPage(d){currentPage=Math.max(1,Math.min(Math.ceil(filtered.length/ROWS_PP),currentPage+d));renderTable();}
+    function renderTable(staff) {
+        const $tbody = $('#table-body');
+        if (!staff || !staff.length) {
+            $tbody.html(`<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">work_off</span><div class="empty-title">No suspended staff found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`);
+            return;
+        }
 
-function openReinstate(id,name){
-  pendingId=id;
-  document.getElementById('modal-text').innerHTML=`You are reinstating <strong>${name}</strong>'s staff account. Their status will immediately return to <strong>Active</strong> and they can resume processing customer deposits and withdrawals at their assigned branch.`;
-  document.getElementById('reinstate-modal').classList.remove('hidden');
-}
-function confirmReinstate(){
-  const btn=document.getElementById('confirm-btn');
-  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...';
-  // PHP_BACKEND: POST /api/admin/reinstate-staff.php {staff_id, new_status:'active'}
-  setTimeout(()=>{
-    document.getElementById('reinstate-modal').classList.add('hidden');
-    const idx=allData.findIndex(r=>r.id===pendingId);
-    if(idx>-1)allData.splice(idx,1);
-    btn.disabled=false;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Staff';
-    renderTable();
-    showToast('Staff account reinstated. Status set to Active.','success');
-  },1500);
-}
+        $tbody.html(staff.map((s, i) => {
+            return `
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*10+i+1).padStart(2,'0')}</td>
+                <td class="py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg premium-gradient-primary uppercase">
+                            ${s.initials || s.full_name.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="font-headline font-bold text-sm text-black dark:text-white">${s.full_name}</div>
+                            <div class="text-[11px] font-bold text-slate-400 -mt-0.5">${s.email}</div>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="mono">${s.staff_id}</span></td>
+                <td style="font-size:12px;font-weight:600">${s.branch_name || 'N/A'}</td>
+                <td><span class="badge ${s.status_badge || 'badge-amber'}">${s.suspension_reason || 'Suspended'}</span></td>
+                <td style="font-size:12px;font-weight:600">${s.suspended_at || 'N/A'}</td>
+                <td style="font-size:12px;color:var(--text-secondary)">${s.suspended_by || 'Admin'}</td>
+                <td><span class="badge badge-gray">${s.duration || 'Permanent'}</span></td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                    <div class="flex items-center justify-center gap-2">
+                        <a href="admin-suspended-staff-detail.html?id=${s.id}" class="action-btn btn-view">
+                            <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
+                        </a>
+                        <button onclick="window.openReinstate('${s.id}','${s.full_name}')" class="action-btn btn-reinstate">
+                            <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+        }).join(''));
+    }
+
+    function updatePagination(total, pages) {
+        const start = (currentPage - 1) * 10 + 1;
+        const end = Math.min(currentPage * 10, total);
+        $('#pag-info').text(total ? `Showing ${start}–${end} of ${total} suspended staff` : 'No results');
+
+        let pcHtml = `<button class="pag-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)">← Previous</button>`;
+        pcHtml += `<div class="flex items-center gap-1.5 mx-2 sm:mx-4">`;
+        for (let i = 1; i <= pages; i++) {
+            if (i > 5 && i < pages - 1) { if(i === 6) pcHtml += '<span class="px-2 opacity-50">...</span>'; continue; }
+            pcHtml += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="window.setPage(${i})">${i}</button>`;
+        }
+        pcHtml += `</div>`;
+        pcHtml += `<button class="pag-btn" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)">Next →</button>`;
+        $('#pag-controls').html(pcHtml);
+    }
+
+    window.goPage = (d) => { currentPage += d; loadSuspendedStaff(); };
+    window.setPage = (p) => { currentPage = p; loadSuspendedStaff(); };
+    
+    let pendingId = null;
+    window.openReinstate = (id, name) => {
+        pendingId = id;
+        $('#modal-text').html(`You are reinstating <strong>${name}</strong>'s staff account. Their status will immediately return to <strong>Active</strong> and they can resume processing customer deposits and withdrawals.`);
+        $('#reinstate-modal').removeClass('hidden');
+    };
+
+    window.confirmReinstate = async () => {
+        const $btn = $('#confirm-btn');
+        $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...');
+        
+        try {
+            const response = await api.post('/admin/staff-action.php', {
+                action: 'reinstate',
+                staff_id: pendingId
+            });
+
+            if (response.status === 'success') {
+                $('#reinstate-modal').addClass('hidden');
+                showToast('Staff account reinstated successfully.', 'success');
+                loadSuspendedStaff();
+            } else {
+                showToast(response.message || 'Action failed', 'error');
+            }
+        } catch (error) {
+            console.error('Reinstate failed:', error);
+            showToast('Server error occurred', 'error');
+        } finally {
+            $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Staff');
+        }
+    };
+
+    $('#search-input').on('keyup', (e) => { if (e.key === 'Enter') { currentPage = 1; loadSuspendedStaff(); } });
+    window.resetFilters = () => { $('#search-input').val(''); currentPage = 1; loadSuspendedStaff(); };
+
+    loadSuspendedStaff();
+});
+
 function showToast(msg, type = 'success') {
     const wrap = document.getElementById('toast-wrap');
     if (!wrap) return;
@@ -464,7 +460,7 @@ overlay?.addEventListener('click', () => {
     overlay?.classList.remove('active');
 });
 
-renderTable();
+
 </script>
 </body>
 </html>

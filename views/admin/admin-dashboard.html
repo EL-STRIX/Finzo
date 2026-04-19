@@ -29,9 +29,10 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/admin-dropdowns.js"></script>
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
+  <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -133,7 +134,7 @@
             <span class="material-symbols-outlined" style="color:#e17055;">arrow_upward</span>
           </div>
           <div class="admin-stat-label">Total Withdrawals</div>
-          <div class="admin-stat-value">₹38,000 <span class="admin-stat-delta positive">+8.3%</span></div>
+          <div class="admin-stat-value skeleton w-24 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -141,7 +142,7 @@
             <span class="material-symbols-outlined" style="color:#00b894;">arrow_downward</span>
           </div>
           <div class="admin-stat-label">Total Deposits</div>
-          <div class="admin-stat-value">₹72,000 <span class="admin-stat-delta positive">+14.2%</span></div>
+          <div class="admin-stat-value skeleton w-24 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -149,7 +150,7 @@
             <span class="material-symbols-outlined" style="color:#3b82f6;">sync_alt</span>
           </div>
           <div class="admin-stat-label">Total Transfers</div>
-          <div class="admin-stat-value">₹1.4L <span class="admin-stat-delta positive">+11.6%</span></div>
+          <div class="admin-stat-value skeleton w-24 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -157,7 +158,7 @@
             <span class="material-symbols-outlined" style="color:#3b82f6;">account_balance</span>
           </div>
           <div class="admin-stat-label">Total Accounts</div>
-          <div class="admin-stat-value">2,480 <span class="admin-stat-delta positive">+5.2%</span></div>
+          <div class="admin-stat-value skeleton w-16 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -165,7 +166,7 @@
             <span class="material-symbols-outlined" style="color:#3b82f6;">group</span>
           </div>
           <div class="admin-stat-label">TOTAL USERS</div>
-          <div class="admin-stat-value">128,400 <span class="admin-stat-delta positive">+12%</span></div>
+          <div class="admin-stat-value skeleton w-32 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -173,8 +174,7 @@
             <span class="material-symbols-outlined" style="color:#f39c12;">percent</span>
           </div>
           <div class="admin-stat-label">Interest Credited</div>
-          <div class="admin-stat-value">₹12,400 <span class="admin-stat-delta"
-              style="background:#fff3cd;color:#b07d00;">This Month</span></div>
+          <div class="admin-stat-value skeleton w-24 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -182,7 +182,7 @@
             <span class="material-symbols-outlined" style="color:#ba1a1a;">schedule</span>
           </div>
           <div class="admin-stat-label">PENDING APPROVALS</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Action Required</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -190,7 +190,7 @@
             <span class="material-symbols-outlined" style="color:#e17055;">lock</span>
           </div>
           <div class="admin-stat-label">Locked Accounts</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Brute Force</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -198,8 +198,7 @@
             <span class="material-symbols-outlined" style="color:#6c757d;">person_off</span>
           </div>
           <div class="admin-stat-label">Suspend Users</div>
-          <div class="admin-stat-value">18 <span class="admin-stat-delta"
-              style="background:#e9ecef;color:#6c757d;">Deactivated</span></div>
+          <div class="admin-stat-value skeleton w-16 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -207,8 +206,7 @@
             <span class="material-symbols-outlined" style="color:#f39c12;">restore</span>
           </div>
           <div class="admin-stat-label">SOFT DELETED USERS</div>
-          <div class="admin-stat-value">5 <span class="admin-stat-delta"
-              style="background:#fff3cd;color:#b07d00;">Recoverable</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -216,7 +214,7 @@
             <span class="material-symbols-outlined" style="color:#f39c12;">badge</span>
           </div>
           <div class="admin-stat-label">ACTIVE STAFF</div>
-          <div class="admin-stat-value">4 <span class="admin-stat-delta positive">On Shift</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
 
         <div class="admin-stat-card">
@@ -224,7 +222,7 @@
             <span class="material-symbols-outlined" style="color:#0369a1;">store</span>
           </div>
           <div class="admin-stat-label">ACTIVE BRANCHES</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta positive">Operational</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
 
       </div>
@@ -387,132 +385,15 @@
           </tr>
         </thead>
         <tbody id="dash-user-tbody">
-          <tr data-name="rahul kumar" data-risk="active">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#dbeafe;color:#1d4ed8;">RK</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Rahul Kumar</div>
-                  <div style="font-size:11px;color:#000000;">rahul.kumar@gmail.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success">ACTIVE</span>
-            </td>
-            <td><span class="status-badge badge-success" style="font-size: 11px; padding: 4px 8px;">APPROVED</span>
-            </td>
-            <td>Savings</td>
-            <td>2 mins ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          <!-- Rows will be injected by api.js -->
+          <tr class="skeleton-row-container">
+            <td colspan="6" style="padding: 0;"><div class="skeleton-row"></div></td>
           </tr>
-          <tr data-name="priya sharma" data-risk="suspend">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#ffeef0;color:#e17055;">PS</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Priya Sharma</div>
-                  <div style="font-size:11px;color:#000000;">priya.sharma@gmail.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-error">SUSPEND</span>
-            </td>
-            <td><span class="status-badge badge-error" style="font-size: 11px; padding: 4px 8px;">REJECTED</span>
-            </td>
-            <td>Current</td>
-            <td>14 mins ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          <tr class="skeleton-row-container">
+            <td colspan="6" style="padding: 0;"><div class="skeleton-row"></div></td>
           </tr>
-          <tr data-name="amit mondal" data-risk="active">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#e8f8f2;color:#00b894;">AM</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Amit Mondal</div>
-                  <div style="font-size:11px;color:#000000;">amit.mondal@gmail.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success">ACTIVE</span>
-            </td>
-            <td><span class="status-badge badge-warn" style="font-size: 11px; padding: 4px 8px;">PENDING</span>
-            </td>
-            <td>Savings</td>
-            <td>1 hour ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <!-- Added more dummy rows for pagination test -->
-          <tr data-name="sneha gupta" data-risk="active">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#f3e8ff;color:#9333ea;">SG</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Sneha Gupta</div>
-                  <div style="font-size:11px;color:#000000;">sneha.g@gmail.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success"><span
-                  style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span>
-            </td>
-            <td><span
-                style="font-size:11px;font-weight:700;color:#00b894;background:#e8f8f2;padding:4px 8px;border-radius:6px;">APPROVED</span>
-            </td>
-            <td style="color:#000000;">Savings</td>
-            <td style="color:#000000;">3 hours ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <tr data-name="vikram singh" data-risk="flagged">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#fff8e1;color:#f39c12;">VS</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Vikram Singh</div>
-                  <div style="font-size:11px;color:#000000;">vikram.s@outlook.com</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-warn"><span
-                  style="width:6px;height:6px;background:#f39c12;border-radius:50%;display:inline-block;margin-right:4px;"></span>FLAGGED</span>
-            </td>
-            <td><span
-                style="font-size:11px;font-weight:700;color:#f39c12;background:#fff8e1;padding:4px 8px;border-radius:6px;">PENDING</span>
-            </td>
-            <td style="color:#000000;">Current</td>
-            <td style="color:#000000;">5 hours ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
-          </tr>
-          <tr data-name="ananya das" data-risk="active">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div class="admin-avatar" style="background:#e0f2fe;color:#0369a1;">AD</div>
-                <div>
-                  <div style="font-weight:700;color:#000000;">Ananya Das</div>
-                  <div style="font-size:11px;color:#000000;">ananya.das@live.in</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="status-badge badge-success"><span
-                  style="width:6px;height:6px;background:#00b894;border-radius:50%;display:inline-block;margin-right:4px;"></span>ACTIVE</span>
-            </td>
-            <td><span
-                style="font-size:11px;font-weight:700;color:#00b894;background:#e8f8f2;padding:4px 8px;border-radius:6px;">APPROVED</span>
-            </td>
-            <td style="color:#000000;">Savings</td>
-            <td style="color:#000000;">1 day ago</td>
-            <td style="text-align:right;"><a href="admin-users.html" class="admin-btn-secondary"
-                style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
-                <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a></td>
+          <tr class="skeleton-row-container">
+            <td colspan="6" style="padding: 0;"><div class="skeleton-row"></div></td>
           </tr>
         </tbody>
       </table>
@@ -561,62 +442,98 @@
   <script>
 
 
-    var dashCurrentPage = 1, dashRowsPerPage = 3;
-    function dashGoPage(p) { dashCurrentPage = p; renderDashTable(); }
-    function filterDashUsers() { dashCurrentPage = 1; renderDashTable(); }
-    function renderDashTable() {
-      var q = (document.getElementById('dash-user-search').value || '').toLowerCase().trim();
-      var all = Array.from(document.querySelectorAll('#dash-user-tbody tr'));
-      var filtered = all.filter(function (r) {
-        var t = r.innerText.toLowerCase();
-        return (!q || t.includes(q));
-      });
-      all.forEach(function (r) { r.style.display = 'none'; });
-      var start = (dashCurrentPage - 1) * dashRowsPerPage;
-      filtered.slice(start, start + dashRowsPerPage).forEach(function (r) { r.style.display = ''; });
-      var c = document.getElementById('dash-row-counter');
-      if (c) { 
-        var end = Math.min(start + dashRowsPerPage, filtered.length); 
-        c.textContent = filtered.length === 0 ? 'No users found' : 'Displaying ' + (filtered.length ? start + 1 : 0) + '-' + end + ' of ' + filtered.length + ' users'; 
-      }
-      var tp = Math.ceil(filtered.length / dashRowsPerPage);
-      // Update page buttons
-      for (var i = 1; i <= 2; i++) { 
-        var btn = document.getElementById('dash-pg-' + i); 
-        if (!btn) continue; 
-        if (i === dashCurrentPage) { 
-          btn.classList.remove('admin-btn-secondary');
-          btn.classList.add('admin-btn-primary');
-        } else { 
-          btn.classList.remove('admin-btn-primary');
-          btn.classList.add('admin-btn-secondary');
-        } 
-        btn.style.display = (i <= tp) ? 'inline-block' : 'none';
-      }
-      // Update prev button target
-      var prv = document.getElementById('dash-pg-prev');
-      if(prv) {
-        prv.onclick = function() { dashGoPage(Math.max(dashCurrentPage - 1, 1)); };
-        prv.style.display = (dashCurrentPage > 1) ? '' : 'none';
-      }
-      // Update next button target
-      var nxt = document.getElementById('dash-pg-next');
-      if(nxt) {
-        nxt.onclick = function() { dashGoPage(Math.min(dashCurrentPage + 1, tp)); };
-        nxt.style.display = (dashCurrentPage < tp) ? '' : 'none';
-      }
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-      renderDashTable();
-      
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
-          $('#sidebar-overlay').removeClass('active');
-      });
+    $(function() {
+        async function loadDashboard() {
+            try {
+                const response = await api.get('/admin/dashboard.php');
+                if (response.status === 'success') {
+                    updateStats(response.data.stats);
+                    renderRecentUsers(response.data.recent_users);
+                }
+            } catch (error) {
+                console.error('Dashboard load failed:', error);
+            }
+        }
+
+        function updateStats(stats) {
+            const cards = $('.admin-stat-card');
+            
+            // Map stats to cards
+            const mapping = [
+                { label: 'Total Withdrawals', value: stats.withdrawals_today, isPrice: true },
+                { label: 'Total Deposits', value: stats.deposits_today, isPrice: true },
+                { label: 'Total Transfers', value: stats.transfers_today, isPrice: true },
+                { label: 'Total Accounts', value: stats.total_users, isPrice: false }, // Using total users as proxy for accounts if not separate
+                { label: 'TOTAL USERS', value: stats.total_users, isPrice: false },
+                { label: 'Interest Credited', value: 0, isPrice: true },
+                { label: 'PENDING APPROVALS', value: stats.pending_approvals, isPrice: false },
+                { label: 'Locked Accounts', value: stats.locked_accounts, isPrice: false },
+                { label: 'Suspend Users', value: stats.suspended_users, isPrice: false },
+                { label: 'SOFT DELETED USERS', value: 0, isPrice: false },
+                { label: 'ACTIVE STAFF', value: stats.total_staff, isPrice: false },
+                { label: 'ACTIVE BRANCHES', value: stats.total_branches, isPrice: false }
+            ];
+
+            cards.each(function(i) {
+                const map = mapping[i];
+                if (!map) return;
+                const $val = $(this).find('.admin-stat-value');
+                const valStr = map.isPrice ? formatINR(map.value) : map.value.toLocaleString();
+                $val.contents().first().replaceWith(valStr + ' ');
+            });
+        }
+
+        function renderRecentUsers(users) {
+            const $tbody = $('#dash-user-tbody');
+            $tbody.html(users.map(u => {
+                const initials = u.full_name.split(' ').map(n=>n[0]).join('').toUpperCase();
+                const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-error' : 'badge-warn');
+                return `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="admin-avatar" style="background:${getAvatarGradient(initials)};color:#fff;">${initials}</div>
+                            <div>
+                                <div style="font-weight:700;">${u.full_name}</div>
+                                <div style="font-size:11px;opacity:0.6;">${u.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${u.status.toUpperCase()}</span></td>
+                    <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warn'}" style="font-size: 11px; padding: 4px 8px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
+                    <td>Savings</td>
+                    <td>${timeAgo(u.created_at)}</td>
+                    <td style="text-align:right;">
+                        <a href="admin-users.html?id=${u.id}" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important;">
+                            <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View
+                        </a>
+                    </td>
+                </tr>`;
+            }).join(''));
+        }
+
+        function getAvatarGradient(initials) {
+            const gradients = ['linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'];
+            let hash = 0; for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
+            return gradients[Math.abs(hash) % gradients.length];
+        }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+            if (seconds < 60) return 'Just now';
+            const intervals = { year: 31536000, month: 2592000, week: 604800, day: 86400, hour: 3600, minute: 60 };
+            for (let i in intervals) {
+                const count = Math.floor(seconds / intervals[i]);
+                if (count > 0) return count + ' ' + i + (count > 1 ? 's' : '') + ' ago';
+            }
+            return 'Long ago';
+        }
+
+        loadDashboard();
+
+        // Mobile Menu
+        $('#mobile-menu-btn').on('click', () => { $('#admin-sidebar').addClass('mobile-open'); $('#sidebar-overlay').addClass('active'); });
+        $('#sidebar-overlay').on('click', () => { $('#admin-sidebar').removeClass('mobile-open'); $('#sidebar-overlay').removeClass('active'); });
     });
   </script>
 </body>

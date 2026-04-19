@@ -366,16 +366,29 @@
       $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
       $btn.prop('disabled', true);
 
-      // Demo auth
-      setTimeout(() => {
-        if (id === 'staff@finzo.com' && pw === 'staff123') {
-          window.location.href = '../staff/staff-dashboard.html';
+      // Real API authentication
+      fetch('/api/auth/staff-login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect || '../staff/staff-dashboard.html';
         } else {
           $form.addClass('error-state');
-          $error.text("Invalid staff credentials").show();
+          $error.text(data.message || "Invalid staff credentials").show();
           $btn.html(original).prop('disabled', false);
         }
-      }, 1200);
+      })
+      .catch(err => {
+        console.error('Staff login error:', err);
+        $form.addClass('error-state');
+        $error.text("Connection error. Please try again.").show();
+        $btn.html(original).prop('disabled', false);
+      });
     });
 
     $('#toggle-password').on('click', function() {

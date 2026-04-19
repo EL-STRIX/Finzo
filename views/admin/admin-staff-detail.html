@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/api.js"></script>
   <script src="../../assets/js/theme.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
@@ -101,27 +102,13 @@
   <!-- MAIN CONTENT -->
   <div class="admin-main">
     <!-- TOP BAR -->
-    <div class="admin-topbar">
-      <div class="flex items-center gap-2 sm:gap-4">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <a href="admin-staff.html" class="hidden sm:flex p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
-          <span class="material-symbols-outlined">arrow_back</span>
-        </a>
-        <div class="flex flex-col">
-          <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">
-             <span class="hidden sm:inline">Admin</span>
-             <span class="material-symbols-outlined text-[10px] hidden sm:inline force-black">chevron_right</span>
-             <span class="whitespace-nowrap">Staff Management</span>
-             <span class="material-symbols-outlined text-[10px] force-black">chevron_right</span>
-             <span class="text-primary dark:text-blue-400 whitespace-nowrap">Amit Sharma</span>
+              <span class="text-primary dark:text-blue-400 whitespace-nowrap" id="staff-name-breadcrumb">Loading...</span>
           </div>
           <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Staff Detail</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
-        <div class="admin-avatar premium-gradient-primary">A</div>
+        <div id="top-admin-avatar" class="admin-avatar premium-gradient-primary">A</div>
       </div>
     </div>
 
@@ -129,20 +116,20 @@
       <!-- STAFF HEADER CARD -->
       <div class="admin-card p-5 sm:p-8 mb-6 sm:mb-10 flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-6 sm:gap-8">
         <div class="flex items-center gap-6">
-          <div class="w-20 h-20 rounded-full premium-gradient-primary flex items-center justify-center font-black text-3xl shadow-lg border-4 border-white dark:border-slate-800">AS</div>
+          <div id="staff-initials-avatar" class="w-20 h-20 rounded-full premium-gradient-primary flex items-center justify-center font-black text-3xl shadow-lg border-4 border-white dark:border-slate-800"><div class="skeleton w-full h-full rounded-full"></div></div>
           <div>
             <div class="flex items-center gap-3 mb-1">
-              <h1 class="font-headline text-3xl font-bold tracking-tight">Amit Sharma</h1>
-              <span class="status-badge badge-success">Active</span>
+              <h1 id="staff-name-h1" class="font-headline text-3xl font-bold tracking-tight"><div class="skeleton w-32 h-8"></div></h1>
+              <span id="staff-status-badge" class="status-badge"><div class="skeleton w-16 h-4"></div></span>
             </div>
             <div class="flex items-center gap-6">
               <div class="flex items-center gap-2 opacity-60 font-medium">
                 <span class="material-symbols-outlined text-sm">badge</span>
-                <span>ID: STF001</span>
+                <span id="staff-id-display"><div class="skeleton w-16 h-4"></div></span>
               </div>
               <div class="flex items-center gap-2 opacity-60 font-medium">
                 <span class="material-symbols-outlined text-sm">location_on</span>
-                <span>Barasat</span>
+                <span id="staff-branch-display"><div class="skeleton w-20 h-4"></div></span>
               </div>
             </div>
           </div>
@@ -161,19 +148,19 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card">
           <div class="admin-stat-label">TOTAL DEPOSITS DONE</div>
-          <div class="admin-stat-value">₹5,24,000 <span class="admin-stat-delta positive">+12%</span></div>
+          <div id="stat-total-deposits" class="admin-stat-value"><div class="skeleton w-16 h-8"></div></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">TOTAL WITHDRAWALS DONE</div>
-          <div class="admin-stat-value">₹3,18,000 <span class="admin-stat-delta positive">+8%</span></div>
+          <div id="stat-total-withdrawals" class="admin-stat-value"><div class="skeleton w-16 h-8"></div></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">TOTAL TRANSACTIONS</div>
-          <div class="admin-stat-value">342 <span class="admin-stat-delta neutral">All Time</span></div>
+          <div id="stat-total-txns" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">LAST ACTIVE</div>
-          <div class="admin-stat-value">Today <span class="admin-stat-delta positive" style="background:#e8f8f2; color:#00b894;">10:45 AM</span></div>
+          <div id="stat-last-active" class="admin-stat-value"><div class="skeleton w-24 h-8"></div></div>
         </div>
       </div>
 
@@ -189,31 +176,31 @@
             <div class="p-5 sm:p-8 space-y-4 sm:space-y-6">
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</span>
-                <span class="font-bold">Amit Sharma</span>
+                <span id="info-full-name" class="font-bold"><div class="skeleton w-24 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</span>
-                <span class="font-bold">amit.sharma@finzo.com</span>
+                <span id="info-email" class="font-bold"><div class="skeleton w-32 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone</span>
-                <span class="font-bold">+91 98765 43210</span>
+                <span id="info-phone" class="font-bold"><div class="skeleton w-28 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Branch</span>
-                <span class="font-bold">Barasat</span>
+                <span id="info-branch" class="font-bold"><div class="skeleton w-16 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Staff ID</span>
-                <span class="font-bold">STF001</span>
+                <span id="info-staff-id" class="font-bold"><div class="skeleton w-16 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Joined</span>
-                <span class="font-bold">01 Jan 2026</span>
+                <span id="info-joined" class="font-bold"><div class="skeleton w-24 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Shifts</span>
-                <span class="font-bold">48</span>
+                <span id="info-shifts" class="font-bold"><div class="skeleton w-8 h-4"></div></span>
               </div>
             </div>
           </div>
@@ -226,23 +213,23 @@
             <div class="p-5 sm:p-8 space-y-4 sm:space-y-6 dark:text-slate-800">
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Shift Start</span>
-                <span class="font-bold px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-sm">09:00 AM</span>
+                <span id="summary-shift-start" class="font-bold px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-sm"><div class="skeleton w-16 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Deposits Done</span>
-                <span class="font-bold">12 (₹28,000)</span>
+                <span id="summary-deposits" class="font-bold"><div class="skeleton w-20 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Withdrawals Done</span>
-                <span class="font-bold">8 (₹14,000)</span>
+                <span id="summary-withdrawals" class="font-bold"><div class="skeleton w-20 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Transactions</span>
-                <span class="font-bold">20</span>
+                <span id="summary-total-txns" class="font-bold"><div class="skeleton w-8 h-4"></div></span>
               </div>
               <div class="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-white/10">
                 <span class="text-[10px] font-black uppercase tracking-widest text-primary dark:text-blue-400">Total Amount</span>
-                <span class="text-xl font-black text-primary dark:text-blue-400">₹42,000</span>
+                <span id="summary-total-amount" class="text-xl font-black text-primary dark:text-blue-400"><div class="skeleton w-24 h-6"></div></span>
               </div>
             </div>
           </div>
@@ -275,58 +262,15 @@
                     <th class="text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-[11px] font-bold opacity-60">TXN20260001</td>
-                    <td class="text-xs">Today 10:45 AM</td>
-                    <td class="font-bold">Rahul Kumar</td>
-                    <td class="font-code text-xs opacity-60">FNZ20260001</td>
-                    <td><span class="status-badge badge-success">Deposit</span></td>
-                    <td class="font-black text-primary dark:text-blue-400">₹5,000</td>
-                    <td class="text-right">
-                      <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
-                        <span class="material-symbols-outlined text-lg">receipt_long</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-[11px] font-bold opacity-60">TXN20260002</td>
-                    <td class="text-xs">Today 10:20 AM</td>
-                    <td class="font-bold">Priya Sharma</td>
-                    <td class="font-code text-xs opacity-60">FNZ20260002</td>
-                    <td><span class="status-badge badge-error">Withdrawal</span></td>
-                    <td class="font-black text-error">₹2,000</td>
-                    <td class="text-right">
-                      <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
-                        <span class="material-symbols-outlined text-lg">receipt_long</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-[11px] font-bold opacity-60">TXN20260003</td>
-                    <td class="text-xs">Today 10:05 AM</td>
-                    <td class="font-bold">Amit Mondal</td>
-                    <td class="font-code text-xs opacity-60">FNZ20260003</td>
-                    <td><span class="status-badge badge-success">Deposit</span></td>
-                    <td class="font-black text-primary dark:text-blue-400">₹12,500</td>
-                    <td class="text-right">
-                      <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
-                        <span class="material-symbols-outlined text-lg">receipt_long</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-[11px] font-bold opacity-60">TXN20260004</td>
-                    <td class="text-xs">Today 09:40 AM</td>
-                    <td class="font-bold">Sneha Gupta</td>
-                    <td class="font-code text-xs opacity-60">FNZ20260004</td>
-                    <td><span class="status-badge badge-success">Deposit</span></td>
-                    <td class="font-black text-primary dark:text-blue-400">₹3,000</td>
-                    <td class="text-right">
-                      <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
-                        <span class="material-symbols-outlined text-lg">receipt_long</span>
-                      </button>
-                    </td>
+                <tbody id="staff-transactions-body">
+                  <tr class="skeleton-row">
+                    <td><div class="skeleton w-24 h-4"></div></td>
+                    <td><div class="skeleton w-32 h-4"></div></td>
+                    <td><div class="skeleton w-28 h-4"></div></td>
+                    <td><div class="skeleton w-24 h-4"></div></td>
+                    <td><div class="skeleton w-20 h-6 rounded-full"></div></td>
+                    <td><div class="skeleton w-16 h-4"></div></td>
+                    <td class="text-right"><div class="skeleton w-8 h-8 ml-auto rounded-lg"></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -415,13 +359,15 @@
           $('#sidebar-overlay').removeClass('active');
       });
 
+      loadStaffData();
+
       let currentAction = '';
 
       const modalConfigs = {
         reset: {
           title: 'Reset Password',
           subtitle: 'Security protocol override',
-          body: 'You are about to issue a mandatory password reset for <b>Amit Sharma</b>. A temporary system-generated password will be created, and the staff will be required to change it at next login.',
+          body: 'You are about to issue a mandatory password reset for <b id="reset-target-name">...</b>. A temporary system-generated password will be created, and the staff will be required to change it at next login.',
           icon: 'lock_reset',
           color: 'indigo',
           btnText: 'Confirm Reset',
@@ -431,7 +377,7 @@
         deactivate: {
           title: 'Deactivate Staff',
           subtitle: 'Irreversible suspension of access',
-          body: 'You are about to deactivate <b>Amit Sharma</b>. This will revoke all system access immediately and terminate active sessions.',
+          body: 'You are about to deactivate <b id="deactivate-target-name">...</b>. This will revoke all system access immediately and terminate active sessions.',
           icon: 'block',
           color: 'rose',
           btnText: 'Confirm Deactivation',
@@ -448,25 +394,92 @@
         }
       };
 
+      async function loadStaffData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const staffId = urlParams.get('id');
+        
+        if (!staffId) {
+          alert('Staff ID is required');
+          return;
+        }
+
+        try {
+          const data = await api.get(`/admin/staff-detail.php?id=${staffId}`);
+          if (data.status === 'success') {
+            const staff = data.data;
+            
+            // Header
+            $('#staff-name-breadcrumb, #staff-name-h1, #reset-target-name, #deactivate-target-name').text(staff.name);
+            $('#staff-initials-avatar').text(staff.initials);
+            $('#staff-id-display').text(`ID: ${staff.staff_id}`);
+            $('#staff-branch-display').text(staff.branch);
+            
+            const state = staff.status === 'Active' ? 'badge-success' : 'badge-error';
+            $('#staff-status-badge').attr('class', `status-badge ${state}`).text(staff.status);
+
+            // Button visibility based on status
+            if (staff.status !== 'Active') {
+               $('#deactivate-staff-btn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed').html('<span class="material-symbols-outlined">block</span> Inactive');
+            }
+
+            // Stats
+            $('#stat-total-deposits').html(`${staff.stats.total_deposits} <span class="admin-stat-delta positive">${staff.stats.deposits_delta}</span>`);
+            $('#stat-total-withdrawals').html(`${staff.stats.total_withdrawals} <span class="admin-stat-delta positive">${staff.stats.withdrawals_delta}</span>`);
+            $('#stat-total-txns').html(`${staff.stats.total_txns} <span class="admin-stat-delta neutral">All Time</span>`);
+            $('#stat-last-active').html(`${staff.stats.last_active_date} <span class="admin-stat-delta positive" style="background:#e8f8f2; color:#00b894;">${staff.stats.last_active_time}</span>`);
+
+            // Info
+            $('#info-full-name').text(staff.name);
+            $('#info-email').text(staff.email);
+            $('#info-phone').text(staff.phone);
+            $('#info-branch').text(staff.branch);
+            $('#info-staff-id').text(staff.staff_id);
+            $('#info-joined').text(staff.joined_at);
+            $('#info-shifts').text(staff.total_shifts);
+
+            // Shift Summary
+            $('#summary-shift-start').text(staff.today_summary.shift_start);
+            $('#summary-deposits').text(`${staff.today_summary.deposits_count} (${staff.today_summary.deposits_amount})`);
+            $('#summary-withdrawals').text(`${staff.today_summary.withdrawals_count} (${staff.today_summary.withdrawals_amount})`);
+            $('#summary-total-txns').text(staff.today_summary.total_txns);
+            $('#summary-total-amount').text(staff.today_summary.total_amount);
+
+            // Transactions
+            const txHtml = staff.recent_transactions.map(t => `
+              <tr>
+                <td class="text-[11px] font-bold opacity-60">${t.receipt_no}</td>
+                <td class="text-xs">${t.date}</td>
+                <td class="font-bold">${t.customer}</td>
+                <td class="font-code text-xs opacity-60">${t.account_no}</td>
+                <td><span class="status-badge ${t.type === 'Deposit' ? 'badge-success' : 'badge-error'}">${t.type}</span></td>
+                <td class="font-black ${t.type === 'Deposit' ? 'text-primary dark:text-blue-400' : 'text-error'}">${t.amount}</td>
+                <td class="text-right">
+                  <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
+                    <span class="material-symbols-outlined text-lg">receipt_long</span>
+                  </button>
+                </td>
+              </tr>
+            `).join('');
+            $('#staff-transactions-body').html(txHtml || '<tr><td colspan="7" class="py-10 text-center opacity-40">No transactions recorded yet</td></tr>');
+          }
+        } catch (error) {
+          console.error('Failed to load staff data:', error);
+        }
+      }
+
       function openGovernanceModal(action) {
         currentAction = action;
         const config = modalConfigs[action];
 
-        // Reset previous success display if any
         $('#auth-step').show();
         $('#modal-body-text').show().html(config.body);
         $('#modal-subtitle').show().text(config.subtitle);
-
-        // Update UI content
         $('#modal-title').text(config.title);
         $('#modal-icon').text(config.icon);
-        
-        // dynamic style
         $('#modal-icon-container').attr('class', `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`);
         $('#confirm-governance-btn').attr('class', `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`)
                                   .text(config.btnText).show().prop('disabled', false);
 
-        // Inject Reasons if applicable
         if (config.reasons && config.reasons.length > 0) {
           let reasonsHtml = '';
           config.reasons.forEach(r => {
@@ -480,7 +493,6 @@
           $('#reason-grid').html(reasonsHtml);
           $('#reason-step').slideDown(300);
           
-          // Other handler
           $('input[name="suspension_reason"]').on('change', function() {
             if ($(this).val() === 'Other') {
               $('#custom-reason-container').slideDown(300);
@@ -492,12 +504,6 @@
           $('#reason-step').hide();
         }
 
-        // Dynamic styling
-        $('#modal-icon-container').attr('class', `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`);
-        $('#confirm-governance-btn').attr('class', `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`)
-                                  .text(config.btnText).show().prop('disabled', false);
-
-        // Show modal
         $('#modal-backdrop').css('opacity', '1');
         $('#modal-container').removeClass('scale-95').css('opacity', '1');
         $('#governance-modal').removeClass('hidden').hide().fadeIn(300).css('display', 'flex');
@@ -517,63 +523,67 @@
         });
       };
 
-      $('#deactivate-staff-btn').on('click', () => openGovernanceModal('deactivate'));
+      $('#deactivate-staff-btn').on('click', () => {
+         if ($(this).prop('disabled')) return;
+         openGovernanceModal('deactivate');
+      });
       $('#reset-password-btn').on('click', () => openGovernanceModal('reset'));
 
-      $('#confirm-governance-btn').on('click', function() {
+      $('#confirm-governance-btn').on('click', async function() {
         const $btn = $(this);
-        
-        // If we are already in the "DONE" state, clicking should close the modal
-        if ($btn.text().includes('DONE')) {
-          closeGovernanceModal();
-          return;
-        }
+        if ($btn.text().includes('DONE')) { closeGovernanceModal(); return; }
 
         const password = $('#admin-password').val();
-        if (password !== 'admin123') {
-          $('#auth-error').removeClass('hidden').hide().slideDown(200);
-          $('#admin-password').addClass('ring-2 ring-rose-500/20').focus();
-          return;
+        const staffId = new URLSearchParams(window.location.search).get('id');
+        const reason = $('input[name="suspension_reason"]:checked').val();
+
+        if (currentAction === 'deactivate' && !reason) {
+           alert('Please select a reason for deactivation.');
+           return;
         }
 
         $btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-sm">refresh</span> AUTHORIZING...');
 
-        setTimeout(() => {
-          if (currentAction === 'reset') {
-            // Show new password screen
-            $('#auth-step').slideUp(300);
-            $('#modal-subtitle').hide();
-            $('#modal-title').text('Temporary Password Generated');
-            $('#modal-body-text').html(`
-              <div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p>
-                <div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">Finzo@Staff#2026</div>
-                <p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p>
-              </div>
-            `);
-            
-            // Re-enable button so user can click "DONE" to close
-            $btn.prop('disabled', false)
-                .html('<span class="material-symbols-outlined">check_circle</span> DONE')
-                .addClass('bg-emerald-500 shadow-emerald-500/20');
-          } else {
-            $btn.html('<span class="material-symbols-outlined">check_circle</span> ACTION LOGGED').addClass('bg-emerald-500 shadow-emerald-500/20');
-            setTimeout(() => {
-              closeGovernanceModal();
-              if(currentAction === 'deactivate') {
-                $('.status-badge').text('Suspend').removeClass('badge-success').addClass('badge-error');
-              }
-            }, 1500);
-          }
-        }, 2000);
-      });
+        try {
+          const response = await api.post('/admin/staff-detail.php', {
+            action: currentAction,
+            id: staffId,
+            password: password,
+            reason: reason,
+            notes: $('#custom-reason-notes').val()
+          });
 
-      $(document).on('keydown', (e) => {
-        if (e.key === 'Escape' && !$('#governance-modal').hasClass('hidden')) {
-          closeGovernanceModal();
+          if (response.status === 'success') {
+            if (currentAction === 'reset') {
+              $('#auth-step').slideUp(300);
+              $('#modal-subtitle').hide();
+              $('#modal-title').text('Temporary Password Generated');
+              $('#modal-body-text').html(`
+                <div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center">
+                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p>
+                  <div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">${response.temp_password}</div>
+                  <p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p>
+                </div>
+              `);
+              $btn.prop('disabled', false).html('<span class="material-symbols-outlined">check_circle</span> DONE').addClass('bg-emerald-500 shadow-emerald-500/20');
+            } else {
+              $btn.html('<span class="material-symbols-outlined">check_circle</span> ACTION LOGGED').addClass('bg-emerald-500 shadow-emerald-500/20');
+              setTimeout(() => {
+                closeGovernanceModal();
+                loadStaffData(); // Refresh page
+              }, 1500);
+            }
+          } else {
+            $('#auth-error').text(response.message).removeClass('hidden').hide().slideDown(200);
+            $btn.prop('disabled', false).text(currentAction === 'reset' ? 'Confirm Reset' : 'Confirm Deactivation');
+          }
+        } catch (error) {
+           alert('Connection failed. Please try again.');
+           $btn.prop('disabled', false).text('Try Again');
         }
       });
     });
+</script>
   </script>
 </body>
 </html>

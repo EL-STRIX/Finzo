@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <style>
     /* Premium Table Styling */
     .admin-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
@@ -294,7 +296,13 @@
                 <th class="py-4 px-6 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody id="table-body"></tbody>
+            <tbody id="table-body">
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+            </tbody>
           </table>
         </div>
 
@@ -328,169 +336,145 @@
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-/* ── THEME ── */
-const THEME_KEY='finzo-admin-theme';
-function initTheme(){
-  const saved=localStorage.getItem(THEME_KEY);
-  const dark=saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme:dark)').matches);
-  if(dark) {
-    document.documentElement.classList.add('dark');
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-  updateThemeIcons();
-}
-function toggleTheme(){
-  const dark=document.documentElement.classList.toggle('dark');
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  localStorage.setItem(THEME_KEY,dark?'dark':'light');
-  updateThemeIcons();
-}
-function updateThemeIcons(){
-  const dark=document.documentElement.classList.contains('dark');
-  ['theme-icon','theme-icon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dark?'light_mode':'dark_mode';});
-  const lbl=document.getElementById('theme-label');
-  if(lbl)lbl.textContent=dark?'Light Mode':'Dark Mode';
-}
-initTheme();
+    $(function() {
+      const $searchInput = $('#search-input');
+      const $tbody = $('#table-body');
+      const $pagInfo = $('#pag-info');
+      const $pagControls = $('#pag-controls');
+      
+      let currentPage = 1;
+      let pendingReinstateId = null;
 
-/* ── DATA ── */
-const allData=[
-  {id:'01',name:'Rahul Kumar',email:'rahul.kumar@gmail.com',initials:'RK',accNo:'FNZ20260001',accType:'Savings',reason:'Suspicious Activity',date:'10 Apr 2026',by:'Arjun Sharma (Admin)',duration:'8 days',tabKey:'suspicious'},
-  {id:'02',name:'Sneha Patel',email:'sneha.patel@gmail.com',initials:'SP',accNo:'FNZ20260009',accType:'Current',reason:'Daily Limit Breach',date:'08 Apr 2026',by:'Arjun Sharma (Admin)',duration:'10 days',tabKey:'limit'},
-  {id:'03',name:'Vikram Gupta',email:'vikram.gupta@gmail.com',initials:'VG',accNo:'FNZ20260005',accType:'Savings',reason:'Failed Login Attempts',date:'05 Apr 2026',by:'System (Auto)',duration:'13 days',tabKey:'login'},
-  {id:'04',name:'Mohan Kumar',email:'mohan.kumar@gmail.com',initials:'MK',accNo:'FNZ20260006',accType:'Savings',reason:'Policy Violation',date:'01 Apr 2026',by:'Priya Singh (Admin)',duration:'17 days',tabKey:'suspicious'},
-  {id:'05',name:'Nisha Rao',email:'nisha.rao@gmail.com',initials:'NR',accNo:'FNZ20260007',accType:'Current',reason:'Manual Review',date:'28 Mar 2026',by:'Arjun Sharma (Admin)',duration:'21 days',tabKey:'suspicious'},
-];
+      async function loadSuspendedUsers() {
+          const search = $searchInput.val();
+          $tbody.html(`
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+          `);
 
-const ROWS_PP=5;
-let currentPage=1,activeTab='all',pendingReinstateId=null;
-let filtered=[...allData];
+          try {
+              const response = await api.get('/admin/suspended-users.php', {
+                  search: search,
+                  page: currentPage,
+                  per_page: 10
+              });
 
-function reasonBadge(r){
-  const map={'Suspicious Activity':'badge-red','Daily Limit Breach':'badge-amber','Failed Login Attempts':'badge-amber','Policy Violation':'badge-red','Manual Review':'badge-blue'};
-  return `<span class="badge ${map[r]||'badge-gray'}">${r}</span>`;
-}
-function getAvatarGradient(initials) {
-  const gradients = [
-    'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', // Slate
-    'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', // Sky
-    'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)', // Indigo
-    'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)', // Amber
-    'linear-gradient(135deg, #10b981 0%, #047857 100%)', // Emerald
-    'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'  // Rose
-  ];
-  let hash = 0;
-  for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
-  return gradients[Math.abs(hash) % gradients.length];
-}
-function switchTab(key,el){
-  activeTab=key; currentPage=1;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderTable();
-}
-function resetFilters(){
-  document.getElementById('search-input').value='';
-  document.getElementById('start-date').value='';
-  document.getElementById('end-date').value='';
-  activeTab='all'; currentPage=1;
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  renderTable();
-}
-function renderTable(){
-  const search=document.getElementById('search-input').value.toLowerCase();
-  const startDate=document.getElementById('start-date').value;
-  const endDate=document.getElementById('end-date').value;
-  filtered=allData.filter(r=>{
-    if(activeTab!=='all'){
-      if(activeTab==='suspicious'&&r.tabKey!=='suspicious')return false;
-      if(activeTab==='limit'&&r.tabKey!=='limit')return false;
-      if(activeTab==='login'&&r.tabKey!=='login')return false;
-    }
-    if(search&&!r.name.toLowerCase().includes(search)&&!r.email.toLowerCase().includes(search)&&!r.accNo.toLowerCase().includes(search))return false;
-    
-    // Date Range Filtering
-    if(startDate || endDate) {
-      const rowDate = new Date(r.date);
-      if(startDate && rowDate < new Date(startDate)) return false;
-      if(endDate && rowDate > new Date(endDate)) return false;
-    }
-    return true;
-  });
-  const total=filtered.length;
-  const totalPages=Math.max(1,Math.ceil(total/ROWS_PP));
-  if(currentPage>totalPages)currentPage=totalPages;
-  const slice=filtered.slice((currentPage-1)*ROWS_PP,currentPage*ROWS_PP);
-  const tbody=document.getElementById('table-body');
-  if(!slice.length){
-    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
-  } else {
-    tbody.innerHTML=slice.map((r,i)=>`
-      <tr>
-        <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*ROWS_PP+i+1).padStart(2,'0')}</td>
-        <td>
-          <div class="user-cell">
-            <div class="avatar-circle" style="background: ${getAvatarGradient(r.initials)}">${r.initials}</div>
-            <div style="display:flex; flex-direction:column;">
-              <span class="user-name">${r.name}</span>
-              <span class="user-email">${r.email}</span>
-            </div>
-          </div>
-        </td>
-        <td><span class="mono">${r.accNo}</span></td>
-        <td><span class="badge ${r.accType==='Savings'?'badge-green':'badge-blue'}">${r.accType}</span></td>
-        <td>${reasonBadge(r.reason)}</td>
-        <td style="font-size:12px;font-weight:600">${r.date}</td>
-        <td style="font-size:12px;color:var(--text-secondary)">${r.by}</td>
-        <td><span class="badge badge-gray">${r.duration}</span></td>
-        <td>
-          <div style="display:flex;align-items:center;justify-content:center;gap:8px">
-            <a href="admin-suspended-user-detail.html?id=${r.id}" class="action-btn btn-view" title="View Details">
-              <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
-              View
-            </a>
-            <button class="action-btn btn-reinstate" onclick="openReinstate('${r.id}','${r.name}')" title="Restore Account">
-              <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
-              Reinstate
-            </button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  const s=(currentPage-1)*ROWS_PP+1,e=Math.min(currentPage*ROWS_PP,total);
-  document.getElementById('pag-info').textContent=total?`Showing ${s}–${e} of ${total} suspended accounts`:'No results found';
-  const pc=document.getElementById('pag-controls');
-  pc.innerHTML=`<button class="pag-btn" onclick="goPage(-1)" ${currentPage<=1?'disabled':''}>← Previous</button>`;
-  for(let i=1;i<=Math.min(totalPages,5);i++) {
-    pc.innerHTML+=`<button class="pag-num ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
-  }
-  pc.innerHTML+=`<button class="pag-btn" onclick="goPage(1)" ${currentPage>=totalPages?'disabled':''}>Next →</button>`;
-}
-function goPage(d){currentPage=Math.max(1,Math.min(Math.ceil(filtered.length/ROWS_PP),currentPage+d));renderTable();}
+              if (response.status === 'success') {
+                  renderTable(response.data.users, response.data.total, response.data.pages);
+              } else {
+                  $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">${response.message || 'No suspended accounts found.'}</td></tr>`);
+                  $pagInfo.text('No results');
+                  $pagControls.empty();
+              }
+          } catch (error) {
+              console.error('Failed to load suspended users:', error);
+              $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
+          }
+      }
 
-/* ── REINSTATE ── */
-function openReinstate(id,name){
-  pendingReinstateId=id;
-  document.getElementById('reinstate-modal-text').innerHTML=`You are reinstating <strong>${name}</strong>'s account.`;
-  document.getElementById('reinstate-modal').classList.remove('hidden');
-}
-function closeModal(){document.getElementById('reinstate-modal').classList.add('hidden');}
-function confirmReinstate(){
-  const btn=document.getElementById('reinstate-confirm-btn');
-  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...';
-  // PHP_BACKEND: POST /api/admin/reinstate-user.php {user_id, action:'reinstate', new_status:'active'}
-  setTimeout(()=>{
-    closeModal();
-    const idx=allData.findIndex(r=>r.id===pendingReinstateId);
-    if(idx>-1)allData.splice(idx,1);
-    btn.disabled=false;btn.innerHTML='<span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Account';
-    renderTable();
-    showToast('Account reinstated successfully. Status set to Active.','success');
-  },1500);
-}
+      function renderTable(users, total, pages) {
+          if (!users || !users.length) {
+              $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No suspended accounts found.</td></tr>`);
+              $pagInfo.text('Showing 0 of 0 suspended accounts');
+              $pagControls.empty();
+              return;
+          }
+
+          $tbody.html(users.map((u, i) => {
+              return `
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-4 px-6 text-xs font-black opacity-30 tracking-widest">${String((currentPage-1)*10 + i + 1).padStart(2,'0')}</td>
+                <td class="py-4 px-6">
+                  <div class="user-cell">
+                    <div class="avatar-circle premium-gradient-primary uppercase">${u.initials || u.full_name.charAt(0)}</div>
+                    <div style="display:flex; flex-direction:column;">
+                      <span class="user-name">${u.full_name}</span>
+                      <span class="user-email">${u.email}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-6"><span class="mono">${u.account_no || 'N/A'}</span></td>
+                <td class="py-4 px-6"><span class="badge ${u.account_type==='savings'?'badge-green':'badge-blue'}">${u.account_type || 'N/A'}</span></td>
+                <td class="py-4 px-6"><span class="badge badge-red">${u.suspension_reason || 'Suspended'}</span></td>
+                <td class="py-4 px-6 text-xs font-bold text-slate-500">${u.suspended_at || 'N/A'}</td>
+                <td class="py-4 px-6 text-xs font-semibold opacity-60">${u.suspended_by || 'Admin'}</td>
+                <td class="py-4 px-6"><span class="badge badge-gray">${u.duration || 'Active'}</span></td>
+                <td class="py-4 px-6 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    <a href="admin-suspended-user-detail.html?id=${u.id}" class="action-btn btn-view" title="View Details">
+                      <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
+                    </a>
+                    <button class="action-btn btn-reinstate" onclick="window.openReinstate('${u.id}','${u.full_name}')" title="Restore Account">
+                      <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>`;
+          }).join(''));
+
+          updatePagination(total, pages);
+      }
+
+      function updatePagination(total, pages) {
+          $pagInfo.text(`Showing ${Math.min((currentPage-1)*10+1, total)}–${Math.min(currentPage*10, total)} of ${total} suspended accounts`);
+          
+          let html = `<button class="pag-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)">← Previous</button>`;
+          for(let i=1; i<=pages; i++) {
+              if (i > 5 && i < pages - 1) { if(i === 6) html += '<span class="px-2 opacity-50">...</span>'; continue; }
+              html += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="window.goPageTo(${i})}">${i}</button>`;
+          }
+          if (pages > 1) {
+              html += `<button class="pag-btn" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)">Next →</button>`;
+          }
+          $pagControls.html(html);
+      }
+
+      window.goPage = (d) => { currentPage += d; loadSuspendedUsers(); };
+      window.goPageTo = (p) => { currentPage = p; loadSuspendedUsers(); };
+      
+      window.resetFilters = () => { 
+          $searchInput.val(''); 
+          $('#start-date').val('');
+          $('#end-date').val('');
+          currentPage = 1; 
+          loadSuspendedUsers(); 
+      };
+
+      window.openReinstate = (id, name) => {
+          pendingReinstateId = id;
+          $('#reinstate-modal-text').html(`You are reinstating <strong>${name}</strong>'s account. Operational access will be restored immediately.`);
+          $('#reinstate-modal').removeClass('hidden');
+      };
+
+      window.confirmReinstate = async () => {
+          const btn = $('#reinstate-confirm-btn');
+          btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...');
+          
+          try {
+              const response = await api.post('/admin/user-action.php', {
+                  user_id: pendingReinstateId,
+                  action: 'reinstate'
+              });
+
+              if (response.status === 'success') {
+                  $('#reinstate-modal').addClass('hidden');
+                  showToast('Account reinstated successfully.', 'success');
+                  loadSuspendedUsers();
+              } else {
+                  alert(response.message);
+              }
+          } catch (error) {
+              alert('An error occurred.');
+          } finally {
+              btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">check_circle</span> Reinstate Account');
+          }
+      };
+
+      window.closeModal = () => $('#reinstate-modal').addClass('hidden');
+
+      loadSuspendedUsers();
+    });
 
 function showToast(msg, type = 'success') {
     const wrap = document.getElementById('toast-wrap');
@@ -524,7 +508,7 @@ overlay?.addEventListener('click', () => {
     overlay?.classList.remove('active');
 });
 
-renderTable();
+
 </script>
 </body>
 </html>

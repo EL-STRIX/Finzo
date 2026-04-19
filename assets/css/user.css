@@ -603,9 +603,27 @@ tbody td { padding: 14px 16px; font-size: 13px; color: var(--text-primary); vert
   border: 1px solid rgba(255,255,255,0.1);
 }
 
-.balance-reveal-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  vertical-align: middle;
+
+/* ── SKELETON LOADERS ── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-input) 25%, var(--border) 50%, var(--bg-input) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  display: inline-block;
+  min-height: 1em;
+  width: 100%;
+}
+.skeleton-circle { border-radius: 50%; width: 40px; height: 40px; }
+.skeleton-text { height: 12px; margin-bottom: 6px; }
+.skeleton-title { height: 24px; margin-bottom: 12px; width: 60%; }
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
 }

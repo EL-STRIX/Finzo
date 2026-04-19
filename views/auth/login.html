@@ -371,24 +371,38 @@
       $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
       $btn.prop('disabled', true);
 
-      // Demo auth
-      setTimeout(() => {
-        if ((id === '12345678' || id === 'user@finzo.com') && pw === 'user123') {
-          // Force active state for demo account to unlock all features
-          localStorage.setItem('finzo_status', 'active');
-          localStorage.setItem('finzo_user_name', 'Rahul Kumar');
-          localStorage.setItem('finzo_user_email', 'user@finzo.com');
-          localStorage.setItem('finzo_account_no', 'FNZ20260001');
-          localStorage.setItem('finzo_account_type', 'savings');
-          localStorage.setItem('finzo_balance', '500.00');
-          
-          window.location.href = '../user/dashboard.html';
+      // Real API authentication
+      fetch('/api/auth/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          // Sync session data to localStorage for UserState
+          if (data.user) {
+            localStorage.setItem('finzo_status', data.user.status || 'active');
+            localStorage.setItem('finzo_user_name', data.user.full_name || '');
+            localStorage.setItem('finzo_user_email', data.user.email || '');
+            localStorage.setItem('finzo_account_no', data.user.account_no || '');
+            localStorage.setItem('finzo_account_type', data.user.account_type || 'savings');
+            localStorage.setItem('finzo_balance', data.user.balance || '0');
+          }
+          window.location.href = data.redirect || '../user/dashboard.html';
         } else {
           $form.addClass('error-state');
-          $error.text("Invalid email or password").show();
+          $error.text(data.message || "Invalid email or password").show();
           $btn.html(original).prop('disabled', false);
         }
-      }, 1200);
+      })
+      .catch(err => {
+        console.error('Login error:', err);
+        $form.addClass('error-state');
+        $error.text("Connection error. Please try again.").show();
+        $btn.html(original).prop('disabled', false);
+      });
     });
 
     $('#toggle-password').on('click', function() {

@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
 
@@ -121,19 +123,19 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card">
           <div class="admin-stat-label">PENDING REVIEW</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta negative">Action Required</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">APPROVED TODAY</div>
-          <div class="admin-stat-value">8 <span class="admin-stat-delta positive">Activated</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">REJECTED TODAY</div>
-          <div class="admin-stat-value">2 <span class="admin-stat-delta negative">Declined</span></div>
+          <div class="admin-stat-value skeleton w-12 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-label">TOTAL APPROVED</div>
-          <div class="admin-stat-value">1,240 <span class="admin-stat-delta neutral" style="background:#f0f2ff; color:#6c63ff;">All Time</span></div>
+          <div class="admin-stat-value skeleton w-24 h-8"></div>
         </div>
       </div>
 
@@ -212,80 +214,13 @@
               <th class="text-right">Actions</th>
             </tr>
           </thead>
-          <tbody id="applications-table-body">
-            <tr data-status="pending" data-id-type="aadhaar card" data-date="2026-04-10">
-              <td class="font-bold opacity-40">01</td>
-              <td>
-                <div class="flex items-center gap-3 applicant-info">
-                  <div class="admin-avatar premium-gradient-primary">RK</div>
-                  <div>
-                    <div class="font-bold applicant-name">Rahul Kumar</div>
-                    <div class="text-[11px] opacity-60 applicant-email">rahul.kumar@gmail.com</div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-xs font-bold">+91 98765 43210</td>
-              <td><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">Savings Account</span></td>
-              <td class="text-xs font-bold">Aadhaar Card</td>
-              <td class="text-xs whitespace-nowrap">April 10, 2026 08:30 AM</td>
-              <td><span class="status-badge badge-warn">Pending</span></td>
-              <td>
-                <div class="flex justify-end">
-                  <a href="admin-review-application.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
-                  </a>
-                </div>
-              </td>
-            </tr>
-            <tr data-status="under review" data-id-type="pan card" data-date="2026-04-10">
-              <td class="font-bold opacity-40">02</td>
-              <td>
-                <div class="flex items-center gap-3 applicant-info">
-                  <div class="admin-avatar" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white;">PS</div>
-                  <div>
-                    <div class="font-bold applicant-name">Priya Sharma</div>
-                    <div class="text-[11px] opacity-60 applicant-email">priya.sharma@gmail.com</div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-xs font-bold">+91 87654 32109</td>
-              <td><span class="status-badge" style="background:#f0f2ff; color:#002645;">Current Account</span></td>
-              <td class="text-xs font-bold">PAN Card</td>
-              <td class="text-xs whitespace-nowrap">April 10, 2026 07:15 AM</td>
-              <td><span class="status-badge" style="background:#e0f2fe; color:#0369a1;">Under Review</span></td>
-              <td>
-                <div class="flex justify-end">
-                  <a href="admin-review-application.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
-                  </a>
-                </div>
-              </td>
-            </tr>
-            <tr data-status="pending" data-id-type="passport" data-date="2026-04-09">
-              <td class="font-bold opacity-40">03</td>
-              <td>
-                <div class="flex items-center gap-3 applicant-info">
-                  <div class="admin-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">AM</div>
-                  <div>
-                    <div class="font-bold applicant-name">Amit Mondal</div>
-                    <div class="text-[11px] opacity-60 applicant-email">amit.mondal@gmail.com</div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-xs font-bold">+91 76543 21098</td>
-              <td><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">Savings Account</span></td>
-              <td class="text-xs font-bold">Passport</td>
-              <td class="text-xs whitespace-nowrap">April 09, 2026 05:45 PM</td>
-              <td><span class="status-badge badge-warn">Pending</span></td>
-              <td>
-                <div class="flex justify-end">
-                  <a href="admin-review-application.html" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                    <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
-                  </a>
-                </div>
-              </td>
-            </tr>
-          </tbody>
+            <tbody id="applications-table-body">
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+            </tbody>
         </table>
         </div>
 
@@ -303,146 +238,154 @@
   </div>
 
   <script>
-    /* ═══════════════════════════════════════════════
-       FILTERING LOGIC
-       ═══════════════════════════════════════════════ */
+    /* ── DATA INTEGRATION ── */
     $(function() {
-      // Mobile Navigation
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
-          $('#sidebar-overlay').removeClass('active');
-      });
-
       const $statusBtns = $('.tab-btn');
       const $searchInput = $('#filter-search');
-      const $dateFrom = $('#filter-date-from');
-      const $dateTo = $('#filter-date-to');
       const $idTypeInput = $('#filter-id-type');
       const $applyBtn = $('#apply-filters');
       const $resetBtn = $('#reset-filters');
-      const $tableRows = $('#applications-table-body tr');
-      const $prevBtn = $('#prev-page');
-      const $nextBtn = $('#next-page');
-
+      const $tbody = $('#applications-table-body');
+      
       let currentStatus = 'all';
       let currentPage = 1;
-      const rowsPerPage = 3;
 
-      // Status Tab handling
+      async function loadApplications() {
+          $tbody.html(`
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+          `);
+
+          try {
+              const response = await api.get('/admin/pending-approvals.php', {
+                  status: currentStatus,
+                  search: $searchInput.val(),
+                  page: currentPage,
+                  per_page: 10
+              });
+
+              if (response.status === 'success') {
+                  renderTable(response.data.applications, response.data.total, response.data.pages);
+                  updateStats(response.data.stats || {});
+              } else {
+                  $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40">No applications found.</td></tr>`);
+                  document.querySelector('.text-xs.font-bold.opacity-40:contains("Showing")').textContent = 'No results found';
+              }
+          } catch (error) {
+              console.error('Failed to load applications:', error);
+              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
+          }
+      }
+
+      function renderTable(apps, total, pages) {
+          if (!apps || !apps.length) {
+              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40">No applications found.</td></tr>`);
+              return;
+          }
+
+          $tbody.html(apps.map((app, i) => {
+              const initials = app.initials || app.full_name.charAt(0);
+              const dateStr = app.created_at || 'N/A';
+              const statusBadgeClass = app.status === 'pending' ? 'badge-amber' : (app.status === 'under_review' ? 'badge-blue' : 'badge-green');
+              const statusText = (app.status_text || app.status || 'Pending').replace('_', ' ');
+
+              return `
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" data-status="${app.status}">
+                <td class="font-bold opacity-30 tracking-widest text-[11px]">${String((currentPage-1)*10 + i + 1).padStart(2, '0')}</td>
+                <td>
+                  <div class="flex items-center gap-3 applicant-info">
+                    <div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>
+                    <div>
+                      <div class="font-bold applicant-name text-slate-800 dark:text-slate-100">${app.full_name}</div>
+                      <div class="text-[11px] opacity-60 applicant-email">${app.email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-xs font-bold text-slate-600 dark:text-slate-400 font-mono">${app.phone || 'N/A'}</td>
+                <td><span class="status-badge bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-500/20">${(app.account_type || 'Savings').charAt(0).toUpperCase() + (app.account_type || 'Savings').slice(1)}</span></td>
+                <td><span class="text-xs font-bold opacity-70">${app.id_type || 'N/A'}</span></td>
+                <td class="text-xs whitespace-nowrap opacity-60 font-semibold">${dateStr}</td>
+                <td>
+                   <span class="badge ${statusBadgeClass}">
+                     <span class="material-symbols-outlined" style="font-size:10px;">${app.status === 'pending' ? 'hourglass_empty' : 'verified'}</span>
+                     ${statusText.toUpperCase()}
+                   </span>
+                </td>
+                <td>
+                  <div class="flex justify-end">
+                    <a href="admin-review-application.html?id=${app.id}" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                      <span class="material-symbols-outlined" style="font-size:16px;">settings_accessibility</span> Manage
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              `;
+          }).join(''));
+
+          updatePagination(total, pages);
+      }
+
+      function updatePagination(total, pages) {
+          const $info = $('.text-xs.font-bold.opacity-40');
+          $info.text(`Showing ${Math.min((currentPage-1)*10+1, total)}-${Math.min(currentPage*10, total)} of ${total} applications`);
+          
+          const $controls = $('#next-page').parent();
+          
+          $('#prev-page').prop('disabled', currentPage === 1);
+          $('#next-page').prop('disabled', currentPage === pages || pages === 0);
+
+          let pagNumHtml = '';
+          for (let i = 1; i <= pages; i++) {
+            if (pages > 5 && i > 3 && i < pages) {
+              if (i === 4) pagNumHtml += '<span class="px-2 opacity-50">...</span>';
+              continue;
+            }
+            pagNumHtml += `<button onclick="window.goToPage(${i})" class="${i === currentPage ? 'admin-btn-primary' : 'admin-btn-secondary'}" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important; ${i === currentPage ? 'background: #1a3c5e !important;' : ''}">${i}</button>`;
+          }
+          
+          $controls.find('button:not(#prev-page, #next-page)').remove();
+          $controls.find('span.opacity-50').remove();
+          $('#prev-page').after(pagNumHtml);
+      }
+
+      function updateStats(stats) {
+          if (stats.pending_review !== undefined) {
+              $('.admin-stat-label:contains("PENDING REVIEW")').next().html(`${stats.pending_review} <span class="admin-stat-delta negative">Action Required</span>`);
+          }
+          if (stats.approved_today !== undefined) {
+              $('.admin-stat-label:contains("APPROVED TODAY")').next().text(stats.approved_today);
+          }
+          if (stats.rejected_today !== undefined) {
+              $('.admin-stat-label:contains("REJECTED TODAY")').next().text(stats.rejected_today);
+          }
+          if (stats.total_approved !== undefined) {
+              $('.admin-stat-label:contains("TOTAL APPROVED")').next().text(stats.total_approved);
+          }
+      }
+
+      window.goToPage = (p) => { currentPage = p; loadApplications(); };
+
       $statusBtns.on('click', function() {
         $statusBtns.removeClass('bg-primary text-white shadow-md').addClass('text-slate-500');
         $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-md');
         currentStatus = $(this).data('status');
-        currentPage = 1; // Reset to page 1
-        applyFilters();
-      });
-
-      // Apply Button Click
-      $applyBtn.on('click', function() {
         currentPage = 1;
-        applyFilters();
+        loadApplications();
       });
 
-      // Reset Button Click
-      $resetBtn.on('click', function() {
-        $searchInput.val('');
-        $dateFrom.val('');
-        $dateTo.val('');
-        $idTypeInput.val('all').trigger('change');
-        currentPage = 1;
-        
-        // Reset status tabs
-        $statusBtns.removeClass('bg-primary text-white shadow-lg').addClass('text-slate-500');
-        $statusBtns.first().removeClass('text-slate-500').addClass('bg-primary text-white shadow-lg');
-        currentStatus = 'all';
-
-        // Reset dropdown label manually
-        $('#filter-id-dropdown .dropdown-label').text('All ID Types');
-        $('#filter-id-dropdown .finzo-dropdown-option').removeClass('is-selected');
-        $('#filter-id-dropdown .finzo-dropdown-option[data-value="all"]').addClass('is-selected');
-
-        applyFilters();
+      $applyBtn.on('click', () => { currentPage = 1; loadApplications(); });
+      $resetBtn.on('click', () => { 
+          $searchInput.val(''); 
+          currentStatus = 'all'; 
+          currentPage = 1; 
+          loadApplications(); 
       });
 
-      // Search on keyup for live feeling
-      $searchInput.on('keyup', function() {
-        currentPage = 1;
-        applyFilters();
-      });
+      $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; loadApplications(); } });
+      $('#next-page').on('click', () => { currentPage++; loadApplications(); });
 
-      // Pagination helper
-      window.goToPage = function(p) {
-        currentPage = p;
-        applyFilters();
-      };
-
-      // Auto-filter on ID Type change
-      $idTypeInput.on('change', function() {
-        applyFilters();
-      });
-
-      function applyFilters() {
-        const searchTerm = $searchInput.val().toLowerCase();
-        const dateFrom = $dateFrom.val();
-        const dateTo = $dateTo.val();
-        const idType = $idTypeInput.val().toLowerCase();
-
-        let filteredRows = [];
-
-        $tableRows.each(function() {
-          const $row = $(this);
-          const rowStatus = $row.data('status');
-          const rowIdType = $row.data('id-type');
-          const rowDate = $row.data('date');
-          const rowText = $row.find('.applicant-info').text().toLowerCase();
-
-          const matchesStatus = (currentStatus === 'all' || rowStatus === currentStatus);
-          const matchesSearch = (!searchTerm || rowText.includes(searchTerm));
-          const matchesIdType = (idType === 'all' || rowIdType === idType);
-
-          let matchesDate = true;
-          if (dateFrom && rowDate < dateFrom) matchesDate = false;
-          if (dateTo && rowDate > dateTo) matchesDate = false;
-
-          if (matchesStatus && matchesSearch && matchesIdType && matchesDate) {
-            filteredRows.push($row);
-          } else {
-            $row.hide();
-          }
-        });
-
-        // Paginate filtered results
-        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-
-        filteredRows.forEach(($row, index) => {
-          if (index >= startIndex && index < endIndex) {
-            $row.show();
-          } else {
-            $row.hide();
-          }
-        });
-
-        // Update Pagination Buttons
-        $prevBtn.prop('disabled', currentPage === 1)
-                .off('click').on('click', () => goToPage(currentPage - 1));
-        
-        $nextBtn.prop('disabled', currentPage === totalPages || totalPages === 0)
-                .off('click').on('click', () => goToPage(currentPage + 1));
-
-        // Update Counter
-        const startNum = filteredRows.length > 0 ? startIndex + 1 : 0;
-        const endNum = Math.min(endIndex, filteredRows.length);
-        const $counter = $('.opacity-40:contains("Showing")');
-        if ($counter.length) {
-          $counter.text(`Showing ${startNum}-${endNum} of ${filteredRows.length} applications`);
-        }
-      }
+      loadApplications();
     });
   </script>
 </body>

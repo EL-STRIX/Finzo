@@ -401,15 +401,51 @@ function submitProfile() {
   btn.disabled = true;
   btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:18px">autorenew</span> Submitting...';
 
-  // PHP_BACKEND: POST /api/profile/submit.php with all form data
-  // Update $_SESSION['user_status'] = 'under_review'
-  setTimeout(() => {
-    const accountType = document.querySelector('input[name="account-type"]:checked').value;
-    localStorage.setItem('finzo_status', 'under_review');
-    localStorage.setItem('finzo_account_type', accountType);
-    showToast('Profile submitted! Redirecting...', 'success');
-    setTimeout(() => { window.location.href = 'account-pending.html'; }, 1500);
-  }, 2000);
+  // Build FormData with all profile fields + file uploads
+  const formData = new FormData();
+  formData.append('dob', document.getElementById('dob').value);
+  formData.append('gender', document.getElementById('gender').value);
+  formData.append('father_name', document.getElementById('father-name').value);
+  formData.append('occupation', document.getElementById('occupation').value);
+  formData.append('annual_income', document.getElementById('income').value);
+  formData.append('street', document.getElementById('street').value);
+  formData.append('city', document.getElementById('city').value);
+  formData.append('state', document.getElementById('state').value);
+  formData.append('pincode', document.getElementById('pincode').value);
+  formData.append('id_type', document.getElementById('id-type').value);
+  formData.append('id_number', document.getElementById('id-number').value);
+  formData.append('account_type', document.querySelector('input[name="account-type"]:checked').value);
+  formData.append('initial_deposit', deposit);
+  formData.append('transaction_pin', pin);
+
+  // Attach ID document files
+  const frontFile = document.getElementById('front-input').files[0];
+  const backFile = document.getElementById('back-input').files[0];
+  if (frontFile) formData.append('id_front', frontFile);
+  if (backFile) formData.append('id_back', backFile);
+
+  fetch('/api/user/complete-profile.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: formData
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      showToast('Profile submitted! Redirecting...', 'success');
+      setTimeout(() => { window.location.href = 'account-pending.html'; }, 1500);
+    } else {
+      showToast(data.message || 'Submission failed. Please try again.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">send</span> Submit for Approval';
+    }
+  })
+  .catch(err => {
+    console.error('Profile submission error:', err);
+    showToast('Connection error. Please try again.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">send</span> Submit for Approval';
+  });
 }
 
 updateStepUI(1);

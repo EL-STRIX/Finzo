@@ -147,21 +147,35 @@
 <script>
   buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
   let activeFilter = 'all';
+  let notifs = [];
 
-  const notifications = [
-    { id: 1, type: 'system', icon: 'account_balance', iconBg: 'rgba(8,145,178,0.1)', iconColor: '#0891b2', title: 'Institutional Access Verified', body: 'Universal authentication successful. Your Finzo Platinum Profile is now active and ready for portfolio management.', time: 'Today, 10:30 AM', unread: true },
-    { id: 2, type: 'security', icon: 'pending', iconBg: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b', title: 'KYC Protocol Pending', body: 'Please complete your advanced identity verification to unlock higher liquidity thresholds and cross-border settlements.', time: 'Today, 10:31 AM', unread: true },
-    { id: 3, type: 'system', icon: 'info', iconBg: 'rgba(59,130,246,0.1)', iconColor: '#3b82f6', title: 'Ecosystem Broadcast', body: 'You have been successfully registered on the Finzo Institutional Banking interface. All secure nodes are synchronized.', time: 'Yesterday', unread: false },
-  ];
-
-  let notifs = [...notifications];
+  // Load notifications from API
+  async function loadNotifications() {
+    try {
+      const res = await fetch('/api/user/notifications.php', { credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success && data.notifications) {
+        notifs = data.notifications.map((n, i) => ({
+          id: n.id || i + 1,
+          type: n.type || 'system',
+          icon: n.icon || 'notifications',
+          iconBg: n.icon_bg || 'rgba(8,145,178,0.1)',
+          iconColor: n.icon_color || '#0891b2',
+          title: n.title,
+          body: n.body || n.message,
+          time: n.created_at ? new Date(n.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : 'Recently',
+          unread: !n.is_read
+        }));
+      }
+    } catch (e) { console.warn('Failed to load notifications:', e); }
+    renderNotifs();
+  }
 
   function renderNotifs() {
     const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
     const container = document.getElementById('notif-container');
     const unreadCount = notifs.filter(n => n.unread).length;
     
-    // Update Stats
     document.getElementById('unread-stat').textContent = unreadCount;
     document.getElementById('count-all').textContent = notifs.length;
     document.getElementById('count-transaction').textContent = notifs.filter(n=>n.type==='transaction').length;
@@ -209,6 +223,9 @@
       iconContainer.style.background = n.iconBg;
       iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:32px; color:${n.iconColor}">${n.icon}</span>`;
 
+      // Mark as read on backend
+      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&id=' + id }).catch(() => {});
+      
       renderNotifs();
       openModal('viewNotifModal');
     }
@@ -216,6 +233,7 @@
 
   function deleteCurrentNotif() {
     if (currentViewNotifId !== null) {
+      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&id=' + currentViewNotifId }).catch(() => {});
       notifs = notifs.filter(n => n.id !== currentViewNotifId);
       currentViewNotifId = null;
       renderNotifs();
@@ -225,6 +243,7 @@
   }
 
   function markAllRead() {
+    fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
     notifs.forEach(n => n.unread = false);
     renderNotifs();
     showToast('All broadcasts acknowledged', 'success');
@@ -232,6 +251,7 @@
 
   function clearAll() {
     openConfirm('Purge All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
+      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
       notifs = [];
       renderNotifs();
       showToast('Activity feed cleared', 'success');
@@ -245,7 +265,7 @@
     renderNotifs();
   }
 
-  renderNotifs();
+  loadNotifications();
 </script>
 </body>
 </html>

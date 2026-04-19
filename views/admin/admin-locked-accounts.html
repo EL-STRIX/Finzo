@@ -11,6 +11,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <style>
     :root {
       --primary: #1a3c5e;
@@ -1357,7 +1360,13 @@
                 <th style="text-align:center;">Actions</th>
               </tr>
             </thead>
-            <tbody id="table-body"></tbody>
+            <tbody id="table-body">
+              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+            </tbody>
           </table>
         </div>
 
@@ -1461,13 +1470,7 @@
     initTheme();
 
     /* ── DATA ── */
-    // PHP_BACKEND: GET /api/admin/locked-accounts.php
-    const allData = [
-      { id: 'L01', name: 'Sunita Mehta', email: 'sunita.mehta@gmail.com', initials: 'SM', accNo: 'FNZ20260004', accType: 'Savings', attempts: 5, lockedDate: '17 Apr 2026', lockTime: '09:22 AM IST', tabKey: 'no-temp', tempSent: false },
-      { id: 'L02', name: 'Dev Gupta', email: 'dev.gupta@gmail.com', initials: 'DG', accNo: 'FNZ20260008', accType: 'Savings', attempts: 5, lockedDate: '16 Apr 2026', lockTime: '11:45 PM IST', tabKey: 'no-temp', tempSent: false },
-      { id: 'L03', name: 'Arjun Khanna', email: 'arjun.khanna@gmail.com', initials: 'AK', accNo: 'FNZ20260010', accType: 'Current', attempts: 5, lockedDate: '15 Apr 2026', lockTime: '03:10 PM IST', tabKey: 'temp-sent', tempSent: true, tempExp: '16 Apr 2026 03:10 PM' },
-      { id: 'L04', name: 'Mohan Kumar', email: 'mohan.kumar@gmail.com', initials: 'MK', accNo: 'FNZ20260006', accType: 'Savings', attempts: 5, lockedDate: '14 Apr 2026', lockTime: '07:55 AM IST', tabKey: 'temp-sent', tempSent: true, tempExp: '15 Apr 2026 07:55 AM' },
-    ];
+    let allData = []; // API will populate this row via fetch later
 
     const ROWS_PP = 6;
     let currentPage = 1, pendingId = null, generatedPass = '';
@@ -1532,56 +1535,74 @@
     }
 
     // Close dropdowns on outside click
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.finzo-dropdown')) {
-        document.querySelectorAll('.finzo-dropdown-trigger').forEach(trigger => {
-          trigger.classList.remove('is-open');
-          trigger.nextElementSibling.classList.remove('visible');
-        });
-      }
-    });
 
-    function renderTable() {
-      const search = document.getElementById('search-input').value.toLowerCase();
-      const type = document.getElementById('type-filter').value;
-      const status = document.getElementById('status-filter').value;
-      const date = document.getElementById('date-filter').value;
-      
-      // Filter logic
-      filtered = allData.filter(r => {
-        if (search && !r.name.toLowerCase().includes(search) && !r.email.toLowerCase().includes(search) && !r.accNo.toLowerCase().includes(search)) return false;
-        if (type && r.accType !== type) return false;
-        if (status === 'pending' && r.tempSent) return false;
-        if (status === 'done' && !r.tempSent) return false;
-        if (date) {
-           // Compare YYYY-MM-DD from input with record.lockedDate (DD-MMM-YYYY)
-           // Simplify: just convert record date to comparable string if needed
-           // For this demo, we can assume a simplified date match if format matches
+    async function loadData() {
+        const search = document.getElementById('search-input').value;
+        const type = document.getElementById('type-filter').value;
+        const date = document.getElementById('date-filter').value;
+        const status = document.getElementById('status-filter').value;
+
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = `
+            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
+        `;
+        
+        try {
+            const response = await api.get('/admin/locked-accounts.php', {
+                search: search,
+                type: type,
+                date: date,
+                status: status,
+                page: currentPage,
+                per_page: ROWS_PP
+            });
+            
+            if (response.status === 'success') {
+                allData = response.data.accounts.map(acc => ({
+                    id: acc.id,
+                    name: acc.full_name,
+                    email: acc.email,
+                    initials: acc.initials || acc.full_name.charAt(0),
+                    accNo: acc.account_no || 'N/A',
+                    accType: acc.account_type === 'savings' ? 'Savings' : 'Current',
+                    attempts: acc.failed_attempts,
+                    lockedDate: acc.locked_at || 'N/A',
+                    lockTime: acc.lock_time || 'N/A',
+                    tempSent: acc.status === 'unlocked', 
+                    statusBadge: acc.status_badge || 'badge-amber',
+                    statusText: acc.status_text || 'Pending'
+                }));
+                
+                renderTable(response.data.total, response.data.pages);
+            } else {
+                tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">${response.message || 'All accounts are currently accessible.'}</div></div></td></tr>`;
+                document.getElementById('pag-info').textContent = 'No results found';
+                document.getElementById('pag-controls').innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Failed to load locked accounts:', error);
+            tbody.innerHTML = `<tr><td colspan="10" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
         }
-        return true;
-      });
+    }
 
-      // SORT: Pending (tempSent=false) at top, Generated Done (tempSent=true) at bottom
-      filtered.sort((a, b) => {
-        if (!a.tempSent && b.tempSent) return -1;
-        if (a.tempSent && !b.tempSent) return 1;
-        return 0; // Maintain original locked date order for items with same status
-      });
+    function attemptsDisplay(count) {
+      const dots = Array(5).fill(0).map((_, i) => `<div class="attempt-dot ${i < count ? '' : 'empty'}"></div>`).join('');
+      return `<div class="attempt-dots">${dots}<span style="font-size:11px;font-weight:800;color:var(--red);margin-left:6px;">${count}/5</span></div>`;
+    }
 
-      const total = filtered.length;
-      const totalPages = Math.max(1, Math.ceil(total / ROWS_PP));
-      if (currentPage > totalPages) currentPage = totalPages;
-      const slice = filtered.slice((currentPage - 1) * ROWS_PP, currentPage * ROWS_PP);
+    function renderTable(total = allData.length, totalPages = 1) {
       const tbody = document.getElementById('table-body');
-      if (!slice.length) {
+      if (!allData || !allData.length) {
         tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">All accounts are currently accessible.</div></div></td></tr>`;
       } else {
-        tbody.innerHTML = slice.map((r, i) => `
-      <tr style="${r.tempSent ? 'opacity:0.85; background:rgba(0,0,0,0.01)' : ''}">
+        tbody.innerHTML = allData.map((r, i) => `
+      <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" style="${r.tempSent ? 'opacity:0.85; background:rgba(0,0,0,0.01)' : ''}">
         <td style="font-size:11px;font-weight:800;color:var(--text-secondary);">${String((currentPage - 1) * ROWS_PP + i + 1).padStart(2, '0')}</td>
         <td>
           <div class="user-cell">
-            <div class="avatar">${r.initials}</div>
+            <div class="avatar premium-gradient-primary uppercase">${r.initials}</div>
             <div>
               <div class="user-name">${r.name}</div>
               <div class="user-email">${r.email}</div>
@@ -1591,12 +1612,12 @@
         <td><span class="mono">${r.accNo}</span></td>
         <td><span class="badge ${r.accType === 'Savings' ? 'badge-green' : 'badge-blue'}">${r.accType}</span></td>
         <td>
-          <span class="badge ${r.tempSent ? 'badge-indigo' : 'badge-amber'}">
+          <span class="badge ${r.statusBadge}">
             <span class="material-symbols-outlined" style="font-size:10px;">${r.tempSent ? 'check_circle' : 'pending'}</span>
-            ${r.tempSent ? 'Generated Done' : 'Pending'}
+            ${r.statusText}
           </span>
         </td>
-        <td>${attemptsDisplay()}</td>
+        <td>${attemptsDisplay(r.attempts)}</td>
         <td style="font-size:12px;font-weight:600;">${r.lockedDate}</td>
         <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
         <td>
@@ -1617,26 +1638,36 @@
       }
       const s = (currentPage - 1) * ROWS_PP + 1, e = Math.min(currentPage * ROWS_PP, total);
       document.getElementById('pag-info').textContent = total ? `Showing ${s}–${e} of ${total} locked account${total !== 1 ? 's' : ''}` : 'No results found';
+      
       const pc = document.getElementById('pag-controls');
       pc.innerHTML = `<button class="pag-btn" onclick="goPage(-1)" ${currentPage <= 1 ? 'disabled' : ''}>← Prev</button>`;
-      for (let i = 1; i <= Math.min(totalPages, 5); i++)pc.innerHTML += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i};renderTable()">${i}</button>`;
+      
+      for (let i = 1; i <= totalPages; i++) {
+          if (i <= 3 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+              pc.innerHTML += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i};loadData()">${i}</button>`;
+          } else if (i === 4 || i === totalPages - 1) {
+              pc.innerHTML += `<span style="padding: 0 4px; opacity: 0.5;">...</span>`;
+          }
+      }
+      
       pc.innerHTML += `<button class="pag-btn" onclick="goPage(1)" ${currentPage >= totalPages ? 'disabled' : ''}>Next →</button>`;
     }
 
-    function goPage(d) { currentPage = Math.max(1, Math.min(Math.ceil(filtered.length / ROWS_PP), currentPage + d)); renderTable(); }
+    function goPage(d) { 
+        currentPage += d; 
+        loadData(); 
+    }
 
     function resetFilters() {
       document.getElementById('search-input').value = '';
       document.getElementById('date-filter').value = '';
       
-      // Reset Typ Dropdown
       const td = document.getElementById('type-dropdown');
       td.querySelector('input[type="hidden"]').value = '';
       td.querySelector('.dropdown-label').textContent = 'All Types';
       td.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('selected'));
       td.querySelector('.finzo-dropdown-option').classList.add('selected');
 
-      // Reset Status Dropdown
       const sd = document.getElementById('status-dropdown');
       sd.querySelector('input[type="hidden"]').value = '';
       sd.querySelector('.dropdown-label').textContent = 'All Statuses';
@@ -1644,7 +1675,7 @@
       sd.querySelector('.finzo-dropdown-option').classList.add('selected');
 
       currentPage = 1;
-      renderTable();
+      loadData();
       showToast('Filters reset to default', 'info');
     }
 
@@ -1652,7 +1683,6 @@
     function openUnlock(id, name, accNo) {
       pendingId = id;
       
-      // Reset Modal State (Premium transition reset)
       const iconBox = document.getElementById('unlock-modal-icon-box');
       const icon = document.getElementById('unlock-modal-icon');
       const title = document.getElementById('unlock-modal-title');
@@ -1684,63 +1714,54 @@
       document.getElementById('unlock-modal').classList.add('hidden');
     }
 
-    function generatePassword() {
+    async function generatePassword() {
       const btn = document.getElementById('generate-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:15px;">autorenew</span> Generating...';
 
-      // PHP_BACKEND: POST /api/admin/unlock-account.php
-      // Returns: {temp_password, expires_at, sent_via_email:true}
-      setTimeout(() => {
-        // Generate cryptographically random 12-character password
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
-        let pass = '';
-        // Ensure at least one uppercase, one number, one special char
-        pass += 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random() * 24)];
-        pass += '23456789'[Math.floor(Math.random() * 8)];
-        pass += '@#$!'[Math.floor(Math.random() * 4)];
-        for (let i = 3; i < 12; i++) pass += chars[Math.floor(Math.random() * chars.length)];
-        // Shuffle
-        generatedPass = pass.split('').sort(() => Math.random() - .5).join('');
+      try {
+          const response = await api.post('/admin/unlock-account.php', {
+              user_id: pendingId
+          });
 
-        // Update record
-        const rec = allData.find(r => r.id === pendingId);
+          if (response.status === 'success') {
+              generatedPass = response.data.temp_password;
 
-        // Transition Header to Success State
-        const iconBox = document.getElementById('unlock-modal-icon-box');
-        const icon = document.getElementById('unlock-modal-icon');
-        const title = document.getElementById('unlock-modal-title');
-        const desc = document.getElementById('unlock-modal-text');
+              const iconBox = document.getElementById('unlock-modal-icon-box');
+              const icon = document.getElementById('unlock-modal-icon');
+              const title = document.getElementById('unlock-modal-title');
+              const desc = document.getElementById('unlock-modal-text');
 
-        if (rec) {
-          iconBox.style.background = 'var(--green-soft)';
-          iconBox.classList.add('success-pop');
-          icon.textContent = 'task_alt';
-          icon.style.color = 'var(--green)';
-          title.textContent = 'Account Unlocked';
-          title.style.color = 'var(--green)';
-          desc.innerHTML = `Access has been restored for <strong>${rec.name}</strong>. A temporary password was generated and logged in the system.`;
+              iconBox.style.background = 'var(--green-soft)';
+              iconBox.classList.add('success-pop');
+              icon.textContent = 'task_alt';
+              icon.style.color = 'var(--green)';
+              title.textContent = 'Account Unlocked';
+              title.style.color = 'var(--green)';
+              desc.innerHTML = `Access has been restored. A temporary password was generated and logged in the system.`;
 
-          document.getElementById('gen-pass-value').textContent = generatedPass;
-          const passArea = document.getElementById('gen-pass-section');
-          passArea.classList.remove('hidden');
-          const passCard = passArea.querySelector('div[style*="background"]');
-          if (passCard) passCard.classList.add('shimmer-card');
-          
-          document.getElementById('unlock-modal-actions').classList.add('hidden');
-          document.getElementById('unlock-done-actions').classList.remove('hidden');
+              document.getElementById('gen-pass-value').textContent = generatedPass;
+              const passArea = document.getElementById('gen-pass-section');
+              passArea.classList.remove('hidden');
+              const passCard = passArea.querySelector('div[style*="background"]');
+              if (passCard) passCard.classList.add('shimmer-card');
+              
+              document.getElementById('unlock-modal-actions').classList.add('hidden');
+              document.getElementById('unlock-done-actions').classList.remove('hidden');
 
-          /* Update record */
-          rec.tempSent = true;
-          rec.tabKey = 'temp-sent';
-          const now = new Date();
-          const exp = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-          rec.tempExp = exp.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + exp.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-          
-          renderTable();
-          showToast('Account unlocked. Temporary password generated — valid 24 hours.', 'success');
-        }
-      }, 1800);
+              loadData();
+              showToast('Account unlocked. Temporary password generated.', 'success');
+          } else {
+              showToast(response.message || 'Failed to unlock account', 'error');
+              btn.disabled = false;
+              btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
+          }
+      } catch (error) {
+          console.error('Unlock error:', error);
+          showToast('An error occurred during unlock.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
+      }
     }
 
     function copyPassword() {
@@ -1752,7 +1773,6 @@
       });
     }
 
-    /* ── TOAST ── */
     function showToast(msg, type = 'success') {
       const wrap = document.getElementById('toast-wrap');
       const t = document.createElement('div');
@@ -1764,14 +1784,23 @@
       setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(16px)'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
     }
 
-    function toggleSidebar() {
-      const s = document.getElementById('sidebar');
-      const o = document.getElementById('sidebar-overlay');
-      s.classList.toggle('open');
-      o.classList.toggle('visible');
-    }
+    loadData();
 
-    renderTable();
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPage = 1;
+            loadData();
+        });
+    });
+
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            currentPage = 1;
+            loadData();
+        }
+    });
   </script>
 </body>
 

@@ -7,6 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/admin-shared.js"></script>
 <script>
     tailwind.config = {
       darkMode: "class",
@@ -207,7 +210,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:12px;color:var(--text-secondary)">
       <a href="admin-suspended-users.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600">Suspended Users</a>
       <span class="material-symbols-outlined" style="font-size:14px">chevron_right</span>
-      <span style="color:var(--text-primary);font-weight:700" id="bc-name">Rahul Kumar</span>
+      <span style="color:var(--text-primary);font-weight:700" id="bc-name"><div class="skeleton w-24 h-3 inline-block"></div></span>
     </div>
 
 
@@ -222,21 +225,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
         <div class="card card-p">
           <div class="section-label">Customer Information</div>
           <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
-            <div class="avatar-lg" id="detail-avatar">RK</div>
+            <div class="avatar-lg" id="detail-avatar"><div class="skeleton w-full h-full rounded-full"></div></div>
             <div>
-              <div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="detail-name">Rahul Kumar</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px" id="detail-email">rahul.kumar@gmail.com</div>
+              <div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="detail-name"><div class="skeleton w-32 h-5"></div></div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px" id="detail-email"><div class="skeleton w-40 h-4"></div></div>
               <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
                 <span class="badge badge-red">Suspended</span>
-                <span class="badge badge-green" id="detail-acc-type">Savings</span>
+                <span class="badge" id="detail-acc-type-badge"><div class="skeleton w-12 h-3"></div></span>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="detail-acc-no">FNZ20260001</span></div>
-          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="detail-phone">+91 98765 43210</span></div>
-          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="detail-type">Savings Account</span></div>
-          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value">12 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Balance (Frozen)</span><span class="info-value" style="color:var(--red)" id="detail-balance">₹42,080.00</span></div>
+          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="detail-acc-no"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="detail-phone"><div class="skeleton w-28 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="detail-type"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value" id="detail-opened"><div class="skeleton w-20 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Balance (Frozen)</span><span class="info-value" style="color:var(--red)" id="detail-balance"><div class="skeleton w-24 h-5"></div></span></div>
         </div>
 
         <!-- SUSPENSION REASON -->
@@ -252,9 +255,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="detail-by">Arjun Sharma (Admin)</span></div>
-          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date">10 Apr 2026</span></div>
-          <div class="info-row"><span class="info-label">Suspension Time</span><span class="info-value">02:30 PM IST</span></div>
+          <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="detail-by"><div class="skeleton w-24 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date"><div class="skeleton w-20 h-4"></div></span></div>
+          <div class="info-row"><span class="info-label">Suspension Time</span><span class="info-value" id="detail-time"><div class="skeleton w-20 h-4"></div></span></div>
 
 
         </div>
@@ -276,25 +279,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
                 <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Type</th>
                 <th style="padding:10px 16px;text-align:right;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Amount</th>
               </tr></thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border)">
-                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">09 Apr 2026</td>
-                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Transfer to FNZ20260099</td>
-                  <td style="padding:12px 16px"><span class="badge badge-red">Debit</span></td>
-                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--red)">-₹25,000</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border)">
-                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">09 Apr 2026</td>
-                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Transfer to FNZ20260088</td>
-                  <td style="padding:12px 16px"><span class="badge badge-red">Debit</span></td>
-                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--red)">-₹18,500</td>
-                </tr>
-                <tr>
-                  <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">08 Apr 2026</td>
-                  <td style="padding:12px 16px;font-size:13px;font-weight:600">Cash Deposit</td>
-                  <td style="padding:12px 16px"><span class="badge badge-green">Credit</span></td>
-                  <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(--green)">+₹85,580</td>
-                </tr>
+              <tbody id="transactions-body">
+                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
               </tbody>
             </table>
           </div>
@@ -311,7 +299,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
           <div style="display:flex;flex-direction:column;gap:12px">
             <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;text-align:center">
               <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Frozen Balance</div>
-              <div style="font-size:24px;font-weight:800;color:var(--red)" id="snap-balance">₹42,080.00</div>
+              <div style="font-size:24px;font-weight:800;color:var(--red)" id="snap-balance"><div class="skeleton w-32 h-8 mx-auto"></div></div>
               <div style="font-size:10px;color:var(--text-placeholder);margin-top:4px">Cannot be transacted until reinstated</div>
             </div>
 
@@ -323,10 +311,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
         <!-- ADMIN NOTES -->
         <div class="card card-p">
           <div class="section-label">Admin Notes</div>
-          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.7">
-            Customer's banking pattern suddenly changed with 3 large transfers in under 24 hours. All recipients are unknown accounts not in the beneficiary list. Account flagged for manual review pending customer verification.
+          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.7" id="detail-notes">
+            <div class="skeleton w-full h-12"></div>
           </div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text-placeholder);font-weight:600">— Arjun Sharma (Admin) · 10 Apr 2026</div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-placeholder);font-weight:600" id="detail-notes-by"><div class="skeleton w-40 h-3"></div></div>
         </div>
 
         <!-- ACTION CARD -->
@@ -356,7 +344,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
       <span class="material-symbols-outlined" style="color:var(--green);font-size:30px">lock_open</span>
     </div>
     <div class="modal-title">Confirm Reinstatement</div>
-    <div class="modal-text">You are removing the suspension from <strong id="modal-name">Rahul Kumar</strong>'s account <strong id="modal-acc">FNZ20260001</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
+    <div class="modal-text">You are removing the suspension from <strong id="modal-name">--</strong>'s account <strong id="modal-acc">FNZ---</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
 
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
@@ -371,79 +359,103 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-/* ── THEME ── */
-function initTheme(){
-  const s=localStorage.getItem('finzo-admin-theme');
-  const dark=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches);
-  if(dark) {
-    document.documentElement.classList.add('dark');
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-  updateIcons();
-}
-function toggleTheme(){
-  const dark=document.documentElement.classList.toggle('dark');
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  localStorage.setItem('finzo-admin-theme',dark?'dark':'light');
-  updateIcons();
-}
-function updateIcons(){
-  const dark=document.documentElement.classList.contains('dark');
-  ['theme-icon','theme-icon2'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.textContent=dark?'light_mode':'dark_mode';
-  });
-  const lbl=document.getElementById('theme-label');
-  if(lbl) lbl.textContent=dark?'Light Mode':'Dark Mode';
-}
-initTheme();
+    $(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
 
-/* ── LOAD DATA from URL param ── */
-// PHP_BACKEND: GET /api/admin/suspension-detail.php?user_id=X
-const urlParams=new URLSearchParams(window.location.search);
-const suspId=urlParams.get('id')||'01';
-const suspData={
-  '01':{name:'Rahul Kumar',email:'rahul.kumar@gmail.com',initials:'RK',accNo:'FNZ20260001',accType:'Savings',phone:'+91 98765 43210',balance:'₹42,080.00',reason:'Suspicious Activity',reasonDetail:'Multiple large transactions were detected in a short period inconsistent with the customer\'s normal banking behaviour and income profile. The account was flagged by the system and manually reviewed.',by:'Arjun Sharma (Admin)',date:'10 Apr 2026',duration:'8 days'},
-  '02':{name:'Sneha Patel',email:'sneha.patel@gmail.com',initials:'SP',accNo:'FNZ20260009',accType:'Current',phone:'+91 88776 65544',balance:'₹8,200.00',reason:'Daily Limit Breach',reasonDetail:'Customer exceeded the ₹10,000 daily transfer limit on multiple consecutive days. Account was automatically flagged and suspended by the system for admin review.',by:'System (Auto)',date:'08 Apr 2026',duration:'10 days'},
-  '03':{name:'Vikram Gupta',email:'vikram.gupta@gmail.com',initials:'VG',accNo:'FNZ20260005',accType:'Savings',phone:'+91 55443 32211',balance:'₹3,150.00',reason:'Failed Login Attempts',reasonDetail:'Account was automatically locked after 5 consecutive failed login attempts in under 10 minutes. This is a standard security measure to prevent unauthorised access.',by:'System (Auto)',date:'05 Apr 2026',duration:'13 days'},
-};
-const d=suspData[suspId]||suspData['01'];
-document.getElementById('bc-name').textContent=d.name;
-document.getElementById('detail-avatar').textContent=d.initials;
-document.getElementById('detail-name').textContent=d.name;
-document.getElementById('detail-email').textContent=d.email;
-document.getElementById('detail-acc-no').textContent=d.accNo;
-document.getElementById('detail-phone').textContent=d.phone;
-document.getElementById('detail-type').textContent=d.accType+' Account';
-document.getElementById('detail-acc-type').textContent=d.accType;
-document.getElementById('detail-balance').textContent=d.balance;
-document.getElementById('snap-balance').textContent=d.balance;
-document.getElementById('detail-reason').textContent=d.reason;
-document.getElementById('detail-reason-detail').textContent=d.reasonDetail;
-document.getElementById('detail-by').textContent=d.by;
-document.getElementById('detail-date').textContent=d.date;
-document.getElementById('detail-duration').textContent=d.duration;
-document.getElementById('modal-name').textContent=d.name;
-document.getElementById('modal-acc').textContent=d.accNo;
+        if (!userId) {
+            alert('User ID missing');
+            window.location.href = 'admin-suspended-users.html';
+            return;
+        }
 
-/* ── MODAL ── */
-function openReinstateModal(){document.getElementById('reinstate-modal').classList.remove('hidden');}
-function closeModal(){document.getElementById('reinstate-modal').classList.add('hidden');}
+        async function loadDetail() {
+            try {
+                const response = await api.get(`/admin/suspended-user-detail.php?id=${userId}`);
+                if (response.status === 'success') {
+                    populateUI(response.data.user);
+                    renderTransactions(response.data.transactions);
+                } else {
+                    alert(response.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-function processReinstate(){
-  const btn=document.getElementById('confirm-btn');
-  btn.disabled=true;btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...';
-  // PHP_BACKEND: POST /api/admin/reinstate-user.php {user_id, new_status:'active'}
-  // Also: INSERT INTO audit_log (action:'REINSTATE', entity_id, admin_id, description)
-  setTimeout(()=>{
-    closeModal();
-    showToast('Account reinstated. '+d.name+' is now Active.','success');
-    setTimeout(()=>{window.location.href='admin-suspended-users.html';},2000);
-  },1800);
-}
+        function populateUI(user) {
+            $('#bc-name').text(user.full_name);
+            $('#detail-avatar').text(user.initials).addClass('premium-gradient-primary').css('background', '');
+            $('#detail-name').text(user.full_name);
+            $('#detail-email').text(user.email);
+            
+            $('#detail-acc-no').text(user.account_no || 'N/A');
+            $('#detail-phone').text(user.phone || 'N/A');
+            $('#detail-acc-type-badge').text(user.account_type || 'N/A').attr('class', 'badge badge-green');
+            $('#detail-type').text(user.account_type ? (user.account_type + ' Account') : 'N/A');
+            $('#detail-opened').text(user.opened_at || 'N/A');
+            
+            const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            $('#detail-balance').text(balance);
+            $('#snap-balance').text(balance);
+            
+            $('#detail-reason').text(user.suspension_reason || 'Administrative Suspensions');
+            $('#detail-reason-detail').text(user.suspension_notes || 'This account was suspended for administrative review.');
+            $('#detail-by').text(user.suspended_by || 'System / Admin');
+            $('#detail-date').text(user.suspended_date || 'N/A');
+            $('#detail-time').text(user.suspended_time || 'N/A');
+            
+            $('#detail-notes').text(user.admin_notes || 'No administrative notes available.');
+            $('#detail-notes-by').text(user.notes_footer || '');
+
+            $('#modal-name').text(user.full_name);
+            $('#modal-acc').text(user.account_no || 'N/A');
+        }
+
+        function renderTransactions(txs) {
+            if (!txs || txs.length === 0) {
+                $('#transactions-body').html('<tr><td colspan="4" class="text-center py-8 opacity-40">No recent transactions recorded</td></tr>');
+                return;
+            }
+            const html = txs.map(tx => `
+                <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">${tx.date}</td>
+                    <td style="padding:12px 16px;font-size:13px;font-weight:600">${tx.description}</td>
+                    <td style="padding:12px 16px"><span class="badge ${tx.type === 'Debit' ? 'badge-red' : 'badge-green'}">${tx.type}</span></td>
+                    <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(${tx.type === 'Debit' ? '--red' : '--green'})">${tx.amount}</td>
+                </tr>
+            `).join('');
+            $('#transactions-body').html(html);
+        }
+
+        window.openReinstateModal = () => $('#reinstate-modal').removeClass('hidden');
+        window.closeModal = () => $('#reinstate-modal').addClass('hidden');
+
+        window.processReinstate = async () => {
+            const $btn = $('#confirm-btn');
+            $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...');
+            
+            try {
+                const response = await api.post('/admin/user-action.php', {
+                    user_id: userId,
+                    action: 'reinstate'
+                });
+
+                if (response.status === 'success') {
+                    showToast('Account reinstated. Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'admin-suspended-users.html', 1500);
+                } else {
+                    alert(response.message);
+                    $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
+                }
+            } catch (error) {
+                alert('Action failed.');
+                $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
+            }
+        };
+
+        loadDetail();
+    });
 
 function showToast(msg,type='success'){
   const wrap=document.getElementById('toast-wrap');

@@ -53,28 +53,28 @@
 <div class="form-grid form-grid-2" style="gap:16px;padding:16px;background:var(--bg-input);border-radius:var(--radius-md);margin-bottom:20px">
 <div>
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Account Holder</div>
-<div style="font-size:15px;font-weight:800;color:var(--text-primary)" id="stmt-name">Rahul Kumar</div>
-<div style="font-size:12px;color:var(--text-secondary)" id="stmt-email">rahul.kumar@gmail.com</div>
+<div style="font-size:15px;font-weight:800;color:var(--text-primary)" id="stmt-name"><span class="skeleton" style="width: 150px; height: 18px;"></span></div>
+<div style="font-size:12px;color:var(--text-secondary)" id="stmt-email"><span class="skeleton" style="width: 180px; height: 12px;"></span></div>
 </div>
 <div>
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Account Details</div>
-<div style="font-size:13px;font-weight:700;font-family:monospace;color:var(--text-primary)" id="stmt-acc-no">FNZ20260001</div>
-<div style="font-size:12px;color:var(--text-secondary)" id="stmt-acc-type">Savings Account</div>
+<div style="font-size:13px;font-weight:700;font-family:monospace;color:var(--text-primary)" id="stmt-acc-no"><span class="skeleton" style="width: 120px; height: 14px;"></span></div>
+<div style="font-size:12px;color:var(--text-secondary)" id="stmt-acc-type"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
 </div>
 </div>
 <!-- Summary -->
 <div class="form-grid form-grid-3" style="gap:12px;margin-bottom:20px">
 <div style="text-align:center;padding:14px;background:rgba(16,185,129,0.06);border-radius:var(--radius-md);border:1px solid rgba(16,185,129,0.15)">
 <div style="font-size:10px;font-weight:800;color:#10b981;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Total Credits</div>
-<div style="font-size:20px;font-weight:800;color:#10b981" id="stmt-credits">₹500.00</div>
+<div style="font-size:20px;font-weight:800;color:#10b981" id="stmt-credits"><span class="skeleton" style="width: 80px; height: 24px;"></span></div>
 </div>
 <div style="text-align:center;padding:14px;background:rgba(244,63,94,0.06);border-radius:var(--radius-md);border:1px solid rgba(244,63,94,0.15)">
 <div style="font-size:10px;font-weight:800;color:#f43f5e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Total Debits</div>
-<div style="font-size:20px;font-weight:800;color:#f43f5e" id="stmt-debits">₹0.00</div>
+<div style="font-size:20px;font-weight:800;color:#f43f5e" id="stmt-debits"><span class="skeleton" style="width: 80px; height: 24px;"></span></div>
 </div>
 <div style="text-align:center;padding:14px;background:rgba(8,145,178,0.06);border-radius:var(--radius-md);border:1px solid rgba(8,145,178,0.15)">
 <div style="font-size:10px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Closing Balance</div>
-<div style="font-size:20px;font-weight:800;color:var(--primary)" id="stmt-closing">₹500.00</div>
+<div style="font-size:20px;font-weight:800;color:var(--primary)" id="stmt-closing"><span class="skeleton" style="width: 80px; height: 24px;"></span></div>
 </div>
 </div>
 <!-- Table -->
@@ -82,7 +82,7 @@
 <table>
 <thead><tr><th>Date</th><th>Transaction ID</th><th>Description</th><th>Type</th><th>Amount</th><th>Balance After</th></tr></thead>
 <tbody>
-<tr><td style="font-size:12px;font-weight:600">12 Apr 2026</td><td class="td-mono">TXN20260001</td><td style="font-size:12px">Initial Deposit</td><td><span class="badge badge-green">Credit</span></td><td class="amount-pos">+₹500.00</td><td style="font-size:12px;font-weight:700">₹500.00</td></tr>
+<tr><td colspan="6" style="padding:40px;text-align:center"><div class="skeleton" style="width:100%;height:32px;margin:8px 0"></div><div class="skeleton" style="width:100%;height:32px;margin:8px 0"></div><div class="skeleton" style="width:100%;height:32px;margin:8px 0"></div></td></tr>
 </tbody>
 </table>
 </div>
@@ -99,11 +99,53 @@ handleStatusRedirect('statement');
 document.getElementById('stmt-generated').textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 document.getElementById('stmt-name').textContent = UserState.name;
 document.getElementById('stmt-email').textContent = UserState.email;
-document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'FNZ20260001';
+document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
 document.getElementById('stmt-acc-type').textContent = (UserState.accountType||'savings').charAt(0).toUpperCase()+(UserState.accountType||'savings').slice(1)+' Account';
-document.getElementById('stmt-closing').textContent = '₹'+parseFloat(UserState.balance||'0').toLocaleString('en-IN',{minimumFractionDigits:2});
-function generateStatement(){const f=document.getElementById('stmt-from').value,t=document.getElementById('stmt-to').value;if(f&&t){document.getElementById('stmt-period').textContent=`Period: ${f} to ${t}`;}showToast('Statement generated','success');}
-function downloadStatement(){showToast('Downloading PDF... (PHP_BACKEND: TCPDF)','info');window.print();}
+document.getElementById('stmt-closing').textContent = formatINR(UserState.balance || 0);
+
+async function generateStatement(){
+  const f=document.getElementById('stmt-from').value, t=document.getElementById('stmt-to').value;
+  if(f&&t){document.getElementById('stmt-period').textContent=`Period: ${f} to ${t}`;}
+
+  try {
+    const params = new URLSearchParams();
+    if (f) params.set('from_date', f);
+    if (t) params.set('to_date', t);
+    params.set('limit', '500');
+    const res = await fetch('/api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.success && data.transactions) {
+      const tbody = document.querySelector('#statement-preview tbody');
+      let totalCredits = 0, totalDebits = 0;
+      tbody.innerHTML = data.transactions.map(tx => {
+        const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+        const amt = parseFloat(tx.amount);
+        if (isCredit) totalCredits += amt; else totalDebits += amt;
+        const date = new Date(tx.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+        return `<tr>
+          <td style="font-size:12px;font-weight:600">${date}</td>
+          <td class="td-mono">${tx.reference_id || tx.id}</td>
+          <td style="font-size:12px">${tx.description || tx.type}</td>
+          <td><span class="badge ${isCredit?'badge-green':'badge-red'}">${isCredit?'Credit':'Debit'}</span></td>
+          <td class="${isCredit?'amount-pos':'amount-neg'}">${isCredit?'+':'-'}${formatINR(amt)}</td>
+          <td style="font-size:12px;font-weight:700">${formatINR(tx.balance_after || 0)}</td>
+        </tr>`;
+      }).join('');
+      document.getElementById('stmt-credits').textContent = formatINR(totalCredits);
+      document.getElementById('stmt-debits').textContent = formatINR(totalDebits);
+      showToast('Statement generated','success');
+    }
+  } catch(e) { showToast('Failed to load transactions','error'); }
+}
+
+function downloadStatement(){
+  const f=document.getElementById('stmt-from').value, t=document.getElementById('stmt-to').value;
+  const params = new URLSearchParams();
+  if(f) params.set('from_date', f);
+  if(t) params.set('to_date', t);
+  // Download TCPDF-generated statement
+  window.open('/api/pdf/statement.php?' + params.toString(), '_blank');
+}
 </script>
 </body>
 </html>

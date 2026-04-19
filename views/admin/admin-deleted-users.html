@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
 
@@ -297,151 +299,11 @@
               </tr>
             </thead>
             <tbody id="deleted-table-body">
-              <tr data-status="all" data-deleted-by="admin" data-date="2026-04-05">
-                <td class="du-num">01</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff;">MK</div>
-                    <div>
-                      <div class="du-name user-name">Mohan Kumar</div>
-                      <div class="du-email user-email">mohan.kumar@gmail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="du-phone">+91 99887 76655</span></td>
-                <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260010</span></td>
-                <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-
-                <td><span class="du-date-main">05 Apr 2026 — 11:30 AM</span></td>
-                <td>
-                  <div class="du-reason">
-                    <span class="material-symbols-outlined du-reason-icon">warning</span>
-                    <span class="du-reason-text">"User requested account closure"</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="openRecoverModal('Mohan Kumar','FNZ20260010')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Mohan Kumar','FNZ20260010','mohan.kumar@gmail.com','+91 99887 76655','Savings','15 Jan 2026','₹5,000.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-status="all" data-deleted-by="admin" data-date="2026-04-03">
-                <td class="du-num">02</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;">SP</div>
-                    <div>
-                      <div class="du-name user-name">Sneha Patel</div>
-                      <div class="du-email user-email">sneha.patel@gmail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="du-phone">+91 88776 65544</span></td>
-                <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260015</span></td>
-                <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
-
-                <td><span class="du-date-main">03 Apr 2026 — 02:15 PM</span></td>
-                <td>
-                  <div class="du-reason">
-                    <span class="material-symbols-outlined du-reason-icon">warning</span>
-                    <span class="du-reason-text">"Suspicious activity detected"</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="openRecoverModal('Sneha Patel','FNZ20260015')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Sneha Patel','FNZ20260015','sneha.patel@gmail.com','+91 88776 65544','Current','02 Feb 2026','₹12,450.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-status="all" data-deleted-by="admin" data-date="2026-04-01">
-                <td class="du-num">03</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;">AK</div>
-                    <div>
-                      <div class="du-name user-name">Arjun Khanna</div>
-                      <div class="du-email user-email">arjun.khanna@gmail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="du-phone">+91 77665 54433</span></td>
-                <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260018</span></td>
-                <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-
-                <td><span class="du-date-main">01 Apr 2026 — 10:00 AM</span></td>
-                <td>
-                  <div class="du-reason">
-                    <span class="material-symbols-outlined du-reason-icon">warning</span>
-                    <span class="du-reason-text">"Duplicate account found"</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="openRecoverModal('Arjun Khanna','FNZ20260018')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Arjun Khanna','FNZ20260018','arjun.khanna@gmail.com','+91 77665 54433','Savings','20 Jan 2026','₹2,800.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-status="all" data-deleted-by="system" data-date="2026-03-28">
-                <td class="du-num">04</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar" style="background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;">NR</div>
-                    <div>
-                      <div class="du-name user-name">Nisha Rao</div>
-                      <div class="du-email user-email">nisha.rao@gmail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="du-phone">+91 66554 43322</span></td>
-                <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260022</span></td>
-                <td><span class="du-type-savings"><span class="material-symbols-outlined" style="font-size:11px;">savings</span>SAVINGS</span></td>
-
-                <td><span class="du-date-main">28 Mar 2026 — 09:45 AM</span></td>
-                <td>
-                  <div class="du-reason">
-                    <span class="material-symbols-outlined du-reason-icon">warning</span>
-                    <span class="du-reason-text">"Suspend for 6 months"</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="openRecoverModal('Nisha Rao','FNZ20260022')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Nisha Rao','FNZ20260022','nisha.rao@gmail.com','+91 66554 43322','Savings','10 Feb 2026','₹1,200.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-status="all" data-deleted-by="admin" data-date="2026-03-25">
-                <td class="du-num">05</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;">VG</div>
-                    <div>
-                      <div class="du-name user-name">Vikram Gupta</div>
-                      <div class="du-email user-email">vikram.gupta@gmail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="du-phone">+91 55443 32211</span></td>
-                <td><span class="du-acc"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>FNZ20260025</span></td>
-                <td><span class="du-type-current"><span class="material-symbols-outlined" style="font-size:11px;">account_balance_wallet</span>CURRENT</span></td>
-
-                <td><span class="du-date-main">25 Mar 2026 — 04:30 PM</span></td>
-                <td>
-                  <div class="du-reason">
-                    <span class="material-symbols-outlined du-reason-icon">warning</span>
-                    <span class="du-reason-text">"Fraudulent activity reported"</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="openRecoverModal('Vikram Gupta','FNZ20260025')" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="openDetailsModal('Vikram Gupta','FNZ20260025','vikram.gupta@gmail.com','+91 55443 32211','Current','05 Mar 2026','₹8,900.00')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -625,102 +487,164 @@
 
   <script>
     $(function() {
-      // Mobile Navigation
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
-          $('#sidebar-overlay').removeClass('active');
-      });
+      let currentPage = 1;
 
-      // Tab handling
-      $('.tab-btn').on('click', function() {
-        $('.tab-btn').removeClass('bg-primary text-white shadow-md').addClass('text-slate-500');
-        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-md');
-        applyFilters();
-      });
+      async function loadDeletedUsers() {
+          const $tbody = $('#deleted-table-body');
+          $tbody.html(`
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
+          `);
 
-      // Filter handling
-      $('#apply-filters').on('click', applyFilters);
-      $('#reset-filters').on('click', function() {
-        $('#filter-search').val('');
-        $('#filter-date-from').val('');
-        $('#filter-date-to').val('');
+          try {
+              const response = await api.get('/admin/deleted-users.php', {
+                  search: $('#filter-search').val(),
+                  page: currentPage,
+                  per_page: 10
+              });
 
-        $('.tab-btn').first().click();
-        applyFilters();
-      });
-
-      function applyFilters() {
-        const search = $('#filter-search').val().toLowerCase();
-
-        const tab = $('.tab-btn.bg-primary').data('status');
-        
-        let visibleCount = 0;
-        $('#deleted-table-body tr').each(function() {
-          const name = $(this).find('.user-name').text().toLowerCase();
-          const email = $(this).find('.user-email').text().toLowerCase();
-          const acc = $(this).find('.font-code').text().toLowerCase();
-
-          
-          let matches = (name.includes(search) || email.includes(search) || acc.includes(search));
-
-          
-          if (matches) {
-            $(this).show();
-            visibleCount++;
-          } else {
-            $(this).hide();
+              if (response.status === 'success') {
+                  renderTable(response.data.users, response.data.total, response.data.pages);
+              } else {
+                  $('.du-table').parent().hide();
+                  $('#empty-state').removeClass('hidden').addClass('flex');
+              }
+          } catch (error) {
+              console.error('Failed to load deleted users:', error);
+              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
           }
-        });
+      }
 
-        if (visibleCount === 0) {
-          $('.du-table').parent().hide();
-          $('#empty-state').removeClass('hidden').addClass('flex');
-        } else {
+      function renderTable(users, total, pages) {
+          const $tbody = $('#deleted-table-body');
+          if (!users || !users.length) {
+              $('.du-table').parent().hide();
+              $('#empty-state').removeClass('hidden').addClass('flex');
+              return;
+          }
+
           $('.du-table').parent().show();
           $('#empty-state').addClass('hidden').removeClass('flex');
-        }
+
+          $tbody.html(users.map((u, i) => {
+              const initials = u.initials || u.full_name.charAt(0);
+              const isSavings = (u.account_type || '').toLowerCase() === 'savings';
+              
+              return `
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="du-num tracking-widest opacity-30">${String((currentPage-1)*10+i+1).padStart(2,'0')}</td>
+                <td>
+                  <div class="flex items-center gap-3 user-info">
+                    <div class="du-avatar premium-gradient-primary uppercase" style="color:#fff;">${initials}</div>
+                    <div>
+                      <div class="du-name user-name">${u.full_name}</div>
+                      <div class="du-email user-email">${u.email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="du-phone font-mono">${u.phone || 'N/A'}</span></td>
+                <td><span class="du-acc border-none bg-slate-100/50 dark:bg-white/5"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>${u.account_no || 'N/A'}</span></td>
+                <td><span class="${isSavings ? 'du-type-savings' : 'du-type-current'}"><span class="material-symbols-outlined" style="font-size:11px;">${isSavings ? 'savings' : 'account_balance_wallet'}</span>${(u.account_type || 'N/A').toUpperCase()}</span></td>
+                <td><span class="du-date-main text-xs opacity-60 font-semibold">${u.deleted_at || 'N/A'}</span></td>
+                <td>
+                  <div class="du-reason bg-amber-500/5 p-2 rounded-lg border border-amber-500/10">
+                    <span class="du-reason-text opacity-80">${u.deletion_reason || 'Admin Action'}</span>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex;justify-content:flex-end;gap:8px;">
+                    <button onclick="window.openRecoverModal('${u.full_name}', '${u.account_no}', ${u.id})" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
+                    <button onclick="window.openDetailsModal('${u.full_name}', '${u.account_no}', '${u.email}', '${u.phone}', '${u.account_type}', '${u.created_at}', '${u.balance}', '${u.deleted_at}')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
+                  </div>
+                </td>
+              </tr>`;
+          }).join(''));
+
+          const start = (currentPage - 1) * 10 + 1;
+          const end = Math.min(currentPage * 10, total);
+          $('.text-xs.font-bold.opacity-40').text(`Showing ${start}-${end} of ${total} deleted users`);
+
+          // Pagination logic
+          let pagHtml = `<button class="admin-btn-secondary" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>`;
+          for(let i=1; i<=pages; i++) {
+              if (pages > 5 && i > 3 && i < pages) {
+                  if (i === 4) pagHtml += `<span class="px-2 opacity-50">...</span>`;
+                  continue;
+              }
+              pagHtml += `<button onclick="window.goToPage(${i})" class="${i === currentPage ? 'admin-btn-primary' : 'admin-btn-secondary'}" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important; ${i === currentPage ? 'background: #1a3c5e !important;' : ''}">${i}</button>`;
+          }
+          pagHtml += `<button class="admin-btn-secondary" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next →</button>`;
+          $('.flex.items-center.gap-2').html(pagHtml);
       }
+
+      window.goPage = (d) => { currentPage += d; loadDeletedUsers(); };
+      window.goToPage = (p) => { currentPage = p; loadDeletedUsers(); };
+
+      $('#apply-filters').on('click', () => { currentPage = 1; loadDeletedUsers(); });
+      $('#reset-filters').on('click', () => {
+          $('#filter-search').val('');
+          $('#filter-date-from, #filter-date-to').val('');
+          currentPage = 1;
+          loadDeletedUsers();
+      });
+
+      let pendingUserId = null;
+      window.openRecoverModal = (name, acc, id) => {
+          pendingUserId = id;
+          $('#recover-user-name').text(name);
+          $('#recover-user-acc').text(acc);
+          $('#recoverModal').removeClass('hidden').addClass('flex');
+      };
+
+      window.confirmRecovery = async () => {
+          if (!pendingUserId) return;
+          try {
+              const response = await api.post('/admin/user-action.php', {
+                  user_id: pendingUserId,
+                  action: 'recover'
+              });
+              if (response.status === 'success') {
+                  showToast('User account recovered successfully', 'success');
+                  closeModal('recoverModal');
+                  loadDeletedUsers();
+              } else {
+                  alert(response.message);
+              }
+          } catch (error) {
+              alert('Failed to recover user');
+          }
+      };
+
+      window.openDetailsModal = (name, acc, email, phone, type, reg, balance, deleted) => {
+          $('.details-name').text(name);
+          $('.details-acc').text(acc);
+          $('.details-email').text(email);
+          $('.details-phone').text(phone || 'N/A');
+          $('.details-type').text(type ? type.charAt(0).toUpperCase() + type.slice(1) : 'N/A');
+          $('.details-reg').text(new Date(reg).toLocaleDateString());
+          $('.details-balance').text(parseFloat(balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }));
+          
+          $('#detailsModal').removeClass('hidden').addClass('flex');
+      };
+
+      window.closeModal = (id) => $(`#${id}`).addClass('hidden').removeClass('flex');
+
+      loadDeletedUsers();
+
+      $('#mobile-menu-btn').on('click', () => { $('#admin-sidebar').addClass('mobile-open'); $('#sidebar-overlay').addClass('active'); });
+      $('#sidebar-overlay').on('click', () => { $('#admin-sidebar').removeClass('mobile-open'); $('#sidebar-overlay').removeClass('active'); });
     });
 
-    let currentDetailName = '';
-    let currentDetailAcc = '';
-
-    function openRecoverModal(name, acc) {
-      $('#recover-user-name').text(name);
-      $('#recover-user-acc').text(acc);
-      $('#recoverModal').removeClass('hidden').addClass('flex');
-    }
-
-    function openDetailsModal(name, acc, email, phone, type, reg, balance) {
-      currentDetailName = name;
-      currentDetailAcc = acc;
-      $('.details-name').text(name);
-      $('.details-acc').text(acc);
-      $('.details-email').text(email);
-      $('.details-phone').text(phone);
-      $('.details-type').text(type);
-      $('.details-reg').text(reg);
-      $('.details-balance').text(balance);
-      $('#detailsModal').removeClass('hidden').addClass('flex');
-    }
-
-    function recoverFromDetails() {
-      closeModal('detailsModal');
-      openRecoverModal(currentDetailName, currentDetailAcc);
-    }
-
-    function closeModal(id) {
-      $(`#${id}`).addClass('hidden').removeClass('flex');
-    }
-
-    function confirmRecovery() {
-      alert('Recovery initiated successfully!');
-      closeModal('recoverModal');
-      closeModal('detailsModal');
+    function showToast(msg, type = 'success') {
+        const wrap = document.getElementById('toast-wrap');
+        if (!wrap) return;
+        const t = document.createElement('div');
+        const icons = { success: 'check_circle', error: 'cancel' };
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="material-symbols-outlined" style="color:${type === 'success' ? '#10b981' : '#f43f5e'};font-size:17px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
+        wrap.appendChild(t);
+        setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
     }
   </script>
 </body>

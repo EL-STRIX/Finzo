@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <link rel="stylesheet" href="../../assets/css/dark-mode.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/staff-shared.js"></script>
     <style>
         .brand-sub-staff { color: #f59e0b !important; }
         .staff-sidebar-active {
@@ -60,15 +62,18 @@
         <div class="px-4 py-6 border-b border-white/5">
             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm">AS</div>
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">--</div>
                     <div>
-                        <div class="text-xs font-bold text-amber-700">Amit Sharma</div>
-                        <div class="text-[10px] text-white/50 font-medium">STF001</div>
+                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
                     </div>
                 </div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                <div class="flex flex-col gap-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                    </div>
+                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
                 </div>
             </div>
         </div>
@@ -118,7 +123,7 @@
                 </div>
                 <div class="h-8 w-px bg-slate-200 dark:bg-white/1 hidden sm:block"></div>
                 <div class="flex items-center gap-3">
-                    <div class="text-xs font-bold dark:text-blue-500 hidden sm:block">Amit Sharma</div>
+                    <div class="text-xs font-bold dark:text-blue-500 hidden sm:block staff-name-display">Loading...</div>
                     <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">End Shift</button>
                 </div>
             </div>
@@ -288,244 +293,200 @@
             <p class="text-slate-500 dark:text-slate-400 text-center mb-8 font-bold">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
             <div class="flex gap-4">
                 <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl modal-close">Cancel</button>
-                <a href="../auth/staff-login.html" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30">End Shift</a>
+                <button onclick="window.location.href='/api/auth/logout.php'" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30">End Shift</button>
             </div>
         </div>
     </div>
 
     <script>
-        $(function() {
-            function updateClock() {
-                const now = new Date();
-                $('#live-clock').text(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }));
-                $('#live-date').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
-            }
-            setInterval(updateClock, 1000); updateClock();
-
-            $('#toggle-theme-btn').on('click', function() {
-                const cur = localStorage.getItem('finzo-staff-theme') || 'light';
-                const next = cur === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                document.documentElement.classList.toggle('dark', next === 'dark');
-                localStorage.setItem('finzo-staff-theme', next);
-                $('#theme-icon').text(next === 'dark' ? 'light_mode' : 'dark_mode');
-                $('#theme-label').text(next === 'dark' ? 'Light Mode' : 'Dark Mode');
-            });
-
-            const saved = localStorage.getItem('finzo-staff-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', saved);
-            document.documentElement.classList.toggle('dark', saved === 'dark');
-
-            $('.end-shift-trigger').on('click', function() {
-                $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
-                $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
-            });
-            $('.modal-close').on('click', function() { $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none'); });
-
-            $('#mobile-menu-btn').on('click', function () {
-                $('#admin-sidebar').addClass('mobile-open');
-                $('#sidebar-overlay').addClass('active');
-            });
-            $('#sidebar-overlay').on('click', function () {
-                $('#admin-sidebar').removeClass('mobile-open');
-                $('#sidebar-overlay').removeClass('active');
-            });
-
-            // Custom Dropdown Logic
-            $('.dropdown-trigger').on('click', function(e) {
-                e.stopPropagation();
-                const dropdown = $(this).closest('.custom-dropdown');
-                const menu = dropdown.find('.dropdown-menu');
-                const arrow = $(this).find('.dropdown-arrow');
-                
-                $('.dropdown-menu').not(menu).removeClass('show');
-                $('.dropdown-arrow').not(arrow).removeClass('rotate-180');
-                
-                menu.toggleClass('show');
-                arrow.toggleClass('rotate-180');
-            });
-
-            $('.dropdown-menu button').on('click', function() {
-                const val = $(this).data('value');
-                const html = $(this).html();
-                const dropdown = $(this).closest('.custom-dropdown');
-                
-                dropdown.find('.selected-text').text(val);
-                // Option: to keep the icon in the trigger too
-                dropdown.find('.dropdown-trigger .flex.items-center.gap-2').html(html);
-                
-                dropdown.find('input[type="hidden"]').val(val);
-                dropdown.find('.dropdown-menu').removeClass('show');
-                dropdown.find('.dropdown-arrow').removeClass('rotate-180');
-            });
-
-            $(document).on('click', function() {
-                $('.dropdown-menu').removeClass('show');
-                $('.dropdown-arrow').removeClass('rotate-180');
-            });
-
-            // --- FUNCTIONAL OVERHAUL LOGIC ---
-            
-            const MOCK_DATA = [
-                { id: "01", date: "2026-04-12", time: "10:45 AM", customer: "Rahul Kumar", email: "rahul.kumar@gmail.com", account: "FNZ20260001", type: "DEPOSIT", amount: 5000, balance: 10000, status: "COMPLETED" },
-                { id: "02", date: "2026-04-12", time: "10:20 AM", customer: "Priya Sharma", email: "priya.sharma@gmail.com", account: "FNZ20260002", type: "WITHDRAWAL", amount: 2000, balance: 8000, status: "COMPLETED" },
-                { id: "03", date: "2026-04-12", time: "09:55 AM", customer: "Amit Mondal", email: "amit.mondal@gmail.com", account: "FNZ20260003", type: "DEPOSIT", amount: 10000, balance: 15000, status: "COMPLETED" },
-                { id: "04", date: "2026-04-11", time: "04:30 PM", customer: "Sunita Mehta", email: "sunita.mehta@gmail.com", account: "FNZ20260004", type: "WITHDRAWAL", amount: 1500, balance: 6500, status: "COMPLETED" },
-                { id: "05", date: "2026-04-11", time: "02:15 PM", customer: "Vikram Gupta", email: "vikram.gupta@gmail.com", account: "FNZ20260005", type: "DEPOSIT", amount: 3000, balance: 9000, status: "COMPLETED" },
-                { id: "06", date: "2026-04-10", time: "11:00 AM", customer: "Mohan Kumar", email: "mohan.kumar@gmail.com", account: "FNZ20260006", type: "WITHDRAWAL", amount: 4000, balance: 2000, status: "PENDING" },
-                { id: "07", date: "2026-04-10", time: "09:30 AM", customer: "Sanjay Ray", email: "sanjay.ray@gmail.com", account: "FNZ20260007", type: "DEPOSIT", amount: 12000, balance: 22000, status: "COMPLETED" },
-                { id: "08", date: "2026-04-09", time: "05:15 PM", customer: "Anjali Das", email: "anjali.das@gmail.com", account: "FNZ20260008", type: "WITHDRAWAL", amount: 500, balance: 21500, status: "FAILED" },
-                { id: "09", date: "2026-04-08", time: "01:00 PM", customer: "Deepak Singh", email: "deepak.s@gmail.com", account: "FNZ20260009", type: "DEPOSIT", amount: 7500, balance: 29000, status: "COMPLETED" },
-                { id: "10", date: "2026-04-07", time: "10:00 AM", customer: "Neha Verma", email: "neha.v@gmail.com", account: "FNZ20260010", type: "DEPOSIT", amount: 2000, balance: 31000, status: "COMPLETED" },
-                { id: "11", date: "2026-04-05", time: "03:45 PM", customer: "Rohan Jha", email: "rohan.jha@gmail.com", account: "FNZ20260011", type: "WITHDRAWAL", amount: 1000, balance: 30000, status: "COMPLETED" },
-                { id: "12", date: "2026-04-01", time: "11:20 AM", customer: "Komal Seth", email: "komal.seth@gmail.com", account: "FNZ20260012", type: "DEPOSIT", amount: 50000, balance: 80000, status: "COMPLETED" }
-            ];
-
-            let currentPage = 1;
-            const itemsPerPage = 6;
-            let currentFilters = {
-                search: '',
-                type: 'All Types',
-                status: 'All Status',
-                range: 'All Time'
-            };
-
-            function filterData() {
-                const today = new Date("2026-04-12"); // Fixed reference date for demo
-                return MOCK_DATA.filter(item => {
-                    const matchesSearch = item.customer.toLowerCase().includes(currentFilters.search.toLowerCase()) || 
-                                          item.account.toLowerCase().includes(currentFilters.search.toLowerCase());
-                    const matchesType = currentFilters.type === 'All Types' || item.type === (currentFilters.type === 'Deposits' ? 'DEPOSIT' : 'WITHDRAWAL');
-                    const matchesStatus = currentFilters.status === 'All Status' || item.status === currentFilters.status.toUpperCase();
-                    
-                    let matchesRange = true;
-                    if (currentFilters.range !== 'All Time') {
-                        const itemDate = new Date(item.date);
-                        const diffTime = today - itemDate;
-                        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-                        if (currentFilters.range === 'Today' && diffDays > 0) matchesRange = false;
-                        if (currentFilters.range === 'This Week' && diffDays > 7) matchesRange = false;
-                        if (currentFilters.range === 'This Month' && diffDays > 30) matchesRange = false;
-                    }
-
-                    return matchesSearch && matchesType && matchesStatus && matchesRange;
-                });
-            }
-
-            function renderTransactions() {
-                const filtered = filterData();
-                const totalPages = Math.ceil(filtered.length / itemsPerPage);
-                const startIdx = (currentPage - 1) * itemsPerPage;
-                const paginated = filtered.slice(startIdx, startIdx + itemsPerPage);
-
-                // Update Table
-                const tbody = $('#transaction-table-body');
-                tbody.empty();
-                if (paginated.length === 0) {
-                    tbody.append('<tr><td colspan="9" class="text-center py-12 text-slate-400 font-bold">No transactions found matching your filters.</td></tr>');
-                } else {
-                    paginated.forEach(item => {
-                        const typeClass = item.type === 'DEPOSIT' ? 'badge-success' : 'badge-error';
-                        const statusClass = item.status === 'COMPLETED' ? 'badge-success' : (item.status === 'PENDING' ? 'badge-warn' : 'badge-error');
-                        const amountColor = item.type === 'DEPOSIT' ? 'text-emerald-600' : 'text-red-600';
-                        const amountPrefix = item.type === 'DEPOSIT' ? '+' : '-';
-
-                        tbody.append(`
-                            <tr class="dark:hover:bg-white/1">
-                                <td class="text-black dark:text-slate-400 font-bold">${item.id}</td>
-                                <td>
-                                    <div class="font-bold dark:text-blue-500">${item.date}</div>
-                                    <div class="text-[10px] text-slate-400 uppercase font-black">${item.time}</div>
-                                </td>
-                                <td>
-                                    <div class="font-bold dark:text-blue-500">${item.customer}</div>
-                                    <div class="text-[10px] text-slate-400">${item.email}</div>
-                                </td>
-                                <td class="font-mono text-xs text-slate-600 dark:text-slate-400">${item.account}</td>
-                                <td><span class="status-badge ${typeClass}">${item.type}</span></td>
-                                <td class="font-bold ${amountColor}">${amountPrefix}₹${item.amount.toLocaleString()}</td>
-                                <td class="font-bold dark:text-blue-500">₹${item.balance.toLocaleString()}</td>
-                                <td><span class="status-badge ${statusClass}">${item.status}</span></td>
-                                <td class="text-right">
-                                    <a href="staff-receipt.html" class="p-2 inline-block text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined">print</span></a>
-                                </td>
-                            </tr>
-                        `);
-                    });
-                }
-
-                // Update Summary
-                const totalDeposits = filtered.filter(i => i.type === 'DEPOSIT').reduce((a, b) => a + b.amount, 0);
-                const totalWithdrawals = filtered.filter(i => i.type === 'WITHDRAWAL').reduce((a, b) => a + b.amount, 0);
-                $('#summary-deposits').text('₹' + totalDeposits.toLocaleString());
-                $('#summary-withdrawals').text('₹' + totalWithdrawals.toLocaleString());
-                $('#summary-count').text(`Total: ${filtered.length} transactions`);
-
-                // Update Pagination Metadata
-                const endIdx = Math.min(startIdx + itemsPerPage, filtered.length);
-                $('#showing-meta').text(`Showing ${filtered.length > 0 ? startIdx + 1 : 0}-${endIdx} of ${filtered.length} transactions`);
-
-                // Render Pagination Buttons
-                const pButtons = $('#page-buttons');
-                pButtons.empty();
-                if (totalPages > 1) {
-                    pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}" id="prev-btn">PREV</button>`);
-                    for (let i = 1; i <= totalPages; i++) {
-                        const active = i === currentPage ? 'bg-primary text-white' : 'border border-slate-200 dark:border-white/10 text-slate-400';
-                        pButtons.append(`<button class="px-3 py-1.5 ${active} font-bold rounded-lg text-[10px] page-num" data-page="${i}">${i}</button>`);
-                    }
-                    pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}" id="next-btn">NEXT</button>`);
-                }
-            }
-
-            // Event Listeners
-            $('#search-input').on('input', function() {
-                currentFilters.search = $(this).val();
-            });
-
-            $('#apply-filters-btn').on('click', function() {
-                currentFilters.type = $('#filter-type').val();
-                currentFilters.status = $('#filter-status').val();
-                currentPage = 1;
-                renderTransactions();
-            });
-
-            $('#reset-filters-btn').on('click', function() {
-                $('#search-input').val('');
-                currentFilters = { search: '', type: 'All Types', status: 'All Status', range: 'All Time' };
-                // Reset UI dropdowns manually
-                $('#dropdown-type .selected-text').text('All Types');
-                $('#dropdown-status .selected-text').text('All Status');
-                $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
-                $('.time-tab:first').addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
-                currentPage = 1;
-                renderTransactions();
-            });
-
-            $('.time-tab').on('click', function() {
-                $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
-                $(this).addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
-                currentFilters.range = $(this).text().trim();
-                currentPage = 1;
-                renderTransactions();
-            });
-
-            $(document).on('click', '.page-num', function() {
-                currentPage = parseInt($(this).data('page'));
-                renderTransactions();
-            });
-
-            $(document).on('click', '#prev-btn', function() {
-                if (currentPage > 1) { currentPage--; renderTransactions(); }
-            });
-
-            $(document).on('click', '#next-btn', function() {
-                const totalPages = Math.ceil(filterData().length / itemsPerPage);
-                if (currentPage < totalPages) { currentPage++; renderTransactions(); }
-            });
-
-            // Initial Render
+        $(document).ready(async function() {
+            await fetchStaffSession();
+            loadDashboardStats();
             renderTransactions();
+        });
+
+        async function loadDashboardStats() {
+            try {
+                const res = await api.get('/staff/dashboard.php');
+                if (res.success) {
+                    const stats = res.shift_stats;
+                    // Update the 4 stat cards
+                    $('.admin-stat-card:eq(0) .admin-stat-value').text(formatINR(stats.deposits_total));
+                    $('.admin-stat-card:eq(1) .admin-stat-value').text(formatINR(stats.withdrawals_total));
+                    $('.admin-stat-card:eq(2) .admin-stat-value').text(stats.total_transactions);
+                    
+                    // Month stat - just for display
+                    const now = new Date();
+                    $('.admin-stat-card:eq(3) .admin-stat-value').text(stats.total_transactions); // reusing for now
+                    $('.admin-stat-card:eq(3) .bg-amber-500\/10').text(now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }));
+                }
+            } catch (err) {
+                console.error("Failed to load stats", err);
+            }
+        }
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let currentFilters = {
+            search: '',
+            type: 'all',
+            status: 'all',
+            range: 'All Time'
+        };
+
+        async function renderTransactions() {
+            const tbody = $('#transaction-table-body');
+            tbody.html('<tr><td colspan="9" class="text-center py-12"><div class="flex items-center justify-center gap-3 font-bold text-slate-400"><span class="material-symbols-outlined animate-spin">sync</span> Loading transactions...</div></td></tr>');
+
+            try {
+                // Map range to dates if needed (backend handles simple filters better)
+                let from_date = '';
+                const today = new Date().toISOString().split('T')[0];
+                if (currentFilters.range === 'Today') from_date = today;
+                
+                const query = new URLSearchParams({
+                    page: currentPage,
+                    per_page: itemsPerPage,
+                    search: currentFilters.search,
+                    type: currentFilters.type,
+                    status: currentFilters.status,
+                    from_date: from_date
+                });
+
+                const res = await api.get('/staff/history.php?' + query.toString());
+                tbody.empty();
+
+                if (!res.success || !res.transactions || res.transactions.length === 0) {
+                    tbody.append('<tr><td colspan="9" class="text-center py-12 text-slate-400 font-bold">No transactions found matching your filters.</td></tr>');
+                    updateSummary(0, 0, 0);
+                    renderPagination(1, 1);
+                    return;
+                }
+
+                res.transactions.forEach((item, idx) => {
+                    const isDeposit = item.type === 'deposit';
+                    const typeClass = isDeposit ? 'badge-success' : 'badge-error';
+                    const statusClass = item.status === 'completed' ? 'badge-success' : (item.status === 'pending' ? 'badge-warn' : 'badge-error');
+                    const amountColor = isDeposit ? 'text-emerald-600' : 'text-red-600';
+                    const amountPrefix = isDeposit ? '+' : '-';
+                    
+                    const dateObj = new Date(item.created_at);
+                    const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+                    tbody.append(`
+                        <tr class="dark:hover:bg-white/1">
+                            <td class="text-black dark:text-slate-400 font-bold">${(currentPage-1)*itemsPerPage + idx + 1}</td>
+                            <td>
+                                <div class="font-bold dark:text-blue-500">${dateStr}</div>
+                                <div class="text-[10px] text-slate-400 uppercase font-black">${timeStr}</div>
+                            </td>
+                            <td>
+                                <div class="font-bold dark:text-blue-500">${item.customer_name}</div>
+                                <div class="text-[10px] text-slate-400 font-mono italic">REF: ${item.txn_id}</div>
+                            </td>
+                            <td class="font-mono text-xs text-slate-600 dark:text-slate-400">${item.account_no}</td>
+                            <td><span class="status-badge ${typeClass}">${item.type.toUpperCase()}</span></td>
+                            <td class="font-bold ${amountColor}">${amountPrefix}${formatINR(item.amount)}</td>
+                            <td class="font-bold dark:text-blue-500">${formatINR(item.balance_after)}</td>
+                            <td><span class="status-badge ${statusClass}">${item.status.toUpperCase()}</span></td>
+                            <td class="text-right">
+                                <a href="staff-receipt.html?id=${item.txn_id}" class="p-2 inline-block text-slate-400 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined">print</span>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                // Update Summary (from all visible items in current result)
+                let deps = 0, withs = 0;
+                res.transactions.forEach(t => {
+                    if(t.type === 'deposit') deps += parseFloat(t.amount);
+                    else withs += parseFloat(t.amount);
+                });
+                updateSummary(deps, withs, res.total);
+                renderPagination(res.current_page, res.pages, res.total);
+
+            } catch (err) {
+                tbody.html('<tr><td colspan="9" class="text-center py-12 text-red-500 font-bold">Error loading data. Please refresh.</td></tr>');
+            }
+        }
+
+        function updateSummary(deps, withs, total) {
+            $('#summary-deposits').text(formatINR(deps));
+            $('#summary-withdrawals').text(formatINR(withs));
+            $('#summary-count').text(`Total: ${total} transactions`);
+        }
+
+        function renderPagination(current, total, totalItems) {
+            const container = $('#pagination-container');
+            const startIdx = (current - 1) * itemsPerPage + 1;
+            const endIdx = Math.min(startIdx + itemsPerPage - 1, totalItems);
+            
+            $('#showing-meta').text(`Showing ${totalItems > 0 ? startIdx : 0}-${endIdx} of ${totalItems} transactions`);
+
+            const pButtons = $('#page-buttons');
+            pButtons.empty();
+            if (total > 1) {
+                pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${current === 1 ? 'opacity-50 pointer-events-none' : ''}" id="prev-btn">PREV</button>`);
+                
+                // Show 5 pages around current
+                let start = Math.max(1, current - 2);
+                let end = Math.min(total, start + 4);
+                if (end - start < 4) start = Math.max(1, end - 4);
+                
+                for (let i = start; i <= end; i++) {
+                    const active = i === current ? 'bg-primary text-white' : 'border border-slate-200 dark:border-white/10 text-slate-400';
+                    pButtons.append(`<button class="px-3 py-1.5 ${active} font-bold rounded-lg text-[10px] page-num" data-page="${i}">${i}</button>`);
+                }
+                
+                pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${current === total ? 'opacity-50 pointer-events-none' : ''}" id="next-btn">NEXT</button>`);
+            }
+        }
+
+        // Event Listeners
+        $('#apply-filters-btn').on('click', function() {
+            currentFilters.search = $('#search-input').val().trim();
+            // Dropdown values are set in their separate listeners
+            currentFilters.type = $('#filter-type').val().toLowerCase().replace('all types', 'all').replace('deposits', 'deposit').replace('withdrawals', 'withdrawal');
+            currentFilters.status = $('#filter-status').val().toLowerCase().replace('all status', 'all');
+            currentPage = 1;
+            renderTransactions();
+        });
+
+        $('#reset-filters-btn').on('click', function() {
+            $('#search-input').val('');
+            currentFilters = { search: '', type: 'all', status: 'all', range: 'All Time' };
+            $('#dropdown-type .selected-text').text('All Types');
+            $('#filter-type').val('All Types');
+            $('#dropdown-status .selected-text').text('All Status');
+            $('#filter-status').val('All Status');
+            $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
+            $('.time-tab:first').addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
+            currentPage = 1;
+            renderTransactions();
+        });
+
+        $('.time-tab').on('click', function() {
+            $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
+            $(this).addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
+            currentFilters.range = $(this).text().trim();
+            currentPage = 1;
+            renderTransactions();
+        });
+
+        $(document).on('click', '.page-num', function() {
+            currentPage = parseInt($(this).data('page'));
+            renderTransactions();
+        });
+
+        $(document).on('click', '#prev-btn', function() {
+            if (currentPage > 1) { currentPage--; renderTransactions(); }
+        });
+
+        $(document).on('click', '#next-btn', function() {
+            currentPage++; renderTransactions();
         });
     </script>
 </body>

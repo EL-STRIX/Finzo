@@ -430,29 +430,25 @@
           <div class="stat-icon" style="background:var(--primary-soft); color:var(--primary)"><span
               class="material-symbols-outlined">currency_rupee</span></div>
           <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">VOLUME TODAY</div>
-          <div class="text-2xl font-black mt-1">₹1.2L <span
-              class="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full ml-2">+4.1%</span></div>
+          <div class="text-2xl font-black mt-1 skeleton w-24 h-8"></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--green-soft); color:var(--green)"><span
               class="material-symbols-outlined">add_circle</span></div>
           <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">DEPOSITS</div>
-          <div class="text-2xl font-black mt-1">₹72,000 <span
-              class="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full ml-2">+14.2%</span></div>
+          <div class="text-2xl font-black mt-1 skeleton w-20 h-8"></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--red-soft); color:var(--red)"><span
               class="material-symbols-outlined">remove_circle</span></div>
           <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">WITHDRAWALS</div>
-          <div class="text-2xl font-black mt-1">₹38,000 <span
-              class="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full ml-2">+8.3%</span></div>
+          <div class="text-2xl font-black mt-1 skeleton w-20 h-8"></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--blue-soft); color:var(--blue)"><span
               class="material-symbols-outlined">swap_horiz</span></div>
           <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">TRANSFERS</div>
-          <div class="text-2xl font-black mt-1">₹1.4L <span
-              class="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full ml-2">+11.6%</span></div>
+          <div class="text-2xl font-black mt-1 skeleton w-24 h-8"></div>
         </div>
       </div>
 
@@ -630,68 +626,111 @@
   </div>
 
   <script>
-    const data = [
-      { id: '01', name: 'Rahul Kumar', email: 'rahul.kumar@gmail.com', init: 'RK', acc: 'FNZ20260001', txId: 'TXN20260001', type: 'DEPOSIT', date: '2026-04-10', displayDate: '10 Apr 2026 — 10:30 AM', amount: '+₹5,000.00', status: 'COMPLETED' },
-      { id: '02', name: 'Priya Sharma', email: 'priya.sharma@gmail.com', init: 'PS', acc: 'FNZ20260002', txId: 'TXN20260002', type: 'WITHDRAWAL', date: '2026-04-10', displayDate: '10 Apr 2026 — 11:15 AM', amount: '-₹2,000.00', status: 'COMPLETED' },
-      { id: '03', name: 'Amit Mondal', email: 'amit.mondal@gmail.com', init: 'AM', acc: 'FNZ20260003', txId: 'TXN20260003', type: 'TRANSFER', date: '2026-04-10', displayDate: '10 Apr 2026 — 12:00 PM', amount: '-₹3,500.00', status: 'COMPLETED' },
-      { id: '04', name: 'Sunita Mehta', email: 'sunita.mehta@gmail.com', init: 'SM', acc: 'FNZ20260004', txId: 'TXN20260004', type: 'DEPOSIT', date: '2026-04-09', displayDate: '09 Apr 2026 — 03:45 PM', amount: '+₹10,000.00', status: 'COMPLETED' },
-      { id: '05', name: 'Vikram Gupta', email: 'vikram.gupta@gmail.com', init: 'VG', acc: 'FNZ20260005', txId: 'TXN20260005', type: 'WITHDRAWAL', date: '2026-04-09', displayDate: '09 Apr 2026 — 04:30 PM', amount: '-₹1,500.00', status: 'PENDING' },
-      { id: '06', name: 'Mohan Kumar', email: 'mohan.kumar@gmail.com', init: 'MK', acc: 'FNZ20260006', txId: 'TXN20260006', type: 'TRANSFER', date: '2026-04-08', displayDate: '08 Apr 2026 — 09:00 AM', amount: '-₹7,000.00', status: 'COMPLETED' }
-    ];
-
+    let data = [];
     let currentType = 'all';
     let currentPage = 1;
-    const rowsPerPage = 5;
+    const rowsPerPage = 10;
 
-    function applyFilters() {
-      const search = $('#filter-search').val().toLowerCase();
-      const status = $('#filter-status').val();
-      const account = $('#filter-account').val();
-      const from = $('#date-from').val();
-      const to = $('#date-to').val();
+    async function loadTransactions() {
+      const $tbody = $('#txn-table-body');
+      $tbody.html(`
+        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
+      `);
 
-      const filtered = data.filter(r => {
-        let matchesCategory = true;
-        if (currentType === 'pending') {
-          matchesCategory = r.status.toLowerCase() === 'pending';
-        } else if (currentType !== 'all') {
-          matchesCategory = r.type.toLowerCase() === currentType;
+      try {
+        const response = await api.get('/admin/transactions.php', {
+          type: currentType,
+          status: $('#filter-status').val(),
+          account_type: $('#filter-account').val(),
+          search: $('#filter-search').val(),
+          page: currentPage,
+          per_page: rowsPerPage
+        });
+
+        if (response.status === 'success') {
+          data = response.data.transactions;
+          renderTable(data, response.data.total, response.data.pages);
+          updateStats(response.data.stats || {});
+        } else {
+          $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No transactions found.</td></tr>');
         }
-
-        const matchesStatus = status === 'all' || r.status.toLowerCase() === status;
-        const matchesSearch = !search || r.name.toLowerCase().includes(search) || r.txId.toLowerCase().includes(search) || r.acc.toLowerCase().includes(search);
-
-        let matchesDate = true;
-        if (from && r.date < from) matchesDate = false;
-        if (to && r.date > to) matchesDate = false;
-
-        return matchesCategory && matchesStatus && matchesSearch && matchesDate;
-      });
-
-      const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
-      if (currentPage > totalPages) currentPage = totalPages;
-
-      const paginated = filtered.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-
-      $('#txn-table-body').html(paginated.map(r => `
-        <tr>
-          <td class="font-bold opacity-40">${r.id}</td>
-          <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold">${r.init}</div>
-            <div><div class="font-bold">${r.name}</div><div class="text-[11px] opacity-40 font-semibold">${r.email}</div></div></div></td>
-          <td class="text-xs font-bold font-mono">${r.acc}</td>
-          <td class="text-xs font-bold opacity-60">${r.txId}</td>
-          <td><span class="badge badge-${r.type.toLowerCase()}">${r.type}</span></td>
-          <td class="text-xs font-bold opacity-60">${r.displayDate}</td>
-          <td class="text-sm font-black ${r.amount.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}">${r.amount}</td>
-          <td><span class="badge badge-${r.status.toLowerCase()}">${r.status}</span></td>
-          <td class="text-right"><button class="p-2 opacity-50 hover:opacity-100 transition-all"><span class="material-symbols-outlined text-lg">print</span></button></td>
-        </tr>
-      `).join(''));
-
-      $('#pag-info').text(`Showing ${filtered.length ? (currentPage - 1) * rowsPerPage + 1 : 0}-${Math.min(currentPage * rowsPerPage, filtered.length)} of ${filtered.length}`);
-      $('#prev-page').prop('disabled', currentPage === 1).toggleClass('opacity-50 cursor-not-allowed', currentPage === 1);
-      $('#next-page').prop('disabled', currentPage === totalPages).toggleClass('opacity-50 cursor-not-allowed', currentPage === totalPages);
+      } catch (error) {
+        console.error('Failed to load transactions:', error);
+        $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>');
+      }
     }
+
+    function renderTable(transactions, total, pages) {
+      const $tbody = $('#txn-table-body');
+      if (!transactions || !transactions.length) {
+          $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No transactions found.</td></tr>');
+          return;
+      }
+
+      $tbody.html(transactions.map((r, i) => {
+        const initials = r.initials || r.full_name.charAt(0);
+        const typeClass = r.type.toLowerCase();
+        const amountClass = r.amount_formatted.startsWith('+') ? 'text-emerald-500' : 'text-rose-500';
+        
+        return `
+        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+          <td class="font-bold opacity-30 text-[11px] tracking-widest">${String((currentPage-1)*rowsPerPage + i + 1).padStart(2, '0')}</td>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${initials}</div>
+              <div>
+                <div class="font-bold text-slate-800 dark:text-slate-100">${r.full_name}</div>
+                <div class="text-[11px] opacity-40 font-semibold">${r.email}</div>
+              </div>
+            </div>
+          </td>
+          <td class="text-xs font-bold font-mono text-slate-600 dark:text-slate-400 opacity-80">${r.account_no}</td>
+          <td class="text-[11px] font-bold opacity-50 font-mono tracking-tighter">${r.transaction_id}</td>
+          <td><span class="badge ${getBadgeClass(typeClass)}">${r.type.toUpperCase()}</span></td>
+          <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
+          <td class="text-sm font-black ${amountClass}">${r.amount_formatted}</td>
+          <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
+          <td class="text-right">
+            <button class="p-2 opacity-30 hover:opacity-100 transition-all text-slate-500 font-bold hover:text-primary">
+              <span class="material-symbols-outlined text-lg">print</span>
+            </button>
+          </td>
+        </tr>
+      `;
+      }).join(''));
+
+      $('#pag-info').text(`Showing ${Math.min((currentPage-1)*rowsPerPage+1, total)}-${Math.min(currentPage*rowsPerPage, total)} of ${total}`);
+      $('#prev-page').prop('disabled', currentPage === 1).toggleClass('opacity-50 cursor-not-allowed', currentPage === 1);
+      $('#next-page').prop('disabled', currentPage === pages || pages === 0).toggleClass('opacity-50 cursor-not-allowed', currentPage === pages || pages === 0);
+
+      // Pagination numbers
+      let pagHtml = '';
+      for (let i = 1; i <= pages; i++) {
+        if (pages > 5 && i > 3 && i < pages) {
+          if (i === 4) pagHtml += '<span class="px-2 opacity-50">...</span>';
+          continue;
+        }
+        pagHtml += `<span onclick="goToPage(${i})" class="w-8 h-8 flex items-center justify-center ${i === currentPage ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-primary cursor-pointer'} rounded-lg text-xs font-bold transition-all">${i}</span>`;
+      }
+      $('#pag-numbers').html(pagHtml);
+    }
+
+    function getBadgeClass(type) {
+      if (type === 'deposit') return 'badge-deposit';
+      if (type === 'withdrawal') return 'badge-withdrawal';
+      return 'badge-transfer';
+    }
+
+    function updateStats(stats) {
+      if (stats.volume_today) $('.stat-card:eq(0) .text-2xl').text(stats.volume_today).removeClass('skeleton');
+      if (stats.deposits_today !== undefined) $('.stat-card:eq(1) .text-2xl').text(stats.deposits_today).removeClass('skeleton');
+      if (stats.withdrawals_today !== undefined) $('.stat-card:eq(2) .text-2xl').text(stats.withdrawals_today).removeClass('skeleton');
+      if (stats.transfers_today !== undefined) $('.stat-card:eq(3) .text-2xl').text(stats.transfers_today).removeClass('skeleton');
+    }
+
+    window.goToPage = (p) => { currentPage = p; loadTransactions(); };
 
     $(function () {
       $('#mobile-menu-btn').on('click', function () {
@@ -707,34 +746,25 @@
         $('.tab-btn').removeClass('active bg-primary text-white shadow-lg').addClass('text-slate-500');
         $(this).addClass('active bg-primary text-white shadow-lg').removeClass('text-slate-500');
         currentType = $(this).data('type');
-        currentPage = 1; applyFilters();
+        currentPage = 1; loadTransactions();
       });
-      $('#apply-filters').on('click', () => { currentPage = 1; applyFilters(); });
+
+      $('#apply-filters').on('click', () => { currentPage = 1; loadTransactions(); });
       $('#reset-filters').on('click', () => {
         $('#filter-search').val('');
         $('#date-from, #date-to').val('');
         $('.filter-tab-btn').removeClass('active').first().addClass('active');
-        // Reset each dropdown individually with correct labels
         $('#status-dropdown input[type="hidden"]').val('all');
-        $('#status-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
         $('#status-dropdown .dropdown-label').text('All Status');
         $('#account-dropdown input[type="hidden"]').val('all');
-        $('#account-dropdown .finzo-dropdown-option').removeClass('is-selected').first().addClass('is-selected');
         $('#account-dropdown .dropdown-label').text('All Accounts');
-        currentPage = 1; currentType = 'all'; applyFilters();
-      });
-      $('#filter-search').on('keyup input', () => { currentPage = 1; applyFilters(); });
-      
-      // Live Filtering for Premium Dropdowns
-      $('#filter-status, #filter-account, #date-from, #date-to').on('change', () => {
-        currentPage = 1;
-        applyFilters();
+        currentPage = 1; currentType = 'all'; loadTransactions();
       });
 
-      $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; applyFilters(); } });
-      $('#next-page').on('click', () => { if (currentPage < Math.ceil(data.length / rowsPerPage)) { currentPage++; applyFilters(); } });
+      $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; loadTransactions(); } });
+      $('#next-page').on('click', () => { if (currentPage < 100) { currentPage++; loadTransactions(); } });
 
-      applyFilters();
+      loadTransactions();
     });
   </script>
 </body>

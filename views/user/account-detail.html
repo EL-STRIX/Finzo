@@ -209,24 +209,79 @@
   const accType = UserState.accountType || 'savings';
   document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';
 
-  // Daily limit
-  const dailyLimit = parseInt(localStorage.getItem('finzo_daily_limit') || '10000');
-  const usedToday = parseInt(localStorage.getItem('finzo_used_today') || '0');
-  const remaining = dailyLimit - usedToday;
-  document.getElementById('limit-amount').textContent = '₹'+dailyLimit.toLocaleString('en-IN');
-  document.getElementById('used-amount').textContent = '₹'+usedToday.toLocaleString('en-IN');
-  document.getElementById('limit-remaining').textContent = '₹'+remaining.toLocaleString('en-IN')+' Available';
-  document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/dailyLimit)*100)+'%';
-  document.getElementById('new-limit').value = dailyLimit;
+  // Load daily limit from API
+  let dailyLimit = 10000, usedToday = 0;
+  (async function loadLimitSettings() {
+    try {
+      const res = await fetch('/api/user/account-settings.php', { credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success) {
+        dailyLimit = parseInt(data.daily_limit || 10000);
+        usedToday = parseInt(data.used_today || 0);
+      }
+    } catch(e) {}
+    const remaining = dailyLimit - usedToday;
+    document.getElementById('limit-amount').textContent = '₹'+dailyLimit.toLocaleString('en-IN');
+    document.getElementById('used-amount').textContent = '₹'+usedToday.toLocaleString('en-IN');
+    document.getElementById('limit-remaining').textContent = '₹'+remaining.toLocaleString('en-IN')+' Available';
+    document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/dailyLimit)*100)+'%';
+    document.getElementById('new-limit').value = dailyLimit;
+  })();
 
-  function updateLimit(){
+  // Load recent transactions for mini-ledger
+  (async function loadMiniLedger() {
+    try {
+      const res = await fetch('/api/user/transactions.php?limit=5', { credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success && data.transactions && data.transactions.length > 0) {
+        document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {
+          const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+          const icon = isCredit ? 'arrow_downward' : 'arrow_upward';
+          const iconColor = isCredit ? '#10b981' : '#f43f5e';
+          const iconBg = isCredit ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)';
+          const amtColor = isCredit ? 'var(--green)' : 'var(--danger)';
+          const amtPrefix = isCredit ? '+' : '-';
+          const date = new Date(tx.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+          return `<div class="ledger-row">
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="width:40px;height:40px;border-radius:12px;background:${iconBg};display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="color:${iconColor};font-size:20px">${icon}</span></div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${tx.description || tx.type}</div>
+                <div style="font-size:10px;color:var(--text-secondary);font-weight:600">${tx.reference_id || ''}</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:14px;font-weight:800;color:${amtColor}">${amtPrefix}${formatINR(tx.amount)}</div>
+              <div style="font-size:10px;color:var(--text-placeholder)">${date}</div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) {}
+  })();
+
+  async function updateLimit(){
     const val = parseInt(document.getElementById('new-limit').value);
     if (!val || val < 1000 || val > 100000){ showToast('Exposure limit must be between ₹1,000 and ₹1,00,000','error'); return; }
-    localStorage.setItem('finzo_daily_limit', val);
-    document.getElementById('limit-amount').textContent = '₹'+val.toLocaleString('en-IN');
-    document.getElementById('limit-remaining').textContent = '₹'+(val-usedToday).toLocaleString('en-IN')+' Available';
-    document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/val)*100)+'%';
-    showToast('Exposure threshold updated','success');
+    
+    try {
+      const res = await fetch('/api/user/account-settings.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'daily_limit=' + val
+      });
+      const data = await res.json();
+      if (data.success) {
+        dailyLimit = val;
+        document.getElementById('limit-amount').textContent = '₹'+val.toLocaleString('en-IN');
+        document.getElementById('limit-remaining').textContent = '₹'+(val-usedToday).toLocaleString('en-IN')+' Available';
+        document.getElementById('limit-bar').style.width = Math.min(100,(usedToday/val)*100)+'%';
+        showToast('Exposure threshold updated','success');
+      } else {
+        showToast(data.message || 'Update failed', 'error');
+      }
+    } catch(e) { showToast('Connection error', 'error'); }
   }
 </script>
 </body>

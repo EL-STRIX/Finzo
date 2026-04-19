@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/api.js"></script>
   <script src="../../assets/js/theme.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
@@ -129,22 +130,21 @@
             <span class="material-symbols-outlined" style="color:#0369a1;">store</span>
           </div>
           <div class="admin-stat-label">TOTAL BRANCHES</div>
-          <div class="admin-stat-value">5 <span class="admin-stat-delta neutral" style="background:#dbeafe;color:#1d4ed8;">Registered</span></div>
+          <div id="stat-total-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#e8f8f2;">
             <span class="material-symbols-outlined" style="color:#00b894;">check_circle</span>
           </div>
           <div class="admin-stat-label">ACTIVE BRANCHES</div>
-          <div class="admin-stat-value">3 <span class="admin-stat-delta positive">Operational</span></div>
+          <div id="stat-active-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#fff8e1;">
             <span class="material-symbols-outlined" style="color:#f39c12;">badge</span>
           </div>
           <div class="admin-stat-label">TOTAL STAFF ASSIGNED</div>
-          <div class="admin-stat-value">8 <span class="admin-stat-delta"
-              style="background:#fff3cd;color:#b07d00;">Across all branches</span></div>
+          <div id="stat-total-staff" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
       </div>
 
@@ -184,119 +184,26 @@
               </tr>
             </thead>
             <tbody id="branches-table-body">
-              <tr data-type="system" data-status="active">
-                <td class="font-bold opacity-40">01</td>
-                <td>
-                  <div class="font-bold">Barasat</div>
-                </td>
-                <td class="text-sm font-medium">Kolkata, West Bengal</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#dbeafe;color:#1d4ed8;">AS</div>
-                    <div class="text-[12px] font-bold">Amit Sharma <span class="opacity-40 font-mono">(STF001)</span></div>
-                  </div>
-                </td>
-                <td class="text-center font-bold">3</td>
-                <td><span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;">MAIN</span></td>
-                <td><span class="status-badge badge-success">ACTIVE</span></td>
-                <td class="text-right">
-                  <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('01')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="editBranch('01')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                  </div>
-                </td>
+            <tbody id="branches-table-body">
+              <tr class="skeleton-row">
+                <td class="font-bold opacity-40"><div class="skeleton w-4 h-4"></div></td>
+                <td><div class="skeleton w-32 h-4"></div></td>
+                <td><div class="skeleton w-40 h-4"></div></td>
+                <td><div class="skeleton w-48 h-6"></div></td>
+                <td><div class="skeleton w-8 h-4 mx-auto"></div></td>
+                <td><div class="skeleton w-20 h-6 rounded-lg"></div></td>
+                <td><div class="skeleton w-24 h-6 rounded-full"></div></td>
+                <td class="text-right"><div class="skeleton w-24 h-8 ml-auto"></div></td>
               </tr>
-              <tr data-type="system" data-status="active">
-                <td class="font-bold opacity-40">02</td>
-                <td>
-                  <div class="font-bold">North Branch</div>
-                </td>
-                <td class="text-sm font-medium">Kolkata, West Bengal</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#fce7f3;color:#be185d;">PS</div>
-                    <div class="text-[12px] font-bold">Priya Singh <span class="opacity-40 font-mono">(STF002)</span></div>
-                  </div>
-                </td>
-                <td class="text-center font-bold">2</td>
-                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
-                <td><span class="status-badge badge-success">ACTIVE</span></td>
-                <td class="text-right">
-                  <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('02')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="editBranch('02')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                    <button onclick="deleteBranch('North Branch', 'FNZ-NB-102')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-type="system" data-status="active">
-                <td class="font-bold opacity-40">03</td>
-                <td>
-                  <div class="font-bold">South Branch</div>
-                </td>
-                <td class="text-sm font-medium">Howrah, West Bengal</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#fef3c7;color:#b45309;">RK</div>
-                    <div class="text-[12px] font-bold">Raj Kumar <span class="opacity-40 font-mono">(STF003)</span></div>
-                  </div>
-                </td>
-                <td class="text-center font-bold">2</td>
-                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
-                <td><span class="status-badge badge-success">ACTIVE</span></td>
-                <td class="text-right">
-                  <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="editBranch('03')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                    <button onclick="deleteBranch('South Branch', 'FNZ-SB-103')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-type="custom" data-status="active">
-                <td class="font-bold opacity-40">04</td>
-                <td>
-                  <div class="font-bold">East Branch</div>
-                </td>
-                <td class="text-sm font-medium">Salt Lake, Kolkata</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#ecfdf5;color:#047857;">SM</div>
-                    <div class="text-[12px] font-bold">Sunita Mehta <span class="opacity-40 font-mono">(STF004)</span></div>
-                  </div>
-                </td>
-                <td class="text-center font-bold">1</td>
-                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
-                <td><span class="status-badge badge-success">ACTIVE</span></td>
-                <td class="text-right">
-                  <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('04')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="editBranch('04')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                    <button onclick="deleteBranch('East Branch', 'FNZ-EB-482')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
-                  </div>
-                </td>
-              </tr>
-              <tr data-type="custom" data-status="active">
-                <td class="font-bold opacity-40">05</td>
-                <td>
-                  <div class="font-bold">Airport Branch</div>
-                </td>
-                <td class="text-sm font-medium">Dum Dum, Kolkata</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#f5f3ff;color:#6d28d9;">DG</div>
-                    <div class="text-[12px] font-bold">Dev Gupta <span class="opacity-40 font-mono">(STF005)</span></div>
-                  </div>
-                </td>
-                <td class="text-center font-bold">0</td>
-                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;border-color:#fef3c7;">CUSTOM</span></td>
-                <td><span class="status-badge badge-success">ACTIVE</span></td>
-                <td class="text-right">
-                  <div class="flex justify-end gap-2">
-                    <button onclick="viewBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
-                    <button onclick="editBranch('05')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                    <button onclick="deleteBranch('Airport Branch', 'FNZ-AB-982')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
-                  </div>
-                </td>
+              <tr class="skeleton-row">
+                <td class="font-bold opacity-40"><div class="skeleton w-4 h-4"></div></td>
+                <td><div class="skeleton w-32 h-4"></div></td>
+                <td><div class="skeleton w-40 h-4"></div></td>
+                <td><div class="skeleton w-48 h-6"></div></td>
+                <td><div class="skeleton w-8 h-4 mx-auto"></div></td>
+                <td><div class="skeleton w-20 h-6 rounded-lg"></div></td>
+                <td><div class="skeleton w-24 h-6 rounded-full"></div></td>
+                <td class="text-right"><div class="skeleton w-24 h-8 ml-auto"></div></td>
               </tr>
             </tbody>
           </table>
@@ -426,25 +333,9 @@
                   <span class="dropdown-label font-bold text-sm">Select Staff Member</span>
                   <span class="material-symbols-outlined chevron">expand_more</span>
                 </div>
-                <div class="finzo-dropdown-menu w-full !relative !mt-2 !shadow-sm !border !border-slate-100 dark:!border-white/5">
-                  <div class="finzo-dropdown-option p-1" data-value="STF001">
-                    <div class="manager-option-item">
-                      <div class="manager-avatar" style="background:#dbeafe;color:#1d4ed8;">AS</div>
-                      <div class="manager-info">
-                        <span class="manager-name">STF001 — Amit Sharma</span>
-                        <div class="manager-meta">Current: <span class="branch-tag">Barasat</span></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="finzo-dropdown-option p-1" data-value="STF006">
-                    <div class="manager-option-item">
-                      <div class="manager-avatar" style="background:#f1f5f9;color:#64748b;">RP</div>
-                      <div class="manager-info">
-                        <span class="manager-name">STF006 — Ravi Patel</span>
-                        <div class="manager-meta">Current: <span class="opacity-40 italic">Unassigned</span></div>
-                      </div>
-                    </div>
-                  </div>
+                <div class="finzo-dropdown-menu w-full !relative !mt-2 !shadow-sm !border !border-slate-100 dark:!border-white/5" id="manager-dropdown-menu">
+                   <!-- Manager options injected here -->
+                   <div class="p-4 text-center text-xs opacity-50">Loading staff...</div>
                 </div>
                 <input type="hidden" id="manager-id" value="">
               </div>
@@ -724,6 +615,10 @@
       // Sidebar Toggle
       $('#mobile-menu-btn').on('click', () => { $('#admin-sidebar, #sidebar-overlay').addClass('mobile-open active'); });
       $('#sidebar-overlay').on('click', () => { $('#admin-sidebar, #sidebar-overlay').removeClass('mobile-open active'); });
+
+      loadBranches();
+      loadUnassignedStaff();
+
       // Search Filtering
       function filterBranches() {
         const query = $('#branch-search').val().toLowerCase();
@@ -738,6 +633,73 @@
       }
 
       $('#branch-search').on('keyup', filterBranches);
+    });
+
+    async function loadBranches() {
+      try {
+        const data = await api.get('/admin/branches.php');
+        if (data.status === 'success') {
+          const info = data.data;
+          
+          // Stats
+          $('#stat-total-branches').html(`${info.stats.total} <span class="admin-stat-delta neutral" style="background:#dbeafe;color:#1d4ed8;">Registered</span>`);
+          $('#stat-active-branches').html(`${info.stats.active} <span class="admin-stat-delta positive">Operational</span>`);
+          $('#stat-total-staff').html(`${info.stats.total_staff} <span class="admin-stat-delta" style="background:#fff3cd;color:#b07d00;">Across all branches</span>`);
+
+          // Table
+          const tableHtml = info.branches.map((b, i) => `
+            <tr data-type="${b.type.toLowerCase()}" data-status="${b.status.toLowerCase()}">
+              <td class="font-bold opacity-40">${String(i + 1).padStart(2, '0')}</td>
+              <td><div class="font-bold">${b.name}</div></td>
+              <td class="text-sm font-medium">${b.city}, ${b.state}</td>
+              <td>
+                <div class="flex items-center gap-2">
+                  <div class="admin-avatar sm" style="width:24px;height:24px;font-size:9px;background:#dbeafe;color:#1d4ed8;">${b.manager_initials || '??'}</div>
+                  <div class="text-[12px] font-bold">${b.manager_name} <span class="opacity-40 font-mono">(${b.manager_id})</span></div>
+                </div>
+              </td>
+              <td class="text-center font-bold">${b.staff_count}</td>
+              <td><span class="status-badge" style="background:${b.type === 'MAIN' ? '#eff6ff' : '#fffbeb'}; color:${b.type === 'MAIN' ? '#1d4ed8' : '#b45309'}; border-color:${b.type === 'MAIN' ? '#dbeafe' : '#fef3c7'};">${b.type}</span></td>
+              <td><span class="status-badge badge-success">ACTIVE</span></td>
+              <td class="text-right">
+                <div class="flex justify-end gap-2">
+                  <button onclick="viewBranch('${b.id}')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span></button>
+                  <button onclick="editBranch('${b.id}')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+                  ${b.type !== 'MAIN' ? `<button onclick="deleteBranch('${b.name}', '${b.id}')" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-slate-400 hover:text-red-500" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>` : ''}
+                </div>
+              </td>
+            </tr>
+          `).join('');
+          $('#branches-table-body').html(tableHtml);
+          $('.tracking-wider').text(`Showing 1-${info.branches.length} of ${info.stats.total} branches`);
+        }
+      } catch (error) {
+        console.error('Failed to load branches:', error);
+      }
+    }
+
+    async function loadUnassignedStaff() {
+       try {
+         const data = await api.get('/admin/staff.php?view=unassigned');
+         if (data.status === 'success') {
+            const staffList = data.data;
+            const staffHtml = staffList.map(s => `
+              <div class="finzo-dropdown-option p-1" data-value="${s.staff_id}">
+                <div class="manager-option-item">
+                  <div class="manager-avatar" style="background:#f1f5f9;color:#64748b;">${s.initials}</div>
+                  <div class="manager-info">
+                    <span class="manager-name">${s.staff_id} — ${s.name}</span>
+                    <div class="manager-meta">Current: <span class="opacity-40 italic">Unassigned</span></div>
+                  </div>
+                </div>
+              </div>
+            `).join('');
+            $('#manager-dropdown-menu').html(staffHtml || '<div class="p-4 text-center text-xs opacity-50">No unassigned staff available</div>');
+         }
+       } catch (error) {
+         console.error('Failed to load staff for assignment:', error);
+       }
+    }
 
       // Branch Code Auto-generator
       $('#add-branch-name').on('input', function() {
@@ -816,58 +778,56 @@
       // Mock Staff Data
       const mockStaff = [
         { id: 'STF001', name: 'Amit Sharma', role: 'Branch Manager', email: 'amit.sharma@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AS', color: '#1d4ed8', bg: '#dbeafe' },
-        { id: 'STF002', name: 'Priya Singh', role: 'Loan Officer', email: 'priya.s@finzobank.com', status: 'Active', branch: 'North Branch', avatar: 'PS', color: '#be185d', bg: '#fce7f3' },
-        { id: 'STF003', name: 'Raj Kumar', role: 'Cashier', email: 'raj.k@finzobank.com', status: 'Active', branch: 'South Branch', avatar: 'RK', color: '#b45309', bg: '#fef3c7' },
-        { id: 'STF007', name: 'Sanjay Dutt', role: 'Assistant Manager', email: 'sanjay.d@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'SD', color: '#047857', bg: '#ecfdf5' },
-        { id: 'STF009', name: 'Ananya Roy', role: 'Customer Service', email: 'ananya.r@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AR', color: '#6d28d9', bg: '#f5f3ff' },
-        { id: 'STF012', name: 'Vikram Seth', role: 'Security Head', email: 'vikram.s@finzobank.com', status: 'Suspend', branch: 'North Branch', avatar: 'VS', color: '#111827', bg: '#f1f5f9' }
-      ];
-
-      window.showBranchStaff = (branchName) => {
-        const filteredStaff = mockStaff.filter(s => s.branch === branchName);
+      window.showBranchStaff = async (branchId, branchName) => {
         const $tbody = $('#branch-staff-table-body');
-        $tbody.empty();
+        $tbody.html('<tr><td colspan="5"><div class="skeleton-row"></div></td></tr>');
         
         $('#staff-modal-title').text(`Staff Directory — ${branchName}`);
-        $('#staff-modal-subtitle').text(`${filteredStaff.length} Team Members assigned`);
-
-        if (filteredStaff.length === 0) {
-          $('#no-staff-error').removeClass('hidden');
-          $('.admin-table').addClass('hidden');
-        } else {
-          $('#no-staff-error').addClass('hidden');
-          $('.admin-table').removeClass('hidden');
-          
-          filteredStaff.forEach(staff => {
-            const statusClass = staff.status === 'Active' ? 'badge-success' : 'badge-danger';
-            const row = `
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors border-b border-slate-100 dark:border-white/5 last:border-0">
-                <td class="px-6 py-4 font-mono font-bold text-[11px] opacity-40">${staff.id}</td>
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm" style="background:${staff.bg};color:${staff.color};">${staff.avatar}</div>
-                    <div>
-                      <div class="font-bold text-sm">${staff.name}</div>
-                      <div class="text-[10px] opacity-60 uppercase font-black tracking-tighter">${staff.role}</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 text-[12px] font-medium opacity-70">${staff.email}</td>
-                <td class="px-6 py-4"><span class="status-badge ${statusClass}">${staff.status.toUpperCase()}</span></td>
-                <td class="px-6 py-4 text-right">
-                  <a href="admin-staff-detail.html" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1">
-                    <span class="text-[10px] font-black uppercase tracking-widest">Detail</span>
-                    <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
-                  </a>
-                </td>
-              </tr>
-            `;
-            $tbody.append(row);
-          });
-        }
-
-        $('#viewBranchModal').addClass('hidden').removeClass('flex');
+        $('#staff-modal-subtitle').text(`Fetching Team Members...`);
         $('#branchStaffModal').removeClass('hidden').addClass('flex');
+
+        try {
+          const response = await api.get('/admin/staff.php', { branch_id: branchId });
+          if (response.status === 'success') {
+            const staff = response.data.staff;
+            $('#staff-modal-subtitle').text(`${staff.length} Team Members assigned`);
+
+            if (staff.length === 0) {
+              $('#no-staff-error').removeClass('hidden');
+              $tbody.closest('table').addClass('hidden');
+            } else {
+              $('#no-staff-error').addClass('hidden');
+              $tbody.closest('table').removeClass('hidden');
+              $tbody.html(staff.map(s => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                  <td class="px-6 py-4 text-xs font-bold font-mono tracking-wider opacity-40">${s.staff_id}</td>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="admin-avatar sm uppercase" style="background:#f1f5f9;color:#64748b;">${s.initials}</div>
+                      <div>
+                        <div class="font-bold text-sm">${s.name}</div>
+                        <div class="text-[11px] opacity-60 font-medium">${s.designation}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-[11px] font-bold">${s.email}</div>
+                    <div class="text-[10px] opacity-40 font-black mt-0.5">${s.phone || 'No Phone'}</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="status-badge ${s.status === 'active' ? 'badge-success' : 'badge-error'}">${s.status.toUpperCase()}</span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a href="admin-staff-detail.html?id=${s.id}" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Detail</a>
+                  </td>
+                </tr>
+              `).join(''));
+            }
+          }
+        } catch (error) {
+          console.error('Failed to load branch staff:', error);
+          $tbody.html('<tr><td colspan="5" class="py-10 text-center text-red-500 font-bold">Failed to load staff list.</td></tr>');
+        }
       };
 
       window.editBranch = (id) => {

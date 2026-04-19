@@ -74,21 +74,52 @@ handleStatusRedirect('transactions');
 
 const ROW_PP = 8;
 let page = 1, activeFilter = 'all';
+let allTxns = [];
 
-// PHP_BACKEND: Fetch from /api/transactions.php?page=&type=&search=&from=&to=
-const allTxns = [
-  {id:'TXN20260001',date:'12 Apr 2026',time:'10:30 AM IST',desc:'Initial Deposit',type:'credit',amount:500,balanceAfter:500,status:'completed'},
-  {id:'TXN20260002',date:'12 Apr 2026',time:'11:15 AM IST',desc:'Account Activation',type:'credit',amount:0,balanceAfter:500,status:'completed'},
-];
+// Fetch transactions from API
+async function loadTransactions() {
+  try {
+    const params = new URLSearchParams();
+    if (activeFilter !== 'all') params.set('type', activeFilter);
+    const search = document.getElementById('search').value;
+    if (search) params.set('search', search);
+    const fromDate = document.getElementById('from-date').value;
+    if (fromDate) params.set('from_date', fromDate);
+    const toDate = document.getElementById('to-date').value;
+    if (toDate) params.set('to_date', toDate);
+    params.set('limit', '200');
 
-let filtered = [...allTxns];
+    const res = await fetch('/api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.success && data.transactions) {
+      allTxns = data.transactions.map(tx => ({
+        id: tx.reference_id || tx.id,
+        date: new Date(tx.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}),
+        time: new Date(tx.created_at).toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'}) + ' IST',
+        desc: tx.description || tx.type,
+        type: tx.type === 'credit' || tx.type === 'deposit' ? 'credit' : tx.type === 'transfer' ? 'transfer' : 'debit',
+        amount: parseFloat(tx.amount),
+        balanceAfter: parseFloat(tx.balance_after || 0),
+        status: tx.status || 'completed'
+      }));
+    } else {
+      allTxns = [];
+    }
+  } catch (err) {
+    console.warn('Failed to load transactions:', err);
+    allTxns = [];
+  }
+  renderTable();
+}
+
+let filtered = [];
 
 function filterTxns(type, el) {
   activeFilter = type;
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   page = 1;
-  renderTable();
+  loadTransactions();
 }
 
 function resetFilters() {
@@ -97,7 +128,7 @@ function resetFilters() {
   document.getElementById('to-date').value = '';
   activeFilter = 'all';
   document.querySelectorAll('.filter-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
-  page = 1; renderTable();
+  page = 1; loadTransactions();
 }
 
 function renderTable() {
@@ -128,7 +159,7 @@ function renderTable() {
         <td class="${amtClass}">${amtSign}${formatINR(t.amount)}</td>
         <td style="font-size:12px;font-weight:700">${formatINR(t.balanceAfter)}</td>
         <td><span class="badge badge-green">Completed</span></td>
-        <td><button class="btn btn-ghost btn-sm btn-icon-only" onclick="window.location.href='receipt.html'" title="View Receipt"><span class="material-symbols-outlined" style="font-size:16px">print</span></button></td>
+        <td><button class="btn btn-ghost btn-sm btn-icon-only" onclick="window.location.href='receipt.html?id=${t.id}'" title="View Receipt"><span class="material-symbols-outlined" style="font-size:16px">print</span></button></td>
       </tr>`;
     }).join('');
   }
@@ -142,7 +173,7 @@ function renderTable() {
 }
 
 function goPage(dir) { page = Math.max(1, Math.min(Math.ceil(filtered.length/ROW_PP), page+dir)); renderTable(); }
-renderTable();
+loadTransactions();
 </script>
 </body>
 </html>

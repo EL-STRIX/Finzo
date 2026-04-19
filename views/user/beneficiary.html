@@ -58,55 +58,115 @@
 buildSidebar('beneficiary'); buildNavbar('Banking','Beneficiaries');
 handleStatusRedirect('beneficiary');
 
-const demoAccounts={'FNZ20260002':'Priya Sharma','FNZ20260003':'Amit Mondal','FNZ20260004':'Sunita Mehta','FNZ20260005':'Vikram Gupta'};
-let beneficiaries=JSON.parse(localStorage.getItem('finzo_beneficiaries')||'[]');
-if(!beneficiaries.length) beneficiaries=[{id:1,nick:'Priya Sharma',account:'FNZ20260002',holder:'Priya Sharma',bank:'Finzo Banking System',added:'12 Apr 2026'},{id:2,nick:'Amit Mondal',account:'FNZ20260003',holder:'Amit Mondal',bank:'Finzo Banking System',added:'12 Apr 2026'}];
+let beneficiaries = [];
+let verifiedHolder = '';
 
-let verifiedHolder='';
-function lookupBen(){
-  const acc=document.getElementById('new-acc').value.trim().toUpperCase();
-  const res=document.getElementById('ben-result');
-  if(!acc)return;
-  if(demoAccounts[acc]){
-    verifiedHolder=demoAccounts[acc];
-    res.textContent='✅ Verified: '+verifiedHolder;
-    res.style.color='#10b981';
-    res.classList.remove('hidden');
-  }else{
-    verifiedHolder='';
-    res.textContent='❌ Finzo account not found';
-    res.style.color='#f43f5e';
+// Load beneficiaries from API
+async function loadBeneficiaries() {
+  try {
+    const res = await fetch('/api/user/beneficiary.php', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.success && data.beneficiaries) {
+      beneficiaries = data.beneficiaries.map(b => ({
+        id: b.id,
+        nick: b.nickname || b.name,
+        account: b.account_no,
+        holder: b.name,
+        bank: b.bank_name || 'Finzo Banking System',
+        added: b.created_at ? new Date(b.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—'
+      }));
+    }
+  } catch(e) { console.warn('Failed to load beneficiaries:', e); }
+  renderList();
+}
+
+async function lookupBen() {
+  const acc = document.getElementById('new-acc').value.trim().toUpperCase();
+  const res = document.getElementById('ben-result');
+  if (!acc) return;
+  try {
+    const r = await fetch('/api/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
+    const data = await r.json();
+    if (data.success && data.account) {
+      verifiedHolder = data.account.holder_name;
+      res.textContent = '✅ Verified: ' + verifiedHolder;
+      res.style.color = '#10b981';
+      res.classList.remove('hidden');
+    } else {
+      verifiedHolder = '';
+      res.textContent = '❌ Finzo account not found';
+      res.style.color = '#f43f5e';
+      res.classList.remove('hidden');
+    }
+  } catch(e) {
+    verifiedHolder = '';
+    res.textContent = '❌ Lookup failed';
+    res.style.color = '#f43f5e';
     res.classList.remove('hidden');
   }
 }
-function addBeneficiary(){
-const nick=document.getElementById('new-nick').value.trim();
-const acc=document.getElementById('new-acc').value.trim().toUpperCase();
-if(!nick||!acc){showToast('Please fill in all fields','error');return;}
-if(!verifiedHolder){showToast('Please verify the Finzo account number first','error');return;}
 
-beneficiaries.push({id:Date.now(),nick,account:acc,holder:verifiedHolder,bank:'Finzo Banking System',added:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})});
-localStorage.setItem('finzo_beneficiaries',JSON.stringify(beneficiaries));
-document.getElementById('new-nick').value='';document.getElementById('new-acc').value='';document.getElementById('ben-result').classList.add('hidden');verifiedHolder='';
-showToast('Beneficiary saved successfully','success');renderList();}
-function deleteBen(id){openConfirm('Remove Beneficiary','Are you sure you want to remove this beneficiary?',()=>{beneficiaries=beneficiaries.filter(b=>b.id!==id);localStorage.setItem('finzo_beneficiaries',JSON.stringify(beneficiaries));renderList();showToast('Beneficiary removed','success');},true);}
-function renderList(){
-const list=document.getElementById('beneficiary-list');
-if(!beneficiaries.length){list.innerHTML='<div class="empty-state"><span class="material-symbols-outlined">group</span><div class="empty-state-title">No saved beneficiaries</div><div class="empty-state-text">Add your first beneficiary using the form on the right.</div></div>';return;}
-list.innerHTML=beneficiaries.map(b=>`
-<div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg-input)'" onmouseout="this.style.background='transparent'">
-<div style="width:44px;height:44px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">${b.nick.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
-<div style="flex:1">
-<div style="font-size:14px;font-weight:700;color:var(--text-primary)">${b.nick}</div>
-<div style="font-size:11px;color:var(--text-secondary);margin-top:2px;font-family:monospace">${b.account}</div>
-<div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Added ${b.added}</div>
-</div>
-<div style="display:flex;gap:6px">
-<a href="transfer.html" class="btn btn-primary btn-sm">Transfer</a>
-<button class="btn btn-ghost btn-sm btn-icon-only" onclick="deleteBen(${b.id})" title="Remove"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
-</div>
-</div>`).join('');}
-renderList();
+async function addBeneficiary() {
+  const nick = document.getElementById('new-nick').value.trim();
+  const acc = document.getElementById('new-acc').value.trim().toUpperCase();
+  if (!nick || !acc) { showToast('Please fill in all fields', 'error'); return; }
+  if (!verifiedHolder) { showToast('Please verify the Finzo account number first', 'error'); return; }
+
+  try {
+    const res = await fetch('/api/user/beneficiary.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      credentials: 'same-origin',
+      body: 'action=add&nickname=' + encodeURIComponent(nick) + '&account_no=' + encodeURIComponent(acc) + '&holder_name=' + encodeURIComponent(verifiedHolder)
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('new-nick').value = '';
+      document.getElementById('new-acc').value = '';
+      document.getElementById('ben-result').classList.add('hidden');
+      verifiedHolder = '';
+      showToast('Beneficiary saved successfully', 'success');
+      loadBeneficiaries();
+    } else {
+      showToast(data.message || 'Failed to save beneficiary', 'error');
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+function deleteBen(id) {
+  openConfirm('Remove Beneficiary', 'Are you sure you want to remove this beneficiary?', async () => {
+    try {
+      await fetch('/api/user/beneficiary.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'action=delete&id=' + encodeURIComponent(id)
+      });
+    } catch(e) {}
+    beneficiaries = beneficiaries.filter(b => b.id !== id);
+    renderList();
+    showToast('Beneficiary removed', 'success');
+  }, true);
+}
+
+function renderList() {
+  const list = document.getElementById('beneficiary-list');
+  if (!beneficiaries.length) { list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">group</span><div class="empty-state-title">No saved beneficiaries</div><div class="empty-state-text">Add your first beneficiary using the form on the right.</div></div>'; return; }
+  list.innerHTML = beneficiaries.map(b => `
+  <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg-input)'" onmouseout="this.style.background='transparent'">
+  <div style="width:44px;height:44px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">${b.nick.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+  <div style="flex:1">
+  <div style="font-size:14px;font-weight:700;color:var(--text-primary)">${b.nick}</div>
+  <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;font-family:monospace">${b.account}</div>
+  <div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Added ${b.added}</div>
+  </div>
+  <div style="display:flex;gap:6px">
+  <a href="transfer.html" class="btn btn-primary btn-sm">Transfer</a>
+  <button class="btn btn-ghost btn-sm btn-icon-only" onclick="deleteBen(${b.id})" title="Remove"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+  </div>
+  </div>`).join('');
+}
+loadBeneficiaries();
 </script>
 </body>
 </html>

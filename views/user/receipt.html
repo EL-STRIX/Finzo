@@ -53,7 +53,7 @@
 </div>
 <div style="text-align:right">
 <div style="font-size:13px;font-weight:800;color:var(--text-primary)">TRANSACTION RECEIPT</div>
-<div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-top:4px" id="rcpt-no">RCP20260001</div>
+<div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-top:4px" id="rcpt-no"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
 </div>
 </div>
 
@@ -65,30 +65,30 @@
 <!-- Receipt details -->
 <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:16px;margin-bottom:16px">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px">Transaction Details</div>
-<div class="receipt-row"><span class="r-label">Transaction ID</span><span class="r-value td-mono" id="rcpt-txn-id">TXN20260001</span></div>
-<div class="receipt-row"><span class="r-label">Date & Time</span><span class="r-value" id="rcpt-datetime">12 Apr 2026 — 10:30 AM IST</span></div>
-<div class="receipt-row"><span class="r-label">Transaction Type</span><span class="r-value" id="rcpt-type"><span class="badge badge-teal">Transfer</span></span></div>
-<div class="receipt-row"><span class="r-label">Description</span><span class="r-value" id="rcpt-desc">Fund Transfer</span></div>
+<div class="receipt-row"><span class="r-label">Transaction ID</span><span class="r-value td-mono" id="rcpt-txn-id"><span class="skeleton" style="width: 120px; height: 13px;"></span></span></div>
+<div class="receipt-row"><span class="r-label">Date & Time</span><span class="r-value" id="rcpt-datetime"><span class="skeleton" style="width: 180px; height: 13px;"></span></span></div>
+<div class="receipt-row"><span class="r-label">Transaction Type</span><span class="r-value" id="rcpt-type"><span class="skeleton" style="width: 80px; height: 20px;"></span></span></div>
+<div class="receipt-row"><span class="r-label">Description</span><span class="r-value" id="rcpt-desc"><span class="skeleton" style="width: 100px; height: 13px;"></span></span></div>
 </div>
 
 <div class="form-grid form-grid-2" style="gap:12px;margin-bottom:16px">
 <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">From</div>
-<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-from-name">Rahul Kumar</div>
-<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-from-acc">FNZ20260001</div>
+<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-from-name"><span class="skeleton" style="width: 120px; height: 14px;"></span></div>
+<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-from-acc"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
 <div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Savings Account</div>
 </div>
 <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">To</div>
-<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-to-name">Priya Sharma</div>
-<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-to-acc">FNZ20260002</div>
+<div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-to-name"><span class="skeleton" style="width: 120px; height: 14px;"></span></div>
+<div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-to-acc"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
 <div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Savings Account</div>
 </div>
 </div>
 
 <div style="background:rgba(8,145,178,0.06);border:1px solid rgba(8,145,178,0.15);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;text-align:center">
 <div style="font-size:10px;font-weight:800;color:var(--primary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">Amount Transferred</div>
-<div style="font-size:36px;font-weight:800;color:var(--text-primary)" id="rcpt-amount">₹500.00</div>
+<div style="font-size:36px;font-weight:800;color:var(--text-primary)" id="rcpt-amount"><span class="skeleton" style="width: 140px; height: 40px;"></span></div>
 </div>
 
 <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;margin-bottom:16px">
@@ -117,35 +117,53 @@
 <script>
 buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
 
-// Load last transaction from localStorage
-// PHP_BACKEND: GET /api/transactions/latest.php or from URL param ?txn_id=
-const lastTxn = JSON.parse(localStorage.getItem('finzo_last_txn') || '{}');
-const now = new Date();
-const dateStr = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-const timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
+// Load receipt from API using URL param
+(async function loadReceipt() {
+  const params = new URLSearchParams(window.location.search);
+  const txnId = params.get('id');
+  
+  // Set sender info from session
+  document.getElementById('rcpt-from-name').textContent = UserState.name;
+  document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'NOT ASSIGNED';
 
-document.getElementById('rcpt-no').textContent = 'RCP' + Date.now().toString().slice(-8);
-document.getElementById('rcpt-txn-id').textContent = lastTxn.id || 'TXN20260001';
-document.getElementById('rcpt-datetime').textContent = dateStr + ' — ' + timeStr;
-document.getElementById('rcpt-from-name').textContent = UserState.name;
-document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'FNZ20260001';
+  if (txnId) {
+    try {
+      const res = await fetch('/api/user/receipt.php?id=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success && data.transaction) {
+        const tx = data.transaction;
+        const date = new Date(tx.created_at);
+        const dateStr = date.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+        const timeStr = date.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
 
-if (lastTxn.type === 'transfer') {
-  document.getElementById('rcpt-type').innerHTML = '<span class="badge badge-teal">Transfer</span>';
-  document.getElementById('rcpt-to-name').textContent = lastTxn.recipient || 'Recipient';
-  document.getElementById('rcpt-to-acc').textContent = lastTxn.to || '—';
-} else if (lastTxn.type === 'credit') {
-  document.getElementById('rcpt-type').innerHTML = '<span class="badge badge-green">Deposit</span>';
-  document.getElementById('rcpt-to-name').textContent = UserState.name;
-  document.getElementById('rcpt-to-acc').textContent = UserState.accountNo;
-}
+        document.getElementById('rcpt-no').textContent = tx.receipt_no || ('RCP' + txnId.slice(-8));
+        document.getElementById('rcpt-txn-id').textContent = tx.reference_id || txnId;
+        document.getElementById('rcpt-datetime').textContent = dateStr + ' — ' + timeStr;
+        document.getElementById('rcpt-desc').textContent = tx.description || 'Fund Transfer';
 
-const amt = lastTxn.amount || 0;
-document.getElementById('rcpt-amount').textContent = '₹' + parseFloat(amt).toLocaleString('en-IN',{minimumFractionDigits:2});
-document.getElementById('rcpt-amount2').textContent = '₹' + parseFloat(amt).toLocaleString('en-IN',{minimumFractionDigits:2});
-document.getElementById('rcpt-desc').textContent = lastTxn.desc || 'Fund Transfer';
-const balAfter = parseFloat(UserState.balance || '0');
-document.getElementById('rcpt-balance-after').textContent = '₹' + balAfter.toLocaleString('en-IN',{minimumFractionDigits:2});
+        const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+        document.getElementById('rcpt-type').innerHTML = isCredit
+          ? '<span class="badge badge-green">Deposit</span>'
+          : '<span class="badge badge-teal">Transfer</span>';
+
+        if (tx.to_name) document.getElementById('rcpt-to-name').textContent = tx.to_name;
+        if (tx.to_account) document.getElementById('rcpt-to-acc').textContent = tx.to_account;
+
+        const amt = parseFloat(tx.amount || 0);
+        document.getElementById('rcpt-amount').textContent = formatINR(amt);
+        document.getElementById('rcpt-amount2').textContent = formatINR(amt);
+        document.getElementById('rcpt-balance-after').textContent = formatINR(tx.balance_after || 0);
+        return;
+      }
+    } catch (e) { console.warn('Failed to load receipt:', e); }
+  }
+
+  // Fallback: show basic info
+  const now = new Date();
+  document.getElementById('rcpt-no').textContent = 'RCP' + Date.now().toString().slice(-8);
+  document.getElementById('rcpt-datetime').textContent = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + ' — ' + now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
+  document.getElementById('rcpt-balance-after').textContent = formatINR(UserState.balance || 0);
+})();
 </script>
 </body>
 </html>

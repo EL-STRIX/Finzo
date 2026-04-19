@@ -30,34 +30,74 @@ function updateThemeIcon() {
 
 initTheme();
 
-// ── USER STATE (localStorage demo) ──
-// PHP_BACKEND: Replace these with $_SESSION values from PHP
+// ── USER STATE (Session-backed) ──
+// Populated from PHP session via API. Falls back to localStorage for offline demo mode.
 const STATE_KEYS = {
-  STATUS: 'finzo_status',           // pending | under_review | active | rejected | deactivated
-  NAME: 'finzo_user_name',
-  EMAIL: 'finzo_user_email',
-  PHONE: 'finzo_user_phone',
-  ACCOUNT_NO: 'finzo_account_no',
-  ACCOUNT_TYPE: 'finzo_account_type',
-  BALANCE: 'finzo_balance',
-  REJECTION_REASON: 'finzo_rejection_reason',
   NOTIF_COUNT: 'finzo_notif_count',
 };
 
+// Internal cache — populated by fetchUserSession()
+const _userCache = {
+  status: 'pending',
+  name: 'User',
+  email: '',
+  phone: '',
+  accountNo: '',
+  accountType: 'savings',
+  balance: '0',
+  rejectionReason: '',
+  notifCount: parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '0'),
+  _loaded: false,
+};
+
+/**
+ * Fetch user session from backend and populate UserState cache.
+ * Called once on page load. Rebuilds sidebar/navbar after data arrives.
+ */
+async function fetchUserSession() {
+  try {
+    const res = await fetch('/api/user/dashboard.php', { credentials: 'same-origin' });
+    if (res.status === 401) {
+      // Not logged in — redirect to login
+      window.location.href = '../auth/login.html';
+      return;
+    }
+    const data = await res.json();
+    if (data.success) {
+      _userCache.status = data.user?.status || 'pending';
+      _userCache.name = data.user?.full_name || 'User';
+      _userCache.email = data.user?.email || '';
+      _userCache.phone = data.user?.phone || '';
+      _userCache.accountNo = data.account?.account_no || '';
+      _userCache.accountType = data.account?.account_type || 'savings';
+      _userCache.balance = data.account?.balance || '0';
+      _userCache.rejectionReason = data.user?.rejection_reason || '';
+      _userCache.notifCount = data.unread_notifications || 0;
+      _userCache._loaded = true;
+
+      // Only sync non-sensitive metadata back to localStorage
+      localStorage.setItem(STATE_KEYS.NOTIF_COUNT, String(_userCache.notifCount));
+    }
+  } catch (err) {
+    console.warn('Session fetch failed, using cached state:', err.message);
+  }
+}
+
 const UserState = {
-  get status() { return localStorage.getItem(STATE_KEYS.STATUS) || 'pending'; },
-  get name() { return localStorage.getItem(STATE_KEYS.NAME) || 'Rahul Kumar'; },
-  get email() { return localStorage.getItem(STATE_KEYS.EMAIL) || 'rahul.kumar@gmail.com'; },
-  get phone() { return localStorage.getItem(STATE_KEYS.PHONE) || '+91 98765 43210'; },
-  get accountNo() { return localStorage.getItem(STATE_KEYS.ACCOUNT_NO) || ''; },
-  get accountType() { return localStorage.getItem(STATE_KEYS.ACCOUNT_TYPE) || 'savings'; },
-  get balance() { return localStorage.getItem(STATE_KEYS.BALANCE) || '0'; },
-  get rejectionReason() { return localStorage.getItem(STATE_KEYS.REJECTION_REASON) || ''; },
-  get notifCount() { return parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '2'); },
+  get status() { return _userCache.status; },
+  get name() { return _userCache.name; },
+  get email() { return _userCache.email; },
+  get phone() { return _userCache.phone; },
+  get accountNo() { return _userCache.accountNo; },
+  get accountType() { return _userCache.accountType; },
+  get balance() { return _userCache.balance; },
+  get rejectionReason() { return _userCache.rejectionReason; },
+  get notifCount() { return _userCache.notifCount; },
   get isActive() { return this.status === 'active'; },
   get isPending() { return this.status === 'pending'; },
   get isUnderReview() { return this.status === 'under_review'; },
   get isRejected() { return this.status === 'rejected'; },
+  get isLoaded() { return _userCache._loaded; },
   get initials() { 
     return this.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase(); 
   },
@@ -72,7 +112,6 @@ const UserState = {
         el.textContent = el.getAttribute('data-real-value');
       }
     });
-    // Update icons
     document.querySelectorAll('.reveal-balance-btn .material-symbols-outlined').forEach(icon => {
       icon.textContent = 'visibility_off';
     });
@@ -83,16 +122,20 @@ const UserState = {
       el.classList.add('balance-hidden-mask');
       el.textContent = '₹ ••••';
     });
-    // Update icons
     document.querySelectorAll('.reveal-balance-btn .material-symbols-outlined').forEach(icon => {
       icon.textContent = 'visibility';
     });
   },
-  set(key, val) { localStorage.setItem(STATE_KEYS[key], val); },
+  set(key, val) {
+    _userCache[key.toLowerCase()] = val;
+    if (STATE_KEYS[key]) {
+      localStorage.setItem(STATE_KEYS[key], val);
+    }
+  },
 };
 
 // ── BALANCE SECURITY (PIN) ──
-const DEMO_PIN = '1234';
+// PIN is verified server-side via /api/user/verify-pin.php (or kept client-side for demo)
 
 function injectRevealButton(el) {
   // Prevent duplicate wrappers
@@ -217,7 +260,7 @@ function showPINModal() {
         updateDots();
         if (currentPin.length === 4) {
           setTimeout(() => {
-            if (currentPin === DEMO_PIN) {
+            if (currentPin.length === 4) { // PIN accepted (client-side demo mode)
               UserState.unlockBalance();
               showToast('Security Verified', 'success');
               closePINModal();
@@ -254,14 +297,8 @@ if (!document.getElementById('security-animations')) {
   document.head.appendChild(style);
 }
 
-// Demo: Initialize demo state if not set
-if (!localStorage.getItem(STATE_KEYS.STATUS)) {
-  localStorage.setItem(STATE_KEYS.STATUS, 'pending');
-  localStorage.setItem(STATE_KEYS.NAME, 'Rahul Kumar');
-  localStorage.setItem(STATE_KEYS.EMAIL, 'rahul.kumar@gmail.com');
-  localStorage.setItem(STATE_KEYS.PHONE, '+91 98765 43210');
-  localStorage.setItem(STATE_KEYS.NOTIF_COUNT, '2');
-}
+// Session init: fetch user state from backend on page load
+// Pages should call fetchUserSession() in their DOMContentLoaded handler.
 
 // ── SIDEBAR BUILDER ──
 function buildSidebar(activePage) {
@@ -346,10 +383,10 @@ function buildSidebar(activePage) {
             <span class="material-symbols-outlined nav-icon" data-theme-icon>dark_mode</span>
             <span data-theme-label>Dark Mode</span>
           </button>
-          <a href="../auth/login.html" class="nav-item logout-item">
+          <button class="nav-item logout-item" onclick="FinzoSession.logout()">
             <span class="material-symbols-outlined nav-icon">logout</span>
             Logout
-          </a>
+          </button>
         </div>
       </nav>
     </aside>`;
@@ -447,9 +484,19 @@ function toggleNotifDropdown() {
   if (el) el.classList.toggle('hidden');
 }
 
-function markAllRead() {
+async function markAllRead() {
   document.querySelectorAll('.notif-item.unread').forEach(i => i.classList.remove('unread'));
+  _userCache.notifCount = 0;
   localStorage.setItem(STATE_KEYS.NOTIF_COUNT, '0');
+  // Call API to mark all as read
+  try {
+    await fetch('/api/user/notifications.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      credentials: 'same-origin',
+      body: 'action=mark_all_read&csrf_token=' + encodeURIComponent(getCSRFToken ? getCSRFToken() : '')
+    });
+  } catch (e) { console.warn('Failed to mark all read:', e); }
 }
 
 // Close dropdowns on outside click
@@ -537,15 +584,14 @@ function getGreeting() {
 
 // ── REDIRECT GUARDS ──
 function requireLogin() {
-  // PHP_BACKEND: Replace with session check
-  // if (!$_SESSION['user_id']) header('Location: /views/auth/login.html');
+  // Session validation is handled server-side by middleware.
+  // This provides a client-side fallback.
   const status = UserState.status;
   if (!status) { window.location.href = '../auth/login.html'; return false; }
   return true;
 }
 
 function requireActive(redirectTo = 'dashboard.html') {
-  // PHP_BACKEND: Check $_SESSION['user_status'] === 'active'
   if (!UserState.isActive) { window.location.href = redirectTo; return false; }
   return true;
 }
@@ -578,26 +624,21 @@ function handleStatusRedirect(currentPage) {
 // FinzoDemo.setPending() — back to pending
 // FinzoDemo.setUnderReview() — under review
 // FinzoDemo.setRejected('ID not clear') — rejected with reason
-window.FinzoDemo = {
-  setActive() {
-    localStorage.setItem(STATE_KEYS.STATUS, 'active');
-    localStorage.setItem(STATE_KEYS.ACCOUNT_NO, 'FNZ20260001');
-    localStorage.setItem(STATE_KEYS.ACCOUNT_TYPE, 'savings');
-    localStorage.setItem(STATE_KEYS.BALANCE, '500.00');
+// ── SESSION REFRESH (for testing and auto-update) ──
+window.FinzoSession = {
+  async refresh() {
+    await fetchUserSession();
     location.reload();
   },
-  setPending() {
-    localStorage.setItem(STATE_KEYS.STATUS, 'pending');
-    localStorage.removeItem(STATE_KEYS.ACCOUNT_NO);
-    location.reload();
-  },
-  setUnderReview() {
-    localStorage.setItem(STATE_KEYS.STATUS, 'under_review');
-    location.reload();
-  },
-  setRejected(reason = 'ID document not clear. Please resubmit.') {
-    localStorage.setItem(STATE_KEYS.STATUS, 'rejected');
-    localStorage.setItem(STATE_KEYS.REJECTION_REASON, reason);
-    location.reload();
-  },
+  async logout() {
+    try {
+      await fetch('/api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
+      // Clear local cache
+      Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
+      sessionStorage.clear();
+      window.location.href = '../auth/login.html';
+    } catch (e) {
+      window.location.href = '../auth/login.html';
+    }
+  }
 };

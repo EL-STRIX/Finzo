@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <link rel="stylesheet" href="../../assets/css/dark-mode.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/staff-shared.js"></script>
     <style>
         .brand-sub-staff { color: #f59e0b !important; }
         .staff-sidebar-active {
@@ -57,15 +59,18 @@
         <div class="px-4 py-6 border-b border-white/5">
             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm">AS</div>
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">--</div>
                     <div>
-                        <div class="text-xs font-bold text-amber-700">Amit Sharma</div>
-                        <div class="text-[10px] text-white/50 font-medium">STF001</div>
+                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
                     </div>
                 </div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                <div class="flex flex-col gap-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                    </div>
+                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
                 </div>
             </div>
         </div>
@@ -117,8 +122,8 @@
                 <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
                 <div class="flex items-center gap-3">
                     <div class="text-right hidden sm:block">
-                        <div class="text-xs font-bold dark:text-blue-500">Amit Sharma</div>
-                        <div class="text-[10px] text-slate-400 font-bold">STF001</div>
+                        <div class="text-xs font-bold dark:text-blue-500 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-slate-400 font-bold staff-id-display">STF---</div>
                     </div>
                     <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300 end-shift-trigger">
                         End Shift
@@ -176,7 +181,7 @@
                             <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Customer Account Number</label>
                             <div class="relative ">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 ">search</span>
-                                <input type="text" id="account-lookup" placeholder="Enter account number e.g. FNZ20260001" 
+                                <input type="text" id="account-lookup" placeholder="Enter account number" 
                                     class="w-full h-14 pl-12 pr-4 bg-slate-50 dark:bg-white/1 border-2 border-slate-200 dark:border-white/5 rounded-2xl font-bold dark:text-black focus:outline-none focus:border-amber-500 transition-all">
                             </div>
                         </div>
@@ -196,10 +201,10 @@
                     <div class="mt-6 admin-card p-5 sm:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                             <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl font-black">RK</div>
+                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl font-black" id="res-initials">--</div>
                                 <div>
-                                    <h4 class="text-xl sm:text-2xl font-black font-headline text-primary dark:text-blue-500" id="res-name">Rahul Kumar</h4>
-                                    <div class="text-slate-500 font-bold text-xs sm:text-sm" id="res-acc">FNZ20260001</div>
+                                    <h4 class="text-xl sm:text-2xl font-black font-headline text-primary dark:text-blue-500" id="res-name">Loading...</h4>
+                                    <div class="text-slate-500 font-bold text-xs sm:text-sm" id="res-acc">FNZ---</div>
                                 </div>
                             </div>
                             <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-widest self-start sm:self-auto">Active</span>
@@ -208,15 +213,15 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-8 p-6 bg-slate-50 dark:bg-white/1 rounded-[2rem] border border-slate-100 dark:border-white/5">
                             <div>
                                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Type</div>
-                                <div class="font-bold  dark:text-blue-500">Savings Account</div>
+                                <div class="font-bold dark:text-blue-500 account-type-val">Loading...</div>
                             </div>
                             <div>
                                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Current Balance</div>
-                                <div class="font-black text-primary dark:text-blue-500 text-xl">₹5,000.00</div>
+                                <div class="font-black text-primary dark:text-blue-500 text-xl current-balance-val">₹0.00</div>
                             </div>
                             <div>
                                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Daily Limit Left</div>
-                                <div class="font-bold text-emerald-600">₹8,500.00</div>
+                                <div class="font-bold text-emerald-600 daily-limit-val">₹0.00</div>
                             </div>
                         </div>
 
@@ -280,11 +285,11 @@
                                 <div class="space-y-6">
                                     <div class="flex justify-between items-center text-sm">
                                         <span class="text-white/40 font-bold uppercase tracking-widest text-[10px]">Customer</span>
-                                        <span class="text-white font-black" id="sum-name">Rahul Kumar</span>
+                                        <span class="text-white font-black" id="sum-name">--</span>
                                     </div>
                                     <div class="flex justify-between items-center text-sm">
                                         <span class="text-white/40 font-bold uppercase tracking-widest text-[10px]">Account</span>
-                                        <span class="text-white font-black" id="sum-acc">FNZ20260001</span>
+                                        <span class="text-white font-black" id="sum-acc">--</span>
                                     </div>
                                     <div class="flex justify-between items-center text-sm">
                                         <span class="text-white/40 font-bold uppercase tracking-widest text-[10px]">Type</span>
@@ -331,8 +336,8 @@
                             <div class="space-y-6">
                                 <div class="border-b border-slate-100 dark:border-white/1 pb-4">
                                     <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Customer Details</div>
-                                    <div class="font-bold dark:text-blue-500" id="confirm-name">Rahul Kumar</div>
-                                    <div class="text-sm dark:text-blue-500" id="confirm-acc">FNZ20260001</div>
+                                    <div class="font-bold dark:text-blue-500" id="confirm-name">--</div>
+                                    <div class="text-sm dark:text-blue-500" id="confirm-acc">--</div>
                                 </div>
                                 <div class="border-b border-slate-100 dark:border-white/1 pb-4">
                                     <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Transaction Type</div>
@@ -348,19 +353,19 @@
                                 <div class="grid grid-cols-2 gap-6 p-6 bg-slate-50 dark:bg-white/1 rounded-2xl border border-slate-100 dark:border-white/5">
                                     <div>
                                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Staff Name</div>
-                                        <div class="font-bold dark:text-blue-500">Amit Sharma</div>
+                                        <div class="font-bold dark:text-blue-500 staff-name-display">Loading...</div>
                                     </div>
                                     <div>
                                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Staff ID</div>
-                                        <div class="font-bold dark:text-blue-500">STF001</div>
+                                        <div class="font-bold dark:text-blue-500 staff-id-display">STF---</div>
                                     </div>
                                     <div>
                                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Branch</div>
-                                        <div class="font-bold dark:text-blue-500">Main Branch</div>
+                                        <div class="font-bold dark:text-blue-500 staff-branch-display">Loading...</div>
                                     </div>
                                     <div>
                                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</div>
-                                        <div class="font-bold dark:text-blue-500">12 Apr 2026</div>
+                                        <div class="font-bold dark:text-blue-500" id="current-date-display">--</div>
                                     </div>
                                 </div>
                                 
@@ -373,7 +378,7 @@
 
                         <div class="flex flex-col sm:flex-row gap-4 text-center">
                             <button class="w-full sm:w-auto flex-1 py-4 border-2 border-slate-200 dark:border-white/1 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-sm" onclick="goToStep2()">← Edit Details</button>
-                            <a href="staff-receipt.html" class="w-full sm:w-auto flex-1 py-4 bg-emerald-500 text-white font-black text-center rounded-2xl shadow-xl shadow-emerald-500/30 hover:translate-y-[-2px] transition-all text-sm inline-block">Confirm Deposit ✓</a>
+                            <button id="final-deposit-btn" class="w-full sm:w-auto flex-1 py-4 bg-emerald-500 text-white font-black text-center rounded-2xl shadow-xl shadow-emerald-500/30 hover:translate-y-[-2px] transition-all text-sm inline-block">Confirm Deposit ✓</button>
                         </div>
                     </div>
                 </div>
@@ -391,61 +396,15 @@
             <p class="text-slate-500 dark:text-slate-400 text-center mb-8">Are you sure you want to end your shift and logout?</p>
             <div class="flex gap-4">
                 <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl modal-close">Cancel</button>
-                <a href="../auth/staff-login.html" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30 transition-all">End Shift</a>
+                <button onclick="window.location.href='/api/auth/logout.php'" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30 transition-all">End Shift</button>
             </div>
         </div>
     </div>
 
     <!-- SCRIPTS -->
     <script>
-        // --- Shared Logic ---
-        (function() {
-            const STORAGE_KEY = 'finzo-staff-theme';
-            const html = document.documentElement;
-            function applyTheme(theme) {
-                html.setAttribute('data-theme', theme);
-                html.classList.toggle('dark', theme === 'dark');
-                localStorage.setItem(STORAGE_KEY, theme);
-                if (document.getElementById('theme-icon')) document.getElementById('theme-icon').textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-            }
-            const saved = localStorage.getItem(STORAGE_KEY) || 'light';
-            applyTheme(saved);
-        })();
-
-        $(function() {
-            $('#toggle-theme-btn').on('click', function() {
-                const current = localStorage.getItem('finzo-staff-theme') || 'light';
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                document.documentElement.classList.toggle('dark', next === 'dark');
-                localStorage.setItem('finzo-staff-theme', next);
-                $('#theme-icon').text(next === 'dark' ? 'light_mode' : 'dark_mode');
-                $('#theme-label').text(next === 'dark' ? 'Light Mode' : 'Dark Mode');
-            });
-
-            function updateClock() {
-                const now = new Date();
-                $('#live-clock').text(now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }));
-                $('#live-date').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
-            }
-            setInterval(updateClock, 1000); updateClock();
-
-            $('.end-shift-trigger').on('click', function() {
-                $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
-                $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
-            });
-            $('.modal-close').on('click', function() {
-                $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none');
-                $('#logout-modal').removeClass('scale-100').addClass('hidden');
-            });
-            $('#mobile-menu-btn').on('click', function () {
-                $('#admin-sidebar').addClass('mobile-open');
-                $('#sidebar-overlay').addClass('active');
-            });
-            $('#sidebar-overlay').on('click', function () {
-                $('#admin-sidebar').removeClass('mobile-open');
-                $('#sidebar-overlay').removeClass('active');
-            });
+        $(document).ready(async function() {
+            await fetchStaffSession();
         });
 
         // --- Deposit Page Logic ---
@@ -461,20 +420,48 @@
         }
         updateSteps(1);
 
-        $('#find-btn').on('click', function() {
+        let verifiedAccountNo = '';
+        let verifiedName = '';
+        
+        $('#find-btn').on('click', async function() {
             const acc = $('#account-lookup').val().trim();
-            $(this).html('<span class="material-symbols-outlined animate-spin">sync</span> Searching...');
+            if (!acc) return;
             
-            setTimeout(() => {
-                $(this).html('Find Account →');
-                if (acc === 'FNZ20260001') {
+            const btn = $(this);
+            btn.html('<span class="material-symbols-outlined animate-spin">sync</span> Searching...');
+            
+            try {
+                const res = await api.get('/staff/account-lookup.php?account_no=' + encodeURIComponent(acc));
+                btn.html('Find Account →');
+                
+                if (res.success && res.found && res.account) {
                     $('#account-success').removeClass('hidden');
                     $('#account-error').addClass('hidden');
+                    
+                    verifiedAccountNo = res.account.account_no;
+                    verifiedName      = res.account.name;
+                    
+                    $('#res-name').text(res.account.name);
+                    $('#res-acc').text(res.account.account_no);
+                    
+                    // Show initials
+                    const init = res.account.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+                    $('#res-initials').text(init);
+                    
+                    // Stats
+                    $('.account-type-val').text(res.account.account_type);
+                    $('.current-balance-val').text(formatINR(res.account.balance));
+                    $('.daily-limit-val').text(formatINR(res.account.daily_limit_left));
+                    
                 } else {
                     $('#account-error').removeClass('hidden');
                     $('#account-success').addClass('hidden');
                 }
-            }, 800);
+            } catch (err) {
+                btn.html('Find Account →');
+                $('#account-error').removeClass('hidden');
+                $('#account-success').addClass('hidden');
+            }
         });
 
         function resetForm() {
@@ -503,8 +490,11 @@
             $('#section-3').removeClass('hidden');
             
             // Sync summary to confirmation
-            $('#confirm-amt').text('₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+            $('#confirm-amt').text(formatINR(amt));
             $('#confirm-type').text($('#dep-type').val());
+            
+            const now = new Date();
+            $('#current-date-display').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
             updateSteps(3);
         }
 
@@ -513,14 +503,39 @@
             const val = parseFloat($('#dep-amount').val()) || 0;
             const type = $('#dep-type').val();
             
-            $('#sum-amt, #confirm-amt').text('₹' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
-            $('#sum-after').text('₹' + (5000 + val).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+            $('#sum-amt').text(formatINR(val));
+            $('#sum-after').text('₹---');
             $('#sum-type').text(type);
             
             if (val > 0) {
                 $('#amt-words').text('Amount in words: ' + numberToWords(val) + ' Rupees Only');
             } else {
                 $('#amt-words').text('Amount in words: Waiting for input...');
+            }
+        });
+
+        $('#final-deposit-btn').on('click', async function() {
+            const btn = $(this);
+            btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin">sync</span> Processing...');
+            
+            const reqData = {
+                account_no: verifiedAccountNo,
+                amount: parseFloat($('#dep-amount').val()),
+                reference_note: $('#dep-notes').val().trim() || 'Cash Deposit'
+            };
+            
+            try {
+                const res = await api.post('/staff/deposit.php', reqData);
+                
+                if (res.success) {
+                    window.location.href = res.redirect || 'staff-receipt.html?id=' + res.transaction_id;
+                } else {
+                    alert('Error: ' + res.message);
+                    btn.prop('disabled', false).html('Confirm Deposit ✓');
+                }
+            } catch (err) {
+                alert('Connection error. Please try again.');
+                btn.prop('disabled', false).html('Confirm Deposit ✓');
             }
         });
 
