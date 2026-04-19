@@ -326,10 +326,10 @@
             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Temporary
               Password</label>
             <div class="flex items-center justify-between">
-              <code id="temp-password-display" class="text-lg font-black tracking-widest text-primary dark:text-blue-400">FINZO-9821</code>
-              <button type="button" class="p-2 text-primary hover:bg-white rounded-lg transition-all"
+              <code id="temp-password-display" class="text-lg font-black tracking-widest text-primary dark:text-blue-400">FINZO-1100</code>
+              <button type="button" id="copy-password-btn" class="p-2 text-primary hover:bg-white rounded-lg transition-all"
                 title="Copy Password">
-                <span class="material-symbols-outlined text-xl">content_copy</span>
+                <span class="material-symbols-outlined text-xl" id="copy-icon">content_copy</span>
               </button>
             </div>
           </div>
@@ -389,6 +389,16 @@
 
     $(document).ready(function () {
       let currentPage = 1;
+
+      // Copy Temporary Password
+      $('#copy-password-btn').on('click', function() {
+          const pass = $('#temp-password-display').text();
+          navigator.clipboard.writeText(pass).then(() => {
+              const $icon = $('#copy-icon');
+              $icon.text('check');
+              setTimeout(() => $icon.text('content_copy'), 2000);
+          });
+      });
 
       async function loadStaff() {
           const $tbody = $('#staff-table-body');
