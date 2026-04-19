@@ -14,9 +14,7 @@
             border-radius: 50%;
             display: inline-block;
         }
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Essential Custom UI Utilities for Finzo Architectural Theme */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #faf9fc;

@@ -205,6 +205,8 @@ $(document).ready(function() {
         if (target.length) {
             e.preventDefault();
             
+            isScrollingProgrammatically = true;
+
             // Remove active class from all links and add to clicked link
             $('.nav-link').removeClass('nav-link-active');
             $(this).addClass('nav-link-active');
@@ -212,37 +214,50 @@ $(document).ready(function() {
             const navbarHeight = $('nav').outerHeight() || 80;
             $('html, body').stop().animate({
                 scrollTop: target.offset().top - navbarHeight + 10 // Slight offset for better vision
-            }, 800);
+            }, 800, () => {
+                isScrollingProgrammatically = false;
+            });
         }
     });
 
     // --- NEW: Scrollspy (Underline follows page view) ---
+    let isScrollingProgrammatically = false;
+
     function initScrollspy() {
         const sections = ['home', 'benefits', 'features'];
         const navLinks = $('.nav-link');
         const navbarHeight = $('nav').outerHeight() || 80;
 
+        let scrollTimeout;
         $(window).on('scroll', function() {
-            const scrollPos = $(window).scrollTop() + navbarHeight + 120; // Offset for focus
+            // Do not update while we are animating via JS to prevent flickering/stuck feeling
+            if (isScrollingProgrammatically) return;
 
-            sections.forEach(id => {
-                const section = $('#' + id);
-                if (section.length) {
-                    const top = section.offset().top;
-                    const bottom = top + section.outerHeight();
+            // Throttle to improve performance
+            if (scrollTimeout) return;
+            scrollTimeout = setTimeout(() => {
+                const scrollPos = $(window).scrollTop() + navbarHeight + 150;
 
-                    if (scrollPos >= top && scrollPos <= bottom) {
-                        navLinks.removeClass('nav-link-active');
-                        $(`.nav-link[href="#${id}"]`).addClass('nav-link-active');
+                sections.forEach(id => {
+                    const section = $('#' + id);
+                    if (section.length) {
+                        const top = section.offset().top;
+                        const bottom = top + section.outerHeight();
+
+                        if (scrollPos >= top && scrollPos <= bottom) {
+                            navLinks.removeClass('nav-link-active');
+                            $(`.nav-link[href="#${id}"]`).addClass('nav-link-active');
+                        }
                     }
+                });
+                
+                // Special case: Top of page
+                if ($(window).scrollTop() < 100) {
+                    navLinks.removeClass('nav-link-active');
+                    $('.nav-link[href="#home"]').addClass('nav-link-active');
                 }
-            });
-            
-            // Special case: Top of page
-            if ($(window).scrollTop() < 100) {
-                navLinks.removeClass('nav-link-active');
-                $('.nav-link[href="#home"]').addClass('nav-link-active');
-            }
+                scrollTimeout = null;
+            }, 100);
         });
     }
 
