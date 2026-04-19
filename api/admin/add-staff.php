@@ -24,8 +24,8 @@ $password  = $_POST['password'] ?? '';
 $errors = [];
 
 // Validation
-if (empty($full_name) || strlen($full_name) < 2) {
-    $errors['full_name'] = 'Full name is required (min 2 characters)';
+if (empty($full_name) || strlen($full_name) < 5) {
+    $errors['full_name'] = 'Full name is required (min 5 characters)';
 }
 
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
