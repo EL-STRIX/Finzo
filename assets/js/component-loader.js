@@ -13,6 +13,17 @@ async function loadComponent(elementId, componentPath) {
             const html = await response.text();
             placeholder.innerHTML = html;
             
+            // Fix absolute paths (starting with /) to include the project base path
+            const basePath = window.FinzoBasePath || '/Finzo/';
+            placeholder.querySelectorAll('[href^="/"], [src^="/"]').forEach(el => {
+                const attr = el.hasAttribute('href') ? 'href' : 'src';
+                const originalVal = el.getAttribute(attr);
+                // Only prefix if it's a project path (views, assets, components)
+                if (originalVal.startsWith('/views/') || originalVal.startsWith('/assets/') || originalVal.startsWith('/components/')) {
+                    el.setAttribute(attr, basePath + originalVal.substring(1));
+                }
+            });
+
             // Post-load logic: Active Link Highlighting
             highlightActiveLinks(placeholder);
 
@@ -61,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const basePath = document.querySelector('script[src*="component-loader"]')?.src
         ? new URL(document.querySelector('script[src*="component-loader"]').src).pathname.replace(/assets\/js\/component-loader\.js$/, '')
         : '/Finzo/';
+
+    window.FinzoBasePath = basePath;
 
     // Top Navbar (Landing/Auth)
     loadComponent('navbar-placeholder', basePath + 'components/navbar.html');
