@@ -442,7 +442,12 @@
                   $('#addStaffForm')[0].reset();
                   loadStaff(); // Refresh table
               } else {
-                  alert(response.message || 'Failed to create staff account');
+                  let errorMsg = response.message || 'Failed to create staff account';
+                  if (response.errors) {
+                      const details = Object.values(response.errors).join('\n• ');
+                      errorMsg += '\n\nErrors:\n• ' + details;
+                  }
+                  alert(errorMsg);
               }
           } catch (error) {
               console.error('Staff creation error:', error);

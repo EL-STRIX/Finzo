@@ -45,7 +45,11 @@ if (empty($password) || strlen($password) < 8) {
 }
 
 if (!empty($errors)) {
-    json_response(['success' => false, 'errors' => $errors], 422);
+    json_response([
+        'success' => false, 
+        'message' => 'Validation failed. Please check the highlighted fields.',
+        'errors' => $errors
+    ], 422);
 }
 
 try {
