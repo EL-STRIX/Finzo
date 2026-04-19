@@ -158,27 +158,29 @@
 
       <!-- FILTERS -->
       <div class="admin-card admin-card-dropdown-fix mb-6 sm:mb-8 relative z-20">
-        <div class="p-4 sm:p-6 flex flex-col lg:flex-row flex-wrap lg:items-center gap-4">
-          <div class="flex-1 min-w-[200px] lg:min-w-[300px]">
+        <div class="p-4 sm:p-6 flex flex-col lg:flex-row items-end gap-4">
+          <div class="flex-1 w-full">
             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1 block">Search Staff</label>
-            <div class="relative">
+            <div class="relative group">
               <span
-                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">search</span>
               <input type="text" id="staff-search-input" placeholder="Search by name or staff ID"
-                class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm">
+                class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
             </div>
           </div>
 
-          <div class="flex flex-col">
+          <div class="w-full lg:w-52">
             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Status</label>
-            <div class="finzo-dropdown" id="status-filter-dropdown">
+            <div class="finzo-dropdown w-full" id="status-filter-dropdown">
               <div
-                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl min-w-[150px]">
-                <span class="material-symbols-outlined text-lg opacity-60">filter_list</span>
-                <span class="dropdown-label font-bold text-xs">All Status</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
+                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg opacity-60">filter_list</span>
+                    <span class="dropdown-label font-bold text-xs">All Status</span>
+                </div>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !z-[3000]">
+              <div class="finzo-dropdown-menu !z-[3000] !w-full">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                 <div class="finzo-dropdown-option" data-value="active">Active</div>
                 <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
@@ -187,28 +189,23 @@
             </div>
           </div>
 
-          <div class="flex flex-col">
+          <div class="w-full lg:w-64">
             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Branch</label>
-            <div class="finzo-dropdown" id="branch-filter-dropdown">
+            <div class="finzo-dropdown w-full" id="branch-filter-dropdown">
               <div
-                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl min-w-[180px]">
-                <span class="material-symbols-outlined text-lg opacity-60">location_on</span>
-                <span class="dropdown-label font-bold text-xs">All Branches</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
+                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg opacity-60">location_on</span>
+                    <span class="dropdown-label font-bold text-xs">All Branches</span>
+                </div>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-              <div id="filter-branch-menu" class="finzo-dropdown-menu !z-[3000]">
+              <div id="filter-branch-menu" class="finzo-dropdown-menu !z-[3000] !w-full">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
                 <!-- Dynamically Populated -->
               </div>
               <input type="hidden" id="filter-branch" value="all">
             </div>
-          </div>
-
-          <div class="flex items-end pt-2 sm:pt-5 gap-2 w-full lg:w-auto">
-            <button id="apply-filters" class="admin-btn-primary flex-1 lg:flex-none justify-center"
-              style="padding: 12px 32px !important; border-radius: 12px !important;">Apply</button>
-            <button id="reset-filters" class="admin-btn-secondary flex-1 lg:flex-none justify-center"
-              style="padding: 12px 28px !important; border-radius: 12px !important;">Reset</button>
           </div>
         </div>
       </div>
@@ -551,17 +548,23 @@
           if (stats.transactions_today) $('.admin-stat-card:eq(3) .admin-stat-value').text(stats.transactions_today).removeClass('skeleton');
       }
 
-      // Events
-      $('#apply-filters').on('click', () => { currentPage = 1; loadStaff(); });
-      $('#staff-search-input').on('keyup', (e) => { if (e.key === 'Enter') { currentPage = 1; loadStaff(); } });
-      $('#reset-filters').on('click', () => {
-          $('#staff-search-input').val('');
-          $('#filter-status, #filter-branch').val('all');
-          $('.dropdown-label').each(function() {
-              const $dropdown = $(this).closest('.finzo-dropdown');
-              $(this).text($dropdown.find('.finzo-dropdown-option[data-value="all"]').text());
-          });
-          $('.finzo-dropdown-option').removeClass('is-selected').filter('[data-value="all"]').addClass('is-selected');
+      // Debounce utility to prevent flooding API
+      function debounce(func, wait) {
+          let timeout;
+          return function(...args) {
+              const context = this;
+              clearTimeout(timeout);
+              timeout = setTimeout(() => func.apply(context, args), wait);
+          };
+      }
+
+      // Events — Live filtering behavior
+      $('#staff-search-input').on('input', debounce(function() {
+          currentPage = 1;
+          loadStaff();
+      }, 400));
+
+      $('input[type="hidden"]#filter-status, input[type="hidden"]#filter-branch').on('change', function() {
           currentPage = 1;
           loadStaff();
       });
