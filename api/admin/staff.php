@@ -56,9 +56,17 @@ try {
     $pages  = max(1, ceil($total / $per_page));
     $offset = ($page - 1) * $per_page;
 
+    // Fetch Stats
+    $stmt = $pdo->query("SELECT 
+        COUNT(*) as total,
+        COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+        COUNT(CASE WHEN status = 'suspended' THEN 1 END) as suspended
+    FROM staff");
+    $stats = $stmt->fetch();
+
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.email, s.phone, s.role, s.status,
-               s.last_login_at, s.created_at,
+               s.last_login_at as last_active, s.created_at,
                b.name as branch_name, b.branch_code
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
@@ -69,12 +77,29 @@ try {
     $stmt->execute($params);
     $staff_list = $stmt->fetchAll();
 
+    // Format list for frontend
+    foreach ($staff_list as &$s) {
+        $name_parts = explode(' ', $s['full_name']);
+        $s['name'] = $s['full_name'];
+        $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
+        $s['designation'] = ucfirst($s['role']);
+        $s['last_active'] = $s['last_active'] ? date('d M, H:i', strtotime($s['last_active'])) : 'Never';
+        $s['volume_formatted'] = '₹0'; // Placeholder for transaction logic
+        $s['transactions_today'] = 0; // Placeholder
+    }
+
     json_response([
         'success'      => true,
         'staff'        => $staff_list,
         'total'        => $total,
         'pages'        => $pages,
-        'current_page' => $page
+        'current_page' => $page,
+        'stats'        => [
+            'total'    => $stats['total'],
+            'active'   => $stats['active'],
+            'suspended' => $stats['suspended'],
+            'transactions_today' => 0
+        ]
     ]);
 
 } catch (PDOException $e) {
