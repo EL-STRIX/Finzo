@@ -270,23 +270,23 @@
       <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
         <h3 class="admin-section-title">Add New Staff</h3>
         <button onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"
-          class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+           class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
       <div class="p-8">
-        <form class="space-y-4 sm:space-y-6">
+        <form id="addStaffForm" class="space-y-4 sm:space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div class="col-span-1 sm:col-span-2">
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full
                 Name</label>
-              <input type="text" placeholder="Enter full name"
+              <input type="text" id="staff-full-name" placeholder="Enter full name" required
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
             </div>
             <div>
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Email
                 Address</label>
-              <input type="email" placeholder="email@finzo.com"
+              <input type="email" id="staff-email" placeholder="email@finzo.com" required
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
             </div>
             <div>
@@ -295,17 +295,16 @@
               <div class="flex">
                 <span
                   class="inline-flex items-center px-4 bg-slate-100 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 rounded-l-xl text-xs font-bold text-slate-500 font-Manrope">+91</span>
-                <input type="text" placeholder="98765 43210"
+                <input type="text" id="staff-phone" placeholder="98765 43210" required
                   class="flex-1 w-full min-w-0 px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-r-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
               </div>
             </div>
             <div>
               <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Branch</label>
-              <select
+              <select id="staff-branch" required
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
-                <option>Barasat</option>
-                <option>North Branch</option>
-                <option>South Branch</option>
+                <option value="">Select Branch</option>
+                <!-- Dynamically Populated -->
               </select>
             </div>
             <div>
@@ -337,8 +336,9 @@
           <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
             <button type="button" onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"
               class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
-            <button type="submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">Create Staff
-              Account</button>
+            <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
+                <span>Create Staff Account</span>
+            </button>
           </div>
         </form>
       </div>
@@ -399,6 +399,61 @@
               setTimeout(() => $icon.text('content_copy'), 2000);
           });
       });
+
+      // Load Branches for dropdown
+      async function loadBranchesForModal() {
+          try {
+              const response = await api.get('/admin/branches.php');
+              if (response.success) {
+                  const $select = $('#staff-branch');
+                  $select.html('<option value="">Select Branch</option>');
+                  response.branches.forEach(b => {
+                      $select.append(`<option value="${b.id}">${b.name}</option>`);
+                  });
+              }
+          } catch (error) {
+              console.error('Failed to load branches:', error);
+          }
+      }
+
+      // Handle Staff Creation
+      $('#addStaffForm').on('submit', async function(e) {
+          e.preventDefault();
+          const $btn = $('#create-staff-submit');
+          const originalText = $btn.find('span').text();
+          
+          try {
+              $btn.prop('disabled', true).find('span').text('Creating...');
+              
+              const formData = {
+                  full_name: $('#staff-full-name').val(),
+                  email: $('#staff-email').val(),
+                  phone: $('#staff-phone').val(),
+                  branch_id: $('#staff-branch').val(),
+                  password: $('#temp-password-display').text(),
+                  role: 'teller' // Default role
+              };
+
+              const response = await api.post('/admin/add-staff.php', formData);
+
+              if (response.success) {
+                  alert('Staff account created successfully!');
+                  $('#addStaffModal').addClass('hidden').removeClass('flex');
+                  $('#addStaffForm')[0].reset();
+                  loadStaff(); // Refresh table
+              } else {
+                  alert(response.message || 'Failed to create staff account');
+              }
+          } catch (error) {
+              console.error('Staff creation error:', error);
+              alert('An error occurred. Please try again.');
+          } finally {
+              $btn.prop('disabled', false).find('span').text(originalText);
+          }
+      });
+
+      // Initial Branch Load
+      loadBranchesForModal();
 
       async function loadStaff() {
           const $tbody = $('#staff-table-body');
