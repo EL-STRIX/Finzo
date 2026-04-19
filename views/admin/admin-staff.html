@@ -181,7 +181,7 @@
               <div class="finzo-dropdown-menu !z-[3000]">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                 <div class="finzo-dropdown-option" data-value="active">Active</div>
-                <div class="finzo-dropdown-option" data-value="suspend">Suspend</div>
+                <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
               </div>
               <input type="hidden" id="filter-status" value="all">
             </div>
@@ -196,11 +196,9 @@
                 <span class="dropdown-label font-bold text-xs">All Branches</span>
                 <span class="material-symbols-outlined chevron">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !z-[3000]">
+              <div id="filter-branch-menu" class="finzo-dropdown-menu !z-[3000]">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
-                <div class="finzo-dropdown-option" data-value="barasat">Barasat</div>
-                <div class="finzo-dropdown-option" data-value="north-branch">North Branch</div>
-                <div class="finzo-dropdown-option" data-value="south-branch">South Branch</div>
+                <!-- Dynamically Populated -->
               </div>
               <input type="hidden" id="filter-branch" value="all">
             </div>
@@ -400,15 +398,22 @@
           });
       });
 
-      // Load Branches for dropdown
-      async function loadBranchesForModal() {
+      // Load Branches for dropdowns
+      async function loadBranches() {
           try {
               const response = await api.get('/admin/branches.php');
               if (response.success) {
-                  const $select = $('#staff-branch');
-                  $select.html('<option value="">Select Branch</option>');
+                  // Modal dropdown
+                  const $modalSelect = $('#staff-branch');
+                  $modalSelect.html('<option value="">Select Branch</option>');
+                  
+                  // Filter dropdown
+                  const $filterMenu = $('#filter-branch-menu');
+                  $filterMenu.html('<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>');
+
                   response.branches.forEach(b => {
-                      $select.append(`<option value="${b.id}">${b.name}</option>`);
+                      $modalSelect.append(`<option value="${b.id}">${b.name}</option>`);
+                      $filterMenu.append(`<div class="finzo-dropdown-option" data-value="${b.id}">${b.name}</div>`);
                   });
               }
           } catch (error) {
@@ -458,7 +463,7 @@
       });
 
       // Initial Branch Load
-      loadBranchesForModal();
+      loadBranches();
 
       async function loadStaff() {
           const $tbody = $('#staff-table-body');
@@ -468,7 +473,7 @@
               const response = await api.get('/admin/staff.php', {
                   search: $('#staff-search-input').val(),
                   status: $('#filter-status').val(),
-                  branch: $('#filter-branch').val(),
+                  branch_id: $('#filter-branch').val(),
                   page: currentPage,
                   per_page: 10
               });
