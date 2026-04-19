@@ -15,7 +15,7 @@ $admin_id = $_SESSION['admin_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare("
-            SELECT id, admin_id, full_name, email, phone, status, last_login_at, last_login_ip, created_at
+            SELECT id, admin_id, full_name, email, phone, avatar, status, last_login_at, last_login_ip, created_at
             FROM admin_users WHERE id = ?
         ");
         $stmt->execute([$admin_id]);
@@ -89,9 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
             $stmt->execute([$admin_id]);
-            $admin = $stmt->fetch();
+            $admin_row = $stmt->fetch();
 
-            if (!password_verify($current_password, $admin['password_hash'])) {
+            if (!password_verify($current_password, $admin_row['password_hash'])) {
                 json_response(['success' => false, 'message' => 'Current password is incorrect'], 401);
             }
 
@@ -107,6 +107,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Admin password change error: " . $e->getMessage());
             json_response(['success' => false, 'message' => 'Failed to change password'], 500);
+        }
+
+    } elseif ($action === 'upload_avatar') {
+        if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
+            json_response(['success' => false, 'message' => 'No file uploaded or upload error'], 422);
+        }
+
+        $file = $_FILES['avatar'];
+        $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        
+        if (!in_array($mime, $allowed_types)) {
+            json_response(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, and WEBP are allowed.'], 422);
+        }
+
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = 'admin_' . $admin_id . '_' . time() . '.' . $ext;
+        $upload_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+        $target_path = $upload_dir . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $target_path)) {
+            try {
+                // Get old avatar to delete if it exists
+                $stmt = $pdo->prepare("SELECT avatar FROM admin_users WHERE id = ?");
+                $stmt->execute([$admin_id]);
+                $old_avatar = $stmt->fetchColumn();
+
+                if ($old_avatar && file_exists(dirname(__DIR__, 2) . '/' . $old_avatar)) {
+                    @unlink(dirname(__DIR__, 2) . '/' . $old_avatar);
+                }
+
+                $relative_path = 'uploads/avatars/' . $filename;
+                $stmt = $pdo->prepare("UPDATE admin_users SET avatar = ?, updated_at = NOW() WHERE id = ?");
+                $stmt->execute([$relative_path, $admin_id]);
+
+                json_response(['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path]);
+
+            } catch (PDOException $e) {
+                json_response(['success' => false, 'message' => 'Database error: ' . $e->getMessage()], 500);
+            }
+        } else {
+            json_response(['success' => false, 'message' => 'Failed to move uploaded file'], 500);
         }
 
     } else {
@@ -128,9 +171,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // VERIFY PASSWORD FIRST
             $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
             $stmt->execute([$admin_id]);
-            $admin = $stmt->fetch();
+            $admin_row = $stmt->fetch();
 
-            if (!$admin || !password_verify($password, $admin['password_hash'])) {
+            if (!$admin_row || !password_verify($password, $admin_row['password_hash'])) {
                 json_response(['success' => false, 'message' => 'Verification failed: Incorrect password'], 401);
             }
 

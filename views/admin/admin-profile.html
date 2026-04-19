@@ -383,6 +383,15 @@
         $('#profile-id-input').val(admin.admin_id || '');
         $('#profile-email-input').val(admin.email || '');
         $('#profile-phone-input').val(admin.phone || '');
+
+        // Avatar handling
+        if (admin.avatar) {
+          $('#avatar-img-preview').attr('src', '../../' + admin.avatar).show();
+          $('#avatar-initials').hide();
+        } else {
+          $('#avatar-img-preview').hide();
+          $('#avatar-initials').show();
+        }
       } else {
         showToast('Failed to load profile: ' + (data.message || 'Unknown error'), 'error');
       }
@@ -406,15 +415,33 @@
     }, 3000);
   }
 
-  function previewPhoto(input) {
+  async function previewPhoto(input) {
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('avatar-img-preview').src = e.target.result;
-        document.getElementById('avatar-img-preview').style.display = 'block';
-        document.getElementById('avatar-initials').style.display = 'none';
-      };
-      reader.readAsDataURL(input.files[0]);
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('action', 'upload_avatar');
+      formData.append('avatar', file);
+
+      try {
+        // Show local preview first for speed
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('avatar-img-preview').src = e.target.result;
+          document.getElementById('avatar-img-preview').style.display = 'block';
+          document.getElementById('avatar-initials').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+
+        // Actual upload
+        const response = await api.upload('/admin/profile.php', formData);
+        if (response.success) {
+          showToast('✅ Profile photo updated', 'success');
+        } else {
+          showToast('❌ ' + response.message, 'error');
+        }
+      } catch (error) {
+        showToast('❌ Photo upload failed', 'error');
+      }
     }
   }
 
@@ -444,14 +471,41 @@
     else { bar.style.width = '100%'; bar.style.background = '#00b894'; }
   }
 
-  function handlePasswordUpdate() {
+  async function handlePasswordUpdate() {
+    const currPW = document.getElementById('curr-pw').value;
     const newPW = document.getElementById('new-pw').value;
     const confPW = document.getElementById('conf-pw').value;
-    if (!newPW || !confPW) return;
-    if (newPW === confPW) {
-      showToast('✅ Password changed successfully. Please login again.', 'success');
-    } else {
-      showToast('❌ Passwords do not match. Please try again.', 'error');
+    
+    if (!currPW || !newPW || !confPW) {
+      showToast('❌ All password fields are required', 'error');
+      return;
+    }
+    
+    if (newPW !== confPW) {
+      showToast('❌ New passwords do not match', 'error');
+      return;
+    }
+
+    try {
+      const response = await api.post('/admin/profile.php', {
+        action: 'change_password',
+        current_password: currPW,
+        new_password: newPW,
+        confirm_password: confPW
+      });
+
+      if (response.success) {
+        showToast('✅ Password updated successfully', 'success');
+        // Clear fields
+        document.getElementById('curr-pw').value = '';
+        document.getElementById('new-pw').value = '';
+        document.getElementById('conf-pw').value = '';
+        document.getElementById('pw-bar').style.width = '0%';
+      } else {
+        showToast('❌ ' + response.message, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Failed to update password', 'error');
     }
   }
 
