@@ -111,20 +111,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
         // Update profile info
-        $full_name = sanitize_input($_POST['full_name'] ?? '');
+        $full_name = sanitize_input($_POST['full_name'] ?? $_POST['name'] ?? '');
         $email     = sanitize_input($_POST['email'] ?? '');
+        $phone     = sanitize_input($_POST['phone'] ?? '');
+        $password  = $_POST['password'] ?? '';
 
-        if (empty($full_name) || strlen($full_name) < 2) {
+        if (empty($full_name)) {
             json_response(['success' => false, 'message' => 'Full name is required'], 422);
         }
 
-        if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            json_response(['success' => false, 'message' => 'Invalid email address'], 422);
+        if (empty($password)) {
+            json_response(['success' => false, 'message' => 'Admin password is required for verification'], 422);
         }
 
         try {
-            $stmt = $pdo->prepare("UPDATE admin_users SET full_name = ?, email = ?, updated_at = NOW() WHERE id = ?");
-            $stmt->execute([$full_name, $email, $admin_id]);
+            // VERIFY PASSWORD FIRST
+            $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+            $stmt->execute([$admin_id]);
+            $admin = $stmt->fetch();
+
+            if (!$admin || !password_verify($password, $admin['password_hash'])) {
+                json_response(['success' => false, 'message' => 'Verification failed: Incorrect password'], 401);
+            }
+
+            // UPDATE PROFILE
+            $stmt = $pdo->prepare("
+                UPDATE admin_users 
+                SET full_name = ?, email = ?, phone = ?, updated_at = NOW() 
+                WHERE id = ?
+            ");
+            $stmt->execute([$full_name, $email, $phone, $admin_id]);
 
             $_SESSION['admin_name']  = $full_name;
             $_SESSION['admin_email'] = $email;

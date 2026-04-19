@@ -482,12 +482,12 @@
         password: pass
       });
 
-      if (response.status === 'success') {
+      if (response.success) {
         closeVerifyModal();
         showToast('✅ Profile information updated successfully', 'success');
         loadAdminProfile(); // Refresh displays
       } else {
-        showToast('❌ ' + response.message, 'error');
+        showToast('❌ ' + (response.message || 'Update failed'), 'error');
       }
     } catch (error) {
       showToast('❌ Network error. Please try again.', 'error');
