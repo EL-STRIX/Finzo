@@ -57,12 +57,17 @@ function highlightActiveLinks(container) {
 
 // Global initialization
 document.addEventListener('DOMContentLoaded', () => {
+    // Detect base path dynamically (works in any subdirectory)
+    const basePath = document.querySelector('script[src*="component-loader"]')?.src
+        ? new URL(document.querySelector('script[src*="component-loader"]').src).pathname.replace(/assets\/js\/component-loader\.js$/, '')
+        : '/Finzo/';
+
     // Top Navbar (Landing/Auth)
-    loadComponent('navbar-placeholder', '/components/navbar.html');
+    loadComponent('navbar-placeholder', basePath + 'components/navbar.html');
     
     // Side Sidebar (Dashboard/Admin)
-    loadComponent('sidebar-placeholder', '/components/sidebar.html');
+    loadComponent('sidebar-placeholder', basePath + 'components/sidebar.html');
     
     // Universal Footer
-    loadComponent('footer-placeholder', '/components/footer.html');
+    loadComponent('footer-placeholder', basePath + 'components/footer.html');
 });
