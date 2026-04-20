@@ -39,8 +39,9 @@ try {
             json_response(['success' => false, 'message' => 'Staff is already suspended'], 409);
         }
 
-        $stmt = $pdo->prepare("UPDATE staff SET status = 'suspended', updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$staff_id]);
+        $suspended_by = $_SESSION['admin_name'] ?? 'Admin';
+        $stmt = $pdo->prepare("UPDATE staff SET status = 'suspended', suspension_reason = ?, suspended_by = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$reason, $suspended_by, $staff_id]);
 
         write_audit_log($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $admin_id, 'admin',
             "Suspended staff: {$staff['full_name']}. Reason: {$reason}");

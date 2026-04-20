@@ -12,9 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search   = sanitize_input($_GET['search'] ?? '');
-    $page     = max(1, intval($_GET['page'] ?? 1));
-    $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+    $search     = sanitize_input($_GET['search'] ?? '');
+    $reason     = sanitize_input($_GET['reason'] ?? '');
+    $start_date = sanitize_input($_GET['start_date'] ?? '');
+    $end_date   = sanitize_input($_GET['end_date'] ?? '');
+    $page       = max(1, intval($_GET['page'] ?? 1));
+    $per_page   = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
     $where_clauses = ["s.status = 'suspended'"];
     $params = [];
@@ -22,7 +25,22 @@ try {
     if (!empty($search)) {
         $where_clauses[] = "(s.full_name LIKE ? OR s.email LIKE ? OR s.staff_id LIKE ?)";
         $s = "%{$search}%";
-        $params = [$s, $s, $s];
+        $params[] = $s; $params[] = $s; $params[] = $s;
+    }
+
+    if (!empty($reason)) {
+        $where_clauses[] = "s.suspension_reason = ?";
+        $params[] = $reason;
+    }
+
+    if (!empty($start_date)) {
+        $where_clauses[] = "s.updated_at >= ?";
+        $params[] = $start_date . ' 00:00:00';
+    }
+
+    if (!empty($end_date)) {
+        $where_clauses[] = "s.updated_at <= ?";
+        $params[] = $end_date . ' 23:59:59';
     }
 
     $where_sql = implode(' AND ', $where_clauses);
@@ -36,7 +54,7 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.email, s.phone, s.role, s.status,
-               s.created_at, s.updated_at,
+               s.suspension_reason, s.suspended_by, s.updated_at,
                b.name as branch_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
@@ -52,8 +70,9 @@ try {
         $name_parts = explode(' ', $s['full_name']);
         $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
         $s['suspended_at'] = date('d M Y, H:i', strtotime($s['updated_at']));
-        $s['suspension_reason'] = 'Administrative Review';
-        $s['suspended_by'] = 'Admin';
+        // Values are now pulled from DB, only default if NULL
+        $s['suspension_reason'] = $s['suspension_reason'] ?: 'Administrative Review';
+        $s['suspended_by'] = $s['suspended_by'] ?: 'Admin';
         $s['duration'] = 'Indefinite';
     }
 

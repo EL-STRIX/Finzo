@@ -30,7 +30,7 @@
   <script src="../../assets/js/admin-dropdowns.js"></script>
   <style>
     /* Table specific overrides for this page */
-    .admin-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    .admin-table { width: 100%; border-collapse: collapse; white-space: nowrap; min-width: 1000px; }
     .table-wrap { overflow-x: auto; background: white; border-radius: 12px; }
     .dark .table-wrap { background: #161b22; }
     .status-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
@@ -207,12 +207,12 @@
 
       <!-- TABLE CARD -->
       <div class="admin-card">
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 items-end gap-5 p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 bg-slate-50/20 dark:bg-white/[0.02]">
-          <div class="xl:col-span-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-5 p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 bg-slate-50/20 dark:bg-white/[0.02]">
+          <div>
             <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Search Staff</div>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, staff ID..." oninput="renderTable()">
+              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, staff ID...">
             </div>
           </div>
           <div>
@@ -229,7 +229,7 @@
               <input type="hidden" id="reason-filter" value="">
               <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-slate-200 dark:!border-white/10 !rounded-xl !py-2 !px-4">
                 <span class="material-symbols-outlined text-lg opacity-60">filter_alt</span>
-                <span class="dropdown-label font-bold text-sm">All Reasons</span>
+                <span class="dropdown-label font-bold text-sm text-slate-500">All Reasons</span>
                 <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
@@ -240,10 +240,6 @@
                 <div class="finzo-dropdown-option" data-value="Manual Review">Manual Review</div>
               </div>
             </div>
-          </div>
-          <div class="flex gap-2">
-            <button class="flex-1 px-7 py-2.5 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-black shadow-lg shadow-primary/20 transition-all" onclick="renderTable()">Apply</button>
-            <button class="flex-1 px-6 py-2.5 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-500 rounded-xl text-sm font-bold border border-slate-200 dark:border-white/10 transition-all" onclick="resetFilters()">Reset</button>
           </div>
         </div>
 
@@ -299,6 +295,15 @@
 
 <script>
 $(function() {
+    // Debounce utility to prevent API spamming
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
     let currentPage = 1;
 
     async function loadSuspendedStaff() {
@@ -311,6 +316,9 @@ $(function() {
         try {
             const response = await api.get('/admin/suspended-staff.php', {
                 search: $('#search-input').val(),
+                reason: $('#reason-filter').val(),
+                start_date: $('#start-date').val(),
+                end_date: $('#end-date').val(),
                 page: currentPage,
                 per_page: 10
             });
@@ -338,7 +346,7 @@ $(function() {
 
         $tbody.html(staff.map((s, i) => {
             return `
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors text-[13px]">
                 <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${String((currentPage-1)*10+i+1).padStart(2,'0')}</td>
                 <td class="py-4">
                     <div class="flex items-center gap-3">
@@ -352,10 +360,10 @@ $(function() {
                     </div>
                 </td>
                 <td><span class="mono">${s.staff_id}</span></td>
-                <td style="font-size:12px;font-weight:600">${s.branch_name || 'N/A'}</td>
+                <td style="font-weight:600">${s.branch_name || 'N/A'}</td>
                 <td><span class="badge ${s.status_badge || 'badge-amber'}">${s.suspension_reason || 'Suspended'}</span></td>
-                <td style="font-size:12px;font-weight:600">${s.suspended_at || 'N/A'}</td>
-                <td style="font-size:12px;color:var(--text-secondary)">${s.suspended_by || 'Admin'}</td>
+                <td style="font-weight:600">${s.suspended_at || 'N/A'}</td>
+                <td style="color:var(--text-secondary)">${s.suspended_by || 'Admin'}</td>
                 <td><span class="badge badge-gray">${s.duration || 'Permanent'}</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <div class="flex items-center justify-center gap-2">
@@ -422,10 +430,20 @@ $(function() {
         }
     };
 
-    $('#search-input').on('keyup', (e) => { if (e.key === 'Enter') { currentPage = 1; loadSuspendedStaff(); } });
-    window.resetFilters = () => { $('#search-input').val(''); currentPage = 1; loadSuspendedStaff(); };
+    // Live Filtering Listeners
+    const triggerFilter = () => { currentPage = 1; loadSuspendedStaff(); };
+    const debouncedSearch = debounce(triggerFilter, 300);
 
+    $('#search-input').on('input', debouncedSearch);
+    $('#start-date, #end-date, #reason-filter').on('change', triggerFilter);
+
+    // Initial load
     loadSuspendedStaff();
+
+    // Mobile table hint
+    if (window.innerWidth < 768) {
+       $('.overflow-x-auto').on('scroll.once', function() { $(this).removeClass('table-hint'); });
+    }
 });
 
 function showToast(msg, type = 'success') {
