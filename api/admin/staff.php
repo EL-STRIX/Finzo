@@ -25,12 +25,15 @@ try {
     $page      = max(1, intval($_GET['page'] ?? 1));
     $per_page  = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
-    $where_clauses = ["1=1"];
+    $where_clauses = [];
     $params = [];
 
     if ($status !== 'all' && in_array($status, ['active', 'suspended'])) {
         $where_clauses[] = "s.status = ?";
         $params[] = $status;
+    } else {
+        // By default, exclude suspended staff from the main list
+        $where_clauses[] = "s.status != 'suspended'";
     }
 
     if ($branch_id > 0) {

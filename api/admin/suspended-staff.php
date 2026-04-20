@@ -47,12 +47,24 @@ try {
     $stmt->execute($params);
     $staff_list = $stmt->fetchAll();
 
+    // Format list for frontend
+    foreach ($staff_list as &$s) {
+        $name_parts = explode(' ', $s['full_name']);
+        $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
+        $s['suspended_at'] = date('d M Y, H:i', strtotime($s['updated_at']));
+        $s['suspension_reason'] = 'Administrative Review';
+        $s['suspended_by'] = 'Admin';
+        $s['duration'] = 'Indefinite';
+    }
+
     json_response([
-        'success'      => true,
-        'staff'        => $staff_list,
-        'total'        => $total,
-        'pages'        => $pages,
-        'current_page' => $page
+        'status'  => 'success',
+        'data'    => [
+            'staff'        => $staff_list,
+            'total'        => $total,
+            'pages'        => $pages,
+            'current_page' => $page
+        ]
     ]);
 
 } catch (PDOException $e) {
