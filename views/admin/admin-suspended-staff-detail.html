@@ -335,17 +335,29 @@ $(function() {
             if (response.status === 'success') {
                 populateUI(response.data.staff);
                 renderHistory(response.data.history);
+                // Ensure session/avatar UI is updated via shared logic
+                if (typeof updateAdminUI === 'function') updateAdminUI();
             } else {
-                alert(response.message);
+                showToast(response.message || 'Record not found', 'error');
+                setTimeout(() => window.location.href = 'admin-suspended-staff.html', 2000);
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error loading detail:', error);
+            showToast('Connection error', 'error');
         }
     }
 
     function populateUI(staff) {
         $('#bc-name').text(staff.full_name);
-        $('#detail-avatar, #top-avatar').text(staff.initials).addClass('premium-gradient-primary').css('background', '');
+        
+        // Avatar handling
+        const $av = $('#detail-avatar');
+        if (staff.avatar) {
+            $av.html(`<img src="../../${staff.avatar}" class="w-full h-full object-cover rounded-lg">`).css('background', 'none');
+        } else {
+            $av.text(staff.initials || staff.full_name.charAt(0)).addClass('premium-gradient-primary').css('background', '');
+        }
+
         $('#detail-name').text(staff.full_name);
         $('#detail-email').text(staff.email);
         $('#detail-staff-id, #detail-staff-id-badge').text(staff.staff_id);
@@ -354,11 +366,11 @@ $(function() {
         $('#detail-onboarding').text(staff.onboarding_date || 'N/A');
         $('#detail-volume').text(staff.lifetime_volume || '₹0.00');
         
-        $('#detail-reason').text(staff.suspension_reason || 'N/A');
-        $('#detail-reason-detail').text(staff.suspension_notes || 'No detailed reason provided.');
-        $('#detail-by').text(staff.suspended_by || 'Admin');
+        $('#detail-reason').text(staff.suspension_reason || 'Administrative Review');
+        $('#detail-reason-detail').text(staff.suspension_notes || `Staff account suspended for ${staff.suspension_reason || 'administrative reasons'}. Policy compliance review pending.`);
+        $('#detail-by').text(staff.suspended_by || 'Senior Administrator');
         $('#detail-date').text(staff.suspended_at || 'N/A');
-        $('#detail-duration').text(staff.duration || 'N/A');
+        $('#detail-duration').text(staff.duration || 'Indefinite');
 
         $('#detail-avg-volume').text(staff.avg_daily_volume || '₹0.00');
         $('#detail-deposits').text(staff.deposit_count || '0');
@@ -369,21 +381,29 @@ $(function() {
     }
 
     function renderHistory(txs) {
+        const $tbody = $('#staff-transactions-body');
         if (!txs || txs.length === 0) {
-            $('#staff-transactions-body').html('<tr><td colspan="4" class="text-center py-8 opacity-40">No recent history recorded</td></tr>');
+            $tbody.html('<tr><td colspan="4" class="text-center py-12 opacity-40 font-bold">No historical transactions found</td></tr>');
             return;
         }
         const html = txs.map(t => `
-            <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02]">
-                <td style="padding:16px 24px;font-size:13px;font-weight:700;color:var(--text-primary)">${t.type}</td>
+            <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td style="padding:16px 24px;font-size:13px;font-weight:700;color:var(--text-primary)">
+                   <div class="flex items-center gap-2">
+                     <span class="material-symbols-outlined text-[16px] ${t.type === 'DEPOSIT' ? 'text-green-500' : 'text-red-500'}">
+                        ${t.type === 'DEPOSIT' ? 'vertical_align_bottom' : 'vertical_align_top'}
+                     </span>
+                     ${t.type}
+                   </div>
+                </td>
                 <td style="padding:16px 24px;font-size:12px;color:var(--text-secondary);font-weight:600">${t.timestamp}</td>
                 <td style="padding:16px 24px;text-align:right;font-size:13px;font-weight:800;color:var(--text-primary)">${t.amount}</td>
                 <td style="padding:16px 24px;text-align:center">
-                    <span class="badge ${t.status === 'VERIFIED' ? 'badge-green' : t.status === 'DENIED' ? 'badge-red' : 'badge-amber'}">${t.status}</span>
+                    <span class="badge ${t.status === 'COMPLETED' || t.status === 'SUCCESS' ? 'badge-green' : t.status === 'FAILED' ? 'badge-red' : 'badge-amber'}">${t.status}</span>
                 </td>
             </tr>
         `).join('');
-        $('#staff-transactions-body').html(html);
+        $tbody.html(html);
     }
 
     window.openReinstateModal = () => $('#reinstate-modal').removeClass('hidden');
@@ -391,7 +411,7 @@ $(function() {
 
     window.processReinstate = async () => {
         const $btn = $('#confirm-btn');
-        $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...');
+        $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Authorizing...');
         
         try {
             const response = await api.post('/admin/staff-action.php', {
@@ -399,15 +419,16 @@ $(function() {
                 action: 'reinstate'
             });
 
-            if (response.status === 'success') {
+            if (response.success || response.status === 'success') {
                 showToast('Staff account reinstated. Redirecting...', 'success');
                 setTimeout(() => window.location.href = 'admin-suspended-staff.html', 1500);
             } else {
-                alert(response.message);
+                showToast(response.message || 'Action failed', 'error');
                 $btn.prop('disabled', false).html('Confirm & Authorize');
             }
         } catch (error) {
-            alert('Action failed.');
+            console.error('Reinstate failed:', error);
+            showToast('Server error', 'error');
             $btn.prop('disabled', false).html('Confirm & Authorize');
         }
     };

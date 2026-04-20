@@ -367,10 +367,13 @@ $(function() {
                 <td><span class="badge badge-gray">${s.duration || 'Permanent'}</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <div class="flex items-center justify-center gap-2">
-                        <a href="admin-suspended-staff-detail.html?id=${s.id}" class="action-btn btn-view">
+                        <a href="admin-suspended-staff-detail.html?id=${s.id}" class="action-btn btn-view" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
                         </a>
-                        <button onclick="window.openReinstate('${s.id}','${s.full_name}')" class="action-btn btn-reinstate">
+                        <button class="action-btn btn-reinstate action-reinstate" 
+                                data-id="${s.id}" 
+                                data-name="${s.full_name.replace(/'/g, "&apos;")}"
+                                title="Reinstate Staff">
                             <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
                         </button>
                     </div>
@@ -384,29 +387,57 @@ $(function() {
         const end = Math.min(currentPage * 10, total);
         $('#pag-info').text(total ? `Showing ${start}–${end} of ${total} suspended staff` : 'No results');
 
-        let pcHtml = `<button class="pag-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)">← Previous</button>`;
+        let pcHtml = `<button class="pag-btn prev-page" ${currentPage <= 1 ? 'disabled' : ''}>← Previous</button>`;
         pcHtml += `<div class="flex items-center gap-1.5 mx-2 sm:mx-4">`;
         for (let i = 1; i <= pages; i++) {
             if (i > 5 && i < pages - 1) { if(i === 6) pcHtml += '<span class="px-2 opacity-50">...</span>'; continue; }
-            pcHtml += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="window.setPage(${i})">${i}</button>`;
+            pcHtml += `<button class="pag-num pag-page ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
         }
         pcHtml += `</div>`;
-        pcHtml += `<button class="pag-btn" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)">Next →</button>`;
+        pcHtml += `<button class="pag-btn next-page" ${currentPage >= pages ? 'disabled' : ''}>Next →</button>`;
         $('#pag-controls').html(pcHtml);
     }
 
-    window.goPage = (d) => { currentPage += d; loadSuspendedStaff(); };
-    window.setPage = (p) => { currentPage = p; loadSuspendedStaff(); };
+    // Event Delegation for Table Actions
+    $('#table-body').on('click', '.action-reinstate', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = $(this).attr('data-id');
+        const name = $(this).attr('data-name');
+        openReinstate(id, name);
+    });
+
+    // Event Delegation for Pagination
+    $('#pag-controls').on('click', '.prev-page', function(e) { 
+        e.preventDefault();
+        if(currentPage > 1) { currentPage--; loadSuspendedStaff(); } 
+    });
+    $('#pag-controls').on('click', '.next-page', function(e) { 
+        e.preventDefault();
+        currentPage++; 
+        loadSuspendedStaff(); 
+    });
+    $('#pag-controls').on('click', '.pag-page', function(e) { 
+        e.preventDefault();
+        currentPage = $(this).data('page'); 
+        loadSuspendedStaff(); 
+    });
     
     let pendingId = null;
-    window.openReinstate = (id, name) => {
+    function openReinstate(id, name) {
         pendingId = id;
         $('#modal-text').html(`You are reinstating <strong>${name}</strong>'s staff account. Their status will immediately return to <strong>Active</strong> and they can resume processing customer deposits and withdrawals.`);
         $('#reinstate-modal').removeClass('hidden');
-    };
+    }
 
-    window.confirmReinstate = async () => {
-        const $btn = $('#confirm-btn');
+    // Expose to window for any legacy references or quick debugging
+    window.openReinstateRecord = openReinstate;
+    window.loadSuspendedStaff = loadSuspendedStaff;
+    
+    // Modal Action Listeners
+    $('#confirm-btn').on('click', async function(e) {
+        e.preventDefault();
+        const $btn = $(this);
         $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...');
         
         try {
@@ -428,7 +459,13 @@ $(function() {
         } finally {
             $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Staff');
         }
-    };
+    });
+
+    // Close Modal via Cancel button
+    $('.btn-ghost, #modal-cancel').on('click', function(e) {
+        e.preventDefault();
+        $('#reinstate-modal').addClass('hidden');
+    });
 
     // Live Filtering Listeners
     const triggerFilter = () => { currentPage = 1; loadSuspendedStaff(); };
