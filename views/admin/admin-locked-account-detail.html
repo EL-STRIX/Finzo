@@ -34,19 +34,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
 
-/* SIDEBAR */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-sidebar);display:flex;flex-direction:column;z-index:100;overflow-y:auto;scrollbar-width:none;}
-.sidebar::-webkit-scrollbar{display:none;}
-.sidebar-brand{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
-.brand-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;}
-.brand-sub{font-size:9px;font-weight:800;letter-spacing:.2em;color:#10b981;margin-top:2px;text-transform:uppercase;}
-.nav-section{font-size:9px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,0.28);padding:16px 20px 6px;text-transform:uppercase;}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 16px;margin:2px 8px;border-radius:var(--radius-md);font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);text-decoration:none;transition:var(--transition);border:1px solid transparent;cursor:pointer;background:none;width:calc(100% - 16px);text-align:left;}
-.nav-item:hover{background:rgba(255,255,255,0.06);color:#e2e8f0;}
-.nav-item.active{background:rgba(26,60,94,0.5);color:#fff;border-color:rgba(26,60,94,0.7);}
-.nav-item.danger{color:rgba(244,63,94,0.7);}.nav-item.danger:hover{color:#f43f5e;background:rgba(244,63,94,0.08);}
-.nav-icon{font-size:18px;flex-shrink:0;}
-.sidebar-bottom{padding-bottom:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;flex-shrink:0;}
 
 /* LAYOUT */
 .main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;min-width:0;}
@@ -156,11 +143,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 
 /* ───────────── MOBILE ≤ 768px ───────────── */
 @media(max-width:768px){
-  /* Sidebar off-canvas */
-  .sidebar{transform:translateX(-100%);transition:transform .3s;width:260px;}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-overlay{display:block!important;position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
-  .sidebar-overlay.visible{opacity:1;pointer-events:auto;}
 
   .main{margin-left:0;}
   .topbar{padding:0 14px;height:58px;}
@@ -212,39 +194,73 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 <body>
 
 <!-- SIDEBAR -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
+<div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+<nav class="admin-sidebar" id="admin-sidebar">
+  <div class="admin-sidebar-brand">
     <div class="brand-name">Finzo</div>
-    <div class="brand-sub">Admin Console</div>
+    <div class="brand-sub">ADMIN CONSOLE</div>
   </div>
-  <div style="flex:1;padding-top:8px;">
-    <div class="nav-section">Main</div>
-    <a href="admin-dashboard.html" class="nav-item"><span class="material-symbols-outlined nav-icon">analytics</span>Overview</a>
-    <a href="admin-pending-approvals.html" class="nav-item"><span class="material-symbols-outlined nav-icon">rule</span><span style="flex:1">Pending Approvals</span></a>
-    <a href="admin-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">group</span>User Management</a>
-    <a href="admin-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">badge</span>Staff Management</a>
-    <a href="admin-branches.html" class="nav-item"><span class="material-symbols-outlined nav-icon">store</span>Branch Management</a>
-    <a href="admin-transactions.html" class="nav-item"><span class="material-symbols-outlined nav-icon">swap_horiz</span>Transactions</a>
-    <div class="nav-section">System</div>
-    <a href="admin-suspended-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_off</span><span style="flex:1">Suspended Users</span></a>
-    <a href="admin-suspended-staff.html" class="nav-item"><span class="material-symbols-outlined nav-icon">work_off</span>Suspended Staff</a>
-    <a href="admin-locked-accounts.html" class="nav-item active"><span class="material-symbols-outlined nav-icon">lock_person</span><span style="flex:1">Locked Accounts</span></a>
-    <a href="admin-deleted-users.html" class="nav-item"><span class="material-symbols-outlined nav-icon">person_remove</span>Deleted Users</a>
-    <a href="admin-interest.html" class="nav-item"><span class="material-symbols-outlined nav-icon">percent</span>Interest Management</a>
-    <div class="nav-section">Account</div>
-  </div>
-  <div class="sidebar-bottom">
-    <a href="admin-profile.html" class="nav-item"><span class="material-symbols-outlined nav-icon">account_circle</span>Admin Profile</a>
-    <button class="nav-item" onclick="toggleTheme()"><span class="material-symbols-outlined nav-icon" id="theme-icon">dark_mode</span><span id="theme-label">Dark Mode</span></button>
-    <a href="../../views/auth/login.html" class="nav-item danger"><span class="material-symbols-outlined nav-icon">logout</span>Logout</a>
+  <div class="admin-nav">
+    <div class="admin-nav-section">MAIN</div>
+    <a href="admin-dashboard.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">analytics</span> Overview
+    </a>
+    <a href="admin-pending-approvals.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+    </a>
+    <a href="admin-users.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">group</span> User Management
+    </a>
+    <a href="admin-staff.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">badge</span> Staff Management
+    </a>
+    <a href="admin-branches.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">store</span> Branch Management
+    </a>
+    <a href="admin-transactions.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">swap_horiz</span> Transactions
+    </a>
+
+    <div class="admin-nav-section">System</div>
+
+    <a href="admin-suspended-users.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">person_off</span> Suspended Users
+    </a>
+    <a href="admin-suspended-staff.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">work_off</span> Suspended Staff
+    </a>
+    <a href="admin-locked-accounts.html" class="admin-nav-item active">
+      <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+    </a>
+    <a href="admin-deleted-users.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">person_remove</span> Deleted Users
+    </a>
+    <a href="admin-interest.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">percent</span> Interest Management
+    </a>
+
+    <div class="admin-nav-section">ACCOUNT</div>
+    <a href="admin-profile.html" class="admin-nav-item">
+      <span class="material-symbols-outlined">account_circle</span> Admin Profile
+    </a>
+    <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+      <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+      <span data-theme-label>Dark Mode</span>
+    </button>
+    <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+      <span class="material-symbols-outlined">logout</span> Logout
+    </a>
   </div>
 </nav>
 
 <!-- MAIN -->
 <div class="main">
   <header class="topbar">
-    <div style="display:flex;align-items:center;min-width:0;gap:0;">
-      <button class="menu-btn" onclick="toggleSidebar()"><span class="material-symbols-outlined">menu</span></button>
+    <div class="flex items-center justify-between w-full">
+      <div class="flex items-center gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+          <span class="material-symbols-outlined force-black">menu</span>
+        </button>
       <div style="min-width:0;">
         <div style="font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;line-height:1;">Security Control</div>
         <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Account Lock Detail</div>
@@ -544,10 +560,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
             $('#audit-logs-body').html(html);
         }
 
-        window.toggleSidebar = () => {
-          $('#sidebar').toggleClass('open');
-          $('#sidebar-overlay').toggleClass('visible');
-        };
+        $('#mobile-menu-btn').on('click', function () {
+            $('#admin-sidebar').addClass('mobile-open active');
+            $('#sidebar-overlay').addClass('active');
+        });
+        $('#sidebar-overlay').on('click', function () {
+            $('#admin-sidebar').removeClass('mobile-open active');
+            $('#sidebar-overlay').removeClass('active');
+        });
 
         window.openUnlockModal = () => $('#unlock-modal').removeClass('hidden');
         window.closeModal = () => $('#unlock-modal').addClass('hidden');
@@ -615,10 +635,6 @@ function showToast(msg, type = 'success') {
     setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
 }
 
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('sidebar-overlay').classList.toggle('visible');
-}
 </script>
 </body>
 </html>
