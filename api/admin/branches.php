@@ -53,10 +53,37 @@ try {
     $stmt->execute($params);
     $branches = $stmt->fetchAll();
 
+    // Calculate Stats
+    $stmt_stats = $pdo->query("
+        SELECT 
+            COUNT(*) as total,
+            COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+            (SELECT COUNT(*) FROM staff) as total_staff
+        FROM branches
+    ");
+    $stats = $stmt_stats->fetch();
+
+    foreach ($branches as &$b) {
+        // Generate initials for the manager
+        if (!empty($b['manager_name'])) {
+            $parts = explode(' ', $b['manager_name']);
+            $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+            $b['manager_initials'] = $initials;
+        } else {
+            $b['manager_initials'] = '??';
+        }
+    }
+
     json_response([
-        'success'  => true,
-        'branches' => $branches,
-        'total'    => count($branches)
+        'status' => 'success',
+        'data'   => [
+            'branches' => $branches,
+            'stats'    => [
+                'total'       => (int)$stats['total'],
+                'active'      => (int)$stats['active'],
+                'total_staff' => (int)$stats['total_staff']
+            ]
+        ]
     ]);
 
 } catch (PDOException $e) {
