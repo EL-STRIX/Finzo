@@ -436,11 +436,11 @@
             $('#staff-id-display').text(`ID: ${staff.staff_id}`);
             $('#staff-branch-display').text(staff.branch_name || 'N/A');
             
-            const state = staff.status === 'Active' ? 'badge-success' : 'badge-error';
+            const state = staff.status.toLowerCase() === 'active' ? 'badge-success' : 'badge-error';
             $('#staff-status-badge').attr('class', `status-badge ${state}`).text(staff.status);
 
             // Button visibility based on status
-            if (staff.status !== 'Active') {
+            if (staff.status.toLowerCase() !== 'active') {
                $('#deactivate-staff-btn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed').html('<span class="material-symbols-outlined">block</span> Inactive');
             }
 
@@ -548,11 +548,13 @@
         });
       };
 
-      $('#deactivate-staff-btn').on('click', () => {
+      $('#deactivate-staff-btn').on('click', function() {
          if ($(this).prop('disabled')) return;
          openGovernanceModal('deactivate');
       });
-      $('#reset-password-btn').on('click', () => openGovernanceModal('reset'));
+      $('#reset-password-btn').on('click', function() {
+         openGovernanceModal('reset');
+      });
 
       $('#confirm-governance-btn').on('click', async function() {
         const $btn = $(this);
@@ -561,6 +563,7 @@
         const password = $('#admin-password').val();
         const staffId = new URLSearchParams(window.location.search).get('id');
         const reason = $('input[name="suspension_reason"]:checked').val();
+        const apiAction = currentAction === 'deactivate' ? 'suspend' : 'reset_password';
 
         if (currentAction === 'deactivate' && !reason) {
            alert('Please select a reason for deactivation.');
@@ -570,9 +573,9 @@
         $btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-sm">refresh</span> AUTHORIZING...');
 
         try {
-          const response = await api.post('/admin/staff-detail.php', {
-            action: currentAction,
-            id: staffId,
+          const response = await api.post('/admin/staff-action.php', {
+            action: apiAction,
+            staff_id: staffId,
             password: password,
             reason: reason,
             notes: $('#custom-reason-notes').val()

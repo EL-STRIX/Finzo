@@ -19,14 +19,14 @@ if (!$staff_id || empty($action)) {
     json_response(['success' => false, 'message' => 'Staff ID and action are required'], 422);
 }
 
-if (!in_array($action, ['suspend', 'reinstate'])) {
+if (!in_array($action, ['suspend', 'reinstate', 'reset_password'])) {
     json_response(['success' => false, 'message' => 'Invalid action'], 422);
 }
 
 $admin_id = $_SESSION['admin_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT id, staff_id, full_name, status FROM staff WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, staff_id, full_name, email, status FROM staff WHERE id = ?");
     $stmt->execute([$staff_id]);
     $staff = $stmt->fetch();
 
@@ -59,6 +59,32 @@ try {
             "Reinstated staff: {$staff['full_name']}");
 
         json_response(['success' => true, 'message' => 'Staff member reinstated successfully']);
+    } elseif ($action === 'reset_password') {
+        // Generate secure temp password
+        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
+        $temp_pass = '';
+        $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
+        $temp_pass .= 'ABCDEFGHJKMNPQRSTUVWXYZ'[rand(0, 23)];
+        $temp_pass .= '23456789'[rand(0, 7)];
+        $temp_pass .= '@#$%!'[rand(0, 4)];
+        for ($i = 4; $i < 12; $i++) {
+            $temp_pass .= $chars[rand(0, strlen($chars) - 1)];
+        }
+        $temp_pass = str_shuffle($temp_pass);
+
+        $password_hash = password_hash($temp_pass, PASSWORD_BCRYPT);
+
+        $stmt = $pdo->prepare("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$password_hash, $staff_id]);
+
+        write_audit_log($pdo, 'staff_password_reset', $staff['staff_id'], 'staff', $admin_id, 'admin',
+            "Reset password for staff: {$staff['full_name']} ({$staff['email']})");
+
+        json_response([
+            'success' => true,
+            'message' => 'Temporary password generated successfully',
+            'temp_password' => $temp_pass
+        ]);
     }
 
 } catch (PDOException $e) {
