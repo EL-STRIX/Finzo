@@ -30,7 +30,7 @@ if (empty($email) || empty($password)) {
 // =====================================================
 
 $stmt = $pdo->prepare("
-    SELECT id, full_name, email, password_hash, status
+    SELECT id, full_name, email, avatar, password_hash, status
     FROM admin_users
     WHERE email = ?
 ");
@@ -74,6 +74,7 @@ $stmt->execute([$ip, $admin['id']]);
 $_SESSION['admin_id']      = (int)$admin['id'];
 $_SESSION['admin_name']    = $admin['full_name'];
 $_SESSION['admin_email']   = $admin['email'];
+$_SESSION['admin_avatar']  = $admin['avatar'];
 $_SESSION['role']          = 'admin';
 $_SESSION['last_activity'] = time();
 

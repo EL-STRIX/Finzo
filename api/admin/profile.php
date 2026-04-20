@@ -143,6 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE admin_users SET avatar = ?, updated_at = NOW() WHERE id = ?");
                 $stmt->execute([$relative_path, $admin_id]);
 
+                $_SESSION['admin_avatar'] = $relative_path;
+
                 json_response(['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path]);
 
             } catch (PDOException $e) {

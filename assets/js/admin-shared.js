@@ -13,7 +13,7 @@ const AdminState = {
  */
 async function fetchAdminSession() {
     try {
-        const response = await api.get('/api/admin/dashboard.php'); // Uses dashboard as a soft session check
+        const response = await api.get('/admin/dashboard.php'); // Uses dashboard as a soft session check
         if (response.success) {
             AdminState.admin = response.admin;
             AdminState.isLoaded = true;
@@ -36,12 +36,29 @@ function updateAdminUI(stats = null) {
     if (!AdminState.admin) return;
 
     const name = AdminState.admin.full_name;
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const initials = name.split(' ')
+        .filter(word => /^[a-zA-Z]/.test(word)) 
+        .map(n => n[0])
+        .join('')
+        .toUpperCase();
 
     // Update Avatar
     const avatars = document.querySelectorAll('.admin-avatar');
+    const avatarUrl = AdminState.admin.avatar;
+    
     avatars.forEach(el => {
-        el.textContent = initials;
+        if (avatarUrl) {
+            // If avatar starts with http, use as is, else prepend relative path
+            // Add cache breaker to ensure fresh image load
+            const src = (avatarUrl.startsWith('http') ? avatarUrl : `../../${avatarUrl}`) + '?v=' + new Date().getTime();
+            
+            el.innerHTML = `<img src="${src}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;border:none;">`;
+            el.style.padding = '0'; 
+            el.style.background = 'none'; // Force remove any gradient
+            el.style.backgroundColor = 'transparent';
+        } else {
+            el.textContent = initials;
+        }
     });
 
     // Update Sidebar Badges if stats provided
@@ -79,7 +96,7 @@ function updateSidebarBadge(href, count) {
  */
 async function adminLogout() {
     try {
-        const response = await api.post('/api/auth/logout.php');
+        const response = await api.post('/auth/logout.php');
         if (response.success || response.redirect) {
             window.location.href = response.redirect || '../../views/auth/login.html';
         }

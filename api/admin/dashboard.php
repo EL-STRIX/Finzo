@@ -106,12 +106,18 @@ try {
     $stmt = $pdo->query("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'");
     $total_balance = (float)$stmt->fetchColumn();
 
+    // Fetch fresh admin data
+    $stmt = $pdo->prepare("SELECT full_name, email, avatar FROM admin_users WHERE id = ?");
+    $stmt->execute([$_SESSION['admin_id']]);
+    $admin_data = $stmt->fetch();
+
     json_response([
         'success' => true,
         'admin' => [
             'id' => $_SESSION['admin_id'],
-            'full_name' => $_SESSION['admin_name'],
-            'email' => $_SESSION['admin_email']
+            'full_name' => $admin_data['full_name'],
+            'email' => $admin_data['email'],
+            'avatar' => $admin_data['avatar']
         ],
         'stats' => [
             'total_users'        => $total_users,

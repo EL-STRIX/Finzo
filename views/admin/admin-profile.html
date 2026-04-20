@@ -88,6 +88,7 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/api.js"></script>
+<script src="../../assets/js/admin-shared.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </head>
@@ -377,11 +378,13 @@
       if (data.success) {
         const admin = data.admin;
 
-        // Compute initials from full_name
-        const nameParts = (admin.full_name || '').trim().split(' ');
-        const initials = nameParts.length >= 2
-          ? (nameParts[0][0] + nameParts[1][0]).toUpperCase()
-          : (admin.full_name || 'A').substring(0, 2).toUpperCase();
+        // Compute initials from full_name (filtering out symbols like '(')
+        const initials = (admin.full_name || '')
+          .split(' ')
+          .filter(word => /^[a-zA-Z]/.test(word))
+          .map(n => n[0])
+          .join('')
+          .toUpperCase() || 'A';
 
         // Update header displays
         $('#profile-name-display').text(admin.full_name || '—');

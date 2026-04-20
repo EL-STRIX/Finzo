@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/admin-shared.js"></script>
   <script src="../../assets/js/theme.js"></script>
   <script src="../../assets/js/admin-dropdowns.js"></script>
 </head>
@@ -777,7 +778,9 @@
 
       // Mock Staff Data
       const mockStaff = [
-        { id: 'STF001', name: 'Amit Sharma', role: 'Branch Manager', email: 'amit.sharma@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AS', color: '#1d4ed8', bg: '#dbeafe' },
+        { id: 'STF001', name: 'Amit Sharma', role: 'Branch Manager', email: 'amit.sharma@finzobank.com', status: 'Active', branch: 'Barasat', avatar: 'AS', color: '#1d4ed8', bg: '#dbeafe' }
+      ];
+
       window.showBranchStaff = async (branchId, branchName) => {
         const $tbody = $('#branch-staff-table-body');
         $tbody.html('<tr><td colspan="5"><div class="skeleton-row"></div></td></tr>');
@@ -973,7 +976,6 @@
           location.reload();
         }, 1500);
       });
-    });
   </script>
 </body>
 </html>
