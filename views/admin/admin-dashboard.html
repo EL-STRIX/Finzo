@@ -101,13 +101,13 @@
   <div class="admin-main">
     <!-- TOP BAR -->
     <div class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex items-center gap-3 sm:gap-4 flex-1">
         <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined">menu</span>
+            <span class="material-symbols-outlined force-black">menu</span>
         </button>
         <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">ADMIN OVERVIEW</div>
-          <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Dashboard Overview</div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ADMIN OVERVIEW</div>
+          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Dashboard Overview</div>
         </div>
       </div>
       <div class="flex items-center gap-3 sm:gap-5">
@@ -529,9 +529,15 @@
 
         loadDashboard();
 
-        // Mobile Menu
-        $('#mobile-menu-btn').on('click', () => { $('#admin-sidebar').addClass('mobile-open'); $('#sidebar-overlay').addClass('active'); });
-        $('#sidebar-overlay').on('click', () => { $('#admin-sidebar').removeClass('mobile-open'); $('#sidebar-overlay').removeClass('active'); });
+        // Sidebar Toggle Logic
+        $('#mobile-menu-btn').on('click', function () {
+            $('#admin-sidebar').addClass('mobile-open active');
+            $('#sidebar-overlay').addClass('active');
+        });
+        $('#sidebar-overlay').on('click', function () {
+            $('#admin-sidebar').removeClass('mobile-open active');
+            $('#sidebar-overlay').removeClass('active');
+        });
     });
   </script>
 </body>

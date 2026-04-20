@@ -233,10 +233,10 @@
 
   <div class="admin-main flex-1 flex flex-col min-w-0">
     <!-- TOPBAR -->
-    <header class="admin-topbar flex items-center justify-between px-6 sm:px-8 py-5 !h-auto !bg-white dark:!bg-[#161b22] !border-slate-200 dark:!border-white/5 transition-all duration-300 sticky top-0 z-50">
+    <header class="admin-topbar">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
         <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black" style="font-size:24px;">menu</span>
+            <span class="material-symbols-outlined force-black">menu</span>
         </button>
         <div>
           <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ACCOUNT CONTROL</div>
@@ -471,7 +471,15 @@
 
       window.closeModal = () => $('#reinstate-modal').addClass('hidden');
 
-      loadSuspendedUsers();
+      // Sidebar Toggle Logic
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open active');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open active');
+          $('#sidebar-overlay').removeClass('active');
+      });
     });
 
 function showToast(msg, type = 'success') {

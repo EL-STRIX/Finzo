@@ -60,7 +60,7 @@
   <nav class="admin-sidebar" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <div class="brand-name">Finzo</div>
-      <div class="brand-sub" style="font-weight:700;color:#00b894;">ADMIN CONSOLE</div>
+      <div class="brand-sub">ADMIN CONSOLE</div>
     </div>
     <div class="admin-nav">
       <div class="admin-nav-section sidebar-header-fix font-bold">MAIN</div>
@@ -430,7 +430,17 @@ async function confirmRate() {
   } catch (error) {
     alert('Failed to update rate. Please try again.');
   }
-}
+
+  // Sidebar Toggle Logic
+  $('#mobile-menu-btn').on('click', function () {
+    $('#admin-sidebar').addClass('mobile-open active');
+    $('#sidebar-overlay').addClass('active');
+  });
+  $('#sidebar-overlay').on('click', function () {
+    $('#admin-sidebar').removeClass('mobile-open active');
+    $('#sidebar-overlay').removeClass('active');
+  });
+});
 </script>
 </body>
 </html>

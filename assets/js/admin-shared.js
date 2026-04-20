@@ -62,10 +62,12 @@ function updateAdminUI(stats = null) {
     });
 
     // Update Sidebar Badges if stats provided
+    /* 
     if (stats) {
         updateSidebarBadge('admin-locked-accounts.html', stats.locked_accounts);
         updateSidebarBadge('admin-pending-approvals.html', stats.pending_approvals);
     }
+    */
 }
 
 /**

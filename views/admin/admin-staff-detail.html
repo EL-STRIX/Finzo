@@ -106,12 +106,12 @@
             <span class="material-symbols-outlined force-black">menu</span>
         </button>
         <div class="min-w-0">
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase flex items-center gap-2">
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase flex items-center gap-2">
               <a href="admin-staff.html" class="hover:underline opacity-60">STAFF MANAGEMENT</a>
               <span class="material-symbols-outlined text-[10px] opacity-40">chevron_right</span>
-              <span class="text-primary dark:text-blue-400 whitespace-nowrap" id="staff-name-breadcrumb">Loading...</span>
+              <span class="whitespace-nowrap" id="staff-name-breadcrumb">Loading...</span>
           </div>
-          <div class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">Staff Detail</div>
+          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Staff Detail</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -358,11 +358,11 @@
     $(document).ready(function() {
       // Mobile Navigation
       $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
+          $('#admin-sidebar').addClass('mobile-open active');
           $('#sidebar-overlay').addClass('active');
       });
       $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
+          $('#admin-sidebar').removeClass('mobile-open active');
           $('#sidebar-overlay').removeClass('active');
       });
 

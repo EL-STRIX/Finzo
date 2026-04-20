@@ -7,8 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/admin-shared.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1a3c5e',
+            surface: {
+              card: 'var(--bg-card)',
+              page: 'var(--bg-page)'
+            }
+          }
+        }
+      }
+    }
+</script>
 <style>
 :root{
   --primary:#1a3c5e;
@@ -36,8 +54,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 
 
 /* LAYOUT */
-.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;min-width:0;}
-.topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.admin-main{flex:1;display:flex;flex-direction:column;min-width:0;}
 .page-content{padding:28px 32px;flex:1;}
 
 /* CARD */
@@ -130,6 +147,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 
 /* ───────────── TABLET ≤ 1024px ───────────── */
 @media(max-width:1024px){
+  .admin-main{margin-left:0;}
   .page-grid{grid-template-columns:1fr;}
   /* Action card moves to TOP on single-column layout */
   .col-right{position:static;order:-1;}
@@ -144,8 +162,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 /* ───────────── MOBILE ≤ 768px ───────────── */
 @media(max-width:768px){
 
-  .main{margin-left:0;}
-  .topbar{padding:0 14px;height:58px;}
+  .admin-main{margin-left:0;}
+  .admin-topbar-mobile-fix { padding: 0 14px; height: 58px; }
   .menu-btn{display:flex!important;width:36px;height:36px;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;margin-right:8px;flex-shrink:0;}
   .page-content{padding:14px!important;}
   .card-p{padding:16px!important;}
@@ -254,19 +272,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 </nav>
 
 <!-- MAIN -->
-<div class="main">
-  <header class="topbar">
-    <div class="flex items-center justify-between w-full">
-      <div class="flex items-center gap-4">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+<div class="admin-main">
+  <header class="admin-topbar">
+    <div class="flex items-center gap-3 sm:gap-4 flex-1">
+      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
           <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-      <div style="min-width:0;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;line-height:1;">Security Control</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Account Lock Detail</div>
+      </button>
+      <div>
+        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SECURITY CONTROL</div>
+        <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Locked Account Detail</div>
       </div>
     </div>
-    <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;flex-shrink:0;box-shadow:0 4px 10px rgba(26,60,94,0.25);" id="top-admin-avatar">AD</div>
+    <div class="flex items-center gap-4">
+      <div class="admin-avatar premium-gradient-primary" id="top-admin-avatar">AD</div>
+    </div>
   </header>
 
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>

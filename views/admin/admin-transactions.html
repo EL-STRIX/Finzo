@@ -411,13 +411,13 @@
   <!-- MAIN AREA -->
   <div class="admin-main">
     <header class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-5 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2 text-slate-500">
-            <span class="material-symbols-outlined">menu</span>
+      <div class="flex items-center gap-3 sm:gap-4 flex-1">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined force-black">menu</span>
         </button>
         <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">TRANSACTION MANAGEMENT</div>
-          <h1 class="font-headline text-xl sm:text-3xl font-bold force-black tracking-tight mt-1">All Transactions</h1>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">TRANSACTION MANAGEMENT</div>
+          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">All Transactions</div>
         </div>
       </div>
 
@@ -733,12 +733,13 @@
     window.goToPage = (p) => { currentPage = p; loadTransactions(); };
 
     $(function () {
+      // Sidebar Toggle Logic
       $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
+          $('#admin-sidebar').addClass('mobile-open active');
           $('#sidebar-overlay').addClass('active');
       });
       $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
+          $('#admin-sidebar').removeClass('mobile-open active');
           $('#sidebar-overlay').removeClass('active');
       });
 

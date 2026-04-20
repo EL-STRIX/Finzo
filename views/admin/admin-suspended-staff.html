@@ -186,14 +186,14 @@
   <!-- MAIN -->
   <div class="admin-main">
     <!-- TOPBAR -->
-    <header class="admin-topbar flex items-center justify-between px-6 sm:px-8 py-5 !h-auto !bg-white dark:!bg-[#161b22] !border-slate-200 dark:!border-white/5 transition-all duration-300 sticky top-0 z-50">
+    <header class="admin-topbar">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
         <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
             <span class="material-symbols-outlined force-black">menu</span>
         </button>
         <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">STAFF CONTROL</div>
-          <div class="font-headline text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Suspended Staff</div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">STAFF CONTROL</div>
+          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Suspended Staff</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -498,20 +498,15 @@ function showToast(msg, type = 'success') {
     }, 3500);
 }
 
-// Mobile Menu Toggle
-const sidebar = document.getElementById('admin-sidebar');
-const overlay = document.getElementById('sidebar-overlay');
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-
-mobileMenuBtn?.addEventListener('click', () => {
-    sidebar?.classList.add('mobile-open');
-    overlay?.classList.add('active');
-});
-
-overlay?.addEventListener('click', () => {
-    sidebar?.classList.remove('mobile-open');
-    overlay?.classList.remove('active');
-});
+      // Sidebar Toggle Logic
+      $('#mobile-menu-btn').on('click', function () {
+          $('#admin-sidebar').addClass('mobile-open active');
+          $('#sidebar-overlay').addClass('active');
+      });
+      $('#sidebar-overlay').on('click', function () {
+          $('#admin-sidebar').removeClass('mobile-open active');
+          $('#sidebar-overlay').removeClass('active');
+      });
 
 
 </script>
