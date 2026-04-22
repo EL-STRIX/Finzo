@@ -10,6 +10,8 @@
 <script src="../../assets/js/theme.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/admin-shared.js"></script>
+<link rel="stylesheet" href="../../assets/css/admin.css">
+<link rel="stylesheet" href="../../assets/css/dark-mode.css">
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <script>
     tailwind.config = {
@@ -27,193 +29,13 @@
       }
     }
 </script>
-<style>
-:root{
-  --primary:#1a3c5e;
-  --red:#f43f5e;--red-soft:rgba(244,63,94,0.08);--red-border:rgba(244,63,94,0.2);
-  --amber:#f59e0b;--amber-soft:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);
-  --green:#10b981;--green-soft:rgba(16,185,129,0.08);--green-border:rgba(16,185,129,0.2);
-  --blue:#3b82f6;--blue-soft:rgba(59,130,246,0.08);--blue-border:rgba(59,130,246,0.2);
-  --indigo:#6366f1;--indigo-soft:rgba(99,102,241,0.08);--indigo-border:rgba(99,102,241,0.2);
-  --bg-page:#f1f5f9;--bg-card:#ffffff;--bg-input:#f1f5f9;--bg-sidebar:#0d1117;
-  --text-primary:#0f172a;--text-secondary:#64748b;--border:#e2e8f0;
-  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
-  --sidebar-width:248px;
-  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
-  --transition:all 0.2s ease;
-}
-.dark{
-  --bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);
-  --text-primary:#f0f6fc;--text-secondary:#8b949e;--border:rgba(255,255,255,0.06);
-  --shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
-  --red-soft:rgba(244,63,94,0.12);--amber-soft:rgba(245,158,11,0.12);
-  --green-soft:rgba(16,185,129,0.12);--indigo-soft:rgba(99,102,241,0.12);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;display:flex;}
 
-
-/* LAYOUT */
-.admin-main{flex:1;display:flex;flex-direction:column;min-width:0;}
-.page-content{padding:28px 32px;flex:1;}
-
-/* CARD */
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);}
-.card-p{padding:24px;}
-.section-label{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;}
-
-/* INFO ROWS */
-.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border);gap:16px;}
-.info-row:last-child{border-bottom:none;}
-.info-label{font-size:12px;font-weight:500;color:var(--text-secondary);flex-shrink:0;}
-.info-value{font-size:13px;font-weight:700;color:var(--text-primary);text-align:right;word-break:break-word;max-width:62%;}
-
-/* BADGES */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:7px;font-size:9px;font-weight:800;letter-spacing:.08em;border:1px solid;white-space:nowrap;text-transform:uppercase;}
-.badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red-border);}
-.badge-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border);}
-.badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green-border);}
-.badge-blue{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-border);}
-.badge-indigo{background:var(--indigo-soft);color:var(--indigo);border-color:var(--indigo-border);}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 20px;height:46px;border-radius:var(--radius-md);font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap;text-decoration:none;}
-.btn-amber{background:var(--amber);color:#fff;box-shadow:0 4px 12px rgba(245,158,11,0.3);}.btn-amber:hover{background:#d97706;transform:translateY(-1px);}
-.btn-success{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.2);}.btn-success:hover{background:#059669;transform:translateY(-1px);}
-.btn-ghost{background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text-primary);}
-.btn-lg{height:50px;font-size:14px;border-radius:var(--radius-lg);}
-
-/* ATTEMPT DOTS */
-.attempt-dot{width:15px;height:15px;border-radius:50%;background:var(--red);box-shadow:0 0 6px rgba(244,63,94,0.3);flex-shrink:0;}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;padding:16px;}
-.modal-overlay.hidden{display:none!important;}
-.hidden{display:none!important;}
-.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
-.modal-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.modal-title{font-size:19px;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:8px;}
-.modal-text{font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.6;margin-bottom:18px;}
-.modal-actions{display:flex;gap:10px;}
-.modal-actions .btn{flex:1;height:46px;font-size:13px;}
-
-/* TOAST */
-.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.toast{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 14px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px;font-weight:600;color:var(--text-primary);min-width:260px;}
-.toast-success{border-left:4px solid var(--green);}
-.toast-error{border-left:4px solid var(--red);}
-
-/* MONO */
-.mono{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:.04em;overflow-wrap:break-word;}
-
-/* PAGE GRID — desktop: 2 col */
-.page-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
-.col-left{display:flex;flex-direction:column;gap:20px;}
-.col-right{display:flex;flex-direction:column;gap:16px;position:sticky;top:88px;}
-
-/* PROFILE HEADER */
-.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
-.profile-avatar{width:52px;height:52px;border-radius:50%;background:rgba(245,158,11,0.12);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
-
-/* SECURITY NOTICE */
-.security-notice{background:rgba(244,63,94,0.04);border:1px solid rgba(244,63,94,0.12);border-radius:var(--radius-lg);padding:20px;margin-bottom:18px;display:flex;gap:18px;align-items:flex-start;}
-.security-notice-icon{width:44px;height:44px;min-width:44px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.15);}
-
-/* AUDIT TABLE */
-.audit-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg-input);}
-.audit-footer{padding:10px 18px;border-top:1px solid var(--border);background:var(--bg-input);text-align:center;}
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.table-scroll::-webkit-scrollbar{display:none;}
-.audit-table{width:100%;border-collapse:collapse;min-width:400px;}
-.audit-table th{padding:9px 14px;text-align:left;font-size:9px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.015);}
-.audit-table td{padding:11px 14px;font-size:12px;border-bottom:1px solid var(--border);}
-.audit-table tbody tr:last-child td{border-bottom:none;}
-.audit-table .ip-cell{font-family:'Courier New',monospace;color:var(--text-primary);}
-.audit-table .time-cell{color:var(--text-secondary);}
-.audit-table .outcome-cell{text-align:center;}
-
-/* ANIMATIONS */
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;}
-@keyframes successPop{0%{transform:scale(0.8);opacity:0}50%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-.success-pop{animation:successPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
-.shimmer-card{background:linear-gradient(90deg,var(--bg-input) 25%,rgba(16,185,129,0.05) 50%,var(--bg-input) 75%);background-size:200% 100%;animation:shimmer 2s infinite linear;}
-
-/* MOBILE SIDEBAR OVERLAY */
-.sidebar-overlay{display:none;}
-.menu-btn{display:none;}
-
-/* ───────────── TABLET ≤ 1024px ───────────── */
-@media(max-width:1024px){
-  .admin-main{margin-left:0;}
-  .page-grid{grid-template-columns:1fr;}
-  /* Action card moves to TOP on single-column layout */
-  .col-right{position:static;order:-1;}
-  /* Horizontal layout for action card on tablet */
-  .action-inner{flex-direction:row!important;text-align:left!important;align-items:center;gap:20px!important;}
-  .action-icon{flex-shrink:0;}
-  .action-body{flex:1;}
-  .action-btn{width:auto!important;min-width:180px;}
-  .action-hint{text-align:left!important;}
-}
-
-/* ───────────── MOBILE ≤ 768px ───────────── */
-@media(max-width:768px){
-
-  .admin-main{margin-left:0;}
-  .admin-topbar-mobile-fix { padding: 0 14px; height: 58px; }
-  .menu-btn{display:flex!important;width:36px;height:36px;align-items:center;justify-content:center;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;margin-right:8px;flex-shrink:0;}
-  .page-content{padding:14px!important;}
-  .card-p{padding:16px!important;}
-
-  /* Profile stays horizontal — just tighter */
-  .profile-header{gap:12px;margin-bottom:14px;padding-bottom:14px;}
-  .profile-avatar{width:44px;height:44px;font-size:16px;}
-
-  /* Security notice — stack */
-  .security-notice{flex-direction:column;gap:12px;padding:14px;margin-bottom:14px;}
-  .security-notice-icon{width:38px;height:38px;min-width:38px;border-radius:8px;}
-  .security-notice-icon .material-symbols-outlined{font-size:20px!important;}
-
-  /* Info rows — label on top, value below */
-  .info-row{flex-direction:column;align-items:flex-start;gap:2px;padding:10px 0;}
-  .info-label{font-size:11px;}
-  .info-value{font-size:13px;text-align:left;max-width:100%;}
-
-  /* Audit header wrap */
-  .audit-header{flex-wrap:wrap;padding:12px 14px;gap:8px;}
-
-  /* Action card — back to vertical on mobile */
-  .action-inner{flex-direction:column!important;text-align:center!important;gap:10px!important;}
-  .action-btn{width:100%!important;min-width:unset;}
-  .action-hint{text-align:center!important;}
-
-  /* Attempt dots */
-  .attempt-dot{width:12px;height:12px;}
-
-  /* Modal */
-  .modal-card{padding:20px 16px;border-radius:var(--radius-lg);}
-  .modal-icon{width:48px;height:48px;}
-  .modal-title{font-size:17px;}
-}
-
-/* ───────────── SMALL MOBILE ≤ 480px ───────────── */
-@media(max-width:480px){
-  .modal-actions{flex-direction:column-reverse;}
-  .modal-actions .btn{width:100%;height:50px;}
-  .modal-pass-grid{grid-template-columns:1fr!important;}
-  .toast-wrap{right:10px;left:10px;top:10px;}
-  .toast{min-width:0;width:100%;}
-}
-</style>
-</head>
+  </head>
 <body>
 
 <!-- SIDEBAR -->
-<div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-<nav class="admin-sidebar" id="admin-sidebar">
+<div class="admin-sidebar-overlay sidebar-overlay" id="sidebar-overlay"></div>
+<nav class="admin-sidebar sidebar" id="sidebar">
   <div class="admin-sidebar-brand">
     <div class="brand-name">Finzo</div>
     <div class="brand-sub">ADMIN CONSOLE</div>
@@ -272,19 +94,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
 </nav>
 
 <!-- MAIN -->
-<div class="admin-main">
-  <header class="admin-topbar">
-    <div class="flex items-center gap-3 sm:gap-4 flex-1">
-      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-          <span class="material-symbols-outlined force-black">menu</span>
+<div class="main">
+  <header class="topbar">
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <button class="hamburger-btn icon-btn" onclick="toggleSidebar()" style="display:none;">
+        <span class="material-symbols-outlined force-black">menu</span>
       </button>
-      <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SECURITY CONTROL</div>
-        <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Locked Account Detail</div>
+      <div class="min-w-0 flex-1">
+        <div class="eyebrow truncate">SECURITY CONTROL</div>
+        <div class="topbar-title truncate">Locked Account Detail</div>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="admin-avatar premium-gradient-primary" id="top-admin-avatar">AD</div>
+    <div class="flex items-center gap-4 shrink-0 pl-3">
+      <div class="avatar" style="width:40px;height:40px;background:var(--primary);color:#fff;font-size:14px;">AD</div>
     </div>
   </header>
 
@@ -579,14 +401,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-page);color:
             $('#audit-logs-body').html(html);
         }
 
-        $('#mobile-menu-btn').on('click', function () {
-            $('#admin-sidebar').addClass('mobile-open active');
-            $('#sidebar-overlay').addClass('active');
-        });
-        $('#sidebar-overlay').on('click', function () {
-            $('#admin-sidebar').removeClass('mobile-open active');
-            $('#sidebar-overlay').removeClass('active');
-        });
+        window.toggleSidebar = function() {
+            const sidebar  = document.getElementById('sidebar');
+            const overlay  = document.getElementById('sidebar-overlay');
+            const isOpen   = sidebar.classList.contains('mobile-open');
+            sidebar.classList.toggle('mobile-open', !isOpen);
+            overlay.classList.toggle('active', !isOpen);
+        };
 
         window.openUnlockModal = () => $('#unlock-modal').removeClass('hidden');
         window.closeModal = () => $('#unlock-modal').addClass('hidden');

@@ -24,37 +24,13 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<style>
-  .force-black { color: #000000 !important; opacity: 1 !important; }
-  .dark .force-black { color: #ffffff !important; opacity: 1 !important; }
-  .sidebar-header-fix { color: #ffffff !important; opacity: 1 !important; }
-  .force-white-bg { background: #ffffff !important; background-color: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-  .dark .force-white-bg { background: rgba(18, 18, 18, 0.9) !important; backdrop-filter: blur(10px) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
-  .force-status-bg { background: #f1f2f6 !important; }
-  .dark .force-status-bg { background: rgba(51, 65, 85, 0.5) !important; }
-  
-  /* High-Specificity Fix for metrics card */
-  #metrics-interest-total { background: #ffffff !important; backdrop-filter: none !important; }
-  .dark #metrics-interest-total { background: rgba(18, 18, 18, 0.9) !important; backdrop-filter: blur(10px) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
-  
-  #update-rate-card { background: #ffffff !important; backdrop-filter: none !important; }
-  .dark #update-rate-card { background: rgba(18, 18, 18, 0.9) !important; backdrop-filter: blur(10px) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
 
-  .table-header-theme { background: #ffffff !important; }
-  .dark .table-header-theme { background: #0c0c0c !important; }
-
-  #history-header-row th { background: #ffffff !important; }
-  .dark #history-header-row th { background: #0c0c0c !important; }
-
-  /* Global Light Mode Overrides */
-  html:not(.dark) .admin-main { background: #ffffff !important; }
-</style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="../../assets/js/api.js"></script>
 <script src="../../assets/js/admin-shared.js"></script>
 <script src="../../assets/js/admin-dropdowns.js"></script>
 <script src="../../assets/js/theme.js"></script>
-</head>
+  </head>
 <body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
   <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
   <nav class="admin-sidebar" id="admin-sidebar">
@@ -430,17 +406,7 @@ async function confirmRate() {
   } catch (error) {
     alert('Failed to update rate. Please try again.');
   }
-
-  // Sidebar Toggle Logic
-  $('#mobile-menu-btn').on('click', function () {
-    $('#admin-sidebar').addClass('mobile-open active');
-    $('#sidebar-overlay').addClass('active');
-  });
-  $('#sidebar-overlay').on('click', function () {
-    $('#admin-sidebar').removeClass('mobile-open active');
-    $('#sidebar-overlay').removeClass('active');
-  });
-});
+}
 </script>
 </body>
 </html>
