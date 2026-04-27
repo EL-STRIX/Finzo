@@ -2,530 +2,304 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — Deleted Users</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Deleted Users | Finzo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/theme.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  <script src="../../assets/js/admin-dropdowns.js"></script>
-  </head>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+</head>
 
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <!-- SIDEBAR -->
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
-
-      <div class="admin-nav-section">System</div>
-
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
-
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTENT -->
-  <div class="admin-main">
-    <!-- TOP BAR -->
-    <div class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-        <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SYSTEM RECORDS</div>
-          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Deleted Users</div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
-      </div>
-      <div class="flex items-center gap-4">
-        <div class="admin-avatar premium-gradient-primary">A</div>
-      </div>
-    </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-    <div class="p-4 sm:p-6 lg:p-8">
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-      <!-- FILTER TABS -->
-      <div id="status-tabs" class="flex flex-wrap items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-full sm:w-auto">
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Deleted</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="this-week">Deleted This Week</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="this-month">Deleted This Month</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="recovered">Recovered</button>
-      </div>
-
-      <!-- SEARCH & FILTER -->
-      <div class="admin-card mb-8 !overflow-visible relative z-[30]">
-        <div class="p-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-3 sm:gap-4">
-          <!-- Multi-search -->
-          <div class="w-full sm:flex-1 sm:min-w-[280px]">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">SEARCH USER</label>
-            <div class="relative group">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-              <input type="text" id="filter-search" placeholder="Search by name, email or account number..."
-                class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SYSTEM RECORDS</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Deleted Users</div>
+                </div>
             </div>
-          </div>
-          
-          <!-- Date Range -->
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-             <div class="flex flex-col flex-1 sm:flex-none">
-               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">DELETED FROM</label>
-               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10 w-full">
-             </div>
-             <div class="flex flex-col flex-1 sm:flex-none">
-               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">TO</label>
-               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 focus:ring-2 focus:ring-primary/10 w-full">
-             </div>
-          </div>
+            <div class="flex items-center gap-4">
+                <div class="admin-avatar premium-gradient-primary">A</div>
+            </div>
+        </header>
 
-
-
-          <!-- Buttons -->
-          <div class="flex gap-2 w-full sm:w-auto">
-            <button id="apply-filters" class="admin-btn-primary flex-1 sm:flex-none" style="padding: 11px 28px !important; border-radius: 12px !important; background: #1a3c5e !important;">Apply</button>
-            <button id="reset-filters" class="admin-btn-secondary flex-1 sm:flex-none" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DELETED USERS TABLE -->
-      <div class="admin-card overflow-hidden" style="border-radius:24px;">
-        
-
-        <div class="overflow-x-auto">
-          <table class="du-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>USER</th>
-                <th>PHONE</th>
-                <th>ACCOUNT NO</th>
-                <th>ACCOUNT TYPE</th>
-
-                <th>DELETED ON</th>
-                <th>REASON</th>
-                <th style="text-align:right;">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody id="deleted-table-body">
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- PAGINATION -->
-        <div class="p-6 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/30 dark:bg-white/5">
-          <div class="text-xs font-bold opacity-40">Showing 1-5 of 5 deleted users</div>
-          <div class="flex items-center gap-2">
-            <button id="prev-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>
-            <button id="page-1" onclick="goToPage(1)" class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important; background: #1a3c5e !important;">1</button>
-            <button id="next-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next →</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- EMPTY STATE (hidden by default) -->
-      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 animate-fade-in">
-        <div class="w-24 h-24 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-300 mb-6">
-          <span class="material-symbols-outlined text-6xl">person_check</span>
-        </div>
-        <h3 class="font-headline text-2xl font-bold text-slate-800 dark:text-white mb-2">No Deleted Users Found</h3>
-        <p class="text-slate-500 dark:text-slate-400 text-center max-w-sm">All user accounts are currently active. Soft deleted users will appear here.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- RECOVERY MODAL -->
-  <div id="recoverModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('recoverModal')"></div>
-    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="p-8 text-center bg-white dark:bg-surface-container-high overflow-y-auto">
-        <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center shadow-inner shrink-0">
-          <span class="material-symbols-outlined text-4xl">restore</span>
-        </div>
-        <h3 class="font-headline text-2xl font-bold text-slate-900 dark:text-white mb-3">Recover User Account</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-          You are about to recover the account of <span id="recover-user-name" class="font-bold text-slate-900 dark:text-white"></span> with account number <span id="recover-user-acc" class="font-bold text-slate-900 dark:text-white"></span>.
-          This will restore full access to their account and all their transaction history and data.
-        </p>
-
-        <div class="bg-slate-50 dark:bg-white/5 p-6 rounded-2xl mb-8 border border-slate-100 dark:border-white/5 text-left transition-colors">
-           <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">RESTORE OPTIONS</label>
-           <div class="space-y-4">
-             <label class="flex items-center gap-4 cursor-pointer group">
-               <input type="radio" name="restore-option" checked class="w-5 h-5 text-green-500 border-slate-300 dark:border-white/10 focus:ring-green-500/20 bg-white dark:bg-slate-800 transition-all">
-               <div class="flex flex-col">
-                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors dark:text-white">Restore with original balance</span>
-                 <span class="text-[10px] opacity-60 dark:text-white/60">Balance before deletion will be restored</span>
-               </div>
-             </label>
-             <label class="flex items-center gap-4 cursor-pointer group">
-               <input type="radio" name="restore-option" class="w-5 h-5 text-green-500 border-slate-300 dark:border-white/10 focus:ring-green-500/20 bg-white dark:bg-slate-800 transition-all">
-               <div class="flex flex-col">
-                 <span class="text-sm font-bold group-hover:text-green-500 transition-colors dark:text-white">Restore with zero balance</span>
-                 <span class="text-[10px] opacity-60 dark:text-white/60">Account will start with ₹0.00 balance</span>
-               </div>
-             </label>
-           </div>
-        </div>
-
-        <div class="flex gap-4">
-          <button onclick="closeModal('recoverModal')" class="flex-1 px-6 py-3.5 border-2 border-slate-100 dark:border-white/10 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Cancel</button>
-          <button onclick="confirmRecovery()" class="flex-1 px-6 py-3.5 bg-green-500 text-white rounded-xl text-sm font-bold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover Account</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DETAILS MODAL -->
-  <div id="detailsModal" class="fixed inset-0 z-[2030] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm animate-fade-in" onclick="closeModal('detailsModal')"></div>
-    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter shadow-2xl overflow-hidden p-0 flex flex-col max-h-[90vh]">
-      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-surface-container-high shrink-0">
-        <h3 class="font-headline text-xl font-bold text-slate-900 dark:text-white">Deleted User Details</h3>
-        <button onclick="closeModal('detailsModal')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <div class="p-8 bg-white dark:bg-surface-container-high overflow-y-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <!-- Left Column -->
-          <div class="space-y-8">
-            <div>
-              <h4 class="text-[10px] font-black uppercase tracking-widest text-[#6c63ff] mb-4">Personal Information</h4>
-              <div class="space-y-4">
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Full Name</span>
-                  <span class="text-sm font-bold dark:text-white details-name">Mohan Kumar</span>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Email</span>
-                  <span class="text-sm font-bold dark:text-white details-email">mohan.kumar@gmail.com</span>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Phone</span>
-                  <span class="text-sm font-bold dark:text-white details-phone">+91 99887 76655</span>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Account No</span>
-                  <span class="text-sm font-code font-bold text-indigo-600 dark:text-indigo-400 details-acc">FNZ20260010</span>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Account Type</span>
-                  <span class="text-sm font-bold dark:text-white details-type">Savings</span>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase">Registration Date</span>
-                  <span class="text-sm font-bold dark:text-white details-reg">15 Jan 2026</span>
-                </div>
-              </div>
+        <main class="p-4 sm:p-6 lg:p-10">
+            <!-- STATUS TABS -->
+            <div id="status-tabs" class="flex items-center gap-1 mb-8 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-fit">
+                <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Deleted</button>
+                <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-primary dark:hover:text-slate-300" data-status="recent">Recent</button>
+                <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-primary dark:hover:text-slate-300" data-status="recovered">Recovered</button>
             </div>
 
-            <div class="p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
-              <h4 class="text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 mb-3">Deletion Information</h4>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase">Deleted By</span>
-                  <span class="text-xs font-bold text-red-900 dark:text-red-200">Admin</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase">Deleted On</span>
-                  <span class="text-xs font-bold text-red-900 dark:text-red-200">05 Apr 2026 11:30 AM</span>
-                </div>
-                <div class="mt-2">
-                  <span class="text-[10px] font-bold text-red-800/60 dark:text-red-400/60 uppercase block mb-1">Deletion Reason</span>
-                  <span class="text-xs font-medium text-red-900 dark:text-red-200 italic">"User requested account closure"</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column -->
-          <div class="space-y-8">
-            <div class="p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
-              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Account Summary at time of deletion</h4>
-              <div class="space-y-6">
-                <div class="flex justify-between items-end">
-                  <span class="text-[11px] font-bold text-slate-500 uppercase">Last Balance</span>
-                  <span class="text-2xl font-black text-slate-900 dark:text-white details-balance">₹5,000.00</span>
-                </div>
-                <div class="h-px bg-slate-200 dark:bg-white/10"></div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">Total Transactions</span>
-                    <span class="text-lg font-extrabold dark:text-white">24</span>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">Last Transaction</span>
-                    <span class="text-sm font-bold dark:text-white">04 Apr 2026</span>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2 mt-4 px-3 py-2 bg-slate-200/50 dark:bg-white/10 rounded-lg w-fit">
-                   <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                   <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Account Status: Soft Deleted</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="space-y-4 pt-10">
-              <button onclick="recoverFromDetails()" class="w-full px-6 py-4 bg-green-500 text-white rounded-xl text-sm font-extrabold hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Recover This Account</button>
-              <button onclick="closeModal('detailsModal')" class="w-full px-6 py-4 border-2 border-slate-100 dark:border-white/10 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  
-
-  <script>
-    $(function() {
-      let currentPage = 1;
-
-      async function loadDeletedUsers() {
-          const $tbody = $('#deleted-table-body');
-          $tbody.html(`
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-          `);
-
-          try {
-              const response = await api.get('/admin/deleted-users.php', {
-                  search: $('#filter-search').val(),
-                  page: currentPage,
-                  per_page: 10
-              });
-
-              if (response.status === 'success') {
-                  renderTable(response.data.users, response.data.total, response.data.pages);
-              } else {
-                  $('.du-table').parent().hide();
-                  $('#empty-state').removeClass('hidden').addClass('flex');
-              }
-          } catch (error) {
-              console.error('Failed to load deleted users:', error);
-              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
-          }
-      }
-
-      function renderTable(users, total, pages) {
-          const $tbody = $('#deleted-table-body');
-          if (!users || !users.length) {
-              $('.du-table').parent().hide();
-              $('#empty-state').removeClass('hidden').addClass('flex');
-              return;
-          }
-
-          $('.du-table').parent().show();
-          $('#empty-state').addClass('hidden').removeClass('flex');
-
-          $tbody.html(users.map((u, i) => {
-              const initials = u.initials || u.full_name.charAt(0);
-              const isSavings = (u.account_type || '').toLowerCase() === 'savings';
-              
-              return `
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td class="du-num tracking-widest opacity-30">${String((currentPage-1)*10+i+1).padStart(2,'0')}</td>
-                <td>
-                  <div class="flex items-center gap-3 user-info">
-                    <div class="du-avatar premium-gradient-primary uppercase" style="color:#fff;">${initials}</div>
-                    <div>
-                      <div class="du-name user-name">${u.full_name}</div>
-                      <div class="du-email user-email">${u.email}</div>
+            <!-- FILTERS -->
+            <div class="admin-card mb-8 p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search User</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="filter-search" placeholder="Name, email or account number..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                        </div>
                     </div>
-                  </div>
-                </td>
-                <td><span class="du-phone font-mono">${u.phone || 'N/A'}</span></td>
-                <td><span class="du-acc border-none bg-slate-100/50 dark:bg-white/5"><span class="material-symbols-outlined" style="font-size:13px;color:#94a3b8;">account_balance</span>${u.account_no || 'N/A'}</span></td>
-                <td><span class="${isSavings ? 'du-type-savings' : 'du-type-current'}"><span class="material-symbols-outlined" style="font-size:11px;">${isSavings ? 'savings' : 'account_balance_wallet'}</span>${(u.account_type || 'N/A').toUpperCase()}</span></td>
-                <td><span class="du-date-main text-xs opacity-60 font-semibold">${u.deleted_at || 'N/A'}</span></td>
-                <td>
-                  <div class="du-reason bg-amber-500/5 p-2 rounded-lg border border-amber-500/10">
-                    <span class="du-reason-text opacity-80">${u.deletion_reason || 'Admin Action'}</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex;justify-content:flex-end;gap:8px;">
-                    <button onclick="window.openRecoverModal('${u.full_name}', '${u.account_no}', ${u.id})" class="du-btn-recover"><span class="material-symbols-outlined">restore</span>Recover</button>
-                    <button onclick="window.openDetailsModal('${u.full_name}', '${u.account_no}', '${u.email}', '${u.phone}', '${u.account_type}', '${u.created_at}', '${u.balance}', '${u.deleted_at}')" class="du-btn-view"><span class="material-symbols-outlined" style="font-size:13px;">visibility</span>View</button>
-                  </div>
-                </td>
-              </tr>`;
-          }).join(''));
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">From Date</label>
+                        <input type="date" id="filter-date-from" class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">To Date</label>
+                        <input type="date" id="filter-date-to" class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-50 dark:border-white/5">
+                    <button onclick="window.DeletedUsers.resetFilters()" class="admin-btn-secondary px-6">Reset</button>
+                    <button onclick="window.DeletedUsers.applyFilters()" class="admin-btn-primary px-10">Apply Filters</button>
+                </div>
+            </div>
 
-          const start = (currentPage - 1) * 10 + 1;
-          const end = Math.min(currentPage * 10, total);
-          $('.text-xs.font-bold.opacity-40').text(`Showing ${start}-${end} of ${total} deleted users`);
+            <!-- TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table class="admin-table w-full text-left min-w-[1000px]">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>User</th>
+                                <th>Phone</th>
+                                <th>Account No</th>
+                                <th>Account Type</th>
+                                <th>Deleted On</th>
+                                <th>Reason</th>
+                                <th class="text-right px-6">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deleted-table-body">
+                            <!-- Injected by deleted-users.js -->
+                        </tbody>
+                    </table>
+                </div>
 
-          // Pagination logic
-          let pagHtml = `<button class="admin-btn-secondary" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>`;
-          for(let i=1; i<=pages; i++) {
-              if (pages > 5 && i > 3 && i < pages) {
-                  if (i === 4) pagHtml += `<span class="px-2 opacity-50">...</span>`;
-                  continue;
-              }
-              pagHtml += `<button onclick="window.goToPage(${i})" class="${i === currentPage ? 'admin-btn-primary' : 'admin-btn-secondary'}" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important; ${i === currentPage ? 'background: #1a3c5e !important;' : ''}">${i}</button>`;
-          }
-          pagHtml += `<button class="admin-btn-secondary" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next →</button>`;
-          $('.flex.items-center.gap-2').html(pagHtml);
-      }
+                <!-- EMPTY STATE -->
+                <div id="empty-state" class="hidden flex-col items-center justify-center py-24 animate-fade-in">
+                    <div class="w-20 h-20 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-300 mb-6">
+                        <span class="material-symbols-outlined text-5xl">person_off</span>
+                    </div>
+                    <h3 class="text-xl font-bold dark:text-white">No deleted users found</h3>
+                    <p class="text-sm opacity-50 mt-1">Try adjusting your filters or search query.</p>
+                </div>
 
-      window.goPage = (d) => { currentPage += d; loadDeletedUsers(); };
-      window.goToPage = (p) => { currentPage = p; loadDeletedUsers(); };
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Deleted Users</div>
+                    <div class="flex items-center gap-2">
+                        <!-- Pagination injected by deleted-users.js -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-      $('#apply-filters').on('click', () => { currentPage = 1; loadDeletedUsers(); });
-      $('#reset-filters').on('click', () => {
-          $('#filter-search').val('');
-          $('#filter-date-from, #filter-date-to').val('');
-          currentPage = 1;
-          loadDeletedUsers();
-      });
+    <!-- RECOVERY MODAL -->
+    <div id="recoverModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.DeletedUsers.closeModal('recoverModal')"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
+            <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-emerald-500 text-3xl">restore</span>
+            </div>
+            <h3 class="text-xl font-bold text-center mb-2">Recover User Account</h3>
+            <p class="text-sm opacity-60 text-center mb-8 leading-relaxed">
+                You are about to recover <span id="recover-user-name" class="font-bold dark:text-white"></span> (<span id="recover-user-acc" class="font-mono"></span>). This will restore their access to all banking features.
+            </p>
 
-      let pendingUserId = null;
-      window.openRecoverModal = (name, acc, id) => {
-          pendingUserId = id;
-          $('#recover-user-name').text(name);
-          $('#recover-user-acc').text(acc);
-          $('#recoverModal').removeClass('hidden').addClass('flex');
-      };
+            <div class="bg-slate-50 dark:bg-white/5 p-5 rounded-2xl mb-8">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center">RESTORE OPTIONS</label>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors">
+                        <input type="radio" name="restore-option" checked class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
+                        <div class="flex-1">
+                            <div class="text-sm font-bold dark:text-white">Full Balance</div>
+                            <div class="text-[10px] opacity-50">Restore previous account balance</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors opacity-50">
+                        <input type="radio" name="restore-option" disabled class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
+                        <div class="flex-1">
+                            <div class="text-sm font-bold dark:text-white">Zero Balance</div>
+                            <div class="text-[10px] opacity-50">Reset balance to ₹0.00</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
 
-      window.confirmRecovery = async () => {
-          if (!pendingUserId) return;
-          try {
-              const response = await api.post('/admin/user-action.php', {
-                  user_id: pendingUserId,
-                  action: 'recover'
-              });
-              if (response.status === 'success') {
-                  showToast('User account recovered successfully', 'success');
-                  closeModal('recoverModal');
-                  loadDeletedUsers();
-              } else {
-                  alert(response.message);
-              }
-          } catch (error) {
-              alert('Failed to recover user');
-          }
-      };
+            <div class="flex flex-col gap-3">
+                <button onclick="window.DeletedUsers.confirmRecovery()" class="admin-btn-primary w-full justify-center !py-3 bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Recover Account</button>
+                <button onclick="window.DeletedUsers.closeModal('recoverModal')" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-      window.openDetailsModal = (name, acc, email, phone, type, reg, balance, deleted) => {
-          $('.details-name').text(name);
-          $('.details-acc').text(acc);
-          $('.details-email').text(email);
-          $('.details-phone').text(phone || 'N/A');
-          $('.details-type').text(type ? type.charAt(0).toUpperCase() + type.slice(1) : 'N/A');
-          $('.details-reg').text(new Date(reg).toLocaleDateString());
-          $('.details-balance').text(parseFloat(balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }));
-          
-          $('#detailsModal').removeClass('hidden').addClass('flex');
-      };
+    <!-- DETAILS MODAL -->
+    <div id="detailsModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.DeletedUsers.closeModal('detailsModal')"></div>
+        <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter overflow-hidden">
+            <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
+                <h3 class="text-lg font-bold dark:text-white">Deleted User Details</h3>
+                <button onclick="window.DeletedUsers.closeModal('detailsModal')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-slate-400">close</span>
+                </button>
+            </div>
+            <div class="p-8 max-h-[70vh] overflow-y-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-[.2em] mb-6">PERSONAL INFO</h4>
+                        <div class="space-y-5">
+                            <div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Full Name</div>
+                                <div class="text-sm font-bold dark:text-white details-name">-</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Email</div>
+                                <div class="text-sm font-bold dark:text-white details-email">-</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Phone</div>
+                                <div class="text-sm font-bold dark:text-white details-phone">-</div>
+                            </div>
+                            <div class="flex gap-10">
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Account No</div>
+                                    <div class="text-sm font-bold font-mono text-primary dark:text-blue-400 details-acc">-</div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Type</div>
+                                    <div class="text-sm font-bold dark:text-white details-type">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bg-slate-50 dark:bg-white/5 p-6 rounded-2xl border border-slate-100 dark:border-white/5 mb-6">
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">ACCOUNT SUMMARY</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold opacity-60">Last Balance</span>
+                                    <span class="text-xl font-black dark:text-white details-balance">₹0.00</span>
+                                </div>
+                                <div class="h-px bg-slate-200 dark:bg-white/10 my-2"></div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold opacity-60">Registered</span>
+                                    <span class="text-xs font-bold dark:text-white details-reg">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-500/10 p-6 rounded-2xl border border-red-100 dark:border-red-500/20">
+                            <h4 class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-4">DELETION LOG</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center font-bold text-[11px]">
+                                    <span class="text-red-800/40 uppercase">Deleted By</span>
+                                    <span class="text-red-900 dark:text-red-200">Admin</span>
+                                </div>
+                                <div class="flex justify-between items-center font-bold text-[11px]">
+                                    <span class="text-red-800/40 uppercase">Deleted On</span>
+                                    <span class="text-red-900 dark:text-red-200">20/04/2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 bg-slate-50/50 dark:bg-white/5 flex gap-3">
+                <button onclick="window.DeletedUsers.recoverFromDetails()" class="admin-btn-primary flex-1 justify-center bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Recover Account</button>
+                <button onclick="window.DeletedUsers.closeModal('detailsModal')" class="admin-btn-secondary px-10">Close</button>
+            </div>
+        </div>
+    </div>
 
-      window.closeModal = (id) => $(`#${id}`).addClass('hidden').removeClass('flex');
-
-      loadDeletedUsers();
-
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-    });
-
-    function showToast(msg, type = 'success') {
-        const wrap = document.getElementById('toast-wrap');
-        if (!wrap) return;
-        const t = document.createElement('div');
-        const icons = { success: 'check_circle', error: 'cancel' };
-        t.className = `toast toast-${type}`;
-        t.innerHTML = `<span class="material-symbols-outlined" style="color:${type === 'success' ? '#10b981' : '#f43f5e'};font-size:17px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
-        wrap.appendChild(t);
-        setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
-    }
-  </script>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/deleted-users.js"></script>
 </body>
 
 </html>

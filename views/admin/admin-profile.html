@@ -1,508 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Finzo Admin — Admin Profile</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admin Profile | Finzo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-<link rel="stylesheet" href="../../assets/css/admin.css">
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+    <style type="text/tailwindcss">
+        .profile-label { @apply block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2; }
+        .profile-input { @apply w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm dark:text-slate-200 transition-all; }
+        .locked-input { @apply opacity-60 cursor-not-allowed bg-slate-200/50 dark:bg-white/10; }
+        .pw-meter { @apply h-1 w-full bg-slate-100 dark:bg-white/5 rounded-full mt-2 overflow-hidden; }
+        .pw-meter-bar { @apply h-full w-0 transition-all duration-500 bg-red-500; }
+        .modal-btn { @apply px-6 py-3 rounded-xl font-bold text-sm transition-all; }
+    </style>
+</head>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="../../assets/js/api.js"></script>
-<script src="../../assets/js/admin-shared.js"></script>
-<script src="../../assets/js/admin-dropdowns.js"></script>
-<script src="../../assets/js/theme.js"></script>
-  </head>
-<body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
+        </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-      <div class="admin-nav-section font-bold">System</div>
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-      <div class="admin-nav-section font-bold">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-<div class="admin-main">
-  <div class="admin-topbar">
-    <div class="flex items-center gap-3 sm:gap-4 flex-1">
-      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-          <span class="material-symbols-outlined force-black">menu</span>
-      </button>
-      <div>
-        <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ACCOUNT SETTINGS</div>
-        <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Admin Profile</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="p-4 sm:p-6 lg:p-8">
-    
-    <!-- STATS ROW -->
-   
-
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
-      <!-- PROFILE COLUMN -->
-      <div class="lg:col-span-5 flex flex-col gap-6 lg:gap-8 max-w-4xl mx-auto w-full">
-        
-        <!-- PROFILE INFO CARD -->
-        <div class="admin-card force-white-bg !overflow-visible relative z-[30] p-5 sm:p-8">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <span class="material-symbols-outlined force-black" style="font-size:24px;">person</span>
-              <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Profile Information</div>
-            </div>
-            <div style="font-size:10px;font-weight:800;background:#002645;color:white;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;">SINGULAR AUTHORITY</div>
-          </div>
-
-          <!-- Avatar Section -->
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 mb-8">
-            <div style="position:relative;">
-              <div id="avatar-preview-container" class="premium-gradient-primary" style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:white;box-shadow:0 10px 20px rgba(0,38,69,0.15);overflow:hidden;">
-                <span id="avatar-initials"><div class="skeleton w-full h-full rounded-full"></div></span>
-                <img id="avatar-img-preview" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
-              </div>
-            </div>
-            <div style="flex:1;">
-              <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
-                <div id="profile-name-display" class="force-black" style="font-size:20px;font-weight:800;"><div class="skeleton w-48 h-6"></div></div>
-                <span style="font-size:10px;font-weight:800;background:rgba(0,38,69,0.05);color:#002645;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,38,69,0.1);" class="dark:!bg-slate-800 dark:!text-slate-300 dark:!border-slate-700">PROJECT ADMIN</span>
-              </div>
-              <div id="profile-email-meta" style="color:#64748b;font-size:13px;margin-bottom:12px;" class="leading-relaxed"><div class="skeleton w-64 h-4"></div></div>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
-                <button onclick="document.getElementById('photo-upload').click()" class="admin-btn-secondary" style="padding: 8px 16px !important; display:flex; align-items:center; gap:8px;">
-                  <span class="material-symbols-outlined" style="font-size:18px;">upload</span> Change Photo
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
                 </button>
-              </div>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">ACCOUNT SETTINGS</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Admin Profile</div>
+                </div>
             </div>
-          </div>
-
-          <div style="height:1px;background:rgba(0,0,0,0.05);margin-bottom:32px;" class="dark:bg-slate-800"></div>
-
-          <!-- Edit Form -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
-            <div>
-              <label class="profile-label">Full Name</label>
-              <input type="text" id="profile-name-input" class="profile-input w-full" value="" placeholder="Loading...">
+            <div class="flex items-center gap-4">
+                <div class="admin-avatar premium-gradient-primary">A</div>
             </div>
-            <div>
-              <label class="profile-label">Unique Admin ID</label>
-              <div style="position:relative;">
-                <input type="text" id="profile-id-input" class="profile-input locked-input w-full" value="" readonly style="padding-right: 48px !important; font-family:monospace; letter-spacing:1px;">
-                <span class="material-symbols-outlined" style="position:absolute; right:16px; top:12px; font-size:20px; color:#94a3b8;">key</span>
-              </div>
+        </header>
+
+        <main class="p-4 sm:p-6 lg:p-10">
+            <div class="max-w-4xl mx-auto space-y-8">
+                
+                <!-- PROFILE INFO CARD -->
+                <div class="admin-card p-8">
+                    <div class="flex justify-between items-center mb-10">
+                        <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
+                            <span class="material-symbols-outlined text-primary dark:text-blue-400">person</span>
+                            Profile Information
+                        </h3>
+                        <span class="text-[9px] font-black bg-primary text-white px-3 py-1 rounded-full tracking-widest uppercase shadow-lg shadow-primary/20">Singular Authority</span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-8 mb-12 pb-10 border-b border-slate-50 dark:border-white/5">
+                        <div class="relative group">
+                            <div id="avatar-preview-container" class="w-32 h-32 rounded-full premium-gradient-primary flex items-center justify-center text-4xl font-black text-white shadow-2xl overflow-hidden ring-4 ring-white dark:ring-slate-800 transition-all group-hover:scale-105">
+                                <span id="avatar-initials">A</span>
+                                <img id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
+                            </div>
+                            <button onclick="document.getElementById('photo-upload').click()" class="absolute bottom-1 right-1 w-10 h-10 bg-white dark:bg-slate-800 rounded-full shadow-xl flex items-center justify-center text-primary dark:text-blue-400 hover:text-blue-600 transition-colors border-4 border-slate-50 dark:border-slate-800">
+                                <span class="material-symbols-outlined text-[20px]">add_a_photo</span>
+                            </button>
+                            <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="window.AdminProfile.previewPhoto(this)">
+                        </div>
+                        <div class="text-center sm:text-left flex-1">
+                            <h2 id="profile-name-display" class="text-2xl font-black font-headline text-primary dark:text-slate-200 mb-1">-</h2>
+                            <p id="profile-email-meta" class="text-sm font-bold opacity-40 mb-6">-</p>
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                <span class="px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded-lg uppercase tracking-widest">Global Admin</span>
+                                <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-lg uppercase tracking-widest">Active Status</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div>
+                            <label class="profile-label">Full Name</label>
+                            <input type="text" id="profile-name-input" class="profile-input" placeholder="Loading...">
+                        </div>
+                        <div>
+                            <label class="profile-label">Unique Admin ID</label>
+                            <div class="relative">
+                                <input type="text" id="profile-id-input" class="profile-input locked-input font-mono" readonly>
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">lock</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="profile-label">Email Address</label>
+                            <input type="email" id="profile-email-input" class="profile-input" placeholder="Loading...">
+                        </div>
+                        <div>
+                            <label class="profile-label">Phone Number</label>
+                            <input type="text" id="profile-phone-input" class="profile-input" placeholder="Loading...">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="profile-label">Authority Description</label>
+                            <div class="relative">
+                                <input type="text" class="profile-input locked-input" value="Singular Platform Authority (Global Override Enabled)" readonly>
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">shield</span>
+                            </div>
+                            <p class="text-[10px] mt-3 text-slate-400 italic opacity-80 leading-relaxed">Branch management is reserved for Staff personnel. As Global Admin, you maintain absolute oversight across all project entities.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="window.AdminProfile.showVerifyModal()" class="admin-btn-primary w-full justify-center !py-4 rounded-2xl shadow-xl shadow-primary/20">Update Profile</button>
+                </div>
+
+                <!-- SECURITY & AUTHORITY -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- CHANGE PASSWORD -->
+                    <div class="admin-card p-8">
+                        <h3 class="text-lg font-bold flex items-center gap-2 mb-8 dark:text-white">
+                            <span class="material-symbols-outlined text-primary dark:text-blue-400">security_update_good</span>
+                            Security
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="profile-label">Current Password</label>
+                                <div class="relative">
+                                    <input type="password" id="curr-pw" class="profile-input" placeholder="••••••••">
+                                    <span onclick="window.AdminProfile.togglePW('curr-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="profile-label">New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="new-pw" class="profile-input" placeholder="••••••••" oninput="window.AdminProfile.checkStrength(this.value)">
+                                    <span onclick="window.AdminProfile.togglePW('new-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
+                                </div>
+                                <div class="pw-meter"><div id="pw-bar" class="pw-meter-bar"></div></div>
+                            </div>
+                            <div>
+                                <label class="profile-label">Confirm New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="conf-pw" class="profile-input" placeholder="••••••••">
+                                    <span onclick="window.AdminProfile.togglePW('conf-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10 flex gap-4">
+                                <span class="material-symbols-outlined text-emerald-500 text-[20px]">info</span>
+                                <p class="text-[11px] font-medium text-emerald-700/80 leading-relaxed dark:text-emerald-500/80">Require 8+ chars with uppercase, numeric & special symbols.</p>
+                            </div>
+                            <button onclick="window.AdminProfile.handlePasswordUpdate()" class="admin-btn-secondary w-full justify-center !py-3 rounded-xl">Change Password</button>
+                        </div>
+                    </div>
+
+                    <!-- AUTHORITY RULES -->
+                    <div class="admin-card p-8 bg-primary text-white border-none shadow-2xl shadow-primary/30">
+                        <h3 class="text-lg font-bold flex items-center gap-2 mb-8">
+                            <span class="material-symbols-outlined text-blue-300">verified</span>
+                            Authority Rules
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-blue-300">hub</span>
+                                <div>
+                                    <div class="text-sm font-bold mb-1">Central Control</div>
+                                    <div class="text-[10px] opacity-60 leading-relaxed">Unique oversight entity. No other admin entities exist in this project.</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-amber-300">domain_disabled</span>
+                                <div>
+                                    <div class="text-sm font-bold mb-1">No Branch Management</div>
+                                    <div class="text-[10px] opacity-60 leading-relaxed">Admin cannot manager branches directly; reserved role for Staff personnel.</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-emerald-300">rule_folder</span>
+                                <div>
+                                    <div class="text-sm font-bold mb-1">Global Policies</div>
+                                    <div class="text-[10px] opacity-60 leading-relaxed">Absolute authority over system config and interest rate shifts.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 p-6 bg-white/5 rounded-3xl border border-white/5 flex flex-col items-center justify-center text-center">
+                            <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined text-3xl">shield</span>
+                            </div>
+                            <div class="text-[10px] font-black uppercase tracking-[0.2em] mb-1">System Overlord</div>
+                            <div class="text-[9px] opacity-50">Authorized Personnel Only</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-              <label class="profile-label">Email Address</label>
-              <input type="email" id="profile-email-input" class="profile-input w-full" value="" placeholder="Loading...">
-            </div>
-            <div>
-              <label class="profile-label">Phone Number</label>
-              <input type="text" id="profile-phone-input" class="profile-input w-full" value="" placeholder="Loading...">
-            </div>
-            <div class="sm:col-span-2">
-              <label class="profile-label">Authority Role</label>
-              <div style="position:relative;">
-                <input type="text" class="profile-input locked-input w-full" value="Singular Platform Authority" readonly style="padding-right: 48px !important;">
-                <span class="material-symbols-outlined" style="position:absolute; right:16px; top:12px; font-size:20px; color:#94a3b8;">shield</span>
-              </div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:8px;font-style:italic;line-height:1.5;">This account is the only administrative entity in this project. As Global Admin, you are distinct from Staff personnel; branch management is reserved for Staff members only.</div>
-            </div>
-          </div>
-
-          <button onclick="showVerifyModal()" class="admin-btn-primary w-full" style="padding:14px !important;border-radius:12px !important;">Update Profile</button>
-        </div>
-
-        <!-- GLOBAL PRIVILEGES CARD -->
-        <div class="admin-card force-white-bg p-5 sm:p-8">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
-            <span class="material-symbols-outlined force-black" style="font-size:24px;">shield_with_heart</span>
-            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Project Authority Rules</div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div style="display:flex;align-items:start;gap:16px;padding:16px;background:rgba(0,184,148,0.03);border-radius:16px;border:1px solid rgba(0,184,148,0.1);" class="dark:bg-slate-800/30">
-              <span class="material-symbols-outlined" style="color:#00b894;font-size:24px;">hub</span>
-              <div>
-                <div class="force-black" style="font-size:14px;font-weight:700;">Singular Central Control</div>
-                <div style="font-size:12px;color:#64748b;margin-top:4px;">The Global Admin is the unique oversight entity. No other administrator exists in this project ecosystem.</div>
-                <div style="display:inline-block;margin-top:8px;font-size:9px;font-weight:800;background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;">UNIQUE ENTITY</div>
-              </div>
-            </div>
-
-            <div style="display:flex;align-items:start;gap:16px;padding:16px;background:rgba(59,130,246,0.03);border-radius:16px;border:1px solid rgba(59,130,246,0.1);" class="dark:bg-slate-800/30">
-              <span class="material-symbols-outlined" style="color:#3b82f6;font-size:24px;">domain_disabled</span>
-              <div>
-                <div class="force-black" style="font-size:14px;font-weight:700;">Branch Manager Restriction</div>
-                <div style="font-size:12px;color:#64748b;margin-top:4px;">The Admin cannot be a branch manager. Only eligible Staff can be appointed to manage specific branches.</div>
-                <div style="display:inline-block;margin-top:8px;font-size:9px;font-weight:800;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;">STAFF-ONLY ROLE</div>
-              </div>
-            </div>
-
-            <div style="display:flex;align-items:start;gap:16px;padding:16px;background:rgba(243,156,18,0.03);border-radius:16px;border:1px solid rgba(243,156,18,0.1);" class="dark:bg-slate-800/30">
-              <span class="material-symbols-outlined" style="color:#f39c12;font-size:24px;">rule_folder</span>
-              <div>
-                <div class="force-black" style="font-size:14px;font-weight:700;">Global Policy Enforcement</div>
-                <div style="font-size:12px;color:#64748b;margin-top:4px;">Absolute authority over interest rates and system-wide configurations that affect all branches equally.</div>
-                <div style="display:inline-block;margin-top:8px;font-size:9px;font-weight:800;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;">MASTER POLICY</div>
-              </div>
-            </div>
-
-            <div style="display:flex;align-items:start;gap:16px;padding:16px;background:rgba(186,26,26,0.03);border-radius:16px;border:1px solid rgba(186,26,26,0.1);" class="dark:bg-slate-800/30">
-              <span class="material-symbols-outlined" style="color:#ba1a1a;font-size:24px;">security</span>
-              <div>
-                <div class="force-black" style="font-size:14px;font-weight:700;">Absolute Audit Oversight</div>
-                <div style="font-size:12px;color:#64748b;margin-top:4px;">Complete transparency into all transaction logs and activities across every branch and user.</div>
-                <div style="display:inline-block;margin-top:8px;font-size:9px;font-weight:800;background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:4px;">SYSTEM OVERLORD</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CHANGE PASSWORD CARD -->
-        <div class="admin-card force-white-bg p-5 sm:p-8">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
-            <span class="material-symbols-outlined force-black" style="font-size:24px;">lock</span>
-            <div class="force-black" style="font-family:'Plus Jakarta Sans';font-size:18px;font-weight:800;">Change Password</div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:24px;margin-bottom:24px;">
-            <div style="position:relative;">
-              <label class="profile-label">Current Password</label>
-              <input type="password" id="curr-pw" class="profile-input w-full" placeholder="••••••••">
-              <span onclick="togglePW('curr-pw')" class="material-symbols-outlined" style="position:absolute;right:16px;top:38px;font-size:20px;color:#94a3b8;cursor:pointer;">visibility</span>
-            </div>
-            <div style="position:relative;">
-              <label class="profile-label">New Password</label>
-              <input type="password" id="new-pw" class="profile-input w-full" placeholder="••••••••" oninput="checkStrength(this.value)">
-              <span onclick="togglePW('new-pw')" class="material-symbols-outlined" style="position:absolute;right:16px;top:38px;font-size:20px;color:#94a3b8;cursor:pointer;">visibility</span>
-              <div class="pw-meter"><div id="pw-bar" class="pw-meter-bar"></div></div>
-            </div>
-            <div style="position:relative;">
-              <label class="profile-label">Confirm New Password</label>
-              <input type="password" id="conf-pw" class="profile-input w-full" placeholder="••••••••">
-              <span onclick="togglePW('conf-pw')" class="material-symbols-outlined" style="position:absolute;right:16px;top:38px;font-size:20px;color:#94a3b8;cursor:pointer;">visibility</span>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:start;gap:12px;background:rgba(0,184,148,0.05);padding:16px;border-radius:12px;margin-bottom:24px;">
-            <span class="material-symbols-outlined" style="font-size:20px;color:#00b894;">info</span>
-            <div style="font-size:12px;color:#00897b;line-height:1.5;font-weight:500;">Password must be at least 8 characters with one uppercase, one number and one special character.</div>
-          </div>
-
-          <button onclick="handlePasswordUpdate()" class="admin-btn-primary w-full" style="padding:14px !important;border-radius:12px !important;">Update Password</button>
-        </div>
-      </div>
-
-<div id="toast-container"></div>
-
-<!-- VERIFICATION MODAL -->
-<div id="verify-modal-overlay">
-  <div class="modal-content">
-    <div style="padding: 32px;">
-      <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
-        <div style="width:56px; height:56px; background:rgba(0,38,69,0.05); border-radius:16px; display:flex; align-items:center; justify-content:center;" class="dark:!bg-slate-800">
-          <span class="material-symbols-outlined force-black" style="font-size:28px;">verified_user</span>
-        </div>
-        <div>
-          <div class="force-black" style="font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800;">Verify Admin Auth</div>
-          <div style="font-size:13px; color:#64748b; font-weight:500;">Please confirm your admin password</div>
-        </div>
-      </div>
-      
-      <div style="margin-bottom:24px;">
-        <label class="profile-label">Administrative Password</label>
-        <div style="position:relative;">
-          <input type="password" id="verify-pass" class="profile-input w-full" placeholder="Enter current password">
-          <span onclick="togglePW('verify-pass')" class="material-symbols-outlined" style="position:absolute; right:16px; top:12px; font-size:20px; color:#94a3b8; cursor:pointer;">visibility</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-        <button onclick="closeVerifyModal()" class="modal-btn" style="background:rgba(148,163,184,0.1); color:#64748b;">Cancel</button>
-        <button onclick="handleProfileSave()" class="modal-btn" style="background:#002645; color:white; box-shadow:0 10px 15px -3px rgba(0,38,69,0.2);">Confirm & Update</button>
-      </div>
+        </main>
     </div>
-  </div>
-</div>
 
-<script>
-  $(function () {
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open');
-          $('#sidebar-overlay').removeClass('active');
-      });
+    <!-- VERIFICATION MODAL -->
+    <div id="verify-modal-overlay" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.AdminProfile.closeVerifyModal()"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-slate-100 dark:bg-white/5 rounded-2xl flex items-center justify-center text-primary dark:text-blue-400">
+                    <span class="material-symbols-outlined text-3xl">verified_user</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-headline font-black dark:text-white">Verify Auth</h3>
+                    <p class="text-xs opacity-50 font-bold uppercase tracking-widest mt-1">Admin Confirmation Required</p>
+                </div>
+            </div>
+            
+            <div class="mb-10">
+                <label class="profile-label">Current Password</label>
+                <div class="relative">
+                    <input type="password" id="verify-pass" class="profile-input" placeholder="Enter admin password">
+                    <span onclick="window.AdminProfile.togglePW('verify-pass')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer">visibility</span>
+                </div>
+            </div>
 
-      loadAdminProfile();
-  });
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="window.AdminProfile.closeVerifyModal()" class="modal-btn bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-slate-200">Cancel</button>
+                <button onclick="window.AdminProfile.handleProfileSave()" class="modal-btn bg-primary text-white shadow-xl shadow-primary/20">Confirm</button>
+            </div>
+        </div>
+    </div>
 
-  async function loadAdminProfile() {
-    try {
-      const data = await api.get('/admin/profile.php');
-      if (data.success) {
-        const admin = data.admin;
-
-        // Compute initials from full_name (filtering out symbols like '(')
-        const initials = (admin.full_name || '')
-          .split(' ')
-          .filter(word => /^[a-zA-Z]/.test(word))
-          .map(n => n[0])
-          .join('')
-          .toUpperCase() || 'A';
-
-        // Update header displays
-        $('#profile-name-display').text(admin.full_name || '—');
-        $('#profile-email-meta').html(`${admin.email}`);
-        $('#avatar-initials').text(initials);
-
-        // Update form fields
-        $('#profile-name-input').val(admin.full_name || '');
-        $('#profile-id-input').val(admin.admin_id || '');
-        $('#profile-email-input').val(admin.email || '');
-        $('#profile-phone-input').val(admin.phone || '');
-
-        // Avatar handling
-        if (admin.avatar) {
-          $('#avatar-img-preview').attr('src', '../../' + admin.avatar).show();
-          $('#avatar-initials').hide();
-        } else {
-          $('#avatar-img-preview').hide();
-          $('#avatar-initials').show();
-        }
-      } else {
-        showToast('Failed to load profile: ' + (data.message || 'Unknown error'), 'error');
-      }
-    } catch (error) {
-      console.error('Failed to load admin profile:', error);
-      showToast('Failed to load profile data', 'error');
-    }
-  }
-
-  function showToast(message, type) {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.style.background = type === 'success' ? '#00b894' : '#ef4444';
-    toast.innerHTML = (type === 'success' ? '✅' : '❌') + ' ' + message;
-    container.appendChild(toast);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(-20px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
-
-  async function previewPhoto(input) {
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const formData = new FormData();
-      formData.append('action', 'upload_avatar');
-      formData.append('avatar', file);
-
-      try {
-        // Show local preview first for speed
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('avatar-img-preview').src = e.target.result;
-          document.getElementById('avatar-img-preview').style.display = 'block';
-          document.getElementById('avatar-initials').style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-
-        // Actual upload
-        const response = await api.upload('/admin/profile.php', formData);
-        if (response.success) {
-          showToast('✅ Profile photo updated', 'success');
-        } else {
-          showToast('❌ ' + response.message, 'error');
-        }
-      } catch (error) {
-        showToast('❌ Photo upload failed', 'error');
-      }
-    }
-  }
-
-  function togglePW(id) {
-    const input = document.getElementById(id);
-    const icon = input.nextElementSibling;
-    if (input.type === 'password') {
-      input.type = 'text';
-      icon.textContent = 'visibility_off';
-    } else {
-      input.type = 'password';
-      icon.textContent = 'visibility';
-    }
-  }
-
-  function checkStrength(pw) {
-    const bar = document.getElementById('pw-bar');
-    let strength = 0;
-    if (pw.length >= 8) strength++;
-    if (/[A-Z]/.test(pw)) strength++;
-    if (/[0-9]/.test(pw)) strength++;
-    if (/[^A-Za-z0-9]/.test(pw)) strength++;
-
-    if (strength === 0) { bar.style.width = '0%'; }
-    else if (strength <= 2) { bar.style.width = '33%'; bar.style.background = '#ef4444'; }
-    else if (strength === 3) { bar.style.width = '66%'; bar.style.background = '#f39c12'; }
-    else { bar.style.width = '100%'; bar.style.background = '#00b894'; }
-  }
-
-  async function handlePasswordUpdate() {
-    const currPW = document.getElementById('curr-pw').value;
-    const newPW = document.getElementById('new-pw').value;
-    const confPW = document.getElementById('conf-pw').value;
-    
-    if (!currPW || !newPW || !confPW) {
-      showToast('❌ All password fields are required', 'error');
-      return;
-    }
-    
-    if (newPW !== confPW) {
-      showToast('❌ New passwords do not match', 'error');
-      return;
-    }
-
-    try {
-      const response = await api.post('/admin/profile.php', {
-        action: 'change_password',
-        current_password: currPW,
-        new_password: newPW,
-        confirm_password: confPW
-      });
-
-      if (response.success) {
-        showToast('✅ Password updated successfully', 'success');
-        // Clear fields
-        document.getElementById('curr-pw').value = '';
-        document.getElementById('new-pw').value = '';
-        document.getElementById('conf-pw').value = '';
-        document.getElementById('pw-bar').style.width = '0%';
-      } else {
-        showToast('❌ ' + response.message, 'error');
-      }
-    } catch (error) {
-      showToast('❌ Failed to update password', 'error');
-    }
-  }
-
-  /* VERIFICATION MODAL LOGIC */
-  function showVerifyModal() {
-    document.getElementById('verify-modal-overlay').style.display = 'flex';
-    document.getElementById('verify-pass').focus();
-  }
-
-  function closeVerifyModal() {
-    document.getElementById('verify-modal-overlay').style.display = 'none';
-    document.getElementById('verify-pass').value = '';
-  }
-
-  async function handleProfileSave() {
-    const pass = document.getElementById('verify-pass').value;
-    if (!pass) {
-      showToast('❌ Admin password is required', 'error');
-      return;
-    }
-    
-    try {
-      const response = await api.post('/admin/profile.php', {
-        action: 'update_profile',
-        name: $('#profile-name-input').val(),
-        email: $('#profile-email-input').val(),
-        phone: $('#profile-phone-input').val(),
-        password: pass
-      });
-
-      if (response.success) {
-        closeVerifyModal();
-        showToast('✅ Profile information updated successfully', 'success');
-        loadAdminProfile(); // Refresh displays
-      } else {
-        showToast('❌ ' + (response.message || 'Update failed'), 'error');
-      }
-    } catch (error) {
-      showToast('❌ Network error. Please try again.', 'error');
-    }
-  }
-
-  // Close modal on escape key
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeVerifyModal();
-  });
-</script>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/profile.js"></script>
 </body>
+
 </html>

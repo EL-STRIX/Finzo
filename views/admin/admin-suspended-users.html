@@ -24,11 +24,6 @@
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/theme.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  
   </head>
 <body>
 
@@ -126,7 +121,7 @@
               <div class="text-[10px] font-bold tracking-widest text-[#002645]/60 dark:text-slate-400 uppercase mb-2">Search User</div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-                <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Name, email or account number..." oninput="renderTable()">
+                <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Name, email or account number...">
               </div>
             </div>
             <!-- Date Range Filters -->
@@ -139,8 +134,8 @@
               <input type="date" id="end-date" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
             </div>
             <div class="md:col-span-2 lg:col-span-3 flex gap-2">
-              <button class="flex-1 px-4 py-2.5 bg-[#002645] text-white hover:bg-[#003662] rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all whitespace-nowrap" onclick="renderTable()">Apply Filters</button>
-              <button class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="resetFilters()">Reset</button>
+              <button class="flex-1 px-4 py-2.5 bg-[#002645] text-white hover:bg-[#003662] rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all whitespace-nowrap" onclick="window.SuspendedUsers.applyFilters()">Apply Filters</button>
+              <button class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="window.SuspendedUsers.resetFilters()">Reset</button>
             </div>
           </div>
         </div>
@@ -187,8 +182,8 @@
     <div class="modal-title">Reinstate Account</div>
     <div class="modal-text" id="reinstate-modal-text">You are reinstating this customer account.</div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-success" id="reinstate-confirm-btn" onclick="confirmReinstate()">
+      <button class="btn btn-ghost" onclick="window.SuspendedUsers.closeReinstateModal()">Cancel</button>
+      <button class="btn btn-success" id="reinstate-confirm-btn" onclick="window.SuspendedUsers.confirmReinstate()">
         <span class="material-symbols-outlined" style="font-size:15px">check_circle</span>
         Reinstate Account
       </button>
@@ -199,188 +194,11 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<script>
-    $(function() {
-      const $searchInput = $('#search-input');
-      const $tbody = $('#table-body');
-      const $pagInfo = $('#pag-info');
-      const $pagControls = $('#pag-controls');
-      
-      let currentPage = 1;
-      let pendingReinstateId = null;
-
-      async function loadSuspendedUsers() {
-          const search = $searchInput.val();
-          $tbody.html(`
-              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-          `);
-
-          try {
-              const response = await api.get('/admin/suspended-users.php', {
-                  search: search,
-                  page: currentPage,
-                  per_page: 10
-              });
-
-              if (response.status === 'success') {
-                  renderTable(response.data.users, response.data.total, response.data.pages);
-              } else {
-                  $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">${response.message || 'No suspended accounts found.'}</td></tr>`);
-                  $pagInfo.text('No results');
-                  $pagControls.empty();
-              }
-          } catch (error) {
-              console.error('Failed to load suspended users:', error);
-              $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
-          }
-      }
-
-      function renderTable(users, total, pages) {
-          if (!users || !users.length) {
-              $tbody.html(`<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No suspended accounts found.</td></tr>`);
-              $pagInfo.text('Showing 0 of 0 suspended accounts');
-              $pagControls.empty();
-              return;
-          }
-
-          $tbody.html(users.map((u, i) => {
-              return `
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td class="py-4 px-6 text-xs font-black opacity-30 tracking-widest">${String((currentPage-1)*10 + i + 1).padStart(2,'0')}</td>
-                <td class="py-4 px-6">
-                  <div class="user-cell">
-                    <div class="avatar-circle premium-gradient-primary uppercase">${u.initials || u.full_name.charAt(0)}</div>
-                    <div style="display:flex; flex-direction:column;">
-                      <span class="user-name">${u.full_name}</span>
-                      <span class="user-email">${u.email}</span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-6"><span class="mono">${u.account_no || 'N/A'}</span></td>
-                <td class="py-4 px-6"><span class="badge ${u.account_type==='savings'?'badge-green':'badge-blue'}">${u.account_type || 'N/A'}</span></td>
-                <td class="py-4 px-6"><span class="badge badge-red">${u.suspension_reason || 'Suspended'}</span></td>
-                <td class="py-4 px-6 text-xs font-bold text-slate-500">${u.suspended_at || 'N/A'}</td>
-                <td class="py-4 px-6 text-xs font-semibold opacity-60">${u.suspended_by || 'Admin'}</td>
-                <td class="py-4 px-6"><span class="badge badge-gray">${u.duration || 'Active'}</span></td>
-                <td class="py-4 px-6 text-center">
-                  <div class="flex items-center justify-center gap-2">
-                    <a href="admin-suspended-user-detail.html?id=${u.id}" class="action-btn btn-view" title="View Details">
-                      <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
-                    </a>
-                    <button class="action-btn btn-reinstate" onclick="window.openReinstate('${u.id}','${u.full_name}')" title="Restore Account">
-                      <span class="material-symbols-outlined" style="font-size:16px">lock_open</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>`;
-          }).join(''));
-
-          updatePagination(total, pages);
-      }
-
-      function updatePagination(total, pages) {
-          $pagInfo.text(`Showing ${Math.min((currentPage-1)*10+1, total)}–${Math.min(currentPage*10, total)} of ${total} suspended accounts`);
-          
-          let html = `<button class="pag-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.goPage(-1)">← Previous</button>`;
-          for(let i=1; i<=pages; i++) {
-              if (i > 5 && i < pages - 1) { if(i === 6) html += '<span class="px-2 opacity-50">...</span>'; continue; }
-              html += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="window.goPageTo(${i})}">${i}</button>`;
-          }
-          if (pages > 1) {
-              html += `<button class="pag-btn" ${currentPage >= pages ? 'disabled' : ''} onclick="window.goPage(1)">Next →</button>`;
-          }
-          $pagControls.html(html);
-      }
-
-      window.goPage = (d) => { currentPage += d; loadSuspendedUsers(); };
-      window.goPageTo = (p) => { currentPage = p; loadSuspendedUsers(); };
-      
-      window.resetFilters = () => { 
-          $searchInput.val(''); 
-          $('#start-date').val('');
-          $('#end-date').val('');
-          currentPage = 1; 
-          loadSuspendedUsers(); 
-      };
-
-      window.openReinstate = (id, name) => {
-          pendingReinstateId = id;
-          $('#reinstate-modal-text').html(`You are reinstating <strong>${name}</strong>'s account. Operational access will be restored immediately.`);
-          $('#reinstate-modal').removeClass('hidden');
-      };
-
-      window.confirmReinstate = async () => {
-          const btn = $('#reinstate-confirm-btn');
-          btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:15px">autorenew</span> Processing...');
-          
-          try {
-              const response = await api.post('/admin/user-action.php', {
-                  user_id: pendingReinstateId,
-                  action: 'reinstate'
-              });
-
-              if (response.status === 'success') {
-                  $('#reinstate-modal').addClass('hidden');
-                  showToast('Account reinstated successfully.', 'success');
-                  loadSuspendedUsers();
-              } else {
-                  alert(response.message);
-              }
-          } catch (error) {
-              alert('An error occurred.');
-          } finally {
-              btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:15px">check_circle</span> Reinstate Account');
-          }
-      };
-
-      window.closeModal = () => $('#reinstate-modal').addClass('hidden');
-
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-    });
-
-function showToast(msg, type = 'success') {
-    const wrap = document.getElementById('toast-wrap');
-    if (!wrap) return;
-    const t = document.createElement('div');
-    t.className = `toast toast-${type}`;
-    const icons = { success: 'check_circle', error: 'cancel' };
-    const colors = { success: '#10b981', error: '#f43f5e' };
-    t.innerHTML = `<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px">${icons[type]}</span><span>${msg}</span>`;
-    wrap.appendChild(t);
-    setTimeout(() => {
-        t.style.opacity = '0';
-        t.style.transition = '0.3s';
-        setTimeout(() => t.remove(), 300);
-    }, 3500);
-}
-
-
-// Mobile Menu Toggle
-const sidebar = document.getElementById('admin-sidebar');
-const overlay = document.getElementById('sidebar-overlay');
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-
-mobileMenuBtn?.addEventListener('click', () => {
-    sidebar?.classList.add('mobile-open');
-    overlay?.classList.add('active');
-});
-
-overlay?.addEventListener('click', () => {
-    sidebar?.classList.remove('mobile-open');
-    overlay?.classList.remove('active');
-});
-
-
-</script>
+  <script src="../../assets/js/core/theme.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/api.js"></script>
+  <script src="../../assets/js/ui/dropdowns.js"></script>
+  <script src="../../assets/js/portals/admin.js"></script>
+  <script src="../../assets/js/admin/suspended-users.js"></script>
 </body>
 </html>

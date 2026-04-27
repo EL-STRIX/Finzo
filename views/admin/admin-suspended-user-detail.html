@@ -7,9 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-<script src="../../assets/js/theme.js"></script>
-<script src="../../assets/js/api.js"></script>
-<script src="../../assets/js/admin-shared.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/utils.js"></script>
+<script src="../../assets/js/portals/admin.js"></script>
+<link rel="stylesheet" href="../../assets/css/toast.css">
 <script>
     tailwind.config = {
       darkMode: "class",
@@ -260,124 +261,6 @@
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<script>
-    $(function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('id');
-
-        if (!userId) {
-            alert('User ID missing');
-            window.location.href = 'admin-suspended-users.html';
-            return;
-        }
-
-        async function loadDetail() {
-            try {
-                const response = await api.get(`/admin/suspended-user-detail.php?id=${userId}`);
-                if (response.status === 'success') {
-                    populateUI(response.data.user);
-                    renderTransactions(response.data.transactions);
-                } else {
-                    alert(response.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        function populateUI(user) {
-            $('#bc-name').text(user.full_name);
-            $('#detail-avatar').text(user.initials).addClass('premium-gradient-primary').css('background', '');
-            $('#detail-name').text(user.full_name);
-            $('#detail-email').text(user.email);
-            
-            $('#detail-acc-no').text(user.account_no || 'N/A');
-            $('#detail-phone').text(user.phone || 'N/A');
-            $('#detail-acc-type-badge').text(user.account_type || 'N/A').attr('class', 'badge badge-green');
-            $('#detail-type').text(user.account_type ? (user.account_type + ' Account') : 'N/A');
-            $('#detail-opened').text(user.opened_at || 'N/A');
-            
-            const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
-            $('#detail-balance').text(balance);
-            $('#snap-balance').text(balance);
-            
-            $('#detail-reason').text(user.suspension_reason || 'Administrative Suspensions');
-            $('#detail-reason-detail').text(user.suspension_notes || 'This account was suspended for administrative review.');
-            $('#detail-by').text(user.suspended_by || 'System / Admin');
-            $('#detail-date').text(user.suspended_date || 'N/A');
-            $('#detail-time').text(user.suspended_time || 'N/A');
-            
-            $('#detail-notes').text(user.admin_notes || 'No administrative notes available.');
-            $('#detail-notes-by').text(user.notes_footer || '');
-
-            $('#modal-name').text(user.full_name);
-            $('#modal-acc').text(user.account_no || 'N/A');
-        }
-
-        function renderTransactions(txs) {
-            if (!txs || txs.length === 0) {
-                $('#transactions-body').html('<tr><td colspan="4" class="text-center py-8 opacity-40">No recent transactions recorded</td></tr>');
-                return;
-            }
-            const html = txs.map(tx => `
-                <tr style="border-bottom:1px solid var(--border)">
-                    <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">${tx.date}</td>
-                    <td style="padding:12px 16px;font-size:13px;font-weight:600">${tx.description}</td>
-                    <td style="padding:12px 16px"><span class="badge ${tx.type === 'Debit' ? 'badge-red' : 'badge-green'}">${tx.type}</span></td>
-                    <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(${tx.type === 'Debit' ? '--red' : '--green'})">${tx.amount}</td>
-                </tr>
-            `).join('');
-            $('#transactions-body').html(html);
-        }
-
-        window.openReinstateModal = () => $('#reinstate-modal').removeClass('hidden');
-        window.closeModal = () => $('#reinstate-modal').addClass('hidden');
-
-        window.processReinstate = async () => {
-            const $btn = $('#confirm-btn');
-            $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Processing...');
-            
-            try {
-                const response = await api.post('/admin/user-action.php', {
-                    user_id: userId,
-                    action: 'reinstate'
-                });
-
-                if (response.status === 'success') {
-                    showToast('Account reinstated. Redirecting...', 'success');
-                    setTimeout(() => window.location.href = 'admin-suspended-users.html', 1500);
-                } else {
-                    alert(response.message);
-                    $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
-                }
-            } catch (error) {
-                alert('Action failed.');
-                $btn.prop('disabled', false).html('<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
-            }
-        };
-
-        $('#mobile-menu-btn').on('click', function () {
-            $('#admin-sidebar').addClass('mobile-open active');
-            $('#sidebar-overlay').addClass('active');
-        });
-        $('#sidebar-overlay').on('click', function () {
-            $('#admin-sidebar').removeClass('mobile-open active');
-            $('#sidebar-overlay').removeClass('active');
-        });
-
-        loadDetail();
-    });
-
-function showToast(msg,type='success'){
-  const wrap=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  t.className=`toast toast-${type}`;
-  const colors={success:'#10b981',error:'#f43f5e'};
-  const icons={success:'check_circle',error:'cancel'};
-  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${msg}</span>`;
-  wrap.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3500);
-}
-</script>
+<script src="../../assets/js/admin/suspended-user-detail.js"></script>
 </body>
 </html>

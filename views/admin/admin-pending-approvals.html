@@ -2,400 +2,159 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — Pending Approvals</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Admin — Pending Approvals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/theme.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  <script src="../../assets/js/admin-dropdowns.js"></script>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 </head>
 
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <!-- SIDEBAR -->
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
-
-      <div class="admin-nav-section">System</div>
-
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
-
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTENT -->
-  <div class="admin-main">
-    <!-- TOP BAR -->
-    <div class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-        <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SYSTEM MANAGEMENT</div>
-          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Pending Approvals</div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
-      </div>
-      <div class="flex items-center gap-4">
-        <div class="admin-avatar premium-gradient-primary">A</div>
-      </div>
-    </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-    <div class="p-4 sm:p-6 lg:p-8">
-      <!-- STATS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">PENDING REVIEW</div>
-          <div class="admin-stat-value skeleton w-12 h-8"></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">APPROVED TODAY</div>
-          <div class="admin-stat-value skeleton w-12 h-8"></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">REJECTED TODAY</div>
-          <div class="admin-stat-value skeleton w-12 h-8"></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">TOTAL APPROVED</div>
-          <div class="admin-stat-value skeleton w-24 h-8"></div>
-        </div>
-      </div>
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-      <div id="status-tabs" class="flex flex-wrap items-center gap-1 mb-6 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-full sm:w-auto">
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Applications</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="under review">Under Review</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="pending">Pending</button>
-        <button class="tab-btn flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-status="rejected">Rejected</button>
-      </div>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-      <!-- SEARCH & FILTER -->
-      <div class="admin-card mb-8 !overflow-visible relative z-[30]">
-        <div class="p-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-3 sm:gap-4">
-          <!-- Multi-search -->
-          <div class="w-full sm:flex-1 sm:min-w-[280px]">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Applicant</label>
-            <div class="relative group">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-              <input type="text" id="filter-search" placeholder="Search by name or email..."
-                class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">VERIFICATION</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Pending Approvals</div>
+                </div>
             </div>
-          </div>
-          
-          <!-- Date Range -->
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-             <div class="flex flex-col flex-1 sm:flex-none">
-               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">From</label>
-               <input type="date" id="filter-date-from" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 w-full focus:ring-2 focus:ring-primary/10">
-             </div>
-             <div class="flex flex-col flex-1 sm:flex-none">
-               <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">To</label>
-               <input type="date" id="filter-date-to" class="bg-slate-100 dark:bg-surface-container-high border-none rounded-xl text-xs font-bold px-4 py-2.5 w-full focus:ring-2 focus:ring-primary/10">
-             </div>
-          </div>
+        </header>
 
-          <!-- ID Type -->
-          <div class="flex flex-col w-full sm:w-auto">
-            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">ID Type</label>
-            <div class="finzo-dropdown" id="filter-id-dropdown">
-              <input type="hidden" id="filter-id-type" value="all">
-              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl min-w-[160px]">
-                <span class="material-symbols-outlined text-lg opacity-60">badge</span>
-                <span class="dropdown-label font-bold text-xs">All ID Types</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All ID Types</div>
-                <div class="finzo-dropdown-option" data-value="aadhaar card">Aadhaar Card</div>
-                <div class="finzo-dropdown-option" data-value="pan card">PAN Card</div>
-                <div class="finzo-dropdown-option" data-value="passport">Passport</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Buttons -->
-          <div class="flex gap-2 w-full sm:w-auto">
-            <button id="apply-filters" class="admin-btn-primary flex-1 sm:flex-none" style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
-            <button id="reset-filters" class="admin-btn-secondary flex-1 sm:flex-none" style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- APPLICATIONS TABLE -->
-      <div class="admin-card">
-        <div class="overflow-x-auto">
-        <table class="admin-table min-w-[900px] w-full text-left">
-          <thead>
-            <tr>
-              <th class="w-16">#</th>
-              <th>Applicant</th>
-              <th>Phone</th>
-              <th>Account Type Requested</th>
-              <th>ID Type Submitted</th>
-              <th>Submitted On</th>
-              <th>Status</th>
-              <th class="text-right">Actions</th>
-            </tr>
-          </thead>
-            <tbody id="applications-table-body">
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-            </tbody>
-        </table>
-        </div>
-
-        <!-- PAGINATION -->
-        <div class="p-6 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/30 dark:bg-white/5">
-          <div class="text-xs font-bold opacity-40">Showing 1-3 of 3 applications</div>
-          <div class="flex items-center gap-2">
-            <button id="prev-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">← Previous</button>
-            <button id="page-1" onclick="goToPage(1)" class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
-            <button id="next-page" class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    /* ── DATA INTEGRATION ── */
-    $(function() {
-      const $statusBtns = $('.tab-btn');
-      const $searchInput = $('#filter-search');
-      const $idTypeInput = $('#filter-id-type');
-      const $applyBtn = $('#apply-filters');
-      const $resetBtn = $('#reset-filters');
-      const $tbody = $('#applications-table-body');
-      
-      let currentStatus = 'all';
-      let currentPage = 1;
-
-      async function loadApplications() {
-          $tbody.html(`
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8"><div class="skeleton-row"></div></td></tr>
-          `);
-
-          try {
-              const response = await api.get('/admin/pending-approvals.php', {
-                  status: currentStatus,
-                  search: $searchInput.val(),
-                  page: currentPage,
-                  per_page: 10
-              });
-
-              if (response.status === 'success') {
-                  renderTable(response.data.applications, response.data.total, response.data.pages);
-                  updateStats(response.data.stats || {});
-              } else {
-                  $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40">No applications found.</td></tr>`);
-                  document.querySelector('.text-xs.font-bold.opacity-40:contains("Showing")').textContent = 'No results found';
-              }
-          } catch (error) {
-              console.error('Failed to load applications:', error);
-              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`);
-          }
-      }
-
-      function renderTable(apps, total, pages) {
-          if (!apps || !apps.length) {
-              $tbody.html(`<tr><td colspan="8" class="py-20 text-center font-bold opacity-40">No applications found.</td></tr>`);
-              return;
-          }
-
-          $tbody.html(apps.map((app, i) => {
-              const initials = app.initials || app.full_name.charAt(0);
-              const dateStr = app.created_at || 'N/A';
-              const statusBadgeClass = app.status === 'pending' ? 'badge-amber' : (app.status === 'under_review' ? 'badge-blue' : 'badge-green');
-              const statusText = (app.status_text || app.status || 'Pending').replace('_', ' ');
-
-              return `
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" data-status="${app.status}">
-                <td class="font-bold opacity-30 tracking-widest text-[11px]">${String((currentPage-1)*10 + i + 1).padStart(2, '0')}</td>
-                <td>
-                  <div class="flex items-center gap-3 applicant-info">
-                    <div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>
+        <main class="p-4 sm:p-6 lg:p-10">
+            <!-- FILTERS -->
+            <div class="admin-card mb-6 p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                     <div>
-                      <div class="font-bold applicant-name text-slate-800 dark:text-slate-100">${app.full_name}</div>
-                      <div class="text-[11px] opacity-60 applicant-email">${app.email}</div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Applications</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="approval-search" placeholder="Search by name, email or mobile..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                        </div>
                     </div>
-                  </div>
-                </td>
-                <td class="text-xs font-bold text-slate-600 dark:text-slate-400 font-mono">${app.phone || 'N/A'}</td>
-                <td><span class="status-badge bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-500/20">${(app.account_type || 'Savings').charAt(0).toUpperCase() + (app.account_type || 'Savings').slice(1)}</span></td>
-                <td><span class="text-xs font-bold opacity-70">${app.id_type || 'N/A'}</span></td>
-                <td class="text-xs whitespace-nowrap opacity-60 font-semibold">${dateStr}</td>
-                <td>
-                   <span class="badge ${statusBadgeClass}">
-                     <span class="material-symbols-outlined" style="font-size:10px;">${app.status === 'pending' ? 'hourglass_empty' : 'verified'}</span>
-                     ${statusText.toUpperCase()}
-                   </span>
-                </td>
-                <td>
-                  <div class="flex justify-end">
-                    <a href="admin-review-application.html?id=${app.id}" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                      <span class="material-symbols-outlined" style="font-size:16px;">settings_accessibility</span> Manage
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              `;
-          }).join(''));
+                </div>
+            </div>
 
-          updatePagination(total, pages);
-      }
+            <!-- TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table id="approvals-table" class="admin-table w-full text-left min-w-[900px]">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Branch</th>
+                                <th>Date Applied</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data injected by pending-approvals.js -->
+                        </tbody>
+                    </table>
+                </div>
 
-      function updatePagination(total, pages) {
-          const $info = $('.text-xs.font-bold.opacity-40');
-          $info.text(`Showing ${Math.min((currentPage-1)*10+1, total)}-${Math.min(currentPage*10, total)} of ${total} applications`);
-          
-          const $controls = $('#next-page').parent();
-          
-          $('#prev-page').prop('disabled', currentPage === 1);
-          $('#next-page').prop('disabled', currentPage === pages || pages === 0);
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Items</div>
+                    <div class="flex items-center gap-2">
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <div id="page-numbers" class="flex gap-1.5">
+                            <!-- Page numbers injected by pending-approvals.js -->
+                        </div>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-          let pagNumHtml = '';
-          for (let i = 1; i <= pages; i++) {
-            if (pages > 5 && i > 3 && i < pages) {
-              if (i === 4) pagNumHtml += '<span class="px-2 opacity-50">...</span>';
-              continue;
-            }
-            pagNumHtml += `<button onclick="window.goToPage(${i})" class="${i === currentPage ? 'admin-btn-primary' : 'admin-btn-secondary'}" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important; ${i === currentPage ? 'background: #1a3c5e !important;' : ''}">${i}</button>`;
-          }
-          
-          $controls.find('button:not(#prev-page, #next-page)').remove();
-          $controls.find('span.opacity-50').remove();
-          $('#prev-page').after(pagNumHtml);
-      }
-
-      function updateStats(stats) {
-          if (stats.pending_review !== undefined) {
-              $('.admin-stat-label:contains("PENDING REVIEW")').next().html(`${stats.pending_review} <span class="admin-stat-delta negative">Action Required</span>`);
-          }
-          if (stats.approved_today !== undefined) {
-              $('.admin-stat-label:contains("APPROVED TODAY")').next().text(stats.approved_today);
-          }
-          if (stats.rejected_today !== undefined) {
-              $('.admin-stat-label:contains("REJECTED TODAY")').next().text(stats.rejected_today);
-          }
-          if (stats.total_approved !== undefined) {
-              $('.admin-stat-label:contains("TOTAL APPROVED")').next().text(stats.total_approved);
-          }
-      }
-
-      window.goToPage = (p) => { currentPage = p; loadApplications(); };
-
-      $statusBtns.on('click', function() {
-        $statusBtns.removeClass('bg-primary text-white shadow-md').addClass('text-slate-500');
-        $(this).removeClass('text-slate-500').addClass('bg-primary text-white shadow-md');
-        currentStatus = $(this).data('status');
-        currentPage = 1;
-        loadApplications();
-      });
-
-      $applyBtn.on('click', () => { currentPage = 1; loadApplications(); });
-      $resetBtn.on('click', () => { 
-          $searchInput.val(''); 
-          currentStatus = 'all'; 
-          currentPage = 1; 
-          loadApplications(); 
-      });
-
-      $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; loadApplications(); } });
-      $('#next-page').on('click', () => { currentPage++; loadApplications(); });
-
-      loadApplications();
-
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-    });
-  </script>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/pending-approvals.js"></script>
 </body>
 
 </html>

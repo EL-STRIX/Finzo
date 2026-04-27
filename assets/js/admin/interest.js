@@ -1,0 +1,181 @@
+/**
+ * Finzo Admin — Interest Management Handler
+ * Manages savings interest rates, history, and updates.
+ */
+
+(function() {
+    // DOM Elements
+    const liveRateEl = document.getElementById('live-rate');
+    const lastChangeDateEl = document.getElementById('last-change-date');
+    const newRateInput = document.getElementById('new-rate');
+    const totalInterestEl = document.getElementById('stat-total-interest');
+    const interestDeltaEl = document.getElementById('stat-interest-delta');
+    const earningAccountsEl = document.getElementById('stat-earning-accounts');
+    const historyBody = document.getElementById('interest-history-body');
+    const chartContainer = document.getElementById('interest-chart-container');
+    const customDateContainer = document.getElementById('custom-date-container');
+    const customApplyDateInput = document.getElementById('custom-apply-date');
+    const applyFromDropdownInput = document.getElementById('lock_period_input');
+    const confirmModal = document.getElementById('confirm-modal');
+    const modalMsg = document.getElementById('modal-msg');
+
+    /**
+     * Load interest data from API
+     */
+    async function loadInterestData() {
+        try {
+            const response = await window.api.get('/admin/interest.php');
+            if (response.status === 'success' || response.success) {
+                const info = response.data || response;
+                
+                // Update Live Rate
+                if (liveRateEl) liveRateEl.textContent = info.current_rate;
+                if (lastChangeDateEl) lastChangeDateEl.textContent = info.last_change_date;
+                if (newRateInput) newRateInput.value = info.current_rate;
+
+                // Update Stats
+                if (totalInterestEl) totalInterestEl.textContent = info.stats.total_interest_credited;
+                if (interestDeltaEl) {
+                    interestDeltaEl.innerHTML = `
+                        <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> 
+                        ${info.stats.interest_delta} from last month
+                    `;
+                }
+                if (earningAccountsEl) earningAccountsEl.textContent = info.stats.earning_accounts;
+
+                // Update History Table
+                if (historyBody) {
+                    const historyHtml = info.history.map(h => `
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td class="font-semibold text-sm dark:text-slate-200">${h.effective_date}</td>
+                            <td class="font-black font-headline text-lg text-primary dark:text-blue-400">${h.rate}%</td>
+                            <td class="text-sm opacity-60">${h.updated_by}</td>
+                            <td class="text-right">
+                                <span class="status-badge ${h.status === 'Active' ? 'badge-success' : 'badge-slate'} flex items-center gap-1.5 w-fit ml-auto text-[10px]">
+                                    ${h.status === 'Active' ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
+                                    ${h.status}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                    historyBody.innerHTML = historyHtml;
+                }
+
+                // Render Chart
+                if (chartContainer && info.chart_data) {
+                    const chartHtml = info.chart_data.map(val => {
+                        const height = Math.max(10, val); // Minimum height for visibility
+                        return `<div class="chart-bar flex-1 bg-emerald-500 rounded-t-sm transition-all duration-500 hover:bg-emerald-600 cursor-help" style="height:${height}%; opacity:${0.5 + (height/200)};" title="₹${val}k"></div>`;
+                    }).join('');
+                    chartContainer.innerHTML = chartHtml;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load interest data:', error);
+        }
+    }
+
+    // Exported Object
+    window.InterestManagement = {
+        handleApplyFromChange: (value) => {
+            if (customDateContainer) {
+                if (value === 'Custom Date') {
+                    customDateContainer.style.display = 'block';
+                    // Trigger reflow for animation if needed, or use CSS transitions
+                } else {
+                    customDateContainer.style.display = 'none';
+                }
+            }
+        },
+
+        applyRate: () => {
+            const newRate = newRateInput ? newRateInput.value.trim() : '';
+            const applyType = applyFromDropdownInput ? applyFromDropdownInput.value : 'Immediately';
+            let effectiveDateStr = '';
+
+            if (!newRate || isNaN(parseFloat(newRate))) { 
+                window.portal.showToast('Please enter a valid rate.', 'error'); 
+                return; 
+            }
+
+            if (applyType === 'Immediately') {
+                effectiveDateStr = 'immediately';
+            } else if (applyType === 'Next Month') {
+                const d = new Date();
+                const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+                effectiveDateStr = 'on ' + nextMonth.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            } else {
+                const customDate = customApplyDateInput ? customApplyDateInput.value : '';
+                if (!customDate) { 
+                    window.portal.showToast('Please select a custom date.', 'error'); 
+                    if (customApplyDateInput) customApplyDateInput.focus();
+                    return; 
+                }
+                effectiveDateStr = 'on ' + new Date(customDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            }
+            
+            if (modalMsg) {
+                modalMsg.innerHTML = `You are about to adjust the global savings rate to <strong class="text-primary dark:text-blue-400">${newRate}%</strong>. This update is scheduled to take effect <strong class="text-emerald-600">${effectiveDateStr}</strong>.`;
+            }
+            
+            if (confirmModal) {
+                confirmModal.style.display = 'flex';
+                confirmModal.classList.add('animate-fade-in');
+            }
+        },
+
+        closeModal: () => {
+            if (confirmModal) {
+                confirmModal.style.display = 'none';
+            }
+        },
+
+        confirmRate: async () => {
+            const newRate = newRateInput ? newRateInput.value : '';
+            const applyType = applyFromDropdownInput ? applyFromDropdownInput.value : '';
+            const customDate = customApplyDateInput ? customApplyDateInput.value : '';
+            
+            try {
+                const response = await window.api.post('/admin/interest.php', {
+                    action: 'update_rate',
+                    rate: newRate,
+                    apply_type: applyType,
+                    custom_date: customDate
+                });
+
+                if (response.status === 'success' || response.success) {
+                    window.InterestManagement.closeModal();
+                    window.portal.showToast(response.message || 'Interest rate update scheduled successfully', 'success');
+                    loadInterestData();
+                } else {
+                    window.portal.showToast(response.message || 'Error updating rate', 'error');
+                }
+            } catch (error) {
+                console.error('Update rate error:', error);
+                window.portal.showToast('Failed to update rate. Please try again.', 'error');
+            }
+        }
+    };
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        loadInterestData();
+        
+        // Listen for internal dropdown changes
+        if (applyFromDropdownInput) {
+            // We'll use a MutationObserver or better, event delegation in dropdowns.js
+            // But since the current dropdown logic in admin.html was tied to a global handleApplyFromChange,
+            // we'll hook into that.
+            
+            // Temporary strategy for custom date toggle
+            document.body.addEventListener('click', (e) => {
+                const option = e.target.closest('.finzo-dropdown-option');
+                if (option && option.closest('#apply-from-dropdown')) {
+                    const val = option.getAttribute('data-value');
+                    window.InterestManagement.handleApplyFromChange(val);
+                }
+            });
+        }
+    });
+
+})();

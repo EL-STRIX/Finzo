@@ -2,680 +2,251 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Locked Accounts | Finzo Admin</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <script src="../../assets/js/admin-shared.js"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#1a3c5e',
-            surface: {
-              card: 'var(--bg-card)',
-              page: 'var(--bg-page)'
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locked Accounts | Finzo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  
-  </head>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+</head>
 
-<body>
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <nav class="admin-sidebar sidebar" id="sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
-      <div class="admin-nav-section">System</div>
-
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
-
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme
-        style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-  <div class="main">
-    <header class="topbar">
-      <div class="flex items-center gap-3 flex-1 min-w-0">
-        <button class="hamburger-btn icon-btn" onclick="toggleSidebar()">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="min-w-0 flex-1">
-          <div class="eyebrow truncate">SECURITY CONTROL</div>
-          <div class="topbar-title truncate">Locked Accounts</div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
-      </div>
-      <div class="flex items-center gap-4 shrink-0 pl-3">
-        <div class="avatar" style="width:40px;height:40px;background:var(--primary);color:#fff;font-size:14px;">AD</div>
-      </div>
-    </header>
-
-    <div class="page-content">
-
-      <!-- INFO BANNER -->
-      <div class="security-notice" style="background:var(--amber-soft); border:1.5px solid var(--amber-border); color:var(--text-primary);">
-        <span class="material-symbols-outlined lock-pulse" style="color:var(--amber); font-size:22px; margin-top:2px;">info</span>
-        <div>
-          <strong style="display:block; margin-bottom:4px; font-size:14px;">How account locking works</strong>
-          <p style="font-size:13px; line-height:1.6; opacity:0.9;">
-            If a user enters the wrong password 5 times within 24 hours, their account is automatically locked and added to this queue. Administrators can generate a 24-hour temporary password to restore access. Processed accounts move further down with a 'Generated Done' status.
-          </p>
-        </div>
-      </div>
-
-      <!-- TABLE CARD -->
-      <div class="card">
-        <!-- FILTER BAR -->
-        <div class="filter-bar no-wrap-desktop">
-          <div class="filter-group" style="flex: 1.5; min-width: 0;">
-            <div class="filter-label">Search Account</div>
-            <div class="input-wrap">
-              <span class="material-symbols-outlined input-icon">search</span>
-              <input type="text" class="filter-input with-icon" id="search-input"
-                placeholder="Name, email or account number..." oninput="renderTable()" style="width:100%;" />
-            </div>
-          </div>
-          <div class="filter-group" style="flex: 1; min-width: 120px;">
-            <div class="filter-label">Account Type</div>
-            <div class="finzo-dropdown" id="type-dropdown">
-              <input type="hidden" id="type-filter" value="" />
-              <div class="finzo-dropdown-trigger" onclick="toggleDropdown(this)">
-                <span class="dropdown-label">All Types</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu">
-                <div class="finzo-dropdown-option selected" onclick="selectOption(this, '')">All Types</div>
-                <div class="finzo-dropdown-option" onclick="selectOption(this, 'Savings')">Savings</div>
-                <div class="finzo-dropdown-option" onclick="selectOption(this, 'Current')">Current</div>
-              </div>
-            </div>
-          </div>
-          <div class="filter-group" style="flex: 1; min-width: 120px;">
-            <div class="filter-label">Locked On</div>
-            <input type="date" class="filter-input" id="date-filter" onchange="renderTable()" style="width: 100%;" />
-          </div>
-          <div class="filter-group" style="flex: 1; min-width: 150px;">
-            <div class="filter-label">Password Status</div>
-            <div class="finzo-dropdown" id="status-dropdown">
-              <input type="hidden" id="status-filter" value="" />
-              <div class="finzo-dropdown-trigger" onclick="toggleDropdown(this)">
-                <span class="dropdown-label">All Statuses</span>
-                <span class="material-symbols-outlined chevron">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu">
-                <div class="finzo-dropdown-option selected" onclick="selectOption(this, '')">All Statuses</div>
-                <div class="finzo-dropdown-option" onclick="selectOption(this, 'pending')">Pending</div>
-                <div class="finzo-dropdown-option" onclick="selectOption(this, 'done')">Generated Done</div>
-              </div>
-            </div>
-          </div>
-          <div class="filter-actions">
-            <button class="btn btn-amber" onclick="renderTable()">
-              <span class="material-symbols-outlined" style="font-size:16px;">filter_alt</span> Apply
-            </button>
-            <button class="btn btn-ghost" onclick="resetFilters()">Reset</button>
-          </div>
-        </div>
-
-        <!-- REMOVED TABS AS PER QUEUE LOGIC -->
-
-        <!-- TABLE -->
-        <div class="table-scroll">
-          <table class="audit-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Customer</th>
-                <th>Account No</th>
-                <th>Account Type</th>
-                <th>Status</th>
-                <th>Failed Attempts</th>
-                <th>Locked On</th>
-                <th>Lock Time</th>
-                <th style="text-align:center;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="table-body">
-              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- PAGINATION -->
-        <div class="pag-bar">
-          <span class="pag-info" id="pag-info">Loading...</span>
-          <div class="pag-controls" id="pag-controls"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- UNLOCK MODAL -->
-  <div class="modal-overlay hidden" id="unlock-modal">
-    <div class="modal-card">
-      <div class="modal-icon" id="unlock-modal-icon-box" style="background:var(--amber-soft); transition: all 0.4s ease;">
-        <span class="material-symbols-outlined" id="unlock-modal-icon" style="color:var(--amber);font-size:28px;">key</span>
-      </div>
-      <div class="modal-title" id="unlock-modal-title">Generate Temporary Password</div>
-      <div class="modal-text" id="unlock-modal-text">A secure 12-character temporary password will be generated for <strong id="unlock-user-name">this account</strong>. It will be valid for <strong>24 hours only</strong>. The customer must change it on first login.</div>
-
-      <!-- Generated password display (hidden until generated) -->
-      <div id="gen-pass-section" class="hidden" style="margin-bottom:20px;">
-        <div
-          style="font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:8px;">
-          Generated Temporary Password</div>
-        <div
-          style="display:flex;align-items:center;gap:10px;background:var(--bg-input);border:1.5px solid var(--amber-border);border-radius:var(--radius-md);padding:14px 16px;">
-          <span class="material-symbols-outlined" style="color:var(--amber);font-size:20px;flex-shrink:0;">key</span>
-          <code id="gen-pass-value"
-            style="font-size:18px;font-weight:800;letter-spacing:.14em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;"></code>
-          <button onclick="copyPassword()" id="copy-btn"
-            style="background:none;border:none;cursor:pointer;color:var(--amber);" title="Copy">
-            <span class="material-symbols-outlined" style="font-size:20px;">content_copy</span>
-          </button>
-        </div>
-        <!-- Security Metadata Grid -->
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
-          <div style="background:var(--red-soft); border:1px solid var(--red-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-            <span class="material-symbols-outlined" style="color:var(--red); font-size:18px;">schedule</span>
-            <div style="line-height:1.2;">
-              <div style="font-size:11px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:0.02em;">24 Hours</div>
-              <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Validity Period</div>
-            </div>
-          </div>
-          <div style="background:var(--blue-soft); border:1px solid var(--blue-border); border-radius:var(--radius-sm); padding:10px; display:flex; gap:10px; align-items:center;">
-            <span class="material-symbols-outlined" style="color:var(--blue); font-size:18px;">verified_user</span>
-            <div style="line-height:1.2;">
-              <div style="font-size:11px; font-weight:800; color:var(--blue); text-transform:uppercase; letter-spacing:0.02em;">Verified Channel</div>
-              <div style="font-size:10px; color:var(--text-secondary); font-weight:500;">Sharing Policy</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-actions" id="unlock-modal-actions">
-        <button class="btn btn-ghost" onclick="closeUnlockModal()">Cancel</button>
-        <button class="btn btn-amber" id="generate-btn" onclick="generatePassword()">
-          <span class="material-symbols-outlined" style="font-size:15px;">key</span>
-          Generate & Unlock
-        </button>
-      </div>
-      <div id="unlock-done-actions" class="modal-actions hidden">
-        <button class="btn btn-ghost" onclick="closeUnlockModal()">Close</button>
-        <button class="btn btn-success" onclick="closeUnlockModal()">
-          <span class="material-symbols-outlined" style="font-size:15px;">check_circle</span>
-          Done
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast-wrap" id="toast-wrap"></div>
-
-  <script>
-    /* ── THEME ── */
-    const THEME_KEY = 'finzo-admin-theme';
-    function initTheme() {
-      const s = localStorage.getItem(THEME_KEY);
-      const dark = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches);
-      if (dark) document.documentElement.classList.add('dark');
-      updateThemeIcons();
-    }
-    function toggleTheme() {
-      const dark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
-      updateThemeIcons();
-    }
-    function updateThemeIcons() {
-      const dark = document.documentElement.classList.contains('dark');
-      ['theme-icon', 'theme-icon2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dark ? 'light_mode' : 'dark_mode'; });
-      const lbl = document.getElementById('theme-label'); if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
-    }
-    initTheme();
-
-    /* ── DATA ── */
-    let allData = []; // API will populate this row via fetch later
-
-    const ROWS_PP = 6;
-    let currentPage = 1, pendingId = null, generatedPass = '';
-    let filtered = [...allData];
-
-    function attemptsDisplay() {
-      return `<div class="attempt-dots">${Array(5).fill('<div class="attempt-dot"></div>').join('')}<span style="font-size:11px;font-weight:800;color:var(--red);margin-left:6px;">5/5</span></div>`;
-    }
-
-    function resetFilters() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('date-filter').value = '';
-      // Reset custom dropdown
-      const typeFilter = document.getElementById('type-filter');
-      typeFilter.value = '';
-      document.querySelector('#type-dropdown .dropdown-label').textContent = 'All Types';
-      document.querySelectorAll('#type-dropdown .finzo-dropdown-option').forEach((opt, i) => {
-        opt.classList.toggle('selected', i === 0);
-      });
-
-      currentPage = 1;
-      renderTable();
-    }
-
-    /* ── CUSTOM DROPDOWN LOGIC ── */
-    function toggleDropdown(trigger) {
-      const menu = trigger.nextElementSibling;
-      const isOpen = trigger.classList.contains('is-open');
-
-      // Close all other dropdowns
-      document.querySelectorAll('.finzo-dropdown-trigger').forEach(t => {
-        if (t !== trigger) {
-          t.classList.remove('is-open');
-          t.nextElementSibling.classList.remove('visible');
-        }
-      });
-
-      trigger.classList.toggle('is-open');
-      menu.classList.toggle('visible');
-    }
-
-    function selectOption(option, value) {
-      const dropdown = option.closest('.finzo-dropdown');
-      const trigger = dropdown.querySelector('.finzo-dropdown-trigger');
-      const menu = dropdown.querySelector('.finzo-dropdown-menu');
-      const label = trigger.querySelector('.dropdown-label');
-      const input = dropdown.querySelector('input[type="hidden"]');
-
-      // Update selection
-      dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('selected'));
-      option.classList.add('selected');
-
-      // Update UI and value
-      label.textContent = option.textContent;
-      input.value = value;
-
-      // Close dropdown
-      trigger.classList.remove('is-open');
-      menu.classList.remove('visible');
-
-      // Trigger table render if needed (optional since we have an Apply button now)
-    }
-
-    // Close dropdowns on outside click
-
-    async function loadData() {
-        const search = document.getElementById('search-input').value;
-        const type = document.getElementById('type-filter').value;
-        const date = document.getElementById('date-filter').value;
-        const status = document.getElementById('status-filter').value;
-
-        const tbody = document.getElementById('table-body');
-        tbody.innerHTML = `
-            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-            <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-        `;
-        
-        try {
-            const response = await api.get('/admin/locked-accounts.php', {
-                search: search,
-                type: type,
-                date: date,
-                status: status,
-                page: currentPage,
-                per_page: ROWS_PP
-            });
-            
-            if (response.status === 'success') {
-                allData = response.data.accounts.map(acc => ({
-                    id: acc.id,
-                    name: acc.full_name,
-                    email: acc.email,
-                    initials: acc.initials || acc.full_name.charAt(0),
-                    accNo: acc.account_no || 'N/A',
-                    accType: acc.account_type === 'savings' ? 'Savings' : 'Current',
-                    attempts: acc.failed_attempts,
-                    lockedDate: acc.locked_at || 'N/A',
-                    lockTime: acc.lock_time || 'N/A',
-                    tempSent: acc.status === 'unlocked', 
-                    statusBadge: acc.status_badge || 'badge-amber',
-                    statusText: acc.status_text || 'Pending'
-                }));
-                
-                renderTable(response.data.total, response.data.pages);
-            } else {
-                tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">${response.message || 'All accounts are currently accessible.'}</div></div></td></tr>`;
-                document.getElementById('pag-info').textContent = 'No results found';
-                document.getElementById('pag-controls').innerHTML = '';
-            }
-        } catch (error) {
-            console.error('Failed to load locked accounts:', error);
-            tbody.innerHTML = `<tr><td colspan="10" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
-        }
-    }
-
-    function attemptsDisplay(count) {
-      const dots = Array(5).fill(0).map((_, i) => `<div class="attempt-dot ${i < count ? '' : 'empty'}"></div>`).join('');
-      return `<div class="attempt-dots">${dots}<span style="font-size:11px;font-weight:800;color:var(--red);margin-left:6px;">${count}/5</span></div>`;
-    }
-
-    function renderTable(total = allData.length, totalPages = 1) {
-      const tbody = document.getElementById('table-body');
-      if (!allData || !allData.length) {
-        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">All accounts are currently accessible.</div></div></td></tr>`;
-      } else {
-        tbody.innerHTML = allData.map((r, i) => `
-      <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" style="${r.tempSent ? 'opacity:0.85; background:rgba(0,0,0,0.01)' : ''}">
-        <td style="font-size:11px;font-weight:800;color:var(--text-secondary);">${String((currentPage - 1) * ROWS_PP + i + 1).padStart(2, '0')}</td>
-        <td>
-          <div class="user-cell">
-            <div class="avatar premium-gradient-primary uppercase">${r.initials}</div>
-            <div>
-              <div class="user-name">${r.name}</div>
-              <div class="user-email">${r.email}</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="mono">${r.accNo}</span></td>
-        <td><span class="badge ${r.accType === 'Savings' ? 'badge-green' : 'badge-blue'}">${r.accType}</span></td>
-        <td>
-          <span class="badge ${r.statusBadge}">
-            <span class="material-symbols-outlined" style="font-size:10px;">${r.tempSent ? 'check_circle' : 'pending'}</span>
-            ${r.statusText}
-          </span>
-        </td>
-        <td>${attemptsDisplay(r.attempts)}</td>
-        <td style="font-size:12px;font-weight:600;">${r.lockedDate}</td>
-        <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
-        <td>
-          <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-            <a href="admin-locked-account-detail.html?id=${r.id}" class="btn btn-ghost btn-sm">
-              <span class="material-symbols-outlined" style="font-size:14px;">visibility</span>View
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
             </a>
-            ${!r.tempSent ? `
-            <button class="btn btn-amber btn-sm" onclick="openUnlock('${r.id}','${r.name}','${r.accNo}')">
-              <span class="material-symbols-outlined" style="font-size:14px;">key</span>Unlock
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
+
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
+
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
             </button>
-            ` : `
-            <div style="width:78px; text-align:center;"><span class="material-symbols-outlined" style="color:var(--green);font-size:18px;">check_circle</span></div>
-            `}
-          </div>
-        </td>
-      </tr>`).join('');
-      }
-      const s = (currentPage - 1) * ROWS_PP + 1, e = Math.min(currentPage * ROWS_PP, total);
-      document.getElementById('pag-info').textContent = total ? `Showing ${s}–${e} of ${total} locked account${total !== 1 ? 's' : ''}` : 'No results found';
-      
-      const pc = document.getElementById('pag-controls');
-      pc.innerHTML = `<button class="pag-btn" onclick="goPage(-1)" ${currentPage <= 1 ? 'disabled' : ''}>← Prev</button>`;
-      
-      for (let i = 1; i <= totalPages; i++) {
-          if (i <= 3 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-              pc.innerHTML += `<button class="pag-num ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i};loadData()">${i}</button>`;
-          } else if (i === 4 || i === totalPages - 1) {
-              pc.innerHTML += `<span style="padding: 0 4px; opacity: 0.5;">...</span>`;
-          }
-      }
-      
-      pc.innerHTML += `<button class="pag-btn" onclick="goPage(1)" ${currentPage >= totalPages ? 'disabled' : ''}>Next →</button>`;
-    }
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-    function goPage(d) { 
-        currentPage += d; 
-        loadData(); 
-    }
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">SECURITY CONTROL</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Locked Accounts</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="admin-avatar premium-gradient-primary">A</div>
+            </div>
+        </header>
 
-    function resetFilters() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('date-filter').value = '';
-      
-      const td = document.getElementById('type-dropdown');
-      td.querySelector('input[type="hidden"]').value = '';
-      td.querySelector('.dropdown-label').textContent = 'All Types';
-      td.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('selected'));
-      td.querySelector('.finzo-dropdown-option').classList.add('selected');
+        <main class="p-4 sm:p-6 lg:p-10">
+            <!-- INFO BANNER -->
+            <div class="p-4 mb-6 bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-lg flex gap-4">
+                <span class="material-symbols-outlined text-amber-500">info</span>
+                <div>
+                    <h4 class="text-sm font-bold text-amber-800 dark:text-amber-200">How account locking works</h4>
+                    <p class="text-xs text-amber-700 dark:text-amber-300 mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
+                </div>
+            </div>
 
-      const sd = document.getElementById('status-dropdown');
-      sd.querySelector('input[type="hidden"]').value = '';
-      sd.querySelector('.dropdown-label').textContent = 'All Statuses';
-      sd.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('selected'));
-      sd.querySelector('.finzo-dropdown-option').classList.add('selected');
+            <!-- FILTERS -->
+            <div class="admin-card mb-6 p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Account</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="search-input" placeholder="Name, email or account number..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Account Type</label>
+                        <div class="finzo-dropdown" id="type-dropdown">
+                            <input type="hidden" id="type-filter" value="">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                                <span class="dropdown-label font-bold text-sm">All Types</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
+                                <div class="finzo-dropdown-option is-selected" data-value="">All Types</div>
+                                <div class="finzo-dropdown-option" data-value="Savings">Savings</div>
+                                <div class="finzo-dropdown-option" data-value="Current">Current</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Locked On</label>
+                        <input type="date" id="date-filter" class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Password Status</label>
+                        <div class="finzo-dropdown" id="status-dropdown">
+                            <input type="hidden" id="status-filter" value="">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                                <span class="dropdown-label font-bold text-sm">All Statuses</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
+                                <div class="finzo-dropdown-option is-selected" data-value="">All Statuses</div>
+                                <div class="finzo-dropdown-option" data-value="pending">Pending</div>
+                                <div class="finzo-dropdown-option" data-value="done">Generated Done</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 flex justify-end gap-3">
+                        <button onclick="window.LockedAccounts.resetFilters()" class="admin-btn-secondary px-6">Reset</button>
+                        <button onclick="window.LockedAccounts.applyFilters()" class="admin-btn-primary px-10">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
 
-      currentPage = 1;
-      loadData();
-      showToast('Filters reset to default', 'info');
-    }
+            <!-- TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table class="admin-table w-full text-left min-w-[1000px]">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Account No</th>
+                                <th>Account Type</th>
+                                <th>Status</th>
+                                <th>Failed Attempts</th>
+                                <th>Locked On</th>
+                                <th>Lock Time</th>
+                                <th class="text-right px-6">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Data injected by locked-accounts.js -->
+                        </tbody>
+                    </table>
+                </div>
 
-    /* ── UNLOCK ── */
-    function openUnlock(id, name, accNo) {
-      pendingId = id;
-      
-      const iconBox = document.getElementById('unlock-modal-icon-box');
-      const icon = document.getElementById('unlock-modal-icon');
-      const title = document.getElementById('unlock-modal-title');
-      const desc = document.getElementById('unlock-modal-text');
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div id="pag-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Accounts</div>
+                    <div class="flex items-center gap-2" id="pag-controls">
+                        <!-- Pagination injected by locked-accounts.js -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-      iconBox.style.background = 'var(--amber-soft)';
-      iconBox.classList.remove('success-pop');
-      icon.textContent = 'key';
-      icon.style.color = 'var(--amber)';
-      title.textContent = 'Generate Temporary Password';
-      title.style.color = '';
-      desc.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and will be required to set a new password immediately.`;
+    <!-- UNLOCK MODAL -->
+    <div id="unlock-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.LockedAccounts.closeUnlockModal()"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
+            <div id="unlock-modal-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-amber-50">
+                <span id="unlock-modal-icon" class="material-symbols-outlined text-amber-500 text-3xl">key</span>
+            </div>
+            <h3 id="unlock-modal-title" class="text-xl font-bold text-center mb-2">Generate Temporary Password</h3>
+            <p id="unlock-modal-text" class="text-sm opacity-60 text-center mb-8 leading-relaxed"></p>
 
-      document.getElementById('gen-pass-section').classList.add('hidden');
-      const card = document.getElementById('gen-pass-section').querySelector('div[style*="background"]');
-      if (card) card.classList.remove('shimmer-card');
+            <!-- Generated password display -->
+            <div id="gen-pass-section" class="hidden mb-8">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Temporary Password</label>
+                <div class="flex items-center gap-3 bg-slate-100 dark:bg-white/5 border-2 border-amber-500/20 rounded-xl p-4">
+                    <code id="gen-pass-value" class="flex-1 font-mono font-bold text-xl tracking-wider text-primary dark:text-slate-200 text-center"></code>
+                    <button id="copy-btn" onclick="window.LockedAccounts.copyPassword()" class="p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg transition-colors text-amber-600">
+                        <span class="material-symbols-outlined">content_copy</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <div class="bg-red-50 dark:bg-red-500/10 p-3 rounded-lg flex items-center gap-3">
+                        <span class="material-symbols-outlined text-red-500 text-sm">schedule</span>
+                        <div class="text-[10px] font-bold text-red-700 dark:text-red-300">24H VALIDITY</div>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-500/10 p-3 rounded-lg flex items-center gap-3">
+                        <span class="material-symbols-outlined text-blue-500 text-sm">verified_user</span>
+                        <div class="text-[10px] font-bold text-blue-700 dark:text-blue-300">ONE-TIME USE</div>
+                    </div>
+                </div>
+            </div>
 
-      document.getElementById('unlock-modal-actions').classList.remove('hidden');
-      document.getElementById('unlock-done-actions').classList.add('hidden');
-      
-      const btn = document.getElementById('generate-btn');
-      btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
-      
-      document.getElementById('unlock-modal').classList.remove('hidden');
-    }
+            <div id="unlock-modal-actions" class="flex flex-col gap-3">
+                <button id="generate-btn" onclick="window.LockedAccounts.generatePassword()" class="admin-btn-primary w-full justify-center !py-3">Generate & Unlock</button>
+                <button onclick="window.LockedAccounts.closeUnlockModal()" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
+            </div>
+            <div id="unlock-done-actions" class="hidden flex flex-col gap-3">
+                <button onclick="window.LockedAccounts.closeUnlockModal()" class="admin-btn-primary w-full justify-center !py-3 bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Done</button>
+            </div>
+        </div>
+    </div>
 
-    function closeUnlockModal() {
-      document.getElementById('unlock-modal').classList.add('hidden');
-    }
-
-    async function generatePassword() {
-      const btn = document.getElementById('generate-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:15px;">autorenew</span> Generating...';
-
-      try {
-          const response = await api.post('/admin/unlock-account.php', {
-              user_id: pendingId
-          });
-
-          if (response.status === 'success') {
-              generatedPass = response.data.temp_password;
-
-              const iconBox = document.getElementById('unlock-modal-icon-box');
-              const icon = document.getElementById('unlock-modal-icon');
-              const title = document.getElementById('unlock-modal-title');
-              const desc = document.getElementById('unlock-modal-text');
-
-              iconBox.style.background = 'var(--green-soft)';
-              iconBox.classList.add('success-pop');
-              icon.textContent = 'task_alt';
-              icon.style.color = 'var(--green)';
-              title.textContent = 'Account Unlocked';
-              title.style.color = 'var(--green)';
-              desc.innerHTML = `Access has been restored. A temporary password was generated and logged in the system.`;
-
-              document.getElementById('gen-pass-value').textContent = generatedPass;
-              const passArea = document.getElementById('gen-pass-section');
-              passArea.classList.remove('hidden');
-              const passCard = passArea.querySelector('div[style*="background"]');
-              if (passCard) passCard.classList.add('shimmer-card');
-              
-              document.getElementById('unlock-modal-actions').classList.add('hidden');
-              document.getElementById('unlock-done-actions').classList.remove('hidden');
-
-              loadData();
-              showToast('Account unlocked. Temporary password generated.', 'success');
-          } else {
-              showToast(response.message || 'Failed to unlock account', 'error');
-              btn.disabled = false;
-              btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
-          }
-      } catch (error) {
-          console.error('Unlock error:', error);
-          showToast('An error occurred during unlock.', 'error');
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">key</span>Generate & Unlock';
-      }
-    }
-
-    function copyPassword() {
-      navigator.clipboard.writeText(generatedPass).then(() => {
-        const btn = document.getElementById('copy-btn');
-        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;color:var(--green);">check</span>';
-        setTimeout(() => btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">content_copy</span>', 2000);
-        showToast('Password copied to clipboard', 'success');
-      });
-    }
-
-    function showToast(msg, type = 'success') {
-      const wrap = document.getElementById('toast-wrap');
-      const t = document.createElement('div');
-      const icons = { success: 'check_circle', error: 'cancel', info: 'info' };
-      const colors = { success: '#10b981', error: '#f43f5e', info: '#f59e0b' };
-      t.className = `toast toast-${type}`;
-      t.innerHTML = `<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0;">${icons[type]}</span><span>${msg}</span>`;
-      wrap.appendChild(t);
-      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(16px)'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 4000);
-    }
-
-    loadData();
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentPage = 1;
-            loadData();
-        });
-    });
-
-    document.getElementById('search-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            currentPage = 1;
-            loadData();
-        }
-    });
-
-    // Hamburger sidebar toggle
-    function toggleSidebar() {
-      const sidebar  = document.getElementById('sidebar');
-      const overlay  = document.getElementById('sidebar-overlay');
-      const isOpen   = sidebar.classList.contains('mobile-open');
-      sidebar.classList.toggle('mobile-open', !isOpen);
-      overlay.classList.toggle('active', !isOpen);
-    }
-
-    // Create overlay element if not present
-    if (!document.getElementById('sidebar-overlay')) {
-      const overlay = document.createElement('div');
-      overlay.id = 'sidebar-overlay';
-      overlay.className = 'sidebar-overlay';
-      overlay.onclick = () => toggleSidebar();
-      document.body.appendChild(overlay);
-    }
-
-    // Close sidebar when window resizes to desktop
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1024) {
-        document.getElementById('sidebar')
-          ?.classList.remove('mobile-open');
-        document.getElementById('sidebar-overlay')
-          ?.classList.remove('active');
-      }
-    });
-
-    // Mobile card table — add data labels
-    function addMobileLabels() {
-      if (window.innerWidth > 767) return;
-      const headers = [...document.querySelectorAll('thead th')]
-        .map(th => th.textContent.trim());
-      document.querySelectorAll('tbody tr').forEach(row => {
-        [...row.querySelectorAll('td')].forEach((td, i) => {
-          if (headers[i] && headers[i] !== '#') {
-            td.setAttribute('data-label', headers[i]);
-          }
-        });
-      });
-    }
-    addMobileLabels();
-  </script>
-  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/locked-accounts.js"></script>
 </body>
 
 </html>

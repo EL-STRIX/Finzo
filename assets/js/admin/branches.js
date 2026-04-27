@@ -1,0 +1,235 @@
+/**
+ * Finzo Admin — Branch Management Handler
+ */
+
+(function() {
+    let currentBranches = [];
+    let unassignedStaff = [];
+    let isEditMode = false;
+    let currentEditId = null;
+
+    /**
+     * Load branches from API
+     */
+    async function loadBranches() {
+        const tbody = document.getElementById('branches-table-body');
+        if (tbody) tbody.style.opacity = '0.5';
+
+        try {
+            const response = await window.api.get('/admin/branches.php');
+            if (response.success) {
+                currentBranches = response.branches || [];
+                renderTable(currentBranches);
+                updateStats(response.stats || {});
+            }
+        } catch (error) {
+            console.error('Failed to load branches:', error);
+        } finally {
+            if (tbody) tbody.style.opacity = '1';
+        }
+    }
+
+    /**
+     * Render branches table
+     */
+    function renderTable(branches) {
+        const tbody = document.getElementById('branches-table-body');
+        if (!tbody) return;
+
+        if (!branches.length) {
+            tbody.innerHTML = '<tr><td colspan="8" class="py-20 text-center font-bold opacity-30">No branches found matching your records.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = branches.map((b, i) => {
+            const typeStyle = b.type === 'MAIN' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
+            const countStr = String(i + 1).padStart(2, '0');
+            
+            return `
+            <tr data-id="${b.id}">
+                <td class="font-bold opacity-40">${countStr}</td>
+                <td><div class="font-bold branch-name-text">${b.name}</div></td>
+                <td class="text-sm font-medium branch-location-text">${b.branch_code || 'N/A'} — ${b.state || 'Local'}</td>
+                <td>
+                    <div class="flex items-center gap-2 manager-info-text">
+                        <div class="admin-avatar sm w-6 h-6 text-[9px] bg-blue-100 text-blue-700 flex items-center justify-center rounded-full uppercase">${b.manager_initials || '??'}</div>
+                        <div class="text-[12px] font-bold"><span class="manager-name-text">${b.manager_name || 'Unassigned'}</span> <span class="opacity-40 font-mono">(${b.manager_staff_id || 'N/A'})</span></div>
+                    </div>
+                </td>
+                <td class="text-center font-bold">${b.staff_count || 0}</td>
+                <td><span class="status-badge" style="${typeStyle}">${b.type || 'BRANCH'}</span></td>
+                <td><span class="status-badge badge-success">ACTIVE</span></td>
+                <td class="text-right">
+                    <div class="flex justify-end gap-2">
+                        <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-primary action-view" data-id="${b.id}" data-name="${b.name}" title="View">
+                            <span class="material-symbols-outlined !text-[18px]">visibility</span>
+                        </button>
+                        <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-primary action-edit" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Edit">
+                            <span class="material-symbols-outlined !text-[18px]">edit</span>
+                        </button>
+                        ${b.type !== 'MAIN' ? `
+                        <button type="button" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 action-delete" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Delete">
+                            <span class="material-symbols-outlined !text-[18px]">delete</span>
+                        </button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    /**
+     * Update stats UI
+     */
+    function updateStats(stats) {
+        if (document.getElementById('stat-total-branches')) {
+            document.getElementById('stat-total-branches').innerHTML = `${stats.total || 0} <span class="admin-stat-delta neutral bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px]">Registered</span>`;
+        }
+        if (document.getElementById('stat-active-branches')) {
+            document.getElementById('stat-active-branches').innerHTML = `${stats.active || 0} <span class="admin-stat-delta positive">Operational</span>`;
+        }
+        if (document.getElementById('stat-total-staff')) {
+            document.getElementById('stat-total-staff').innerHTML = `${stats.total_staff || 0} <span class="admin-stat-delta bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">Across all branches</span>`;
+        }
+    }
+
+    /**
+     * Load staff for manager assignment
+     */
+    async function loadUnassignedStaff() {
+        try {
+            const response = await window.api.get('/admin/staff.php', { filter: 'unassigned' });
+            if (response.success) {
+                unassignedStaff = response.staff || [];
+                renderManagerDropdown(unassignedStaff);
+            }
+        } catch (error) {
+            console.error('Failed to load unassigned staff:', error);
+        }
+    }
+
+    function renderManagerDropdown(staff) {
+        const menu = document.getElementById('manager-dropdown-menu');
+        if (!menu) return;
+
+        if (!staff.length) {
+            menu.innerHTML = '<div class="p-4 text-center text-xs opacity-50 font-bold">No available staff members to assign as manager.</div>';
+            return;
+        }
+
+        menu.innerHTML = staff.map(s => `
+            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors" data-value="${s.id}">
+                <div class="admin-avatar sm w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase">${s.initials || '??'}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-bold truncate">${s.name}</div>
+                    <div class="text-[10px] opacity-50 font-medium">${s.staff_id} — ${s.email}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    /**
+     * Bind events
+     */
+    function bindEvents() {
+        // Search
+        const searchInput = document.getElementById('admin-branch-finder');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#branches-table-body tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(query) ? '' : 'none';
+                });
+            });
+        }
+
+        // Action Buttons Delegation
+        document.addEventListener('click', (e) => {
+            const viewBtn = e.target.closest('.action-view');
+            const editBtn = e.target.closest('.action-edit');
+            const deleteBtn = e.target.closest('.action-delete');
+
+            if (viewBtn) {
+                const id = viewBtn.getAttribute('data-id');
+                const name = viewBtn.getAttribute('data-name');
+                const branch = currentBranches.find(b => b.id == id);
+                if (branch) showViewModal(branch);
+            } else if (editBtn) {
+                const id = editBtn.getAttribute('data-id');
+                showEditModal(id);
+            } else if (deleteBtn) {
+                const id = deleteBtn.getAttribute('data-id');
+                const name = deleteBtn.getAttribute('data-name');
+                const code = deleteBtn.getAttribute('data-code');
+                showDeleteModal(id, name, code);
+            }
+        });
+
+        // Add Branch Modal
+        const addBtn = document.querySelector('button[onclick="openAddModal()"]');
+        if (addBtn) {
+            addBtn.removeAttribute('onclick');
+            addBtn.addEventListener('click', () => {
+                isEditMode = false;
+                currentEditId = null;
+                const form = document.getElementById('addBranchForm');
+                if (form) form.reset();
+                document.getElementById('addBranchModal').classList.remove('hidden');
+                document.getElementById('addBranchModal').classList.add('flex');
+            });
+        }
+
+        // Close Modals
+        document.querySelectorAll('[onclick*="addClass(\'hidden\')"]').forEach(btn => {
+            btn.removeAttribute('onclick');
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.fixed');
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+        });
+    }
+
+    function showViewModal(branch) {
+        document.getElementById('view-branch-title').textContent = branch.name;
+        // Populate other fields...
+        document.getElementById('viewBranchModal').classList.remove('hidden');
+        document.getElementById('viewBranchModal').classList.add('flex');
+    }
+
+    function showEditModal(id) {
+        const branch = currentBranches.find(b => b.id == id);
+        if (!branch) return;
+        isEditMode = true;
+        currentEditId = id;
+        
+        const form = document.getElementById('addBranchForm');
+        if (form) {
+            document.getElementById('add-branch-name').value = branch.name;
+            document.getElementById('add-branch-code').value = branch.branch_code;
+        }
+
+        document.getElementById('addBranchModal').classList.remove('hidden');
+        document.getElementById('addBranchModal').classList.add('flex');
+    }
+
+    function showDeleteModal(id, name, code) {
+        if (name.toLowerCase() === 'barasat') {
+            alert("The main branch 'Barasat' cannot be deleted.");
+            return;
+        }
+        document.getElementById('target-branch-name').textContent = `${name} (${code})`;
+        document.getElementById('confirmModal').classList.remove('hidden');
+        document.getElementById('confirmModal').classList.add('flex');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        loadBranches();
+        loadUnassignedStaff();
+        bindEvents();
+    });
+})();

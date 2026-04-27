@@ -6,12 +6,12 @@
 <title>Staff Suspension Detail | Finzo Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="../../assets/js/theme.js"></script>
-<script src="../../assets/js/api.js"></script>
-<script src="../../assets/js/admin-shared.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/utils.js"></script>
+<script src="../../assets/js/portals/admin.js"></script>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+<link rel="stylesheet" href="../../assets/css/toast.css">
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <script>
     tailwind.config = {
@@ -245,145 +245,6 @@
   </div>
 </div>
 
-<div class="toast-wrap" id="toast-wrap"></div>
-
-<script>
-$(function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const staffId = urlParams.get('id');
-
-    if (!staffId) {
-        alert('Staff ID missing');
-        window.location.href = 'admin-suspended-staff.html';
-        return;
-    }
-
-    async function loadDetail() {
-        try {
-            const response = await api.get(`/admin/suspended-staff-detail.php?id=${staffId}`);
-            if (response.status === 'success') {
-                populateUI(response.data.staff);
-                renderHistory(response.data.history);
-                // Ensure session/avatar UI is updated via shared logic
-                if (typeof updateAdminUI === 'function') updateAdminUI();
-            } else {
-                showToast(response.message || 'Record not found', 'error');
-                setTimeout(() => window.location.href = 'admin-suspended-staff.html', 2000);
-            }
-        } catch (error) {
-            console.error('Error loading detail:', error);
-            showToast('Connection error', 'error');
-        }
-    }
-
-    function populateUI(staff) {
-        $('#bc-name').text(staff.full_name);
-        
-        // Avatar handling
-        const $av = $('#detail-avatar');
-        if (staff.avatar) {
-            $av.html(`<img src="../../${staff.avatar}" class="w-full h-full object-cover rounded-lg">`).css('background', 'none');
-        } else {
-            $av.text(staff.initials || staff.full_name.charAt(0)).addClass('premium-gradient-primary').css('background', '');
-        }
-
-        $('#detail-name').text(staff.full_name);
-        $('#detail-email').text(staff.email);
-        $('#detail-staff-id, #detail-staff-id-badge').text(staff.staff_id);
-        $('#detail-phone').text(staff.phone || 'N/A');
-        $('#detail-branch').text(staff.branch_name || 'N/A');
-        $('#detail-onboarding').text(staff.onboarding_date || 'N/A');
-        $('#detail-volume').text(staff.lifetime_volume || '₹0.00');
-        
-        $('#detail-reason').text(staff.suspension_reason || 'Administrative Review');
-        $('#detail-reason-detail').text(staff.suspension_notes || `Staff account suspended for ${staff.suspension_reason || 'administrative reasons'}. Policy compliance review pending.`);
-        $('#detail-by').text(staff.suspended_by || 'Senior Administrator');
-        $('#detail-date').text(staff.suspended_at || 'N/A');
-        $('#detail-duration').text(staff.duration || 'Indefinite');
-
-        $('#detail-avg-volume').text(staff.avg_daily_volume || '₹0.00');
-        $('#detail-deposits').text(staff.deposit_count || '0');
-        $('#detail-withdrawals').text(staff.withdrawal_count || '0');
-
-        $('#modal-name').text(staff.full_name);
-        $('#modal-id').text(staff.staff_id);
-    }
-
-    function renderHistory(txs) {
-        const $tbody = $('#staff-transactions-body');
-        if (!txs || txs.length === 0) {
-            $tbody.html('<tr><td colspan="4" class="text-center py-12 opacity-40 font-bold">No historical transactions found</td></tr>');
-            return;
-        }
-        const html = txs.map(t => `
-            <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td style="padding:16px 24px;font-size:13px;font-weight:700;color:var(--text-primary)">
-                   <div class="flex items-center gap-2">
-                     <span class="material-symbols-outlined text-[16px] ${t.type === 'DEPOSIT' ? 'text-green-500' : 'text-red-500'}">
-                        ${t.type === 'DEPOSIT' ? 'vertical_align_bottom' : 'vertical_align_top'}
-                     </span>
-                     ${t.type}
-                   </div>
-                </td>
-                <td style="padding:16px 24px;font-size:12px;color:var(--text-secondary);font-weight:600">${t.timestamp}</td>
-                <td style="padding:16px 24px;text-align:right;font-size:13px;font-weight:800;color:var(--text-primary)">${t.amount}</td>
-                <td style="padding:16px 24px;text-align:center">
-                    <span class="badge ${t.status === 'COMPLETED' || t.status === 'SUCCESS' ? 'badge-green' : t.status === 'FAILED' ? 'badge-red' : 'badge-amber'}">${t.status}</span>
-                </td>
-            </tr>
-        `).join('');
-        $tbody.html(html);
-    }
-
-    window.openReinstateModal = () => $('#reinstate-modal').removeClass('hidden');
-    window.closeModal = () => $('#reinstate-modal').addClass('hidden');
-
-    window.processReinstate = async () => {
-        const $btn = $('#confirm-btn');
-        $btn.prop('disabled', true).html('<span class="material-symbols-outlined spin" style="font-size:16px">autorenew</span> Authorizing...');
-        
-        try {
-            const response = await api.post('/admin/staff-action.php', {
-                staff_id: staffId,
-                action: 'reinstate'
-            });
-
-            if (response.success || response.status === 'success') {
-                showToast('Staff account reinstated. Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'admin-suspended-staff.html', 1500);
-            } else {
-                showToast(response.message || 'Action failed', 'error');
-                $btn.prop('disabled', false).html('Confirm & Authorize');
-            }
-        } catch (error) {
-            console.error('Reinstate failed:', error);
-            showToast('Server error', 'error');
-            $btn.prop('disabled', false).html('Confirm & Authorize');
-        }
-    };
-
-    $('#mobile-menu-btn').on('click', function () {
-        $('#admin-sidebar').addClass('mobile-open active');
-        $('#sidebar-overlay').addClass('active');
-    });
-    $('#sidebar-overlay').on('click', function () {
-        $('#admin-sidebar').removeClass('mobile-open active');
-        $('#sidebar-overlay').removeClass('active');
-    });
-
-    loadDetail();
-});
-
-function showToast(msg,type='success'){
-  const wrap=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  t.className=`toast toast-${type}`;
-  const colors={success:'#10b981',error:'#f43f5e'};
-  const icons={success:'check_circle',error:'cancel'};
-  t.innerHTML=`<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${msg}</span>`;
-  wrap.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3500);
-}
-</script>
+<script src="../../assets/js/admin/suspended-staff-detail.js"></script>
 </body>
 </html>

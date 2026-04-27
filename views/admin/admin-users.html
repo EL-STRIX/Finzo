@@ -2,439 +2,216 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — User Management</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Admin — User Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  
-  <script src="../../assets/js/theme.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  <script src="../../assets/js/admin-dropdowns.js"></script>
-  </head>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+</head>
 
-<body class="bg-white dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
-
-      <div class="admin-nav-section">System</div>
-
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
-
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme
-        style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-        <div class="min-w-0">
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase truncate">USER MANAGEMENT</div>
-          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1 truncate">User Management</div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
-      </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <button id="open-export-modal" class="admin-btn-secondary whitespace-nowrap flex-shrink-0"
-          style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">
-          <span class="material-symbols-outlined" style="font-size:18px;">file_download</span> <span class="hidden sm:inline">Export Excel</span>
-        </button>
-      </div>
-    </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-    <div class="p-4 sm:p-6 lg:p-8">
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-      <!-- Stats -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8">
-        <div class="admin-stat-card !p-6 elevation-md">
-          <div class="admin-stat-label">Total Users</div>
-          <div class="admin-stat-value !text-2xl skeleton w-24 h-8"></div>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
         </div>
-        <div class="admin-stat-card !p-6 elevation-md">
-          <div class="admin-stat-label">Active</div>
-          <div class="admin-stat-value !text-2xl skeleton w-20 h-8"></div>
-        </div>
-        <div class="admin-stat-card !p-6 elevation-md">
-          <div class="admin-stat-label">SUSPEND</div>
-          <div class="admin-stat-value !text-2xl skeleton w-16 h-8"></div>
-        </div>
-        <div class="admin-stat-card !p-6 elevation-md">
-          <div class="admin-stat-label">Locked</div>
-          <div class="admin-stat-value !text-2xl skeleton w-12 h-8"></div>
-        </div>
-      </div>
+    </nav>
 
-      <!-- SEARCH & FILTER (Synced with Pending Approvals) -->
-      <div class="admin-card mb-8 !overflow-visible relative z-[30]">
-        <div class="p-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-3 sm:gap-4">
-          <!-- Search Database -->
-          <div class="w-full sm:flex-1 sm:min-w-[280px]">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Search Database</label>
-            <div class="relative group">
-              <span
-                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-              <input type="text" id="user-search" placeholder="Search by name, email or account number..."
-                class="w-full pl-12 pr-4 py-2.5 bg-slate-100 dark:bg-surface-container-high border border-transparent focus:border-primary/20 rounded-xl focus:ring-4 focus:ring-primary/5 transition-all font-semibold text-sm">
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">MEMBERSHIP</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">User Management</div>
+                </div>
             </div>
-          </div>
-
-          <!-- Account Status -->
-          <div class="w-full sm:w-52">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Status</label>
-            <div class="finzo-dropdown w-full" id="status-dropdown">
-              <input type="hidden" id="filter-status" value="all">
-              <div
-                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl">
-                <span class="material-symbols-outlined text-lg opacity-60">person_search</span>
-                <span class="dropdown-label font-bold text-xs">All Statuses</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Statuses</div>
-                <div class="finzo-dropdown-option" data-value="Active">Active</div>
-                <div class="finzo-dropdown-option" data-value="Suspended">Suspended</div>
-                <div class="finzo-dropdown-option" data-value="Locked">Locked</div>
-              </div>
+            <div class="flex items-center gap-4">
+                <button id="open-export-modal" class="admin-btn-secondary hidden sm:flex items-center gap-2">
+                    <span class="material-symbols-outlined">download</span> Export
+                </button>
             </div>
-          </div>
+        </header>
 
-          <!-- Account Type -->
-          <div class="w-full sm:w-44">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Type</label>
-            <div class="finzo-dropdown w-full" id="type-dropdown">
-              <input type="hidden" id="filter-type" value="all">
-              <div
-                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[9px] !rounded-xl">
-                <span class="material-symbols-outlined text-lg opacity-60">account_balance_wallet</span>
-                <span class="dropdown-label font-bold text-xs">All Types</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Types</div>
-                <div class="finzo-dropdown-option" data-value="Savings">Savings</div>
-                <div class="finzo-dropdown-option" data-value="Current">Current</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Buttons -->
-          <div class="flex w-full sm:w-auto gap-2">
-            <button id="apply-filters" class="admin-btn-primary flex-1 sm:flex-none"
-              style="padding: 11px 28px !important; border-radius: 12px !important;">Apply</button>
-            <button id="clear-filters" class="admin-btn-secondary flex-1 sm:flex-none"
-              style="padding: 11px 24px !important; border-radius: 12px !important;">Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="admin-card elevation-md transition-all duration-300">
-        <div class="overflow-x-auto">
-        <table class="admin-table w-full min-w-[900px]" id="users-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Account Type</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Joined Date</th>
-              <th style="text-align:right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rows will be injected by api.js -->
-            <tr><td colspan="7" style="padding:0;"><div class="skeleton-row"></div></td></tr>
-            <tr><td colspan="7" style="padding:0;"><div class="skeleton-row"></div></td></tr>
-            <tr><td colspan="7" style="padding:0;"><div class="skeleton-row"></div></td></tr>
-          </tbody>
-        </table>
-        </div>
-        <div class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all">
-          <span id="pagination-info" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Showing 1-5 of 8 users</span>
-          <div class="flex items-center gap-2">
-            <button id="prev-btn" class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">&larr; Previous</button>
-            <div id="page-numbers" class="flex gap-1.5">
-              <!-- Dynamically Generated -->
-            </div>
-            <button id="next-btn" class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">Next &rarr;</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- EXPORT SETTINGS MODAL -->
-  <div id="export-modal" class="fixed inset-0 z-[1000] hidden">
-    <!-- Backdrop -->
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-
-    <!-- Modal Content -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md mx-auto">
-      <div class="admin-card !border-none shadow-2xl overflow-visible">
-        <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
-          <h3 class="export-settings-title text-base sm:text-lg font-bold">Export Settings</h3>
-          <button class="close-export-modal text-slate-400 hover:text-slate-600 transition-colors">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <div class="p-6 space-y-5">
-
-
-          <!-- Account Type -->
-          <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Account Type</label>
-            <div class="grid grid-cols-2 gap-2">
-              <label
-                class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-transparent hover:border-primary/30 cursor-pointer transition-all">
-                <input type="checkbox" checked class="rounded text-primary focus:ring-primary/20">
-                <span class="text-xs font-bold">Savings</span>
-              </label>
-              <label
-                class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-transparent hover:border-primary/30 cursor-pointer transition-all">
-                <input type="checkbox" checked class="rounded text-primary focus:ring-primary/20">
-                <span class="text-xs font-bold">Current</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Date Range -->
-          <div>
-            <label class="block text-[10px] font-black uppercase text-black dark:text-slate-400 mb-1.5 ml-1">Date
-              Range</label>
-            <div class="flex items-center gap-2">
-              <input type="date"
-                class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5 text-black dark:text-on-surface">
-              <span class="text-black dark:text-slate-400 text-xs">to</span>
-              <input type="date"
-                class="flex-1 bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 rounded-xl text-xs font-bold p-2.5 text-black dark:text-on-surface">
-            </div>
-          </div>
-
-
-        </div>
-
-        <div class="p-4 bg-slate-50/50 dark:bg-white/5 flex gap-3">
-          <button
-            class="close-export-modal flex-1 py-3 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30 border border-rose-100 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 font-bold rounded-xl text-xs transition-all">Cancel</button>
-          <button id="start-export"
-            class="flex-1 py-3 !bg-indigo-600 hover:!bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-            Generate Excel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script>
-    $(function () {
-      let currentPage = 1;
-
-      async function loadUsers() {
-          try {
-              const response = await api.get('/admin/users.php', {
-                  search: $('#user-search').val(),
-                  status: $('#filter-status').val(),
-                  account_type: $('#filter-type').val(),
-                  page: currentPage,
-                  per_page: 10
-              });
-
-              if (response.status === 'success') {
-                  renderTable(response.data.users);
-                  updatePagination(response.data.total, response.data.pages);
-              }
-          } catch (error) {
-              console.error('Failed to load users:', error);
-          }
-      }
-
-      function renderTable(users) {
-          const $tbody = $('#users-table tbody');
-          if (!users.length) {
-              $tbody.html('<tr><td colspan="7" class="py-12 text-center font-bold opacity-40">No users found.</td></tr>');
-              return;
-          }
-
-          $tbody.html(users.map(u => {
-              const initials = u.full_name.split(' ').map(n=>n[0]).join('').toUpperCase();
-              const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-neutral' : 'badge-warn');
-              return `
-              <tr>
-                <td>
-                  <div style="display:flex;align-items:center;gap:12px;">
-                    <div class="admin-avatar" style="background:${getAvatarGradient(initials)};color:#fff;">${initials}</div>
-                    <div>
-                      <div style="font-weight:700;">${u.full_name}</div>
+        <main class="p-4 sm:p-6 lg:p-10">
+            <!-- FILTERS -->
+            <div class="admin-card mb-6 p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Users</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="user-search" placeholder="Search by name, email or mobile..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                        </div>
                     </div>
-                  </div>
-                </td>
-                <td>${u.email}</td>
-                <td>${u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A'}</td>
-                <td>${u.phone || 'N/A'}</td>
-                <td><span class="status-badge ${statusClass}"><span style="width:6px;height:6px;background:currentColor;border-radius:50%;opacity:0.6;"></span>${u.status.toUpperCase()}</span></td>
-                <td style="font-size:12px;">${formatDate(u.created_at)}</td>
-                <td style="text-align:right;">
-                  <div class="flex justify-end">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary" style="padding: 6px 14px !important; font-size: 11px !important; border-radius: 8px !important; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                      <span class="material-symbols-outlined" style="font-size:16px;">settings</span> Manage
-                    </a>
-                  </div>
-                </td>
-              </tr>`;
-          }).join(''));
-      }
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Status</label>
+                        <div class="finzo-dropdown" id="status-dropdown">
+                            <input type="hidden" id="filter-status" value="all">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                                <span class="dropdown-label font-bold text-sm">All Status</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
+                                <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
+                                <div class="finzo-dropdown-option" data-value="active">Active</div>
+                                <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
+                                <div class="finzo-dropdown-option" data-value="pending">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Account Type</label>
+                        <div class="finzo-dropdown" id="type-dropdown">
+                            <input type="hidden" id="filter-type" value="all">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                                <span class="dropdown-label font-bold text-sm">All Types</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
+                                <div class="finzo-dropdown-option is-selected" data-value="all">All Types</div>
+                                <div class="finzo-dropdown-option" data-value="savings">Savings</div>
+                                <div class="finzo-dropdown-option" data-value="current">Current</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-50 dark:border-white/5">
+                    <button id="clear-filters" class="admin-btn-secondary px-6">Clear Filters</button>
+                    <button id="apply-filters" class="admin-btn-primary px-10" style="background:#002645 !important;">Apply Filters</button>
+                </div>
+            </div>
 
-      function updatePagination(total, pages) {
-          const start = (currentPage - 1) * 10 + 1;
-          const end = Math.min(currentPage * 10, total);
-          $('#pagination-info').text(`Showing ${total === 0 ? 0 : start}-${end} of ${total} Users`);
+            <!-- TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table id="users-table" class="admin-table w-full text-left min-w-[900px]">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data injected by users.js -->
+                        </tbody>
+                    </table>
+                </div>
 
-          let pageHtml = '';
-          for (let i = 1; i <= pages; i++) {
-              pageHtml += `<button class="page-num ${i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary'}" data-page="${i}" style="width:32px; height:32px; padding:0 !important; border-radius:8px !important; font-size:11px !important;">${i}</button>`;
-          }
-          $('#page-numbers').html(pageHtml);
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Users</div>
+                    <div class="flex items-center gap-2">
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <div id="page-numbers" class="flex gap-1.5">
+                            <!-- Page numbers injected by users.js -->
+                        </div>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-          $('#prev-btn').prop('disabled', currentPage === 1);
-          $('#next-btn').prop('disabled', currentPage === pages || pages === 0);
-      }
+    <!-- EXPORT MODAL -->
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm close-export-modal"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
+            <div class="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-blue-500 text-3xl">download</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Export User List</h3>
+            <p class="text-sm opacity-60 mb-8 leading-relaxed">Download a complete list of users filtered by your currently selected criteria in Microsoft Excel format.</p>
+            <div class="flex flex-col gap-3">
+                <button id="start-export" class="admin-btn-primary w-full justify-center !py-3" style="background:#002645 !important;">Generate Excel Report</button>
+                <button class="admin-btn-secondary w-full justify-center !py-3 border-none close-export-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-      function getAvatarGradient(initials) {
-          const gradients = ['linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'];
-          let hash = 0; for (let i = 0; i < initials.length; i++) hash = initials.charCodeAt(i) + ((hash << 5) - hash);
-          return gradients[Math.abs(hash) % gradients.length];
-      }
-
-      // Events
-      $('#apply-filters').on('click', (e) => { e.preventDefault(); currentPage = 1; loadUsers(); });
-      $('#user-search').on('keyup', (e) => { if (e.key === 'Enter') { currentPage = 1; loadUsers(); } });
-      
-      $('#clear-filters').on('click', (e) => {
-          e.preventDefault();
-          $('#user-search').val('');
-          $('#filter-status, #filter-type').val('all');
-          $('.dropdown-label').each(function() {
-              const $dropdown = $(this).closest('.finzo-dropdown');
-              $(this).text($dropdown.find('.finzo-dropdown-option[data-value="all"]').text());
-          });
-          $('.finzo-dropdown-option').removeClass('is-selected').filter('[data-value="all"]').addClass('is-selected');
-          currentPage = 1;
-          loadUsers();
-      });
-
-      $(document).on('click', '.page-num', function() { currentPage = $(this).data('page'); loadUsers(); });
-      $('#prev-btn').on('click', () => { if (currentPage > 1) { currentPage--; loadUsers(); } });
-      $('#next-btn').on('click', () => { currentPage++; loadUsers(); });
-
-      // Initial load
-      loadUsers();
-
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-
-      // Modal Logic
-      const $modal = $('#export-modal');
-      $('#open-export-modal').on('click', (e) => { e.preventDefault(); $modal.removeClass('hidden').addClass('flex'); $('body').addClass('overflow-hidden'); });
-      $('.close-export-modal').on('click', (e) => { e.preventDefault(); $modal.addClass('hidden').removeClass('flex'); $('body').removeClass('overflow-hidden'); });
-      $('#start-export').on('click', function (e) {
-          e.preventDefault();
-          const $btn = $(this);
-          const originalText = $btn.text();
-          $btn.prop('disabled', true).html('<span class="flex items-center gap-2 justify-center"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...</span>');
-          setTimeout(() => {
-              $btn.prop('disabled', false).text('Excel Ready! (Download Started)');
-              setTimeout(() => { $btn.text(originalText); $modal.addClass('hidden').removeClass('flex'); $('body').removeClass('overflow-hidden'); }, 2000);
-          }, 2500);
-      });
-    });
-</script>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/users.js"></script>
 </body>
 
 </html>

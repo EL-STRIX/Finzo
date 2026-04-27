@@ -29,11 +29,11 @@
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="../../assets/js/theme.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  </head>
+  <link rel="stylesheet" href="../../assets/css/toast.css">
+  <script src="../../assets/js/core/api.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/portals/admin.js"></script>
+</head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
@@ -310,7 +310,7 @@
                    <div class="text-[9px] font-black uppercase tracking-widest text-green-600 mb-1">Expected Account Number</div>
                    <div class="font-code text-xl font-black text-green-700 dark:text-green-400 tracking-wider">FNZ2026<span class="opacity-30">XXXX</span></div>
                 </div>
-                <button onclick="$('#approveModal').removeClass('hidden').addClass('flex')" class="w-full admin-btn-primary py-4" style="background: #00b894 !important; border:none !important;">Approve & Activate Account</button>
+                <button onclick="openApproveModal()" class="w-full admin-btn-primary py-4" style="background: #00b894 !important; border:none !important;">Approve & Activate Account</button>
               </div>
 
               <div class="flex items-center gap-4 px-4">
@@ -330,7 +330,7 @@
                   </div>
                 </div>
                 <textarea placeholder="Enter reason for rejection. This will be shown to the applicant." class="w-full bg-slate-50 dark:bg-white/5 border border-red-100 dark:border-red-900/40 rounded-xl p-4 text-xs min-h-[100px] mb-6 focus:ring-red-500/20"></textarea>
-                <button onclick="$('#rejectModal').removeClass('hidden').addClass('flex')" class="w-full admin-btn-secondary py-4" style="border-color: #ef4444; color: #ef4444;">Reject Application</button>
+                <button onclick="openRejectModal()" class="w-full admin-btn-secondary py-4" style="border-color: #ef4444; color: #ef4444;">Reject Application</button>
               </div>
 
               <hr class="border-slate-100 dark:border-white/5">
@@ -351,7 +351,7 @@
 
   <!-- APPROVE MODAL -->
   <div id="approveModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#approveModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="closeApproveModal()"></div>
     <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
       <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center">
         <span class="material-symbols-outlined text-4xl">check_circle</span>
@@ -362,7 +362,7 @@
         A <span id="modal-acc-type">Savings</span> Account with number <span class="font-code font-bold text-green-600" id="modal-approve-acc">FNZ---</span> will be generated and activated. An email will be sent to the applicant immediately.
       </p>
       <div class="flex gap-3">
-        <button onclick="$('#approveModal').addClass('hidden').removeClass('flex')" class="flex-1 admin-btn-secondary py-4">Cancel</button>
+        <button onclick="closeApproveModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
         <button id="confirmApprove" class="flex-1 admin-btn-primary py-4" style="background:#00b894 !important; border:none !important;">Yes, Approve Now</button>
       </div>
     </div>
@@ -370,7 +370,7 @@
 
   <!-- REJECT MODAL -->
   <div id="rejectModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#rejectModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="closeRejectModal()"></div>
     <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
       <div class="w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 mx-auto mb-6 flex items-center justify-center">
         <span class="material-symbols-outlined text-4xl">cancel</span>
@@ -387,7 +387,7 @@
       </div>
 
       <div class="flex gap-3">
-        <button onclick="$('#rejectModal').addClass('hidden').removeClass('flex')" class="flex-1 admin-btn-secondary py-4">Cancel</button>
+        <button onclick="closeRejectModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
         <button id="confirmReject" class="flex-1 admin-btn-primary py-4" style="background:#ef4444 !important; border:none !important;">Yes, Reject Application</button>
       </div>
     </div>
@@ -395,204 +395,7 @@
 
   
 
-  <script>
-    $(function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const userId = urlParams.get('id');
-
-      if (!userId) {
-          alert('User ID is missing');
-          window.location.href = 'admin-pending-approvals.html';
-          return;
-      }
-
-      async function loadDetails() {
-          try {
-              const response = await api.get(`/admin/review-application.php?id=${userId}`);
-              if (response.status === 'success') {
-                  populateUI(response.data);
-              } else {
-                  alert(response.message || 'Failed to load details');
-              }
-          } catch (error) {
-              console.error('Error loading application:', error);
-          }
-      }
-
-      function populateUI(data) {
-          const user = data.user;
-          const account = data.account;
-
-          // Header
-          $('#bc-name').text(user.full_name);
-          $('#top-status-badge').text(user.status.toUpperCase()).attr('class', `status-badge ${user.status === 'pending' ? 'badge-warn' : (user.status === 'active' ? 'badge-blue' : 'badge-danger')}`);
-          $('#top-admin-avatar').text(user.initials);
-
-          // Personal Details
-          const personalFields = $('#personal-fields .font-bold');
-          $(personalFields[0]).text(user.full_name);
-          $(personalFields[1]).text(user.dob);
-          $(personalFields[2]).text(user.gender);
-          $(personalFields[3]).text(user.father_name);
-          $(personalFields[4]).text(user.occupation);
-          $(personalFields[5]).text(user.annual_income);
-          $(personalFields[6]).text(user.phone);
-          $(personalFields[7]).text(user.email);
-          $(personalFields[8]).text(user.kyc_submitted_at);
-          $(personalFields[9]).text(user.created_at);
-
-          // Address
-          const addressFields = $('#address-fields .font-bold');
-          $(addressFields[0]).text(user.street);
-          $(addressFields[1]).text(user.city);
-          $(addressFields[2]).text(user.state);
-          $(addressFields[3]).text(user.pincode);
-          $(addressFields[4]).text(user.country);
-
-          // Identity
-          const identityFields = $('#identity-fields .font-bold');
-          $(identityFields[0]).text(user.id_type);
-          $(identityFields[1]).text(user.id_number);
-
-          if (data.id_documents.front_url) {
-              $('.admin-card:contains("Identity Verification") .aspect-video').first().html(`<img src="${data.id_documents.front_url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200">`);
-          }
-          if (data.id_documents.back_url) {
-              $('.admin-card:contains("Identity Verification") .aspect-video').last().html(`<img src="${data.id_documents.back_url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200">`);
-          }
-
-          // Account Details
-          const accountFields = $('#account-fields .skeleton, #account-fields .font-bold, #account-fields .status-badge');
-          $('#account-fields div:first-child').html(`<span class="status-badge" style="background:#eef2ff; color:#4f46e5;">${account.account_type} Account</span>`);
-          $('#account-fields div:nth-child(2) .font-bold').text(`₹${parseFloat(account.initial_deposit).toLocaleString('en-IN', {minimumFractionDigits: 2})}`);
-          $('#account-fields div:last-child').html(`<div class="flex items-center gap-2 text-on-tertiary-container font-black"><span class="material-symbols-outlined text-lg">check_circle</span><span>Set ✅</span></div>`);
-
-          // Timeline
-          renderTimeline(data.timeline);
-
-          // Decision Modals
-          $('#modal-approve-name, #modal-reject-name').text(user.full_name);
-          $('#modal-acc-type').text((account.account_type || 'Savings').charAt(0).toUpperCase() + (account.account_type || 'Savings').slice(1));
-          
-          if (response.data.expected_acc) {
-             $('#modal-approve-acc').text(response.data.expected_acc);
-             $('.font-code.text-green-700').html(response.data.expected_acc.replace(/(.{7})(.*)/, '$1<span class="opacity-30">$2</span>'));
-          }
-
-          // Disable buttons if already processed
-          if (user.status === 'active' || user.status === 'rejected') {
-              $('.admin-card:contains("Make Decision") button').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-          }
-      }
-
-      function renderTimeline(events) {
-          let html = '<div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-white/5"></div>';
-          events.forEach((ev, idx) => {
-              const isLast = idx === events.length - 1;
-              const isDecisionPending = ev.status === 'Decision Pending';
-              
-              html += `
-                <div class="flex gap-4 relative">
-                  <div class="w-6 h-6 rounded-full ${ev.completed ? 'bg-on-tertiary-container' : (isDecisionPending ? 'bg-slate-200 dark:bg-slate-700' : 'bg-blue-500')} text-white flex items-center justify-center z-10">
-                    <span class="material-symbols-outlined text-sm">${ev.completed ? 'check' : (isDecisionPending ? '' : 'hourglass_empty')}</span>
-                  </div>
-                  <div>
-                    <div class="font-bold text-sm ${!ev.completed && !isDecisionPending ? 'text-blue-500' : (isDecisionPending ? 'opacity-40' : '')}">${ev.status}</div>
-                    ${ev.time ? `<div class="text-[11px] opacity-60 italic">${ev.time}</div>` : ''}
-                  </div>
-                </div>
-              `;
-          });
-          $('#timeline-body').html(html);
-      }
-
-      // Actions
-      $('#confirmApprove').on('click', async function() {
-          const $btn = $(this);
-          const originalText = $btn.text();
-          $btn.prop('disabled', true).text('Approving...');
-
-          try {
-              const response = await api.post('/admin/review-application.php', {
-                  user_id: userId,
-                  action: 'approve'
-              });
-
-              if (response.status === 'success') {
-                  alert('Application Approved! Account Number: ' + response.account_no);
-                  window.location.href = 'admin-pending-approvals.html';
-              } else {
-                  alert(response.message);
-                  $btn.prop('disabled', false).text(originalText);
-              }
-          } catch (error) {
-              alert('An error occurred.');
-              $btn.prop('disabled', false).text(originalText);
-          }
-      });
-
-      $('#confirmReject').on('click', async function() {
-          const reason = $('textarea[placeholder*="rejection"]').val().trim();
-          if (!reason) {
-              alert('Please enter a rejection reason.');
-              $('#rejectModal').addClass('hidden').removeClass('flex');
-              return;
-          }
-
-          const $btn = $(this);
-          $btn.prop('disabled', true).text('Rejecting...');
-
-          try {
-              const response = await api.post('/admin/review-application.php', {
-                  user_id: userId,
-                  action: 'reject',
-                  reason: reason
-              });
-
-              if (response.status === 'success') {
-                  alert('Application Rejected.');
-                  window.location.href = 'admin-pending-approvals.html';
-              } else {
-                  alert(response.message);
-                  $btn.prop('disabled', false).text('Yes, Reject Application');
-              }
-          } catch (error) {
-              alert('An error occurred.');
-              $btn.prop('disabled', false).text('Yes, Reject Application');
-          }
-      });
-
-      $('.admin-btn-secondary:contains("Save Notes")').on('click', async function() {
-          const notes = $(this).prev('textarea').val().trim();
-          const $btn = $(this);
-          
-          try {
-              const response = await api.post('/admin/review-application.php', {
-                  user_id: userId,
-                  action: 'save_notes',
-                  notes: notes
-              });
-              if (response.status === 'success') {
-                  alert('Notes saved successfully.');
-              }
-          } catch (error) {
-              console.error(error);
-          }
-      });
-
-      loadDetails();
-
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-    });
-  </script>
+  <script src="../../assets/js/admin/review-application.js"></script>
 </body>
 
 </html>

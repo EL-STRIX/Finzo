@@ -2,469 +2,202 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — Transactions</title>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Admin — Transactions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/theme.js"></script>
-  <script src="../../assets/js/main.js"></script>
-  <script src="../../assets/js/api.js"></script>
-  <script src="../../assets/js/admin-shared.js"></script>
-  <script src="../../assets/js/admin-dropdowns.js"></script>
-
-  
-  </head>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+</head>
 
 <body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
-  <!-- SIDEBAR (Standardized) -->
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
-
-      <div class="admin-nav-section">System</div>
-
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
-
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme
-        style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
-
-  <!-- MAIN AREA -->
-  <div class="admin-main">
-    <header class="admin-topbar">
-      <div class="flex items-center gap-3 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-        <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">TRANSACTION MANAGEMENT</div>
-          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">All Transactions</div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
-      </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-    </header>
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-    <main class="p-4 sm:p-6 lg:p-10">
-      <!-- STAT CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10 stat-grid">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--primary-soft); color:var(--primary)"><span
-              class="material-symbols-outlined">currency_rupee</span></div>
-          <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">VOLUME TODAY</div>
-          <div class="text-2xl font-black mt-1 skeleton w-24 h-8"></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--green-soft); color:var(--green)"><span
-              class="material-symbols-outlined">add_circle</span></div>
-          <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">DEPOSITS</div>
-          <div class="text-2xl font-black mt-1 skeleton w-20 h-8"></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--red-soft); color:var(--red)"><span
-              class="material-symbols-outlined">remove_circle</span></div>
-          <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">WITHDRAWALS</div>
-          <div class="text-2xl font-black mt-1 skeleton w-20 h-8"></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--blue-soft); color:var(--blue)"><span
-              class="material-symbols-outlined">swap_horiz</span></div>
-          <div class="text-[9px] font-black tracking-widest text-slate-400 uppercase">TRANSFERS</div>
-          <div class="text-2xl font-black mt-1 skeleton w-24 h-8"></div>
-        </div>
-      </div>
-
-      <!-- CHARTS -->
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-6 mb-6 sm:mb-10">
-        <div class="chart-card p-5 sm:p-7">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
-            <div>
-              <h3 class="font-bold">Transaction Volume</h3>
-              <p class="text-sm opacity-50">Monthly overview — 2026</p>
-            </div>
-            <div class="seg-control overflow-x-auto w-full sm:w-auto flex-nowrap shrink-0">
-              <button class="seg-btn min-w-max">Today</button><button class="seg-btn min-w-max">Week</button><button
-                class="seg-btn active min-w-max">Month</button><button class="seg-btn min-w-max">Year</button>
-            </div>
-          </div>
-          <div class="relative h-[240px] w-full">
-            <svg viewBox="0 0 600 240" class="w-full h-full overflow-visible">
-              <path d="M0,180 C80,160 120,60 200,80 C280,100 320,40 400,60 C480,80 520,30 600,40" fill="none"
-                stroke="#10b981" stroke-width="3" />
-              <path d="M0,200 C100,210 150,140 250,150 C350,160 400,110 500,120 C550,125 580,100 600,105" fill="none"
-                stroke="#f43f5e" stroke-width="3" />
-              <path d="M0,220 C100,215 150,225 250,210 C350,195 400,215 500,180 C550,160 580,190 600,175" fill="none"
-                stroke="#3b82f6" stroke-width="3" />
-            </svg>
-          </div>
-        </div>
-        <div class="chart-card flex flex-col items-center p-5 sm:p-7">
-          <div class="w-full mb-6">
-            <h3 class="font-bold">Breakdown</h3>
-          </div>
-          <div class="donut-wrap mb-6 sm:mb-8">
-            <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--border-color)" stroke-width="3" />
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#10b981" stroke-width="4"
-                stroke-dasharray="60 40" />
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#f43f5e" stroke-width="4"
-                stroke-dasharray="25 75" stroke-dashoffset="-60" />
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#3b82f6" stroke-width="4"
-                stroke-dasharray="15 85" stroke-dashoffset="-85" />
-            </svg>
-            <div class="donut-center">
-              <div class="text-2xl font-black">₹4.2L</div>
-              <div class="text-[9px] font-bold opacity-50 uppercase">TOTAL</div>
-            </div>
-          </div>
-          <div class="w-full space-y-3">
-            <div class="flex justify-between text-xs font-bold">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Deposits
-              </div><span>60%</span>
-            </div>
-            <div class="flex justify-between text-xs font-bold">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-rose-500"></div> Withdrawals
-              </div><span>25%</span>
-            </div>
-            <div class="flex justify-between text-xs font-bold">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-blue-500"></div> Transfers
-              </div><span>15%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PREMIUM FILTERS -->
-      <div class="premium-filter-container p-3 sm:p-4">
-        <div class="filter-tab-box overflow-x-auto overflow-y-hidden flex-nowrap whitespace-nowrap">
-          <button class="filter-tab-btn active tab-btn flex-shrink-0" data-type="all">All Transactions</button>
-          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="deposit">Deposits</button>
-          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="withdrawal">Withdrawals</button>
-          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="transfer">Transfers</button>
-          <button class="filter-tab-btn tab-btn flex-shrink-0" data-type="pending">Pending</button>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(200px,2fr)_1fr_1fr_1.2fr_1.2fr_auto_auto] gap-4 items-end px-2 pb-2">
-          <div class="filter-item sm:col-span-2 lg:col-span-1">
-            <span class="filter-label">Search Activity</span>
-            <div class="search-wrap">
-              <span class="material-symbols-outlined search-icon">search</span>
-              <input type="text" id="filter-search" placeholder="Name, account or ID..."
-                class="pill-input search-input">
-            </div>
-          </div>
-
-          <div class="filter-item">
-            <span class="filter-label">From</span>
-            <input type="date" id="date-from" class="pill-input">
-          </div>
-
-          <div class="filter-item">
-            <span class="filter-label">To</span>
-            <input type="date" id="date-to" class="pill-input">
-          </div>
-
-
-
-          <div class="filter-item">
-            <span class="filter-label">Status</span>
-            <div class="finzo-dropdown" id="status-dropdown">
-              <input type="hidden" id="filter-status" value="all">
-              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
-                <span class="dropdown-label font-bold text-xs">All Status</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
-                <div class="finzo-dropdown-option" data-value="completed">Completed</div>
-                <div class="finzo-dropdown-option" data-value="pending">Pending</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="filter-item">
-            <span class="filter-label">Account</span>
-            <div class="finzo-dropdown" id="account-dropdown">
-              <input type="hidden" id="filter-account" value="all">
-              <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-[10px] !rounded-xl min-w-[140px]">
-                <span class="dropdown-label font-bold text-xs">All Accounts</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-              </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
-                <div class="finzo-dropdown-option" data-value="savings">Savings</div>
-                <div class="finzo-dropdown-option" data-value="current">Current</div>
-              </div>
-            </div>
-          </div>
-
-          <button id="apply-filters" class="btn-apply-main flex-1 items-center justify-center">Apply</button>
-          <button id="reset-filters" class="btn-reset-main flex-1 items-center justify-center">Reset</button>
-        </div>
-      </div>
-
-      <!-- TABLE -->
-      <div class="admin-card overflow-hidden">
-        <div class="p-5 sm:p-6 border-b border-slate-50 dark:border-white/5">
-          <h3 class="font-black text-sm uppercase opacity-40 tracking-widest">Recent Activity</h3>
-        </div>
-        <div class="overflow-x-auto w-full">
-          <table class="admin-table w-full text-left min-w-[1000px]">
-            <thead>
-            <tr>
-              <th class="w-16">#</th>
-              <th>User</th>
-              <th>Acc No</th>
-              <th>TXN ID</th>
-              <th>Type</th>
-              <th>Date & Time</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th class="text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody id="txn-table-body"></tbody>
-        </table>
-        </div>
-        <div class="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/20 dark:bg-white/5 w-full">
-          <div class="text-[11px] font-bold opacity-40 uppercase tracking-widest" id="pag-info">Showing 1-6 of 6</div>
-          <div class="flex items-center gap-2">
-            <button id="prev-page"
-              class="px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-lg text-xs font-bold opacity-50 cursor-not-allowed">←
-              Prev</button>
-            <div class="flex gap-1" id="pag-numbers"><span
-                class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg text-xs font-bold">1</span>
-            </div>
-            <button id="next-page"
-              class="px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-lg text-xs font-bold opacity-50 cursor-not-allowed">Next
-              →</button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    let data = [];
-    let currentType = 'all';
-    let currentPage = 1;
-    const rowsPerPage = 10;
-
-    async function loadTransactions() {
-      const $tbody = $('#txn-table-body');
-      $tbody.html(`
-        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-        <tr><td colspan="9"><div class="skeleton-row"></div></td></tr>
-      `);
-
-      try {
-        const response = await api.get('/admin/transactions.php', {
-          type: currentType,
-          status: $('#filter-status').val(),
-          account_type: $('#filter-account').val(),
-          search: $('#filter-search').val(),
-          page: currentPage,
-          per_page: rowsPerPage
-        });
-
-        if (response.status === 'success') {
-          data = response.data.transactions;
-          renderTable(data, response.data.total, response.data.pages);
-          updateStats(response.data.stats || {});
-        } else {
-          $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No transactions found.</td></tr>');
-        }
-      } catch (error) {
-        console.error('Failed to load transactions:', error);
-        $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>');
-      }
-    }
-
-    function renderTable(transactions, total, pages) {
-      const $tbody = $('#txn-table-body');
-      if (!transactions || !transactions.length) {
-          $tbody.html('<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No transactions found.</td></tr>');
-          return;
-      }
-
-      $tbody.html(transactions.map((r, i) => {
-        const initials = r.initials || r.full_name.charAt(0);
-        const typeClass = r.type.toLowerCase();
-        const amountClass = r.amount_formatted.startsWith('+') ? 'text-emerald-500' : 'text-rose-500';
-        
-        return `
-        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-          <td class="font-bold opacity-30 text-[11px] tracking-widest">${String((currentPage-1)*rowsPerPage + i + 1).padStart(2, '0')}</td>
-          <td>
-            <div class="flex items-center gap-3">
-              <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${initials}</div>
-              <div>
-                <div class="font-bold text-slate-800 dark:text-slate-100">${r.full_name}</div>
-                <div class="text-[11px] opacity-40 font-semibold">${r.email}</div>
-              </div>
-            </div>
-          </td>
-          <td class="text-xs font-bold font-mono text-slate-600 dark:text-slate-400 opacity-80">${r.account_no}</td>
-          <td class="text-[11px] font-bold opacity-50 font-mono tracking-tighter">${r.transaction_id}</td>
-          <td><span class="badge ${getBadgeClass(typeClass)}">${r.type.toUpperCase()}</span></td>
-          <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
-          <td class="text-sm font-black ${amountClass}">${r.amount_formatted}</td>
-          <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
-          <td class="text-right">
-            <button class="p-2 opacity-30 hover:opacity-100 transition-all text-slate-500 font-bold hover:text-primary">
-              <span class="material-symbols-outlined text-lg">print</span>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
             </button>
-          </td>
-        </tr>
-      `;
-      }).join(''));
+            <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-      $('#pag-info').text(`Showing ${Math.min((currentPage-1)*rowsPerPage+1, total)}-${Math.min(currentPage*rowsPerPage, total)} of ${total}`);
-      $('#prev-page').prop('disabled', currentPage === 1).toggleClass('opacity-50 cursor-not-allowed', currentPage === 1);
-      $('#next-page').prop('disabled', currentPage === pages || pages === 0).toggleClass('opacity-50 cursor-not-allowed', currentPage === pages || pages === 0);
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">LEDGER</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Global Transactions</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="open-export-modal" class="admin-btn-secondary hidden sm:flex items-center gap-2">
+                    <span class="material-symbols-outlined">download</span> Export
+                </button>
+            </div>
+        </header>
 
-      // Pagination numbers
-      let pagHtml = '';
-      for (let i = 1; i <= pages; i++) {
-        if (pages > 5 && i > 3 && i < pages) {
-          if (i === 4) pagHtml += '<span class="px-2 opacity-50">...</span>';
-          continue;
-        }
-        pagHtml += `<span onclick="goToPage(${i})" class="w-8 h-8 flex items-center justify-center ${i === currentPage ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-primary cursor-pointer'} rounded-lg text-xs font-bold transition-all">${i}</span>`;
-      }
-      $('#pag-numbers').html(pagHtml);
-    }
+        <main class="p-4 sm:p-6 lg:p-10">
+            <!-- FILTERS -->
+            <div class="admin-card mb-6 p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Transactions</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Transaction Type</label>
+                        <div class="finzo-dropdown" id="type-dropdown">
+                            <input type="hidden" id="filter-type" value="all">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                                <span class="dropdown-label font-bold text-sm">All Transactions</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
+                                <div class="finzo-dropdown-option is-selected" data-value="all">All Transactions</div>
+                                <div class="finzo-dropdown-option" data-value="deposit">Deposits</div>
+                                <div class="finzo-dropdown-option" data-value="withdrawal">Withdrawals</div>
+                                <div class="finzo-dropdown-option" data-value="transfer">Transfers</div>
+                                <div class="finzo-dropdown-option" data-value="interest">Interest</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-50 dark:border-white/5">
+                    <button id="clear-filters" class="admin-btn-secondary px-6">Clear Filters</button>
+                    <button id="apply-filters" class="admin-btn-primary px-10" style="background:#002645 !important;">Apply Filters</button>
+                </div>
+            </div>
 
-    function getBadgeClass(type) {
-      if (type === 'deposit') return 'badge-deposit';
-      if (type === 'withdrawal') return 'badge-withdrawal';
-      return 'badge-transfer';
-    }
+            <!-- TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table id="transactions-table" class="admin-table w-full text-left min-w-[900px]">
+                        <thead>
+                            <tr>
+                                <th>TXN ID</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Branch</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data injected by transactions.js -->
+                        </tbody>
+                    </table>
+                </div>
 
-    function updateStats(stats) {
-      if (stats.volume_today) $('.stat-card:eq(0) .text-2xl').text(stats.volume_today).removeClass('skeleton');
-      if (stats.deposits_today !== undefined) $('.stat-card:eq(1) .text-2xl').text(stats.deposits_today).removeClass('skeleton');
-      if (stats.withdrawals_today !== undefined) $('.stat-card:eq(2) .text-2xl').text(stats.withdrawals_today).removeClass('skeleton');
-      if (stats.transfers_today !== undefined) $('.stat-card:eq(3) .text-2xl').text(stats.transfers_today).removeClass('skeleton');
-    }
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Records</div>
+                    <div class="flex items-center gap-2">
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <div id="page-numbers" class="flex gap-1.5">
+                            <!-- Page numbers injected by transactions.js -->
+                        </div>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-    window.goToPage = (p) => { currentPage = p; loadTransactions(); };
+    <!-- EXPORT MODAL -->
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm close-export-modal"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
+            <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-emerald-600 text-3xl">download</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Export Data</h3>
+            <p class="text-sm opacity-60 mb-8 leading-relaxed">Download a complete ledger of transactions filtered by your currently selected criteria in Microsoft Excel format.</p>
+            <div class="flex flex-col gap-3">
+                <button id="start-export" class="admin-btn-primary w-full justify-center !py-3" style="background:#002645 !important;">Generate Excel Report</button>
+                <button class="admin-btn-secondary w-full justify-center !py-3 border-none close-export-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-    $(function () {
-      // Sidebar Toggle Logic
-      $('#mobile-menu-btn').on('click', function () {
-          $('#admin-sidebar').addClass('mobile-open active');
-          $('#sidebar-overlay').addClass('active');
-      });
-      $('#sidebar-overlay').on('click', function () {
-          $('#admin-sidebar').removeClass('mobile-open active');
-          $('#sidebar-overlay').removeClass('active');
-      });
-
-      $('.tab-btn').on('click', function () {
-        $('.tab-btn').removeClass('active bg-primary text-white shadow-lg').addClass('text-slate-500');
-        $(this).addClass('active bg-primary text-white shadow-lg').removeClass('text-slate-500');
-        currentType = $(this).data('type');
-        currentPage = 1; loadTransactions();
-      });
-
-      $('#apply-filters').on('click', () => { currentPage = 1; loadTransactions(); });
-      $('#reset-filters').on('click', () => {
-        $('#filter-search').val('');
-        $('#date-from, #date-to').val('');
-        $('.filter-tab-btn').removeClass('active').first().addClass('active');
-        $('#status-dropdown input[type="hidden"]').val('all');
-        $('#status-dropdown .dropdown-label').text('All Status');
-        $('#account-dropdown input[type="hidden"]').val('all');
-        $('#account-dropdown .dropdown-label').text('All Accounts');
-        currentPage = 1; currentType = 'all'; loadTransactions();
-      });
-
-      $('#prev-page').on('click', () => { if (currentPage > 1) { currentPage--; loadTransactions(); } });
-      $('#next-page').on('click', () => { if (currentPage < 100) { currentPage++; loadTransactions(); } });
-
-      loadTransactions();
-    });
-  </script>
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/transactions.js"></script>
 </body>
 
 </html>
