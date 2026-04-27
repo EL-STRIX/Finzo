@@ -105,129 +105,257 @@
 
         <main class="p-4 sm:p-6 lg:p-10">
             <!-- STATS GRID -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon bg-blue-50 text-blue-600"><span class="material-symbols-outlined">upload_file</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Withdrawals</div>
-                    <div class="admin-stat-value skeleton">...</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon bg-emerald-50 text-emerald-600"><span class="material-symbols-outlined">download_for_offline</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Deposits</div>
-                    <div class="admin-stat-value skeleton">...</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon bg-purple-50 text-purple-600"><span class="material-symbols-outlined">swap_horiz</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Transfers</div>
-                    <div class="admin-stat-value skeleton">...</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon bg-amber-50 text-amber-600"><span class="material-symbols-outlined">group</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Accounts</div>
-                    <div class="admin-stat-value skeleton">...</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+            </div>
+            <!-- SYSTEM STATS GRID — same design as top cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-slate-100 dark:bg-white/5 text-slate-600"><span class="material-symbols-outlined">group</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Users</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600"><span class="material-symbols-outlined">percent</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Interest Credited</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-amber-50 dark:bg-amber-500/10 text-amber-600"><span class="material-symbols-outlined">rule</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Pending Approvals</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-red-50 dark:bg-red-500/10 text-red-600"><span class="material-symbols-outlined">lock</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Locked Accounts</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-orange-50 dark:bg-orange-500/10 text-orange-600"><span class="material-symbols-outlined">person_off</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Suspended Users</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-slate-100 dark:bg-white/5 text-slate-500"><span class="material-symbols-outlined">delete</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Soft Deleted Users</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-blue-50 dark:bg-blue-500/10 text-blue-600"><span class="material-symbols-outlined">badge</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Active Staff</div>
+                    <div class="admin-stat-value skeleton">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600"><span class="material-symbols-outlined">store</span></div>
+                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Active Branches</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- RECENT USERS -->
-                <div class="lg:col-span-2 admin-card overflow-hidden">
-                    <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
-                        <h3 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">history</span> Recent Activity
-                        </h3>
-                        <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">View All</a>
+            <!-- CHARTS ROW -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Transaction Volume Chart -->
+                <div class="lg:col-span-2 admin-card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="font-bold text-sm force-black">Transaction Volume</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">Last 7 days activity overview</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-[10px] font-bold">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Deposits</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Withdrawals</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Transfers</span>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="admin-table w-full text-left min-w-[600px]">
-                            <thead>
-                                <tr>
-                                    <th>User Details</th>
-                                    <th>Status</th>
-                                    <th>Verification</th>
-                                    <th>Type</th>
-                                    <th>Joined</th>
-                                    <th class="text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dash-user-tbody">
-                                <!-- Data injected by dashboard.js -->
-                                <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
-                                <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
-                                <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
-                            </tbody>
-                        </table>
+                    <div class="relative h-[280px]">
+                        <canvas id="chart-transactions"></canvas>
                     </div>
                 </div>
 
-                <!-- QUICK STATS SIDEBAR -->
-                <div class="space-y-4">
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-slate-100 text-slate-600"><span class="material-symbols-outlined">group</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">TOTAL USERS</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
+                <!-- Account Types Donut -->
+                <div class="admin-card p-6">
+                    <h3 class="font-bold text-sm force-black mb-6">Account Distribution</h3>
+                    <div class="relative flex items-center justify-center" style="height: 220px;">
+                        <canvas id="chart-accounts"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-3" id="donut-legend">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active</span>
+                            <span class="font-bold force-black skeleton" id="legend-active">0</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</span>
+                            <span class="font-bold force-black skeleton" id="legend-pending">0</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Suspended</span>
+                            <span class="font-bold force-black skeleton" id="legend-suspended">0</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Locked</span>
+                            <span class="font-bold force-black skeleton" id="legend-locked">0</span>
                         </div>
                     </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-slate-100 text-slate-600"><span class="material-symbols-outlined">percent</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">Interest Credited</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
+                </div>
+            </div>
+
+            <!-- MONTHLY REVENUE CHART -->
+            <div class="admin-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="font-bold text-sm force-black">Monthly Revenue</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Deposits vs Withdrawals trend</p>
                     </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-amber-50 text-amber-600"><span class="material-symbols-outlined">rule</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">PENDING APPROVALS</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-red-50 text-red-600"><span class="material-symbols-outlined">lock</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">Locked Accounts</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-orange-50 text-orange-600"><span class="material-symbols-outlined">person_off</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">Suspend Users</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-slate-100 text-slate-600"><span class="material-symbols-outlined">delete</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">SOFT DELETED USERS</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-blue-50 text-blue-600"><span class="material-symbols-outlined">badge</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">ACTIVE STAFF</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card !flex-row items-center gap-4 py-4">
-                        <div class="admin-stat-icon sm bg-emerald-50 text-emerald-600"><span class="material-symbols-outlined">store</span></div>
-                        <div class="flex-1">
-                            <div class="admin-stat-label !mb-0 text-[10px]">ACTIVE BRANCHES</div>
-                            <div class="admin-stat-value !text-lg skeleton">...</div>
-                        </div>
-                    </div>
+                </div>
+                <div class="relative h-[260px]">
+                    <canvas id="chart-revenue"></canvas>
+                </div>
+            </div>
+
+            <!-- RECENT ACTIVITY TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
+                    <h3 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">history</span> Recent Activity
+                    </h3>
+                    <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">View All</a>
+                </div>
+                <div class="overflow-x-auto w-full">
+                    <table class="admin-table w-full text-left min-w-[600px]">
+                        <thead>
+                            <tr>
+                                <th>User Details</th>
+                                <th>Status</th>
+                                <th>Verification</th>
+                                <th>Type</th>
+                                <th>Joined</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dash-user-tbody">
+                            <!-- Data injected by dashboard.js -->
+                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
+                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
+                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../assets/js/core/theme.js"></script>
     <script src="../../assets/js/core/utils.js"></script>
     <script src="../../assets/js/core/api.js"></script>
     <script src="../../assets/js/ui/dropdowns.js"></script>
     <script src="../../assets/js/portals/admin.js"></script>
     <script src="../../assets/js/admin/dashboard.js"></script>
+
+    <!-- Dashboard Charts Initialization -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+        const textColor = isDark ? '#8b949e' : '#64748b';
+
+        // ── Transaction Volume Line Chart ──
+        const txCtx = document.getElementById('chart-transactions');
+        if (txCtx) {
+            new Chart(txCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        { label: 'Deposits', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Withdrawals', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Transfers', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 } } },
+                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 } }, beginAtZero: true }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        // ── Account Distribution Donut Chart ──
+        const acCtx = document.getElementById('chart-accounts');
+        if (acCtx) {
+            new Chart(acCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Active', 'Pending', 'Suspended', 'Locked'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.parsed + '%'; } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ── Monthly Revenue Bar Chart ──
+        const rvCtx = document.getElementById('chart-revenue');
+        if (rvCtx) {
+            new Chart(rvCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        { label: 'Deposits', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Withdrawals', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 8, barPercentage: 0.6 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11, weight: 600 }, color: textColor } }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11, weight: 600 } } },
+                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 }, callback: function(v) { return '₹' + (v/1000) + 'K'; } }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+    });
+    </script>
 </body>
 
 </html>

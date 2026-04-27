@@ -2230,7 +2230,7 @@ html[data-theme="light"] #users-table tr {
 
 .avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
 
-#mobile-menu-btn { display: none !important; }
+/* mobile-menu-btn visibility is controlled by media queries below */
 
 /* ATTEMPT DOTS */
 .attempt-dot{width:15px;height:15px;border-radius:50%;background:var(--red);box-shadow:0 0 6px rgba(244,63,94,0.3);flex-shrink:0;}
@@ -3193,3 +3193,267 @@ html[data-theme="light"] .admin-card {
       }
     }
 
+/* ============================================================
+   UNIFIED RESPONSIVE OVERRIDES (FINAL AUTHORITY)
+   These rules are placed LAST to override all scattered
+   media queries above. This is the single source of truth
+   for all admin page responsiveness.
+   ============================================================ */
+
+/* ── DESKTOP ≥ 1024px ── */
+@media (min-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(0) !important;
+  }
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+  #mobile-menu-btn,
+  .hamburger-btn,
+  .menu-btn {
+    display: none !important;
+  }
+  .admin-sidebar-overlay,
+  .sidebar-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  .admin-main {
+    margin-left: 260px;
+  }
+  .main {
+    margin-left: var(--sidebar-width, 260px);
+  }
+}
+
+/* ── TABLET ≤ 1023px ── */
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .admin-sidebar.mobile-open,
+  .admin-sidebar.active {
+    transform: translateX(0) !important;
+  }
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease !important;
+  }
+  .sidebar.mobile-open,
+  .sidebar.active {
+    transform: translateX(0) !important;
+  }
+  .admin-main,
+  .main {
+    margin-left: 0 !important;
+  }
+  #mobile-menu-btn,
+  .hamburger-btn,
+  .menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .admin-topbar {
+    padding: 16px 20px !important;
+  }
+  .topbar {
+    padding: 0 16px !important;
+  }
+  .page-content {
+    padding: 20px !important;
+  }
+  .page-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .col-right {
+    position: static !important;
+    order: -1;
+  }
+  .stats-grid,
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .table-scroll,
+  .table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-bar.no-wrap-desktop {
+    flex-wrap: wrap !important;
+  }
+  .filter-group {
+    flex: 1 1 200px !important;
+  }
+  .action-inner {
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center;
+    gap: 20px !important;
+  }
+  .action-icon { flex-shrink: 0; }
+  .action-body { flex: 1; }
+  .action-btn { width: auto !important; min-width: 180px; }
+  .action-hint { text-align: left !important; }
+}
+
+/* ── MOBILE ≤ 767px ── */
+@media (max-width: 767px) {
+  .page-content {
+    padding: 14px !important;
+  }
+  .card-p {
+    padding: 16px !important;
+  }
+  .stats-grid,
+  .stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .profile-header {
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+  }
+  .profile-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  .security-notice {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .security-notice-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 8px;
+  }
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 10px 0;
+  }
+  .info-value {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  .filter-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .filter-group {
+    width: 100% !important;
+    flex: none !important;
+  }
+  .filter-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  .filter-input,
+  .filter-select,
+  .finzo-dropdown {
+    width: 100% !important;
+  }
+  .audit-header {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .action-inner {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 10px !important;
+  }
+  .action-btn {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  .action-hint {
+    text-align: center !important;
+  }
+  .attempt-dot {
+    width: 12px;
+    height: 12px;
+  }
+  .modal-card {
+    width: 92vw !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px 16px !important;
+    border-radius: 16px !important;
+  }
+  .modal-icon {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .modal-title {
+    font-size: 17px !important;
+  }
+  .modal-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .modal-actions .btn {
+    width: 100%;
+    height: 50px;
+  }
+  .pag-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .filter-tab-box {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .topbar-title {
+    font-size: 16px !important;
+  }
+  .toast-wrap {
+    top: auto !important;
+    bottom: 20px;
+    right: 50% !important;
+    transform: translateX(50%);
+    width: 90vw;
+  }
+  .toast {
+    min-width: unset !important;
+    width: 100%;
+  }
+}
+
+/* ── SMALL MOBILE ≤ 480px ── */
+@media (max-width: 480px) {
+  .modal-pass-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-topbar {
+    padding: 12px 14px !important;
+  }
+}
