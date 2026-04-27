@@ -1,0 +1,63 @@
+-- Finzo Banking System - Admin Role Based Access Control Schema Update
+-- Step 1: Drop existing table
+DROP TABLE IF EXISTS admin_users;
+
+-- Step 2: Create new admin_users table
+CREATE TABLE admin_users (
+  id                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+  -- Personal Information
+  full_name               VARCHAR(150) NOT NULL,
+  date_of_birth           DATE NULL,
+  gender                  ENUM('Male','Female','Other','Prefer not to say') NULL,
+  profile_photo           VARCHAR(500) NULL,
+
+  -- Contact Information
+  email                   VARCHAR(255) NOT NULL UNIQUE,
+  phone                   VARCHAR(15) NULL,
+
+  -- Identity & Security
+  password_hash           VARCHAR(255) NOT NULL,
+  two_fa_enabled          TINYINT(1) DEFAULT 0,
+  two_fa_secret           VARCHAR(255) NULL,
+  security_question       VARCHAR(255) NULL,
+  security_answer_hash    VARCHAR(255) NULL,
+
+  -- Role & Access
+  -- super_admin: only one, hardcoded, cannot be created via UI
+  -- admin: added by super_admin, full access with restrictions
+  -- moderator: added by super_admin, limited access only
+  admin_role              ENUM('super_admin','admin','moderator') NOT NULL DEFAULT 'admin',
+  access_level            ENUM('full','restricted') NOT NULL DEFAULT 'restricted',
+  status                  ENUM('active','inactive','suspended') NOT NULL DEFAULT 'active',
+
+  -- Activity Records (auto)
+  last_login_at           TIMESTAMP NULL,
+  last_login_ip           VARCHAR(45) NULL,
+  last_password_changed   TIMESTAMP NULL,
+  failed_attempts         TINYINT DEFAULT 0,
+  locked_until            TIMESTAMP NULL,
+
+  -- System Records (auto)
+  -- created_by is NULL for super_admin
+  -- created_by is super_admin id for all other admins
+  created_by              INT UNSIGNED NULL,
+  created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (created_by) REFERENCES admin_users(id) ON DELETE SET NULL,
+  INDEX idx_email (email),
+  INDEX idx_role (admin_role),
+  INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- NOTE: No INSERT here. Super Admin will be inserted at the end manually
+
+-- Step 3: Create uploads folder reference table
+CREATE TABLE IF NOT EXISTS admin_profile_photos (
+  id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  admin_id      INT UNSIGNED NOT NULL,
+  photo_path    VARCHAR(500) NOT NULL,
+  uploaded_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (admin_id) REFERENCES admin_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

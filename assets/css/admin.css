@@ -3200,6 +3200,25 @@ html[data-theme="light"] .admin-card {
    for all admin page responsiveness.
    ============================================================ */
 
+/* ── BASE: .admin-card definition ── */
+.admin-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 6px -1px rgba(0, 38, 69, 0.04), 0 10px 15px -3px rgba(0, 38, 69, 0.04);
+  transition: all 0.3s ease;
+}
+.admin-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 38, 69, 0.08), 0 8px 10px -5px rgba(0, 38, 69, 0.03);
+}
+[data-theme="dark"] .admin-card {
+  background: rgba(28, 33, 40, 0.6);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
 /* ── DESKTOP ≥ 1024px ── */
 @media (min-width: 1024px) {
   .admin-sidebar {
@@ -3312,7 +3331,8 @@ html[data-theme="light"] .admin-card {
   }
   .stats-grid,
   .stat-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
   }
   .profile-header {
     gap: 12px;
@@ -3446,6 +3466,81 @@ html[data-theme="light"] .admin-card {
     min-width: unset !important;
     width: 100%;
   }
+
+  /* Admin stat cards — compact for 2-per-row on mobile */
+  .admin-stat-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+  .admin-stat-card:hover {
+    transform: none !important;
+  }
+  .admin-stat-value {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+  .admin-stat-icon {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  .admin-stat-icon .material-symbols-outlined {
+    font-size: 16px !important;
+  }
+  .admin-stat-label {
+    font-size: 8px !important;
+    margin-bottom: 4px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  /* Admin card — tighter on mobile */
+  .admin-card {
+    border-radius: 14px !important;
+  }
+
+  /* Admin table — scrollable and readable */
+  .admin-table {
+    min-width: 500px !important;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    white-space: nowrap;
+  }
+  .admin-table th {
+    font-size: 9px !important;
+  }
+  .overflow-x-auto {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Chart containers — shorter on mobile */
+  .admin-card canvas {
+    max-height: 200px !important;
+  }
+
+  /* Topbar text responsiveness */
+  .admin-topbar .text-2xl,
+  .admin-topbar .text-xl {
+    font-size: 17px !important;
+  }
+  .admin-topbar .text-\\[10px\\] {
+    font-size: 9px !important;
+  }
+
+  /* Search/filter inputs — full width */
+  .search-wrap,
+  [class*="search"] input {
+    width: 100% !important;
+  }
+
+  /* Main page content padding */
+  main {
+    padding: 12px !important;
+  }
 }
 
 /* ── SMALL MOBILE ≤ 480px ── */
@@ -3454,6 +3549,58 @@ html[data-theme="light"] .admin-card {
     grid-template-columns: 1fr !important;
   }
   .admin-topbar {
-    padding: 12px 14px !important;
+    padding: 10px 12px !important;
+  }
+  .admin-topbar .text-2xl,
+  .admin-topbar .text-xl {
+    font-size: 15px !important;
+  }
+
+  /* Even tighter stat cards */
+  .admin-stat-card {
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+  .admin-stat-value {
+    font-size: 16px !important;
+  }
+  .admin-stat-label {
+    font-size: 7px !important;
+    letter-spacing: 0.06em !important;
+  }
+  .admin-stat-icon {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 7px !important;
+    margin-bottom: 6px !important;
+  }
+  .admin-stat-icon .material-symbols-outlined {
+    font-size: 14px !important;
+  }
+
+  /* Full-width buttons on small mobile */
+  .admin-btn-primary,
+  .admin-btn-secondary,
+  .admin-btn-danger,
+  .btn-danger,
+  .btn-primary,
+  .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Stack detail-page header info on mobile */
+  .admin-topbar > div:first-child {
+    flex-wrap: wrap;
+  }
+
+  /* Chart shorter on tiny screens */
+  .admin-card canvas {
+    max-height: 160px !important;
+  }
+
+  /* Main content padding */
+  main {
+    padding: 8px !important;
   }
 }

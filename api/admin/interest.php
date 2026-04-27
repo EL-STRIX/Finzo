@@ -52,6 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // POST: UPDATE RATE
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    check_admin_permission($pdo, $admin_id, 'change_interest_rate');
+
     $action = sanitize_input($_POST['action'] ?? 'update_rate');
 
     $new_rate       = floatval($_POST['new_rate'] ?? 0);

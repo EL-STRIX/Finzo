@@ -25,6 +25,11 @@ if (!in_array($action, ['suspend', 'reinstate', 'reset_password'])) {
 
 $admin_id = $_SESSION['admin_id'];
 
+// Prevent restricted admins from suspending or reinstating staff
+if (in_array($action, ['suspend', 'reinstate'])) {
+    check_admin_permission($pdo, $admin_id, 'suspend_staff');
+}
+
 try {
     $stmt = $pdo->prepare("SELECT id, staff_id, full_name, email, status FROM staff WHERE id = ?");
     $stmt->execute([$staff_id]);

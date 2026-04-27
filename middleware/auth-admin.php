@@ -61,5 +61,15 @@ if (is_session_expired()) {
     exit;
 }
 
+// Fetch and cache admin_role if not in session
+if (!isset($_SESSION['admin_role'])) {
+    $role_stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
+    $role_stmt->execute([$_SESSION['admin_id']]);
+    $role = $role_stmt->fetchColumn();
+    // Cache it to avoid repeated DB hits
+    $_SESSION['admin_role'] = $role ?: 'admin'; // fallback just in case
+}
+
 // Refresh session activity timestamp
 refresh_session_activity();
+

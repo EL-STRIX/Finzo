@@ -38,6 +38,7 @@ try {
 
     switch ($action) {
         case 'suspend':
+            check_admin_permission($pdo, $admin_id, 'suspend_user');
             if ($user['status'] === 'suspended') {
                 json_response(['success' => false, 'message' => 'User is already suspended'], 409);
             }
@@ -60,6 +61,7 @@ try {
             break;
 
         case 'reinstate':
+            check_admin_permission($pdo, $admin_id, 'reinstate_user');
             if ($user['status'] !== 'suspended') {
                 json_response(['success' => false, 'message' => 'User is not suspended'], 409);
             }
@@ -80,6 +82,7 @@ try {
             break;
 
         case 'delete':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
             if ($user['is_deleted']) {
                 json_response(['success' => false, 'message' => 'User is already deleted'], 409);
             }
@@ -98,6 +101,7 @@ try {
             break;
 
         case 'recover':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
             if (!$user['is_deleted']) {
                 json_response(['success' => false, 'message' => 'User is not deleted'], 409);
             }

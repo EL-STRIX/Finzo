@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Finzo Admin — Dashboard Overivew</title>
+    <title>Finzo Admin — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = {
@@ -87,48 +86,46 @@
     </nav>
 
     <!-- MAIN AREA -->
-    <div class="admin-main">
-        <header class="admin-topbar">
+    <div class="admin-main lg:ml-72 transition-all duration-300">
+        <header class="admin-topbar sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5">
             <div class="flex items-center gap-3 flex-1">
                 <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-                    <span class="material-symbols-outlined force-black">menu</span>
+                    <span class="material-symbols-outlined force-black dark:text-white">menu</span>
                 </button>
                 <div>
                     <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">REAL-TIME MONITORING</div>
-                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Admin Dashboard</div>
+                    <div class="text-xl font-black tracking-tight mt-1 truncate max-w-[200px] sm:max-w-none">Admin Dashboard</div>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="admin-avatar premium-gradient-primary">A</div>
+            <div class="flex items-center gap-4 px-4">
+                <div class="admin-avatar premium-gradient-primary">AD</div>
             </div>
         </header>
 
         <main class="p-4 sm:p-6 lg:p-10">
             <!-- STATS GRID -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
                 <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-blue-50 text-blue-600"><span class="material-symbols-outlined">upload_file</span></div>
+                    <div class="admin-stat-icon bg-blue-50 dark:bg-blue-500/10 text-blue-600"><span class="material-symbols-outlined">upload_file</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Withdrawals</div>
                     <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-emerald-50 text-emerald-600"><span class="material-symbols-outlined">download_for_offline</span></div>
+                    <div class="admin-stat-icon bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600"><span class="material-symbols-outlined">download_for_offline</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Deposits</div>
                     <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-purple-50 text-purple-600"><span class="material-symbols-outlined">swap_horiz</span></div>
+                    <div class="admin-stat-icon bg-purple-50 dark:bg-purple-500/10 text-purple-600"><span class="material-symbols-outlined">swap_horiz</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Transfers</div>
                     <div class="admin-stat-value skeleton">0</div>
                 </div>
                 <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-amber-50 text-amber-600"><span class="material-symbols-outlined">group</span></div>
+                    <div class="admin-stat-icon bg-amber-50 dark:bg-amber-500/10 text-amber-600"><span class="material-symbols-outlined">group</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Accounts</div>
                     <div class="admin-stat-value skeleton">0</div>
                 </div>
-            </div>
-            <!-- SYSTEM STATS GRID — same design as top cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon bg-slate-100 dark:bg-white/5 text-slate-600"><span class="material-symbols-outlined">group</span></div>
                     <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Users</div>
@@ -172,90 +169,77 @@
             </div>
 
             <!-- CHARTS ROW -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
                 <!-- Transaction Volume Chart -->
-                <div class="lg:col-span-2 admin-card p-6">
-                    <div class="flex items-center justify-between mb-6">
+                <div class="lg:col-span-2 admin-card p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                         <div>
-                            <h3 class="font-bold text-sm force-black">Transaction Volume</h3>
-                            <p class="text-[11px] text-slate-400 mt-1">Last 7 days activity overview</p>
+                            <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white">Transaction Volume</h3>
+                            <p class="text-[11px] font-bold text-slate-400 mt-1">Real-time volume analysis (Last 6 Months)</p>
                         </div>
-                        <div class="flex items-center gap-4 text-[10px] font-bold">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Deposits</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Withdrawals</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Transfers</span>
+                        <div class="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest">
+                            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span> Deposits</span>
+                            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span> Withdrawals</span>
                         </div>
                     </div>
-                    <div class="relative h-[280px]">
+                    <div class="relative h-[320px]">
                         <canvas id="chart-transactions"></canvas>
                     </div>
                 </div>
 
                 <!-- Account Types Donut -->
-                <div class="admin-card p-6">
-                    <h3 class="font-bold text-sm force-black mb-6">Account Distribution</h3>
-                    <div class="relative flex items-center justify-center" style="height: 220px;">
+                <div class="admin-card p-6 sm:p-8">
+                    <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white mb-8">Account Spread</h3>
+                    <div class="relative flex items-center justify-center mb-8" style="height: 200px;">
                         <canvas id="chart-accounts"></canvas>
                     </div>
-                    <div class="mt-6 space-y-3" id="donut-legend">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active</span>
-                            <span class="font-bold force-black skeleton" id="legend-active">0</span>
+                    <div class="space-y-4" id="donut-legend">
+                        <div class="flex items-center justify-between text-[11px] font-bold">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active</span>
+                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-active">0</span>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</span>
-                            <span class="font-bold force-black skeleton" id="legend-pending">0</span>
+                        <div class="flex items-center justify-between text-[11px] font-bold">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</span>
+                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-pending">0</span>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Suspended</span>
-                            <span class="font-bold force-black skeleton" id="legend-suspended">0</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Locked</span>
-                            <span class="font-bold force-black skeleton" id="legend-locked">0</span>
+                        <div class="flex items-center justify-between text-[11px] font-bold">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Suspended</span>
+                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-suspended">0</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- MONTHLY REVENUE CHART -->
-            <div class="admin-card p-6 mb-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="font-bold text-sm force-black">Monthly Revenue</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">Deposits vs Withdrawals trend</p>
-                    </div>
-                </div>
-                <div class="relative h-[260px]">
+            <!-- REVENUE CHART -->
+            <div class="admin-card p-6 sm:p-8 mb-10">
+                <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white mb-8">Monthly Revenue Performance</h3>
+                <div class="relative h-[280px]">
                     <canvas id="chart-revenue"></canvas>
                 </div>
             </div>
 
             <!-- RECENT ACTIVITY TABLE -->
             <div class="admin-card overflow-hidden">
-                <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
-                    <h3 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">history</span> Recent Activity
+                <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
+                    <h3 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
+                        <span class="material-symbols-outlined text-lg text-primary">history</span> Recent Onboarding
                     </h3>
-                    <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">View All</a>
+                    <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Global Audit Log</a>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table class="admin-table w-full text-left min-w-[600px]">
+                    <table class="admin-table w-full text-left min-w-[700px]">
                         <thead>
                             <tr>
-                                <th>User Details</th>
-                                <th>Status</th>
+                                <th>User Profile</th>
+                                <th>Account Status</th>
                                 <th>Verification</th>
-                                <th>Type</th>
+                                <th>Tier</th>
                                 <th>Joined</th>
                                 <th class="text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody id="dash-user-tbody">
-                            <!-- Data injected by dashboard.js -->
-                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
-                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
-                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-6 w-20 rounded"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
+                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded-xl"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -263,6 +247,7 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../assets/js/core/theme.js"></script>
     <script src="../../assets/js/core/utils.js"></script>
@@ -270,92 +255,5 @@
     <script src="../../assets/js/ui/dropdowns.js"></script>
     <script src="../../assets/js/portals/admin.js"></script>
     <script src="../../assets/js/admin/dashboard.js"></script>
-
-    <!-- Dashboard Charts Initialization -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-        const textColor = isDark ? '#8b949e' : '#64748b';
-
-        // ── Transaction Volume Line Chart ──
-        const txCtx = document.getElementById('chart-transactions');
-        if (txCtx) {
-            new Chart(txCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [
-                        { label: 'Deposits', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Withdrawals', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Transfers', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 } } },
-                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 } }, beginAtZero: true }
-                    },
-                    interaction: { mode: 'index', intersect: false }
-                }
-            });
-        }
-
-        // ── Account Distribution Donut Chart ──
-        const acCtx = document.getElementById('chart-accounts');
-        if (acCtx) {
-            new Chart(acCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Active', 'Pending', 'Suspended', 'Locked'],
-                    datasets: [{
-                        data: [0, 0, 0, 0],
-                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
-                        borderWidth: 0,
-                        hoverOffset: 8
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.parsed + '%'; } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ── Monthly Revenue Bar Chart ──
-        const rvCtx = document.getElementById('chart-revenue');
-        if (rvCtx) {
-            new Chart(rvCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [
-                        { label: 'Deposits', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 8, barPercentage: 0.6 },
-                        { label: 'Withdrawals', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 8, barPercentage: 0.6 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11, weight: 600 }, color: textColor } }
-                    },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11, weight: 600 } } },
-                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11, weight: 600 }, callback: function(v) { return '₹' + (v/1000) + 'K'; } }, beginAtZero: true }
-                    }
-                }
-            });
-        }
-    });
-    </script>
 </body>
-
 </html>

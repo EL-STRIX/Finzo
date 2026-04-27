@@ -9,8 +9,9 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <script src="../../assets/js/core/api.js"></script>
 <script src="../../assets/js/core/utils.js"></script>
-<script src="../../assets/js/portals/admin.js"></script>
-
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+    <script src="../../assets/js/portals/admin.js"></script>
 <script>
     tailwind.config = {
       darkMode: "class",
@@ -122,119 +123,152 @@
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8">
 
       <!-- LEFT -->
-      <div style="display:flex;flex-direction:column;gap:20px">
+      <div class="space-y-6">
 
-        <!-- CUSTOMER PROFILE -->
-        <div class="card card-p">
-          <div class="section-label">Customer Information</div>
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
-            <div class="avatar-lg" id="detail-avatar"><div class="skeleton w-full h-full rounded-full"></div></div>
-            <div>
-              <div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="detail-name"><div class="skeleton w-32 h-5"></div></div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px" id="detail-email"><div class="skeleton w-40 h-4"></div></div>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-                <span class="badge badge-red">Suspended</span>
-                <span class="badge" id="detail-acc-type-badge"><div class="skeleton w-12 h-3"></div></span>
+        <!-- PROFILE CARD -->
+        <div class="admin-card p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 border-b border-slate-50 dark:border-white/5 pb-8 mb-8 text-center sm:text-left">
+            <div id="detail-avatar" class="w-24 h-24 rounded-2xl premium-gradient-primary flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-primary/20">
+              -
+            </div>
+            <div class="flex-1">
+              <div class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2">Suspended Account</div>
+              <h1 id="detail-name" class="text-2xl sm:text-3xl font-black font-headline tracking-tight text-slate-800 dark:text-white">-</h1>
+              <p id="detail-email" class="text-sm font-bold opacity-40 mb-4">-</p>
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <span id="detail-acc-type-badge" class="px-3 py-1 bg-slate-100 dark:bg-white/5 text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
+                <span class="px-3 py-1 bg-red-500 text-white text-[10px] font-black rounded-lg uppercase tracking-widest shadow-lg shadow-red-500/20">Inactive</span>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="detail-acc-no"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="detail-phone"><div class="skeleton w-28 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="detail-type"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value" id="detail-opened"><div class="skeleton w-20 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Balance (Frozen)</span><span class="info-value" style="color:var(--red)" id="detail-balance"><div class="skeleton w-24 h-5"></div></span></div>
+
+          <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+            <div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Number</p>
+              <p id="detail-acc-no" class="font-bold text-sm tracking-widest">-</p>
+            </div>
+            <div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phone Number</p>
+              <p id="detail-phone" class="font-bold text-sm">-</p>
+            </div>
+            <div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Type</p>
+              <p id="detail-type" class="font-bold text-sm">-</p>
+            </div>
+            <div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date Joined</p>
+              <p id="detail-opened" class="font-bold text-sm">-</p>
+            </div>
+            <div class="col-span-2 pt-4 border-t border-slate-50 dark:border-white/5">
+              <p class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Frozen Balance</p>
+              <p id="detail-balance" class="text-2xl font-black text-red-600 dark:text-red-400">-</p>
+            </div>
+          </div>
         </div>
 
-        <!-- SUSPENSION REASON -->
-        <div class="card card-p">
-          <div class="section-label">Suspension Details</div>
-          <div class="reason-box" style="margin-bottom:18px">
-            <div style="display:flex;align-items:flex-start;gap:12px">
-              <span class="material-symbols-outlined" style="color:var(--red);font-size:22px;flex-shrink:0;margin-top:2px">warning</span>
-              <div>
-                <div style="font-size:12px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Suspension Reason</div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:8px" id="detail-reason">Suspicious Activity</div>
-                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6" id="detail-reason-detail">Multiple large transactions were detected in a short period that are inconsistent with the customer's normal banking behaviour and income profile. The account was flagged by the system and manually reviewed by the admin team.</div>
+        <!-- SUSPENSION DETAILS -->
+        <div class="admin-card p-6 sm:p-8">
+          <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-50 dark:border-white/5 pb-4">Violation Context</div>
+          <div class="bg-red-50 dark:bg-red-500/5 p-6 rounded-2xl border border-red-100 dark:border-red-500/10 mb-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-white dark:bg-red-500/20 shadow-sm flex items-center justify-center text-red-500">
+                <span class="material-symbols-outlined">report</span>
+              </div>
+              <div class="flex-1">
+                <div class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Verified Reason</div>
+                <div class="text-sm font-bold mb-2 dark:text-white" id="detail-reason">-</div>
+                <div class="text-[12px] opacity-60 leading-relaxed font-medium" id="detail-reason-detail">-</div>
               </div>
             </div>
           </div>
-          <div class="info-row"><span class="info-label">Suspended By</span><span class="info-value" id="detail-by"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Suspension Date</span><span class="info-value" id="detail-date"><div class="skeleton w-20 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Suspension Time</span><span class="info-value" id="detail-time"><div class="skeleton w-20 h-4"></div></span></div>
-
-
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">By Admin</p>
+              <p id="detail-by" class="font-bold text-[13px]">-</p>
+            </div>
+            <div>
+              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">Date</p>
+              <p id="detail-date" class="font-bold text-[13px]">-</p>
+            </div>
+            <div>
+              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">Time</p>
+              <p id="detail-time" class="font-bold text-[13px]">-</p>
+            </div>
+          </div>
         </div>
 
-        <!-- RECENT TRANSACTIONS BEFORE SUSPENSION -->
-        <div class="card">
-          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <!-- RECENT TXNS -->
+        <div class="admin-card overflow-hidden">
+          <div class="p-6 border-b border-slate-50 dark:border-white/5 flex items-center justify-between">
             <div>
-              <div style="font-size:13px;font-weight:800;color:var(--text-primary)">Recent Transactions</div>
-              <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Last 3 transactions before suspension</div>
+              <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Activity History</h3>
+              <p class="text-[10px] opacity-40 font-bold uppercase mt-1">Last 3 Pre-suspension trans</p>
             </div>
-            <a href="admin-transactions.html" style="font-size:12px;font-weight:700;color:var(--primary);text-decoration:none">View All →</a>
+            <a href="admin-transactions.html" class="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-widest hover:underline">View All</a>
           </div>
-          <div style="padding:0 4px; overflow-x: auto;" class="selection:bg-[#002645]/10">
-            <table style="width:100%; min-width: 500px; border-collapse:collapse">
-              <thead><tr style="background:var(--bg-input)">
-                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Date</th>
-                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Description</th>
-                <th style="padding:10px 16px;text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Type</th>
-                <th style="padding:10px 16px;text-align:right;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;border-bottom:1px solid var(--border)">Amount</th>
-              </tr></thead>
+          <div class="overflow-x-auto w-full">
+            <table class="admin-table w-full text-left min-w-[500px]">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Type</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
               <tbody id="transactions-body">
-                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
-                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
-                <tr><td colspan="4"><div class="skeleton w-full h-8"></div></td></tr>
+                <tr><td colspan="4" class="p-10 text-center text-xs opacity-40 font-bold uppercase">Processing...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
-
       </div>
 
       <!-- RIGHT -->
-      <div style="display:flex;flex-direction:column;gap:20px">
-
-        <!-- QUICK STATS -->
-        <div class="card card-p">
-          <div class="section-label">Account Snapshot</div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;text-align:center">
-              <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Frozen Balance</div>
-              <div style="font-size:24px;font-weight:800;color:var(--red)" id="snap-balance"><div class="skeleton w-32 h-8 mx-auto"></div></div>
-              <div style="font-size:10px;color:var(--text-placeholder);margin-top:4px">Cannot be transacted until reinstated</div>
-            </div>
-
-          </div>
-        </div>
-
-
-
+      <div class="space-y-6">
+        
         <!-- ADMIN NOTES -->
-        <div class="card card-p">
-          <div class="section-label">Admin Notes</div>
-          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.7" id="detail-notes">
-            <div class="skeleton w-full h-12"></div>
+        <div class="admin-card p-6 sm:p-8">
+          <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Official Notes</div>
+          <div id="detail-notes" class="p-4 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-medium leading-relaxed italic opacity-60 border border-slate-100 dark:border-white/5">
+            Loading notes...
           </div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text-placeholder);font-weight:600" id="detail-notes-by"><div class="skeleton w-40 h-3"></div></div>
+          <div id="detail-notes-by" class="mt-4 text-[10px] font-black text-primary/40 uppercase text-right">-</div>
         </div>
 
-        <!-- ACTION CARD -->
-        <div class="card card-p" style="background:var(--green-soft);border:1.5px solid var(--green-border)">
-          <div style="text-align:center">
-            <span class="material-symbols-outlined" style="font-size:36px;color:var(--green);display:block;margin-bottom:10px">lock_open</span>
-            <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Remove Suspension</div>
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:18px">Once removed, the account returns to <strong>Active</strong> status immediately and the customer regains full banking access.</div>
-            <button class="btn btn-success btn-lg" style="width:100%" onclick="openReinstateModal()">
-              <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
-              Reinstate Account
+        <!-- ACTIONS -->
+        <div class="admin-card p-6 sm:p-8 border-2 border-emerald-500/20 bg-emerald-500/5">
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 text-emerald-500 shadow-inner">
+              <span class="material-symbols-outlined text-3xl">verified_user</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2 dark:text-white">Account Recovery</h3>
+            <p class="text-xs opacity-60 leading-relaxed mb-8">Reinstating will restore original access and notify the user via registered mobile/email.</p>
+            <button onclick="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
+              <span class="material-symbols-outlined">power_settings_new</span> Reinstate Account
             </button>
-
+            <button onclick="window.SuspendedUserDetail.permanentDelete()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
+              Permanent Deletion Request
+            </button>
           </div>
         </div>
 
+        <!-- SECURITY LOG -->
+        <div class="admin-card p-6">
+          <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Security Snapshot</div>
+          <div class="space-y-3">
+             <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-lg">
+                <span class="text-[10px] font-bold opacity-40 uppercase">Risk Index</span>
+                <span class="text-[11px] font-black text-red-500">CRITICAL</span>
+             </div>
+             <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-lg">
+               <span class="text-[10px] font-bold opacity-40 uppercase">Audit ID</span>
+               <span class="text-[11px] font-black opacity-60 font-mono">SEC-7742</span>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
 
   </div>

@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $admin_id = $_SESSION['admin_id'];
+check_admin_permission($pdo, $admin_id, 'add_branch');
 
 // Collect inputs
 $branch_name  = sanitize_input($_POST['branch_name'] ?? '');

@@ -70,7 +70,7 @@ function highlightActiveLinks(container) {
 document.addEventListener('DOMContentLoaded', () => {
     // Detect base path dynamically (works in any subdirectory)
     const basePath = document.querySelector('script[src*="component-loader"]')?.src
-        ? new URL(document.querySelector('script[src*="component-loader"]').src).pathname.replace(/assets\/js\/component-loader\.js$/, '')
+        ? new URL(document.querySelector('script[src*="component-loader"]').src).pathname.replace(/assets\/js\/(core\/)?component-loader\.js$/, '')
         : '/Finzo/';
 
     window.FinzoBasePath = basePath;

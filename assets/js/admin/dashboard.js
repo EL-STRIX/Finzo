@@ -1,10 +1,13 @@
 /**
  * Finzo Admin — Dashboard Handler
+ * Version 1.1 — Integrated Chart.js updates and Premium UX
  */
 
 (function() {
+    let charts = {};
+
     /**
-     * Load dashboard high-level stats and recent users
+     * Load dashboard high-level stats, charts and recent users
      */
     async function loadDashboard() {
         try {
@@ -12,9 +15,11 @@
             if (response.success) {
                 updateStats(response.data.stats);
                 renderRecentUsers(response.data.recent_users);
+                updateCharts(response.data);
             }
         } catch (error) {
             console.error('Dashboard load failed:', error);
+            // Handle error UI if needed
         }
     }
 
@@ -24,29 +29,30 @@
     function updateStats(stats) {
         const cards = document.querySelectorAll('.admin-stat-card');
         
-        const mapping = [
-            { label: 'Total Withdrawals', value: stats.withdrawals_today, isPrice: true },
-            { label: 'Total Deposits', value: stats.deposits_today, isPrice: true },
-            { label: 'Total Transfers', value: stats.transfers_today, isPrice: true },
-            { label: 'Total Accounts', value: stats.total_users, isPrice: false }, 
-            { label: 'TOTAL USERS', value: stats.total_users, isPrice: false },
-            { label: 'Interest Credited', value: 0, isPrice: true },
-            { label: 'PENDING APPROVALS', value: stats.pending_approvals, isPrice: false },
-            { label: 'Locked Accounts', value: stats.locked_accounts, isPrice: false },
-            { label: 'Suspend Users', value: stats.suspended_users, isPrice: false },
-            { label: 'SOFT DELETED USERS', value: 0, isPrice: false },
-            { label: 'ACTIVE STAFF', value: stats.total_staff, isPrice: false },
-            { label: 'ACTIVE BRANCHES', value: stats.total_branches, isPrice: false }
-        ];
-
-        cards.forEach((card, i) => {
-            const map = mapping[i];
-            if (!map) return;
+        // Define mapping based on card labels (flexible matching)
+        cards.forEach(card => {
+            const labelEl = card.querySelector('.admin-stat-label');
             const valEl = card.querySelector('.admin-stat-value');
-            if (valEl) {
-                valEl.classList.remove('skeleton');
-                valEl.textContent = map.isPrice ? window.FinzoUtils.formatINR(map.value) : map.value.toLocaleString();
-            }
+            if (!labelEl || !valEl) return;
+
+            const label = labelEl.textContent.trim().toUpperCase();
+            let value = 0;
+            let isPrice = false;
+
+            if (label.includes('WITHDRAWALS')) { value = stats.withdrawals_today; isPrice = true; }
+            else if (label.includes('DEPOSITS')) { value = stats.deposits_today; isPrice = true; }
+            else if (label.includes('TRANSFERS')) { value = stats.transfers_today; isPrice = true; }
+            else if (label.includes('TOTAL ACCOUNTS') || label.includes('TOTAL USERS')) { value = stats.total_users; }
+            else if (label.includes('INTEREST')) { value = 0; isPrice = true; } // Logic for interest not in this API yet
+            else if (label.includes('PENDING APPROVALS')) { value = stats.pending_approvals; }
+            else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts; }
+            else if (label.includes('SUSPENDED USERS')) { value = stats.suspended_users; }
+            else if (label.includes('SOFT DELETED')) { value = 0; }
+            else if (label.includes('ACTIVE STAFF')) { value = stats.total_staff; }
+            else if (label.includes('ACTIVE BRANCHES')) { value = stats.total_branches; }
+
+            valEl.classList.remove('skeleton');
+            valEl.textContent = isPrice ? window.FinzoUtils.formatINR(value) : value.toLocaleString();
         });
     }
 
@@ -57,7 +63,7 @@
         const tbody = document.getElementById('dash-user-tbody');
         if (!tbody) return;
 
-        if (!users.length) {
+        if (!users || !users.length) {
             tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center opacity-40 font-bold">No recent activity.</td></tr>';
             return;
         }
@@ -68,22 +74,22 @@
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
             return `
-            <tr>
+            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                 <td>
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>
-                        <div>
-                            <div class="font-bold text-sm">${u.full_name}</div>
-                            <div class="text-[10px] opacity-60">${u.email}</div>
+                        <div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" style="background:${gradient};color:#fff;">${initials}</div>
+                        <div class="min-w-0">
+                            <div class="font-bold text-sm truncate">${u.full_name}</div>
+                            <div class="text-[10px] opacity-40 truncate">${u.email}</div>
                         </div>
                     </div>
                 </td>
                 <td><span class="status-badge ${statusClass}">${u.status.toUpperCase()}</span></td>
                 <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warn'}" style="font-size: 10px; padding: 4px 10px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
                 <td class="text-xs font-semibold">Savings</td>
-                <td class="text-[11px] opacity-70">${window.FinzoUtils.timeAgo(u.created_at)}</td>
+                <td class="text-[11px] opacity-40 font-bold">${window.FinzoUtils.timeAgo(u.created_at)}</td>
                 <td class="text-right">
-                    <a href="admin-users.html?id=${u.id}" class="admin-btn-secondary px-3 py-1.5 text-[10px] rounded-lg inline-flex items-center gap-2">
+                    <a href="admin-users.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-xs">visibility</span> View
                     </a>
                 </td>
@@ -91,8 +97,151 @@
         }).join('');
     }
 
+    /**
+     * Update Global Charts with real data
+     */
+    function updateCharts(data) {
+        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#8b949e' : '#64748b';
+
+        // 1. Transaction Volume (Line Chart)
+        const txCanvas = document.getElementById('chart-transactions');
+        if (txCanvas && data.monthly_chart_data) {
+            const labels = data.monthly_chart_data.map(d => d.month);
+            const deposits = data.monthly_chart_data.map(d => d.deposits);
+            const withdrawals = data.monthly_chart_data.map(d => d.withdrawals);
+
+            if (charts.transactions) {
+                charts.transactions.data.labels = labels;
+                charts.transactions.data.datasets[0].data = deposits;
+                charts.transactions.data.datasets[1].data = withdrawals;
+                charts.transactions.update();
+            }
+        }
+
+        // 2. Account Distribution (Donut)
+        const acCanvas = document.getElementById('chart-accounts');
+        if (acCanvas && data.stats) {
+            const stats = data.stats;
+            const values = [stats.active_users, stats.pending_users, stats.suspended_users, stats.locked_accounts];
+            
+            // Update Legend numbers
+            document.getElementById('legend-active').textContent = stats.active_users;
+            document.getElementById('legend-pending').textContent = stats.pending_users;
+            document.getElementById('legend-suspended').textContent = stats.suspended_users;
+            document.getElementById('legend-locked').textContent = stats.locked_accounts;
+            
+            // Remove skeleton from legend
+            document.querySelectorAll('#donut-legend .skeleton').forEach(el => el.classList.remove('skeleton'));
+
+            if (charts.accounts) {
+                charts.accounts.data.datasets[0].data = values;
+                charts.accounts.update();
+            }
+        }
+
+        // 3. Monthly Revenue (Bar Chart)
+        const rvCanvas = document.getElementById('chart-revenue');
+        if (rvCanvas && data.monthly_chart_data) {
+            if (charts.revenue) {
+                charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
+                charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => d.deposits);
+                charts.revenue.data.datasets[1].data = data.monthly_chart_data.map(d => d.withdrawals);
+                charts.revenue.update();
+            }
+        }
+    }
+
+    /**
+     * Initialize Chart instances with minimal placeholder/null config
+     */
+    function initCharts() {
+        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+        const textColor = isDark ? '#8b949e' : '#64748b';
+
+        // Transactions Line Chart
+        const txCtx = document.getElementById('chart-transactions');
+        if (txCtx) {
+            charts.transactions = new Chart(txCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Deposits', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Withdrawals', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: gridColor, drawBorder: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } },
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        // Accounts Donut Chart
+        const acCtx = document.getElementById('chart-accounts');
+        if (acCtx) {
+            charts.accounts = new Chart(acCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Active', 'Pending', 'Suspended', 'Locked'],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
+                        borderWidth: 0, hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // Revenue Bar Chart
+        const rvCtx = document.getElementById('chart-revenue');
+        if (rvCtx) {
+            charts.revenue = new Chart(rvCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Deposits', data: [], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Withdrawals', data: [], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 8, barPercentage: 0.6 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'top', 
+                            labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11, weight: 600 }, color: textColor } 
+                        } 
+                    },
+                    scales: {
+                        y: { grid: { color: gridColor, drawBorder: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } },
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } }
+                    }
+                }
+            });
+        }
+    }
+
     // Initialization
-    document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            loadDashboard();
+        });
+    } else {
+        initCharts();
         loadDashboard();
-    });
+    }
 })();

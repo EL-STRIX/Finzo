@@ -1,326 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Locked Account Detail | Finzo Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script src="../../assets/js/core/api.js"></script>
-<script src="../../assets/js/core/utils.js"></script>
-<script src="../../assets/js/portals/admin.js"></script>
-<link rel="stylesheet" href="../../assets/css/admin.css">
-
-<link rel="stylesheet" href="../../assets/css/dark-mode.css">
-<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-<script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#1a3c5e',
-            surface: {
-              card: 'var(--bg-card)',
-              page: 'var(--bg-page)'
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locked Account Detail | Finzo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a3c5e',
+                        surface: {
+                            card: 'var(--bg-card)',
+                            page: 'var(--bg-page)'
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-</script>
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
 
-  </head>
-<body>
-
-<!-- SIDEBAR -->
-<div class="admin-sidebar-overlay sidebar-overlay" id="sidebar-overlay"></div>
-<nav class="admin-sidebar" id="admin-sidebar">
-  <div class="admin-sidebar-brand">
-    <div class="brand-name">Finzo</div>
-    <div class="brand-sub">ADMIN CONSOLE</div>
-  </div>
-  <div class="admin-nav">
-    <div class="admin-nav-section">MAIN</div>
-    <a href="admin-dashboard.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">analytics</span> Overview
-    </a>
-    <a href="admin-pending-approvals.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-    </a>
-    <a href="admin-users.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">group</span> User Management
-    </a>
-    <a href="admin-staff.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">badge</span> Staff Management
-    </a>
-    <a href="admin-branches.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">store</span> Branch Management
-    </a>
-    <a href="admin-transactions.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">swap_horiz</span> Transactions
-    </a>
-
-    <div class="admin-nav-section">System</div>
-
-    <a href="admin-suspended-users.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">person_off</span> Suspended Users
-    </a>
-    <a href="admin-suspended-staff.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">work_off</span> Suspended Staff
-    </a>
-    <a href="admin-locked-accounts.html" class="admin-nav-item active">
-      <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-    </a>
-    <a href="admin-deleted-users.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">person_remove</span> Deleted Users
-    </a>
-    <a href="admin-interest.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">percent</span> Interest Management
-    </a>
-
-    <div class="admin-nav-section">ACCOUNT</div>
-    <a href="admin-profile.html" class="admin-nav-item">
-      <span class="material-symbols-outlined">account_circle</span> Admin Profile
-    </a>
-    <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-      <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-      <span data-theme-label>Dark Mode</span>
-    </button>
-    <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-      <span class="material-symbols-outlined">logout</span> Logout
-    </a>
-  </div>
-</nav>
-
-<!-- MAIN -->
-<div class="main">
-  <header class="topbar">
-    <div class="flex items-center gap-3 flex-1 min-w-0">
-      <button id="mobile-menu-btn" class="hamburger-btn icon-btn">
-        <span class="material-symbols-outlined force-black">menu</span>
-      </button>
-      <div class="min-w-0 flex-1">
-        <div class="eyebrow truncate">SECURITY CONTROL</div>
-        <div class="topbar-title truncate">Locked Account Detail</div>
-      </div>
-    </div>
-    <div class="flex items-center gap-4 shrink-0 pl-3">
-      <div class="avatar" style="width:40px;height:40px;background:var(--primary);color:#fff;font-size:14px;">AD</div>
-    </div>
-  </header>
-
-
-
-  <div class="page-content">
-
-    <!-- BREADCRUMB -->
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;font-size:12px;color:var(--text-secondary);">
-      <a href="admin-locked-accounts.html" style="color:var(--text-secondary);text-decoration:none;font-weight:600;white-space:nowrap;">Locked Accounts</a>
-      <span class="material-symbols-outlined" style="font-size:14px;flex-shrink:0;">chevron_right</span>
-      <span style="color:var(--text-primary);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="bc-name">Sunita Mehta</span>
-    </div>
-
-    <!-- PAGE GRID -->
-    <div class="page-grid">
-
-      <!-- LEFT COLUMN -->
-      <div class="col-left">
-
-        <!-- Customer Info Card -->
-        <div class="card card-p">
-          <div class="section-label">Customer Information</div>
-          <div class="profile-header">
-            <div class="profile-avatar" id="d-avatar"><div class="skeleton w-full h-full rounded-full"></div></div>
-            <div style="min-width:0;flex:1;">
-              <div style="font-size:16px;font-weight:800;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-name"><div class="skeleton w-32 h-4"></div></div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="d-email"><div class="skeleton w-40 h-3"></div></div>
-              <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
-                <span class="badge" id="d-main-badge"><div class="skeleton w-12 h-3"></div></span>
-                <span class="badge" id="d-acc-type-badge"><div class="skeleton w-12 h-3"></div></span>
-              </div>
-            </div>
-          </div>
-          <div class="info-row"><span class="info-label">Account Number</span><span class="info-value mono" id="d-acc-no"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Phone Number</span><span class="info-value" id="d-phone"><div class="skeleton w-28 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Account Type</span><span class="info-value" id="d-acc-type"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Account Opened</span><span class="info-value" id="d-opened"><div class="skeleton w-20 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Balance</span><span class="info-value" id="d-balance" style="color:var(--primary);font-size:14px;"><div class="skeleton w-24 h-5"></div></span></div>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand border-b border-white/5">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
         </div>
+        <div class="admin-nav mt-6">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
 
-        <!-- Lock Details Card -->
-        <div class="card card-p">
-          <div class="section-label">Lock Details</div>
-          <div class="security-notice">
-            <div class="security-notice-icon">
-              <span class="material-symbols-outlined" style="color:var(--red);font-size:24px;">error</span>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Official Security Log</div>
-              <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:10px;">Failed Login Threshold Reached</div>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-                <div style="display:flex;gap:4px;">
-                  <div class="attempt-dot"></div>
-                  <div class="attempt-dot"></div>
-                  <div class="attempt-dot"></div>
-                  <div class="attempt-dot"></div>
-                  <div class="attempt-dot"></div>
-                </div>
-                <span style="font-size:13px;font-weight:800;color:var(--red);">5 of 5 Attempts</span>
-              </div>
-              <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">The customer entered an incorrect password 5 times in a row. The system automatically locked the account as a security measure to protect funds from unauthorised access.</div>
-            </div>
-          </div>
-          <div class="info-row"><span class="info-label">Locked On</span><span class="info-value" id="d-locked-date"><div class="skeleton w-20 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Lock Date &amp; Time</span><span class="info-value" id="d-lock-time"><div class="skeleton w-40 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Locked By</span><span class="info-value" id="d-locked-by"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Login IP Address</span><span class="info-value mono" id="d-ip"><div class="skeleton w-24 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="d-device"><div class="skeleton w-32 h-4"></div></span></div>
-          <div class="info-row"><span class="info-label">Temp Password Status</span><span class="info-value" id="d-temp-status"><div class="skeleton w-20 h-4 rounded-full"></div></span></div>
-          <div class="info-row" id="d-expiry-row" style="display:none;border-bottom:none;"><span class="info-label">Temp Password Expires</span><span class="info-value" id="d-expiry" style="color:var(--red);">—</span></div>
-        </div>
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-        <!-- Recent Login Attempts -->
-        <div class="card" style="overflow:hidden;">
-          <div class="audit-header" style="border-radius:var(--radius-xl) var(--radius-xl) 0 0;">
-            <div>
-              <div style="font-size:14px;font-weight:800;color:var(--text-primary);">Recent Login Attempts</div>
-              <div style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">Last 5 failed events · lock triggered</div>
-            </div>
-            <span class="badge badge-amber" style="flex-shrink:0;">Security Audit</span>
-          </div>
-          <div class="table-scroll">
-            <table class="audit-table">
-              <thead>
-                <tr>
-                  <th>IP Address</th>
-                  <th>Date &amp; Time</th>
-                  <th style="text-align:center;">Outcome</th>
-                </tr>
-              </thead>
-              <tbody id="audit-logs-body">
-                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
-                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
-                <tr><td colspan="3"><div class="skeleton w-full h-8"></div></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="audit-footer" style="border-radius:0 0 var(--radius-xl) var(--radius-xl);">
-            <div style="font-size:10px;font-weight:800;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;">Vault Audit Reference: #VAULT-2026-LM914</div>
-          </div>
-        </div>
-
-      </div><!-- /col-left -->
-
-      <!-- RIGHT COLUMN — action cards -->
-      <div class="col-right">
-
-        <!-- Generate Password Card -->
-        <div class="card card-p" id="unlock-action-card" style="background:var(--amber-soft);border:1.5px solid var(--amber-border);">
-          <div class="action-inner" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;">
-            <span class="action-icon material-symbols-outlined" style="font-size:30px;color:var(--amber);display:block;margin-bottom:8px;">key</span>
-            <div class="action-body" style="width:100%;">
-              <div style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:5px;">Generate Temporary Password</div>
-              <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;">Create a secure 12-character temporary password. Valid for <strong>24 hours</strong> only. Customer must reset on first login.</div>
-              <button class="btn btn-amber btn-lg action-btn" style="width:100%;" onclick="openUnlockModal()">
-                <span class="material-symbols-outlined" style="font-size:16px;">key</span>
-                Generate &amp; Unlock
-              </button>
-              <div class="action-hint" style="margin-top:8px;font-size:11px;color:var(--text-secondary);">Expires automatically after 24 hours</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Temp Password Display Card (shown after generation) -->
-        <div class="card card-p hidden" id="temp-pass-card" style="background:var(--green-soft);border:1.5px solid var(--green-border);">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-            <div style="font-size:10px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.05em;">Security Credentials</div>
-            <span class="badge badge-green">Active</span>
-          </div>
-          <div style="background:var(--bg-card);border:1.5px solid var(--green-border);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
-            <span class="material-symbols-outlined" style="color:var(--green);font-size:18px;flex-shrink:0;">key</span>
-            <code id="display-pass" style="font-size:15px;font-weight:800;letter-spacing:.1em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;word-break:break-all;"></code>
-            <button onclick="copyDisplayPass()" style="background:none;border:none;cursor:pointer;color:var(--green);width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;" title="Copy">
-              <span class="material-symbols-outlined" id="copy-icon2" style="font-size:17px;">content_copy</span>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
             </button>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">
-            <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.12);border-radius:var(--radius-sm);padding:7px 9px;display:flex;gap:6px;align-items:center;">
-              <span class="material-symbols-outlined" style="color:var(--red);font-size:14px;">schedule</span>
-              <div><div style="font-size:9px;font-weight:800;color:var(--red);text-transform:uppercase;">24h</div><div style="font-size:8px;color:var(--text-secondary);">Validity</div></div>
+            <a href="../../views/auth/login.html" class="admin-nav-item text-red-500">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main lg:ml-72 min-h-screen">
+        <header class="topbar sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <button id="mobile-menu-btn" class="hamburger-btn lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined force-black dark:text-white">menu</span>
+                </button>
+                <div class="min-w-0 flex-1">
+                    <div class="eyebrow text-[10px] font-black tracking-widest text-primary opacity-60">SECURITY CONTROL</div>
+                    <div class="topbar-title text-lg font-black tracking-tight text-slate-800 dark:text-white">Locked Account Detail</div>
+                </div>
             </div>
-            <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.12);border-radius:var(--radius-sm);padding:7px 9px;display:flex;gap:6px;align-items:center;">
-              <span class="material-symbols-outlined" style="color:var(--blue);font-size:14px;">verified_user</span>
-              <div><div style="font-size:9px;font-weight:800;color:var(--blue);text-transform:uppercase;">Verified</div><div style="font-size:8px;color:var(--text-secondary);">Channel</div></div>
+            <div class="flex items-center gap-4 shrink-0 px-4">
+                <div class="w-10 h-10 rounded-xl premium-gradient-primary flex items-center justify-center text-white font-black text-sm">AD</div>
             </div>
-          </div>
-          <div style="padding-top:10px;border-top:1px solid rgba(16,185,129,0.15);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);">
-            <span class="material-symbols-outlined" style="font-size:13px;color:var(--green);flex-shrink:0;">info</span>
-            <span>Record stays in queue until first login.</span>
-          </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="p-4 sm:p-6 lg:p-10">
+            <!-- BREADCRUMB -->
+            <div class="flex items-center gap-2 mb-8 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                <a href="admin-locked-accounts.html" class="hover:text-primary transition-colors">Locked Accounts</a>
+                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                <span class="text-slate-900 dark:text-white" id="bc-name">Sunita Mehta</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+                <!-- LEFT COLUMN -->
+                <div class="space-y-6">
+                    <!-- PROFILE CARD -->
+                    <div class="admin-card p-6 sm:p-8">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 border-b border-slate-50 dark:border-white/5 pb-8 mb-8 text-center sm:text-left">
+                            <div id="d-avatar" class="w-24 h-24 rounded-2xl premium-gradient-primary flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-primary/20">
+                                S
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2">Locked Security Context</div>
+                                <h1 id="d-name" class="text-2xl sm:text-3xl font-black font-headline tracking-tight text-slate-800 dark:text-white">-</h1>
+                                <p id="d-email" class="text-sm font-bold opacity-40 mb-4">-</p>
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                    <span id="d-main-badge" class="px-3 py-1 bg-red-100 dark:bg-red-500/10 text-red-600 text-[10px] font-black rounded-lg uppercase tracking-widest">Locked</span>
+                                    <span id="d-acc-type-badge" class="px-3 py-1 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Number</p>
+                                <p id="d-acc-no" class="font-bold text-sm tracking-widest">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mobile No</p>
+                                <p id="d-phone" class="font-bold text-sm">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Account Type</p>
+                                <p id="d-acc-type" class="font-bold text-sm">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date Joined</p>
+                                <p id="d-opened" class="font-bold text-sm">-</p>
+                            </div>
+                            <div class="col-span-2 pt-4 border-t border-slate-50 dark:border-white/5">
+                                <p class="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Current Balance</p>
+                                <p id="d-balance" class="text-2xl font-black text-primary dark:text-blue-400">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LOCK ANALYSIS -->
+                    <div class="admin-card p-6 sm:p-8">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-50 dark:border-white/5 pb-4">Incident Report</div>
+                        <div class="bg-red-50 dark:bg-red-500/5 p-6 rounded-2xl border border-red-100 dark:border-red-500/10 mb-8">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-white dark:bg-red-500/20 shadow-sm flex items-center justify-center text-red-500 flex-shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">security</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Reason for Lock</div>
+                                    <div id="d-reason" class="text-sm font-bold text-slate-800 dark:text-white leading-relaxed">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5">
+                                <p class="text-[9px] font-bold opacity-40 uppercase mb-1">Locked On</p>
+                                <p id="d-locked-date" class="font-black text-xs">-</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5">
+                                <p class="text-[9px] font-bold opacity-40 uppercase mb-1">IP Address</p>
+                                <p id="d-ip" class="font-black text-xs mono">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RECENT ATTEMPTS -->
+                    <div class="admin-card overflow-hidden">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5 flex items-center justify-between">
+                            <h3 class="text-xs font-black dark:text-white uppercase tracking-widest">Recent Access Logs</h3>
+                            <span class="px-2 py-1 bg-amber-100 dark:bg-amber-500/10 text-amber-600 text-[9px] font-black rounded uppercase">Audit Reference #VAULT-2026</span>
+                        </div>
+                        <div class="overflow-x-auto w-full">
+                            <table class="admin-table w-full text-left min-w-[500px]">
+                                <thead>
+                                    <tr>
+                                        <th>IP Address</th>
+                                        <th>Timestamp</th>
+                                        <th class="text-center">Outcome</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-logs-body">
+                                    <tr><td colspan="3" class="p-10 text-center text-xs opacity-40 font-bold uppercase">Fetching logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div class="space-y-6">
+                    <!-- ACTIONS -->
+                    <div class="admin-card p-6 sm:p-8" id="unlock-action-card">
+                        <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest mb-6">Access Control</h3>
+                        <div class="space-y-4">
+                            <button onclick="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-amber-500/20" style="background:#f59e0b !important;">
+                                <span class="material-symbols-outlined">key</span> Generate & Unlock
+                            </button>
+                            <div class="p-4 bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-100 dark:border-amber-500/10 text-center">
+                                <p class="text-[10px] font-bold text-amber-700 dark:text-amber-200 uppercase leading-relaxed">
+                                    Unlocking will provide a temporary PIN valid for 24 hours only.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TEMP PASS CARD (Hidden initially) -->
+                    <div id="temp-pass-card" class="admin-card p-6 sm:p-8 hidden" style="background:rgba(16,185,129,0.05); border:2px solid #10b981;">
+                        <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">Account Reinstated</div>
+                        <div class="p-4 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-green-900/40 rounded-xl mb-4">
+                            <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
+                            <div id="display-pass" class="text-center font-mono text-xl font-black text-emerald-700 dark:text-emerald-400 py-2 border-b border-emerald-50 mb-2"></div>
+                            <button onclick="copyDisplayPass()" class="w-full text-emerald-600 text-[9px] font-black uppercase tracking-widest py-1 hover:bg-emerald-50 rounded transition-all">Copy to Clipboard</button>
+                        </div>
+                        <div class="text-[10px] opacity-60 text-center uppercase font-bold italic">Requirement: Reset PIN on first login</div>
+                    </div>
+
+                    <!-- SECURITY AUDIT -->
+                    <div class="admin-card p-6">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">System Context</div>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-[10px] font-bold opacity-40 uppercase mb-1">Locked By</p>
+                                <p id="d-locked-by" class="font-black text-xs">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold opacity-40 uppercase mb-1">Detection Device</p>
+                                <p id="d-device" class="font-black text-xs">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-      </div><!-- /col-right -->
-
-    </div><!-- /page-grid -->
-  </div><!-- /page-content -->
-</div><!-- /main -->
-
-<!-- MODAL -->
-<div class="modal-overlay hidden" id="unlock-modal">
-  <div class="modal-card">
-    <div class="modal-icon" id="modal-icon-box" style="background:var(--amber-soft);transition:all 0.35s ease;">
-      <span class="material-symbols-outlined" id="modal-icon" style="color:var(--amber);font-size:26px;">key</span>
     </div>
-    <div class="modal-title" id="modal-title">Generate Temporary Password</div>
-    <div class="modal-text" id="modal-desc">A secure 12-character one-time password will be generated for <strong id="modal-name">Sunita Mehta</strong> (<strong id="modal-acc">FNZ20260004</strong>). Valid for <strong>24 hours only</strong>. Customer must change on first login.</div>
 
-    <div id="modal-pass-area" class="hidden" style="margin-bottom:18px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:7px;">Temporary Password</div>
-      <div style="display:flex;align-items:center;gap:10px;background:var(--bg-input);border:1.5px solid var(--amber-border);border-radius:var(--radius-md);padding:12px 14px;">
-        <span class="material-symbols-outlined" style="color:var(--amber);font-size:18px;flex-shrink:0;">key</span>
-        <code id="modal-pass-val" style="font-size:16px;font-weight:800;letter-spacing:.1em;color:var(--text-primary);flex:1;font-family:'Courier New',monospace;word-break:break-all;"></code>
-        <button onclick="copyModalPass()" style="background:none;border:none;cursor:pointer;color:var(--amber);flex-shrink:0;" title="Copy">
-          <span class="material-symbols-outlined" id="modal-copy-icon" style="font-size:18px;">content_copy</span>
-        </button>
-      </div>
-      <div class="modal-pass-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;">
-        <div style="background:var(--red-soft);border:1px solid var(--red-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--red);font-size:16px;">schedule</span>
-          <div><div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;">24 Hours</div><div style="font-size:9px;color:var(--text-secondary);">Validity Period</div></div>
+    <!-- MODAL -->
+    <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300" id="modal-card">
+            <div class="p-8 text-center text-slate-800 dark:text-white">
+                <div class="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mx-auto mb-6 text-amber-500">
+                    <span class="material-symbols-outlined text-4xl">vpn_key</span>
+                </div>
+                <h3 class="text-xl font-black font-headline mb-3">Restore Access?</h3>
+                <p class="text-sm opacity-60 leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name">-</strong>. User must reset their credentials immediately.</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">Cancel</button>
+                    <button id="gen-btn" onclick="doGenerate()" class="flex-1 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-amber-500/20 transition-all">Authorize</button>
+                </div>
+            </div>
         </div>
-        <div style="background:var(--amber-soft);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--amber);font-size:16px;">security</span>
-          <div><div style="font-size:10px;font-weight:800;color:var(--amber);text-transform:uppercase;">Force Reset</div><div style="font-size:9px;color:var(--text-secondary);">On First Login</div></div>
-        </div>
-        <div style="background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--blue);font-size:16px;">verified_user</span>
-          <div><div style="font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;">Verified</div><div style="font-size:9px;color:var(--text-secondary);">Sharing Policy</div></div>
-        </div>
-        <div style="background:var(--green-soft);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:9px;display:flex;gap:8px;align-items:center;">
-          <span class="material-symbols-outlined" style="color:var(--green);font-size:16px;">history_edu</span>
-          <div><div style="font-size:10px;font-weight:800;color:var(--green);text-transform:uppercase;">Logged</div><div style="font-size:9px;color:var(--text-secondary);">Audit Trail</div></div>
-        </div>
-      </div>
     </div>
 
-    <div class="modal-actions" id="modal-action-1">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-amber" id="gen-btn" onclick="doGenerate()">
-        <span class="material-symbols-outlined" style="font-size:15px;">key</span>
-        Generate &amp; Unlock
-      </button>
-    </div>
-    <div class="modal-actions hidden" id="modal-action-2">
-      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
-      <button class="btn btn-success" onclick="closeModal()">
-        <span class="material-symbols-outlined" style="font-size:15px;">check</span>
-        Done
-      </button>
-    </div>
-  </div>
-</div>
-
-<script src="../../assets/js/admin/locked-account-detail.js"></script>
+    <script src="../../assets/js/admin/locked-account-detail.js"></script>
 </body>
 </html>

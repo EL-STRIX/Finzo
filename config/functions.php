@@ -388,3 +388,69 @@ function get_greeting() {
         return 'Good Evening';
     }
 }
+
+// =====================================================
+// ADMIN ROLE & PERMISSIONS
+// =====================================================
+
+/**
+ * Check if the admin has permission to perform a specific action.
+ * @param PDO $pdo Database connection
+ * @param int $admin_id The ID of the admin
+ * @param string $action The action they are attempting to perform
+ * @return bool True if allowed, otherwise responds with 403 JSON and exits.
+ */
+function check_admin_permission($pdo, $admin_id, $action) {
+    $stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
+    $stmt->execute([$admin_id]);
+    $role = $stmt->fetchColumn();
+
+    if (!$role) {
+        json_response([
+            'success' => false,
+            'message' => 'Admin account not found'
+        ], 403);
+    }
+
+    // Super Admin — zero restrictions, can do everything
+    if ($role === 'super_admin') {
+        return true;
+    }
+
+    // Admin role — blocked from these actions only
+    $admin_blocked = [
+        'suspend_user',
+        'reinstate_user',
+        'soft_delete_user',
+        'change_interest_rate',
+        'add_branch',
+        'manage_admins',
+        'suspend_staff',
+        'delete_staff'
+    ];
+    
+    if ($role === 'admin' && in_array($action, $admin_blocked)) {
+        json_response([
+            'success' => false,
+            'message' => 'You do not have permission to perform this action'
+        ], 403);
+    }
+
+    // Moderator role — can ONLY do these actions
+    $moderator_allowed = [
+        'view_dashboard',
+        'view_users',
+        'review_kyc_application',
+        'approve_kyc_application',
+        'reject_kyc_application'
+    ];
+    
+    if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
+        json_response([
+            'success' => false,
+            'message' => 'You do not have permission to perform this action'
+        ], 403);
+    }
+
+    return true;
+}
