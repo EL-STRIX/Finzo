@@ -17,6 +17,7 @@ window.AdminPortal = {
             const data = await window.api.get('/admin/dashboard.php');
             if (data.success) {
                 this.state.admin = data.admin;
+                window.csrfToken = data.csrf_token;
                 this.state.isLoaded = true;
                 this.syncHeader(data.admin, data.stats);
             }
@@ -38,9 +39,9 @@ window.AdminPortal = {
 
         // Update all admin avatars
         document.querySelectorAll('.admin-avatar').forEach(el => {
-            if (admin.avatar) {
+            if (admin.profile_photo) {
                 const cacheBuster = '?v=' + new Date().getTime();
-                const src = (admin.avatar.startsWith('http') ? admin.avatar : `../../${admin.avatar}`) + cacheBuster;
+                const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `../../${admin.profile_photo}`) + cacheBuster;
                 el.innerHTML = `<img src="${src}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 el.style.background = 'none';
             } else {

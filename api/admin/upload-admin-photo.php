@@ -22,8 +22,8 @@ if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/
     json_response(['success' => false, 'message' => 'Profile photo must be JPG or PNG'], 422);
 }
 
-if ($file['size'] > 5 * 1024 * 1024) {
-    json_response(['success' => false, 'message' => 'Profile photo max size is 5MB'], 422);
+if ($file['size'] > 10 * 1024 * 1024) {
+    json_response(['success' => false, 'message' => 'Profile photo max size is 10MB'], 422);
 }
 
 $admin_id = $_SESSION['admin_id'];

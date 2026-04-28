@@ -238,6 +238,7 @@
                     const response = await window.api.upload('/admin/upload-admin-photo.php', formData);
                     if (response.success) {
                         window.portal.showToast('Profile photo updated', 'success');
+                        if (window.AdminPortal) window.AdminPortal.init();
                     } else {
                         window.portal.showToast(response.message || 'Upload failed', 'error');
                     }

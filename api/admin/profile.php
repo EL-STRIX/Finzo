@@ -15,7 +15,7 @@ $admin_id = $_SESSION['admin_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare("
-            SELECT id, admin_id, full_name, email, phone, avatar, status, last_login_at, last_login_ip, created_at
+            SELECT id, admin_id, full_name, email, phone, profile_photo, status, last_login_at, last_login_ip, created_at
             FROM admin_users WHERE id = ?
         ");
         $stmt->execute([$admin_id]);
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (move_uploaded_file($file['tmp_name'], $target_path)) {
             try {
                 // Get old avatar to delete if it exists
-                $stmt = $pdo->prepare("SELECT avatar FROM admin_users WHERE id = ?");
+                $stmt = $pdo->prepare("SELECT profile_photo FROM admin_users WHERE id = ?");
                 $stmt->execute([$admin_id]);
                 $old_avatar = $stmt->fetchColumn();
 
@@ -140,10 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $relative_path = 'uploads/avatars/' . $filename;
-                $stmt = $pdo->prepare("UPDATE admin_users SET avatar = ?, updated_at = NOW() WHERE id = ?");
+                $stmt = $pdo->prepare("UPDATE admin_users SET profile_photo = ?, updated_at = NOW() WHERE id = ?");
                 $stmt->execute([$relative_path, $admin_id]);
 
-                $_SESSION['admin_avatar'] = $relative_path;
+                $_SESSION['admin_profile_photo'] = $relative_path;
 
                 json_response(['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path]);
 

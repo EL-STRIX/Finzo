@@ -107,17 +107,22 @@ try {
     $total_balance = (float)$stmt->fetchColumn();
 
     // Fetch fresh admin data
-    $stmt = $pdo->prepare("SELECT full_name, email, avatar FROM admin_users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT full_name, email, profile_photo FROM admin_users WHERE id = ?");
     $stmt->execute([$_SESSION['admin_id']]);
     $admin_data = $stmt->fetch();
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     json_response([
         'success' => true,
+        'csrf_token' => $_SESSION['csrf_token'],
         'admin' => [
             'id' => $_SESSION['admin_id'],
             'full_name' => $admin_data['full_name'],
             'email' => $admin_data['email'],
-            'avatar' => $admin_data['avatar']
+            'profile_photo' => $admin_data['profile_photo']
         ],
         'stats' => [
             'total_users'        => $total_users,
