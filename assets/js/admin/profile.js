@@ -132,7 +132,16 @@
                 document.getElementById('profile-admin-id-input').value = admin.admin_id || '---';
                 document.getElementById('profile-name-input').value = admin.full_name;
                 document.getElementById('profile-dob-input').value = admin.date_of_birth || '';
-                document.getElementById('profile-gender-input').value = admin.gender || '';
+                
+                // Gender Dropdown sync
+                const genderVal = admin.gender || '';
+                const genderInput = document.getElementById('profile-gender-input');
+                genderInput.value = genderVal;
+                const genderDropdown = genderInput.closest('.finzo-dropdown');
+                if (genderDropdown && genderVal) {
+                    const label = genderDropdown.querySelector('.dropdown-label');
+                    if (label) label.textContent = genderVal;
+                }
                 document.getElementById('profile-phone-input').value = admin.phone || '';
                 document.getElementById('profile-email-input').value = admin.email;
                 document.getElementById('profile-seq-q-input').value = admin.security_question || '';
@@ -594,7 +603,23 @@
                     window.AdminProfile.closeAddModal();
                     
                     // Clear form
-                    fields.forEach(f => document.getElementById('add-' + f).value = '');
+                    fields.forEach(f => {
+                        const input = document.getElementById('add-' + f);
+                        if (input) {
+                            input.value = '';
+                            // Reset custom dropdown labels if applicable
+                            const dropdown = input.closest('.finzo-dropdown');
+                            if (dropdown) {
+                                const label = dropdown.querySelector('.dropdown-label');
+                                if (label) {
+                                    if (f === 'gender') label.textContent = 'Select Gender';
+                                    else if (f === 'role') label.textContent = 'Select Role';
+                                    else label.textContent = 'Select Option';
+                                }
+                                dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
+                            }
+                        }
+                    });
                     document.getElementById('new-avatar-preview').src = '';
                     document.getElementById('new-avatar-preview').classList.add('hidden');
                     document.getElementById('role-preview-box').classList.add('hidden');

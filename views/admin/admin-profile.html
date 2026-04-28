@@ -182,13 +182,19 @@
                                 </div>
                                 <div>
                                     <label class="profile-label">Gender</label>
-                                    <select id="profile-gender-input" class="profile-input">
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                        <option value="Prefer not to say">Prefer not to say</option>
-                                    </select>
+                                    <div class="finzo-dropdown">
+                                        <div class="finzo-dropdown-trigger profile-input flex items-center justify-between">
+                                            <span class="dropdown-label">Select Gender</span>
+                                            <span class="material-symbols-outlined text-[18px] opacity-40 transition-transform">expand_more</span>
+                                        </div>
+                                        <input type="hidden" id="profile-gender-input" value="">
+                                        <div class="finzo-dropdown-menu">
+                                            <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                                            <div class="finzo-dropdown-option" data-value="Female">Female</div>
+                                            <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                                            <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="profile-label">Phone Number</label>
@@ -459,13 +465,19 @@
                         </div>
                         <div>
                             <label class="profile-label">Gender *</label>
-                            <select id="add-gender" class="profile-input">
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                                <option value="Prefer not to say">Prefer not to say</option>
-                            </select>
+                            <div class="finzo-dropdown">
+                                <div class="finzo-dropdown-trigger profile-input flex items-center justify-between">
+                                    <span class="dropdown-label">Select Gender</span>
+                                    <span class="material-symbols-outlined text-[18px] opacity-40 transition-transform">expand_more</span>
+                                </div>
+                                <input type="hidden" id="add-gender" value="">
+                                <div class="finzo-dropdown-menu">
+                                    <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                                    <div class="finzo-dropdown-option" data-value="Female">Female</div>
+                                    <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                                    <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+                                </div>
+                            </div>
                             <div id="err-add-gender" class="text-[10px] text-error mt-1 hidden font-bold"></div>
                         </div>
                         <div>
@@ -520,11 +532,17 @@
                     <h4 class="text-sm font-bold border-b border-slate-100 dark:border-white/5 pb-2 mb-4 dark:text-white uppercase tracking-widest opacity-80">Role & Access</h4>
                     <div class="mb-4">
                         <label class="profile-label">Admin Role *</label>
-                        <select id="add-role" class="profile-input" onchange="window.AdminProfile.updateRolePreview(this.value)">
-                            <option value="">Select Role</option>
-                            <option value="admin">Admin — Full access to most features</option>
-                            <option value="moderator">Moderator — Can only review and approve users</option>
-                        </select>
+                        <div class="finzo-dropdown">
+                            <div class="finzo-dropdown-trigger profile-input flex items-center justify-between">
+                                <span class="dropdown-label">Select Role</span>
+                                <span class="material-symbols-outlined text-[18px] opacity-40 transition-transform">expand_more</span>
+                            </div>
+                            <input type="hidden" id="add-role" value="" onchange="window.AdminProfile.updateRolePreview(this.value)">
+                            <div class="finzo-dropdown-menu">
+                                <div class="finzo-dropdown-option" data-value="admin">Admin — Full access to most features</div>
+                                <div class="finzo-dropdown-option" data-value="moderator">Moderator — Can only review and approve users</div>
+                            </div>
+                        </div>
                         <div id="err-add-role" class="text-[10px] text-error mt-1 hidden font-bold"></div>
                     </div>
 

@@ -405,6 +405,12 @@ body {
 
 .profile-input:focus { border-color: #002645 !important; box-shadow: 0 0 0 3px rgba(0,38,69,0.1) !important; outline: none !important; }
 
+.dark .profile-input:focus { 
+    border-color: rgba(255, 255, 255, 0.2) !important; 
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.03) !important; 
+}
+
 .locked-input { background: rgba(148, 163, 184, 0.1) !important; cursor: not-allowed !important; }
 
 .dark .locked-input { background: rgba(255, 255, 255, 0.02) !important; color: #64748b !important; }
