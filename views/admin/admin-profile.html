@@ -116,137 +116,207 @@
             <div class="max-w-6xl mx-auto space-y-8">
                 
                 <!-- PROFILE CARD -->
-                <div class="admin-card p-6 sm:p-8 flex flex-col md:flex-row gap-8">
-                    <!-- Left Col -->
-                    <div class="w-full md:w-1/3 flex flex-col items-center text-center space-y-4">
-                        <div class="relative group">
-                            <div id="avatar-preview-container" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full premium-gradient-primary flex items-center justify-center text-4xl font-black text-white shadow-2xl overflow-hidden ring-4 ring-white dark:ring-slate-800 transition-all group-hover:scale-105">
-                                <span id="avatar-initials" class="uppercase"></span>
-                                <img id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
-                            </div>
-                        </div>
-                        
-                        <button onclick="document.getElementById('photo-upload').click()" class="admin-btn-secondary !py-2 !px-4 !text-[11px] rounded-lg">Upload Photo</button>
-                        <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
-
-                        <h2 id="profile-name-display" class="text-2xl font-black font-headline text-primary dark:text-slate-200 mt-2">-</h2>
-
-                        <div class="flex flex-wrap justify-center gap-2 mt-2">
-                            <span id="badge-role" class="px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-200 text-slate-700">Loading</span>
-                            <span id="badge-access" class="px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-200 text-slate-700">Loading</span>
-                            <span id="badge-status" class="px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-200 text-slate-700">Loading</span>
-                        </div>
+                <div class="admin-card overflow-hidden">
+                    <!-- Banner -->
+                    <div class="h-32 bg-gradient-to-r from-[#002645] to-[#1a4b77] dark:from-slate-800 dark:to-slate-900 relative">
+                        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
                     </div>
+                    
+                    <div class="p-6 sm:p-8 flex flex-col lg:flex-row gap-8 relative">
+                        <!-- Left Col -->
+                        <div class="w-full lg:w-1/3 flex flex-col items-center text-center space-y-4 -mt-16 z-10 relative">
+                            <div class="relative group cursor-pointer" onclick="document.getElementById('photo-upload').click()">
+                                <div id="avatar-preview-container" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full premium-gradient-primary flex items-center justify-center text-5xl font-black text-white shadow-2xl overflow-hidden ring-4 ring-white dark:ring-slate-900 transition-all group-hover:scale-105">
+                                    <span id="avatar-initials" class="uppercase"></span>
+                                    <img id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
+                                </div>
+                                <div class="absolute bottom-2 right-2 w-7 h-7 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-lg" title="Verified Account">
+                                    <span class="material-symbols-outlined text-[14px] text-white">verified</span>
+                                </div>
+                                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined text-white">photo_camera</span>
+                                </div>
+                            </div>
+                            
+                            <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
 
-                    <!-- Right Col -->
-                    <div class="w-full md:w-2/3 border-t md:border-t-0 md:border-l border-slate-100 dark:border-white/5 pt-8 md:pt-0 md:pl-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
-                                <label class="profile-label">Full Name *</label>
-                                <input type="text" id="profile-name-input" class="profile-input" placeholder="Loading...">
+                                <h2 id="profile-name-display" class="text-2xl font-black font-headline text-primary dark:text-slate-200">-</h2>
+                                <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Administrator</p>
                             </div>
-                            <div>
-                                <label class="profile-label">Date of Birth</label>
-                                <input type="date" id="profile-dob-input" class="profile-input">
-                            </div>
-                            <div>
-                                <label class="profile-label">Gender</label>
-                                <select id="profile-gender-input" class="profile-input">
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                    <option value="Prefer not to say">Prefer not to say</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="profile-label">Phone Number</label>
-                                <input type="text" id="profile-phone-input" class="profile-input" placeholder="Loading...">
-                            </div>
-                            <div class="md:col-span-2 flex flex-col">
-                                <label class="profile-label">Email Address (Read-only)</label>
-                                <input type="email" id="profile-email-input" class="profile-input locked-input" readonly>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="profile-label">Security Question *</label>
-                                <input type="text" id="profile-seq-q-input" class="profile-input" placeholder="E.g., What was the name of your first pet?">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="profile-label">Security Answer</label>
-                                <input type="password" id="profile-seq-a-input" class="profile-input" placeholder="Leave blank to keep current answer">
+
+                            <div class="flex flex-wrap justify-center gap-2 mt-2 w-full border-t border-slate-100 dark:border-white/5 pt-5">
+                                <span id="badge-role" class="px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-widest bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 shadow-sm">Loading</span>
+                                <span id="badge-access" class="px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-widest bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">Loading</span>
+                                <span id="badge-status" class="px-3 py-1.5 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-sm">Loading</span>
                             </div>
                         </div>
-                        <div class="flex justify-end">
-                            <button onclick="window.AdminProfile.saveProfile()" class="admin-btn-primary !px-8">Save Changes</button>
+
+                        <!-- Right Col -->
+                        <div class="w-full lg:w-2/3 lg:pl-4">
+                            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
+                                <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
+                                    <span class="material-symbols-outlined text-primary dark:text-blue-400">person</span>
+                                    Personal Details
+                                </h3>
+                                <div class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1.5 uppercase tracking-widest dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 shadow-sm">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Profile Active
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div>
+                                    <label class="profile-label">Full Name *</label>
+                                    <input type="text" id="profile-name-input" class="profile-input" placeholder="Loading...">
+                                </div>
+                                <div>
+                                    <label class="profile-label">Date of Birth</label>
+                                    <input type="date" id="profile-dob-input" class="profile-input">
+                                </div>
+                                <div>
+                                    <label class="profile-label">Gender</label>
+                                    <select id="profile-gender-input" class="profile-input">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="profile-label">Phone Number</label>
+                                    <input type="text" id="profile-phone-input" class="profile-input" placeholder="Loading...">
+                                </div>
+                                <div class="md:col-span-2 flex flex-col">
+                                    <label class="profile-label flex justify-between">Email Address <span class="text-slate-400 font-normal normal-case tracking-normal">Read-only</span></label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">lock</span>
+                                        <input type="email" id="profile-email-input" class="profile-input locked-input !pl-11" readonly>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="profile-label">Security Question *</label>
+                                    <input type="text" id="profile-seq-q-input" class="profile-input" placeholder="E.g., What was the name of your first pet?">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="profile-label flex justify-between">Security Answer <span class="text-slate-400 font-normal normal-case tracking-normal">Leave blank to keep current</span></label>
+                                    <input type="password" id="profile-seq-a-input" class="profile-input" placeholder="••••••••">
+                                </div>
+                            </div>
+                            <div class="flex justify-end border-t border-slate-100 dark:border-white/5 pt-6">
+                                <button onclick="window.AdminProfile.saveProfile()" class="admin-btn-primary !px-8 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">save</span> Save Changes
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- CHANGE PASSWORD CARD -->
-                <div class="admin-card p-6 sm:p-8">
-                    <h3 class="text-lg font-bold flex items-center gap-2 mb-8 dark:text-white">
-                        <span class="material-symbols-outlined text-primary dark:text-blue-400">key</span>
-                        Change Password
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="profile-label">Current Password</label>
-                            <div class="relative max-w-sm">
-                                <input type="password" id="curr-pw" class="profile-input" placeholder="••••••••">
-                                <span onclick="window.AdminProfile.togglePW('curr-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
-                            </div>
+                <div class="admin-card overflow-hidden flex flex-col md:flex-row">
+                    <!-- Left Sidebar info -->
+                    <div class="w-full md:w-1/3 bg-slate-50 dark:bg-slate-800/30 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-700/50 flex flex-col justify-center">
+                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-4 shadow-sm border border-indigo-200 dark:border-indigo-500/30">
+                            <span class="material-symbols-outlined">password</span>
                         </div>
-                        <div>
-                            <label class="profile-label">New Password</label>
-                            <div class="relative">
-                                <input type="password" id="new-pw" class="profile-input" placeholder="••••••••" oninput="window.AdminProfile.checkStrength(this.value)">
-                                <span onclick="window.AdminProfile.togglePW('new-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
+                        <h3 class="text-lg font-bold mb-2 dark:text-white">Password Settings</h3>
+                        <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Ensure your account remains secure by using a strong, unique password. We recommend at least 8 characters, combining uppercase, lowercase, numbers, and symbols.
+                        </p>
+                    </div>
+
+                    <!-- Right Form -->
+                    <div class="w-full md:w-2/3 p-6 sm:p-8">
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="profile-label">Current Password</label>
+                                <div class="relative">
+                                    <input type="password" id="curr-pw" class="profile-input" placeholder="••••••••">
+                                    <span onclick="window.AdminProfile.togglePW('curr-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors text-[20px]">visibility</span>
+                                </div>
                             </div>
-                            <div class="pw-meter"><div id="pw-bar" class="pw-meter-bar"></div></div>
-                            <div id="pw-text" class="text-[10px] mt-1 font-bold"></div>
-                        </div>
-                        <div>
-                            <label class="profile-label">Confirm New Password</label>
-                            <div class="relative">
-                                <input type="password" id="conf-pw" class="profile-input" placeholder="••••••••">
-                                <span onclick="window.AdminProfile.togglePW('conf-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors">visibility</span>
+                            <div>
+                                <label class="profile-label">New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="new-pw" class="profile-input" placeholder="••••••••" oninput="window.AdminProfile.checkStrength(this.value)">
+                                    <span onclick="window.AdminProfile.togglePW('new-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors text-[20px]">visibility</span>
+                                </div>
+                                <div class="pw-meter"><div id="pw-bar" class="pw-meter-bar"></div></div>
+                                <div id="pw-text" class="text-[10px] mt-1 font-bold"></div>
                             </div>
-                        </div>
-                        <div class="md:col-span-2 flex justify-end mt-2">
-                            <button onclick="window.AdminProfile.updatePassword()" class="admin-btn-primary">Update Password</button>
+                            <div>
+                                <label class="profile-label">Confirm New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="conf-pw" class="profile-input" placeholder="••••••••">
+                                    <span onclick="window.AdminProfile.togglePW('conf-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors text-[20px]">visibility</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-2 pt-6 border-t border-slate-100 dark:border-white/5">
+                                <button onclick="window.AdminProfile.updatePassword()" class="admin-btn-primary flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">update</span> Update Password
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ACCOUNT SECURITY CARD -->
                 <div class="admin-card p-6 sm:p-8">
-                    <h3 class="text-lg font-bold flex items-center gap-2 mb-8 dark:text-white">
+                    <h3 class="text-lg font-bold flex items-center gap-2 mb-6 dark:text-white pb-4 border-b border-slate-100 dark:border-white/5">
                         <span class="material-symbols-outlined text-primary dark:text-blue-400">shield</span>
-                        Account Security
+                        Account Security Status
                     </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 px-2">
-                        <div>
-                            <label class="profile-label">Last Login</label>
-                            <div id="sec-last-login" class="font-bold text-sm tracking-wide dark:text-slate-300">-</div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Last Login -->
+                        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-blue-200 transition-colors">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-blue-500 opacity-80 mb-3 relative z-10 text-[28px]">login</span>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Last Login</label>
+                            <div id="sec-last-login" class="font-bold text-[13px] tracking-wide dark:text-slate-200 relative z-10 truncate">-</div>
                         </div>
-                        <div>
-                            <label class="profile-label">Last Login IP</label>
-                            <div id="sec-last-ip" class="font-bold text-sm tracking-wide dark:text-slate-300 font-mono">-</div>
+                        
+                        <!-- Last IP -->
+                        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-purple-200 transition-colors">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-purple-500 opacity-80 mb-3 relative z-10 text-[28px]">my_location</span>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Last IP Address</label>
+                            <div id="sec-last-ip" class="font-bold text-[13px] tracking-wide dark:text-slate-200 font-mono relative z-10 truncate">-</div>
                         </div>
-                        <div>
-                            <label class="profile-label">Last Password Changed</label>
-                            <div id="sec-last-pwd" class="font-bold text-sm tracking-wide dark:text-slate-300">-</div>
+                        
+                        <!-- Last Password Change -->
+                        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-amber-200 transition-colors">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-amber-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-amber-500 opacity-80 mb-3 relative z-10 text-[28px]">update</span>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Password Updated</label>
+                            <div id="sec-last-pwd" class="font-bold text-[13px] tracking-wide dark:text-slate-200 relative z-10 truncate">-</div>
                         </div>
-                        <div>
-                            <label class="profile-label">Failed Login Attempts</label>
-                            <div id="sec-failed" class="font-bold text-sm tracking-wide text-error dark:text-red-400">-</div>
+                        
+                        <!-- Failed Logins -->
+                        <div class="bg-red-50 dark:bg-red-500/5 rounded-2xl p-5 border border-red-100 dark:border-red-500/10 relative overflow-hidden group hover:border-red-300 transition-colors">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-red-500 opacity-80 mb-3 relative z-10 text-[28px]">gpp_bad</span>
+                            <label class="block text-[10px] font-black text-red-400 uppercase tracking-widest mb-1 relative z-10">Failed Attempts</label>
+                            <div id="sec-failed" class="font-bold text-lg tracking-wide text-red-600 dark:text-red-400 relative z-10 truncate">-</div>
                         </div>
-                        <div class="flex flex-col gap-1 items-start">
-                            <label class="profile-label">Two-Factor Auth (2FA)</label>
-                            <label class="relative inline-flex items-center cursor-pointer mt-1">
+                    </div>
+
+                    <!-- 2FA Section -->
+                    <div class="mt-6 pt-6 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-50 dark:bg-slate-800/30 p-5 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-800/50 shadow-sm">
+                                <span class="material-symbols-outlined text-[24px]">phonelink_lock</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base dark:text-white">Two-Factor Authentication (2FA)</h4>
+                                <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 max-w-lg leading-relaxed font-medium">Enhance your account security by requiring an additional verification step using an authenticator app during login.</p>
+                            </div>
+                        </div>
+                        <div class="mt-5 sm:mt-0 shrink-0 bg-white dark:bg-slate-800 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <label class="relative inline-flex items-center cursor-pointer m-0">
                                 <input type="checkbox" id="sec-2fa-toggle" class="sr-only peer" onchange="window.AdminProfile.toggle2FA(this.checked)">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-white/10 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                <span class="ml-3 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400" id="sec-2fa-label">DISABLED</span>
+                                <div class="w-12 h-7 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                                <span class="ml-4 text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 min-w-[70px] inline-block text-center" id="sec-2fa-label">DISABLED</span>
                             </label>
                         </div>
                     </div>
@@ -254,11 +324,12 @@
 
                 <!-- RECENT ACTIVITY CARD -->
                 <div class="admin-card overflow-hidden">
-                    <div class="p-6 sm:p-8 border-b border-slate-50 dark:border-white/5">
+                    <div class="p-6 sm:p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/20">
                         <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
                             <span class="material-symbols-outlined text-primary dark:text-blue-400">history</span>
-                            Recent Activity
+                            Admin Activity History
                         </h3>
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">Last 100 Records</div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="admin-table w-full text-left">
@@ -276,6 +347,16 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/20 hidden" id="activity-pagination-container">
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest" id="activity-pagination-info">
+                            Showing 0 to 0 of 0 entries
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="activity-prev-btn" onclick="window.AdminProfile.prevActivityPage()" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm text-xs font-bold uppercase tracking-wider flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">chevron_left</span> Prev</button>
+                            <button id="activity-next-btn" onclick="window.AdminProfile.nextActivityPage()" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm text-xs font-bold uppercase tracking-wider flex items-center gap-1">Next <span class="material-symbols-outlined text-[14px]">chevron_right</span></button>
+                        </div>
                     </div>
                 </div>
 
@@ -317,13 +398,18 @@
     <div id="add-admin-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.AdminProfile.closeAddModal()"></div>
         <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter max-h-[90vh] flex flex-col overflow-hidden">
-            <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-slate-800 shrink-0">
-                <div>
-                    <h3 class="text-xl font-bold dark:text-white">Add New Admin</h3>
-                    <p class="text-xs text-slate-400 mt-1">Create a new admin account for the Finzo panel</p>
+            <div class="p-6 sm:p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-start bg-slate-50/50 dark:bg-slate-800/30 shrink-0">
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center shrink-0 border border-primary/20 dark:border-blue-500/30">
+                        <span class="material-symbols-outlined text-[24px]">person_add</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold dark:text-white">Add New Admin</h3>
+                        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 font-medium">Create a new admin account for the Finzo management console</p>
+                    </div>
                 </div>
-                <button onclick="window.AdminProfile.closeAddModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-red-500 transition-colors">
-                    <span class="material-symbols-outlined text-lg">close</span>
+                <button onclick="window.AdminProfile.closeAddModal()" class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-red-500 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
                 </button>
             </div>
             

@@ -32,7 +32,7 @@ try {
         SELECT action_type, details, ip_address, created_at
         FROM audit_log
         WHERE actor_id = ? AND actor_role = 'admin'
-        ORDER BY created_at DESC LIMIT 10
+        ORDER BY created_at DESC LIMIT 100
     ");
     $stmt->execute([$admin_id]);
     $activity = $stmt->fetchAll(PDO::FETCH_ASSOC);

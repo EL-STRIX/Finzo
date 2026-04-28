@@ -80,8 +80,48 @@ window.AdminPortal = {
                 window.location.href = res.redirect || '../../views/auth/login.html';
             });
         });
+    },
+
+    /**
+     * Show a standardized toast notification
+     */
+    showToast: function(message, type = 'success', duration = 4000) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
+        
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <span class="material-symbols-outlined">${icons[type]}</span>
+            <div style="flex:1">${message}</div>
+            <button onclick="this.parentElement.remove()" style="opacity:0.5; hover:opacity:1; transition:opacity:0.2s">
+                <span class="material-symbols-outlined" style="font-size:16px">close</span>
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => toast.classList.add('active'), 10);
+
+        // Auto remove
+        setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
     }
 };
+
+// Aliases for broader compatibility across admin scripts
+window.portal = window.AdminPortal;
+window.showToast = window.AdminPortal.showToast;
 
 // Auto-init on load
 document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());

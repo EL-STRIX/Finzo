@@ -6,6 +6,11 @@
 (function() {
     let currentAdminRole = 'admin';
 
+    // Pagination State for Activity
+    let activityData = [];
+    let currentActivityPage = 1;
+    const ACTIVITY_PER_PAGE = 10;
+
     // Helper: Formats relative time
     const timeAgo = (dateStr) => {
         if (!dateStr) return 'Never';
@@ -28,12 +33,54 @@
         return Math.floor(seconds) + " seconds ago";
     };
 
-    // Helper: Formats absolute date
-    const formatDate = (dateStr) => {
+    // Helper: Formats absolute date and time
+    const formatDateTime = (dateStr) => {
         if (!dateStr) return '-';
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + 
+               d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     };
+
+    function renderActivityPage() {
+        const tbody = document.getElementById('activity-table-body');
+        const info = document.getElementById('activity-pagination-info');
+        const prevBtn = document.getElementById('activity-prev-btn');
+        const nextBtn = document.getElementById('activity-next-btn');
+
+        if (activityData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center italic opacity-40 py-8">No recent activity found.</td></tr>`;
+            document.getElementById('activity-pagination-container').classList.add('hidden');
+            return;
+        }
+
+        document.getElementById('activity-pagination-container').classList.remove('hidden');
+
+        const totalPages = Math.ceil(activityData.length / ACTIVITY_PER_PAGE);
+        if (currentActivityPage > totalPages) currentActivityPage = totalPages;
+        if (currentActivityPage < 1) currentActivityPage = 1;
+
+        const startIdx = (currentActivityPage - 1) * ACTIVITY_PER_PAGE;
+        const endIdx = Math.min(startIdx + ACTIVITY_PER_PAGE, activityData.length);
+        
+        const pageData = activityData.slice(startIdx, endIdx);
+
+        tbody.innerHTML = pageData.map(a => {
+            // Strip redundant IP from details
+            let cleanDetails = a.details ? a.details.replace(/\sfrom IP:\s.*$/, '') : '-';
+            
+            return `
+            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                <td class="font-bold text-xs uppercase tracking-wider">${a.action_type.replace(/_/g, ' ')}</td>
+                <td class="text-sm opacity-80">${cleanDetails}</td>
+                <td class="text-xs font-mono opacity-60">${a.ip_address}</td>
+                <td class="text-xs font-bold opacity-60 whitespace-nowrap">${formatDateTime(a.created_at)}</td>
+            </tr>
+        `}).join('');
+
+        info.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${activityData.length} entries`;
+        prevBtn.disabled = currentActivityPage === 1;
+        nextBtn.disabled = currentActivityPage === totalPages;
+    }
 
     /**
      * Load Admin profile data from API
@@ -115,18 +162,13 @@
                 }
 
                 // Recent Activity
-                const tbody = document.getElementById('activity-table-body');
                 if (response.activity && response.activity.length > 0) {
-                    tbody.innerHTML = response.activity.map(a => `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                            <td class="font-bold text-xs uppercase tracking-wider">${a.action_type.replace(/_/g, ' ')}</td>
-                            <td class="text-sm opacity-80">${a.details || '-'}</td>
-                            <td class="text-xs font-mono opacity-60">${a.ip_address}</td>
-                            <td class="text-xs font-bold opacity-60">${formatDate(a.created_at)}</td>
-                        </tr>
-                    `).join('');
+                    activityData = response.activity;
+                    currentActivityPage = 1;
+                    renderActivityPage();
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center italic opacity-40 py-8">No recent activity found.</td></tr>`;
+                    activityData = [];
+                    renderActivityPage();
                 }
 
                 // Super Admin Privileges Check
@@ -325,6 +367,8 @@
             }
 
             try {
+                const btn = document.activeElement;
+                window.api.setButtonLoading(btn, true, 'Updating...');
                 const res = await window.api.post('/admin/update-admin-profile.php', {
                     current_password: curr, new_password: nw, confirm_new_password: conf
                 });
@@ -341,6 +385,8 @@
                 }
             } catch (e) {
                 window.portal.showToast('System error updating password', 'error');
+            } finally {
+                window.api.setButtonLoading(document.activeElement, false);
             }
         },
 
@@ -360,6 +406,8 @@
              }
 
              try {
+                 const btn = document.activeElement;
+                 window.api.setButtonLoading(btn, true, 'Saving...');
                  const res = await window.api.post('/admin/update-admin-profile.php', payload);
                  if (res.success) {
                      window.portal.showToast(res.message, 'success');
@@ -370,6 +418,8 @@
                  }
              } catch(e) {
                   window.portal.showToast('System error updating profile', 'error');
+             } finally {
+                  window.api.setButtonLoading(document.activeElement, false);
              }
         },
 
@@ -547,6 +597,21 @@
         closeDeleteModal: () => {
             window.targetDeleteAdminId = null;
             document.getElementById('delete-admin-modal').style.display = 'none';
+        },
+
+        // Activity Pagination
+        prevActivityPage: () => {
+            if (currentActivityPage > 1) {
+                currentActivityPage--;
+                renderActivityPage();
+            }
+        },
+        nextActivityPage: () => {
+            const totalPages = Math.ceil(activityData.length / ACTIVITY_PER_PAGE);
+            if (currentActivityPage < totalPages) {
+                currentActivityPage++;
+                renderActivityPage();
+            }
         }
     };
 
