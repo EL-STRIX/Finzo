@@ -144,7 +144,9 @@
                 }
                 document.getElementById('profile-phone-input').value = admin.phone || '';
                 document.getElementById('profile-email-input').value = admin.email;
-                document.getElementById('profile-seq-q-input').value = admin.security_question || '';
+                
+                const qField = document.getElementById('profile-seq-q-input');
+                if (qField) qField.value = admin.security_question || '';
                 
                 // Badges
                 const baseBadgeClass = 'px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest transition-colors';
@@ -217,6 +219,36 @@
                     // Show Management Card
                     document.getElementById('admin-management-container').classList.remove('hidden');
                     loadAdminList();
+                    loadLockedAdmins();
+                }
+
+                // Security Question Status Badge
+                const sqContainer = document.getElementById('sq-status-container');
+                const sqSet = admin.security_question_set == 1;
+                if (sqContainer) {
+                    if (sqSet) {
+                        sqContainer.innerHTML = `
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
+                            </div>`;
+                        const sqQField = document.getElementById('sq-question');
+                        if (sqQField && admin.security_question) sqQField.value = admin.security_question;
+                        const sqBtnText = document.getElementById('sq-btn-text');
+                        if (sqBtnText) sqBtnText.textContent = 'Update Security Question';
+                    } else {
+                        const warningMsg = admin.admin_role === 'super_admin' 
+                            ? '⚠️ As a Super Admin, your account is critical. If you get locked, you will need another Super Admin to unlock you, or you must have a security question set.'
+                            : '⚠️ You have not set a security question yet. If your account gets locked you will need a Super Admin to unlock it manually.';
+                        sqContainer.innerHTML = `
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 mb-3">
+                                <span class="material-symbols-outlined text-amber-500 text-[14px]">warning</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Not Set — Recommended</span>
+                            </div>
+                            <p class="text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-relaxed bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
+                                ${warningMsg}
+                            </p>`;
+                    }
                 }
 
             } else {
@@ -228,7 +260,61 @@
         }
     }
 
+    let pendingUnlockAdminId = null;
+    let pendingUnlockName = '';
+
+    async function loadLockedAdmins() {
+        try {
+            const res = await window.api.get('/admin/get-locked-admins.php');
+            if (!res.success || res.total === 0) {
+                document.getElementById('locked-admins-container').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('locked-admins-container').classList.remove('hidden');
+            document.getElementById('locked-count-badge').textContent = `${res.total} Locked`;
+
+            const formatDT = (d) => {
+                if (!d) return '-';
+                return new Date(d).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            };
+
+            const tbody = document.getElementById('locked-admins-body');
+            tbody.innerHTML = res.locked_admins.map(a => {
+                const lockReasonLabel = a.lock_reason === 'failed_password'
+                    ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-100">Wrong Password (3x)</span>`
+                    : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">Wrong Answer (5x)</span>`;
+
+                const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-slate-600 dark:text-slate-300';
+                const sqHtml = a.security_question_set
+                    ? `<span class="text-emerald-600 text-xs font-bold">Yes</span>`
+                    : `<span class="text-rose-500 text-xs font-bold">No</span>`;
+
+                return `<tr class="hover:bg-rose-50/30 dark:hover:bg-rose-500/5 transition-colors border-b border-slate-50 dark:border-white/5 last:border-0">
+                    <td class="py-4 px-6">
+                        <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
+                        <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
+                    </td>
+                    <td class="py-4 px-4"><span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">${a.admin_role}</span></td>
+                    <td class="py-4 px-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">${formatDT(a.locked_at)}</td>
+                    <td class="py-4 px-4">${lockReasonLabel}</td>
+                    <td class="py-4 px-4 text-[11px] font-bold ${attemptsColor}">${a.answer_attempts} / 5</td>
+                    <td class="py-4 px-4">${sqHtml}</td>
+                    <td class="py-4 px-4">
+                        <button onclick="window.AdminProfile.showUnlockConfirm(${a.id}, '${a.full_name.replace(/'/g, "\\'")}')"
+                            class="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">
+                            Unlock
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (err) {
+            console.error('Error loading locked admins:', err);
+        }
+    }
+
     async function loadAdminList() {
+
         try {
             const res = await window.api.get('/admin/get-admins.php');
             if (res.success) {
@@ -432,13 +518,16 @@
                  full_name: document.getElementById('profile-name-input').value,
                  date_of_birth: document.getElementById('profile-dob-input').value,
                  gender: document.getElementById('profile-gender-input').value,
-                 phone: document.getElementById('profile-phone-input').value,
-                 security_question: document.getElementById('profile-seq-q-input').value,
-                 security_answer: document.getElementById('profile-seq-a-input').value
+                 phone: document.getElementById('profile-phone-input').value
              };
 
-             if(!payload.full_name || !payload.security_question){
-                 window.portal.showToast('Full Name and Security Question are required', 'error');
+             const qField = document.getElementById('profile-seq-q-input');
+             const aField = document.getElementById('profile-seq-a-input');
+             if (qField) payload.security_question = qField.value;
+             if (aField) payload.security_answer = aField.value;
+
+             if(!payload.full_name){
+                 window.portal.showToast('Full Name is required', 'error');
                  return;
              }
 
@@ -448,7 +537,8 @@
                  const res = await window.api.post('/admin/update-admin-profile.php', payload);
                  if (res.success) {
                      window.portal.showToast(res.message, 'success');
-                     document.getElementById('profile-seq-a-input').value = '';
+                     const aField = document.getElementById('profile-seq-a-input');
+                     if (aField) aField.value = '';
                      loadAdminProfile();
                  } else {
                      window.portal.showToast(res.message, 'error');
@@ -673,6 +763,112 @@
             if (currentActivityPage < totalPages) {
                 currentActivityPage++;
                 renderActivityPage();
+            }
+        },
+
+        saveSecurityQuestion: async (e) => {
+            if (e) e.preventDefault();
+            const question = document.getElementById('sq-question').value.trim();
+            const answer = document.getElementById('sq-answer').value;
+            const currPw = document.getElementById('sq-curr-pw').value;
+
+            if (!question || question.length < 10) {
+                window.portal.showToast('Security question must be at least 10 characters', 'error');
+                return;
+            }
+            if (!answer || answer.length < 3) {
+                window.portal.showToast('Security answer must be at least 3 characters', 'error');
+                return;
+            }
+            if (!currPw) {
+                window.portal.showToast('Current password is required', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-save-sq');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Saving...</span>';
+
+            try {
+                const res = await window.api.post('/admin/save-security-question.php', {
+                    security_question: question,
+                    security_answer: answer,
+                    current_password: currPw
+                });
+                if (res.success) {
+                    window.portal.showToast('Security question saved successfully', 'success');
+                    document.getElementById('sq-answer').value = '';
+                    document.getElementById('sq-curr-pw').value = '';
+                    // Update badge to Set
+                    const sqContainer = document.getElementById('sq-status-container');
+                    if (sqContainer) {
+                        sqContainer.innerHTML = `
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
+                            </div>`;
+                    }
+                    const sqBtnText = document.getElementById('sq-btn-text');
+                    if (sqBtnText) sqBtnText.textContent = 'Update Security Question';
+                } else {
+                    window.portal.showToast(res.message || 'Failed to save security question', 'error');
+                }
+            } catch(err) {
+                window.portal.showToast('System error saving security question', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        },
+
+        showUnlockConfirm: (adminId, adminName) => {
+            pendingUnlockAdminId = adminId;
+            pendingUnlockName = adminName;
+            const overlay = document.getElementById('unlock-confirm-overlay');
+            const msg = document.getElementById('unlock-confirm-msg');
+            if (msg) msg.textContent = `Unlock ${adminName}'s account? They will be able to login with their existing password immediately.`;
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+            }
+        },
+
+        closeUnlockConfirm: () => {
+            pendingUnlockAdminId = null;
+            pendingUnlockName = '';
+            const overlay = document.getElementById('unlock-confirm-overlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+        },
+
+        confirmUnlock: async () => {
+            if (!pendingUnlockAdminId) return;
+            const btn = document.getElementById('confirm-unlock-btn');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Unlocking...';
+
+            try {
+                const res = await window.api.post('/admin/unlock-admin-account.php', {
+                    target_admin_id: pendingUnlockAdminId
+                });
+                window.AdminProfile.closeUnlockConfirm();
+                if (res.success) {
+                    window.portal.showToast(res.message, 'success');
+                    // Reload locked list
+                    loadLockedAdmins();
+                } else {
+                    window.portal.showToast(res.message || 'Failed to unlock account', 'error');
+                }
+            } catch (err) {
+                window.portal.showToast('System error unlocking account', 'error');
+                window.AdminProfile.closeUnlockConfirm();
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
             }
         }
     };

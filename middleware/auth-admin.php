@@ -70,6 +70,66 @@ if (!isset($_SESSION['admin_role'])) {
     $_SESSION['admin_role'] = $role ?: 'admin'; // fallback just in case
 }
 
+// =====================================================
+// REAL-TIME LOCK & SUSPENSION CHECK
+// Runs on every request to catch locks that happen
+// while an admin session is still active.
+// =====================================================
+$lock_stmt = $pdo->prepare("SELECT account_locked, auto_unlock_at, status, email FROM admin_users WHERE id = ?");
+$lock_stmt->execute([$_SESSION['admin_id']]);
+$admin_status_row = $lock_stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($admin_status_row) {
+    if ($admin_status_row['account_locked'] == 1) {
+        // Check if auto-unlock time has passed
+        if ($admin_status_row['auto_unlock_at'] && strtotime($admin_status_row['auto_unlock_at']) <= time()) {
+            // Auto-unlock the account silently
+            $pdo->prepare("
+                UPDATE admin_users 
+                SET account_locked = 0, failed_attempts = 0, locked_at = NULL, lock_reason = NULL, auto_unlock_at = NULL 
+                WHERE id = ?
+            ")->execute([$_SESSION['admin_id']]);
+            
+            // Re-fetch to continue
+            $admin_status_row['account_locked'] = 0;
+        }
+
+        if ($admin_status_row['account_locked'] == 1) {
+            $session_email = $admin_status_row['email'] ?? '';
+            destroy_session();
+            if (
+                isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' ||
+                isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false
+            ) {
+                json_response([
+                    'success' => false,
+                    'locked'  => true,
+                    'message' => 'Your account has been locked. Please use the unlock process.',
+                    'redirect' => '/Finzo/views/auth/admin-login.html?locked=1&email=' . urlencode($session_email)
+                ], 401);
+            }
+            header('Location: ' . APP_URL . '/views/auth/admin-login.html?locked=1&email=' . urlencode($session_email));
+            exit;
+        }
+    }
+
+    if ($admin_status_row['status'] === 'suspended') {
+        destroy_session();
+        if (
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' ||
+            isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false
+        ) {
+            json_response([
+                'success' => false,
+                'message' => 'Your account has been suspended. Contact the system administrator.',
+                'redirect' => '/Finzo/views/auth/admin-login.html?suspended=1'
+            ], 403);
+        }
+        header('Location: ' . APP_URL . '/views/auth/admin-login.html?suspended=1');
+        exit;
+    }
+}
+
 // Refresh session activity timestamp
 refresh_session_activity();
 

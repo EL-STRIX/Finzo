@@ -207,14 +207,6 @@
                                         <input type="email" id="profile-email-input" class="profile-input locked-input !pl-11" readonly>
                                     </div>
                                 </div>
-                                <div class="md:col-span-2">
-                                    <label class="profile-label">Security Question *</label>
-                                    <input type="text" id="profile-seq-q-input" class="profile-input" placeholder="E.g., What was the name of your first pet?">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="profile-label flex justify-between">Security Answer <span class="text-slate-400 font-normal normal-case tracking-normal">Leave blank to keep current</span></label>
-                                    <input type="password" id="profile-seq-a-input" class="profile-input" placeholder="••••••••">
-                                </div>
                             </div>
                             <div class="flex justify-end border-t border-slate-100 dark:border-white/5 pt-6">
                                 <button onclick="window.AdminProfile.saveProfile()" class="admin-btn-primary !px-8 flex items-center gap-2">
@@ -270,6 +262,57 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SECURITY QUESTION SETUP CARD -->
+                <div class="admin-card overflow-hidden flex flex-col md:flex-row mb-6">
+                    <!-- Left Banner -->
+                    <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-100 p-8 flex flex-col justify-center relative overflow-hidden dark:bg-slate-800/50 dark:border-white/5">
+                        <div class="absolute -right-12 -top-12 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                        <div class="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-6 relative z-10 text-teal-600 dark:bg-slate-800 dark:border-slate-700 dark:text-teal-400">
+                            <span class="material-symbols-outlined">quiz</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 dark:text-white relative z-10">Security Question</h3>
+                        <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium relative z-10 mb-4">
+                            Set a security question to unlock your account if it ever gets locked
+                        </p>
+                        
+                        <div id="sq-status-container" class="relative z-10">
+                            <!-- JS injected badge -->
+                        </div>
+                    </div>
+
+                    <!-- Right Form -->
+                    <div class="w-full md:w-2/3 p-6 sm:p-8">
+                        <form id="sq-setup-form" onsubmit="window.AdminProfile.saveSecurityQuestion(event)" class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="profile-label">Security Question <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <input type="text" id="sq-question" class="profile-input" placeholder="e.g. What was the name of your first pet?" minlength="10" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="profile-label">Security Answer <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <input type="password" id="sq-answer" class="profile-input" placeholder="Enter your answer" required minlength="3">
+                                    <span onclick="window.AdminProfile.togglePW('sq-answer')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors text-[20px]">visibility</span>
+                                </div>
+                                <p class="text-[11px] font-semibold text-slate-400 mt-2 ml-1">Answer is case-insensitive. Remember this — it unlocks your account.</p>
+                            </div>
+                            <div class="border-t border-slate-100 dark:border-white/5 pt-6 mt-2">
+                                <label class="profile-label">Current Password <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <input type="password" id="sq-curr-pw" class="profile-input" placeholder="Enter current password to confirm" required>
+                                    <span onclick="window.AdminProfile.togglePW('sq-curr-pw')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors text-[20px]">visibility</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-2 pt-6 border-t border-slate-100 dark:border-white/5">
+                                <button type="submit" id="btn-save-sq" class="admin-btn-primary flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">save</span> <span id="sq-btn-text">Set Security Question</span>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -408,8 +451,55 @@
                     </div>
                 </div>
 
+                <!-- LOCKED ADMIN ACCOUNTS CARD (Super Admin Only) -->
+                <div id="locked-admins-container" class="admin-card overflow-hidden hidden mt-6">
+                    <div class="p-6 sm:p-8 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-rose-50/50 dark:bg-rose-500/5">
+                        <h3 class="text-lg font-bold flex items-center gap-2 text-rose-700 dark:text-rose-400">
+                            <span class="material-symbols-outlined text-rose-500">lock</span>
+                            Locked Admin Accounts
+                        </h3>
+                        <span id="locked-count-badge" class="px-3 py-1 bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 text-[10px] font-black rounded-lg uppercase tracking-widest border border-rose-200 dark:border-rose-500/20">0 Locked</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-white/3 border-b border-slate-100 dark:border-white/5">
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-6 py-3">Name & Email</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Role</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Locked At</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Lock Reason</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Ans. Attempts</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Security Q</th>
+                                    <th class="text-left text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locked-admins-body">
+                                <!-- JS injected -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Unlock Confirm Dialog -->
+                <div id="unlock-confirm-overlay" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4 bg-primary/40 backdrop-blur-sm">
+                    <div class="admin-card w-full max-w-sm p-8 text-center relative z-10">
+                        <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-emerald-500 text-3xl">lock_open</span>
+                        </div>
+                        <h3 class="text-lg font-bold dark:text-white mb-2">Unlock Account?</h3>
+                        <p id="unlock-confirm-msg" class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">They will be able to login with their existing password immediately.</p>
+                        <div class="flex gap-3">
+                            <button onclick="window.AdminProfile.closeUnlockConfirm()" class="flex-1 admin-btn-secondary">Cancel</button>
+                            <button id="confirm-unlock-btn" onclick="window.AdminProfile.confirmUnlock()" class="flex-1 admin-btn-primary bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[16px]">lock_open</span> Confirm Unlock
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
+
     </div>
 
     <!-- ADD ADMIN MODAL (Super Admin Only) -->

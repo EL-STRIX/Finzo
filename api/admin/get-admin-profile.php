@@ -17,7 +17,8 @@ try {
     $stmt = $pdo->prepare("
         SELECT id, admin_id, full_name, email, phone, date_of_birth, gender, profile_photo,
                admin_role, access_level, status, two_fa_enabled, 
-               last_login_at, last_login_ip, last_password_changed, failed_attempts
+               last_login_at, last_login_ip, last_password_changed, failed_attempts,
+               security_question, security_question_set
         FROM admin_users 
         WHERE id = ?
     ");

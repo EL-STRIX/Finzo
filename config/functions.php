@@ -53,10 +53,6 @@ function validate_csrf_token($token) {
         return false;
     }
     $valid = hash_equals($_SESSION['csrf_token'], $token);
-    if ($valid) {
-        // Regenerate token after validation to prevent reuse
-        generate_csrf_token();
-    }
     return $valid;
 }
 

@@ -67,9 +67,8 @@
       transition: color 0.25s;
     }
 
-    .fin-input-container { position: relative; width: 100%; transition: all 0.4s ease-out; opacity: 0; transform: translateY(12px); }
-    .fin-input-container.visible { opacity: 1; transform: translateY(0); }
-
+    .fin-input-container { position: relative; width: 100%; transition: all 0.4s ease-out; }
+    
     .fin-input { 
       width: 100% !important; 
       height: 52px !important;
@@ -159,14 +158,13 @@
       gap: 12px;
       transition: all 0.3s ease; 
       box-shadow: 0 4px 16px rgba(99,102,241,0.35);
-      opacity: 0; transform: translateY(12px);
     }
+    .admin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     @media (min-width: 640px) {
       .admin-btn { height: 54px; font-size: 15px; }
     }
-    .admin-btn.visible { opacity: 1; transform: translateY(0); }
-    .admin-btn:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,0.45); }
-    .admin-btn:active { transform: translateY(0) scale(0.99); }
+    .admin-btn:hover:not(:disabled) { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,0.45); }
+    .admin-btn:active:not(:disabled) { transform: translateY(0) scale(0.99); }
     
     .error-state .fin-input {
       border-color: #ef4444 !important;
@@ -203,9 +201,57 @@
     @media (min-width: 1024px) {
       .mobile-brand-bar { display: none; }
     }
+
+    /* State Transitions */
+    .app-state { display: none; opacity: 0; transform: translateX(10px); transition: all 0.3s ease; }
+    .app-state.active { display: block; opacity: 1; transform: translateX(0); }
+
+    /* Cards */
+    .option-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .option-card:hover:not(.disabled) {
+      border-color: #6366f1;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.1);
+    }
+    .option-card.disabled {
+      opacity: 0.6;
+      background: #f8fafc;
+    }
+    
+    /* Toast */
+    #toast-container {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+    }
+    .toast {
+      background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.3); margin-bottom: 10px;
+      animation: slideInRight 0.3s forwards, fadeOut 0.3s 3s forwards;
+    }
+    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    
+    /* Password Strength */
+    .strength-meter { display: flex; gap: 4px; margin-top: 8px; height: 4px; }
+    .strength-segment { flex: 1; border-radius: 2px; background: #e2e8f0; transition: background 0.3s; }
+    .strength-text { font-size: 11px; font-weight: 700; text-align: right; margin-top: 4px; color: #94a3b8; }
+
+    .req-list { list-style: none; padding: 0; margin-top: 8px; }
+    .req-item { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .req-item .material-symbols-outlined { font-size: 14px; }
+    .req-item.met { color: #10b981; }
+    .req-item.met .material-symbols-outlined { color: #10b981; }
   </style>
 </head>
 <body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
+<div id="toast-container"></div>
 <main class="min-h-screen flex">
 
   <!-- LEFT PANEL -->
@@ -257,7 +303,7 @@
   <!-- RIGHT PANEL -->
   <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white px-5 py-8 sm:p-8 md:p-12 relative overflow-y-auto">
     
-    <div class="w-full max-w-[420px]">
+    <div class="w-full max-w-[420px]" id="app-container">
 
       <!-- Mobile Branding -->
       <div class="mobile-brand-bar">
@@ -267,75 +313,338 @@
         <span class="text-xl font-black tracking-tighter text-[#6366f1] font-headline">Finzo</span>
       </div>
 
-      <!-- Role Switcher -->
-      <div class="role-switcher mb-8 sm:mb-10 lg:mb-12">
-        <div class="role-item" onclick="window.location.href='login.html'">Customer</div>
-        <div class="role-item" onclick="window.location.href='staff-login.html'">Staff</div>
-        <div class="role-item active" onclick="window.location.href='admin-login.html'">Admin</div>
-      </div>
-
-      <div class="mb-8 sm:mb-10 text-left w-full">
-        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Restricted Access</h2>
-        <p class="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">Finzo administrative console.</p>
-      </div>
-
-      <form class="space-y-4 sm:space-y-5 w-full" novalidate id="adminLoginForm">
-        <!-- Field: Admin Identity -->
-        <div class="fin-input-container" style="transition-delay: 0ms;">
-          <label class="field-label">Administrator Email</label>
-          <div class="relative">
-            <input id="identity" type="text" placeholder="e.g. sujay@gmail.com" class="fin-input"/>
-            <span class="material-symbols-outlined input-icon">admin_panel_settings</span>
-          </div>
+      <!-- ==============================================
+           STATE 1: NORMAL LOGIN FORM 
+           ============================================== -->
+      <div id="state-1" class="app-state active">
+        <!-- Role Switcher -->
+        <div class="role-switcher mb-8 sm:mb-10 lg:mb-12">
+          <div class="role-item" onclick="window.location.href='login.html'">Customer</div>
+          <div class="role-item" onclick="window.location.href='staff-login.html'">Staff</div>
+          <div class="role-item active" onclick="window.location.href='admin-login.html'">Admin</div>
         </div>
 
-        <!-- Field: Password -->
-        <div class="fin-input-container" style="transition-delay: 80ms;">
-          <div class="flex justify-between items-center pr-1">
-            <label class="field-label">Password</label>
-          </div>
-          <div class="relative group">
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input"/>
-            <span class="material-symbols-outlined input-icon">key</span>
-            <span class="material-symbols-outlined password-toggle" id="toggle-password">visibility</span>
-          </div>
-          <div class="flex justify-between items-center mt-3 px-1">
-            <div class="flex items-center gap-2 group cursor-pointer" onclick="$('#remember-check').toggleClass('checked')">
-              <div class="custom-checkbox" id="remember-check"></div>
-              <span class="text-[12px] sm:text-[13px] font-semibold text-slate-500 group-hover:text-admin-accent transition-colors">Remember root dev</span>
+        <div class="mb-8 sm:mb-10 text-left w-full">
+          <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Restricted Access</h2>
+          <p class="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">Finzo administrative console.</p>
+        </div>
+
+        <form class="space-y-4 sm:space-y-5 w-full" novalidate id="adminLoginForm">
+          <!-- Field: Admin Identity -->
+          <div class="fin-input-container" style="transition-delay: 0ms;">
+            <label class="field-label">Administrator Email</label>
+            <div class="relative">
+              <input id="identity" type="text" placeholder="e.g. sujay@gmail.com" class="fin-input"/>
+              <span class="material-symbols-outlined input-icon">admin_panel_settings</span>
             </div>
-            <a href="forgot-password.html" class="text-[11px] sm:text-[12px] font-bold text-admin-accent hover:underline tracking-[0.03em]">Forgot Key?</a>
+          </div>
+
+          <!-- Field: Password -->
+          <div class="fin-input-container" style="transition-delay: 80ms;">
+            <div class="flex justify-between items-center pr-1">
+              <label class="field-label">Password</label>
+            </div>
+            <div class="relative group">
+              <input id="password" type="password" placeholder="••••••••••••" class="fin-input"/>
+              <span class="material-symbols-outlined input-icon">key</span>
+              <span class="material-symbols-outlined password-toggle" id="toggle-password">visibility</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 px-1">
+              <div class="flex items-center gap-2 group cursor-pointer" onclick="$('#remember-check').toggleClass('checked')">
+                <div class="custom-checkbox" id="remember-check"></div>
+                <span class="text-[12px] sm:text-[13px] font-semibold text-slate-500 group-hover:text-admin-accent transition-colors">Remember root dev</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="error-box" class="error-msg">Invalid root credentials</div>
+
+          <!-- Suspended Message (URL param) -->
+          <div id="suspended-box" class="bg-red-50 text-red-600 border border-red-200 p-3 rounded-lg text-sm font-semibold mt-4 hidden">
+            Your account has been suspended. Contact the system administrator.
+          </div>
+
+          <!-- Action -->
+          <div class="pt-3 sm:pt-4">
+            <button type="submit" id="login-btn" class="admin-btn" style="transition-delay: 160ms;">
+              <span>Unlock Admin Console</span>
+              <span class="material-symbols-outlined text-xl">login</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-6 sm:mt-8 text-center">
+          <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary transition-colors">Customer? Login here →</a>
+        </div>
+      </div>
+
+      <!-- ==============================================
+           STATE 2: ACCOUNT LOCKED SCREEN
+           ============================================== -->
+      <div id="state-2" class="app-state">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-rose-500 text-4xl">lock</span>
+          </div>
+          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Account Locked</h2>
+          <p class="text-slate-500 font-medium text-sm leading-relaxed mb-4">
+            Your account has been locked due to multiple failed login attempts.
+          </p>
+          <div class="inline-flex bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-600" id="locked-email-display">
+            ---
           </div>
         </div>
 
-        <div id="error-box" class="error-msg">Invalid root credentials</div>
+        <div class="flex flex-col gap-4">
+          <!-- Countdown Timer Box -->
+          <div id="auto-unlock-box" class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
+            <div class="flex items-center justify-center gap-2 text-amber-600 mb-2">
+              <span class="material-symbols-outlined text-[20px]">timer</span>
+              <span class="text-[11px] font-black uppercase tracking-widest">Auto-Unlock In</span>
+            </div>
+            <div id="countdown-display" class="text-4xl font-headline font-black text-amber-500 my-2">--:--</div>
+            <p id="countdown-footer" class="text-[11px] font-semibold text-amber-700 leading-relaxed max-w-[240px] mx-auto mb-4">
+              Your account will automatically unlock after 30 minutes. You can also unlock instantly using your security question below.
+            </p>
+            <button type="button" id="back-to-login-btn" class="hidden w-full bg-teal-600 text-white font-black text-[11px] uppercase tracking-widest py-3 rounded-xl shadow-lg shadow-teal-500/20 hover:bg-teal-700 transition-all active:scale-[0.98]" onclick="goToState(1)">
+              Back to Login
+            </button>
+          </div>
 
-        <!-- Action -->
-        <div class="pt-3 sm:pt-4">
-          <button type="submit" id="login-btn" class="admin-btn" style="transition-delay: 160ms;">
-            <span>Unlock Admin Console</span>
-            <span class="material-symbols-outlined text-xl">login</span>
-          </button>
+          <!-- Card 1: Unlock via SQ -->
+          <div class="option-card" id="card-sq">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-indigo-500">quiz</span>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 mb-1">Unlock Instantly via Security Question</h3>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed mb-3">Don't want to wait? Answer your security question to unlock immediately and reset your password.</p>
+                <div id="sq-message" class="text-xs font-bold text-rose-500 mb-2 hidden"></div>
+                <button type="button" id="btn-unlock-sq" class="w-full bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white font-bold text-xs py-2.5 rounded-lg transition-colors border border-indigo-100">
+                  Unlock My Account
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
 
-      <!-- Customer switching link -->
-      <div class="mt-6 sm:mt-8 text-center">
-        <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary transition-colors">Customer? Login here →</a>
+        <div class="mt-8 text-center">
+          <a href="#" class="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors" onclick="goToState(1)">← Back to Login</a>
+        </div>
       </div>
 
+      <!-- ==============================================
+           STATE 3: SECURITY QUESTION FORM
+           ============================================== -->
+      <div id="state-3" class="app-state">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-teal-500 text-4xl">shield</span>
+          </div>
+          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Verify Your Identity</h2>
+          <p class="text-slate-500 font-medium text-sm leading-relaxed mb-4">
+            Answer your security question to unlock your account
+          </p>
+          <div class="text-xs font-bold text-slate-400" id="sq-email-display">---</div>
+        </div>
+
+        <form id="sqForm" class="space-y-5 w-full">
+          <!-- Question Box -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <label class="field-label">Your Security Question</label>
+            <div id="sq-question-text" class="text-sm font-bold text-slate-900">Loading...</div>
+          </div>
+
+          <!-- Answer Box -->
+          <div class="fin-input-container">
+            <label class="field-label">Your Answer</label>
+            <div class="relative group">
+              <input id="sq_answer" type="password" placeholder="Enter your answer" class="fin-input pl-4 !padding-left:16px"/>
+              <span class="material-symbols-outlined password-toggle" onclick="togglePw('sq_answer', this)">visibility</span>
+            </div>
+            <div id="sq-error-box" class="error-msg"></div>
+          </div>
+
+          <!-- Attempts Warning -->
+          <div id="sq-attempts-warning" class="bg-amber-50 text-amber-700 border border-amber-200 p-3 rounded-lg text-xs font-semibold hidden">
+            Warning: <span id="sq-attempts-count">0</span> attempt(s) used. Account locks for 10 minutes after 5 wrong answers.
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="btn-verify-answer" class="admin-btn">
+              <span>Verify Answer</span>
+              <span class="material-symbols-outlined text-xl">arrow_forward</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-8 text-center">
+          <a href="#" class="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors" onclick="goToState(2)">← Back</a>
+        </div>
+      </div>
+
+      <!-- ==============================================
+           STATE 4: SET NEW PASSWORD
+           ============================================== -->
+      <div id="state-4" class="app-state">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-green-500 text-4xl">key</span>
+          </div>
+          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Set New Password</h2>
+          <p class="text-slate-500 font-medium text-sm leading-relaxed">
+            Create a strong new password to unlock and access your account
+          </p>
+        </div>
+
+        <form id="newPwForm" class="space-y-5 w-full">
+          <!-- New Password -->
+          <div class="fin-input-container">
+            <label class="field-label">New Password</label>
+            <div class="relative group">
+              <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input pl-4"/>
+              <span class="material-symbols-outlined password-toggle" onclick="togglePw('new_password', this)">visibility</span>
+            </div>
+            <!-- Strength Meter -->
+            <div class="strength-meter mt-2">
+              <div class="strength-segment" id="seg-1"></div>
+              <div class="strength-segment" id="seg-2"></div>
+              <div class="strength-segment" id="seg-3"></div>
+              <div class="strength-segment" id="seg-4"></div>
+            </div>
+            <div class="strength-text" id="strength-text">Weak</div>
+            
+            <ul class="req-list" id="pw-reqs">
+              <li class="req-item" id="req-len"><span class="material-symbols-outlined">close</span> At least 8 characters</li>
+              <li class="req-item" id="req-up"><span class="material-symbols-outlined">close</span> One uppercase letter</li>
+              <li class="req-item" id="req-num"><span class="material-symbols-outlined">close</span> One number</li>
+              <li class="req-item" id="req-sp"><span class="material-symbols-outlined">close</span> One special character (!@#$%^&*)</li>
+            </ul>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="fin-input-container mt-4">
+            <div class="flex justify-between items-center pr-1">
+              <label class="field-label">Confirm Password</label>
+              <span id="match-indicator" class="material-symbols-outlined text-[16px] text-slate-300 hidden">check_circle</span>
+            </div>
+            <div class="relative group">
+              <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input pl-4"/>
+              <span class="material-symbols-outlined password-toggle" onclick="togglePw('confirm_password', this)">visibility</span>
+            </div>
+          </div>
+
+          <div id="npw-error-box" class="error-msg"></div>
+
+          <div class="pt-4">
+            <button type="submit" id="btn-update-pw" class="admin-btn" disabled>
+              <span>Update Password & Login</span>
+              <span class="material-symbols-outlined text-xl">lock_open</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
   </section>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-  $(function() {
-    // Show animations
-    setTimeout(() => {
-      $('.fin-input-container, .admin-btn').addClass('visible');
-    }, 100);
+  let CSRF_TOKEN = '';
+  let CURRENT_EMAIL = '';
+  let RESET_TOKEN = '';
+  let countdownTimer = null;
+  let autoUnlockInterval = null;
 
-    // Icon float: up when focused or has value, down when empty & unfocused
+  function showToast(msg) {
+    const $t = $('<div class="toast">' + msg + '</div>');
+    $('#toast-container').append($t);
+    setTimeout(() => { $t.remove(); }, 3500);
+  }
+
+  function goToState(stateNum) {
+    $('.app-state').removeClass('active');
+    setTimeout(() => {
+      $('#state-' + stateNum).addClass('active');
+    }, 50);
+  }
+
+  function togglePw(inputId, iconElem) {
+    const p = $('#' + inputId);
+    const isPw = p.attr('type') === 'password';
+    p.attr('type', isPw ? 'text' : 'password');
+    $(iconElem).text(isPw ? 'visibility_off' : 'visibility');
+  }
+
+  // Countdown logic
+  function startCountdown(minutes, $msgElem, $btnElem) {
+    if (countdownTimer) clearInterval(countdownTimer);
+    let seconds = minutes * 60;
+    
+    $btnElem.prop('disabled', true).addClass('disabled');
+    $msgElem.show();
+
+    function update() {
+      if (seconds <= 0) {
+        clearInterval(countdownTimer);
+        $msgElem.hide();
+        $btnElem.prop('disabled', false).removeClass('disabled');
+        return;
+      }
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      $msgElem.text('Try again in ' + m + ':' + (s < 10 ? '0'+s : s));
+      seconds--;
+    }
+    update();
+    countdownTimer = setInterval(update, 1000);
+  }
+
+  $(function() {
+    // Initial fetch of CSRF token
+    const $loginBtn = $('#login-btn');
+    $loginBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+    function refreshCsrfToken() {
+      return fetch('../../api/auth/get-csrf-token.php')
+        .then(res => res.json())
+        .then(data => { 
+          if(data.csrf_token) {
+            CSRF_TOKEN = data.csrf_token; 
+            $loginBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+            console.log("CSRF Token initialized.");
+          } 
+        })
+        .catch(err => {
+          console.error('Token fetch error:', err);
+          showToast("Failed to initialize security session. Please refresh the page.", "error");
+        });
+    }
+
+    refreshCsrfToken();
+
+    // Handle URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('suspended') === '1') {
+      $('#suspended-box').removeClass('hidden');
+    }
+    if (urlParams.get('unlocked') === '1') {
+      showToast("Your account has been unlocked. You can now login normally.");
+    }
+    if (urlParams.get('locked') === '1') {
+      const em = urlParams.get('email');
+      if (em) {
+        $('#identity').val(em);
+        CURRENT_EMAIL = em;
+        $('#locked-email-display').text(em);
+        goToState(2);
+        checkLockStatus(em);
+      }
+    }
+
+    // Input animations
     $('.fin-input').on('input focus blur', function() {
       const $icon = $(this).siblings('.input-icon');
       if ($(this).val().trim().length > 0) {
@@ -345,69 +654,366 @@
       }
     });
 
-    const $form = $('#adminLoginForm');
-    const $btn = $('#login-btn');
-    const $error = $('#error-box');
-    let CSRF_TOKEN = '';
+    // ==========================================
+    // STATE 1: LOGIN FORM
+    // ==========================================
+    const $loginForm = $('#adminLoginForm');
+    const $loginError = $('#error-box');
 
-    // Fetch CSRF Token on load
-    fetch('../../api/auth/get-csrf-token.php')
-      .then(res => res.json())
-      .then(data => { if(data.csrf_token) CSRF_TOKEN = data.csrf_token; })
-      .catch(err => console.error('Token fetch error:', err));
+    // Password visibility toggle
+    $('#toggle-password').on('click', function() {
+      const $input = $('#password');
+      const type = $input.attr('type') === 'password' ? 'text' : 'password';
+      $input.attr('type', type);
+      $(this).text(type === 'password' ? 'visibility' : 'visibility_off');
+    });
 
-    $form.on('submit', function(e) {
+    $('#admin-forgot-pw').on('click', function() {
+      const email = $('#identity').val().trim();
+      const $msg = $('#forgot-pw-msg');
+      $msg.hide();
+
+      if (!email) {
+        $msg.text("Enter your email address first").show();
+        return;
+      }
+
+      // Check lock status
+      fetch('../../api/admin/check-lock-status.php?email=' + encodeURIComponent(email))
+        .then(res => res.json())
+        .then(data => {
+          if (data.found && data.locked) {
+            CURRENT_EMAIL = email;
+            $('#locked-email-display').text(email);
+            goToState(2);
+            setupLockedCard(data);
+          } else {
+            $msg.html("To reset your password, your account must be locked first.<br>Contact your Super Admin for assistance.").show();
+          }
+        })
+        .catch(() => {
+          $msg.text("Error checking account status").show();
+        });
+    });
+
+    $loginForm.on('submit', function(e) {
       e.preventDefault();
       const id = $('#identity').val().trim();
       const pw = $('#password').val().trim();
 
-      $form.removeClass('error-state');
-      $error.hide();
+      $loginForm.removeClass('error-state');
+      $loginError.hide();
 
       if (!id || !pw) {
-        $form.addClass('error-state');
-        $error.text("Credentials required").show();
+        $loginForm.addClass('error-state');
+        $loginError.text("Credentials required").show();
         return;
       }
 
-      const original = $btn.html();
-      $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Authenticating...</span>');
-      $btn.prop('disabled', true);
+      CURRENT_EMAIL = id;
+      const original = $loginBtn.html();
+      $loginBtn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Authenticating...</span>').prop('disabled', true);
 
-      // Real API authentication
       fetch('../../api/auth/admin-login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        credentials: 'same-origin',
         body: 'email=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
       })
-      .then(res => {
-        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422) throw new Error('Server Error');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         if (data.success) {
           window.location.href = data.redirect || '../admin/admin-dashboard.html';
+        } else if (data.locked) {
+          $('#locked-email-display').text(id);
+          setupLockedCard(data);
+          goToState(2);
+          $loginBtn.html(original).prop('disabled', false);
         } else {
-          $form.addClass('error-state');
-          $error.text(data.message || "Invalid credentials").show();
-          $btn.html(original).prop('disabled', false);
+          $loginForm.addClass('error-state');
+          $loginError.text(data.message || "Invalid credentials").show();
+          $loginBtn.html(original).prop('disabled', false);
+
+          // If CSRF error, automatically refresh token for next try
+          if (data.message && data.message.includes('CSRF')) {
+            refreshCsrfToken();
+          }
         }
       })
       .catch(err => {
         console.error('Admin login error:', err);
-        $form.addClass('error-state');
-        $error.text("Connection error. Please try again.").show();
-        $btn.html(original).prop('disabled', false);
+        $loginForm.addClass('error-state');
+        $loginError.text("Connection error. Please try again.").show();
+        $loginBtn.html(original).prop('disabled', false);
       });
     });
 
-    $('#toggle-password').on('click', function() {
-      const p = $('#password');
-      const isPw = p.attr('type') === 'password';
-      p.attr('type', isPw ? 'text' : 'password');
-      $(this).text(isPw ? 'visibility_off' : 'visibility');
+    function checkLockStatus(email) {
+      fetch('../../api/admin/check-lock-status.php?email=' + encodeURIComponent(email))
+        .then(res => res.json())
+        .then(data => {
+          if (data.found && data.locked) {
+            $('#locked-email-display').text(email);
+            setupLockedCard(data);
+          }
+        });
+    }
+
+    function setupLockedCard(data) {
+      const $card = $('#card-sq');
+      const $btn = $('#btn-unlock-sq');
+      const $msg = $('#sq-message');
+      const $timerBox = $('#auto-unlock-box');
+      const $countdownDisplay = $('#countdown-display');
+      const $countdownFooter = $('#countdown-footer');
+
+      // 1. Handle Auto-Unlock Timer
+      if (autoUnlockInterval) clearInterval(autoUnlockInterval);
+      
+      if (data.auto_unlock_at) {
+        const until = new Date(data.auto_unlock_at.replace(' ', 'T')).getTime();
+        const now = new Date().getTime();
+        let remaining = Math.max(0, Math.floor((until - now) / 1000));
+
+        if (remaining <= 0) {
+          $timerBox.removeClass('bg-amber-50 border-amber-200').addClass('bg-teal-50 border-teal-200');
+          $countdownDisplay.text("00:00").removeClass('text-amber-500').addClass('text-teal-600');
+          $countdownFooter.html('<div class="text-teal-700 font-bold mb-2">✓ Account Auto-Unlocked</div>You can now login with your password.').addClass('text-teal-700');
+          $card.hide();
+        } else {
+          $timerBox.removeClass('bg-teal-50 border-teal-200').addClass('bg-amber-50 border-amber-200');
+          $countdownDisplay.addClass('text-amber-500').removeClass('text-teal-600');
+          $countdownFooter.text("Your account will automatically unlock after 30 minutes. You can also unlock instantly using your security question below.").removeClass('text-teal-700');
+          $card.show();
+          startAutoUnlockCountdown(remaining);
+        }
+      }
+
+      // 2. Handle SQ Card State
+      if (data.security_question_set === false) {
+        $card.addClass('disabled opacity-60');
+        $btn.hide();
+        const superMsg = data.admin_role === 'super_admin' 
+          ? "No security question set. Please wait for auto-unlock or use another Super Admin account."
+          : "No security question set. Please wait for auto-unlock or contact your Super Admin.";
+        $msg.text(superMsg).removeClass('hidden').show();
+      } else if (data.answer_locked === true) {
+        $card.addClass('disabled');
+        $msg.removeClass('hidden text-rose-500 text-teal-600').addClass('text-amber-500');
+        let mins = 10;
+        if (data.answer_locked_until) {
+          const until = new Date(data.answer_locked_until.replace(' ', 'T')).getTime();
+          const now = new Date().getTime();
+          mins = Math.max(1, Math.ceil((until - now) / 60000));
+        }
+        startCountdown(mins, $msg, $btn);
+      } else {
+        $card.removeClass('disabled');
+        $btn.show().prop('disabled', false);
+        $msg.hide();
+      }
+    }
+
+    function startAutoUnlockCountdown(seconds) {
+      const $display = $('#countdown-display');
+      const $footer = $('#countdown-footer');
+      const $box = $('#auto-unlock-box');
+      const $card = $('#card-sq');
+
+      function update() {
+        if (seconds <= 0) {
+          clearInterval(autoUnlockInterval);
+          $box.removeClass('bg-amber-50 border-amber-200').addClass('bg-teal-50 border-teal-200');
+          $display.text("00:00").removeClass('text-amber-500').addClass('text-teal-600');
+          $footer.html('<div class="text-teal-700 font-bold mb-2">✓ Account Auto-Unlocked</div>You can now login with your password.').addClass('text-teal-700');
+          $('#back-to-login-btn').removeClass('hidden');
+          $card.fadeOut();
+          return;
+        }
+
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        $display.text(`${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
+        seconds--;
+      }
+
+      update();
+      autoUnlockInterval = setInterval(update, 1000);
+    }
+
+    // ==========================================
+    // STATE 2: UNLOCK SQ BUTTON
+    // ==========================================
+    $('#btn-unlock-sq').on('click', function() {
+      const original = $(this).text();
+      $(this).text('Loading...').prop('disabled', true);
+
+      fetch('../../api/admin/get-security-question.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'email=' + encodeURIComponent(CURRENT_EMAIL) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+      })
+      .then(res => res.json())
+      .then(data => {
+        $(this).text(original).prop('disabled', false);
+        if (data.success) {
+          $('#sq-email-display').text(data.email);
+          $('#sq-question-text').text(data.question);
+          goToState(3);
+        } else if (data.answer_locked) {
+          setupLockedCard({answer_locked: true}); // approximate
+        } else {
+          $('#sq-message').text(data.message).show();
+        }
+      });
     });
+
+    // ==========================================
+    // STATE 3: VERIFY ANSWER FORM
+    // ==========================================
+    const $sqForm = $('#sqForm');
+    const $sqBtn = $('#btn-verify-answer');
+    const $sqError = $('#sq-error-box');
+
+    $sqForm.on('submit', function(e) {
+      e.preventDefault();
+      const ans = $('#sq_answer').val().trim();
+      
+      $sqError.hide();
+      if (!ans) {
+        $sqError.text("Answer is required").show();
+        return;
+      }
+
+      const original = $sqBtn.html();
+      $sqBtn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Verifying...</span>').prop('disabled', true);
+
+      fetch('../../api/admin/verify-security-answer.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'email=' + encodeURIComponent(CURRENT_EMAIL) + '&security_answer=' + encodeURIComponent(ans) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+      })
+      .then(res => res.json())
+      .then(data => {
+        $sqBtn.html(original).prop('disabled', false);
+        if (data.success) {
+          RESET_TOKEN = data.reset_token;
+          goToState(4);
+        } else if (data.answer_locked) {
+          $sqError.hide();
+          const $warn = $('#sq-attempts-warning');
+          $warn.removeClass('bg-amber-50 text-amber-700 border-amber-200').addClass('bg-rose-50 text-rose-700 border-rose-200');
+          startCountdown(10, $warn, $sqBtn);
+        } else {
+          $sqError.text(data.message).show();
+          // We don't get exact attempt count back cleanly, but we can parse it
+          const match = data.message.match(/(\d+)\sattempt/);
+          if (match) {
+             const used = 5 - parseInt(match[1]);
+             $('#sq-attempts-count').text(used);
+             $('#sq-attempts-warning').show();
+          }
+        }
+      })
+      .catch(err => {
+        $sqError.text("Connection error").show();
+        $sqBtn.html(original).prop('disabled', false);
+      });
+    });
+
+    // ==========================================
+    // STATE 4: SET NEW PASSWORD
+    // ==========================================
+    const $newPwInput = $('#new_password');
+    const $confPwInput = $('#confirm_password');
+    const $btnUpdatePw = $('#btn-update-pw');
+    const $npwError = $('#npw-error-box');
+
+    function checkPasswordStrength() {
+      const pw = $newPwInput.val();
+      const conf = $confPwInput.val();
+      
+      let reqs = { len: pw.length >= 8, up: /[A-Z]/.test(pw), num: /[0-9]/.test(pw), sp: /[!@#$%^&*]/.test(pw) };
+      
+      // Update checks
+      $('#req-len').toggleClass('met', reqs.len).find('span').text(reqs.len ? 'check_circle' : 'close');
+      $('#req-up').toggleClass('met', reqs.up).find('span').text(reqs.up ? 'check_circle' : 'close');
+      $('#req-num').toggleClass('met', reqs.num).find('span').text(reqs.num ? 'check_circle' : 'close');
+      $('#req-sp').toggleClass('met', reqs.sp).find('span').text(reqs.sp ? 'check_circle' : 'close');
+
+      let strength = 0;
+      if (reqs.len) strength++;
+      if (reqs.len && reqs.up && reqs.num) strength++;
+      if (reqs.len && reqs.up && reqs.num && reqs.sp) strength++;
+
+      const colors = ['#ef4444', '#f59e0b', '#10b981'];
+      const labels = ['Weak', 'Fair', 'Strong'];
+      
+      $('.strength-segment').css('background', '#e2e8f0');
+      
+      if (pw.length > 0) {
+        let segCount = strength === 0 ? 1 : strength + 1; // 1 to 4
+        let color = strength === 0 ? colors[0] : (strength === 1 ? colors[1] : colors[2]);
+        let lbl = strength === 0 ? labels[0] : (strength === 1 ? labels[1] : labels[2]);
+        if (strength === 3) { segCount = 4; color = '#059669'; lbl = 'Very Strong'; }
+        
+        for (let i=1; i<=segCount; i++) $('#seg-' + i).css('background', color);
+        $('#strength-text').text(lbl).css('color', color);
+      } else {
+        $('#strength-text').text('Weak').css('color', '#94a3b8');
+      }
+
+      const allReqsMet = reqs.len && reqs.up && reqs.num && reqs.sp;
+      const passwordsMatch = pw === conf && pw !== '';
+
+      if (passwordsMatch) {
+        $('#match-indicator').removeClass('hidden text-slate-300 text-rose-500').addClass('text-green-500').text('check_circle');
+      } else if (conf !== '') {
+        $('#match-indicator').removeClass('hidden text-slate-300 text-green-500').addClass('text-rose-500').text('cancel');
+      } else {
+        $('#match-indicator').addClass('hidden');
+      }
+
+      $btnUpdatePw.prop('disabled', !(allReqsMet && passwordsMatch));
+    }
+
+    $newPwInput.on('input', checkPasswordStrength);
+    $confPwInput.on('input', checkPasswordStrength);
+
+    $('#newPwForm').on('submit', function(e) {
+      e.preventDefault();
+      const pw = $newPwInput.val();
+      const conf = $confPwInput.val();
+
+      $npwError.hide();
+      const original = $btnUpdatePw.html();
+      $btnUpdatePw.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Updating...</span>').prop('disabled', true);
+
+      fetch('../../api/admin/reset-password-unlock.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'reset_token=' + encodeURIComponent(RESET_TOKEN) + '&new_password=' + encodeURIComponent(pw) + '&confirm_password=' + encodeURIComponent(conf) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast("Password updated successfully! Redirecting to login...");
+          setTimeout(() => {
+            window.location.href = 'admin-login.html?unlocked=1';
+          }, 2000);
+        } else {
+          $btnUpdatePw.html(original).prop('disabled', false);
+          $npwError.text(data.message).show();
+          if (data.message.includes('expired')) {
+            setTimeout(() => { window.location.href = 'admin-login.html'; }, 2000);
+          }
+        }
+      })
+      .catch(err => {
+        $btnUpdatePw.html(original).prop('disabled', false);
+        $npwError.text("Connection error").show();
+      });
+    });
+
   });
 </script>
 </body>

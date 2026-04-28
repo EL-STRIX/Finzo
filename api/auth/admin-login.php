@@ -1,8 +1,7 @@
 <?php
 /**
  * Finzo Banking System — Admin Login
- * POST endpoint: authenticates an admin and starts a session.
- * Version 1.0 — April 2026
+ * POST endpoint: authenticates an admin and handles lockouts.
  */
 
 require_once dirname(__DIR__, 2) . '/config/db.php';
@@ -13,82 +12,148 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-// Note: CSRF protection not required on login endpoints.
-// Login cannot be CSRF-exploited as the attacker would need the victim's credentials.
+// 1. Validate CSRF token
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (!validate_csrf_token($csrf_token)) {
+    json_response(['success' => false, 'message' => 'Invalid CSRF token'], 403);
+}
 
-// Collect and sanitize inputs
+// 2. Sanitize inputs
 $email    = sanitize_input($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// Basic validation
 if (empty($email) || empty($password)) {
     json_response(['success' => false, 'message' => 'Email and password are required'], 422);
 }
 
-// =====================================================
-// FIND ADMIN
-// =====================================================
-
+// 3. Query admin_users
 $stmt = $pdo->prepare("
-    SELECT id, full_name, email, profile_photo, password_hash, status, admin_role
+    SELECT id, full_name, email, profile_photo, password_hash, status, admin_role, 
+           failed_attempts, account_locked, locked_at, auto_unlock_at, answer_locked_until, security_question_set
     FROM admin_users
     WHERE email = ?
 ");
 $stmt->execute([$email]);
 $admin = $stmt->fetch();
 
+// 4. If no record found
 if (!$admin) {
     json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
 }
 
-// =====================================================
-// VERIFY PASSWORD
-// =====================================================
-
-if (!password_verify($password, $admin['password_hash'])) {
-    json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
-}
-
-// =====================================================
-// CHECK ACCOUNT STATUS
-// =====================================================
-
-if ($admin['status'] !== 'active') {
+// 5. If status = 'suspended'
+if ($admin['status'] === 'suspended') {
     json_response([
         'success' => false,
-        'message' => 'Your admin account is inactive.'
+        'message' => 'Your account has been suspended. Contact the system administrator.'
     ], 403);
 }
 
-// =====================================================
-// SUCCESSFUL LOGIN
-// =====================================================
+// 6. If account_locked = 1
+if ($admin['account_locked'] == 1) {
+    // Check if auto-unlock time has passed
+    if ($admin['auto_unlock_at'] && strtotime($admin['auto_unlock_at']) <= time()) {
+        // Auto-unlock the account
+        $pdo->prepare("
+            UPDATE admin_users 
+            SET account_locked = 0, failed_attempts = 0, locked_at = NULL, lock_reason = NULL, auto_unlock_at = NULL 
+            WHERE id = ?
+        ")->execute([$admin['id']]);
+        
+        // Refresh admin data to continue
+        $admin['account_locked'] = 0;
+        $admin['failed_attempts'] = 0;
+    } else {
+        json_response([
+            'success' => false,
+            'locked' => true,
+            'security_question_set' => (bool)$admin['security_question_set'],
+            'auto_unlock_at' => $admin['auto_unlock_at'],
+            'message' => 'Account locked.'
+        ], 401);
+    }
+}
 
+// 7. If account NOT locked, verify password
 $ip = get_client_ip();
 
-// Update last login info
-$stmt = $pdo->prepare("UPDATE admin_users SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?");
-$stmt->execute([$ip, $admin['id']]);
-
-// Set session variables
-$_SESSION['admin_id']      = (int)$admin['id'];
-$_SESSION['admin_name']    = $admin['full_name'];
-$_SESSION['admin_email']   = $admin['email'];
-$_SESSION['admin_profile_photo']  = $admin['profile_photo'];
-$_SESSION['admin_role']    = $admin['admin_role'];
-$_SESSION['role']          = 'admin';
-$_SESSION['last_activity'] = time();
-
-// Write audit log
-write_audit_log($pdo, 'admin_login', $admin['id'], 'admin', $admin['id'], 'admin',
-    "Admin login from IP: {$ip}");
-
-// Build redirect relative to project root (works in /Finzo/ subdirectory)
-$base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
-$redirect = $base . '/views/admin/admin-dashboard.html';
-
-json_response([
-    'success'  => true,
-    'message'  => 'Login successful',
-    'redirect' => $redirect
-]);
+if (!password_verify($password, $admin['password_hash'])) {
+    $new_attempts = (int)$admin['failed_attempts'] + 1;
+    
+    if ($new_attempts >= 3) {
+        // Lock account
+        $updateStmt = $pdo->prepare("
+            UPDATE admin_users 
+            SET account_locked = 1, 
+                locked_at = NOW(), 
+                failed_attempts = 3, 
+                lock_reason = 'failed_password',
+                auto_unlock_at = DATE_ADD(NOW(), INTERVAL 30 MINUTE)
+            WHERE id = ?
+        ");
+        $updateStmt->execute([$admin['id']]);
+        
+        // Re-fetch to get the auto_unlock_at we just set
+        $st = $pdo->prepare("SELECT auto_unlock_at FROM admin_users WHERE id = ?");
+        $st->execute([$admin['id']]);
+        $auto_unlock_at = $st->fetchColumn();
+        
+        // Insert into admin_lock_log
+        $logStmt = $pdo->prepare("
+            INSERT INTO admin_lock_log (admin_id, event_type, ip_address, details) 
+            VALUES (?, 'locked_password', ?, 'Locked after 3 failed password attempts')
+        ");
+        $logStmt->execute([$admin['id'], $ip]);
+        
+        // Write audit log
+        write_audit_log($pdo, 'admin_account_locked', $admin['id'], 'admin', $admin['id'], 'admin', 'Account locked: 3 wrong passwords');
+        
+        json_response([
+            'success' => false,
+            'locked' => true,
+            'security_question_set' => (bool)$admin['security_question_set'],
+            'auto_unlock_at' => $auto_unlock_at,
+            'message' => 'Account locked.'
+        ], 401);
+    } else {
+        // Update failed attempts
+        $updateStmt = $pdo->prepare("UPDATE admin_users SET failed_attempts = ? WHERE id = ?");
+        $updateStmt->execute([$new_attempts, $admin['id']]);
+        
+        $remaining = 3 - $new_attempts;
+        json_response([
+            'success' => false,
+            'locked' => false,
+            'message' => "Invalid password. {$remaining} attempt(s) remaining before lockout."
+        ], 401);
+    }
+} else {
+    // CORRECT password
+    $updateStmt = $pdo->prepare("
+        UPDATE admin_users 
+        SET failed_attempts = 0, account_locked = 0, last_login_at = NOW(), last_login_ip = ? 
+        WHERE id = ?
+    ");
+    $updateStmt->execute([$ip, $admin['id']]);
+    
+    // Set session variables
+    $_SESSION['admin_id']      = (int)$admin['id'];
+    $_SESSION['admin_name']    = $admin['full_name'];
+    $_SESSION['admin_email']   = $admin['email'];
+    $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
+    $_SESSION['admin_role']    = $admin['admin_role'];
+    $_SESSION['role']          = 'admin';
+    $_SESSION['last_activity'] = time();
+    
+    // Write audit log
+    write_audit_log($pdo, 'admin_login', $admin['id'], 'admin', $admin['id'], 'admin', "Admin login from IP: {$ip}");
+    
+    $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
+    $redirect = $base . '/views/admin/admin-dashboard.html';
+    
+    json_response([
+        'success'  => true,
+        'message'  => 'Login successful',
+        'redirect' => $redirect
+    ]);
+}
