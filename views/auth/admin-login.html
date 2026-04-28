@@ -188,8 +188,11 @@
     }
     .custom-checkbox.checked::after { opacity: 1; }
 
-    ::-webkit-scrollbar { width: 0; display: none; }
-    @media (min-width: 1024px) { body { overflow: hidden; } }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     .mobile-brand-bar {
       display: flex;
@@ -206,30 +209,58 @@
     .app-state { display: none; opacity: 0; transform: translateX(10px); transition: all 0.3s ease; }
     .app-state.active { display: block; opacity: 1; transform: translateX(0); }
 
-    /* Cards */
-    .option-card {
-      background: #ffffff;
+    /* Recovery Dashboard Styles */
+    .recovery-step { 
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(10px);
+      display: none;
+    }
+    .recovery-step.active { 
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .admin-card {
+      background: white;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: all 0.2s;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+    .dark .admin-card {
+      background: rgba(30, 41, 59, 0.5);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .option-card {
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .option-card:hover:not(.disabled) {
       border-color: #6366f1;
-      box-shadow: 0 4px 12px rgba(99,102,241,0.1);
+      background: #f8faff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
     }
-    .option-card.disabled {
-      opacity: 0.6;
-      background: #f8fafc;
+    .option-card.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .dark .option-card:hover:not(.disabled) {
+      background: rgba(99, 102, 241, 0.05);
     }
-    
+
+    .strength-meter { display: flex; gap: 4px; margin-top: 8px; height: 4px; }
+    .strength-segment { flex: 1; border-radius: 2px; background: rgba(226, 232, 240, 0.5); transition: all 0.3s; }
+    .strength-text { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+    #countdown-display {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
     /* Toast */
-    #toast-container {
-      position: fixed; top: 20px; right: 20px; z-index: 9999;
-    }
+    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
     .toast {
       background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;
       box-shadow: 0 4px 12px rgba(16,185,129,0.3); margin-bottom: 10px;
@@ -237,17 +268,20 @@
     }
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-    
-    /* Password Strength */
-    .strength-meter { display: flex; gap: 4px; margin-top: 8px; height: 4px; }
-    .strength-segment { flex: 1; border-radius: 2px; background: #e2e8f0; transition: background 0.3s; }
-    .strength-text { font-size: 11px; font-weight: 700; text-align: right; margin-top: 4px; color: #94a3b8; }
 
-    .req-list { list-style: none; padding: 0; margin-top: 8px; }
-    .req-item { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-    .req-item .material-symbols-outlined { font-size: 14px; }
-    .req-item.met { color: #10b981; }
-    .req-item.met .material-symbols-outlined { color: #10b981; }
+    /* Dark mode global adjustments */
+    .dark .fin-input {
+      background: rgba(15, 23, 42, 0.5) !important;
+      border-color: rgba(255, 255, 255, 0.05) !important;
+      color: white !important;
+    }
+    .dark .fin-input:focus {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border-color: #6366f1 !important;
+    }
+    .dark .field-label { color: #94a3b8; }
+    .dark .option-card { border-color: rgba(255, 255, 255, 0.05); }
+    .dark .admin-card { background: rgba(15, 23, 42, 0.4); }
   </style>
 </head>
 <body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
@@ -301,7 +335,7 @@
     </section>
 
   <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white px-5 py-8 sm:p-8 md:p-12 relative overflow-y-auto">
+  <section class="w-full lg:w-[48%] flex flex-col items-center bg-white px-5 py-12 sm:p-12 md:p-16 relative overflow-y-auto lg:h-screen">
     
     <div class="w-full max-w-[420px]" id="app-container">
 
@@ -371,181 +405,154 @@
               <span class="material-symbols-outlined text-xl">login</span>
             </button>
           </div>
+          <div class="mt-6 text-center">
+            <a href="login.html" class="text-[12px] font-bold text-slate-400 hover:text-primary transition-colors">Customer Portal? Login here →</a>
+          </div>
         </form>
-
-        <div class="mt-6 sm:mt-8 text-center">
-          <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary transition-colors">Customer? Login here →</a>
-        </div>
       </div>
 
       <!-- ==============================================
-           STATE 2: ACCOUNT LOCKED SCREEN
+           RECOVERY DASHBOARD (Consolidated Locked States)
            ============================================== -->
       <div id="state-2" class="app-state">
+        <!-- Dashboard Header -->
         <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span class="material-symbols-outlined text-rose-500 text-4xl">lock</span>
+          <div class="w-16 h-16 bg-white dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-slate-200 shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl" id="recovery-icon">lock</span>
           </div>
-          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Account Locked</h2>
-          <p class="text-slate-500 font-medium text-sm leading-relaxed mb-4">
-            Your account has been locked due to multiple failed login attempts.
+          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy dark:text-fin-navy mb-2" id="recovery-title">Account Locked</h2>
+          <p class="text-slate-500 dark:text-slate-400 font-medium text-xs leading-relaxed" id="recovery-subtitle">
+            System access restricted due to security protocols.
           </p>
-          <div class="inline-flex bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-600" id="locked-email-display">
-            ---
+        </div>
+
+        <!-- SHARED TIMER (Always Visible) -->
+        <div id="auto-unlock-card" class="admin-card overflow-hidden border-amber-100 bg-amber-50/30 dark:bg-amber-500/5 dark:border-amber-500/20 mb-6">
+          <div class="p-5 text-center">
+            <div class="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 mb-2">
+              <span class="material-symbols-outlined text-[18px]">timer</span>
+              <span class="text-[9px] font-black uppercase tracking-widest">Automatic System Unlock</span>
+            </div>
+            <div id="countdown-display" class="text-4xl font-headline font-black text-amber-500 my-1">--:--</div>
+            <div id="countdown-footer" class="text-[10px] font-bold text-amber-700/60 dark:text-amber-400/60 uppercase tracking-tighter">
+              Account restores automatically after 30 minutes
+            </div>
           </div>
         </div>
 
-        <div class="flex flex-col gap-4">
-          <!-- Countdown Timer Box -->
-          <div id="auto-unlock-box" class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
-            <div class="flex items-center justify-center gap-2 text-amber-600 mb-2">
-              <span class="material-symbols-outlined text-[20px]">timer</span>
-              <span class="text-[11px] font-black uppercase tracking-widest">Auto-Unlock In</span>
-            </div>
-            <div id="countdown-display" class="text-4xl font-headline font-black text-amber-500 my-2">--:--</div>
-            <p id="countdown-footer" class="text-[11px] font-semibold text-amber-700 leading-relaxed max-w-[240px] mx-auto mb-4">
-              Your account will automatically unlock after 30 minutes. You can also unlock instantly using your security question below.
-            </p>
-            <button type="button" id="back-to-login-btn" class="hidden w-full bg-teal-600 text-white font-black text-[11px] uppercase tracking-widest py-3 rounded-xl shadow-lg shadow-teal-500/20 hover:bg-teal-700 transition-all active:scale-[0.98]" onclick="goToState(1)">
-              Back to Login
-            </button>
-          </div>
-
-          <!-- Card 1: Unlock via SQ -->
-          <div class="option-card" id="card-sq">
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-indigo-500">quiz</span>
+        <!-- RECOVERY STEPS CONTAINER -->
+        <div id="recovery-steps-container" class="space-y-4">
+          
+          <!-- STEP 1: Recovery Options -->
+          <div id="step-options" class="recovery-step active">
+            <div class="option-card border-indigo-100 bg-indigo-50/50 dark:bg-indigo-50 shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="startRecoveryStep('question')">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 border border-indigo-100 shadow-sm">
+                  <span class="material-symbols-outlined text-indigo-500">security_update_good</span>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-[13px] font-bold text-slate-900 mb-1">Instant Recovery</h3>
+                  <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Answer your security question to reset your password and unlock now.</p>
+                  <div id="sq-message" class="mt-3 p-2 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-lg text-[10px] font-bold text-rose-600 hidden"></div>
+                  <div class="mt-3 flex items-center gap-1 text-[10px] font-black text-indigo-600 uppercase tracking-widest group-hover:gap-2 transition-all">
+                    Begin Verification <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 class="text-sm font-bold text-slate-900 mb-1">Unlock Instantly via Security Question</h3>
-                <p class="text-xs text-slate-500 font-medium leading-relaxed mb-3">Don't want to wait? Answer your security question to unlock immediately and reset your password.</p>
-                <div id="sq-message" class="text-xs font-bold text-rose-500 mb-2 hidden"></div>
-                <button type="button" id="btn-unlock-sq" class="w-full bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white font-bold text-xs py-2.5 rounded-lg transition-colors border border-indigo-100">
-                  Unlock My Account
-                </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Answer Question -->
+          <div id="step-question" class="recovery-step hidden space-y-5">
+            <div class="bg-indigo-50/30 dark:bg-indigo-50/30 border border-indigo-100 dark:border-indigo-100 rounded-2xl p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-indigo-400 text-[16px]">quiz</span>
+                <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Your Security Question</span>
+              </div>
+              <div id="sq-question-text" class="text-sm font-bold text-slate-900 dark:text-slate-900 leading-relaxed italic">
+                "---"
               </div>
             </div>
+
+            <form id="sqForm" class="space-y-4">
+              <div class="fin-input-container">
+                <label class="field-label">Your Secret Answer</label>
+                <div class="relative group">
+                  <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input !pl-12 !h-[50px]" required />
+                  <span class="material-symbols-outlined input-icon !left-4">verified_user</span>
+                  <span class="material-symbols-outlined password-toggle !right-4" onclick="togglePw('sq_answer', this)">visibility</span>
+                </div>
+                <div id="sq-error-box" class="error-msg"></div>
+              </div>
+
+              <!-- Attempts Info -->
+              <div id="sq-attempts-warning" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10 text-[10px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2 hidden">
+                <span class="material-symbols-outlined text-[16px]">warning</span>
+                <span><span id="sq-attempts-count">0</span>/5 attempts used. Locking for 10 min on failure.</span>
+              </div>
+
+              <div class="flex gap-3">
+                <button type="button" onclick="resetRecoveryDashboard()" class="flex-1 px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Cancel</button>
+                <button type="submit" id="btn-verify-answer" class="flex-[2] admin-btn !h-[50px] !text-[11px] !rounded-xl">Verify & Proceed</button>
+              </div>
+            </form>
           </div>
+
+          <!-- STEP 3: New Password -->
+          <div id="step-password" class="recovery-step hidden space-y-6">
+            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-50 border border-emerald-100 dark:border-emerald-100 text-center">
+              <div class="w-10 h-10 bg-white dark:bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+                <span class="material-symbols-outlined text-emerald-500 text-[20px]">check_circle</span>
+              </div>
+              <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-700">Identity Verified. Please set a new password.</p>
+            </div>
+
+            <form id="newPwForm" class="space-y-4">
+              <div class="fin-input-container">
+                <label class="field-label">New Password</label>
+                <div class="relative group">
+                  <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
+                  <span class="material-symbols-outlined input-icon !left-4">lock_reset</span>
+                  <span class="material-symbols-outlined password-toggle !right-4" onclick="togglePw('new_password', this)">visibility</span>
+                </div>
+                <!-- Strength Meter -->
+                <div class="strength-meter">
+                  <div class="strength-segment" id="seg-1"></div>
+                  <div class="strength-segment" id="seg-2"></div>
+                  <div class="strength-segment" id="seg-3"></div>
+                  <div class="strength-segment" id="seg-4"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                  <div class="strength-text" id="strength-text">Security: 0%</div>
+                  <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest" id="strength-label">Insecure</div>
+                </div>
+              </div>
+
+              <div class="fin-input-container">
+                <label class="field-label">Confirm New Password</label>
+                <div class="relative group">
+                  <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
+                  <span class="material-symbols-outlined input-icon !left-4">lock_open</span>
+                  <div id="match-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 hidden"><span class="material-symbols-outlined text-[18px]"></span></div>
+                </div>
+              </div>
+
+              <div id="npw-error-box" class="error-msg"></div>
+
+              <button type="submit" id="btn-update-pw" class="admin-btn !h-[50px] !text-[11px] !rounded-xl" disabled>
+                Update Password & Login
+              </button>
+            </form>
+          </div>
+
         </div>
 
-        <div class="mt-8 text-center">
-          <a href="#" class="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors" onclick="goToState(1)">← Back to Login</a>
+        <div class="mt-10 text-center pt-6 border-t border-slate-100 dark:border-white/5">
+          <a href="admin-login.html" class="text-[11px] font-black text-slate-400 hover:text-primary transition-all uppercase tracking-widest flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Return to Login
+          </a>
         </div>
       </div>
-
-      <!-- ==============================================
-           STATE 3: SECURITY QUESTION FORM
-           ============================================== -->
-      <div id="state-3" class="app-state">
-        <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span class="material-symbols-outlined text-teal-500 text-4xl">shield</span>
-          </div>
-          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Verify Your Identity</h2>
-          <p class="text-slate-500 font-medium text-sm leading-relaxed mb-4">
-            Answer your security question to unlock your account
-          </p>
-          <div class="text-xs font-bold text-slate-400" id="sq-email-display">---</div>
-        </div>
-
-        <form id="sqForm" class="space-y-5 w-full">
-          <!-- Question Box -->
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <label class="field-label">Your Security Question</label>
-            <div id="sq-question-text" class="text-sm font-bold text-slate-900">Loading...</div>
-          </div>
-
-          <!-- Answer Box -->
-          <div class="fin-input-container">
-            <label class="field-label">Your Answer</label>
-            <div class="relative group">
-              <input id="sq_answer" type="password" placeholder="Enter your answer" class="fin-input pl-4 !padding-left:16px"/>
-              <span class="material-symbols-outlined password-toggle" onclick="togglePw('sq_answer', this)">visibility</span>
-            </div>
-            <div id="sq-error-box" class="error-msg"></div>
-          </div>
-
-          <!-- Attempts Warning -->
-          <div id="sq-attempts-warning" class="bg-amber-50 text-amber-700 border border-amber-200 p-3 rounded-lg text-xs font-semibold hidden">
-            Warning: <span id="sq-attempts-count">0</span> attempt(s) used. Account locks for 10 minutes after 5 wrong answers.
-          </div>
-
-          <div class="pt-2">
-            <button type="submit" id="btn-verify-answer" class="admin-btn">
-              <span>Verify Answer</span>
-              <span class="material-symbols-outlined text-xl">arrow_forward</span>
-            </button>
-          </div>
-        </form>
-
-        <div class="mt-8 text-center">
-          <a href="#" class="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors" onclick="goToState(2)">← Back</a>
-        </div>
-      </div>
-
-      <!-- ==============================================
-           STATE 4: SET NEW PASSWORD
-           ============================================== -->
-      <div id="state-4" class="app-state">
-        <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span class="material-symbols-outlined text-green-500 text-4xl">key</span>
-          </div>
-          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Set New Password</h2>
-          <p class="text-slate-500 font-medium text-sm leading-relaxed">
-            Create a strong new password to unlock and access your account
-          </p>
-        </div>
-
-        <form id="newPwForm" class="space-y-5 w-full">
-          <!-- New Password -->
-          <div class="fin-input-container">
-            <label class="field-label">New Password</label>
-            <div class="relative group">
-              <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input pl-4"/>
-              <span class="material-symbols-outlined password-toggle" onclick="togglePw('new_password', this)">visibility</span>
-            </div>
-            <!-- Strength Meter -->
-            <div class="strength-meter mt-2">
-              <div class="strength-segment" id="seg-1"></div>
-              <div class="strength-segment" id="seg-2"></div>
-              <div class="strength-segment" id="seg-3"></div>
-              <div class="strength-segment" id="seg-4"></div>
-            </div>
-            <div class="strength-text" id="strength-text">Weak</div>
-            
-            <ul class="req-list" id="pw-reqs">
-              <li class="req-item" id="req-len"><span class="material-symbols-outlined">close</span> At least 8 characters</li>
-              <li class="req-item" id="req-up"><span class="material-symbols-outlined">close</span> One uppercase letter</li>
-              <li class="req-item" id="req-num"><span class="material-symbols-outlined">close</span> One number</li>
-              <li class="req-item" id="req-sp"><span class="material-symbols-outlined">close</span> One special character (!@#$%^&*)</li>
-            </ul>
-          </div>
-
-          <!-- Confirm Password -->
-          <div class="fin-input-container mt-4">
-            <div class="flex justify-between items-center pr-1">
-              <label class="field-label">Confirm Password</label>
-              <span id="match-indicator" class="material-symbols-outlined text-[16px] text-slate-300 hidden">check_circle</span>
-            </div>
-            <div class="relative group">
-              <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input pl-4"/>
-              <span class="material-symbols-outlined password-toggle" onclick="togglePw('confirm_password', this)">visibility</span>
-            </div>
-          </div>
-
-          <div id="npw-error-box" class="error-msg"></div>
-
-          <div class="pt-4">
-            <button type="submit" id="btn-update-pw" class="admin-btn" disabled>
-              <span>Update Password & Login</span>
-              <span class="material-symbols-outlined text-xl">lock_open</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
     </div>
   </section>
 </main>
@@ -759,74 +766,74 @@
     }
 
     function setupLockedCard(data) {
-      const $card = $('#card-sq');
-      const $btn = $('#btn-unlock-sq');
-      const $msg = $('#sq-message');
-      const $timerBox = $('#auto-unlock-box');
+      const $timerCard = $('#auto-unlock-card');
       const $countdownDisplay = $('#countdown-display');
       const $countdownFooter = $('#countdown-footer');
+      const $recoveryOptions = $('#step-options');
+      const $sqMsg = $('#sq-message');
 
-      // 1. Handle Auto-Unlock Timer
+      // 1. Reset Dashboard to Step 1
+      resetRecoveryDashboard();
+
+      // 2. Handle Auto-Unlock Timer
       if (autoUnlockInterval) clearInterval(autoUnlockInterval);
       
       if (data.auto_unlock_at) {
-        const until = new Date(data.auto_unlock_at.replace(' ', 'T')).getTime();
+        // Cross-browser date parsing (replace - with / and space with T or keep as space)
+        const until = new Date(data.auto_unlock_at.replace(/-/g, '/')).getTime();
         const now = new Date().getTime();
         let remaining = Math.max(0, Math.floor((until - now) / 1000));
 
         if (remaining <= 0) {
-          $timerBox.removeClass('bg-amber-50 border-amber-200').addClass('bg-teal-50 border-teal-200');
+          $timerCard.removeClass('border-amber-100 bg-amber-50/30').addClass('border-teal-100 bg-teal-50/30');
           $countdownDisplay.text("00:00").removeClass('text-amber-500').addClass('text-teal-600');
-          $countdownFooter.html('<div class="text-teal-700 font-bold mb-2">✓ Account Auto-Unlocked</div>You can now login with your password.').addClass('text-teal-700');
-          $card.hide();
+          $countdownFooter.html('<span class="text-teal-600">✓ Account Restored Automatically</span>').addClass('text-teal-600');
+          $recoveryOptions.hide();
         } else {
-          $timerBox.removeClass('bg-teal-50 border-teal-200').addClass('bg-amber-50 border-amber-200');
+          $timerCard.removeClass('border-teal-100 bg-teal-50/30').addClass('border-amber-100 bg-amber-50/30');
           $countdownDisplay.addClass('text-amber-500').removeClass('text-teal-600');
-          $countdownFooter.text("Your account will automatically unlock after 30 minutes. You can also unlock instantly using your security question below.").removeClass('text-teal-700');
-          $card.show();
+          $countdownFooter.text("Account restores automatically after 30 minutes").removeClass('text-teal-600');
+          $recoveryOptions.show();
           startAutoUnlockCountdown(remaining);
         }
       }
 
-      // 2. Handle SQ Card State
+      // 3. Handle SQ Card State
+      const $optCard = $recoveryOptions.find('.option-card');
       if (data.security_question_set === false) {
-        $card.addClass('disabled opacity-60');
-        $btn.hide();
+        $optCard.addClass('opacity-50 pointer-events-none');
         const superMsg = data.admin_role === 'super_admin' 
-          ? "No security question set. Please wait for auto-unlock or use another Super Admin account."
-          : "No security question set. Please wait for auto-unlock or contact your Super Admin.";
-        $msg.text(superMsg).removeClass('hidden').show();
+          ? "Recovery Disabled: No security question set."
+          : "Recovery Disabled: Contact Super Admin.";
+        $sqMsg.text(superMsg).removeClass('hidden').show();
       } else if (data.answer_locked === true) {
-        $card.addClass('disabled');
-        $msg.removeClass('hidden text-rose-500 text-teal-600').addClass('text-amber-500');
+        $optCard.addClass('opacity-50 pointer-events-none');
         let mins = 10;
         if (data.answer_locked_until) {
           const until = new Date(data.answer_locked_until.replace(' ', 'T')).getTime();
           const now = new Date().getTime();
           mins = Math.max(1, Math.ceil((until - now) / 60000));
         }
-        startCountdown(mins, $msg, $btn);
+        $sqMsg.text(`Verification locked. Retry in ${mins}m`).removeClass('hidden').show();
       } else {
-        $card.removeClass('disabled');
-        $btn.show().prop('disabled', false);
-        $msg.hide();
+        $optCard.removeClass('opacity-50 pointer-events-none');
+        $sqMsg.hide();
       }
     }
 
     function startAutoUnlockCountdown(seconds) {
       const $display = $('#countdown-display');
       const $footer = $('#countdown-footer');
-      const $box = $('#auto-unlock-box');
-      const $card = $('#card-sq');
+      const $card = $('#auto-unlock-card');
+      const $options = $('#step-options');
 
       function update() {
         if (seconds <= 0) {
           clearInterval(autoUnlockInterval);
-          $box.removeClass('bg-amber-50 border-amber-200').addClass('bg-teal-50 border-teal-200');
+          $card.removeClass('border-amber-100 bg-amber-50/30').addClass('border-teal-100 bg-teal-50/30');
           $display.text("00:00").removeClass('text-amber-500').addClass('text-teal-600');
-          $footer.html('<div class="text-teal-700 font-bold mb-2">✓ Account Auto-Unlocked</div>You can now login with your password.').addClass('text-teal-700');
-          $('#back-to-login-btn').removeClass('hidden');
-          $card.fadeOut();
+          $footer.html('<span class="text-teal-600 font-black uppercase tracking-widest">✓ Account Unlocked</span>').addClass('text-teal-600');
+          $options.fadeOut();
           return;
         }
 
@@ -840,52 +847,61 @@
       autoUnlockInterval = setInterval(update, 1000);
     }
 
-    // ==========================================
-    // STATE 2: UNLOCK SQ BUTTON
-    // ==========================================
-    $('#btn-unlock-sq').on('click', function() {
-      const original = $(this).text();
-      $(this).text('Loading...').prop('disabled', true);
+    // DASHBOARD STEP CONTROLLER
+    window.startRecoveryStep = function(step) {
+      if (step === 'question') {
+        const $btn = $('.option-card');
+        const original = $btn.find('h3').text();
+        $btn.find('h3').text('Checking security status...');
 
-      fetch('../../api/admin/get-security-question.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'email=' + encodeURIComponent(CURRENT_EMAIL) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
-      })
-      .then(res => res.json())
-      .then(data => {
-        $(this).text(original).prop('disabled', false);
-        if (data.success) {
-          $('#sq-email-display').text(data.email);
-          $('#sq-question-text').text(data.question);
-          goToState(3);
-        } else if (data.answer_locked) {
-          setupLockedCard({answer_locked: true}); // approximate
-        } else {
-          $('#sq-message').text(data.message).show();
-        }
-      });
-    });
+        fetch('../../api/admin/get-security-question.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'email=' + encodeURIComponent(CURRENT_EMAIL) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+        })
+        .then(res => res.json())
+        .then(data => {
+          $btn.find('h3').text(original);
+          if (data.success) {
+            $('#sq-question-text').text(`"${data.question}"`);
+            showSubStep('step-question');
+            $('#recovery-icon').text('verified_user');
+            $('#recovery-title').text('Identity Verification');
+            $('#recovery-subtitle').text('Please confirm your security answer');
+          } else {
+            showToast(data.message || "Error fetching question", "error");
+          }
+        });
+      }
+    };
+
+    window.resetRecoveryDashboard = function() {
+      showSubStep('step-options');
+      $('#recovery-icon').text('lock');
+      $('#recovery-title').text('Account Locked');
+      $('#recovery-subtitle').text('System access restricted due to security protocols.');
+      $('#sq_answer').val('');
+      $('#sq-error-box').hide();
+    };
+
+    function showSubStep(stepId) {
+      $('.recovery-step').addClass('hidden').removeClass('active');
+      $(`#${stepId}`).removeClass('hidden').addClass('active');
+    }
 
     // ==========================================
-    // STATE 3: VERIFY ANSWER FORM
+    // RECOVERY FORM HANDLERS
     // ==========================================
-    const $sqForm = $('#sqForm');
-    const $sqBtn = $('#btn-verify-answer');
-    const $sqError = $('#sq-error-box');
-
-    $sqForm.on('submit', function(e) {
+    $('#sqForm').on('submit', function(e) {
       e.preventDefault();
       const ans = $('#sq_answer').val().trim();
+      const $btn = $('#btn-verify-answer');
+      const $error = $('#sq-error-box');
       
-      $sqError.hide();
-      if (!ans) {
-        $sqError.text("Answer is required").show();
-        return;
-      }
+      if (!ans) return;
 
-      const original = $sqBtn.html();
-      $sqBtn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Verifying...</span>').prop('disabled', true);
+      const original = $btn.html();
+      $btn.html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
 
       fetch('../../api/admin/verify-security-answer.php', {
         method: 'POST',
@@ -894,99 +910,73 @@
       })
       .then(res => res.json())
       .then(data => {
-        $sqBtn.html(original).prop('disabled', false);
+        $btn.html(original).prop('disabled', false);
         if (data.success) {
           RESET_TOKEN = data.reset_token;
-          goToState(4);
-        } else if (data.answer_locked) {
-          $sqError.hide();
-          const $warn = $('#sq-attempts-warning');
-          $warn.removeClass('bg-amber-50 text-amber-700 border-amber-200').addClass('bg-rose-50 text-rose-700 border-rose-200');
-          startCountdown(10, $warn, $sqBtn);
+          showSubStep('step-password');
+          $('#recovery-icon').text('key_visualizer');
+          $('#recovery-title').text('Reset Password');
+          $('#recovery-subtitle').text('Create a secure new password for your account');
         } else {
-          $sqError.text(data.message).show();
-          // We don't get exact attempt count back cleanly, but we can parse it
-          const match = data.message.match(/(\d+)\sattempt/);
-          if (match) {
-             const used = 5 - parseInt(match[1]);
-             $('#sq-attempts-count').text(used);
-             $('#sq-attempts-warning').show();
+          $error.text(data.message).show();
+          if (data.message.match(/(\d+)\sattempt/)) {
+            const match = data.message.match(/(\d+)\sattempt/);
+            $('#sq-attempts-count').text(5 - parseInt(match[1]));
+            $('#sq-attempts-warning').removeClass('hidden');
+          }
+          if (data.answer_locked) {
+            setupLockedCard({answer_locked: true}); 
           }
         }
-      })
-      .catch(err => {
-        $sqError.text("Connection error").show();
-        $sqBtn.html(original).prop('disabled', false);
       });
     });
 
-    // ==========================================
-    // STATE 4: SET NEW PASSWORD
-    // ==========================================
-    const $newPwInput = $('#new_password');
-    const $confPwInput = $('#confirm_password');
-    const $btnUpdatePw = $('#btn-update-pw');
-    const $npwError = $('#npw-error-box');
-
-    function checkPasswordStrength() {
-      const pw = $newPwInput.val();
-      const conf = $confPwInput.val();
+    // PASSWORD STRENGTH LOGIC
+    function updateStrength() {
+      const pw = $('#new_password').val();
+      const conf = $('#confirm_password').val();
+      const $btn = $('#btn-update-pw');
       
       let reqs = { len: pw.length >= 8, up: /[A-Z]/.test(pw), num: /[0-9]/.test(pw), sp: /[!@#$%^&*]/.test(pw) };
-      
-      // Update checks
-      $('#req-len').toggleClass('met', reqs.len).find('span').text(reqs.len ? 'check_circle' : 'close');
-      $('#req-up').toggleClass('met', reqs.up).find('span').text(reqs.up ? 'check_circle' : 'close');
-      $('#req-num').toggleClass('met', reqs.num).find('span').text(reqs.num ? 'check_circle' : 'close');
-      $('#req-sp').toggleClass('met', reqs.sp).find('span').text(reqs.sp ? 'check_circle' : 'close');
-
       let strength = 0;
       if (reqs.len) strength++;
       if (reqs.len && reqs.up && reqs.num) strength++;
       if (reqs.len && reqs.up && reqs.num && reqs.sp) strength++;
 
-      const colors = ['#ef4444', '#f59e0b', '#10b981'];
-      const labels = ['Weak', 'Fair', 'Strong'];
+      const colors = ['#ef4444', '#f59e0b', '#10b981', '#059669'];
+      const labels = ['Insecure', 'Basic', 'Secure', 'Very Strong'];
       
-      $('.strength-segment').css('background', '#e2e8f0');
-      
+      $('.strength-segment').css('background', 'rgba(226, 232, 240, 0.5)');
       if (pw.length > 0) {
-        let segCount = strength === 0 ? 1 : strength + 1; // 1 to 4
-        let color = strength === 0 ? colors[0] : (strength === 1 ? colors[1] : colors[2]);
-        let lbl = strength === 0 ? labels[0] : (strength === 1 ? labels[1] : labels[2]);
-        if (strength === 3) { segCount = 4; color = '#059669'; lbl = 'Very Strong'; }
-        
-        for (let i=1; i<=segCount; i++) $('#seg-' + i).css('background', color);
-        $('#strength-text').text(lbl).css('color', color);
+        let count = strength + 1;
+        for (let i=1; i<=count; i++) $(`#seg-${i}`).css('background', colors[strength]);
+        $('#strength-text').text(`Security: ${count * 25}%`).css('color', colors[strength]);
+        $('#strength-label').text(labels[strength]).css('color', colors[strength]);
       } else {
-        $('#strength-text').text('Weak').css('color', '#94a3b8');
+        $('#strength-text').text('Security: 0%').css('color', '');
+        $('#strength-label').text('Insecure').css('color', '');
       }
 
-      const allReqsMet = reqs.len && reqs.up && reqs.num && reqs.sp;
-      const passwordsMatch = pw === conf && pw !== '';
+      const match = pw === conf && pw !== '';
+      $('#match-indicator').toggleClass('hidden', conf === '');
+      $('#match-indicator span').text(match ? 'check_circle' : 'cancel')
+                                .toggleClass('text-emerald-500', match)
+                                .toggleClass('text-rose-500', !match);
 
-      if (passwordsMatch) {
-        $('#match-indicator').removeClass('hidden text-slate-300 text-rose-500').addClass('text-green-500').text('check_circle');
-      } else if (conf !== '') {
-        $('#match-indicator').removeClass('hidden text-slate-300 text-green-500').addClass('text-rose-500').text('cancel');
-      } else {
-        $('#match-indicator').addClass('hidden');
-      }
-
-      $btnUpdatePw.prop('disabled', !(allReqsMet && passwordsMatch));
+      $btn.prop('disabled', !(strength === 3 && match));
     }
 
-    $newPwInput.on('input', checkPasswordStrength);
-    $confPwInput.on('input', checkPasswordStrength);
+    $('#new_password, #confirm_password').on('input', updateStrength);
 
     $('#newPwForm').on('submit', function(e) {
       e.preventDefault();
-      const pw = $newPwInput.val();
-      const conf = $confPwInput.val();
+      const pw = $('#new_password').val();
+      const conf = $('#confirm_password').val();
+      const $btn = $('#btn-update-pw');
+      const $error = $('#npw-error-box');
 
-      $npwError.hide();
-      const original = $btnUpdatePw.html();
-      $btnUpdatePw.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Updating...</span>').prop('disabled', true);
+      const original = $btn.html();
+      $btn.html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
 
       fetch('../../api/admin/reset-password-unlock.php', {
         method: 'POST',
@@ -996,21 +986,12 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          showToast("Password updated successfully! Redirecting to login...");
-          setTimeout(() => {
-            window.location.href = 'admin-login.html?unlocked=1';
-          }, 2000);
+          showToast("Account Unlocked Successfully!", "success");
+          setTimeout(() => window.location.href = 'admin-login.html?unlocked=1', 1500);
         } else {
-          $btnUpdatePw.html(original).prop('disabled', false);
-          $npwError.text(data.message).show();
-          if (data.message.includes('expired')) {
-            setTimeout(() => { window.location.href = 'admin-login.html'; }, 2000);
-          }
+          $btn.html(original).prop('disabled', false);
+          $error.text(data.message).show();
         }
-      })
-      .catch(err => {
-        $btnUpdatePw.html(original).prop('disabled', false);
-        $npwError.text("Connection error").show();
       });
     });
 
