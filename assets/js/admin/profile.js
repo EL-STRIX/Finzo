@@ -200,16 +200,9 @@
 
                 // Super Admin Privileges Check
                 if (admin.admin_role === 'super_admin') {
-                    // Inject Add Admin button
-                    const c = document.getElementById('header-actions-container');
-                    if (!document.getElementById('inject-add-admin')) {
-                        const btn = document.createElement('button');
-                        btn.id = 'inject-add-admin';
-                        btn.className = 'admin-btn-primary flex items-center gap-2 !py-2';
-                        btn.innerHTML = `<span class="material-symbols-outlined text-lg">add</span> <span class="hidden sm:inline">Add Admin</span>`;
-                        btn.onclick = () => window.AdminProfile.showAddModal();
-                        c.prepend(btn);
-                    }
+                    // Show Add Admin button
+                    const addBtn = document.getElementById('header-add-admin-btn');
+                    if (addBtn) addBtn.classList.remove('hidden');
                     
                     // Show Management Card
                     document.getElementById('admin-management-container').classList.remove('hidden');
@@ -512,10 +505,21 @@
         },
 
         showAddModal: () => {
-            document.getElementById('add-admin-modal').style.display = 'flex';
+            const modal = document.getElementById('add-admin-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                // Prevent background scrolling
+                document.body.style.overflow = 'hidden';
+            }
         },
         closeAddModal: () => {
-            document.getElementById('add-admin-modal').style.display = 'none';
+            const modal = document.getElementById('add-admin-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
         },
 
         submitAddAdmin: async () => {
@@ -583,7 +587,20 @@
                     loadAdminList(); // Refresh list automatically
                 } else {
                     if (response.field) {
-                        const e = document.getElementById('err-add-' + response.field.replace(/_/g, '-').replace('full-name', 'name').replace('date-of-birth', 'dob').replace('security', 'seq').replace('-answer', '-a').replace('-question', '-q').replace('admin-role', 'role').replace('password', 'pw'));
+                        const fieldMap = {
+                            'full_name': 'name',
+                            'date_of_birth': 'dob',
+                            'gender': 'gender',
+                            'phone': 'phone',
+                            'email': 'email',
+                            'password': 'pw',
+                            'confirm_password': 'conf-pw',
+                            'security_question': 'seq-q',
+                            'security_answer': 'seq-a',
+                            'admin_role': 'role'
+                        };
+                        const targetId = 'err-add-' + (fieldMap[response.field] || response.field);
+                        const e = document.getElementById(targetId);
                         if(e){
                             e.textContent = response.message;
                             e.classList.remove('hidden');

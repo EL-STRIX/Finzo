@@ -367,7 +367,12 @@
                             <span class="material-symbols-outlined text-amber-500">manage_accounts</span>
                             Admin Management
                         </h3>
-                        <span id="management-count-badge" class="px-3 py-1 bg-amber-500/10 text-amber-600 text-[10px] font-black rounded-lg uppercase tracking-widest">0 Admins</span>
+                        <div class="flex items-center gap-3">
+                            <span id="management-count-badge" class="px-3 py-1 bg-amber-500/10 text-amber-600 text-[10px] font-black rounded-lg uppercase tracking-widest">0 Admins</span>
+                            <button id="header-add-admin-btn" onclick="window.AdminProfile.showAddModal()" class="hidden px-4 py-1.5 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-1.5 shadow-sm">
+                                <span class="material-symbols-outlined text-[14px]">add</span> Add Admin
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="admin-table w-full text-left">
