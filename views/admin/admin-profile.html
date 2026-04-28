@@ -530,19 +530,7 @@
         </div>
     </div>
     
-    <!-- INLINE DELETE CONFIRM MODAL -->
-    <div id="delete-admin-modal" class="fixed inset-0 z-[2001] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.AdminProfile.closeDeleteModal()"></div>
-        <div class="admin-card w-full max-w-sm relative z-10 p-8 animate-modal-enter text-center">
-            <span class="material-symbols-outlined text-4xl text-error mb-4">warning</span>
-            <h3 class="text-xl font-bold dark:text-white mb-2">Confirm Deletion</h3>
-            <p id="delete-admin-text" class="text-sm opacity-70 mb-8 leading-relaxed"></p>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="window.AdminProfile.closeDeleteModal()" class="admin-btn-secondary">Cancel</button>
-                <button id="confirm-delete-btn" class="admin-btn-primary !bg-error hover:!bg-error/90 w-full justify-center">Delete Admin</button>
-            </div>
-        </div>
-    </div>
+
 
 
     <script src="../../assets/js/core/theme.js"></script>

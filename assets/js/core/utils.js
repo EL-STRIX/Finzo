@@ -36,6 +36,26 @@ window.FinzoUtils = {
     },
 
     /**
+     * Format date and time to a readable string (e.g. 28 Apr 2026, 14:30)
+     * @param {string|Date} dateStr 
+     * @returns {string}
+     */
+    formatDateTime: function(dateStr) {
+        if (!dateStr) return 'N/A';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }) + ', ' + date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    },
+
+    /**
      * Generate an institutional-grade gradient based on initials
      * @param {string} initials 
      * @returns {string} CSS gradient string

@@ -227,52 +227,59 @@
                 if (res.total > 0) {
                     tbody.innerHTML = res.admins.map((a, i) => {
                         
-                        let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600">Admin</span>`;
+                        let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
                         if (a.admin_role === 'moderator') {
-                            roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600">Moderator</span>`;
+                            roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
                         }
 
                         let statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500">• Active</span>`;
                         if(a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
                         
-                        let actHtml = ``;
-                        if(a.status === 'active') {
-                            actHtml += `<button onclick="window.AdminProfile.manageAdmin(${a.id}, 'suspend')" class="p-1 rounded text-amber-500 hover:bg-amber-50 dark:hover:bg-white/5"><span class="material-symbols-outlined text-[18px]">block</span></button>`;
-                        } else if (a.status === 'suspended') {
-                            actHtml += `<button onclick="window.AdminProfile.manageAdmin(${a.id}, 'activate')" class="p-1 rounded text-emerald-500 hover:bg-emerald-50 dark:hover:bg-white/5"><span class="material-symbols-outlined text-[18px]">check_circle</span></button>`;
-                        }
-                        actHtml += `<button onclick="window.AdminProfile.showDeleteModal(${a.id}, '${a.full_name}')" class="p-1 rounded text-red-500 hover:bg-red-50 dark:hover:bg-white/5 ml-1"><span class="material-symbols-outlined text-[18px]">delete</span></button>`;
-
                         const photo = a.profile_photo 
-                            ? `<img src="../../${a.profile_photo}" class="w-8 h-8 rounded-full object-cover">`
-                            : `<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold">${a.full_name.charAt(0).toUpperCase()}</div>`;
+                            ? `<img src="../../${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
+                            : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
+
+                        const formatDateLocal = (d) => {
+                            if (!d) return '-';
+                            const dt = new Date(d);
+                            return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                        };
 
                         return `
-                        <tr id="admin-row-${a.id}" class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                            <td class="text-xs font-bold opacity-50">${i+1}</td>
-                            <td>${photo}</td>
-                            <td>
-                                <div class="font-bold text-sm">${a.full_name}</div>
-                                <div class="text-[10px] opacity-60">${a.email}</div>
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
+                            <td class="py-4 px-6 text-[10px] font-bold text-slate-400 w-12 text-center">${i + 1}</td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3">
+                                    ${photo}
+                                    <div>
+                                        <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
+                                        <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td>${roleHtml}</td>
-                            <td><span class="text-[10px] uppercase font-bold opacity-60">${a.access_level}</span></td>
-                            <td>${statHtml}</td>
-                            <td class="text-[10px] font-bold opacity-60">${timeAgo(a.last_login_at)}</td>
-                            <td>
-                                <div class="text-[10px] font-bold">${a.created_by_name || 'System'}</div>
-                                <div class="text-[9px] opacity-50">${formatDate(a.created_at)}</div>
+                            <td class="py-4 px-6">${roleHtml}</td>
+                            <td class="py-4 px-6">
+                                <span class="text-[10px] font-bold uppercase tracking-tight text-slate-500 dark:text-slate-400">${a.access_level}</span>
                             </td>
-                            <td class="text-right whitespace-nowrap">${actHtml}</td>
+                            <td class="py-4 px-6">${statHtml}</td>
+                            <td class="py-4 px-6">
+                                <div class="text-[10px] font-bold dark:text-slate-300">${a.last_login_at ? timeAgo(a.last_login_at) : 'Never'}</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-[10px] font-bold dark:text-slate-300">${a.created_by_name || 'System'}</div>
+                                <div class="text-[9px] font-bold text-slate-400 mt-0.5">${formatDateLocal(a.created_at)}</div>
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <a href="admin-detail.html?id=${a.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 shadow-sm border border-transparent hover:border-primary/20">
+                                    View Profile
+                                    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                                </a>
+                            </td>
                         </tr>
                         `;
                     }).join('');
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-10">
-                        <span class="material-symbols-outlined text-4xl opacity-20 mb-2">person_add</span>
-                        <div class="font-bold">No admins added yet</div>
-                        <div class="text-xs opacity-50 mt-1">Click + Add Admin to create your first admin account</div>
-                    </td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400 text-xs font-bold">No other administrators found.</td></tr>`;
                 }
             }
         } catch (e) {
@@ -619,30 +626,6 @@
             }
         },
 
-        manageAdmin: async (id, action) => {
-            try {
-                const res = await window.api.post('/admin/admin-action.php', { target_admin_id: id, action: action });
-                if(res.success){
-                    window.portal.showToast(res.message, 'success');
-                    loadAdminList();
-                } else {
-                    window.portal.showToast(res.message, 'error');
-                }
-            } catch (e) {
-                window.portal.showToast('System error performing action', 'error');
-            }
-        },
-
-        showDeleteModal: (id, name) => {
-            window.targetDeleteAdminId = id;
-            document.getElementById('delete-admin-text').textContent = `Are you sure you want to delete ${name}? This action cannot be undone.`;
-            document.getElementById('delete-admin-modal').style.display = 'flex';
-        },
-        closeDeleteModal: () => {
-            window.targetDeleteAdminId = null;
-            document.getElementById('delete-admin-modal').style.display = 'none';
-        },
-
         // Activity Pagination
         prevActivityPage: () => {
             if (currentActivityPage > 1) {
@@ -659,22 +642,6 @@
         }
     };
 
-    // Attach to confirm delete statically
-    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-        if (!window.targetDeleteAdminId) return;
-        try {
-            const res = await window.api.post('/admin/admin-action.php', { target_admin_id: window.targetDeleteAdminId, action: 'delete' });
-            if(res.success){
-                window.portal.showToast(res.message, 'success');
-                window.AdminProfile.closeDeleteModal();
-                loadAdminList();
-            } else {
-                window.portal.showToast(res.message, 'error');
-            }
-        } catch (e) {
-            window.portal.showToast('System error performing action', 'error');
-        }
-    });
 
     // Initialization
     document.addEventListener('DOMContentLoaded', () => {
