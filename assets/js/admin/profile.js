@@ -195,7 +195,29 @@
                 document.getElementById('sec-last-login').textContent = timeAgo(admin.last_login_at);
                 document.getElementById('sec-last-ip').textContent = admin.last_login_ip || '-';
                 document.getElementById('sec-last-pwd').textContent = timeAgo(admin.last_password_changed);
-                document.getElementById('sec-failed').textContent = admin.failed_attempts || '0';
+                
+                // Recovery Status handling
+                const recoveryCard = document.getElementById('sec-recovery-card');
+                const recoveryIcon = document.getElementById('sec-recovery-icon');
+                const recoveryText = document.getElementById('sec-recovery-text');
+                if (recoveryCard && recoveryIcon && recoveryText) {
+                    const recoveryLabel = recoveryCard.querySelector('label');
+                    if (admin.security_question_set == 1) {
+                        recoveryCard.className = "bg-emerald-50 dark:bg-emerald-500/5 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-500/10 relative overflow-hidden group hover:border-emerald-300 transition-colors";
+                        recoveryIcon.textContent = "verified_user";
+                        recoveryIcon.className = "material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]";
+                        if(recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10";
+                        recoveryText.textContent = "✓ Configured";
+                        recoveryText.className = "font-bold text-[13px] tracking-wide text-emerald-700 dark:text-emerald-400 relative z-10 truncate";
+                    } else {
+                        recoveryCard.className = "bg-rose-50 dark:bg-rose-500/5 rounded-2xl p-5 border border-rose-100 dark:border-rose-500/10 relative overflow-hidden group hover:border-rose-300 transition-colors";
+                        recoveryIcon.textContent = "gpp_maybe";
+                        recoveryIcon.className = "material-symbols-outlined text-rose-500 opacity-80 mb-3 relative z-10 text-[28px]";
+                        if(recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 relative z-10";
+                        recoveryText.textContent = "⚠ Action Required";
+                        recoveryText.className = "font-bold text-[13px] tracking-wide text-rose-700 dark:text-rose-400 relative z-10 truncate";
+                    }
+                }
                 
                 // 2FA is currently a placeholder
                 // document.getElementById('sec-2fa-toggle').checked = (admin.two_fa_enabled == 1);

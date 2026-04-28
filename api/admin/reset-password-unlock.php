@@ -65,7 +65,8 @@ $updateStmt = $pdo->prepare("
         locked_at = NULL, 
         lock_reason = NULL, 
         password_reset_token = NULL, 
-        password_reset_expires_at = NULL
+        password_reset_expires_at = NULL,
+        last_password_changed = NOW()
     WHERE id = ?
 ");
 $updateStmt->execute([$new_hash, $admin['id']]);
