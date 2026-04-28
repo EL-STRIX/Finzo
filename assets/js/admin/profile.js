@@ -3,7 +3,7 @@
  * Manages administrative account settings, avatar, security, and super_admin privileges.
  */
 
-(function() {
+(function () {
     let currentAdminRole = 'admin';
 
     // Pagination State for Activity
@@ -16,7 +16,7 @@
         if (!dateStr) return 'Never';
         const ts = new Date(dateStr).getTime();
         const seconds = Math.floor((new Date().getTime() - ts) / 1000);
-        
+
         let interval = seconds / 31536000;
         if (interval > 1) return Math.floor(interval) + " years ago";
         interval = seconds / 2592000;
@@ -37,8 +37,8 @@
     const formatDateTime = (dateStr) => {
         if (!dateStr) return '-';
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + 
-               d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
+            d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     };
 
     function renderActivityPage() {
@@ -61,13 +61,13 @@
 
         const startIdx = (currentActivityPage - 1) * ACTIVITY_PER_PAGE;
         const endIdx = Math.min(startIdx + ACTIVITY_PER_PAGE, activityData.length);
-        
+
         const pageData = activityData.slice(startIdx, endIdx);
 
         tbody.innerHTML = pageData.map(a => {
             // Strip redundant IP from details
             let cleanDetails = a.details ? a.details.replace(/\sfrom IP:\s.*$/, '') : '-';
-            
+
             // Professional overrides
             switch (a.action_type) {
                 case 'admin_login':
@@ -123,16 +123,16 @@
             if (response.success) {
                 const admin = response.profile;
                 currentAdminRole = admin.admin_role;
-                
+
                 // Topbar & Subtitle handling
                 document.getElementById('topbar-avatar').textContent = admin.full_name.charAt(0);
-                
+
                 // Profile Card bindings
                 document.getElementById('profile-name-display').textContent = admin.full_name;
                 document.getElementById('profile-admin-id-input').value = admin.admin_id || '---';
                 document.getElementById('profile-name-input').value = admin.full_name;
                 document.getElementById('profile-dob-input').value = admin.date_of_birth || '';
-                
+
                 // Gender Dropdown sync
                 const genderVal = admin.gender || '';
                 const genderInput = document.getElementById('profile-gender-input');
@@ -144,13 +144,13 @@
                 }
                 document.getElementById('profile-phone-input').value = admin.phone || '';
                 document.getElementById('profile-email-input').value = admin.email;
-                
+
                 const qField = document.getElementById('profile-seq-q-input');
                 if (qField) qField.value = admin.security_question || '';
-                
+
                 // Badges
                 const baseBadgeClass = 'px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest transition-colors';
-                
+
                 const roleBadge = document.getElementById('badge-role');
                 if (admin.admin_role === 'super_admin') {
                     roleBadge.textContent = 'Super Admin';
@@ -165,8 +165,8 @@
 
                 const accessBadge = document.getElementById('badge-access');
                 accessBadge.textContent = admin.access_level;
-                accessBadge.className = admin.access_level === 'full' 
-                    ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400` 
+                accessBadge.className = admin.access_level === 'full'
+                    ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`
                     : `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
 
                 const statusBadge = document.getElementById('badge-status');
@@ -180,7 +180,7 @@
                 }
 
                 // Avatar handling
-                const initials = admin.full_name.split(' ').map(n=>n[0]).join('').substring(0, 2);
+                const initials = admin.full_name.split(' ').map(n => n[0]).join('').substring(0, 2);
                 if (admin.profile_photo) {
                     document.getElementById('avatar-img-preview').src = '../../' + admin.profile_photo;
                     document.getElementById('avatar-img-preview').classList.remove('hidden');
@@ -195,7 +195,7 @@
                 document.getElementById('sec-last-login').textContent = timeAgo(admin.last_login_at);
                 document.getElementById('sec-last-ip').textContent = admin.last_login_ip || '-';
                 document.getElementById('sec-last-pwd').textContent = timeAgo(admin.last_password_changed);
-                
+
                 // Recovery Status handling
                 const recoveryCard = document.getElementById('sec-recovery-card');
                 const recoveryIcon = document.getElementById('sec-recovery-icon');
@@ -206,19 +206,19 @@
                         recoveryCard.className = "bg-emerald-50 dark:bg-emerald-500/5 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-500/10 relative overflow-hidden group hover:border-emerald-300 transition-colors";
                         recoveryIcon.textContent = "verified_user";
                         recoveryIcon.className = "material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if(recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10";
+                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10";
                         recoveryText.textContent = "✓ Configured";
                         recoveryText.className = "font-bold text-[13px] tracking-wide text-emerald-700 dark:text-emerald-400 relative z-10 truncate";
                     } else {
                         recoveryCard.className = "bg-rose-50 dark:bg-rose-500/5 rounded-2xl p-5 border border-rose-100 dark:border-rose-500/10 relative overflow-hidden group hover:border-rose-300 transition-colors";
                         recoveryIcon.textContent = "gpp_maybe";
                         recoveryIcon.className = "material-symbols-outlined text-rose-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if(recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 relative z-10";
+                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 relative z-10";
                         recoveryText.textContent = "⚠ Action Required";
                         recoveryText.className = "font-bold text-[13px] tracking-wide text-rose-700 dark:text-rose-400 relative z-10 truncate";
                     }
                 }
-                
+
                 // 2FA is currently a placeholder
                 // document.getElementById('sec-2fa-toggle').checked = (admin.two_fa_enabled == 1);
 
@@ -237,7 +237,7 @@
                     // Show Add Admin button
                     const addBtn = document.getElementById('header-add-admin-btn');
                     if (addBtn) addBtn.classList.remove('hidden');
-                    
+
                     // Show Management Card
                     document.getElementById('admin-management-container').classList.remove('hidden');
                     loadAdminList();
@@ -259,7 +259,7 @@
                         const sqBtnText = document.getElementById('sq-btn-text');
                         if (sqBtnText) sqBtnText.textContent = 'Update Security Question';
                     } else {
-                        const warningMsg = admin.admin_role === 'super_admin' 
+                        const warningMsg = admin.admin_role === 'super_admin'
                             ? '⚠️ As a Super Admin, your account is critical. If you get locked, you will need another Super Admin to unlock you, or you must have a security question set.'
                             : '⚠️ You have not set a security question yet. If your account gets locked you will need a Super Admin to unlock it manually.';
                         sqContainer.innerHTML = `
@@ -344,16 +344,16 @@
                 const tbody = document.getElementById('admin-management-body');
                 if (res.total > 0) {
                     tbody.innerHTML = res.admins.map((a, i) => {
-                        
+
                         let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
                         if (a.admin_role === 'moderator') {
                             roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
                         }
 
                         let statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500">• Active</span>`;
-                        if(a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
-                        
-                        const photo = a.profile_photo 
+                        if (a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
+
+                        const photo = a.profile_photo
                             ? `<img src="../../${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
                             : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
 
@@ -436,7 +436,7 @@
         },
 
         previewNewPhoto: (input) => {
-             if (input.files && input.files[0]) {
+            if (input.files && input.files[0]) {
                 const file = input.files[0];
                 const r = new FileReader();
                 r.onload = (e) => {
@@ -444,7 +444,7 @@
                     document.getElementById('new-avatar-preview').classList.remove('hidden');
                 };
                 r.readAsDataURL(file);
-             }
+            }
         },
 
         togglePW: (id) => {
@@ -470,13 +470,13 @@
             if (/[0-9]/.test(pw)) strength++;
             if (/[^A-Za-z0-9]/.test(pw)) strength++;
 
-            if (strength === 0) { 
+            if (strength === 0) {
                 pwBar.style.width = '0%'; pwText.textContent = '';
-            } else if (strength <= 2) { 
+            } else if (strength <= 2) {
                 pwBar.style.width = '33%'; pwBar.style.background = '#ef4444'; pwText.textContent = 'Weak'; pwText.style.color = '#ef4444';
-            } else if (strength === 3) { 
+            } else if (strength === 3) {
                 pwBar.style.width = '66%'; pwBar.style.background = '#f39c12'; pwText.textContent = 'Fair'; pwText.style.color = '#f39c12';
-            } else { 
+            } else {
                 pwBar.style.width = '100%'; pwBar.style.background = '#10b981'; pwText.textContent = 'Strong'; pwText.style.color = '#10b981';
             }
         },
@@ -490,14 +490,14 @@
             if (/[0-9]/.test(pw)) strength++;
             if (/[^A-Za-z0-9]/.test(pw)) strength++;
 
-            if (strength === 0) { 
-                pwBar.style.width = '0%'; 
-            } else if (strength <= 2) { 
-                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444'; 
-            } else if (strength === 3) { 
-                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12'; 
-            } else { 
-                pwBar.style.width = '100%'; pwBar.style.background = '#10b981'; 
+            if (strength === 0) {
+                pwBar.style.width = '0%';
+            } else if (strength <= 2) {
+                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444';
+            } else if (strength === 3) {
+                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12';
+            } else {
+                pwBar.style.width = '100%'; pwBar.style.background = '#10b981';
             }
         },
 
@@ -506,7 +506,7 @@
             const nw = document.getElementById('new-pw').value;
             const conf = document.getElementById('conf-pw').value;
 
-            if(!curr || !nw || !conf){
+            if (!curr || !nw || !conf) {
                 window.portal.showToast('Please fill all password fields', 'error');
                 return;
             }
@@ -536,40 +536,40 @@
         },
 
         saveProfile: async () => {
-             const payload = {
-                 full_name: document.getElementById('profile-name-input').value,
-                 date_of_birth: document.getElementById('profile-dob-input').value,
-                 gender: document.getElementById('profile-gender-input').value,
-                 phone: document.getElementById('profile-phone-input').value
-             };
+            const payload = {
+                full_name: document.getElementById('profile-name-input').value,
+                date_of_birth: document.getElementById('profile-dob-input').value,
+                gender: document.getElementById('profile-gender-input').value,
+                phone: document.getElementById('profile-phone-input').value
+            };
 
-             const qField = document.getElementById('profile-seq-q-input');
-             const aField = document.getElementById('profile-seq-a-input');
-             if (qField) payload.security_question = qField.value;
-             if (aField) payload.security_answer = aField.value;
+            const qField = document.getElementById('profile-seq-q-input');
+            const aField = document.getElementById('profile-seq-a-input');
+            if (qField) payload.security_question = qField.value;
+            if (aField) payload.security_answer = aField.value;
 
-             if(!payload.full_name){
-                 window.portal.showToast('Full Name is required', 'error');
-                 return;
-             }
+            if (!payload.full_name) {
+                window.portal.showToast('Full Name is required', 'error');
+                return;
+            }
 
-             try {
-                 const btn = document.activeElement;
-                 window.api.setButtonLoading(btn, true, 'Saving...');
-                 const res = await window.api.post('/admin/update-admin-profile.php', payload);
-                 if (res.success) {
-                     window.portal.showToast(res.message, 'success');
-                     const aField = document.getElementById('profile-seq-a-input');
-                     if (aField) aField.value = '';
-                     loadAdminProfile();
-                 } else {
-                     window.portal.showToast(res.message, 'error');
-                 }
-             } catch(e) {
-                  window.portal.showToast('System error updating profile', 'error');
-             } finally {
-                  window.api.setButtonLoading(document.activeElement, false);
-             }
+            try {
+                const btn = document.activeElement;
+                window.api.setButtonLoading(btn, true, 'Saving...');
+                const res = await window.api.post('/admin/update-admin-profile.php', payload);
+                if (res.success) {
+                    window.portal.showToast(res.message, 'success');
+                    const aField = document.getElementById('profile-seq-a-input');
+                    if (aField) aField.value = '';
+                    loadAdminProfile();
+                } else {
+                    window.portal.showToast(res.message, 'error');
+                }
+            } catch (e) {
+                window.portal.showToast('System error updating profile', 'error');
+            } finally {
+                window.api.setButtonLoading(document.activeElement, false);
+            }
         },
 
         toggle2FA: async (enabled) => {
@@ -577,7 +577,7 @@
                 const res = await window.api.post('/admin/update-admin-profile.php', {
                     two_fa_enabled: enabled ? 1 : 0
                 });
-                if(res.success){
+                if (res.success) {
                     document.getElementById('sec-2fa-label').textContent = enabled ? 'ENABLED' : 'DISABLED';
                     window.portal.showToast('2FA settings updated', 'success');
                 } else {
@@ -662,14 +662,14 @@
 
         submitAddAdmin: async () => {
             const btn = document.getElementById('add-admin-submit-btn');
-            
+
             // Clear errors
             document.querySelectorAll('[id^=err-add-]').forEach(el => el.classList.add('hidden'));
 
             const fields = ['name', 'dob', 'gender', 'phone', 'email', 'pw', 'conf-pw', 'seq-q', 'seq-a', 'role'];
             const vals = {};
             let hasErr = false;
-            
+
             fields.forEach(f => {
                 vals[f] = document.getElementById('add-' + f).value;
                 if (!vals[f]) {
@@ -713,7 +713,7 @@
                 const response = await window.api.upload('/admin/add-admin.php', formData);
                 if (response.success) {
                     window.AdminProfile.closeAddModal();
-                    
+
                     // Clear form
                     fields.forEach(f => {
                         const input = document.getElementById('add-' + f);
@@ -755,7 +755,7 @@
                         };
                         const targetId = 'err-add-' + (fieldMap[response.field] || response.field);
                         const e = document.getElementById(targetId);
-                        if(e){
+                        if (e) {
                             e.textContent = response.message;
                             e.classList.remove('hidden');
                         } else {
@@ -836,7 +836,7 @@
                 } else {
                     window.portal.showToast(res.message || 'Failed to save security question', 'error');
                 }
-            } catch(err) {
+            } catch (err) {
                 window.portal.showToast('System error saving security question', 'error');
             } finally {
                 btn.disabled = false;

@@ -73,12 +73,18 @@ window.AdminPortal = {
         }
 
         // Standardized Logout
-        document.querySelectorAll('a[href*="logout"]').forEach(link => {
-            link.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const res = await window.api.post('/auth/logout.php');
-                window.location.href = res.redirect || '../../views/auth/login.html';
-            });
+        document.querySelectorAll('.admin-nav-item').forEach(link => {
+            if (link.textContent.toLowerCase().includes('logout')) {
+                link.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    try {
+                        await window.api.post('/auth/logout.php');
+                        window.location.href = '../../views/auth/admin-login.html';
+                    } catch (error) {
+                        window.location.href = '../../views/auth/admin-login.html';
+                    }
+                });
+            }
         });
     },
 
