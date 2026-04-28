@@ -166,6 +166,13 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
+                                    <label class="profile-label flex justify-between">Admin ID <span class="text-slate-400 font-normal normal-case tracking-normal">System Generated</span></label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">badge</span>
+                                        <input type="text" id="profile-admin-id-input" class="profile-input locked-input !pl-11 font-mono" readonly>
+                                    </div>
+                                </div>
+                                <div>
                                     <label class="profile-label">Full Name *</label>
                                     <input type="text" id="profile-name-input" class="profile-input" placeholder="Loading...">
                                 </div>
@@ -378,7 +385,7 @@
                         <table class="admin-table w-full text-left">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="w-20">ID</th>
                                     <th>Admin</th>
                                     <th>Role</th>
                                     <th>Access</th>
@@ -436,6 +443,10 @@
                 <div>
                     <h4 class="text-sm font-bold border-b border-slate-100 dark:border-white/5 pb-2 mb-4 dark:text-white uppercase tracking-widest opacity-80">Personal Information</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="profile-label flex justify-between">Allocated Admin ID <span class="text-slate-400 font-normal normal-case tracking-normal">Non-editable</span></label>
+                            <input type="text" id="add-admin-id" class="profile-input locked-input font-mono !bg-slate-100 dark:!bg-white/5" readonly value="Loading...">
+                        </div>
                         <div>
                             <label class="profile-label">Full Name *</label>
                             <input type="text" id="add-name" class="profile-input">

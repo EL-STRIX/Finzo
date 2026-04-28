@@ -129,6 +129,7 @@
                 
                 // Profile Card bindings
                 document.getElementById('profile-name-display').textContent = admin.full_name;
+                document.getElementById('profile-admin-id-input').value = admin.admin_id || '---';
                 document.getElementById('profile-name-input').value = admin.full_name;
                 document.getElementById('profile-dob-input').value = admin.date_of_birth || '';
                 document.getElementById('profile-gender-input').value = admin.gender || '';
@@ -247,7 +248,7 @@
 
                         return `
                         <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
-                            <td class="py-4 px-6 text-[10px] font-bold text-slate-400 w-12 text-center">${i + 1}</td>
+                            <td class="py-4 px-6 text-[10px] font-black text-slate-400 w-20 text-left font-mono">${a.admin_id}</td>
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-3">
                                     ${photo}
@@ -511,13 +512,22 @@
             }
         },
 
-        showAddModal: () => {
+        showAddModal: async () => {
             const modal = document.getElementById('add-admin-modal');
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
-                // Prevent background scrolling
                 document.body.style.overflow = 'hidden';
+
+                // Fetch prospective Admin ID
+                try {
+                    const res = await window.api.get('/admin/get-next-admin-id.php');
+                    if (res.success) {
+                        document.getElementById('add-admin-id').value = res.next_id;
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch next admin ID');
+                }
             }
         },
         closeAddModal: () => {

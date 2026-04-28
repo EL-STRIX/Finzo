@@ -15,7 +15,7 @@ $admin_id = $_SESSION['admin_id'];
 
 try {
     $stmt = $pdo->prepare("
-        SELECT id, full_name, email, phone, date_of_birth, gender, profile_photo,
+        SELECT id, admin_id, full_name, email, phone, date_of_birth, gender, profile_photo,
                admin_role, access_level, status, two_fa_enabled, 
                last_login_at, last_login_ip, last_password_changed, failed_attempts
         FROM admin_users 

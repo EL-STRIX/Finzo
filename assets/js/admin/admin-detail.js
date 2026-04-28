@@ -87,6 +87,7 @@
 
             // Info Grid
             document.getElementById('info-name').textContent = admin.full_name;
+            document.getElementById('info-admin-id').textContent = admin.admin_id || '---';
             document.getElementById('info-email').innerHTML = `<span class="material-symbols-outlined text-slate-400 text-lg">mail</span> ${admin.email}`;
             document.getElementById('info-phone').textContent = admin.phone || 'Not Provided';
             document.getElementById('info-gender').textContent = admin.gender || 'Not Specified';
@@ -108,7 +109,7 @@
             document.getElementById('sys-pwd-change').textContent = admin.last_password_changed ? window.FinzoUtils.timeAgo(admin.last_password_changed) : 'Unknown';
             document.getElementById('sys-failed-attempts').textContent = admin.failed_attempts || '0';
             document.getElementById('sys-created-by').textContent = admin.created_by_name || 'System';
-            document.getElementById('sys-id').textContent = `ADM-${admin.id.toString().padStart(6, '0')}`;
+            document.getElementById('sys-id').textContent = admin.admin_id;
         },
 
         /**

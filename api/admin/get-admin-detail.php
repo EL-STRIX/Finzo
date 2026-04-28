@@ -31,7 +31,7 @@ if ($target_id === (int)$_SESSION['admin_id']) {
 try {
     $stmt = $pdo->prepare("
         SELECT 
-            a.id, a.full_name, a.email, a.phone, a.date_of_birth, a.gender, a.profile_photo,
+            a.id, a.admin_id, a.full_name, a.email, a.phone, a.date_of_birth, a.gender, a.profile_photo,
             a.admin_role, a.access_level, a.status, a.two_fa_enabled, 
             a.last_login_at, a.last_login_ip, a.last_password_changed, a.failed_attempts, a.created_at,
             (SELECT full_name FROM admin_users WHERE id = a.created_by) AS created_by_name
