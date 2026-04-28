@@ -107,9 +107,22 @@
             document.getElementById('sys-last-login').textContent = admin.last_login_at ? window.FinzoUtils.timeAgo(admin.last_login_at) : 'Never';
             document.getElementById('sys-last-ip').textContent = admin.last_login_ip || 'No Record';
             document.getElementById('sys-pwd-change').textContent = admin.last_password_changed ? window.FinzoUtils.timeAgo(admin.last_password_changed) : 'Unknown';
-            document.getElementById('sys-failed-attempts').textContent = admin.failed_attempts || '0';
+            const failedEl = document.getElementById('sys-failed-attempts');
+            const attempts = admin.failed_attempts || 0;
+            failedEl.textContent = attempts;
+            failedEl.className = `text-xs font-bold ${attempts > 0 ? 'text-rose-500' : 'text-emerald-500'}`;
             document.getElementById('sys-created-by').textContent = admin.created_by_name || 'System';
             document.getElementById('sys-id').textContent = admin.admin_id;
+
+            // Role-based Security Note
+            const noteText = document.getElementById('security-note-text');
+            if (noteText) {
+                if (admin.admin_role === 'moderator') {
+                    noteText.textContent = '"Moderators have restricted access. All KYC approvals and account reviews are logged for quality assurance and compliance monitoring."';
+                } else {
+                    noteText.textContent = '"Administrators possess elevated privileges. Every system modification and user override is recorded in the global audit log for institutional security."';
+                }
+            }
         },
 
         /**
