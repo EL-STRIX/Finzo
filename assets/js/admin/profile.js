@@ -68,12 +68,44 @@
             // Strip redundant IP from details
             let cleanDetails = a.details ? a.details.replace(/\sfrom IP:\s.*$/, '') : '-';
             
+            // Professional overrides
+            switch (a.action_type) {
+                case 'admin_login':
+                    cleanDetails = 'Successfully authenticated into the administrative console.';
+                    break;
+                case 'admin_profile_updated':
+                    cleanDetails = 'Account preferences and profile parameters were modified.';
+                    break;
+                case 'admin_password_updated':
+                    cleanDetails = 'Security credentials (password) were successfully reset.';
+                    break;
+                case 'admin_added':
+                    cleanDetails = 'A new administrative account was provisioned in the system.';
+                    break;
+                case 'admin_deleted':
+                    cleanDetails = 'An administrative account was permanently revoked and deleted.';
+                    break;
+                case 'admin_suspended':
+                    cleanDetails = 'Administrative system access was temporarily suspended.';
+                    break;
+                case 'admin_activated':
+                    cleanDetails = 'Administrative system access was restored and activated.';
+                    break;
+            }
+
+            // Determine badge style
+            let badgeClass = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+            if (a.action_type.includes('login')) badgeClass = 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20';
+            else if (a.action_type.includes('update')) badgeClass = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20';
+            else if (a.action_type.includes('delete') || a.action_type.includes('suspend')) badgeClass = 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 border border-red-100 dark:border-red-500/20';
+            else if (a.action_type.includes('add') || a.action_type.includes('activate')) badgeClass = 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 border border-purple-100 dark:border-purple-500/20';
+
             return `
-            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                <td class="font-bold text-xs uppercase tracking-wider">${a.action_type.replace(/_/g, ' ')}</td>
-                <td class="text-sm opacity-80">${cleanDetails}</td>
-                <td class="text-xs font-mono opacity-60">${a.ip_address}</td>
-                <td class="text-xs font-bold opacity-60 whitespace-nowrap">${formatDateTime(a.created_at)}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-50 dark:border-white/5 last:border-0">
+                <td class="py-4"><span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${badgeClass}">${a.action_type.replace(/_/g, ' ')}</span></td>
+                <td class="py-4 text-[13px] font-medium text-slate-600 dark:text-slate-300">${cleanDetails}</td>
+                <td class="py-4 text-xs font-mono text-slate-500 dark:text-slate-400">${a.ip_address}</td>
+                <td class="py-4 text-[11px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap uppercase tracking-wide">${formatDateTime(a.created_at)}</td>
             </tr>
         `}).join('');
 
