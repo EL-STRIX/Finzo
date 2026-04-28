@@ -185,15 +185,8 @@
                 document.getElementById('sec-last-pwd').textContent = timeAgo(admin.last_password_changed);
                 document.getElementById('sec-failed').textContent = admin.failed_attempts || '0';
                 
-                const m2fa = document.getElementById('sec-2fa-toggle');
-                const p2fa = document.getElementById('sec-2fa-label');
-                if (admin.two_fa_enabled == 1) {
-                    m2fa.checked = true;
-                    p2fa.textContent = 'ENABLED';
-                } else {
-                    m2fa.checked = false;
-                    p2fa.textContent = 'DISABLED';
-                }
+                // 2FA is currently a placeholder
+                // document.getElementById('sec-2fa-toggle').checked = (admin.two_fa_enabled == 1);
 
                 // Recent Activity
                 if (response.activity && response.activity.length > 0) {
