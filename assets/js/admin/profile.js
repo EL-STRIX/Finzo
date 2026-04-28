@@ -137,32 +137,34 @@
                 document.getElementById('profile-seq-q-input').value = admin.security_question || '';
                 
                 // Badges
+                const baseBadgeClass = 'px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest transition-colors';
+                
                 const roleBadge = document.getElementById('badge-role');
                 if (admin.admin_role === 'super_admin') {
                     roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-primary text-white';
+                    roleBadge.className = `${baseBadgeClass} bg-[#002645] text-white shadow-sm`;
                 } else if (admin.admin_role === 'admin') {
                     roleBadge.textContent = 'Admin';
-                    roleBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-teal-500/10 text-teal-600';
+                    roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400`;
                 } else {
                     roleBadge.textContent = 'Moderator';
-                    roleBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-amber-500/10 text-amber-600';
+                    roleBadge.className = `${baseBadgeClass} bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400`;
                 }
 
                 const accessBadge = document.getElementById('badge-access');
                 accessBadge.textContent = admin.access_level;
                 accessBadge.className = admin.access_level === 'full' 
-                    ? 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-emerald-500/10 text-emerald-500' 
-                    : 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-500/10 text-slate-500';
+                    ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400` 
+                    : `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
 
                 const statusBadge = document.getElementById('badge-status');
                 statusBadge.textContent = admin.status;
                 if (admin.status === 'active') {
-                    statusBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-emerald-500/10 text-emerald-500';
+                    statusBadge.className = `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`;
                 } else if (admin.status === 'suspended') {
-                    statusBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-red-500/10 text-red-500';
+                    statusBadge.className = `${baseBadgeClass} bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400`;
                 } else {
-                    statusBadge.className = 'px-3 py-1 text-[10px] font-black rounded-lg uppercase tracking-widest bg-slate-500/10 text-slate-500';
+                    statusBadge.className = `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
                 }
 
                 // Avatar handling
