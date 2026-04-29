@@ -167,6 +167,8 @@
             if (reinstateModal) {
                 reinstateModal.classList.add('hidden');
                 reinstateModal.classList.remove('flex');
+                const pwd = document.getElementById('admin-password');
+                if(pwd) pwd.value = '';
             }
         },
 
@@ -174,6 +176,13 @@
             if (!pendingId) return;
             const btn = confirmBtn;
             if (!btn) return;
+
+            const password = document.getElementById('admin-password')?.value;
+            if(!password) {
+                window.portal.showToast('Administrator password is required', 'error');
+                return;
+            }
+
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
@@ -181,7 +190,8 @@
             try {
                 const response = await window.api.post('/admin/staff-action.php', {
                     action: 'reinstate',
-                    staff_id: pendingId
+                    staff_id: pendingId,
+                    password: password
                 });
 
                 if (response.status === 'success' || response.success) {

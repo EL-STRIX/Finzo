@@ -24,6 +24,7 @@
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/core/theme.js"></script>
   </head>
 <body class="bg-slate-50 dark:bg-[#0d1117] font-body text-black dark:text-on-surface antialiased">
 
@@ -87,7 +88,7 @@
   </nav>
 
   <!-- MAIN -->
-  <div class="admin-main">
+  <div class="flex-1 min-w-0 lg:ml-[260px] transition-all duration-300 overflow-hidden">
     <!-- TOPBAR -->
     <header class="admin-topbar">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
@@ -104,11 +105,15 @@
       </div>
     </header>
 
-    <div class="p-4 sm:p-6 lg:p-8">
+    <div class="p-4 sm:p-6 lg:p-6">
 
       <!-- TABLE CARD -->
       <div class="admin-card">
-        <div class="grid grid-cols-2 lg:grid-cols-4 items-end gap-3 sm:gap-5 p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 bg-slate-50/20 dark:bg-white/[0.02]">
+        <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
+            <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Suspended Personnel Audit</h3>
+            <a href="admin-staff.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Full Staff Audit</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-slate-50/20 dark:bg-white/[0.02]">
           <div>
             <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Search Staff</div>
             <div class="relative">
@@ -143,19 +148,18 @@
             </div>
           </div>
         </div>
-
-        <div class="overflow-x-auto">
-          <table class="admin-table">
+        <div class="w-full overflow-x-auto scrollbar-thin">
+          <table class="admin-table w-full min-w-[950px]">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Staff Member</th>
-                <th>Staff ID</th>
-                <th>Branch</th>
-                <th>Suspension Reason</th>
-                <th>Suspended On</th>
-                <th>Suspended By</th>
-                <th>Duration</th>
+                <th class="w-12">#</th>
+                <th>Staff</th>
+                <th class="w-24">ID</th>
+                <th class="w-32">Branch</th>
+                <th>Reason</th>
+                <th class="w-40">Date</th>
+                <th class="w-32">By</th>
+                <th class="w-24">Duration</th>
                 <th class="text-center px-6">Actions</th>
               </tr>
             </thead>
@@ -178,14 +182,24 @@
   </div>
 </div>
 
-<div class="modal-overlay hidden" id="reinstate-modal">
+<div class="modal-overlay hidden" id="reinstate-modal" style="z-index: 2100;">
   <div class="modal-card">
-    <div class="modal-icon" style="background:var(--green-soft)"><span class="material-symbols-outlined" style="color:var(--green);font-size:28px">how_to_reg</span></div>
+    <div class="modal-icon" style="background:#e8f5e9"><span class="material-symbols-outlined" style="color:#2e7d32;font-size:28px">how_to_reg</span></div>
     <div class="modal-title">Reinstate Staff Account</div>
     <div class="modal-text" id="modal-text">You are reinstating this staff account.</div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="document.getElementById('reinstate-modal').classList.add('hidden')">Cancel</button>
-      <button class="btn btn-success" id="confirm-btn" onclick="confirmReinstate()">
+    
+    <div class="mt-6 w-full text-left">
+      <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Authorize Action (Admin Password)</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+        <input type="password" id="admin-password" placeholder="••••••••" 
+          class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
+      </div>
+    </div>
+
+    <div class="modal-actions mt-8">
+      <button class="btn btn-ghost" onclick="window.SuspendedStaff.closeModal()">Cancel</button>
+      <button class="btn btn-success" id="confirm-btn" onclick="window.SuspendedStaff.confirmReinstate()">
         <span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Staff
       </button>
     </div>
@@ -194,7 +208,6 @@
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
-  <script src="../../assets/js/core/theme.js"></script>
   <script src="../../assets/js/core/utils.js"></script>
   <script src="../../assets/js/core/api.js"></script>
   <script src="../../assets/js/ui/dropdowns.js"></script>

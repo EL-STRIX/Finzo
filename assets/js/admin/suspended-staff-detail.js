@@ -99,17 +99,34 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = html;
     }
 
-    window.openReinstateModal = () => document.getElementById('reinstate-modal').classList.remove('hidden');
-    window.closeModal = () => document.getElementById('reinstate-modal').classList.add('hidden');
+    window.openReinstateModal = () => {
+        document.getElementById('reinstate-modal').classList.remove('hidden');
+        document.getElementById('reinstate-modal').classList.add('flex');
+    };
+
+    window.closeModal = () => {
+        document.getElementById('reinstate-modal').classList.add('hidden');
+        document.getElementById('reinstate-modal').classList.remove('flex');
+        const pwd = document.getElementById('admin-password');
+        if(pwd) pwd.value = '';
+    };
 
     window.processReinstate = async () => {
         const btn = document.getElementById('confirm-btn');
+        const password = document.getElementById('admin-password')?.value;
+
+        if(!password) {
+            window.FinzoUtils.showToast('Administrator password is required', 'error');
+            return;
+        }
+
         window.api.setButtonLoading(btn, true);
         
         try {
             const response = await window.api.post('/admin/staff-action.php', {
                 staff_id: staffId,
-                action: 'reinstate'
+                action: 'reinstate',
+                password: password
             });
 
             if (response.success || response.status === 'success') {

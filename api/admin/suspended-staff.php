@@ -23,7 +23,7 @@ try {
     $params = [];
 
     if (!empty($search)) {
-        $where_clauses[] = "(s.full_name LIKE ? OR s.email LIKE ? OR s.staff_id LIKE ?)";
+        $where_clauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ?)";
         $s = "%{$search}%";
         $params[] = $s; $params[] = $s; $params[] = $s;
     }
@@ -53,7 +53,7 @@ try {
     $offset = ($page - 1) * $per_page;
 
     $stmt = $pdo->prepare("
-        SELECT s.id, s.staff_id, s.full_name, s.email, s.phone, s.role, s.status,
+        SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, s.designation as role, s.status,
                s.suspension_reason, s.suspended_by, s.updated_at,
                b.name as branch_name
         FROM staff s

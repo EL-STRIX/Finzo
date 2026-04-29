@@ -329,9 +329,82 @@
     }
 
     /**
+     * Initialize Drag and Drop for file uploads
+     */
+    function initDragAndDrop() {
+        // ID Documents
+        ['front', 'back'].forEach(type => {
+            const dropZone = document.getElementById(`${type}-drop-zone`);
+            const input = document.getElementById(`id_${type}`);
+            
+            if (!dropZone || !input) return;
+
+            ['dragover', 'dragleave', 'drop'].forEach(evt => {
+                dropZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            dropZone.addEventListener('dragover', () => {
+                dropZone.classList.add('border-primary/60', 'bg-primary/5', 'scale-[1.01]');
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                dropZone.addEventListener(evt, () => {
+                    dropZone.classList.remove('border-primary/60', 'bg-primary/5', 'scale-[1.01]');
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(files[0]);
+                    input.files = dataTransfer.files;
+                    window.previewDoc(input, type);
+                }
+            });
+        });
+
+        // Profile Photo
+        const photoZone = document.getElementById('photo-preview-container');
+        const photoInput = document.getElementById('profile_photo');
+        if (photoZone && photoInput) {
+            ['dragover', 'dragleave', 'drop'].forEach(evt => {
+                photoZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            photoZone.addEventListener('dragover', () => {
+                photoZone.classList.add('border-primary', 'scale-110');
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                photoZone.addEventListener(evt, () => {
+                    photoZone.classList.remove('border-primary', 'scale-110');
+                });
+            });
+
+            photoZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(files[0]);
+                    photoInput.files = dataTransfer.files;
+                    window.previewProfilePhoto(photoInput);
+                }
+            });
+        }
+    }
+
+    /**
      * Bind page events
      */
     function bindEvents() {
+        initDragAndDrop();
         // Search with debounce
         const searchInput = document.getElementById('staff-search-input');
         if (searchInput) {

@@ -29,12 +29,13 @@
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <script src="../../assets/js/core/theme.js"></script>
   <script src="../../assets/js/core/api.js"></script>
   <script src="../../assets/js/core/utils.js"></script>
   <script src="../../assets/js/portals/admin.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-[#0d1117] font-body text-black dark:text-on-surface antialiased">
 
   <!-- SIDEBAR -->
   <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -97,7 +98,7 @@
   </nav>
 
   <!-- MAIN CONTENT -->
-  <div class="admin-main">
+  <div class="flex-1 min-w-0 lg:ml-[260px] transition-all duration-300 overflow-hidden">
     <div class="admin-topbar">
       <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
         <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
