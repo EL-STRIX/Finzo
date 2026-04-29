@@ -195,29 +195,36 @@ document.addEventListener('DOMContentLoaded', () => {
         currentAction = action;
         const config = modalConfigs[action];
 
-        document.getElementById('auth-step').style.display = 'block';
-        
+        // Reset visibility
+        const reasonStep = document.getElementById('reason-step');
+        const authStep = document.getElementById('auth-step');
         const bodyText = document.getElementById('modal-body-text');
-        bodyText.style.display = 'block';
+        const customContainer = document.getElementById('custom-reason-container');
+        
+        reasonStep.classList.add('hidden');
+        authStep.classList.remove('hidden');
+        customContainer.classList.add('hidden');
+
+        // Populate Content
         bodyText.innerHTML = config.body;
-        
-        const subTitle = document.getElementById('modal-subtitle');
-        subTitle.style.display = 'block';
-        subTitle.textContent = config.subtitle;
-        
         document.getElementById('modal-title').textContent = config.title;
+        document.getElementById('modal-subtitle').textContent = config.subtitle;
         document.getElementById('modal-icon').textContent = config.icon;
         
+        // Inject name if possible
+        const staffName = document.getElementById('staff-full-name')?.textContent || 'this staff member';
+        const targetName = document.getElementById(action + '-target-name');
+        if (targetName) targetName.textContent = staffName;
+
         const iconContainer = document.getElementById('modal-icon-container');
         iconContainer.className = `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`;
         
         const confirmBtn = document.getElementById('confirm-governance-btn');
         confirmBtn.className = `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`;
         confirmBtn.textContent = config.btnText;
-        confirmBtn.style.display = 'block';
         confirmBtn.disabled = false;
 
-        const reasonStep = document.getElementById('reason-step');
+        // Handle reasons
         if (config.reasons && config.reasons.length > 0) {
             let reasonsHtml = '';
             config.reasons.forEach(r => {
@@ -229,20 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
             document.getElementById('reason-grid').innerHTML = reasonsHtml;
-            reasonStep.style.display = 'block';
+            reasonStep.classList.remove('hidden');
             
             document.querySelectorAll('input[name="suspension_reason"]').forEach(radio => {
                 radio.addEventListener('change', function() {
-                    const customContainer = document.getElementById('custom-reason-container');
                     if (this.value === 'Other') {
-                        customContainer.style.display = 'block';
+                        customContainer.classList.remove('hidden');
                     } else {
-                        customContainer.style.display = 'none';
+                        customContainer.classList.add('hidden');
                     }
                 });
             });
-        } else {
-            reasonStep.style.display = 'none';
         }
 
         const backdrop = document.getElementById('modal-backdrop');
@@ -254,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const modal = document.getElementById('governance-modal');
         modal.classList.remove('hidden');
-        modal.style.display = 'flex';
+        modal.classList.add('flex');
         
         document.body.classList.add('overflow-hidden');
     }
@@ -269,17 +273,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setTimeout(() => {
             const modal = document.getElementById('governance-modal');
-            modal.style.display = '';
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
             
             document.body.classList.remove('overflow-hidden');
             
             document.getElementById('admin-password').value = '';
             document.getElementById('auth-error').classList.add('hidden');
-            document.getElementById('admin-password').classList.remove('ring-2', 'ring-rose-500/20');
             
-            document.getElementById('reason-step').style.display = 'none';
-            document.getElementById('custom-reason-container').style.display = 'none';
+            document.getElementById('reason-step').classList.add('hidden');
+            document.getElementById('custom-reason-container').classList.add('hidden');
         }, 300);
     };
 
