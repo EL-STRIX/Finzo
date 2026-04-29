@@ -1,9 +1,10 @@
 <?php
-include 'config/config.php';
-$res = $conn->query("DESCRIBE admin_users");
-$columns = [];
-while($row = $res->fetch_assoc()) {
-    $columns[] = $row;
+require_once __DIR__ . '/../config/db.php';
+try {
+    $stmt = $pdo->query("DESCRIBE admin_users");
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo $row['Field'] . " - " . $row['Type'] . "\n";
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
 }
-echo json_encode($columns, JSON_PRETTY_PRINT);
-?>

@@ -178,9 +178,22 @@
         showResetModal: function() {
             document.getElementById('reset-modal').classList.remove('hidden');
             document.getElementById('reset-modal').classList.add('flex');
-            document.getElementById('new-password').value = '';
-            document.getElementById('confirm-password').value = '';
-            document.getElementById('err-new-pw').classList.add('hidden');
+            document.getElementById('reset-success-state').classList.add('hidden');
+            document.getElementById('reset-modal-actions').classList.remove('hidden');
+            
+            // Clean up any existing "Done" button
+            const existingDone = document.getElementById('reset-done-btn');
+            if (existingDone) existingDone.remove();
+            
+            // Set up copy to clipboard
+            const display = document.getElementById('generated-password-display');
+            display.onclick = () => {
+                const text = display.textContent;
+                if (text === '--------') return;
+                navigator.clipboard.writeText(text).then(() => {
+                    window.portal.showToast('Password copied to clipboard', 'success');
+                });
+            };
         },
 
         closeResetModal: function() {
@@ -189,41 +202,43 @@
         },
 
         submitReset: async function() {
-            const pw = document.getElementById('new-password').value;
-            const conf = document.getElementById('confirm-password').value;
-            const err = document.getElementById('err-new-pw');
-
-            if (pw.length < 8) {
-                err.textContent = 'Password must be at least 8 characters';
-                err.classList.remove('hidden');
-                return;
-            }
-
-            if (pw !== conf) {
-                err.textContent = 'Passwords do not match';
-                err.classList.remove('hidden');
-                return;
-            }
-
             const btn = document.getElementById('reset-submit-btn');
             window.api.setButtonLoading(btn, true);
 
             try {
                 const response = await window.api.post('/admin/admin-action.php', {
                     action: 'reset_password',
-                    admin_id: currentAdminId,
-                    new_password: pw
+                    admin_id: currentAdminId
                 });
 
                 if (response.success) {
+                    // Show success UI
+                    document.getElementById('reset-success-state').classList.remove('hidden');
+                    document.getElementById('generated-password-display').textContent = response.generated_password;
+                    document.getElementById('password-expiry-display').textContent = window.FinzoUtils.formatDateTime(response.expiry);
+                    
+                    // Hide the generate button, change cancel to "Done"
+                    document.getElementById('reset-modal-actions').classList.add('hidden');
+                    
+                    // Add a "Done" button
+                    const doneBtn = document.createElement('button');
+                    doneBtn.id = 'reset-done-btn';
+                    doneBtn.className = 'w-full py-3 bg-slate-900 text-white font-black rounded-xl text-[10px] uppercase tracking-widest mt-4';
+                    doneBtn.textContent = 'Done';
+                    doneBtn.onclick = () => {
+                        this.closeResetModal();
+                        doneBtn.remove();
+                        this.loadAdminData();
+                    };
+                    document.getElementById('reset-modal-content').appendChild(doneBtn);
+
                     window.portal.showToast(response.message, 'success');
-                    this.closeResetModal();
-                    this.loadAdminData();
                 } else {
                     window.portal.showToast(response.message, 'error');
                 }
             } catch (error) {
-                window.portal.showToast('Error resetting password', 'error');
+                console.error(error);
+                window.portal.showToast('Error generating password', 'error');
             } finally {
                 window.api.setButtonLoading(btn, false);
             }

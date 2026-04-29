@@ -298,20 +298,25 @@
                 <h3 class="text-xl font-black dark:text-white">Reset Admin Password</h3>
                 <p class="text-xs text-slate-500 mt-1 font-medium">Set a secure temporary password for this administrator.</p>
             </div>
-            <div class="p-8 space-y-6">
-                <div>
-                    <label class="profile-label">New Password</label>
-                    <input type="password" id="new-password" class="profile-input" placeholder="Min. 8 characters">
-                    <div id="err-new-pw" class="text-[10px] text-error mt-1 font-bold hidden"></div>
+            <div class="p-8 space-y-6" id="reset-modal-content">
+                <div class="text-center py-4">
+                    <p class="text-sm text-slate-600 dark:text-slate-400 font-medium">Clicking "Generate Now" will create a random password valid for <span class="font-bold text-primary dark:text-blue-400">24 hours</span>.</p>
                 </div>
-                <div>
-                    <label class="profile-label">Confirm New Password</label>
-                    <input type="password" id="confirm-password" class="profile-input" placeholder="Repeat password">
+                
+                <!-- Success State (Hidden by default) -->
+                <div id="reset-success-state" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl text-center">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">Temporary Password</div>
+                        <div id="generated-password-display" class="text-2xl font-black tracking-widest text-slate-900 dark:text-white font-mono select-all cursor-pointer" title="Click to copy">--------</div>
+                        <div class="text-[10px] font-bold text-slate-500 mt-2 italic">Valid until <span id="password-expiry-display">--:--</span></div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 text-center font-medium">Copy this password and provide it to the administrator. It will not be shown again.</p>
                 </div>
-                <div class="pt-4 flex gap-3">
+
+                <div class="pt-4 flex gap-3" id="reset-modal-actions">
                     <button onclick="window.AdminDetail.closeResetModal()" class="flex-1 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 font-black rounded-xl text-[10px] uppercase tracking-widest transition-all">Cancel</button>
                     <button id="reset-submit-btn" onclick="window.AdminDetail.submitReset()" class="flex-1 py-3 bg-primary text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2">
-                        Reset Now
+                        Generate Now
                         <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
                     </button>
                 </div>

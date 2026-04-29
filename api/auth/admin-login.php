@@ -14,8 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // 1. Validate CSRF token
 $csrf_token = $_POST['csrf_token'] ?? '';
+if (empty($csrf_token)) {
+    json_response(['success' => false, 'message' => 'Security token missing. Please refresh the page.'], 403);
+}
 if (!validate_csrf_token($csrf_token)) {
-    json_response(['success' => false, 'message' => 'Invalid CSRF token'], 403);
+    json_response(['success' => false, 'message' => 'Invalid or expired security session. Please try again.'], 403);
 }
 
 // 2. Sanitize inputs
@@ -29,7 +32,8 @@ if (empty($email) || empty($password)) {
 // 3. Query admin_users
 $stmt = $pdo->prepare("
     SELECT id, full_name, email, profile_photo, password_hash, status, admin_role, 
-           failed_attempts, account_locked, locked_at, auto_unlock_at, answer_locked_until, security_question_set
+           failed_attempts, account_locked, locked_at, auto_unlock_at, answer_locked_until, security_question_set,
+           temp_password_expiry
     FROM admin_users
     WHERE email = ?
 ");
@@ -39,6 +43,14 @@ $admin = $stmt->fetch();
 // 4. If no record found
 if (!$admin) {
     json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
+}
+
+// 4.1 Check temporary password expiry
+if ($admin['temp_password_expiry'] && strtotime($admin['temp_password_expiry']) < time()) {
+    json_response([
+        'success' => false,
+        'message' => 'Your temporary password has expired. Please contact a super administrator for a new one.'
+    ], 401);
 }
 
 // 5. If status = 'suspended'

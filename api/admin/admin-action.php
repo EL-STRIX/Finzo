@@ -77,18 +77,31 @@ try {
             break;
 
         case 'reset_password':
-            $new_password = $_POST['new_password'] ?? '';
-            if (strlen($new_password) < 8) {
-                json_response(['success' => false, 'message' => 'Password must be at least 8 characters long.'], 422);
-            }
+            // Auto-generate a secure random password (10 characters)
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+            $generated_password = substr(str_shuffle($chars), 0, 10);
             
-            $hash = password_hash($new_password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE admin_users SET password_hash = ?, last_password_changed = NOW(), failed_attempts = 0 WHERE id = ?");
+            $hash = password_hash($generated_password, PASSWORD_DEFAULT);
+            
+            // Set password and expiry (24 hours from now)
+            $stmt = $pdo->prepare("
+                UPDATE admin_users 
+                SET password_hash = ?, 
+                    last_password_changed = NOW(), 
+                    failed_attempts = 0,
+                    temp_password_expiry = DATE_ADD(NOW(), INTERVAL 24 HOUR)
+                WHERE id = ?
+            ");
             $stmt->execute([$hash, $target_id]);
             
-            write_audit_log($pdo, 'admin_password_reset', $target_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced password reset for {$target['full_name']}");
+            write_audit_log($pdo, 'admin_password_reset', $target_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}");
             
-            $response = ['success' => true, 'message' => "Password has been successfully updated for {$target['full_name']}."];
+            $response = [
+                'success' => true, 
+                'message' => "A new temporary password has been generated for {$target['full_name']}.",
+                'generated_password' => $generated_password,
+                'expiry' => date('Y-m-d H:i:s', strtotime('+24 hours'))
+            ];
             break;
     }
 

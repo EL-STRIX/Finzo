@@ -615,14 +615,16 @@
     $loginBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
 
     function refreshCsrfToken() {
-      return fetch('../../api/auth/get-csrf-token.php')
+      return fetch('../../api/auth/get-csrf-token.php?v=' + Date.now())
         .then(res => res.json())
         .then(data => { 
           if(data.csrf_token) {
             CSRF_TOKEN = data.csrf_token; 
             $loginBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
             console.log("CSRF Token initialized.");
-          } 
+          } else {
+            console.error("Token missing in response");
+          }
         })
         .catch(err => {
           console.error('Token fetch error:', err);
