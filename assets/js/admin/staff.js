@@ -203,8 +203,27 @@
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
             generateStaffPassword(); // Auto-generate on open
+            loadNextStaffId(); // Fetch next sequential ID
         }
     };
+
+    async function loadNextStaffId() {
+        const idInput = document.getElementById('staff_id_display');
+        if (!idInput) return;
+        
+        idInput.value = 'Loading...';
+        try {
+            const response = await window.api.get('/admin/get-next-staff-id.php');
+            if (response.success) {
+                idInput.value = response.next_id;
+            } else {
+                idInput.value = 'ERROR';
+            }
+        } catch (error) {
+            console.error('Failed to load next staff ID');
+            idInput.value = 'ERROR';
+        }
+    }
 
     window.closeAddStaffModal = function() {
         const modal = document.getElementById('addStaffModal');
