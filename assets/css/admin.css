@@ -172,6 +172,74 @@ body {
   color: #4f46e5 !important;
 }
 
+.finzo-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.finzo-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 6px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.finzo-dropdown-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.dark .finzo-dropdown-menu {
+  background: #161b22;
+  border-color: rgba(255,255,255,0.1);
+}
+
+.finzo-dropdown-option {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dark .finzo-dropdown-option {
+  color: #94a3b8;
+}
+
+.finzo-dropdown-option:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.dark .finzo-dropdown-option:hover {
+  background: rgba(255,255,255,0.05);
+  color: #f1f5f9;
+}
+
+.finzo-dropdown-trigger.is-open .material-symbols-outlined {
+  transform: rotate(180deg);
+}
+
+.finzo-dropdown-trigger .material-symbols-outlined {
+  transition: transform 0.25s;
+}
+
 .dark, [data-theme="dark"] {
   --bg-page:#0d1117;--bg-card:#161b22;--bg-input:rgba(255,255,255,0.04);
   --text-primary:#f0f6fc;--text-secondary:#8b949e;--text-placeholder:#484f58;
@@ -209,6 +277,26 @@ body {
 .dark .search-input { background: rgba(255, 255, 255, 0.05) !important; }
 
 .search-input:focus { border-color: rgba(0, 38, 69, 0.2) !important; box-shadow: 0 0 0 4px rgba(0, 38, 69, 0.06) !important; }
+
+/* Modal Dropdown Overrides */
+.modal-dropdown-trigger {
+  background: #f8fafc !important; /* bg-slate-50 */
+  border: none !important;
+  border-radius: 12px !important; /* rounded-xl */
+  padding: 12px 16px !important; /* py-3 px-4 */
+  height: 48px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important; /* text-sm */
+}
+
+.dark .modal-dropdown-trigger {
+  background: #1c2128 !important; /* dark:bg-surface-container-high approximation */
+  color: #f0f6fc !important;
+}
+
+.modal-dropdown-trigger .dropdown-label {
+  font-weight: 700;
+}
 
 /* Filter dropdown overrides for layout */
 .filter-item .finzo-dropdown { display: block; width: 100%; }
@@ -484,6 +572,87 @@ html[data-theme="light"] input::placeholder {
 .btn-ghost:hover { color: var(--text-primary); }
 
 .btn-lg { height: 50px; font-size: 14px; border-radius: var(--radius-lg); }
+
+/* Premium Admin Buttons */
+.admin-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: #002645;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 38, 69, 0.2);
+}
+
+.admin-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 38, 69, 0.3);
+  filter: brightness(1.1);
+}
+
+.admin-btn-primary:active {
+  transform: translateY(0);
+}
+
+.admin-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f1f5f9;
+  color: #475569 !important;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  transition: all 0.25s;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+.dark .admin-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1 !important;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.admin-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #ef4444;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  transition: all 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.admin-btn-danger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.admin-btn-primary .material-symbols-outlined,
+.admin-btn-secondary .material-symbols-outlined,
+.admin-btn-danger .material-symbols-outlined {
+  font-size: 18px;
+}
 
 .modal-actions .btn { flex: 1; height: 46px; font-size: 13px; }
 

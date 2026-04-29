@@ -107,7 +107,7 @@ try {
     $total_balance = (float)$stmt->fetchColumn();
 
     // Fetch fresh admin data
-    $stmt = $pdo->prepare("SELECT full_name, email, profile_photo FROM admin_users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT full_name, email, profile_photo, admin_role FROM admin_users WHERE id = ?");
     $stmt->execute([$_SESSION['admin_id']]);
     $admin_data = $stmt->fetch();
 
@@ -122,7 +122,8 @@ try {
             'id' => $_SESSION['admin_id'],
             'full_name' => $admin_data['full_name'],
             'email' => $admin_data['email'],
-            'profile_photo' => $admin_data['profile_photo']
+            'profile_photo' => $admin_data['profile_photo'],
+            'role' => $admin_data['admin_role']
         ],
         'stats' => [
             'total_users'        => $total_users,

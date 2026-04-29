@@ -111,7 +111,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button onclick="openAddStaffModal()" class="admin-btn-primary hidden md:flex whitespace-nowrap flex-shrink-0"
+        <button id="add-staff-btn" onclick="openAddStaffModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Staff
         </button>
@@ -256,83 +256,319 @@
   <!-- ADD STAFF MODAL -->
   <div id="addStaffModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"
-      onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"></div>
-    <div class="admin-card w-full max-w-xl relative z-10 animate-modal-enter">
-      <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
-        <h3 class="admin-section-title">Add New Staff</h3>
-        <button onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"
+      onclick="closeAddStaffModal()"></div>
+    <div class="admin-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
+      <div class="p-6 border-b border-slate-100 dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
+        <div>
+          <h3 class="text-xl font-bold text-primary dark:text-slate-100">Add New Staff Member</h3>
+          <p class="text-[11px] text-slate-400 font-medium">Fill in the details to add a new staff account</p>
+        </div>
+        <button onclick="closeAddStaffModal()"
            class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <div class="p-8">
-        <form id="addStaffForm" class="space-y-4 sm:space-y-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div class="col-span-1 sm:col-span-2">
-              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full
-                Name</label>
-              <input type="text" id="staff-full-name" placeholder="Enter full name" required
-                class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
-            </div>
-            <div>
-              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Email
-                Address</label>
-              <input type="email" id="staff-email" placeholder="email@finzo.com" required
-                class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
-            </div>
-            <div>
-              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Phone
-                Number</label>
-              <div class="flex">
-                <span
-                  class="inline-flex items-center px-4 bg-slate-100 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 rounded-l-xl text-xs font-bold text-slate-500 font-Manrope">+91</span>
-                <input type="text" id="staff-phone" placeholder="98765 43210" required
-                  class="flex-1 w-full min-w-0 px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-r-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+      
+      <form id="addStaffForm" class="p-0">
+        <div class="p-6 sm:p-8 space-y-8">
+          
+          <!-- SECTION A: Profile Photo -->
+          <div class="flex flex-col items-center justify-center pb-2">
+            <div class="relative group cursor-pointer" onclick="document.getElementById('profile_photo').click()">
+              <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
+                <span class="material-symbols-outlined text-3xl text-slate-300 group-hover:text-primary transition-colors">person</span>
+                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1 group-hover:text-primary transition-colors">Upload Photo</span>
+                <img id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+              </div>
+              <div class="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
+                <span class="material-symbols-outlined text-sm">edit</span>
               </div>
             </div>
-            <div>
-              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Branch</label>
-              <select id="staff-branch" required
-                class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
-                <option value="">Select Branch</option>
-                <!-- Dynamically Populated -->
-              </select>
+            <p class="text-[10px] text-slate-400 font-bold mt-3">Optional • JPG or PNG • Max 5MB</p>
+            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden" onchange="previewProfilePhoto(this)">
+            <div id="error-profile_photo" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+          </div>
+
+          <!-- SECTION B: Personal Information -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">person</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Personal Information</h4>
             </div>
-            <div>
-              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Staff ID</label>
-              <div class="relative">
-                <input type="text" id="new-staff-id" value="" placeholder="Generating..." readonly
-                  class="w-full pl-4 pr-10 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-xl font-bold opacity-60 cursor-not-allowed">
-                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">lock</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Full Name *</label>
+                <input type="text" id="full_name" name="full_name" placeholder="John Doe" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-full_name" class="text-error text-[10px] font-bold mt-1 hidden"></div>
               </div>
-              <p class="text-[9px] text-slate-400 mt-1.5 font-bold flex items-center gap-1">
-                <span class="material-symbols-outlined text-[10px]">info</span>
-                System Generated — Cannot be manualy edited.
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Date of Birth *</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-date_of_birth" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Gender *</label>
+                <div class="finzo-dropdown">
+                  <div class="finzo-dropdown-trigger modal-dropdown-trigger">
+                    <span class="dropdown-label">Select Gender</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu">
+                    <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                    <div class="finzo-dropdown-option" data-value="Female">Female</div>
+                    <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                    <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+                  </div>
+                  <input type="hidden" id="gender" name="gender" required>
+                </div>
+                <div id="error-gender" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION C: Contact Information -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">contact_phone</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Contact Information</h4>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Personal Email *</label>
+                <input type="email" id="personal_email" name="personal_email" placeholder="john.doe@email.com" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-personal_email" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Phone Number *</label>
+                <div class="relative group">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">+91</span>
+                  <input type="text" id="phone" name="phone" placeholder="9876543210" required maxlength="10"
+                    class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                </div>
+                <div id="error-phone" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Emergency Contact Name (Optional)</label>
+                <input type="text" id="emergency_contact_name" name="emergency_contact_name" placeholder="Name"
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Emergency Phone (Optional)</label>
+                <input type="text" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="9876543210" maxlength="10"
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION D: Identity Documents -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">badge</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Identity & Documents</h4>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">ID Type *</label>
+                <div class="finzo-dropdown">
+                  <div class="finzo-dropdown-trigger modal-dropdown-trigger">
+                    <span class="dropdown-label">Select ID Type</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu">
+                    <div class="finzo-dropdown-option" data-value="Aadhaar">Aadhaar</div>
+                    <div class="finzo-dropdown-option" data-value="PAN">PAN</div>
+                    <div class="finzo-dropdown-option" data-value="Passport">Passport</div>
+                  </div>
+                  <input type="hidden" id="id_type" name="id_type" required>
+                </div>
+                <div id="error-id_type" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">ID Number *</label>
+                <input type="text" id="id_number" name="id_number" placeholder="Enter ID number" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-id_number" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              
+              <div class="col-span-1 sm:col-span-2 space-y-4">
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Front of ID Document *</label>
+                  <div class="relative group cursor-pointer" onclick="document.getElementById('id_front').click()">
+                    <div id="front-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
+                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
+                      <p id="front-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload front image</p>
+                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB</p>
+                      <img id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                    </div>
+                  </div>
+                  <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" required onchange="previewDoc(this, 'front')">
+                  <div id="error-id_front" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Back of ID Document *</label>
+                  <div class="relative group cursor-pointer" onclick="document.getElementById('id_back').click()">
+                    <div id="back-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
+                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
+                      <p id="back-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload back image</p>
+                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB</p>
+                      <img id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                    </div>
+                  </div>
+                  <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" required onchange="previewDoc(this, 'back')">
+                  <div id="error-id_back" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION E: Employment Information -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">work</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Employment Information</h4>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Designation *</label>
+                <div class="finzo-dropdown">
+                  <div class="finzo-dropdown-trigger modal-dropdown-trigger">
+                    <span class="dropdown-label">Teller</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu">
+                    <div class="finzo-dropdown-option is-selected" data-value="Teller">Teller</div>
+                    <div class="finzo-dropdown-option" data-value="Supervisor">Supervisor</div>
+                    <div class="finzo-dropdown-option" data-value="Manager">Manager</div>
+                  </div>
+                  <input type="hidden" id="designation" name="designation" value="Teller" required>
+                </div>
+                <div id="error-designation" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Branch Assignment *</label>
+                <div class="finzo-dropdown" id="staff-branch-dropdown">
+                  <div class="finzo-dropdown-trigger modal-dropdown-trigger">
+                    <span class="dropdown-label">Select Branch</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </div>
+                  <div id="staff-branch-menu" class="finzo-dropdown-menu">
+                    <!-- Dynamically Populated -->
+                  </div>
+                  <input type="hidden" id="staff-branch" name="branch_id" required>
+                </div>
+                <div id="error-branch_id" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Date of Joining</label>
+                <input type="date" id="date_of_joining" name="date_of_joining"
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <p class="text-[9px] text-slate-400 mt-1 font-bold">Defaults to today's date if empty</p>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Department</label>
+                <input type="text" value="Teller Operations" readonly
+                  class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
+                <p class="text-[9px] text-slate-400 mt-1 font-bold">Assigned to Teller Operations department</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION F: Address -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">location_on</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Address</h4>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div class="col-span-1 sm:col-span-2">
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Street Address</label>
+                <input type="text" id="street" name="street" placeholder="123 Bank Street"
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">City *</label>
+                <input type="text" id="city" name="city" placeholder="Mumbai" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-city" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">State *</label>
+                <input type="text" id="state" name="state" placeholder="Maharashtra" required
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-state" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Pincode *</label>
+                <input type="text" id="pincode" name="pincode" placeholder="400001" required maxlength="6"
+                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-bold text-sm">
+                <div id="error-pincode" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Country</label>
+                <input type="text" value="India" readonly
+                  class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION G: Login & Security -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">security</span>
+              </span>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Login & Security</h4>
+            </div>
+            
+            <div class="p-4 sm:p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
+              <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Account Password *</label>
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1 group">
+                  <input type="text" id="staff-password" name="password" placeholder="Generate or enter a password" required
+                    class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary dark:text-blue-400">
+                  <button type="button" onclick="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-lg" id="pass-copy-icon">content_copy</span>
+                  </button>
+                </div>
+                <button type="button" onclick="generateStaffPassword()" class="admin-btn-secondary !py-3 !px-4 flex items-center justify-center gap-2 whitespace-nowrap">
+                  <span class="material-symbols-outlined text-sm" id="gen-pass-icon">refresh</span>
+                  <span>Generate</span>
+                </button>
+              </div>
+              <p class="text-[9px] text-slate-400 mt-3 font-bold flex items-center gap-1.5 italic">
+                <span class="material-symbols-outlined text-[12px] text-orange-400">info</span>
+                Share this password securely with the staff member.
               </p>
+              <div id="error-password" class="text-error text-[10px] font-bold mt-1 hidden"></div>
             </div>
           </div>
 
-          <div class="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5">
-            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Temporary
-              Password</label>
-            <div class="flex items-center justify-between">
-              <code id="temp-password-display" class="text-lg font-black tracking-widest text-primary dark:text-blue-400">FINZO-1100</code>
-              <button type="button" id="copy-password-btn" class="p-2 text-primary hover:bg-white rounded-lg transition-all"
-                title="Copy Password">
-                <span class="material-symbols-outlined text-xl" id="copy-icon">content_copy</span>
-              </button>
-            </div>
-          </div>
+        </div>
 
-          <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
-            <button type="button" onclick="$('#addStaffModal').addClass('hidden').removeClass('flex')"
-              class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
-            <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
-                <span>Create Staff Account</span>
-            </button>
-          </div>
-        </form>
-      </div>
+        <!-- MODAL FOOTER -->
+        <div class="p-6 border-t border-slate-100 dark:border-white/5 sticky bottom-0 bg-white dark:bg-surface-container z-20 flex flex-col-reverse sm:flex-row justify-end gap-3">
+          <button type="button" onclick="closeAddStaffModal()"
+            class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
+          <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
+              <span class="material-symbols-outlined">person_add</span>
+              <span>Add Staff Member</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

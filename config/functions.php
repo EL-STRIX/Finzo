@@ -422,7 +422,8 @@ function check_admin_permission($pdo, $admin_id, $action) {
         'add_branch',
         'manage_admins',
         'suspend_staff',
-        'delete_staff'
+        'delete_staff',
+        'add_staff'
     ];
     
     if ($role === 'admin' && in_array($action, $admin_blocked)) {

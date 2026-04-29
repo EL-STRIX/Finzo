@@ -1,0 +1,66 @@
+<?php
+/**
+ * api/admin/get-staff-detail.php
+ * GET endpoint: returns full staff profile including address and documents.
+ */
+
+require_once dirname(__DIR__, 2) . '/middleware/auth-admin.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+$staff_id = intval($_GET['staff_id'] ?? $_GET['id'] ?? 0);
+if (!$staff_id) {
+    json_response(['success' => false, 'message' => 'Staff ID is required'], 422);
+}
+
+try {
+    // JOIN all 3 tables: staff, staff_address, staff_documents
+    $stmt = $pdo->prepare("
+        SELECT
+            s.*,
+            sa.street, sa.city, sa.state, sa.pincode, sa.country,
+            sd.id_type, sd.id_number, sd.front_image, sd.back_image,
+            b.name as branch_name
+        FROM staff s
+        LEFT JOIN staff_address sa ON sa.staff_id = s.id
+        LEFT JOIN staff_documents sd ON sd.staff_id = s.id
+        LEFT JOIN branches b ON b.id = s.branch_id
+        WHERE s.id = ?
+    ");
+    $stmt->execute([$staff_id]);
+    $staff = $stmt->fetch();
+
+    if (!$staff) {
+        json_response(['success' => false, 'message' => 'Staff member not found'], 404);
+    }
+
+    // Convert image paths to accessible URLs if they exist
+    $base_url = APP_URL . '/';
+    if ($staff['profile_photo']) $staff['profile_photo_url'] = $base_url . $staff['profile_photo'];
+    if ($staff['front_image']) $staff['front_image_url'] = $base_url . $staff['front_image'];
+    if ($staff['back_image']) $staff['back_image_url'] = $base_url . $staff['back_image'];
+
+    // Performance stats (preserving existing functionality)
+    $stmt = $pdo->prepare("
+        SELECT
+            COUNT(*) as total_transactions,
+            COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as total_deposits,
+            COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals
+        FROM transactions
+        WHERE processed_by_staff_id = ? AND status = 'completed'
+    ");
+    $stmt->execute([$staff_id]);
+    $performance = $stmt->fetch();
+
+    json_response([
+        'success' => true,
+        'staff' => $staff,
+        'performance' => $performance
+    ]);
+
+} catch (PDOException $e) {
+    error_log("Get staff detail error: " . $e->getMessage());
+    json_response(['success' => false, 'message' => 'Failed to load staff details'], 500);
+}
