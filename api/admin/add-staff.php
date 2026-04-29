@@ -194,14 +194,14 @@ try {
         INSERT INTO staff_documents (staff_id, id_type, id_number, front_image, back_image)
         VALUES (?, ?, ?, ?, ?)
     ");
-    $stmt->execute([$new_staff_db_id, $id_type, $id_number, $id_front_path, $id_back_path]);
+    $stmt->execute([$staff_id_str, $id_type, $id_number, $id_front_path, $id_back_path]);
 
     // 14. Insert into staff_address
     $stmt = $pdo->prepare("
         INSERT INTO staff_address (staff_id, street, city, state, pincode, country)
         VALUES (?, ?, ?, ?, ?, 'India')
     ");
-    $stmt->execute([$new_staff_db_id, $street, $city, $state, $pincode]);
+    $stmt->execute([$staff_id_str, $street, $city, $state, $pincode]);
 
     $pdo->commit();
 

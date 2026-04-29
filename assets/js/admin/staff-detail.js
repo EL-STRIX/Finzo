@@ -51,23 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatCurrency(amount) {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR'
-        }).format(amount);
+        return window.FinzoUtils.formatINR(amount);
     }
 
     async function loadStaffData() {
         try {
             const response = await window.api.get(`/admin/staff-detail.php?id=${staffId}`);
             if (response.status === 'success' || response.success) {
-                const staff = response.staff || response.data?.staff;
-                const performance = response.performance || response.data?.performance || {};
-                const transactions = response.transactions || response.data?.transactions || [];
+                const staff = response.staff;
+                const performance = response.performance || {};
+                const today = response.today_performance || {};
+                const transactions = response.transactions || [];
+                const totalShifts = response.total_shifts || 0;
                 
                 // Header
                 const breadcrumb = document.getElementById('staff-name-breadcrumb');
-                if(breadcrumb) breadcrumb.textContent = staff.full_name;
+                if(breadcrumb) {
+                    breadcrumb.classList.remove('opacity-60');
+                    breadcrumb.textContent = staff.full_name;
+                }
                 
                 const h1 = document.getElementById('staff-name-h1');
                 if(h1) h1.textContent = staff.full_name;
@@ -79,7 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(deactivateTarget) deactivateTarget.textContent = staff.full_name;
 
                 const avatar = document.getElementById('staff-initials-avatar');
-                if(avatar) avatar.textContent = getInitials(staff.full_name);
+                if(avatar) {
+                    const initials = getInitials(staff.full_name);
+                    avatar.innerHTML = initials;
+                    avatar.style.background = window.FinzoUtils.getAvatarGradient(initials);
+                }
+
+                // Title display (Designation & Department)
+                const desEl = document.getElementById('info-designation');
+                if(desEl) desEl.textContent = staff.designation;
+                const depEl = document.getElementById('info-department');
+                if(depEl) depEl.textContent = staff.department;
                 
                 const idDisplay = document.getElementById('staff-id-display');
                 if(idDisplay) idDisplay.textContent = `ID: ${staff.staff_id}`;
@@ -91,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusBadge = document.getElementById('staff-status-badge');
                 if(statusBadge) {
                    statusBadge.className = `status-badge ${state}`;
-                   statusBadge.textContent = staff.status;
+                   statusBadge.textContent = staff.status.toUpperCase();
                 }
 
                 // Button visibility based on status
@@ -100,11 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
                    if(deactivateBtn) {
                        deactivateBtn.disabled = true;
                        deactivateBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                       deactivateBtn.innerHTML = '<span class="material-symbols-outlined">block</span> Inactive';
+                       deactivateBtn.innerHTML = '<span class="material-symbols-outlined">block</span> Suspended';
                    }
                 }
 
-                // Stats
+                // Stats (All Time)
                 const statDeposits = document.getElementById('stat-total-deposits');
                 if(statDeposits) statDeposits.innerHTML = `${formatCurrency(performance.total_deposits)} <span class="admin-stat-delta positive">+0%</span>`;
                 
@@ -117,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lastActive = staff.last_login_at ? new Date(staff.last_login_at) : null;
                 const statLastActive = document.getElementById('stat-last-active');
                 if(statLastActive) {
-                   statLastActive.innerHTML = lastActive ? `${lastActive.toLocaleDateString()} <span class="admin-stat-delta positive" style="background:#e8f8f2; color:#00b894;">${lastActive.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>` : 'Never';
+                   statLastActive.innerHTML = lastActive ? `${window.FinzoUtils.formatDate(lastActive)} <span class="admin-stat-delta positive" style="background:#e8f8f2; color:#00b894;">${lastActive.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>` : 'Never';
                 }
 
                 // Info
@@ -127,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'info-phone': staff.phone || 'N/A',
                     'info-branch': staff.branch_name || 'N/A',
                     'info-staff-id': staff.staff_id,
-                    'info-joined': new Date(staff.created_at).toLocaleDateString(),
-                    'info-shifts': staff.total_shifts || '0'
+                    'info-joined': window.FinzoUtils.formatDate(staff.created_at),
+                    'info-shifts': totalShifts
                 };
                 
                 for(const [id, val] of Object.entries(mapping)) {
@@ -136,46 +148,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(el) el.textContent = val;
                 }
 
-                // Shift Summary (Mocked/Calculated for now as API doesn't provide today specifically)
+                // Today's Shift Summary
                 const sStart = document.getElementById('summary-shift-start'); if(sStart) sStart.textContent = '09:00 AM';
-                const sDep = document.getElementById('summary-deposits'); if(sDep) sDep.textContent = `${performance.deposit_count || 0} (${formatCurrency(performance.total_deposits)})`;
-                const sWit = document.getElementById('summary-withdrawals'); if(sWit) sWit.textContent = `${performance.withdrawal_count || 0} (${formatCurrency(performance.total_withdrawals)})`;
-                const sTx = document.getElementById('summary-total-txns'); if(sTx) sTx.textContent = performance.total_transactions || 0;
-                const sAmt = document.getElementById('summary-total-amount'); if(sAmt) sAmt.textContent = formatCurrency((parseFloat(performance.total_deposits) || 0) - (parseFloat(performance.total_withdrawals) || 0));
+                const sDep = document.getElementById('summary-deposits'); if(sDep) sDep.textContent = `${today.deposit_count || 0} (${formatCurrency(today.total_deposits)})`;
+                const sWit = document.getElementById('summary-withdrawals'); if(sWit) sWit.textContent = `${today.withdrawal_count || 0} (${formatCurrency(today.total_withdrawals)})`;
+                const sTx = document.getElementById('summary-total-txns'); if(sTx) sTx.textContent = today.total_transactions || 0;
+                const sAmt = document.getElementById('summary-total-amount'); if(sAmt) sAmt.textContent = formatCurrency((parseFloat(today.total_deposits) || 0) - (parseFloat(today.total_withdrawals) || 0));
 
                 // Transactions
                 const tbody = document.getElementById('staff-transactions-body');
                 if (tbody) {
                     if (transactions && transactions.length > 0) {
                         const txHtml = transactions.map(t => `
-                        <tr>
-                            <td class="text-[11px] font-bold opacity-60">${t.txn_id}</td>
-                            <td class="text-xs">${new Date(t.created_at).toLocaleString()}</td>
-                            <td class="font-bold">${t.customer_name}</td>
-                            <td class="font-code text-xs opacity-60">${t.account_no}</td>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="text-[11px] font-bold opacity-60 font-mono">${t.txn_id}</td>
+                            <td class="text-xs font-medium">${window.FinzoUtils.formatDateTime(t.created_at)}</td>
+                            <td class="font-bold text-sm text-slate-800 dark:text-slate-100">${t.customer_name}</td>
+                            <td class="font-mono text-xs opacity-60">${t.account_no}</td>
                             <td><span class="status-badge ${t.type === 'deposit' ? 'badge-success' : 'badge-error'}">${t.type.toUpperCase()}</span></td>
-                            <td class="font-black ${t.type === 'deposit' ? 'text-primary dark:text-blue-400' : 'text-error'}">${formatCurrency(t.amount)}</td>
+                            <td class="font-black text-xs ${t.type === 'deposit' ? 'text-primary dark:text-blue-400' : 'text-error'}">${formatCurrency(t.amount)}</td>
                             <td class="text-right">
-                            <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400">
-                                <span class="material-symbols-outlined text-lg">receipt_long</span>
+                            <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400 group">
+                                <span class="material-symbols-outlined text-lg group-hover:text-primary transition-colors">receipt_long</span>
                             </button>
                             </td>
                         </tr>
                         `).join('');
                         tbody.innerHTML = txHtml;
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="7" class="py-10 text-center opacity-40">No transactions recorded yet</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center opacity-40 font-bold">No transactions recorded yet</td></tr>';
                     }
                 }
             } else {
                 const tbody = document.getElementById('staff-transactions-body');
-                if(tbody) tbody.innerHTML = '<tr><td colspan="7" class="py-10 text-center text-error font-bold">Failed to load staff details. Please try again.</td></tr>';
-                window.FinzoUtils.showToast(response.message || 'Error loading staff details', 'error');
+                if(tbody) tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-error font-bold">Failed to load staff details: ' + (response.message || 'Unknown error') + '</td></tr>';
+                if(window.showToast) window.showToast(response.message || 'Error loading staff details', 'error');
             }
         } catch (error) {
             console.error('Failed to load staff data:', error);
             const tbody = document.getElementById('staff-transactions-body');
-            if(tbody) tbody.innerHTML = '<tr><td colspan="7" class="py-10 text-center text-error font-bold">Failed to load staff details. Please try again.</td></tr>';
+            if(tbody) tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-error font-bold">Connection error. Please check your network and try again.</td></tr>';
         }
     }
 

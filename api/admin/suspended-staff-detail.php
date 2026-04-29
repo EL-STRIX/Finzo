@@ -19,7 +19,8 @@ if (!$staff_id) {
 try {
     // Fetch staff profile with suspension details
     $stmt = $pdo->prepare("
-        SELECT s.id, s.staff_id, s.full_name, s.email, s.phone, s.role, s.status,
+        SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
+               s.designation as role, s.status,
                s.suspension_reason, s.suspended_by, s.updated_at as suspended_at,
                s.created_at as onboarding_date,
                b.name as branch_name

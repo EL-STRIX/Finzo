@@ -19,7 +19,8 @@ if (!$staff_id) {
 try {
     // Fetch staff profile
     $stmt = $pdo->prepare("
-        SELECT s.id, s.staff_id, s.full_name, s.email, s.phone, s.role, s.status,
+        SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
+               s.designation, s.department, s.status,
                s.last_login_at, s.last_login_ip, s.created_at,
                b.name as branch_name, b.branch_code, b.state as branch_state
         FROM staff s
@@ -33,7 +34,7 @@ try {
         json_response(['success' => false, 'message' => 'Staff member not found'], 404);
     }
 
-    // Performance stats
+    // Performance stats (All Time)
     $stmt = $pdo->prepare("
         SELECT
             COUNT(*) as total_transactions,
@@ -46,6 +47,29 @@ try {
     ");
     $stmt->execute([$staff_id]);
     $performance = $stmt->fetch();
+
+    // Today's performance
+    $stmt = $pdo->prepare("
+        SELECT
+            COUNT(*) as total_transactions,
+            COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as total_deposits,
+            COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals,
+            COUNT(CASE WHEN type = 'deposit' THEN 1 END) as deposit_count,
+            COUNT(CASE WHEN type = 'withdrawal' THEN 1 END) as withdrawal_count
+        FROM transactions
+        WHERE processed_by_staff_id = ? AND status = 'completed' AND DATE(created_at) = CURDATE()
+    ");
+    $stmt->execute([$staff_id]);
+    $today_performance = $stmt->fetch();
+
+    // Total shifts (distinct days worked)
+    $stmt = $pdo->prepare("
+        SELECT COUNT(DISTINCT DATE(created_at)) 
+        FROM transactions 
+        WHERE processed_by_staff_id = ?
+    ");
+    $stmt->execute([$staff_id]);
+    $total_shifts = (int)$stmt->fetchColumn();
 
     // Recent transactions (last 20)
     $stmt = $pdo->prepare("
@@ -64,10 +88,12 @@ try {
     $transactions = $stmt->fetchAll();
 
     json_response([
-        'success'      => true,
-        'staff'        => $staff,
-        'performance'  => $performance,
-        'transactions' => $transactions
+        'success'           => true,
+        'staff'             => $staff,
+        'performance'       => $performance,
+        'today_performance' => $today_performance,
+        'total_shifts'      => $total_shifts,
+        'transactions'      => $transactions
     ]);
 
 } catch (PDOException $e) {
