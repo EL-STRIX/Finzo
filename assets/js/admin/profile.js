@@ -125,7 +125,9 @@
                 currentAdminRole = admin.admin_role;
 
                 // Topbar & Subtitle handling
-                document.getElementById('topbar-avatar').textContent = admin.full_name.charAt(0);
+                if (!admin.profile_photo) {
+                    document.getElementById('topbar-avatar').textContent = admin.full_name.charAt(0);
+                }
 
                 // Profile Card bindings
                 document.getElementById('profile-name-display').textContent = admin.full_name;

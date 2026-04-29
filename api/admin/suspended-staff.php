@@ -54,7 +54,7 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, s.designation as role, s.status,
-               s.suspension_reason, s.suspended_by, s.updated_at,
+               s.suspension_reason, s.suspended_by, s.updated_at, s.profile_photo,
                b.name as branch_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id

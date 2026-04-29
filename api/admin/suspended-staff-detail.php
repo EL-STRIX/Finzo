@@ -22,7 +22,7 @@ try {
         SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
                s.designation as role, s.status,
                s.suspension_reason, s.suspended_by, s.updated_at as suspended_at,
-               s.created_at as onboarding_date,
+               s.created_at as onboarding_date, s.profile_photo,
                b.name as branch_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id

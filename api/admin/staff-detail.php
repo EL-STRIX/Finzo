@@ -21,7 +21,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
                s.designation, s.department, s.status,
-               s.last_login_at, s.last_login_ip, s.created_at,
+               s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
                b.name as branch_name, b.branch_code, b.state as branch_state
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
