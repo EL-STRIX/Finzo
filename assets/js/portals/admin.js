@@ -18,6 +18,8 @@ window.AdminPortal = {
             if (data.success) {
                 this.state.admin = data.admin;
                 window.csrfToken = data.csrf_token;
+                const meta = document.querySelector('meta[name="csrf-token"]');
+                if (meta) meta.content = data.csrf_token;
                 this.state.isLoaded = true;
                 this.syncHeader(data.admin, data.stats);
             }

@@ -49,14 +49,16 @@ try {
     $pages  = max(1, ceil($total / $per_page));
     $offset = ($page - 1) * $per_page;
 
-    // Fetch Staff List
+    // Fetch Staff List with individual stats
     $stmt = $pdo->prepare("
         SELECT
             s.id, s.staff_id, s.full_name, s.personal_email,
             s.phone, s.designation, s.department,
             s.status, s.profile_photo,
             s.date_of_joining, s.last_login_at,
-            b.name as branch_name
+            b.name as branch_name,
+            (SELECT COUNT(*) FROM transactions WHERE processed_by_staff_id = s.id) as txn_count,
+            (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_amount
         FROM staff s
         LEFT JOIN branches b ON b.id = s.branch_id
         WHERE {$where_sql}
@@ -65,6 +67,12 @@ try {
     ");
     $stmt->execute($params);
     $staff_list = $stmt->fetchAll();
+
+    // Fetch Global Stats for top cards
+    $total_staff = $pdo->query("SELECT COUNT(*) FROM staff")->fetchColumn();
+    $active_staff = $pdo->query("SELECT COUNT(*) FROM staff WHERE status = 'active'")->fetchColumn();
+    $suspended_staff = $pdo->query("SELECT COUNT(*) FROM staff WHERE status = 'suspended'")->fetchColumn();
+    $txns_today = $pdo->query("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()")->fetchColumn();
 
     // Format for frontend
     $base_url = APP_URL . '/';
@@ -81,7 +89,13 @@ try {
         'staff'        => $staff_list,
         'total'        => $total,
         'pages'        => $pages,
-        'current_page' => $page
+        'current_page' => $page,
+        'stats'        => [
+            'total_staff' => (int)$total_staff,
+            'active_staff' => (int)$active_staff,
+            'suspended_staff' => (int)$suspended_staff,
+            'transactions_today' => (int)$txns_today
+        ]
     ]);
 
 } catch (PDOException $e) {

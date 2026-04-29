@@ -32,6 +32,7 @@
   <script src="../../assets/js/core/theme.js"></script>
   <script src="../../assets/js/core/utils.js"></script>
   <script src="../../assets/js/core/api.js"></script>
+  <meta name="csrf-token" content="">
   </head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -128,28 +129,28 @@
             <span class="material-symbols-outlined" style="color:#0369a1;">group</span>
           </div>
           <div class="admin-stat-label">TOTAL STAFF</div>
-          <div class="admin-stat-value skeleton w-16 h-8"></div>
+          <div id="stat-total-staff" class="admin-stat-value skeleton w-16 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#e8f8f2;">
             <span class="material-symbols-outlined" style="color:#00b894;">badge</span>
           </div>
           <div class="admin-stat-label">ACTIVE STAFF</div>
-          <div class="admin-stat-value skeleton w-16 h-8"></div>
+          <div id="stat-active-staff" class="admin-stat-value skeleton w-16 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#f1f3f5;">
             <span class="material-symbols-outlined" style="color:#6c757d;">person_off</span>
           </div>
           <div class="admin-stat-label">SUSPEND STAFF</div>
-          <div class="admin-stat-value skeleton w-16 h-8"></div>
+          <div id="stat-suspend-staff" class="admin-stat-value skeleton w-16 h-8"></div>
         </div>
         <div class="admin-stat-card">
           <div class="admin-stat-icon" style="background:#fff8e1;">
             <span class="material-symbols-outlined" style="color:#f39c12;">receipt</span>
           </div>
           <div class="admin-stat-label">TRANSACTIONS TODAY</div>
-          <div class="admin-stat-value skeleton w-20 h-8"></div>
+          <div id="stat-transactions-today" class="admin-stat-value skeleton w-20 h-8"></div>
         </div>
       </div>
 
@@ -180,6 +181,7 @@
               <div class="finzo-dropdown-menu !z-[3000] !w-full">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                 <div class="finzo-dropdown-option" data-value="active">Active</div>
+                <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
               </div>
               <input type="hidden" id="filter-status" value="all">
             </div>
@@ -218,7 +220,7 @@
               <th style="width: 12%;">Branch</th>
               <th style="width: 10%;" class="text-center">Trans</th>
               <th style="width: 12%;" class="text-right">Amount</th>
-              <th style="width: 12%;">Active</th>
+              <th style="width: 12%;">Last Login</th>
               <th style="width: 8%;">Status</th>
               <th style="width: 10%;" class="text-right">ACTIONS</th>
             </tr>
@@ -269,7 +271,7 @@
         </button>
       </div>
       
-      <form id="addStaffForm" class="p-0">
+      <form id="addStaffForm" data-no-validate class="p-0">
         <div class="p-6 sm:p-8 space-y-8">
           
           <!-- SECTION A: Profile Photo -->

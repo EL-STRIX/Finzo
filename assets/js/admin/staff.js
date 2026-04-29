@@ -39,11 +39,34 @@
             if (response.success) {
                 renderTable(response.staff || []);
                 updatePagination(response.total || 0, response.pages || 1);
+                if (response.stats) {
+                    updateStats(response.stats);
+                }
             }
         } catch (error) {
             console.error('Failed to load staff:', error);
         } finally {
             if (tbody) tbody.style.opacity = '1';
+        }
+    }
+
+    /**
+     * Update top stat cards
+     */
+    function updateStats(stats) {
+        const elements = {
+            'stat-total-staff': stats.total_staff,
+            'stat-active-staff': stats.active_staff,
+            'stat-suspend-staff': stats.suspended_staff,
+            'stat-transactions-today': stats.transactions_today
+        };
+
+        for (const [id, value] of Object.entries(elements)) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('skeleton', 'w-16', 'w-20', 'h-8');
+                el.textContent = value.toLocaleString();
+            }
         }
     }
 
@@ -80,8 +103,8 @@
                 </td>
                 <td class="text-center text-[10px] font-bold font-mono opacity-50">${s.staff_id}</td>
                 <td><div class="text-[11px] font-bold">${s.branch_name || 'Unassigned'}</div></td>
-                <td class="text-center font-bold text-xs opacity-60">0</td>
-                <td class="text-right font-black text-xs text-primary dark:text-blue-400">₹0</td>
+                <td class="text-center font-bold text-xs opacity-60">${s.txn_count || 0}</td>
+                <td class="text-right font-black text-xs text-primary dark:text-blue-400">${window.FinzoUtils.formatINR(s.txn_amount || 0)}</td>
                 <td class="text-[10px] font-bold opacity-40">${s.last_login_at ? window.FinzoUtils.formatDate(s.last_login_at) : 'Never'}</td>
                 <td><span class="status-badge ${statusClass}">${s.status.toUpperCase()}</span></td>
                 <td class="text-right">
@@ -334,7 +357,7 @@
                 try {
                     const formData = new FormData(addForm);
                     // CSRF token from session (handled by api.js if set up, or add manually)
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || '';
                     formData.append('csrf_token', csrfToken);
 
                     const response = await window.api.upload('/admin/add-staff.php', formData);
