@@ -42,6 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Security Breach Suspected',
                 'Other'
             ]
+        },
+        delete: {
+            title: 'Delete Staff Account',
+            subtitle: 'Critical security procedure',
+            body: 'You are about to <span class="text-rose-600 font-black underline">PERMANENTLY DELETE</span> <b id="delete-target-name">...</b> from the system. This action is irreversible and will remove all associated address and identity records.',
+            icon: 'delete_forever',
+            color: 'rose',
+            btnText: 'Confirm Permanent Deletion',
+            btnClass: 'bg-rose-700 shadow-rose-700/20',
+            reasons: []
         }
     };
 
@@ -212,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-icon').textContent = config.icon;
         
         // Inject name if possible
-        const staffName = document.getElementById('staff-full-name')?.textContent || 'this staff member';
+        const staffName = document.getElementById('staff-name-h1')?.textContent || 'this staff member';
         const targetName = document.getElementById(action + '-target-name');
         if (targetName) targetName.textContent = staffName;
 
@@ -294,6 +304,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const delBtn = document.getElementById('delete-staff-btn');
+    if(delBtn) {
+        delBtn.addEventListener('click', function() {
+            openGovernanceModal('delete');
+        });
+    }
+
     const rBtn = document.getElementById('reset-password-btn');
     if(rBtn) {
         rBtn.addEventListener('click', function() {
@@ -312,7 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('admin-password').value;
             const checkedReason = document.querySelector('input[name="suspension_reason"]:checked');
             const reason = checkedReason ? checkedReason.value : null;
-            const apiAction = currentAction === 'deactivate' ? 'suspend' : 'reset_password';
+            
+            let apiAction = '';
+            if (currentAction === 'deactivate') apiAction = 'suspend';
+            else if (currentAction === 'reset') apiAction = 'reset_password';
+            else if (currentAction === 'delete') apiAction = 'delete';
 
             if (currentAction === 'deactivate' && !reason) {
                 alert('Please select a reason for deactivation.');

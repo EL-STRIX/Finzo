@@ -19,19 +19,34 @@ if (!$staff_id || empty($action)) {
     json_response(['success' => false, 'message' => 'Staff ID and action are required'], 422);
 }
 
-if (!in_array($action, ['suspend', 'reinstate', 'reset_password'])) {
+if (!in_array($action, ['suspend', 'reinstate', 'reset_password', 'delete'])) {
     json_response(['success' => false, 'message' => 'Invalid action'], 422);
 }
 
 $admin_id = $_SESSION['admin_id'];
+$password = $_POST['password'] ?? '';
+
+if (empty($password)) {
+    json_response(['success' => false, 'message' => 'Admin password is required for this action'], 422);
+}
 
 // Prevent restricted admins from suspending or reinstating staff
-if (in_array($action, ['suspend', 'reinstate'])) {
+if (in_array($action, ['suspend', 'reinstate', 'delete'])) {
     check_admin_permission($pdo, $admin_id, 'suspend_staff');
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id, staff_id, full_name, email, status FROM staff WHERE id = ?");
+    // 1. Verify Admin Password
+    $admin_stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+    $admin_stmt->execute([$admin_id]);
+    $admin = $admin_stmt->fetch();
+
+    if (!$admin || !password_verify($password, $admin['password_hash'])) {
+        json_response(['success' => false, 'message' => 'Invalid administrative password. Access denied.'], 403);
+    }
+
+    // 2. Fetch Staff
+    $stmt = $pdo->prepare("SELECT id, staff_id, full_name, personal_email as email, status FROM staff WHERE id = ?");
     $stmt->execute([$staff_id]);
     $staff = $stmt->fetch();
 
@@ -91,9 +106,29 @@ try {
             'message' => 'Temporary password generated successfully',
             'temp_password' => $temp_pass
         ]);
-    }
+    } elseif ($action === 'delete') {
+        $pdo->beginTransaction();
+        
+        // Delete from address
+        $stmt = $pdo->prepare("DELETE FROM staff_address WHERE staff_id = ?");
+        $stmt->execute([$staff['staff_id']]);
 
+        // Delete from documents
+        $stmt = $pdo->prepare("DELETE FROM staff_documents WHERE staff_id = ?");
+        $stmt->execute([$staff['staff_id']]);
+
+        // Delete from staff
+        $stmt = $pdo->prepare("DELETE FROM staff WHERE id = ?");
+        $stmt->execute([$staff_id]);
+
+        write_audit_log($pdo, 'staff_deleted', $staff['staff_id'], 'staff', $admin_id, 'admin',
+            "Permanently deleted staff: {$staff['full_name']} ({$staff['email']})");
+
+        $pdo->commit();
+        json_response(['success' => true, 'message' => 'Staff member deleted permanently']);
+    }
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
     error_log("Staff action error: " . $e->getMessage());
-    json_response(['success' => false, 'message' => 'Action failed. Please try again.'], 500);
+    json_response(['success' => false, 'message' => 'Action failed: ' . $e->getMessage()], 500);
 }
