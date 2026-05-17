@@ -101,7 +101,8 @@ try {
 
     if (!empty($security_answer)) {
         $fields[] = "security_answer_hash = ?";
-        $params[] = password_hash($security_answer, PASSWORD_BCRYPT);
+        $security_answer_lower = strtolower(trim($security_answer));
+        $params[] = password_hash($security_answer_lower, PASSWORD_BCRYPT);
     }
 
     $query = "UPDATE admin_users SET " . implode(", ", $fields) . " WHERE id = ?";

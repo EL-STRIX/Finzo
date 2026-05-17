@@ -60,8 +60,11 @@ if ($answer_locked_until && strtotime($answer_locked_until) > time()) {
 // Wait, the spec says in part 4: "Note below: 'Answer is case-insensitive. Remember this — it unlocks your account.'"
 // This means we should lowercase the answer before hashing and verifying.
 $security_answer_lower = strtolower(trim($security_answer));
+$security_answer_trimmed = trim($security_answer);
 
-if (!password_verify($security_answer_lower, $admin['security_answer_hash'])) {
+if (!password_verify($security_answer_lower, $admin['security_answer_hash']) && 
+    !password_verify($security_answer_trimmed, $admin['security_answer_hash']) &&
+    !password_verify($security_answer, $admin['security_answer_hash'])) {
     $new_answer_attempts = (int)$admin['answer_attempts'] + 1;
     
     if ($new_answer_attempts >= 5) {

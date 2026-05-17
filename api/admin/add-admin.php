@@ -98,7 +98,8 @@ try {
     }
 
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
-    $answer_hash = password_hash($security_answer, PASSWORD_BCRYPT);
+    $security_answer_lower = strtolower(trim($security_answer));
+    $answer_hash = password_hash($security_answer_lower, PASSWORD_BCRYPT);
     $access_level = ($admin_role === 'admin') ? 'full' : 'restricted';
 
 
@@ -115,9 +116,9 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO admin_users (
             admin_id, full_name, date_of_birth, gender, profile_photo, email, phone, 
-            password_hash, security_question, security_answer_hash, 
+            password_hash, security_question, security_answer_hash, security_question_set,
             admin_role, access_level, status, created_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 'active', ?)
     ");
     
     $stmt->execute([
