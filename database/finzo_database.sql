@@ -112,6 +112,8 @@ CREATE TABLE IF NOT EXISTS staff (
     status ENUM('active', 'suspended') NOT NULL DEFAULT 'active',
     last_login_at TIMESTAMP NULL DEFAULT NULL,
     last_login_ip VARCHAR(45) NULL DEFAULT NULL,
+    failed_attempts TINYINT NOT NULL DEFAULT 0,
+    locked_until TIMESTAMP NULL DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -177,7 +179,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     INDEX idx_to_account (to_account_id),
     INDEX idx_type (type),
     INDEX idx_status (status),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_daily_limit (from_account_id, type, status, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -187,7 +190,7 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     nickname VARCHAR(100) NOT NULL,
-    account_no VARCHAR(20) NOT NULL,
+    account_no VARCHAR(20) NOT NULL COMMENT 'No FK — account_no may not yet exist at save time; validation is handled at the API layer',
     bank_name VARCHAR(150) NULL DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -223,7 +226,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
     entity_id VARCHAR(100) NULL DEFAULT NULL,
     entity_type VARCHAR(50) NULL DEFAULT NULL,
     actor_id INT UNSIGNED NOT NULL,
-    actor_role ENUM('admin', 'staff', 'system') NOT NULL,
+    actor_role ENUM('admin', 'staff', 'user', 'system') NOT NULL,
     details TEXT NULL DEFAULT NULL,
     ip_address VARCHAR(45) NULL DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

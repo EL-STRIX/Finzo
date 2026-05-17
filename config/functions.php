@@ -159,11 +159,11 @@ function generate_staff_id($pdo) {
 
 /**
  * Generate a unique transaction ID.
- * Format: TXN + uniqid (e.g., TXN6625a3b4e1f2a)
+ * Format: TXN + 16 hex chars from cryptographic random bytes
  * @return string Transaction ID
  */
 function generate_transaction_id() {
-    return 'TXN' . strtoupper(uniqid());
+    return 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 }
 
 // =====================================================

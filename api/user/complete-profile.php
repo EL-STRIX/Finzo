@@ -226,7 +226,7 @@ try {
         $stmt = $pdo->prepare("
             UPDATE accounts SET
                 account_type = ?, balance = ?, txn_pin_hash = ?, status = 'pending', updated_at = NOW()
-            WHERE user_id = ?
+            WHERE user_id = ? AND status IN ('pending', 'rejected')
         ");
         $stmt->execute([$account_type, $initial_deposit, $txn_pin_hash, $user_id]);
     } else {

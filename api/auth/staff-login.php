@@ -19,7 +19,8 @@ if (empty($identity) || empty($password)) {
 }
 
 $stmt = $pdo->prepare("
-    SELECT id, staff_id, full_name, personal_email, password_hash, status, branch_id, designation
+    SELECT id, staff_id, full_name, personal_email, password_hash, status, branch_id, designation,
+           failed_attempts, locked_until
     FROM staff
     WHERE staff_id = ? OR personal_email = ?
 ");
@@ -30,7 +31,13 @@ if (!$staff) {
     json_response(['success' => false, 'message' => 'Invalid Staff ID or password'], 401);
 }
 
+// Check if account is locked due to too many failed attempts
+if ($staff['failed_attempts'] >= 5 && $staff['locked_until'] && strtotime($staff['locked_until']) > time()) {
+    json_response(['success' => false, 'message' => 'Account locked due to too many failed attempts. Try again later.'], 403);
+}
+
 if (!password_verify($password, $staff['password_hash'])) {
+    $pdo->prepare("UPDATE staff SET failed_attempts = failed_attempts + 1, locked_until = IF(failed_attempts + 1 >= 5, DATE_ADD(NOW(), INTERVAL 30 MINUTE), locked_until) WHERE id = ?")->execute([$staff['id']]);
     json_response(['success' => false, 'message' => 'Invalid Staff ID or password'], 401);
 }
 
@@ -43,8 +50,7 @@ if ($staff['status'] === 'suspended') {
 
 $ip = get_client_ip();
 
-$stmt = $pdo->prepare("UPDATE staff SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?");
-$stmt->execute([$ip, $staff['id']]);
+$pdo->prepare("UPDATE staff SET failed_attempts = 0, locked_until = NULL, last_login_at = NOW(), last_login_ip = ? WHERE id = ?")->execute([$ip, $staff['id']]);
 
 $_SESSION['staff_id']         = (int)$staff['id'];
 $_SESSION['staff_display_id'] = $staff['staff_id'];
