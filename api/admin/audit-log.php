@@ -61,10 +61,23 @@ try {
     $pages  = max(1, ceil($total / $per_page));
     $offset = ($page - 1) * $per_page;
 
-    // Fetch
     $stmt = $pdo->prepare("
         SELECT al.id, al.action_type, al.entity_id, al.entity_type,
-               al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at
+               al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
+               CASE 
+                   WHEN al.actor_role = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.actor_id), al.actor_id)
+                   WHEN al.actor_role = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.actor_id), al.actor_id)
+                   ELSE 'SYSTEM'
+               END as actor_display_id,
+               CASE 
+                   WHEN al.actor_role = 'admin' THEN (SELECT admin_role FROM admin_users WHERE id = al.actor_id)
+                   ELSE al.actor_role
+               END as actor_specific_role,
+               CASE 
+                   WHEN al.entity_type = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.entity_id), al.entity_id)
+                   WHEN al.entity_type = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.entity_id), al.entity_id)
+                   ELSE al.entity_id
+               END as entity_display_id
         FROM audit_log al
         WHERE {$where_sql}
         ORDER BY al.created_at DESC

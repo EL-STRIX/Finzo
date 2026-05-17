@@ -52,7 +52,8 @@
 
         tbody.innerHTML = '';
         entries.forEach((entry, i) => {
-            const countStr = String((currentPage - 1) * rowsPerPage + i + 1).padStart(2, '0');
+            const countVal = total - ((currentPage - 1) * rowsPerPage + i);
+            const countStr = String(countVal).padStart(2, '0');
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer';
             
@@ -63,13 +64,13 @@
             tr.innerHTML = `
                 <td class="font-bold opacity-30 text-[11px] tracking-widest">${countStr}</td>
                 <td>
-                    <div class="font-bold text-slate-800 dark:text-slate-100">${entry.actor_id}</div>
+                    <div class="font-bold text-slate-800 dark:text-slate-100">${entry.actor_display_id || entry.actor_id}</div>
                     <div class="mt-1">${getActorBadge(entry.actor_role)}</div>
                 </td>
                 <td>${getActionBadge(entry.action_type)}</td>
                 <td>
                     <div class="text-[10px] uppercase tracking-widest font-bold opacity-50">${entry.entity_type || 'SYSTEM'}</div>
-                    <div class="font-mono text-xs font-bold mt-1">${entry.entity_id || '-'}</div>
+                    <div class="font-mono text-xs font-bold mt-1">${entry.entity_display_id || entry.entity_id || '-'}</div>
                 </td>
                 <td class="font-mono text-xs opacity-60">${entry.ip_address || 'N/A'}</td>
                 <td class="text-xs opacity-60" title="${detailsText.replace(/"/g, '&quot;')}">${truncatedDetails}</td>
@@ -135,9 +136,9 @@
         if (elId) elId.textContent = entry.id;
         if (elAction) elAction.innerHTML = getActionBadge(entry.action_type);
         if (elActorRole) elActorRole.innerHTML = getActorBadge(entry.actor_role);
-        if (elActorId) elActorId.textContent = entry.actor_id;
+        if (elActorId) elActorId.textContent = entry.actor_display_id || entry.actor_id;
         if (elEntityType) elEntityType.textContent = (entry.entity_type || 'SYSTEM').toUpperCase();
-        if (elEntityId) elEntityId.textContent = entry.entity_id || '-';
+        if (elEntityId) elEntityId.textContent = entry.entity_display_id || entry.entity_id || '-';
         if (elIp) elIp.textContent = entry.ip_address || 'N/A';
         if (elTimestamp) elTimestamp.textContent = entry.created_at;
         if (elDetails) elDetails.textContent = entry.details || 'No details provided.';
