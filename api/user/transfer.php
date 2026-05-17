@@ -70,27 +70,67 @@ if (!validate_pin($pdo, $user_id, $txn_pin)) {
 try {
     $pdo->beginTransaction();
 
-    // Get source account with row lock
+    // Fetch source account ID (no lock yet)
     $stmt = $pdo->prepare("
-        SELECT a.id, a.account_no, a.balance, a.daily_limit, u.full_name
+        SELECT a.id
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
         WHERE a.user_id = ? AND a.status = 'active'
-        FOR UPDATE
     ");
     $stmt->execute([$user_id]);
-    $source = $stmt->fetch();
+    $source_id = $stmt->fetchColumn();
 
-    if (!$source) {
+    if (!$source_id) {
         $pdo->rollBack();
         json_response(['success' => false, 'message' => 'Source account not found or inactive'], 404);
     }
 
-    // Cannot transfer to own account
-    if ($source['account_no'] === $to_account_no) {
+    // Fetch destination account ID (no lock yet)
+    $stmt = $pdo->prepare("
+        SELECT a.id
+        FROM accounts a
+        WHERE a.account_no = ? AND a.status = 'active'
+    ");
+    $stmt->execute([$to_account_no]);
+    $dest_id = $stmt->fetchColumn();
+
+    if (!$dest_id) {
+        $pdo->rollBack();
+        json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404);
+    }
+
+    if ($source_id === $dest_id) {
         $pdo->rollBack();
         json_response(['success' => false, 'message' => 'Cannot transfer to your own account'], 422);
     }
+
+    // Lock accounts in ascending ID order to prevent deadlocks
+    $first_id  = min($source_id, $dest_id);
+    $second_id = max($source_id, $dest_id);
+
+    $stmt = $pdo->prepare("
+        SELECT a.id, a.account_no, a.balance, a.daily_limit, u.full_name, u.id as owner_user_id
+        FROM accounts a
+        JOIN users u ON a.user_id = u.id
+        WHERE a.id = ? AND a.status = 'active'
+        FOR UPDATE
+    ");
+    $stmt->execute([$first_id]);
+    $first = $stmt->fetch();
+
+    $stmt->execute([$second_id]);
+    $second = $stmt->fetch();
+
+    // Assign source and dest based on which was which
+    $source = ($first['id'] == $source_id) ? $first : $second;
+    $dest   = ($first['id'] == $dest_id)   ? $first : $second;
+
+    if (!$source || !$dest) {
+        $pdo->rollBack();
+        json_response(['success' => false, 'message' => 'Account error during locking'], 500);
+    }
+
+    // Populate dest_user_id for notifications
+    $dest['dest_user_id'] = $dest['owner_user_id'];
 
     // Check balance
     if ($source['balance'] < $amount) {
@@ -115,22 +155,6 @@ try {
             'success' => false,
             'message' => "Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining)
         ], 422);
-    }
-
-    // Get destination account with row lock
-    $stmt = $pdo->prepare("
-        SELECT a.id, a.account_no, a.balance, u.full_name, u.id as dest_user_id
-        FROM accounts a
-        JOIN users u ON a.user_id = u.id
-        WHERE a.account_no = ? AND a.status = 'active'
-        FOR UPDATE
-    ");
-    $stmt->execute([$to_account_no]);
-    $dest = $stmt->fetch();
-
-    if (!$dest) {
-        $pdo->rollBack();
-        json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404);
     }
 
     // =====================================================
@@ -160,6 +184,7 @@ try {
         $txn_id,
         $source['id'],
         $dest['id'],
+        $amount,
         $new_source_balance,
         $description,
     ]);
@@ -181,7 +206,7 @@ try {
     );
 
     // Write audit log
-    write_audit_log($pdo, 'fund_transfer', $txn_id, 'transaction', $user_id, 'system',
+    write_audit_log($pdo, 'fund_transfer', $txn_id, 'transaction', $user_id, 'user',
         "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
 
     $pdo->commit();

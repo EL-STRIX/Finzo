@@ -11,6 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
+if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+    json_response(['success' => false, 'message' => 'Invalid security token'], 403);
+}
+
 $admin_id = $_SESSION['admin_id'];
 check_admin_permission($pdo, $admin_id, 'add_branch');
 
