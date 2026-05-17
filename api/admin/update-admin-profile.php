@@ -77,7 +77,7 @@ try {
     $phone = sanitize_input($_POST['phone'] ?? '');
     $date_of_birth = sanitize_input($_POST['date_of_birth'] ?? '');
     $gender = sanitize_input($_POST['gender'] ?? '');
-    $security_question = sanitize_input($_POST['security_question'] ?? '');
+    $security_question = isset($_POST['security_question']) ? sanitize_input($_POST['security_question']) : null;
     $security_answer = $_POST['security_answer'] ?? '';
 
     // Validations (Email is read-only)
@@ -91,23 +91,20 @@ try {
         json_response(['success' => false, 'field' => 'phone', 'message' => 'Invalid phone number format'], 422);
     }
 
-    $updates = [
-        'full_name' => $full_name,
-        'phone' => $phone,
-        'date_of_birth' => $date_of_birth,
-        'gender' => $gender,
-        'security_question' => $security_question
-    ];
-    $params = array_values($updates);
-    
-    $query = "UPDATE admin_users SET full_name=?, phone=?, date_of_birth=?, gender=?, security_question=?";
+    $fields = ["full_name = ?", "phone = ?", "date_of_birth = ?", "gender = ?"];
+    $params = [$full_name, $phone, $date_of_birth, $gender];
+
+    if ($security_question !== null && $security_question !== '') {
+        $fields[] = "security_question = ?";
+        $params[] = $security_question;
+    }
 
     if (!empty($security_answer)) {
-        $query .= ", security_answer_hash=?";
+        $fields[] = "security_answer_hash = ?";
         $params[] = password_hash($security_answer, PASSWORD_BCRYPT);
     }
-    
-    $query .= " WHERE id=?";
+
+    $query = "UPDATE admin_users SET " . implode(", ", $fields) . " WHERE id = ?";
     $params[] = $admin_id;
 
     $stmt = $pdo->prepare($query);
