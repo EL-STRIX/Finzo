@@ -12,7 +12,8 @@ ALTER TABLE admin_users
   ADD COLUMN IF NOT EXISTS password_reset_token      VARCHAR(100) NULL,
   ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMP NULL,
   ADD COLUMN IF NOT EXISTS security_question_set TINYINT(1) DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS auto_unlock_at TIMESTAMP NULL;
+  ADD COLUMN IF NOT EXISTS auto_unlock_at          TIMESTAMP NULL,
+  ADD COLUMN IF NOT EXISTS temp_password_expiry    TIMESTAMP NULL DEFAULT NULL;
 
 -- Explanation of each new column:
 -- account_locked: 1 = locked, 0 = not locked

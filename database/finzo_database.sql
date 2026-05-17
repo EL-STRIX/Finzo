@@ -269,22 +269,6 @@ CREATE TABLE IF NOT EXISTS password_resets (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- TABLE 12: login_attempts (tracking failed logins)
--- =====================================================
-CREATE TABLE IF NOT EXISTS login_attempts (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    identifier VARCHAR(255) NOT NULL COMMENT 'email or staff_id',
-    attempts TINYINT NOT NULL DEFAULT 0,
-    locked_until TIMESTAMP NULL DEFAULT NULL,
-    last_attempt_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    INDEX idx_identifier (identifier),
-    INDEX idx_locked_until (locked_until)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================================================
 -- SEED DATA
 -- =====================================================
 

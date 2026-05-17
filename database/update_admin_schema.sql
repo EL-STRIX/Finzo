@@ -44,26 +44,17 @@ CREATE TABLE admin_users (
   -- System Records (auto)
   -- created_by is NULL for super_admin
   -- created_by is super_admin id for all other admins
-  created_by              INT UNSIGNED NULL,
+  created_by              VARCHAR(20) NULL,
   created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-  FOREIGN KEY (created_by) REFERENCES admin_users(id) ON DELETE SET NULL,
+  FOREIGN KEY (created_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
   INDEX idx_email (email),
   INDEX idx_role (admin_role),
   INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- NOTE: No INSERT here. Super Admin will be inserted at the end manually
-
--- Step 3: Create uploads folder reference table
-CREATE TABLE IF NOT EXISTS admin_profile_photos (
-  id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  admin_id      INT UNSIGNED NOT NULL,
-  photo_path    VARCHAR(500) NOT NULL,
-  uploaded_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (admin_id) REFERENCES admin_users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
 

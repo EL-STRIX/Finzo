@@ -41,14 +41,14 @@ CREATE TABLE staff (
   status                ENUM('active','suspended') NOT NULL DEFAULT 'active',
 
   -- System Records (auto)
-  created_by            INT UNSIGNED NULL,
+  created_by            VARCHAR(20) NULL,
   created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   last_login_at         TIMESTAMP NULL,
   last_login_ip         VARCHAR(45) NULL,
 
   FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE SET NULL,
-  FOREIGN KEY (created_by) REFERENCES admin_users(id) ON DELETE SET NULL,
+  FOREIGN KEY (created_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
   INDEX idx_staff_id (staff_id),
   INDEX idx_status (status),
   INDEX idx_branch_id (branch_id),
@@ -84,4 +84,24 @@ CREATE TABLE staff_address (
   updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- STEP 5: Create staff_shifts table
+
+CREATE TABLE staff_shifts (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    staff_id        INT UNSIGNED NOT NULL,
+    shift_date      DATE NOT NULL,
+    clock_in        TIMESTAMP NULL DEFAULT NULL,
+    clock_out       TIMESTAMP NULL DEFAULT NULL,
+    status          ENUM('active', 'completed', 'absent') NOT NULL DEFAULT 'active',
+    notes           VARCHAR(255) NULL DEFAULT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
+    INDEX idx_staff_id (staff_id),
+    INDEX idx_shift_date (shift_date),
+    UNIQUE KEY uniq_staff_date (staff_id, shift_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

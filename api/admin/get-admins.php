@@ -20,7 +20,7 @@ try {
         SELECT 
             a.id, a.admin_id, a.full_name, a.email, a.phone, a.gender, a.profile_photo, 
             a.admin_role, a.access_level, a.status, a.last_login_at, a.created_at,
-            (SELECT full_name FROM admin_users WHERE id = a.created_by) AS created_by_name
+            (SELECT full_name FROM admin_users WHERE admin_id = a.created_by) AS created_by_name
         FROM admin_users a
         WHERE a.admin_role != 'super_admin'
         ORDER BY a.created_at DESC

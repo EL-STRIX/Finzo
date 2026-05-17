@@ -107,6 +107,11 @@ try {
     $max_id = $id_stmt->fetchColumn() ?: 0;
     $next_admin_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
 
+    // Fetch creator's alphanumeric admin_id (e.g., STF001)
+    $creator_stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+    $creator_stmt->execute([$_SESSION['admin_id']]);
+    $creator_admin_id = $creator_stmt->fetchColumn() ?: null;
+
     $stmt = $pdo->prepare("
         INSERT INTO admin_users (
             admin_id, full_name, date_of_birth, gender, profile_photo, email, phone, 
@@ -118,7 +123,7 @@ try {
     $stmt->execute([
         $next_admin_id, $full_name, $date_of_birth, $gender, $photo_path, $email, $phone,
         $password_hash, $security_question, $answer_hash,
-        $admin_role, $access_level, $_SESSION['admin_id']
+        $admin_role, $access_level, $creator_admin_id
     ]);
     
     $new_id = $pdo->lastInsertId();

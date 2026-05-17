@@ -171,6 +171,11 @@ try {
     // 8. Hash Password
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
+    // Fetch creator's alphanumeric admin_id (e.g., STF001)
+    $creator_stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+    $creator_stmt->execute([$admin_id]);
+    $creator_admin_id = $creator_stmt->fetchColumn() ?: null;
+
     // 12. Insert into staff table
     $stmt = $pdo->prepare("
         INSERT INTO staff (
@@ -184,7 +189,7 @@ try {
         $full_name, $date_of_birth, $gender, $profile_photo_path,
         $personal_email, $phone, $emergency_contact_name, $emergency_contact_phone,
         $staff_id_str, $designation, $department, $branch_id,
-        $date_of_joining, $password_hash, $admin_id
+        $date_of_joining, $password_hash, $creator_admin_id
     ]);
     
     $new_staff_db_id = $pdo->lastInsertId();
