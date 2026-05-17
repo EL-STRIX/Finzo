@@ -67,7 +67,8 @@
                     window.location.href = data.redirect;
                     return data;
                 }
-                return { success: false, message: data.message || `Error ${res.status}: ${res.statusText}` };
+                // Return full server response so field-level errors (data.errors) reach the caller
+                return { success: false, message: data.message || `Error ${res.status}: ${res.statusText}`, ...data };
             }
 
             return data;

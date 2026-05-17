@@ -31,7 +31,8 @@ $phone                   = sanitize_input($_POST['phone'] ?? '');
 $emergency_contact_name  = sanitize_input($_POST['emergency_contact_name'] ?? '');
 $emergency_contact_phone = sanitize_input($_POST['emergency_contact_phone'] ?? '');
 $designation             = sanitize_input($_POST['designation'] ?? 'Teller');
-$branch_id               = !empty($_POST['branch_id']) ? intval($_POST['branch_id']) : null;
+$branch_id_raw           = $_POST['branch_id'] ?? '';
+$branch_id               = ($branch_id_raw !== '' && $branch_id_raw !== 'null') ? intval($branch_id_raw) : null;
 $date_of_joining         = sanitize_input($_POST['date_of_joining'] ?? date('Y-m-d'));
 $street                  = sanitize_input($_POST['street'] ?? '');
 $city                    = sanitize_input($_POST['city'] ?? '');
@@ -119,9 +120,12 @@ $id_back_path = null;
 
 // Helper function for file uploads
 function handle_staff_upload($file, $prefix, $dir, &$errors, $field_name, $required = false) {
-    if (empty($file['name']) || $file['error'] !== UPLOAD_ERR_OK) {
+    // Safely handle null or missing file input
+    $hasFile = is_array($file) && !empty($file['name']) && isset($file['error']) && $file['error'] === UPLOAD_ERR_OK;
+
+    if (!$hasFile) {
         if ($required) {
-            $errors[$field_name] = 'File upload is required';
+            $errors[$field_name] = 'Please upload a file (JPG or PNG, max 5MB)';
         }
         return null;
     }
@@ -137,25 +141,33 @@ function handle_staff_upload($file, $prefix, $dir, &$errors, $field_name, $requi
         return null;
     }
     
-    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = $prefix . uniqid() . '.' . $ext;
+    // Ensure upload directory exists
     $target_dir = dirname(__DIR__, 2) . '/uploads/' . $dir . '/';
+    if (!is_dir($target_dir)) {
+        mkdir($target_dir, 0755, true);
+    }
+
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $filename = $prefix . uniqid() . '.' . $ext;
     
     if (!move_uploaded_file($file['tmp_name'], $target_dir . $filename)) {
-        $errors[$field_name] = 'Failed to save uploaded file';
+        $errors[$field_name] = 'Failed to save uploaded file. Please try again.';
         return null;
     }
     
     return 'uploads/' . $dir . '/' . $filename;
 }
 
-// Required files
-$id_front_path = handle_staff_upload($_FILES['id_front'] ?? null, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', true);
-$id_back_path = handle_staff_upload($_FILES['id_back'] ?? null, 'staff_doc_back_', 'staff-documents', $errors, 'id_back', true);
+// ID Documents (optional - can be uploaded later)
+$id_front_file = (isset($_FILES['id_front']) && is_array($_FILES['id_front'])) ? $_FILES['id_front'] : null;
+$id_back_file  = (isset($_FILES['id_back'])  && is_array($_FILES['id_back']))  ? $_FILES['id_back']  : null;
+$id_front_path = handle_staff_upload($id_front_file, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', false);
+$id_back_path  = handle_staff_upload($id_back_file,  'staff_doc_back_',  'staff-documents', $errors, 'id_back',  false);
 
 // Optional photo
-if (!empty($_FILES['profile_photo']['name'])) {
-    $profile_photo_path = handle_staff_upload($_FILES['profile_photo'], 'staff_photo_', 'staff-photos', $errors, 'profile_photo');
+$profile_photo_file = (isset($_FILES['profile_photo']) && is_array($_FILES['profile_photo'])) ? $_FILES['profile_photo'] : null;
+if ($profile_photo_file && !empty($profile_photo_file['name'])) {
+    $profile_photo_path = handle_staff_upload($profile_photo_file, 'staff_photo_', 'staff-photos', $errors, 'profile_photo');
 }
 
 if (!empty($errors)) {
@@ -194,19 +206,19 @@ try {
     
     $new_staff_db_id = $pdo->lastInsertId();
 
-    // 13. Insert into staff_documents
+    // 13. Insert into staff_documents (uses integer FK to staff.id)
     $stmt = $pdo->prepare("
         INSERT INTO staff_documents (staff_id, id_type, id_number, front_image, back_image)
         VALUES (?, ?, ?, ?, ?)
     ");
-    $stmt->execute([$staff_id_str, $id_type, $id_number, $id_front_path, $id_back_path]);
+    $stmt->execute([$new_staff_db_id, $id_type, $id_number, $id_front_path, $id_back_path]);
 
-    // 14. Insert into staff_address
+    // 14. Insert into staff_address (uses integer FK to staff.id)
     $stmt = $pdo->prepare("
         INSERT INTO staff_address (staff_id, street, city, state, pincode, country)
         VALUES (?, ?, ?, ?, ?, 'India')
     ");
-    $stmt->execute([$staff_id_str, $street, $city, $state, $pincode]);
+    $stmt->execute([$new_staff_db_id, $street, $city, $state, $pincode]);
 
     $pdo->commit();
 

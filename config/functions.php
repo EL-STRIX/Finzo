@@ -128,20 +128,21 @@ function generate_account_number($pdo) {
 function generate_staff_id($pdo) {
     $prefix = STAFF_ID_PREFIX;
 
-    $stmt = $pdo->prepare("SELECT staff_id FROM staff ORDER BY id DESC LIMIT 1");
-    $stmt->execute();
-    $last = $stmt->fetchColumn();
-
-    if ($last) {
-        $lastNum = intval(substr($last, strlen($prefix)));
-        $nextNum = $lastNum + 1;
-    } else {
-        $nextNum = 1;
-    }
-
+    // Check both staff AND admin_users — both share the STF prefix
+    $stmt = $pdo->query("
+        SELECT MAX(num) as max_id FROM (
+            SELECT CAST(SUBSTRING(staff_id, 4) AS UNSIGNED) as num
+            FROM staff WHERE staff_id LIKE 'STF%'
+            UNION ALL
+            SELECT CAST(SUBSTRING(admin_id, 4) AS UNSIGNED) as num
+            FROM admin_users WHERE admin_id LIKE 'STF%'
+        ) combined
+    ");
+    $max_id = $stmt->fetchColumn() ?: 0;
+    $nextNum = $max_id + 1;
     $staffId = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
 
-    // Ensure uniqueness
+    // Ensure uniqueness in staff table (defensive check)
     $check = $pdo->prepare("SELECT COUNT(*) FROM staff WHERE staff_id = ?");
     $check->execute([$staffId]);
     while ($check->fetchColumn() > 0) {

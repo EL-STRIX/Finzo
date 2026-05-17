@@ -439,12 +439,48 @@
         // Add Staff Form Submit
         const addForm = document.getElementById('addStaffForm');
         if (addForm) {
-            addForm.addEventListener('submit', async function(e) {
+        addForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const submitBtn = document.getElementById('create-staff-submit');
                 
-                window.api.setButtonLoading(submitBtn, true, 'Processing...');
                 clearErrors();
+
+                // --- Client-side pre-validation for custom dropdown hidden inputs ---
+                let clientErrors = false;
+                const requiredFields = [
+                    { id: 'full_name',       label: 'Full Name' },
+                    { id: 'date_of_birth',   label: 'Date of Birth' },
+                    { id: 'gender',          label: 'Gender' },
+                    { id: 'personal_email',  label: 'Personal Email' },
+                    { id: 'phone',           label: 'Phone Number' },
+                    { id: 'id_type',         label: 'ID Type' },
+                    { id: 'id_number',       label: 'ID Number' },
+                    { id: 'city',            label: 'City' },
+                    { id: 'state',           label: 'State' },
+                    { id: 'pincode',         label: 'Pincode' },
+                    { id: 'staff-password',  label: 'Password', name: 'password' },
+                ];
+                requiredFields.forEach(({ id, label, name }) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const val = el.value ? el.value.trim() : '';
+                    if (!val) {
+                        const errorKey = name || id;
+                        const errorEl = document.getElementById(`error-${errorKey}`);
+                        if (errorEl) {
+                            errorEl.textContent = `${label} is required`;
+                            errorEl.classList.remove('hidden');
+                        }
+                        clientErrors = true;
+                    }
+                });
+                if (clientErrors) {
+                    if (window.showToast) window.showToast('Please fill in all required fields.', 'error');
+                    return;
+                }
+                // --- End client-side validation ---
+
+                window.api.setButtonLoading(submitBtn, true, 'Processing...');
                 
                 try {
                     const formData = new FormData(addForm);

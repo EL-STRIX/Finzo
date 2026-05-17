@@ -11,14 +11,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-if ($_SESSION['admin_role'] !== 'super_admin') {
-    json_response(['success' => false, 'message' => 'Forbidden'], 403);
-}
-
 try {
-    require_once dirname(__DIR__, 2) . '/config/functions.php';
-    
-    $next_id = generate_staff_id($pdo);
+    // Check both staff and admin_users — both share the STF prefix
+    $stmt = $pdo->query("
+        SELECT MAX(num) as max_id FROM (
+            SELECT CAST(SUBSTRING(staff_id, 4) AS UNSIGNED) as num
+            FROM staff WHERE staff_id LIKE 'STF%'
+            UNION ALL
+            SELECT CAST(SUBSTRING(admin_id, 4) AS UNSIGNED) as num
+            FROM admin_users WHERE admin_id LIKE 'STF%'
+        ) combined
+    ");
+    $max_id = $stmt->fetchColumn() ?: 0;
+    $next_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
 
     json_response([
         'success' => true,
