@@ -247,6 +247,41 @@
             });
         }
 
+        // Live Filter Updates
+        const searchInput = document.getElementById('filter-search');
+        const actionInput = document.getElementById('filter-action-type');
+        const roleInput = document.getElementById('filter-actor-role');
+        const dateFrom = document.getElementById('date-from');
+        const dateTo = document.getElementById('date-to');
+
+        let debounceTimer;
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    currentPage = 1;
+                    loadAuditLog();
+                }, 300);
+            });
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    clearTimeout(debounceTimer);
+                    currentPage = 1;
+                    loadAuditLog();
+                }
+            });
+        }
+
+        const triggerFilterUpdate = () => {
+            currentPage = 1;
+            loadAuditLog();
+        };
+
+        if (actionInput) actionInput.addEventListener('change', triggerFilterUpdate);
+        if (roleInput) roleInput.addEventListener('change', triggerFilterUpdate);
+        if (dateFrom) dateFrom.addEventListener('change', triggerFilterUpdate);
+        if (dateTo) dateTo.addEventListener('change', triggerFilterUpdate);
+
         // Clear Filters
         const clearBtn = document.getElementById('clear-filters');
         if (clearBtn) {
