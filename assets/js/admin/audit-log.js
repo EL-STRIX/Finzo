@@ -62,7 +62,7 @@
             const truncatedDetails = detailsText.length > 60 ? detailsText.substring(0, 60) + '...' : detailsText;
             
             tr.innerHTML = `
-                <td class="font-bold opacity-30 text-[11px] tracking-widest">${countStr}</td>
+                <td class="font-bold opacity-30 text-[11px] tracking-widest">${String(entry.id).padStart(2, '0')}</td>
                 <td>
                     <div class="font-bold text-slate-800 dark:text-slate-100">${entry.actor_display_id || entry.actor_id}</div>
                     <div class="mt-1">${getActorBadge(entry.actor_specific_role || entry.actor_role)}</div>

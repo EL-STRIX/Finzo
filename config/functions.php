@@ -183,16 +183,67 @@ function generate_transaction_id() {
 function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id, $actor_role, $details = null) {
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     
+    // 1. Resolve actor_id to its alphanumeric string format (like STF001) and specific role
+    $resolved_actor_id = $actor_id;
+    $resolved_actor_role = $actor_role;
+
+    if ($actor_role === 'admin') {
+        $stmt = $pdo->prepare("SELECT admin_id, admin_role FROM admin_users WHERE id = ?");
+        $stmt->execute([$actor_id]);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($admin) {
+            $resolved_actor_id = $admin['admin_id'];
+            if ($admin['admin_role'] === 'super_admin') {
+                $resolved_actor_role = 'Super Admin';
+            } else if ($admin['admin_role'] === 'moderator') {
+                $resolved_actor_role = 'Moderator';
+            } else {
+                $resolved_actor_role = 'Admin';
+            }
+        }
+    } else if ($actor_role === 'staff') {
+        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ?");
+        $stmt->execute([$actor_id]);
+        $staff_id = $stmt->fetchColumn();
+        if ($staff_id) {
+            $resolved_actor_id = $staff_id;
+        }
+        $resolved_actor_role = 'Staff';
+    } else if ($actor_role === 'system') {
+        $resolved_actor_id = 'SYSTEM';
+        $resolved_actor_role = 'System';
+    } else if ($actor_role === 'user') {
+        $resolved_actor_role = 'User';
+    }
+
+    // 2. Resolve entity_id to its alphanumeric string format if applicable
+    $resolved_entity_id = $entity_id;
+    if ($entity_type === 'admin' && !empty($entity_id) && is_numeric($entity_id)) {
+        $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+        $stmt->execute([$entity_id]);
+        $admin_id = $stmt->fetchColumn();
+        if ($admin_id) {
+            $resolved_entity_id = $admin_id;
+        }
+    } else if ($entity_type === 'staff' && !empty($entity_id) && is_numeric($entity_id)) {
+        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ?");
+        $stmt->execute([$entity_id]);
+        $staff_id = $stmt->fetchColumn();
+        if ($staff_id) {
+            $resolved_entity_id = $staff_id;
+        }
+    }
+
     $stmt = $pdo->prepare("
         INSERT INTO audit_log (action_type, entity_id, entity_type, actor_id, actor_role, details, ip_address, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
     ");
     $stmt->execute([
         $action_type,
-        $entity_id,
+        $resolved_entity_id,
         $entity_type,
-        $actor_id,
-        $actor_role,
+        $resolved_actor_id,
+        $resolved_actor_role,
         $details,
         $ip
     ]);

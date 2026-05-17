@@ -24,13 +24,18 @@ try {
     $params = [];
 
     if ($action_type !== 'all') {
-        $where_clauses[] = "al.action_type = ?";
-        $params[] = $action_type;
+        $where_clauses[] = "al.action_type LIKE ?";
+        $params[] = "%{$action_type}%";
     }
 
     if ($actor_role !== 'all' && in_array($actor_role, ['admin', 'staff', 'system'])) {
-        $where_clauses[] = "al.actor_role = ?";
-        $params[] = $actor_role;
+        if ($actor_role === 'admin') {
+            $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator')";
+        } else if ($actor_role === 'staff') {
+            $where_clauses[] = "al.actor_role = 'Staff'";
+        } else if ($actor_role === 'system') {
+            $where_clauses[] = "al.actor_role = 'System'";
+        }
     }
 
     if (!empty($from_date)) {
@@ -44,9 +49,8 @@ try {
     }
 
     if (!empty($search)) {
-        $where_clauses[] = "(al.action_type LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ?)";
+        $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
         $s = "%{$search}%";
-        $params[] = $s;
         $params[] = $s;
         $params[] = $s;
     }
@@ -64,20 +68,9 @@ try {
     $stmt = $pdo->prepare("
         SELECT al.id, al.action_type, al.entity_id, al.entity_type,
                al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
-               CASE 
-                   WHEN al.actor_role = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.actor_id), al.actor_id)
-                   WHEN al.actor_role = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.actor_id), al.actor_id)
-                   ELSE 'SYSTEM'
-               END as actor_display_id,
-               CASE 
-                   WHEN al.actor_role = 'admin' THEN (SELECT admin_role FROM admin_users WHERE id = al.actor_id)
-                   ELSE al.actor_role
-               END as actor_specific_role,
-               CASE 
-                   WHEN al.entity_type = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.entity_id), al.entity_id)
-                   WHEN al.entity_type = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.entity_id), al.entity_id)
-                   ELSE al.entity_id
-               END as entity_display_id
+               al.actor_id as actor_display_id,
+               al.actor_role as actor_specific_role,
+               al.entity_id as entity_display_id
         FROM audit_log al
         WHERE {$where_sql}
         ORDER BY al.created_at DESC
