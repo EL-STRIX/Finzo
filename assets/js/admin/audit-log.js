@@ -65,7 +65,7 @@
                 <td class="font-bold opacity-30 text-[11px] tracking-widest">${countStr}</td>
                 <td>
                     <div class="font-bold text-slate-800 dark:text-slate-100">${entry.actor_display_id || entry.actor_id}</div>
-                    <div class="mt-1">${getActorBadge(entry.actor_role)}</div>
+                    <div class="mt-1">${getActorBadge(entry.actor_specific_role || entry.actor_role)}</div>
                 </td>
                 <td>${getActionBadge(entry.action_type)}</td>
                 <td>
@@ -111,14 +111,18 @@
     // Get Actor Badge
     function getActorBadge(role) {
         const r = (role || '').toLowerCase();
-        if (r === 'admin') {
+        if (r === 'super_admin') {
+            return `<span class="badge" style="background:#faf5ff;color:#6b21a8;border:1px solid #d8b4fe">SUPER ADMIN</span>`;
+        } else if (r === 'admin') {
             return `<span class="badge" style="background:#dbeafe;color:#1e40af">ADMIN</span>`;
+        } else if (r === 'moderator') {
+            return `<span class="badge" style="background:#e0f2fe;color:#0369a1">MODERATOR</span>`;
         } else if (r === 'staff') {
             return `<span class="badge" style="background:#ede9fe;color:#5b21b6">STAFF</span>`;
         } else if (r === 'system') {
             return `<span class="badge" style="background:#f1f5f9;color:#475569">SYSTEM</span>`;
         }
-        return `<span class="badge">${r.toUpperCase()}</span>`;
+        return `<span class="badge">${r.replace(/_/g, ' ').toUpperCase()}</span>`;
     }
 
     // Open Detail Modal
@@ -135,7 +139,7 @@
         
         if (elId) elId.textContent = entry.id;
         if (elAction) elAction.innerHTML = getActionBadge(entry.action_type);
-        if (elActorRole) elActorRole.innerHTML = getActorBadge(entry.actor_role);
+        if (elActorRole) elActorRole.innerHTML = getActorBadge(entry.actor_specific_role || entry.actor_role);
         if (elActorId) elActorId.textContent = entry.actor_display_id || entry.actor_id;
         if (elEntityType) elEntityType.textContent = (entry.entity_type || 'SYSTEM').toUpperCase();
         if (elEntityId) elEntityId.textContent = entry.entity_display_id || entry.entity_id || '-';
