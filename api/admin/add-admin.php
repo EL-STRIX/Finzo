@@ -102,16 +102,21 @@ try {
     $access_level = ($admin_role === 'admin') ? 'full' : 'restricted';
 
 
+    // Generate next Admin ID (STF00x)
+    $id_stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(admin_id, 4) AS UNSIGNED)) as max_id FROM admin_users");
+    $max_id = $id_stmt->fetchColumn() ?: 0;
+    $next_admin_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
+
     $stmt = $pdo->prepare("
         INSERT INTO admin_users (
-            full_name, date_of_birth, gender, profile_photo, email, phone, 
+            admin_id, full_name, date_of_birth, gender, profile_photo, email, phone, 
             password_hash, security_question, security_answer_hash, 
             admin_role, access_level, status, created_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
     ");
     
     $stmt->execute([
-        $full_name, $date_of_birth, $gender, $photo_path, $email, $phone,
+        $next_admin_id, $full_name, $date_of_birth, $gender, $photo_path, $email, $phone,
         $password_hash, $security_question, $answer_hash,
         $admin_role, $access_level, $_SESSION['admin_id']
     ]);
@@ -124,7 +129,7 @@ try {
     json_response([
         'success' => true, 
         'message' => 'Admin added successfully', 
-        'admin_id' => $new_id, 
+        'admin_id' => $next_admin_id, 
         'admin_name' => $full_name
     ]);
 

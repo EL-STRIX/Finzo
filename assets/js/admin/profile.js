@@ -513,14 +513,15 @@
                 return;
             }
 
+            const btn = document.querySelector('button[onclick="window.AdminProfile.updatePassword()"]') || document.activeElement;
+
             try {
-                const btn = document.activeElement;
-                window.api.setButtonLoading(btn, true, 'Updating...');
+                if (btn) window.api.setButtonLoading(btn, true, 'Updating...');
                 const res = await window.api.post('/admin/update-admin-profile.php', {
                     current_password: curr, new_password: nw, confirm_new_password: conf
                 });
                 if (res.success) {
-                    window.portal.showToast(res.message, 'success');
+                    window.portal.showToast('Password changed successfully', 'success');
                     document.getElementById('curr-pw').value = '';
                     document.getElementById('new-pw').value = '';
                     document.getElementById('conf-pw').value = '';
@@ -533,7 +534,7 @@
             } catch (e) {
                 window.portal.showToast('System error updating password', 'error');
             } finally {
-                window.api.setButtonLoading(document.activeElement, false);
+                if (btn) window.api.setButtonLoading(btn, false);
             }
         },
 
@@ -555,9 +556,10 @@
                 return;
             }
 
+            const btn = document.querySelector('button[onclick="window.AdminProfile.saveProfile()"]') || document.activeElement;
+
             try {
-                const btn = document.activeElement;
-                window.api.setButtonLoading(btn, true, 'Saving...');
+                if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
                 const res = await window.api.post('/admin/update-admin-profile.php', payload);
                 if (res.success) {
                     window.portal.showToast(res.message, 'success');
@@ -570,7 +572,7 @@
             } catch (e) {
                 window.portal.showToast('System error updating profile', 'error');
             } finally {
-                window.api.setButtonLoading(document.activeElement, false);
+                if (btn) window.api.setButtonLoading(btn, false);
             }
         },
 
@@ -810,9 +812,7 @@
             }
 
             const btn = document.getElementById('btn-save-sq');
-            const origHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Saving...</span>';
+            if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
 
             try {
                 const res = await window.api.post('/admin/save-security-question.php', {
@@ -833,16 +833,16 @@
                                 <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
                             </div>`;
                     }
-                    const sqBtnText = document.getElementById('sq-btn-text');
-                    if (sqBtnText) sqBtnText.textContent = 'Update Security Question';
+                    if (btn) {
+                        btn.dataset.originalText = `<span class="material-symbols-outlined text-[18px]">save</span> <span id="sq-btn-text">Update Security Question</span>`;
+                    }
                 } else {
                     window.portal.showToast(res.message || 'Failed to save security question', 'error');
                 }
             } catch (err) {
                 window.portal.showToast('System error saving security question', 'error');
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = origHtml;
+                if (btn) window.api.setButtonLoading(btn, false);
             }
         },
 

@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS admin_users;
 -- Step 2: Create new admin_users table
 CREATE TABLE admin_users (
   id                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  admin_id                VARCHAR(20) NOT NULL UNIQUE,
 
   -- Personal Information
   full_name               VARCHAR(150) NOT NULL,
@@ -67,5 +68,5 @@ CREATE TABLE IF NOT EXISTS admin_profile_photos (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Seed super admin (replace the hash below with: php -r "echo password_hash('Admin@123', PASSWORD_BCRYPT);")
-INSERT INTO admin_users (full_name, email, password_hash, admin_role, access_level, status)
-VALUES ('Super Admin', 'admin@finzo.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', 'full', 'active');
+INSERT INTO admin_users (admin_id, full_name, email, password_hash, admin_role, access_level, status)
+VALUES ('STF001', 'Super Admin', 'admin@finzo.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', 'full', 'active');
