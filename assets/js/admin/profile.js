@@ -337,35 +337,35 @@
         }
     }
 
-    async function loadAdminList() {
+    // Store full admin list for client-side filtering
+    let allAdmins = [];
 
-        try {
-            const res = await window.api.get('/admin/get-admins.php');
-            if (res.success) {
-                document.getElementById('management-count-badge').textContent = `${res.total} Admins`;
-                const tbody = document.getElementById('admin-management-body');
-                if (res.total > 0) {
-                    tbody.innerHTML = res.admins.map((a, i) => {
+    function renderAdminTable(admins) {
+        const tbody = document.getElementById('admin-management-body');
+        if (!tbody) return;
 
-                        let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
-                        if (a.admin_role === 'moderator') {
-                            roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
-                        }
+        if (admins.length > 0) {
+            tbody.innerHTML = admins.map((a, i) => {
 
-                        let statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500">• Active</span>`;
-                        if (a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
+                let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
+                if (a.admin_role === 'moderator') {
+                    roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
+                }
 
-                        const photo = a.profile_photo
-                            ? `<img src="../../${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
-                            : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
+                let statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500">• Active</span>`;
+                if (a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
 
-                        const formatDateLocal = (d) => {
-                            if (!d) return '-';
-                            const dt = new Date(d);
-                            return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-                        };
+                const photo = a.profile_photo
+                    ? `<img src="../../${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
+                    : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
 
-                        return `
+                const formatDateLocal = (d) => {
+                    if (!d) return '-';
+                    const dt = new Date(d);
+                    return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                };
+
+                return `
                         <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                             <td class="py-4 px-6 text-[10px] font-black text-slate-400 w-20 text-left font-mono">${a.admin_id}</td>
                             <td class="py-4 px-6">
@@ -397,10 +397,50 @@
                             </td>
                         </tr>
                         `;
-                    }).join('');
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400 text-xs font-bold">No other administrators found.</td></tr>`;
-                }
+            }).join('');
+        } else {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400 text-xs font-bold">No administrators match your filters.</td></tr>`;
+        }
+    }
+
+    function filterAdminList() {
+        const searchVal = (document.getElementById('admin-search-input')?.value || '').toLowerCase().trim();
+        const statusVal = document.getElementById('admin-status-filter')?.value || 'all';
+        const roleVal = document.getElementById('admin-role-filter')?.value || 'all';
+
+        const filtered = allAdmins.filter(a => {
+            // Search filter: match against name, email, admin_id
+            if (searchVal) {
+                const haystack = `${a.full_name} ${a.email} ${a.admin_id}`.toLowerCase();
+                if (!haystack.includes(searchVal)) return false;
+            }
+            // Status filter
+            if (statusVal !== 'all' && a.status !== statusVal) return false;
+            // Role filter
+            if (roleVal !== 'all' && a.admin_role !== roleVal) return false;
+            return true;
+        });
+
+        // Update visible count badge
+        const badge = document.getElementById('management-count-badge');
+        if (badge) {
+            const isFiltered = searchVal || statusVal !== 'all' || roleVal !== 'all';
+            badge.textContent = isFiltered
+                ? `${filtered.length} of ${allAdmins.length} Admins`
+                : `${allAdmins.length} Admins`;
+        }
+
+        renderAdminTable(filtered);
+    }
+
+    async function loadAdminList() {
+
+        try {
+            const res = await window.api.get('/admin/get-admins.php');
+            if (res.success) {
+                allAdmins = res.admins || [];
+                document.getElementById('management-count-badge').textContent = `${res.total} Admins`;
+                renderAdminTable(allAdmins);
             }
         } catch (e) {
             console.error(e);
@@ -776,6 +816,9 @@
                 btn.querySelector('span:last-child').classList.add('hidden');
             }
         },
+
+        // Admin List Filtering
+        filterAdminList: filterAdminList,
 
         // Activity Pagination
         prevActivityPage: () => {
