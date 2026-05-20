@@ -24,9 +24,12 @@ try {
                s.gender, s.date_of_birth, s.emergency_contact_name, s.emergency_contact_phone,
                s.date_of_joining, s.created_by,
                s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
-               b.name as branch_name, b.branch_code, b.state as branch_state
+               b.name as branch_name, b.branch_code, b.state as branch_state,
+               COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
+        LEFT JOIN admins creator_admin ON s.created_by = creator_admin.admin_id
+        LEFT JOIN staff creator_staff ON s.created_by = creator_staff.staff_id
         WHERE s.id = ?
     ");
     $stmt->execute([$staff_id]);
