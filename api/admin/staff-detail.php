@@ -28,7 +28,7 @@ try {
                COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
-        LEFT JOIN admins creator_admin ON s.created_by = creator_admin.admin_id
+        LEFT JOIN admin_users creator_admin ON s.created_by = creator_admin.admin_id
         LEFT JOIN staff creator_staff ON s.created_by = creator_staff.staff_id
         WHERE s.id = ?
     ");
