@@ -20,7 +20,7 @@ if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
 
 // Collect and sanitize inputs
 $full_name        = sanitize_input($_POST['full_name'] ?? '');
-$email            = sanitize_input($_POST['email'] ?? '');
+$email            = trim($_POST['email'] ?? '');
 $phone            = sanitize_input($_POST['phone'] ?? '');
 $password         = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
@@ -114,10 +114,14 @@ try {
     $_SESSION['role']        = 'customer';
     $_SESSION['last_activity'] = time();
 
+    // Build redirect relative to project root (consistent with login.php)
+    $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
+    $redirect = $base . '/views/user/dashboard.html';
+
     json_response([
         'success'  => true,
         'message'  => 'Registration successful! Please complete your profile.',
-        'redirect' => '/views/user/dashboard.html'
+        'redirect' => $redirect
     ], 201);
 
 } catch (PDOException $e) {

@@ -171,7 +171,6 @@ if ($profile_photo_file && !empty($profile_photo_file['name'])) {
 }
 
 if (!empty($errors)) {
-    file_put_contents(dirname(__DIR__, 2) . '/debug_errors.txt', "Validation Errors: " . json_encode($errors) . "\n", FILE_APPEND);
     error_log("Add staff validation errors: " . json_encode($errors));
     json_response(['success' => false, 'message' => 'Validation failed', 'errors' => $errors], 422);
 }
@@ -245,7 +244,6 @@ try {
     if ($id_front_path) @unlink(dirname(__DIR__, 2) . '/' . $id_front_path);
     if ($id_back_path) @unlink(dirname(__DIR__, 2) . '/' . $id_back_path);
     
-    file_put_contents(dirname(__DIR__, 2) . '/debug_errors.txt', "Exception: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
     error_log("Add staff error: " . $e->getMessage());
     json_response(['success' => false, 'message' => 'An error occurred while creating staff account: ' . $e->getMessage()], 500);
 }

@@ -109,7 +109,7 @@ window.AdminPortal = {
         toast.innerHTML = `
             <span class="material-symbols-outlined">${icons[type]}</span>
             <div style="flex:1">${message}</div>
-            <button onclick="this.parentElement.remove()" style="opacity:0.5; hover:opacity:1; transition:opacity:0.2s">
+            <button onclick="this.parentElement.remove()" style="opacity:0.5;transition:opacity 0.2s;background:none;border:none;cursor:pointer;">
                 <span class="material-symbols-outlined" style="font-size:16px">close</span>
             </button>
         `;

@@ -1,2 +1,0 @@
-Validation Errors: {"id_back":"Only JPG and PNG images are allowed"}
-Validation Errors: {"id_back":"Only JPG and PNG images are allowed"}

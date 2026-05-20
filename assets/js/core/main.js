@@ -84,10 +84,36 @@ $(document).ready(function() {
         }
     });
 
-    // Toasts placeholder
-    window.showToast = function(message, type = 'success') {
+    // Toast Notification System
+    window.showToast = function(message, type = 'success', duration = 4000) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;';
+            document.body.appendChild(container);
+        }
 
-        // Optionally create a visible toast element here
+        const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
+        const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+
+        const toast = document.createElement('div');
+        toast.style.cssText = `display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-left:4px solid ${colors[type] || colors.info};border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1e293b;transform:translateX(120%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:380px;`;
+        toast.innerHTML = `
+            <span class="material-symbols-outlined" style="color:${colors[type] || colors.info};font-size:20px;">${icons[type] || 'info'}</span>
+            <div style="flex:1">${message}</div>
+            <button onclick="this.parentElement.style.transform='translateX(120%)';setTimeout(()=>this.parentElement.remove(),400)" style="background:none;border:none;cursor:pointer;opacity:0.4;padding:0;">
+                <span class="material-symbols-outlined" style="font-size:16px;color:#64748b;">close</span>
+            </button>
+        `;
+
+        container.appendChild(toast);
+        setTimeout(() => toast.style.transform = 'translateX(0)', 10);
+
+        setTimeout(() => {
+            toast.style.transform = 'translateX(120%)';
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
     }
 
     // --- NEW: Panel Management (Global) ---
