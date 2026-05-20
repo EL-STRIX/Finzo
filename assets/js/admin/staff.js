@@ -474,6 +474,27 @@
                         clientErrors = true;
                     }
                 });
+
+                // Enforce ID front and back uploads
+                const idFront = document.getElementById('id_front');
+                if (!idFront || !idFront.files || idFront.files.length === 0) {
+                    const errorEl = document.getElementById('error-id_front');
+                    if (errorEl) {
+                        errorEl.textContent = 'Front image of identity document is required';
+                        errorEl.classList.remove('hidden');
+                    }
+                    clientErrors = true;
+                }
+                const idBack = document.getElementById('id_back');
+                if (!idBack || !idBack.files || idBack.files.length === 0) {
+                    const errorEl = document.getElementById('error-id_back');
+                    if (errorEl) {
+                        errorEl.textContent = 'Back image of identity document is required';
+                        errorEl.classList.remove('hidden');
+                    }
+                    clientErrors = true;
+                }
+
                 if (clientErrors) {
                     if (window.showToast) window.showToast('Please fill in all required fields.', 'error');
                     return;

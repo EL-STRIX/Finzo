@@ -56,7 +56,11 @@ if (session_status() === PHP_SESSION_NONE) {
 // =====================================================
 // SECURITY CONSTANTS
 // =====================================================
+// Overridden by system_settings table if exists
+// get_setting($pdo, 'max_failed_login_attempts') returns live value
 define('MAX_LOGIN_ATTEMPTS', 5);
+// Overridden by system_settings table if exists
+// get_setting($pdo, 'customer_lockout_duration') returns live value
 define('LOCKOUT_DURATION', 1800); // 30 minutes in seconds
 
 // =====================================================
@@ -83,7 +87,11 @@ define('SMTP_ENCRYPTION', 'tls');
 // ACCOUNT / BANKING CONSTANTS
 // =====================================================
 define('ACCOUNT_NUMBER_PREFIX', 'FNZ');
+// Overridden by system_settings table if exists
+// get_setting($pdo, 'min_initial_deposit') returns live value
 define('MIN_INITIAL_DEPOSIT', 500);
+// Overridden by system_settings table if exists
+// get_setting($pdo, 'daily_transfer_limit') returns live value
 define('DAILY_TRANSFER_LIMIT', 10000);
 define('DEFAULT_INTEREST_RATE', 4.25);
 define('CURRENCY_SYMBOL', '₹');

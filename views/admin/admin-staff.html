@@ -406,30 +406,30 @@
               
               <div class="col-span-1 sm:col-span-2 space-y-4">
                 <div>
-                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Front of ID Document <span class="text-slate-300 normal-case font-medium">(Optional)</span></label>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Front of ID Document *</label>
                   <div class="relative group cursor-pointer" onclick="document.getElementById('id_front').click()">
                     <div id="front-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="front-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload front image</p>
-                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Optional</p>
+                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
                       <img id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
                     </div>
                   </div>
-                  <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')">
+                  <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')" required>
                   <div id="error-id_front" class="text-error text-[10px] font-bold mt-1 hidden"></div>
                 </div>
 
                 <div>
-                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Back of ID Document <span class="text-slate-300 normal-case font-medium">(Optional)</span></label>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Back of ID Document *</label>
                   <div class="relative group cursor-pointer" onclick="document.getElementById('id_back').click()">
                     <div id="back-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="back-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload back image</p>
-                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Optional</p>
+                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
                       <img id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
                     </div>
                   </div>
-                  <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')">
+                  <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')" required>
                   <div id="error-id_back" class="text-error text-[10px] font-bold mt-1 hidden"></div>
                 </div>
               </div>

@@ -64,9 +64,12 @@ if (!password_verify($password, $user['password_hash'])) {
     // Increment failed attempts
     $new_attempts = $user['failed_attempts'] + 1;
 
-    if ($new_attempts >= MAX_LOGIN_ATTEMPTS) {
+    $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
+    $lockout_duration = get_setting($pdo, 'customer_lockout_duration', 1800);
+
+    if ($new_attempts >= $max_attempts) {
         // Lock the account
-        $lock_until = date('Y-m-d H:i:s', time() + LOCKOUT_DURATION);
+        $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
         $stmt = $pdo->prepare("UPDATE users SET failed_attempts = ?, locked_until = ? WHERE id = ?");
         $stmt->execute([$new_attempts, $lock_until, $user['id']]);
 
@@ -74,15 +77,16 @@ if (!password_verify($password, $user['password_hash'])) {
         write_audit_log($pdo, 'account_locked', $user['id'], 'user', $user['id'], 'system',
             "Account locked after {$new_attempts} failed login attempts");
 
+        $lockout_minutes = ceil($lockout_duration / 60);
         json_response([
             'success' => false,
-            'message' => 'Account locked due to too many failed attempts. Try again in 30 minutes.'
+            'message' => "Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes."
         ], 423);
     } else {
         $stmt = $pdo->prepare("UPDATE users SET failed_attempts = ? WHERE id = ?");
         $stmt->execute([$new_attempts, $user['id']]);
 
-        $remaining = MAX_LOGIN_ATTEMPTS - $new_attempts;
+        $remaining = $max_attempts - $new_attempts;
         json_response([
             'success' => false,
             'message' => "Invalid email or password. {$remaining} attempt(s) remaining."

@@ -124,6 +124,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$txn_id, $acct_id, $initial_balance, $initial_balance]);
                 }
 
+                // Update kyc_applications status
+                $stmt = $pdo->prepare("
+                    UPDATE kyc_applications SET
+                        status = 'approved',
+                        reviewed_by = ?,
+                        reviewed_at = NOW()
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([$_SESSION['admin_id'], $user_id]);
+
                 $pdo->commit();
 
                 // Send approved email
@@ -153,6 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     json_response(['success' => false, 'message' => 'Rejection reason is required'], 422);
                 }
 
+                $pdo->beginTransaction();
+
                 // Update user status
                 $stmt = $pdo->prepare("
                     UPDATE users SET status = 'rejected', rejection_reason = ?, updated_at = NOW() WHERE id = ?
@@ -162,6 +174,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Update account status
                 $stmt = $pdo->prepare("UPDATE accounts SET status = 'rejected', updated_at = NOW() WHERE user_id = ?");
                 $stmt->execute([$user_id]);
+
+                // Update kyc_applications status
+                $stmt = $pdo->prepare("
+                    UPDATE kyc_applications SET
+                        status = 'rejected',
+                        reviewed_by = ?,
+                        reviewed_at = NOW(),
+                        rejection_reason = ?
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([$_SESSION['admin_id'], $reason, $user_id]);
+
+                $pdo->commit();
 
                 // Send rejection email
                 send_rejected_email($user['email'], $user['full_name'], $reason);
@@ -187,6 +212,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // In a production system, you'd have a separate admin_notes column
                 write_audit_log($pdo, 'admin_notes_saved', $user_id, 'user', $admin_id, 'admin',
                     "Admin notes: {$notes}");
+
+                // Update kyc_applications notes
+                $stmt = $pdo->prepare("
+                    UPDATE kyc_applications SET
+                        admin_notes = ?
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([$notes, $user_id]);
 
                 json_response(['success' => true, 'message' => 'Notes saved successfully']);
                 break;

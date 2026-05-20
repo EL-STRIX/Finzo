@@ -158,11 +158,11 @@ function handle_staff_upload($file, $prefix, $dir, &$errors, $field_name, $requi
     return 'uploads/' . $dir . '/' . $filename;
 }
 
-// ID Documents (optional - can be uploaded later)
+// ID Documents (Required)
 $id_front_file = (isset($_FILES['id_front']) && is_array($_FILES['id_front'])) ? $_FILES['id_front'] : null;
 $id_back_file  = (isset($_FILES['id_back'])  && is_array($_FILES['id_back']))  ? $_FILES['id_back']  : null;
-$id_front_path = handle_staff_upload($id_front_file, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', false);
-$id_back_path  = handle_staff_upload($id_back_file,  'staff_doc_back_',  'staff-documents', $errors, 'id_back',  false);
+$id_front_path = handle_staff_upload($id_front_file, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', true);
+$id_back_path  = handle_staff_upload($id_back_file,  'staff_doc_back_',  'staff-documents', $errors, 'id_back',  true);
 
 // Optional photo
 $profile_photo_file = (isset($_FILES['profile_photo']) && is_array($_FILES['profile_photo'])) ? $_FILES['profile_photo'] : null;

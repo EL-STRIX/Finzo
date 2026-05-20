@@ -503,3 +503,62 @@ function check_admin_permission($pdo, $admin_id, $action) {
 
     return true;
 }
+
+// =====================================================
+// SYSTEM SETTINGS HELPERS
+// =====================================================
+
+/**
+ * Retrieve a system setting from the system_settings table.
+ * Casts the returned value based on setting_type.
+ * @param PDO $pdo Database connection
+ * @param string $key Unique setting key
+ * @param mixed $default Default value if setting is not found
+ * @return mixed Cast setting value
+ */
+function get_setting($pdo, $key, $default = null) {
+    try {
+        $stmt = $pdo->prepare("SELECT setting_value, setting_type FROM system_settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return $default;
+        }
+        $value = $row['setting_value'];
+        $type = $row['setting_type'];
+        switch ($type) {
+            case 'number':
+                return (float)$value;
+            case 'boolean':
+                return $value === 'true';
+            case 'json':
+                return json_decode($value, true);
+            case 'string':
+            default:
+                return (string)$value;
+        }
+    } catch (PDOException $e) {
+        return $default;
+    }
+}
+
+/**
+ * Update a system setting in the system_settings table.
+ * @param PDO $pdo Database connection
+ * @param string $key Unique setting key
+ * @param mixed $value New value for the setting
+ * @param int $admin_id ID of the admin updating the setting
+ * @return bool True on success, false on failure
+ */
+function update_setting($pdo, $key, $value, $admin_id) {
+    try {
+        $stmt = $pdo->prepare("
+            UPDATE system_settings 
+            SET setting_value = ?, updated_by = ?, updated_at = NOW() 
+            WHERE setting_key = ?
+        ");
+        return $stmt->execute([$value, $admin_id, $key]);
+    } catch (PDOException $e) {
+        return false;
+    }
+}

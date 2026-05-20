@@ -48,9 +48,11 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT u.id, u.full_name, u.email, u.phone, u.status, u.kyc_submitted_at, u.created_at,
-               a.account_type, a.balance as initial_deposit
+               a.account_type, a.balance as initial_deposit,
+               k.application_no, k.submission_count, k.submitted_at
         FROM users u
         LEFT JOIN accounts a ON u.id = a.user_id
+        LEFT JOIN kyc_applications k ON u.id = k.user_id
         WHERE {$where_sql}
         ORDER BY u.kyc_submitted_at DESC, u.created_at DESC
         LIMIT {$per_page} OFFSET {$offset}

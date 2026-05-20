@@ -138,8 +138,8 @@ if (empty($account_type) || !in_array($account_type, ['savings', 'current'])) {
     $errors['account_type'] = 'Please select a valid account type';
 }
 
-if ($initial_deposit < MIN_INITIAL_DEPOSIT) {
-    $errors['initial_deposit'] = 'Initial deposit must be at least ' . CURRENCY_SYMBOL . MIN_INITIAL_DEPOSIT;
+if ($initial_deposit < ($min_deposit = get_setting($pdo, 'min_initial_deposit', 500))) {
+    $errors['initial_deposit'] = 'Initial deposit must be at least ' . CURRENCY_SYMBOL . $min_deposit;
 }
 
 if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
@@ -238,6 +238,80 @@ try {
         // Temporary account number — will be replaced with proper one on approval
         $temp_account_no = 'PENDING_' . $user_id;
         $stmt->execute([$user_id, $temp_account_no, $account_type, $initial_deposit, $txn_pin_hash]);
+    }
+
+    // Generate unique application number
+    $stmt = $pdo->query("SELECT MAX(id) FROM kyc_applications");
+    $max_id = $stmt->fetchColumn() ?: 0;
+    $next_num = $max_id + 1;
+    $year = date('Y');
+    $application_no = 'KYC' . $year . str_pad($next_num, 7, '0', STR_PAD_LEFT);
+
+    // Check if user already has a kyc_applications row
+    $stmt = $pdo->prepare("SELECT id, submission_count FROM kyc_applications WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $existing_app = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existing_app) {
+        // Resubmission
+        $new_count = $existing_app['submission_count'] + 1;
+        $stmt = $pdo->prepare("
+            UPDATE kyc_applications SET
+                status = 'submitted',
+                submission_count = ?,
+                dob = ?,
+                gender = ?,
+                father_name = ?,
+                occupation = ?,
+                annual_income = ?,
+                street = ?,
+                city = ?,
+                state = ?,
+                pincode = ?,
+                id_type = ?,
+                id_number = ?,
+                id_front_path = ?,
+                id_back_path = ?,
+                account_type = ?,
+                initial_deposit = ?,
+                submitted_at = NOW(),
+                rejection_reason = NULL,
+                reviewed_by = NULL,
+                reviewed_at = NULL
+            WHERE user_id = ?
+        ");
+        $stmt->execute([
+            $new_count,
+            $dob, $gender, $father_name, $occupation, $annual_income,
+            $street, $city, $state, $pincode,
+            $id_type, $id_number, $id_front_path, $id_back_path,
+            $account_type, $initial_deposit,
+            $user_id
+        ]);
+    } else {
+        // First submission
+        $stmt = $pdo->prepare("
+            INSERT INTO kyc_applications (
+                user_id, application_no, status, submission_count,
+                dob, gender, father_name, occupation, annual_income,
+                street, city, state, pincode,
+                id_type, id_number, id_front_path, id_back_path,
+                account_type, initial_deposit, submitted_at, created_at, updated_at
+            ) VALUES (
+                ?, ?, 'submitted', 1,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, NOW(), NOW(), NOW()
+            )
+        ");
+        $stmt->execute([
+            $user_id, $application_no,
+            $dob, $gender, $father_name, $occupation, $annual_income,
+            $street, $city, $state, $pincode,
+            $id_type, $id_number, $id_front_path, $id_back_path,
+            $account_type, $initial_deposit
+        ]);
     }
 
     $pdo->commit();
