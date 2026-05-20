@@ -447,30 +447,21 @@
         }
     }
 
-    // Wire up filter controls (search + finzo-dropdown hidden inputs)
-    function initFilterListeners() {
-        const searchInput = document.getElementById('admin-search-input');
-        const statusInput = document.getElementById('admin-status-filter');
-        const roleInput = document.getElementById('admin-role-filter');
+    // Wire up filter controls using event delegation (bulletproof approach)
+    // Search: direct listener on the input element
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'admin-search-input') {
+            filterAdminList();
+        }
+    });
 
-        if (searchInput) {
-            searchInput.addEventListener('input', filterAdminList);
+    // Dropdowns: listen for 'change' events bubbling from hidden inputs
+    // dropdowns.js dispatches change with bubbles:true when an option is selected
+    document.addEventListener('change', function(e) {
+        if (e.target && (e.target.id === 'admin-status-filter' || e.target.id === 'admin-role-filter')) {
+            filterAdminList();
         }
-        // dropdowns.js dispatches 'change' on the hidden input when an option is selected
-        if (statusInput) {
-            statusInput.addEventListener('change', filterAdminList);
-        }
-        if (roleInput) {
-            roleInput.addEventListener('change', filterAdminList);
-        }
-    }
-
-    // Run after DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFilterListeners);
-    } else {
-        initFilterListeners();
-    }
+    });
 
     // Exported Object
     window.AdminProfile = {
