@@ -1,369 +1,499 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html class="light" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin — Staff Detail</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Staff Dossier — Finzo Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                        "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="../../assets/css/admin.css">
-  <link rel="stylesheet" href="../../assets/css/dark-mode.css">
-  <script src="../../assets/js/core/theme.js"></script>
-  <script src="../../assets/js/core/api.js"></script>
-  <script src="../../assets/js/core/utils.js"></script>
-  <script src="../../assets/js/portals/admin.js"></script>
+    </script>
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/dark-mode.css">
 </head>
+<body class="bg-slate-50 dark:bg-slate-900 font-body text-black dark:text-on-surface antialiased">
 
-<body class="bg-slate-50 dark:bg-[#0d1117] font-body text-black dark:text-on-surface antialiased">
-
-  <!-- SIDEBAR -->
-  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-  <nav class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-sidebar-brand">
-      <div class="brand-name">Finzo</div>
-      <div class="brand-sub">ADMIN CONSOLE</div>
-    </div>
-    <div class="admin-nav">
-      <div class="admin-nav-section">MAIN</div>
-      <a href="admin-dashboard.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">analytics</span> Overview
-      </a>
-      <a href="admin-pending-approvals.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-      </a>
-      <a href="admin-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">group</span> User Management
-      </a>
-      <a href="admin-staff.html" class="admin-nav-item active">
-        <span class="material-symbols-outlined">badge</span> Staff Management
-      </a>
-      <a href="admin-branches.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">store</span> Branch Management
-      </a>
-      <a href="admin-transactions.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">swap_horiz</span> Transactions
-      </a>
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
+        </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
             <a href="admin-audit-log.html" class="admin-nav-item">
                 <span class="material-symbols-outlined">manage_search</span> Audit Log
             </a>
 
-      <div class="admin-nav-section">System</div>
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
 
-      <a href="admin-suspended-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_off</span> Suspended Users
-      </a>
-      <a href="admin-suspended-staff.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">work_off</span> Suspended Staff
-      </a>
-      <a href="admin-locked-accounts.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-      </a>
-      <a href="admin-deleted-users.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">person_remove</span> Deleted Users
-      </a>
-      <a href="admin-interest.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">percent</span> Interest Management
-      </a>
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../../views/auth/admin-login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
 
-      <div class="admin-nav-section">ACCOUNT</div>
-      <a href="admin-profile.html" class="admin-nav-item">
-        <span class="material-symbols-outlined">account_circle</span> Admin Profile
-      </a>
-      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-        <span data-theme-label>Dark Mode</span>
-      </button>
-      <a href="../../views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-        <span class="material-symbols-outlined">logout</span> Logout
-      </a>
-    </div>
-  </nav>
+    <div class="admin-main lg:ml-72 transition-all duration-300">
+        <!-- TOP BAR -->
+        <header class="admin-topbar sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5">
+            <div class="flex items-center gap-4 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                    <span class="material-symbols-outlined force-black dark:text-white">menu</span>
+                </button>
+                <a href="admin-staff.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-all text-slate-500">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-primary dark:text-slate-400 uppercase">STAFF DOSSIER</div>
+                    <div id="header-staff-name" class="text-xl font-black tracking-tight mt-1 dark:text-white">Loading Staff...</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-4">
+                <div id="header-status-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border">
+                    <div class="w-1.5 h-1.5 rounded-full animate-pulse"></div>
+                    <span class="text-[10px] font-black uppercase tracking-widest"></span>
+                </div>
+                <div id="top-admin-avatar" class="admin-avatar premium-gradient-primary">AD</div>
+            </div>
+        </header>
 
-  <!-- MAIN CONTENT -->
-  <div class="flex-1 min-w-0 lg:ml-[260px] transition-all duration-300 overflow-hidden">
-    <div class="admin-topbar">
-      <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
-        </button>
-        <div class="min-w-0">
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase flex items-center gap-2">
-              <a href="admin-staff.html" class="hover:underline opacity-60">STAFF MANAGEMENT</a>
-              <span class="material-symbols-outlined text-[10px] opacity-40">chevron_right</span>
-              <span class="whitespace-nowrap" id="staff-name-breadcrumb">Loading...</span>
-          </div>
-          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Staff Detail</div>
-        </div>
-      </div>
-      <div class="flex items-center gap-4">
-        <div id="top-admin-avatar" class="admin-avatar premium-gradient-primary">A</div>
-      </div>
-    </div>
-
-    <div class="p-4 sm:p-6 lg:p-10">
-      <!-- STAFF HEADER CARD -->
-      <div class="admin-card p-5 sm:p-8 mb-6 sm:mb-10 flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-6 sm:gap-8">
-        <div class="flex items-center gap-6">
-          <div id="staff-initials-avatar" class="w-20 h-20 rounded-full premium-gradient-primary flex items-center justify-center font-black text-3xl shadow-lg border-4 border-white dark:border-slate-800"><div class="skeleton w-full h-full rounded-full"></div></div>
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <h1 id="staff-name-h1" class="font-headline text-3xl font-bold tracking-tight"><div class="skeleton w-32 h-8"></div></h1>
-              <span id="staff-status-badge" class="status-badge"><div class="skeleton w-16 h-4"></div></span>
-            </div>
-            <div id="staff-role-display" class="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] text-slate-400 mb-3 flex items-center gap-2">
-                <span id="info-designation"><div class="skeleton w-16 h-3"></div></span>
-                <span class="opacity-30">•</span>
-                <span id="info-department"><div class="skeleton w-24 h-3"></div></span>
-            </div>
-            <div class="flex items-center gap-6">
-              <div class="flex items-center gap-2 opacity-60 font-medium">
-                <span class="material-symbols-outlined text-sm">badge</span>
-                <span id="staff-id-display"><div class="skeleton w-16 h-4"></div></span>
-              </div>
-              <div class="flex items-center gap-2 opacity-60 font-medium">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                <span id="staff-branch-display"><div class="skeleton w-20 h-4"></div></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
-          <button id="deactivate-staff-btn" class="admin-btn-destructive w-full sm:w-auto justify-center">
-             <span class="material-symbols-outlined">block</span> Deactivate Staff
-          </button>
-          <button id="reset-password-btn" class="admin-btn-secondary w-full sm:w-auto justify-center">
-             <span class="material-symbols-outlined">lock_reset</span> Reset Password
-          </button>
-          <button id="delete-staff-btn" class="admin-btn-destructive !bg-rose-700 w-full sm:w-auto justify-center">
-             <span class="material-symbols-outlined">delete_forever</span> Delete Staff
-          </button>
-        </div>
-      </div>
-
-      <!-- STATS ROW -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">TOTAL DEPOSITS DONE</div>
-          <div id="stat-total-deposits" class="admin-stat-value"><div class="skeleton w-16 h-8"></div></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">TOTAL WITHDRAWALS DONE</div>
-          <div id="stat-total-withdrawals" class="admin-stat-value"><div class="skeleton w-16 h-8"></div></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">TOTAL TRANSACTIONS</div>
-          <div id="stat-total-txns" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
-        </div>
-        <div class="admin-stat-card">
-          <div class="admin-stat-label">LAST ACTIVE</div>
-          <div id="stat-last-active" class="admin-stat-value"><div class="skeleton w-24 h-8"></div></div>
-        </div>
-      </div>
-
-      <!-- TWO COLUMN LAYOUT -->
-      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
-        <!-- LEFT COLUMN: INFO -->
-        <div class="lg:w-[40%] space-y-6 sm:space-y-10">
-          <div class="admin-card">
-            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary dark:text-blue-400">info</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Staff Information</h3>
-            </div>
-            <div class="p-5 sm:p-8 space-y-4 sm:space-y-6">
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</span>
-                <span id="info-full-name" class="font-bold"><div class="skeleton w-24 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</span>
-                <span id="info-email" class="font-bold"><div class="skeleton w-32 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone</span>
-                <span id="info-phone" class="font-bold"><div class="skeleton w-28 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Branch</span>
-                <span id="info-branch" class="font-bold"><div class="skeleton w-16 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Staff ID</span>
-                <span id="info-staff-id" class="font-bold"><div class="skeleton w-16 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pb-4 border-b border-slate-50 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Joined</span>
-                <span id="info-joined" class="font-bold"><div class="skeleton w-24 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Shifts</span>
-                <span id="info-shifts" class="font-bold"><div class="skeleton w-8 h-4"></div></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="admin-card" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3 dark:border-slate-800">
-              <span class="material-symbols-outlined text-primary dark:text-blue-400">summarize</span>
-              <h3 class="admin-section-title dark:text-slate-900" style="font-size:16px;">Today's Shift Summary</h3>
-            </div>
-            <div class="p-5 sm:p-8 space-y-4 sm:space-y-6 dark:text-slate-800">
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Shift Start</span>
-                <span id="summary-shift-start" class="font-bold px-3 py-1 bg-white dark:bg-slate-800 rounded-lg shadow-sm"><div class="skeleton w-16 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Deposits Done</span>
-                <span id="summary-deposits" class="font-bold"><div class="skeleton w-20 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Withdrawals Done</span>
-                <span id="summary-withdrawals" class="font-bold"><div class="skeleton w-20 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Transactions</span>
-                <span id="summary-total-txns" class="font-bold"><div class="skeleton w-8 h-4"></div></span>
-              </div>
-              <div class="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-white/10">
-                <span class="text-[10px] font-black uppercase tracking-widest text-primary dark:text-blue-400">Total Amount</span>
-                <span id="summary-total-amount" class="text-xl font-black text-primary dark:text-blue-400"><div class="skeleton w-24 h-6"></div></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN: HISTORY -->
-        <div class="lg:w-[60%]">
-          <div class="admin-card h-full flex flex-col">
-            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1c2128]">
-              <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary dark:text-blue-400">history</span>
-                <h3 class="admin-section-title" style="font-size:16px;">All Transactions by This Staff</h3>
-              </div>
-              <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2 flex-1 sm:flex-none">
-                <input type="date" class="bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-bold px-3 py-2 flex-1 sm:flex-none">
-              </div>
-            </div>
+        <main class="p-4 sm:p-6 lg:p-10 space-y-8">
             
-            <div class="flex-1 overflow-x-auto w-full">
-              <table class="admin-table w-full text-left min-w-[700px]">
-                <thead>
-                  <tr>
-                    <th>Receipt No</th>
-                    <th>Date & Time</th>
-                    <th>Customer</th>
-                    <th>Account</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th class="text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="staff-transactions-body">
-                  <tr class="skeleton-row">
-                    <td><div class="skeleton w-24 h-4"></div></td>
-                    <td><div class="skeleton w-32 h-4"></div></td>
-                    <td><div class="skeleton w-28 h-4"></div></td>
-                    <td><div class="skeleton w-24 h-4"></div></td>
-                    <td><div class="skeleton w-20 h-6 rounded-full"></div></td>
-                    <td><div class="skeleton w-16 h-4"></div></td>
-                    <td class="text-right"><div class="skeleton w-8 h-8 ml-auto rounded-lg"></div></td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8">
+                
+                <!-- Left Column: Details -->
+                <div class="lg:col-span-8 space-y-8">
+                    
+                    <!-- Profile Card -->
+                    <div class="admin-card p-6 sm:p-8">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-slate-50 dark:border-white/5">
+                            <div class="relative group">
+                                <div id="staff-photo-container" class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl overflow-hidden ring-4 ring-slate-100 dark:ring-white/5 shadow-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                                    <span id="photo-initials" class="text-4xl font-black text-slate-300">?</span>
+                                </div>
+                            </div>
+                            <div class="text-center sm:text-left flex-1">
+                                <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">---</h3>
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
+                                    <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-slate-400 border border-slate-200/50 dark:border-white/10 font-mono">---</span>
+                                    <span id="info-designation-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-blue-600 text-white">---</span>
+                                    <span id="info-department-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">---</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-4 flex items-center justify-center sm:justify-start gap-2">
+                                    <span class="material-symbols-outlined text-lg">calendar_today</span>
+                                    Member since <span id="info-joined-date">---</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Email Address</label>
+                                    <div id="info-email" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-400 text-base">mail</span> ---
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Phone Number</label>
+                                    <div id="info-phone" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-400 text-base">phone</span> ---
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Emergency Contact</label>
+                                    <div id="info-emergency" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-400 text-base">emergency</span> ---
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Gender</label>
+                                    <div id="info-gender" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Date of Birth</label>
+                                    <div id="info-dob" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Branch Assignment</label>
+                                    <div id="info-branch" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-400 text-base">store</span> ---
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Card -->
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5">
+                            <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
+                                <span class="material-symbols-outlined text-primary">location_on</span> Residential Address
+                            </h4>
+                        </div>
+                        <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Street</label>
+                                <div id="addr-street" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">City</label>
+                                <div id="addr-city" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">State</label>
+                                <div id="addr-state" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Pincode</label>
+                                <div id="addr-pincode" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Audit Info -->
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5">
+                            <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
+                                <span class="material-symbols-outlined text-primary">security</span> System Audit Info
+                            </h4>
+                        </div>
+                        <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Last Login</label>
+                                <div id="sys-last-login" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
+                                <div id="sys-last-ip" class="text-[9px] font-black text-slate-500 dark:text-slate-400 mt-1">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Date of Joining</label>
+                                <div id="sys-joining-date" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Created By</label>
+                                <div id="sys-created-by" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Staff ID</label>
+                                <div id="sys-staff-id" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Database ID</label>
+                                <div id="sys-db-id" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Total Shifts</label>
+                                <div id="sys-total-shifts" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Identity Documents -->
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5">
+                            <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
+                                <span class="material-symbols-outlined text-primary">badge</span> Identity Documents
+                            </h4>
+                        </div>
+                        <div class="p-6 sm:p-8">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">ID Type</label>
+                                    <div id="doc-id-type" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">ID Number</label>
+                                    <div id="doc-id-number" class="text-sm font-bold font-mono text-slate-700 dark:text-slate-200">---</div>
+                                </div>
+                            </div>
+                            <div id="doc-images-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <!-- Front -->
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-3">Front of Document</label>
+                                    <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-slate-100 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
+                                        <div id="doc-front-placeholder" class="text-center">
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
+                                            <p class="text-[10px] font-bold text-slate-400 mt-2">No document uploaded</p>
+                                        </div>
+                                        <img id="doc-front-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg">zoom_in</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Back -->
+                                <div>
+                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-3">Back of Document</label>
+                                    <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-slate-100 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
+                                        <div id="doc-back-placeholder" class="text-center">
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
+                                            <p class="text-[10px] font-bold text-slate-400 mt-2">No document uploaded</p>
+                                        </div>
+                                        <img id="doc-back-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg">zoom_in</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Stats -->
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5">
+                            <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
+                                <span class="material-symbols-outlined text-primary">trending_up</span> Performance Overview
+                            </h4>
+                        </div>
+                        <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-2xl">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Deposits</div>
+                                <div id="stat-total-deposits" class="text-xl font-black text-primary dark:text-blue-400">₹0</div>
+                            </div>
+                            <div class="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-2xl">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Withdrawals</div>
+                                <div id="stat-total-withdrawals" class="text-xl font-black text-rose-500">₹0</div>
+                            </div>
+                            <div class="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-2xl">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Transactions</div>
+                                <div id="stat-total-txns" class="text-xl font-black text-slate-800 dark:text-white">0</div>
+                            </div>
+                            <div class="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-2xl">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Last Active</div>
+                                <div id="stat-last-active" class="text-sm font-black text-slate-800 dark:text-white">Never</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Table -->
+                    <div class="admin-card overflow-hidden">
+                        <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
+                            <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
+                                <span class="material-symbols-outlined text-primary">history</span> Transaction History
+                            </h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="admin-table w-full text-left">
+                                <thead>
+                                    <tr>
+                                        <th>Receipt No</th>
+                                        <th>Date & Time</th>
+                                        <th>Customer</th>
+                                        <th>Account</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staff-transactions-body">
+                                    <tr><td colspan="7" class="text-center py-12 text-slate-500 dark:text-slate-400 text-xs font-bold">Loading transactions...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Actions -->
+                <div class="lg:col-span-4 space-y-6">
+                    
+                    <!-- Action Panel -->
+                    <div class="admin-card p-6">
+                        <h5 class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">Staff Control</h5>
+                        <div class="space-y-4">
+                            <!-- Deactivate/Activate -->
+                            <button id="deactivate-staff-btn" class="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <span id="suspend-icon" class="material-symbols-outlined">block</span>
+                                    </div>
+                                    <div class="text-left">
+                                        <div id="suspend-label" class="text-sm font-black dark:text-white">Deactivate Staff</div>
+                                        <div class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Temporarily revoke access</div>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                            </button>
+
+                            <!-- Reset Password -->
+                            <button id="reset-password-btn" class="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <span class="material-symbols-outlined">lock_reset</span>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="text-sm font-black dark:text-white">Reset Password</div>
+                                        <div class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Force new credentials</div>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                            </button>
+
+                            <!-- Delete -->
+                            <button id="delete-staff-btn" class="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <span class="material-symbols-outlined">person_remove</span>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="text-sm font-black text-rose-600">Delete Account</div>
+                                        <div class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Permanent removal</div>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Today's Shift -->
+                    <div class="admin-card p-6">
+                        <h5 class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">Today's Shift Summary</h5>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center pb-3 border-b border-slate-50 dark:border-white/5">
+                                <span class="text-[10px] font-black text-slate-400 uppercase">Deposits Done</span>
+                                <span id="summary-deposits" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-3 border-b border-slate-50 dark:border-white/5">
+                                <span class="text-[10px] font-black text-slate-400 uppercase">Withdrawals Done</span>
+                                <span id="summary-withdrawals" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-3 border-b border-slate-50 dark:border-white/5">
+                                <span class="text-[10px] font-black text-slate-400 uppercase">Total Transactions</span>
+                                <span id="summary-total-txns" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-[10px] font-black text-primary dark:text-blue-400 uppercase">Net Amount</span>
+                                <span id="summary-total-amount" class="text-lg font-black text-primary dark:text-blue-400">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Note -->
+                    <div class="p-6 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-[20px] overflow-hidden relative shadow-sm">
+                        <div class="relative z-10">
+                            <h5 class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-4">Security Note</h5>
+                            <p class="text-xs leading-relaxed text-indigo-900 dark:text-indigo-200 font-medium italic">
+                                "All staff-related actions are recorded in the global audit log. Every modification and user override is attributed to the performing administrator's session."
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl text-indigo-500/10">gavel</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-4 sm:p-6 border-t border-slate-50 dark:border-white/5 flex justify-center items-center bg-slate-50/30 dark:bg-white/5 overflow-x-auto w-full">
-              <div class="flex items-center gap-2">
-                <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;" disabled>Previous</button>
-                <button class="admin-btn-primary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">1</button>
-                <button class="admin-btn-secondary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">2</button>
-                <button class="admin-btn-secondary" style="width:34px; height:34px; padding:0 !important; font-size: 12px !important; border-radius: 8px !important;">3</button>
-                <button class="admin-btn-secondary" style="padding: 8px 16px !important; font-size: 11px !important; border-radius: 8px !important;">Next</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        </main>
     </div>
-  </div>
 
-  <!-- GOVERNANCE SECURITY MODAL -->
-  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
-    <!-- Backdrop -->
-    <div id="modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md opacity-0"></div>
-    
-    <!-- Modal Container -->
-    <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300">
-      <div class="admin-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
-        <!-- Header (Fixed) -->
-        <div id="modal-header" class="p-8 pb-4 text-center shrink-0">
-          <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300">
-            <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
-          </div>
-          <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
-          <p id="modal-subtitle" class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
-        </div>
-
-        <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
-          <div id="modal-body-text" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
-            <!-- Custom action text injected here -->
-          </div>
-
-          <!-- Reason Step (Only for Deactivation) -->
-          <div id="reason-step" class="hidden">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Select Deactivation Reason</label>
-            <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <!-- Dynamically Injected -->
+    <!-- GOVERNANCE SECURITY MODAL -->
+    <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
+        <div id="modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md opacity-0"></div>
+        <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300">
+            <div class="admin-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
+                <div id="modal-header" class="p-8 pb-4 text-center shrink-0">
+                    <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300">
+                        <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
+                    </div>
+                    <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
+                    <p id="modal-subtitle" class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
+                </div>
+                <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
+                    <div id="modal-body-text" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4"></div>
+                    <div id="reason-step" class="hidden">
+                        <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Select Deactivation Reason</label>
+                        <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                        <div id="custom-reason-container" class="mt-4 hidden animate-in fade-in slide-in-from-top-1 duration-300">
+                            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Additional Observations (Internal Audit)</label>
+                            <textarea id="custom-reason-notes" rows="2" placeholder="Elaborate on the reason for deactivation..."
+                                class="w-full bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
+                        </div>
+                    </div>
+                    <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
+                        <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Confirm Identity (Admin Password)</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">admin_panel_settings</span>
+                            <input type="password" id="admin-password" placeholder="••••••••"
+                                class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
+                        </div>
+                        <p id="auth-error" class="text-[10px] font-black text-rose-500 mt-2 ml-1 hidden">Invalid administrative credentials. Access denied.</p>
+                    </div>
+                </div>
+                <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-50 dark:border-white/5">
+                    <button onclick="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel Action</button>
+                    <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Authorize Change</button>
+                </div>
             </div>
-            <div id="custom-reason-container" class="mt-4 hidden animate-in fade-in slide-in-from-top-1 duration-300">
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Additional Observations (Internal Audit)</label>
-              <textarea id="custom-reason-notes" rows="2" placeholder="Elaborate on the reason for deactivation..." 
-                class="w-full bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
-            </div>
-          </div>
-
-          <!-- Auth Step -->
-          <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Confirm Identity (Admin Password)</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">admin_panel_settings</span>
-              <input type="password" id="admin-password" placeholder="••••••••"
-                class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
-            </div>
-            <p id="auth-error" class="text-[10px] font-black text-rose-500 mt-2 ml-1 hidden">Invalid administrative credentials. Access denied.</p>
-          </div>
         </div>
-
-        <!-- Footer Actions (Fixed) -->
-        <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-50 dark:border-white/5">
-          <button onclick="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel Action</button>
-          <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Authorize Change</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <script src="../../assets/js/admin/staff-detail.js"></script>
+    <!-- IMAGE LIGHTBOX MODAL -->
+    <div id="lightbox-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm cursor-pointer" onclick="closeLightbox()">
+        <div class="relative max-w-4xl max-h-[90vh] w-full">
+            <button class="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors" onclick="closeLightbox()">
+                <span class="material-symbols-outlined text-3xl">close</span>
+            </button>
+            <img id="lightbox-img" class="w-full h-full object-contain rounded-2xl shadow-2xl" alt="Document Preview" />
+        </div>
+    </div>
+
+    <script src="../../assets/js/core/theme.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/api.js"></script>
+    <script src="../../assets/js/portals/admin.js"></script>
+    <script src="../../assets/js/admin/staff-detail.js"></script>
 </body>
 </html>
