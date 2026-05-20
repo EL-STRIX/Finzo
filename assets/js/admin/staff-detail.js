@@ -1,20 +1,20 @@
 /**
  * Finzo Admin — Staff Detail (Dossier View)
- * Matches the admin-detail.html design pattern
+ * v2.0 — Redesigned to match admin-detail.html
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const staffId = urlParams.get('id');
+    var urlParams = new URLSearchParams(window.location.search);
+    var staffId = urlParams.get('id');
     
     if (!staffId) {
         alert('Staff ID is required');
         return;
     }
 
-    let currentAction = '';
+    var currentAction = '';
 
-    const modalConfigs = {
+    var modalConfigs = {
         reset: {
             title: 'Reset Password',
             subtitle: 'Security protocol override',
@@ -57,321 +57,296 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getInitials(name) {
         if (!name) return 'S';
-        return name.split(' ').map(n => n[0]).join('').toUpperCase();
+        return name.split(' ').map(function(n) { return n[0]; }).join('').toUpperCase();
     }
 
-    function formatCurrency(amount) {
-        return window.FinzoUtils.formatINR(amount);
+    function fmtCurrency(amount) {
+        if (window.FinzoUtils && window.FinzoUtils.formatINR) return window.FinzoUtils.formatINR(amount);
+        var num = parseFloat(amount) || 0;
+        return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    function formatDate(dateStr) {
+    function fmtDate(dateStr) {
         if (!dateStr) return 'N/A';
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        try {
+            var d = new Date(dateStr);
+            if (isNaN(d.getTime())) return 'N/A';
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch(e) { return 'N/A'; }
     }
 
     function timeAgo(dateStr) {
         if (!dateStr) return 'Never';
-        const d = new Date(dateStr);
-        const now = new Date();
-        const diff = now - d;
-        const mins = Math.floor(diff / 60000);
-        const hours = Math.floor(diff / 3600000);
-        const days = Math.floor(diff / 86400000);
-        
-        if (mins < 1) return 'Just now';
-        if (mins < 60) return `${mins} min ago`;
-        if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-        if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;
-        return formatDate(dateStr);
+        try {
+            var d = new Date(dateStr);
+            var now = new Date();
+            var diff = now - d;
+            var mins = Math.floor(diff / 60000);
+            var hours = Math.floor(diff / 3600000);
+            var days = Math.floor(diff / 86400000);
+            if (mins < 1) return 'Just now';
+            if (mins < 60) return mins + ' min ago';
+            if (hours < 24) return hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+            if (days < 30) return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+            return fmtDate(dateStr);
+        } catch(e) { return 'N/A'; }
+    }
+
+    // safe DOM setter
+    function setText(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = val || '---';
+    }
+    function setHtml(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = val || '---';
     }
 
     // Lightbox
     window.openLightbox = function(imgSrc) {
-        const modal = document.getElementById('lightbox-modal');
-        const img = document.getElementById('lightbox-img');
+        var modal = document.getElementById('lightbox-modal');
+        var img = document.getElementById('lightbox-img');
         if (modal && img) {
             img.src = imgSrc;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
     };
-
     window.closeLightbox = function() {
-        const modal = document.getElementById('lightbox-modal');
+        var modal = document.getElementById('lightbox-modal');
         if (modal) {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }
     };
 
+    // =============================
+    //  LOAD STAFF DATA
+    // =============================
     async function loadStaffData() {
+        console.log('[StaffDetail] Loading staff data for id=' + staffId);
         try {
-            const response = await window.api.get(`/admin/staff-detail.php?id=${staffId}`);
-            if (response.status === 'success' || response.success) {
-                const staff = response.staff;
-                const performance = response.performance || {};
-                const today = response.today_performance || {};
-                const transactions = response.transactions || [];
-                const totalShifts = response.total_shifts || 0;
-                const documents = response.documents || [];
-                const address = response.address || {};
+            var response = await window.api.get('/admin/staff-detail.php?id=' + staffId);
+            console.log('[StaffDetail] API Response:', response);
 
-                // --- Header ---
-                const headerName = document.getElementById('header-staff-name');
-                if (headerName) headerName.textContent = staff.full_name;
+            if (!response || (!response.success && response.status !== 'success')) {
+                console.error('[StaffDetail] API error:', response);
+                if (window.showToast) window.showToast(response?.message || 'Error loading staff details', 'error');
+                return;
+            }
 
-                // Status badge in header
-                const statusBadge = document.getElementById('header-status-badge');
-                if (statusBadge) {
-                    const isActive = staff.status.toLowerCase() === 'active';
-                    const dotEl = statusBadge.querySelector('div');
-                    const textEl = statusBadge.querySelector('span');
-                    
-                    if (isActive) {
-                        statusBadge.className = 'hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10';
-                        if (dotEl) dotEl.className = 'w-1.5 h-1.5 rounded-full animate-pulse bg-emerald-500';
-                        if (textEl) { textEl.className = 'text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400'; textEl.textContent = 'ACTIVE ACCOUNT'; }
-                    } else {
-                        statusBadge.className = 'hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-rose-200 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-500/10';
-                        if (dotEl) dotEl.className = 'w-1.5 h-1.5 rounded-full animate-pulse bg-rose-500';
-                        if (textEl) { textEl.className = 'text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400'; textEl.textContent = 'SUSPENDED'; }
-                    }
+            var staff = response.staff || {};
+            var performance = response.performance || {};
+            var today = response.today_performance || {};
+            var transactions = response.transactions || [];
+            var totalShifts = response.total_shifts || 0;
+            var documents = response.documents || [];
+            var address = response.address || {};
+            var appBase = window.location.origin + '/Finzo/';
+
+            console.log('[StaffDetail] Staff:', staff);
+            console.log('[StaffDetail] Documents:', documents);
+            console.log('[StaffDetail] Address:', address);
+
+            // ─── HEADER ─────────────────────────────
+            setText('header-staff-name', staff.full_name);
+
+            // Status badge
+            var statusBadge = document.getElementById('header-status-badge');
+            if (statusBadge) {
+                var isActive = (staff.status || '').toLowerCase() === 'active';
+                var dot = statusBadge.querySelector('.status-dot');
+                var label = statusBadge.querySelector('.status-label');
+                if (isActive) {
+                    statusBadge.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10';
+                    if (dot) dot.className = 'status-dot w-1.5 h-1.5 rounded-full animate-pulse bg-emerald-500';
+                    if (label) { label.className = 'status-label text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400'; label.textContent = 'ACTIVE ACCOUNT'; }
+                } else {
+                    statusBadge.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full border border-rose-200 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-500/10';
+                    if (dot) dot.className = 'status-dot w-1.5 h-1.5 rounded-full animate-pulse bg-rose-500';
+                    if (label) { label.className = 'status-label text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400'; label.textContent = 'SUSPENDED'; }
                 }
+            }
 
-                // --- Profile Card ---
-                const photoContainer = document.getElementById('staff-photo-container');
-                const initialsEl = document.getElementById('photo-initials');
-                if (photoContainer && staff.profile_photo) {
-                    const baseUrl = window.location.origin + '/Finzo/';
-                    photoContainer.innerHTML = `<img src="${baseUrl}${staff.profile_photo}" class="w-full h-full object-cover" alt="${staff.full_name}" onerror="this.parentNode.innerHTML='<span class=\\'text-4xl font-black text-slate-300\\'>${getInitials(staff.full_name)}</span>'" />`;
-                } else if (initialsEl) {
-                    initialsEl.textContent = getInitials(staff.full_name);
-                    if (photoContainer) photoContainer.style.background = window.FinzoUtils?.getAvatarGradient?.(getInitials(staff.full_name)) || 'linear-gradient(135deg, #667eea, #764ba2)';
+            // ─── PROFILE CARD ────────────────────────
+            var photoContainer = document.getElementById('staff-photo-container');
+            if (photoContainer) {
+                var initials = getInitials(staff.full_name);
+                if (staff.profile_photo) {
+                    photoContainer.innerHTML = '<img src="' + appBase + staff.profile_photo + '" class="w-full h-full object-cover" alt="' + (staff.full_name||'') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" /><span style="display:none" class="text-4xl font-black text-slate-300 w-full h-full flex items-center justify-center">' + initials + '</span>';
+                } else {
+                    var grad = (window.FinzoUtils && window.FinzoUtils.getAvatarGradient) ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #667eea, #764ba2)';
+                    photoContainer.style.background = grad;
+                    photoContainer.innerHTML = '<span class="text-4xl font-black text-white">' + initials + '</span>';
                 }
+            }
 
-                const infoName = document.getElementById('info-name');
-                if (infoName) infoName.textContent = staff.full_name;
+            setText('info-name', staff.full_name);
+            setText('info-staff-id-badge', staff.staff_id);
+            setText('info-designation-badge', staff.designation);
+            setText('info-department-badge', staff.department);
+            setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
 
-                const staffIdBadge = document.getElementById('info-staff-id-badge');
-                if (staffIdBadge) staffIdBadge.textContent = staff.staff_id;
+            // Personal Info
+            setText('info-email', staff.email || 'N/A');
+            setText('info-phone', staff.phone || 'N/A');
+            setText('info-gender', staff.gender || 'N/A');
+            setText('info-dob', fmtDate(staff.date_of_birth));
+            
+            var emergencyText = 'Not provided';
+            if (staff.emergency_contact_name) {
+                emergencyText = staff.emergency_contact_name;
+                if (staff.emergency_contact_phone) emergencyText += ' (' + staff.emergency_contact_phone + ')';
+            }
+            setText('info-emergency', emergencyText);
+            setText('info-branch', staff.branch_name || 'Unassigned');
 
-                const desBadge = document.getElementById('info-designation-badge');
-                if (desBadge) desBadge.textContent = staff.designation;
+            // ─── ADDRESS ─────────────────────────────
+            setText('addr-street', address.street);
+            setText('addr-city', address.city);
+            setText('addr-state', address.state);
+            setText('addr-pincode', address.pincode);
 
-                const depBadge = document.getElementById('info-department-badge');
-                if (depBadge) depBadge.textContent = staff.department;
+            // ─── SYSTEM AUDIT ────────────────────────
+            setText('sys-last-login', staff.last_login_at ? timeAgo(staff.last_login_at) : 'Never');
+            setText('sys-last-ip', staff.last_login_ip || '—');
+            setText('sys-joining-date', fmtDate(staff.date_of_joining));
+            setText('sys-created-by', staff.created_by || 'System');
+            setText('sys-staff-id', staff.staff_id);
+            setText('sys-db-id', '#' + staff.id);
+            setText('sys-total-shifts', String(totalShifts));
 
-                const joinedDate = document.getElementById('info-joined-date');
-                if (joinedDate) joinedDate.textContent = formatDate(staff.date_of_joining || staff.created_at);
+            // ─── DOCUMENTS ──────────────────────────
+            var doc = (documents && documents.length > 0) ? documents[0] : null;
+            setText('doc-id-type', doc ? doc.id_type : 'Not uploaded');
+            setText('doc-id-number', doc ? doc.id_number : '—');
 
-                // Personal info
-                const infoEmail = document.getElementById('info-email');
-                if (infoEmail) infoEmail.innerHTML = `<span class="material-symbols-outlined text-slate-400 text-base">mail</span> ${staff.email}`;
+            if (doc && doc.front_image) {
+                var frontImg = document.getElementById('doc-front-img');
+                var frontPlaceholder = document.getElementById('doc-front-placeholder');
+                var frontWrapper = document.getElementById('doc-front-wrapper');
+                var frontSrc = appBase + doc.front_image;
+                if (frontImg) { frontImg.src = frontSrc; frontImg.classList.remove('hidden'); }
+                if (frontPlaceholder) frontPlaceholder.classList.add('hidden');
+                if (frontWrapper) frontWrapper.onclick = function() { openLightbox(frontSrc); };
+            }
+            if (doc && doc.back_image) {
+                var backImg = document.getElementById('doc-back-img');
+                var backPlaceholder = document.getElementById('doc-back-placeholder');
+                var backWrapper = document.getElementById('doc-back-wrapper');
+                var backSrc = appBase + doc.back_image;
+                if (backImg) { backImg.src = backSrc; backImg.classList.remove('hidden'); }
+                if (backPlaceholder) backPlaceholder.classList.add('hidden');
+                if (backWrapper) backWrapper.onclick = function() { openLightbox(backSrc); };
+            }
 
-                const infoPhone = document.getElementById('info-phone');
-                if (infoPhone) infoPhone.innerHTML = `<span class="material-symbols-outlined text-slate-400 text-base">phone</span> ${staff.phone || 'N/A'}`;
+            // ─── PERFORMANCE STATS ──────────────────
+            setText('stat-total-deposits', fmtCurrency(performance.total_deposits));
+            setText('stat-total-withdrawals', fmtCurrency(performance.total_withdrawals));
+            setText('stat-total-txns', String(performance.total_transactions || 0));
+            setText('stat-last-active', staff.last_login_at ? timeAgo(staff.last_login_at) : 'Never');
 
-                const infoEmergency = document.getElementById('info-emergency');
-                if (infoEmergency) {
-                    const emergencyText = staff.emergency_contact_name 
-                        ? `${staff.emergency_contact_name} (${staff.emergency_contact_phone || 'N/A'})` 
-                        : 'Not provided';
-                    infoEmergency.innerHTML = `<span class="material-symbols-outlined text-slate-400 text-base">emergency</span> ${emergencyText}`;
-                }
+            // ─── TODAY'S SHIFT ───────────────────────
+            setText('summary-deposits', (today.deposit_count || 0) + ' (' + fmtCurrency(today.total_deposits) + ')');
+            setText('summary-withdrawals', (today.withdrawal_count || 0) + ' (' + fmtCurrency(today.total_withdrawals) + ')');
+            setText('summary-total-txns', String(today.total_transactions || 0));
+            setText('summary-total-amount', fmtCurrency((parseFloat(today.total_deposits) || 0) + (parseFloat(today.total_withdrawals) || 0)));
 
-                const infoGender = document.getElementById('info-gender');
-                if (infoGender) infoGender.textContent = staff.gender || 'N/A';
-
-                const infoDob = document.getElementById('info-dob');
-                if (infoDob) infoDob.textContent = formatDate(staff.date_of_birth);
-
-                const infoBranch = document.getElementById('info-branch');
-                if (infoBranch) infoBranch.innerHTML = `<span class="material-symbols-outlined text-slate-400 text-base">store</span> ${staff.branch_name || 'Unassigned'}`;
-
-                // --- Address ---
-                const addrStreet = document.getElementById('addr-street');
-                if (addrStreet) addrStreet.textContent = address.street || 'N/A';
-
-                const addrCity = document.getElementById('addr-city');
-                if (addrCity) addrCity.textContent = address.city || 'N/A';
-
-                const addrState = document.getElementById('addr-state');
-                if (addrState) addrState.textContent = address.state || 'N/A';
-
-                const addrPincode = document.getElementById('addr-pincode');
-                if (addrPincode) addrPincode.textContent = address.pincode || 'N/A';
-
-                // --- System Audit ---
-                const sysLastLogin = document.getElementById('sys-last-login');
-                if (sysLastLogin) sysLastLogin.textContent = staff.last_login_at ? timeAgo(staff.last_login_at) : 'Never';
-
-                const sysLastIp = document.getElementById('sys-last-ip');
-                if (sysLastIp) sysLastIp.textContent = staff.last_login_ip || '—';
-
-                const sysJoining = document.getElementById('sys-joining-date');
-                if (sysJoining) sysJoining.textContent = formatDate(staff.date_of_joining);
-
-                const sysCreatedBy = document.getElementById('sys-created-by');
-                if (sysCreatedBy) sysCreatedBy.textContent = staff.created_by || 'System';
-
-                const sysStaffId = document.getElementById('sys-staff-id');
-                if (sysStaffId) sysStaffId.textContent = staff.staff_id;
-
-                const sysDbId = document.getElementById('sys-db-id');
-                if (sysDbId) sysDbId.textContent = `#${staff.id}`;
-
-                const sysTotalShifts = document.getElementById('sys-total-shifts');
-                if (sysTotalShifts) sysTotalShifts.textContent = totalShifts;
-
-                // --- Documents ---
-                const doc = documents.length > 0 ? documents[0] : null;
-                const docIdType = document.getElementById('doc-id-type');
-                if (docIdType) docIdType.textContent = doc?.id_type || 'Not uploaded';
-
-                const docIdNumber = document.getElementById('doc-id-number');
-                if (docIdNumber) docIdNumber.textContent = doc?.id_number || '—';
-
-                const baseUrl = window.location.origin + '/Finzo/';
-
-                if (doc?.front_image) {
-                    const frontImg = document.getElementById('doc-front-img');
-                    const frontPlaceholder = document.getElementById('doc-front-placeholder');
-                    const frontWrapper = document.getElementById('doc-front-wrapper');
-                    if (frontImg) {
-                        frontImg.src = baseUrl + doc.front_image;
-                        frontImg.classList.remove('hidden');
-                    }
-                    if (frontPlaceholder) frontPlaceholder.classList.add('hidden');
-                    if (frontWrapper) frontWrapper.onclick = () => openLightbox(baseUrl + doc.front_image);
-                }
-
-                if (doc?.back_image) {
-                    const backImg = document.getElementById('doc-back-img');
-                    const backPlaceholder = document.getElementById('doc-back-placeholder');
-                    const backWrapper = document.getElementById('doc-back-wrapper');
-                    if (backImg) {
-                        backImg.src = baseUrl + doc.back_image;
-                        backImg.classList.remove('hidden');
-                    }
-                    if (backPlaceholder) backPlaceholder.classList.add('hidden');
-                    if (backWrapper) backWrapper.onclick = () => openLightbox(baseUrl + doc.back_image);
-                }
-
-                // --- Performance Stats ---
-                const statDeposits = document.getElementById('stat-total-deposits');
-                if (statDeposits) statDeposits.textContent = formatCurrency(performance.total_deposits);
-
-                const statWithdrawals = document.getElementById('stat-total-withdrawals');
-                if (statWithdrawals) statWithdrawals.textContent = formatCurrency(performance.total_withdrawals);
-
-                const statTxns = document.getElementById('stat-total-txns');
-                if (statTxns) statTxns.textContent = performance.total_transactions || 0;
-
-                const statLastActive = document.getElementById('stat-last-active');
-                if (statLastActive) statLastActive.textContent = staff.last_login_at ? timeAgo(staff.last_login_at) : 'Never';
-
-                // --- Today's Shift ---
-                const sDep = document.getElementById('summary-deposits');
-                if (sDep) sDep.textContent = `${today.deposit_count || 0} (${formatCurrency(today.total_deposits)})`;
-
-                const sWit = document.getElementById('summary-withdrawals');
-                if (sWit) sWit.textContent = `${today.withdrawal_count || 0} (${formatCurrency(today.total_withdrawals)})`;
-
-                const sTx = document.getElementById('summary-total-txns');
-                if (sTx) sTx.textContent = today.total_transactions || 0;
-
-                const sAmt = document.getElementById('summary-total-amount');
-                if (sAmt) sAmt.textContent = formatCurrency((parseFloat(today.total_deposits) || 0) + (parseFloat(today.total_withdrawals) || 0));
-
-                // --- Button state for suspended ---
-                const deactivateBtn = document.getElementById('deactivate-staff-btn');
-                if (staff.status.toLowerCase() !== 'active' && deactivateBtn) {
+            // ─── BUTTON STATE ───────────────────────
+            if ((staff.status || '').toLowerCase() !== 'active') {
+                var deactivateBtn = document.getElementById('deactivate-staff-btn');
+                if (deactivateBtn) {
                     deactivateBtn.disabled = true;
                     deactivateBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    const label = document.getElementById('suspend-label');
-                    if (label) label.textContent = 'Already Suspended';
-                    const icon = document.getElementById('suspend-icon');
-                    if (icon) icon.textContent = 'check_circle';
                 }
-
-                // --- Transactions ---
-                const tbody = document.getElementById('staff-transactions-body');
-                if (tbody) {
-                    if (transactions && transactions.length > 0) {
-                        tbody.innerHTML = transactions.map(t => `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                            <td class="text-[11px] font-bold opacity-60 font-mono">${t.txn_id}</td>
-                            <td class="text-xs font-medium">${window.FinzoUtils.formatDateTime(t.created_at)}</td>
-                            <td class="font-bold text-sm text-slate-800 dark:text-slate-100">${t.customer_name}</td>
-                            <td class="font-mono text-xs opacity-60">${t.account_no}</td>
-                            <td><span class="status-badge ${t.type === 'deposit' ? 'badge-success' : 'badge-error'}">${t.type.toUpperCase()}</span></td>
-                            <td class="font-black text-xs ${t.type === 'deposit' ? 'text-primary dark:text-blue-400' : 'text-error'}">${formatCurrency(t.amount)}</td>
-                            <td class="text-right">
-                                <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400 group">
-                                    <span class="material-symbols-outlined text-lg group-hover:text-primary transition-colors">receipt_long</span>
-                                </button>
-                            </td>
-                        </tr>
-                        `).join('');
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center opacity-40 font-bold">No transactions recorded yet</td></tr>';
-                    }
-                }
-            } else {
-                if (window.showToast) window.showToast(response.message || 'Error loading staff details', 'error');
+                var suspendLabel = document.getElementById('suspend-label');
+                if (suspendLabel) suspendLabel.textContent = 'Already Suspended';
+                var suspendIcon = document.getElementById('suspend-icon');
+                if (suspendIcon) suspendIcon.textContent = 'check_circle';
             }
+
+            // ─── TRANSACTIONS TABLE ─────────────────
+            var tbody = document.getElementById('staff-transactions-body');
+            if (tbody) {
+                if (transactions && transactions.length > 0) {
+                    var html = '';
+                    for (var i = 0; i < transactions.length; i++) {
+                        var t = transactions[i];
+                        var typeClass = t.type === 'deposit' ? 'badge-success' : 'badge-error';
+                        var amtClass = t.type === 'deposit' ? 'text-primary dark:text-blue-400' : 'text-error';
+                        var dateStr = (window.FinzoUtils && window.FinzoUtils.formatDateTime) ? window.FinzoUtils.formatDateTime(t.created_at) : fmtDate(t.created_at);
+                        html += '<tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">';
+                        html += '<td class="text-[11px] font-bold opacity-60 font-mono">' + t.txn_id + '</td>';
+                        html += '<td class="text-xs font-medium">' + dateStr + '</td>';
+                        html += '<td class="font-bold text-sm text-slate-800 dark:text-slate-100">' + t.customer_name + '</td>';
+                        html += '<td class="font-mono text-xs opacity-60">' + t.account_no + '</td>';
+                        html += '<td><span class="status-badge ' + typeClass + '">' + t.type.toUpperCase() + '</span></td>';
+                        html += '<td class="font-black text-xs ' + amtClass + '">' + fmtCurrency(t.amount) + '</td>';
+                        html += '<td class="text-right"><button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
+                        html += '</tr>';
+                    }
+                    tbody.innerHTML = html;
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center opacity-40 font-bold">No transactions recorded yet</td></tr>';
+                }
+            }
+
+            console.log('[StaffDetail] Render complete.');
+
         } catch (error) {
-            console.error('Failed to load staff data:', error);
+            console.error('[StaffDetail] Load error:', error);
             if (window.showToast) window.showToast('Connection error. Please try again.', 'error');
         }
     }
 
-    // --- Modal System (identical to original) ---
+    // =============================
+    //  GOVERNANCE MODAL SYSTEM
+    // =============================
     function openGovernanceModal(action) {
         currentAction = action;
-        const config = modalConfigs[action];
+        var config = modalConfigs[action];
 
-        const reasonStep = document.getElementById('reason-step');
-        const authStep = document.getElementById('auth-step');
-        const bodyText = document.getElementById('modal-body-text');
-        const customContainer = document.getElementById('custom-reason-container');
+        var reasonStep = document.getElementById('reason-step');
+        var authStep = document.getElementById('auth-step');
+        var bodyText = document.getElementById('modal-body-text');
+        var customContainer = document.getElementById('custom-reason-container');
         
-        reasonStep.classList.add('hidden');
-        authStep.classList.remove('hidden');
-        customContainer.classList.add('hidden');
+        if (reasonStep) reasonStep.classList.add('hidden');
+        if (authStep) authStep.classList.remove('hidden');
+        if (customContainer) customContainer.classList.add('hidden');
 
-        bodyText.innerHTML = config.body;
-        document.getElementById('modal-title').textContent = config.title;
-        document.getElementById('modal-subtitle').textContent = config.subtitle;
-        document.getElementById('modal-icon').textContent = config.icon;
+        if (bodyText) bodyText.innerHTML = config.body;
+        setText('modal-title', config.title);
+        setText('modal-subtitle', config.subtitle);
+        setText('modal-icon', config.icon);
         
-        const staffName = document.getElementById('info-name')?.textContent || 'this staff member';
-        const targetName = document.getElementById(action + '-target-name');
-        if (targetName) targetName.textContent = staffName;
+        var staffName = document.getElementById('info-name');
+        var nameText = staffName ? staffName.textContent : 'this staff member';
+        var targetName = document.getElementById(action + '-target-name');
+        if (targetName) targetName.textContent = nameText;
 
-        const iconContainer = document.getElementById('modal-icon-container');
-        iconContainer.className = `w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-${config.color}-50 dark:bg-${config.color}-500/10 text-${config.color}-500 shadow-lg`;
+        var iconContainer = document.getElementById('modal-icon-container');
+        if (iconContainer) iconContainer.className = 'w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-' + config.color + '-50 dark:bg-' + config.color + '-500/10 text-' + config.color + '-500 shadow-lg';
         
-        const confirmBtn = document.getElementById('confirm-governance-btn');
-        confirmBtn.className = `flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ${config.btnClass}`;
-        confirmBtn.textContent = config.btnText;
-        confirmBtn.disabled = false;
+        var confirmBtn = document.getElementById('confirm-governance-btn');
+        if (confirmBtn) {
+            confirmBtn.className = 'flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all ' + config.btnClass;
+            confirmBtn.textContent = config.btnText;
+            confirmBtn.disabled = false;
+        }
 
-        if (config.reasons && config.reasons.length > 0) {
-            let reasonsHtml = '';
-            config.reasons.forEach(r => {
-                reasonsHtml += `
-                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border-2 border-transparent hover:border-slate-200 dark:hover:border-white/10 cursor-pointer transition-all group">
-                    <input type="radio" name="suspension_reason" value="${r}" class="text-primary focus:ring-primary/10">
-                    <span class="text-[10px] font-black text-slate-500 group-hover:text-black dark:group-hover:text-white leading-tight">${r}</span>
-                </label>
-                `;
+        if (config.reasons && config.reasons.length > 0 && reasonStep) {
+            var reasonsHtml = '';
+            config.reasons.forEach(function(r) {
+                reasonsHtml += '<label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border-2 border-transparent hover:border-slate-200 dark:hover:border-white/10 cursor-pointer transition-all group">';
+                reasonsHtml += '<input type="radio" name="suspension_reason" value="' + r + '" class="text-primary focus:ring-primary/10">';
+                reasonsHtml += '<span class="text-[10px] font-black text-slate-500 group-hover:text-black dark:group-hover:text-white leading-tight">' + r + '</span>';
+                reasonsHtml += '</label>';
             });
             document.getElementById('reason-grid').innerHTML = reasonsHtml;
             reasonStep.classList.remove('hidden');
             
-            document.querySelectorAll('input[name="suspension_reason"]').forEach(radio => {
+            document.querySelectorAll('input[name="suspension_reason"]').forEach(function(radio) {
                 radio.addEventListener('change', function() {
                     if (this.value === 'Other') {
                         customContainer.classList.remove('hidden');
@@ -382,78 +357,63 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        const backdrop = document.getElementById('modal-backdrop');
-        backdrop.style.opacity = '1';
+        var backdrop = document.getElementById('modal-backdrop');
+        if (backdrop) backdrop.style.opacity = '1';
         
-        const container = document.getElementById('modal-container');
-        container.classList.remove('scale-95');
-        container.style.opacity = '1';
+        var container = document.getElementById('modal-container');
+        if (container) { container.classList.remove('scale-95'); container.style.opacity = '1'; }
         
-        const modal = document.getElementById('governance-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        var modal = document.getElementById('governance-modal');
+        if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
         
         document.body.classList.add('overflow-hidden');
     }
 
     window.closeGovernanceModal = function() {
-        const container = document.getElementById('modal-container');
-        container.classList.add('scale-95');
-        container.style.opacity = '0';
+        var container = document.getElementById('modal-container');
+        if (container) { container.classList.add('scale-95'); container.style.opacity = '0'; }
         
-        const backdrop = document.getElementById('modal-backdrop');
-        backdrop.style.opacity = '0';
+        var backdrop = document.getElementById('modal-backdrop');
+        if (backdrop) backdrop.style.opacity = '0';
         
-        setTimeout(() => {
-            const modal = document.getElementById('governance-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            
+        setTimeout(function() {
+            var modal = document.getElementById('governance-modal');
+            if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
             document.body.classList.remove('overflow-hidden');
-            
-            document.getElementById('admin-password').value = '';
-            document.getElementById('auth-error').classList.add('hidden');
-            
-            document.getElementById('reason-step').classList.add('hidden');
-            document.getElementById('custom-reason-container').classList.add('hidden');
+            var pw = document.getElementById('admin-password');
+            if (pw) pw.value = '';
+            var err = document.getElementById('auth-error');
+            if (err) err.classList.add('hidden');
+            var rs = document.getElementById('reason-step');
+            if (rs) rs.classList.add('hidden');
+            var cc = document.getElementById('custom-reason-container');
+            if (cc) cc.classList.add('hidden');
         }, 300);
     };
 
-    const dBtn = document.getElementById('deactivate-staff-btn');
-    if (dBtn) {
-        dBtn.addEventListener('click', function() {
-            if (this.disabled) return;
-            openGovernanceModal('deactivate');
-        });
-    }
+    // Button bindings
+    var dBtn = document.getElementById('deactivate-staff-btn');
+    if (dBtn) dBtn.addEventListener('click', function() { if (!this.disabled) openGovernanceModal('deactivate'); });
 
-    const delBtn = document.getElementById('delete-staff-btn');
-    if (delBtn) {
-        delBtn.addEventListener('click', function() {
-            openGovernanceModal('delete');
-        });
-    }
+    var delBtn = document.getElementById('delete-staff-btn');
+    if (delBtn) delBtn.addEventListener('click', function() { openGovernanceModal('delete'); });
 
-    const rBtn = document.getElementById('reset-password-btn');
-    if (rBtn) {
-        rBtn.addEventListener('click', function() {
-            openGovernanceModal('reset');
-        });
-    }
+    var rBtn = document.getElementById('reset-password-btn');
+    if (rBtn) rBtn.addEventListener('click', function() { openGovernanceModal('reset'); });
 
-    const cBtn = document.getElementById('confirm-governance-btn');
+    var cBtn = document.getElementById('confirm-governance-btn');
     if (cBtn) {
         cBtn.addEventListener('click', async function() {
-            if (this.textContent.includes('DONE') || this.textContent.includes('LOGGED')) { 
+            if (this.textContent.indexOf('DONE') >= 0 || this.textContent.indexOf('LOGGED') >= 0) { 
                 closeGovernanceModal(); 
                 return; 
             }
 
-            const password = document.getElementById('admin-password').value;
-            const checkedReason = document.querySelector('input[name="suspension_reason"]:checked');
-            const reason = checkedReason ? checkedReason.value : null;
+            var password = document.getElementById('admin-password').value;
+            var checkedReason = document.querySelector('input[name="suspension_reason"]:checked');
+            var reason = checkedReason ? checkedReason.value : null;
             
-            let apiAction = '';
+            var apiAction = '';
             if (currentAction === 'deactivate') apiAction = 'suspend';
             else if (currentAction === 'reset') apiAction = 'reset_password';
             else if (currentAction === 'delete') apiAction = 'delete';
@@ -467,45 +427,41 @@ document.addEventListener('DOMContentLoaded', () => {
             this.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> AUTHORIZING...';
 
             try {
-                const response = await window.api.post('/admin/staff-action.php', {
+                var notesEl = document.getElementById('custom-reason-notes');
+                var resp = await window.api.post('/admin/staff-action.php', {
                     action: apiAction,
                     staff_id: staffId,
                     password: password,
                     reason: reason,
-                    notes: document.getElementById('custom-reason-notes').value
+                    notes: notesEl ? notesEl.value : ''
                 });
 
-                if (response.status === 'success' || response.success) {
+                if (resp.status === 'success' || resp.success) {
                     if (currentAction === 'reset') {
-                        document.getElementById('auth-step').style.display = 'none';
-                        document.getElementById('modal-subtitle').style.display = 'none';
-                        document.getElementById('modal-title').textContent = 'Temporary Password Generated';
-                        document.getElementById('modal-body-text').innerHTML = `
-                            <div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center">
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p>
-                            <div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">${response.temp_password || response.data?.temp_password}</div>
-                            <p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p>
-                            </div>
-                        `;
+                        var authStep = document.getElementById('auth-step');
+                        if (authStep) authStep.style.display = 'none';
+                        var subtitle = document.getElementById('modal-subtitle');
+                        if (subtitle) subtitle.style.display = 'none';
+                        setText('modal-title', 'Temporary Password Generated');
+                        var bodyText = document.getElementById('modal-body-text');
+                        if (bodyText) {
+                            var tempPw = resp.temp_password || (resp.data && resp.data.temp_password) || '--------';
+                            bodyText.innerHTML = '<div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p><div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">' + tempPw + '</div><p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p></div>';
+                        }
                         this.disabled = false;
                         this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> DONE';
-                        this.classList.replace(modalConfigs['reset'].btnClass.split(' ')[0], 'bg-emerald-500');
-                        this.classList.add('shadow-emerald-500/20');
+                        this.className = 'flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20';
                     } else {
                         this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ACTION LOGGED';
-                        this.classList.replace(modalConfigs['deactivate'].btnClass.split(' ')[0], 'bg-emerald-500');
-                        this.classList.add('shadow-emerald-500/20');
-                        setTimeout(() => {
+                        this.className = 'flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20';
+                        setTimeout(function() {
                             closeGovernanceModal();
                             loadStaffData();
                         }, 1500);
                     }
                 } else {
-                    const errEl = document.getElementById('auth-error');
-                    errEl.textContent = response.message;
-                    errEl.classList.remove('hidden');
-                    errEl.style.display = 'block';
-                    
+                    var errEl = document.getElementById('auth-error');
+                    if (errEl) { errEl.textContent = resp.message; errEl.classList.remove('hidden'); }
                     this.disabled = false;
                     this.textContent = currentAction === 'reset' ? 'Confirm Reset' : 'Confirm Deactivation';
                 }
@@ -517,5 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Start loading
     loadStaffData();
 });
