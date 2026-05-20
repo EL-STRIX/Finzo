@@ -29,20 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt = $pdo->prepare("
             SELECT action_type, entity_id, entity_type, details, ip_address, created_at
             FROM audit_log
-            WHERE actor_id = ? AND actor_role = 'admin'
+            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator')
             ORDER BY created_at DESC
             LIMIT 10
         ");
-        $stmt->execute([$admin_id]);
+        $stmt->execute([$admin['admin_id']]);
         $recent_activity = $stmt->fetchAll();
 
         // Security overview
         $stmt = $pdo->prepare("
             SELECT COUNT(*) as total_actions
             FROM audit_log
-            WHERE actor_id = ? AND actor_role = 'admin'
+            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator')
         ");
-        $stmt->execute([$admin_id]);
+        $stmt->execute([$admin['admin_id']]);
         $total_actions = (int)$stmt->fetchColumn();
 
         json_response([

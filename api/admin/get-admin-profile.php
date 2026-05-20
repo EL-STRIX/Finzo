@@ -32,10 +32,10 @@ try {
     $stmt = $pdo->prepare("
         SELECT action_type, details, ip_address, created_at
         FROM audit_log
-        WHERE actor_id = ? AND actor_role = 'admin'
+        WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator')
         ORDER BY created_at DESC LIMIT 100
     ");
-    $stmt->execute([$admin_id]);
+    $stmt->execute([$profile['admin_id']]);
     $activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     json_response([
