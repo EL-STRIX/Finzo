@@ -447,6 +447,31 @@
         }
     }
 
+    // Wire up filter controls (search + finzo-dropdown hidden inputs)
+    function initFilterListeners() {
+        const searchInput = document.getElementById('admin-search-input');
+        const statusInput = document.getElementById('admin-status-filter');
+        const roleInput = document.getElementById('admin-role-filter');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterAdminList);
+        }
+        // dropdowns.js dispatches 'change' on the hidden input when an option is selected
+        if (statusInput) {
+            statusInput.addEventListener('change', filterAdminList);
+        }
+        if (roleInput) {
+            roleInput.addEventListener('change', filterAdminList);
+        }
+    }
+
+    // Run after DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFilterListeners);
+    } else {
+        initFilterListeners();
+    }
+
     // Exported Object
     window.AdminProfile = {
         uploadPhoto: async (input) => {

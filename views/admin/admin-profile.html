@@ -549,38 +549,49 @@
                         </div>
                     </div>
                     <!-- Filter Bar -->
-                    <div class="px-6 sm:px-8 py-4 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/20">
-                        <div class="flex flex-col sm:flex-row gap-3">
+                    <div id="admin-filter-bar" class="px-6 sm:px-8 py-4 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/20">
+                        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
                             <!-- Search Box -->
-                            <div class="relative flex-1">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                            <div style="position:relative; flex:1; min-width:200px;">
+                                <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:18px; pointer-events:none;">search</span>
                                 <input type="text" id="admin-search-input" placeholder="Search by name, email, or ID..."
-                                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all shadow-sm"
-                                    oninput="window.AdminProfile.filterAdminList()">
+                                    style="width:100%; padding:10px 14px 10px 40px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; font-size:12px; font-weight:500; color:#334155; outline:none; transition:all 0.2s; box-sizing:border-box;">
                             </div>
                             <!-- Status Filter -->
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">filter_list</span>
-                                <select id="admin-status-filter"
-                                    class="appearance-none pl-9 pr-8 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 cursor-pointer transition-all shadow-sm min-w-[140px]"
-                                    onchange="window.AdminProfile.filterAdminList()">
-                                    <option value="all">All Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="suspended">Suspended</option>
-                                </select>
-                                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
+                            <div class="finzo-dropdown" style="position:relative; width:auto !important; min-width:155px; flex-shrink:0;">
+                                <div class="finzo-dropdown-trigger" style="display:flex !important; align-items:center !important; justify-content:space-between !important; gap:8px !important; padding:9px 14px !important; background:#fff !important; border:1px solid #e2e8f0 !important; border-radius:12px !important; cursor:pointer !important; height:auto !important; min-height:unset !important; font-size:11px !important;">
+                                    <span style="display:flex; align-items:center; gap:6px;">
+                                        <span class="material-symbols-outlined" style="font-size:16px; color:#94a3b8;">filter_list</span>
+                                        <span class="dropdown-label" style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#475569;">All Status</span>
+                                    </span>
+                                    <span class="material-symbols-outlined" style="font-size:16px; color:#94a3b8; transition:transform 0.25s;">expand_more</span>
+                                </div>
+                                <input type="hidden" id="admin-status-filter" value="all">
+                                <div class="finzo-dropdown-menu" style="min-width:155px;">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
+                                    <div class="finzo-dropdown-option" data-value="active">
+                                        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-right:8px;"></span>Active
+                                    </div>
+                                    <div class="finzo-dropdown-option" data-value="suspended">
+                                        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#ef4444; margin-right:8px;"></span>Suspended
+                                    </div>
+                                </div>
                             </div>
                             <!-- Role Filter -->
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">badge</span>
-                                <select id="admin-role-filter"
-                                    class="appearance-none pl-9 pr-8 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 cursor-pointer transition-all shadow-sm min-w-[150px]"
-                                    onchange="window.AdminProfile.filterAdminList()">
-                                    <option value="all">All Roles</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="moderator">Moderator</option>
-                                </select>
-                                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
+                            <div class="finzo-dropdown" style="position:relative; width:auto !important; min-width:165px; flex-shrink:0;">
+                                <div class="finzo-dropdown-trigger" style="display:flex !important; align-items:center !important; justify-content:space-between !important; gap:8px !important; padding:9px 14px !important; background:#fff !important; border:1px solid #e2e8f0 !important; border-radius:12px !important; cursor:pointer !important; height:auto !important; min-height:unset !important; font-size:11px !important;">
+                                    <span style="display:flex; align-items:center; gap:6px;">
+                                        <span class="material-symbols-outlined" style="font-size:16px; color:#94a3b8;">badge</span>
+                                        <span class="dropdown-label" style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#475569;">All Roles</span>
+                                    </span>
+                                    <span class="material-symbols-outlined" style="font-size:16px; color:#94a3b8; transition:transform 0.25s;">expand_more</span>
+                                </div>
+                                <input type="hidden" id="admin-role-filter" value="all">
+                                <div class="finzo-dropdown-menu" style="min-width:165px;">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Roles</div>
+                                    <div class="finzo-dropdown-option" data-value="admin">Admin</div>
+                                    <div class="finzo-dropdown-option" data-value="moderator">Moderator</div>
+                                </div>
                             </div>
                         </div>
                     </div>
