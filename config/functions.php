@@ -128,21 +128,16 @@ function generate_account_number($pdo) {
 function generate_staff_id($pdo) {
     $prefix = STAFF_ID_PREFIX;
 
-    // Check both staff AND admin_users — both share the STF prefix
+    // Only check the staff table — admin IDs are independent
     $stmt = $pdo->query("
-        SELECT MAX(num) as max_id FROM (
-            SELECT CAST(SUBSTRING(staff_id, 4) AS UNSIGNED) as num
-            FROM staff WHERE staff_id LIKE 'STF%'
-            UNION ALL
-            SELECT CAST(SUBSTRING(admin_id, 4) AS UNSIGNED) as num
-            FROM admin_users WHERE admin_id LIKE 'STF%'
-        ) combined
+        SELECT MAX(CAST(SUBSTRING(staff_id, 4) AS UNSIGNED)) as max_id
+        FROM staff WHERE staff_id LIKE 'STF%'
     ");
     $max_id = $stmt->fetchColumn() ?: 0;
     $nextNum = $max_id + 1;
     $staffId = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
 
-    // Ensure uniqueness in staff table (defensive check)
+    // Ensure uniqueness (defensive check)
     $check = $pdo->prepare("SELECT COUNT(*) FROM staff WHERE staff_id = ?");
     $check->execute([$staffId]);
     while ($check->fetchColumn() > 0) {
@@ -474,8 +469,8 @@ function check_admin_permission($pdo, $admin_id, $action) {
         'add_branch',
         'manage_admins',
         'suspend_staff',
-        'delete_staff',
-        'add_staff'
+        'delete_staff'
+        // 'add_staff' removed — admin role is allowed to create staff members
     ];
     
     if ($role === 'admin' && in_array($action, $admin_blocked)) {

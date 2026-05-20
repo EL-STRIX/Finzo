@@ -21,6 +21,8 @@ try {
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
                s.designation, s.department, s.status,
+               s.gender, s.date_of_birth, s.emergency_contact_name, s.emergency_contact_phone,
+               s.date_of_joining, s.created_by,
                s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
                b.name as branch_name, b.branch_code, b.state as branch_state
         FROM staff s
@@ -87,13 +89,33 @@ try {
     $stmt->execute([$staff_id]);
     $transactions = $stmt->fetchAll();
 
+    // Staff documents
+    $stmt = $pdo->prepare("
+        SELECT id_type, id_number, front_image, back_image
+        FROM staff_documents
+        WHERE staff_id = ?
+    ");
+    $stmt->execute([$staff_id]);
+    $documents = $stmt->fetchAll();
+
+    // Staff address
+    $stmt = $pdo->prepare("
+        SELECT street, city, state, pincode, country
+        FROM staff_address
+        WHERE staff_id = ?
+    ");
+    $stmt->execute([$staff_id]);
+    $address = $stmt->fetch();
+
     json_response([
         'success'           => true,
         'staff'             => $staff,
         'performance'       => $performance,
         'today_performance' => $today_performance,
         'total_shifts'      => $total_shifts,
-        'transactions'      => $transactions
+        'transactions'      => $transactions,
+        'documents'         => $documents,
+        'address'           => $address
     ]);
 
 } catch (PDOException $e) {

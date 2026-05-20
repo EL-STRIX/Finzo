@@ -12,15 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    // Check both staff and admin_users — both share the STF prefix
+    // Only check the staff table — admin IDs are independent
     $stmt = $pdo->query("
-        SELECT MAX(num) as max_id FROM (
-            SELECT CAST(SUBSTRING(staff_id, 4) AS UNSIGNED) as num
-            FROM staff WHERE staff_id LIKE 'STF%'
-            UNION ALL
-            SELECT CAST(SUBSTRING(admin_id, 4) AS UNSIGNED) as num
-            FROM admin_users WHERE admin_id LIKE 'STF%'
-        ) combined
+        SELECT MAX(CAST(SUBSTRING(staff_id, 4) AS UNSIGNED)) as max_id
+        FROM staff WHERE staff_id LIKE 'STF%'
     ");
     $max_id = $stmt->fetchColumn() ?: 0;
     $next_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
