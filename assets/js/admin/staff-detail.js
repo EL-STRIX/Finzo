@@ -213,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('sys-joining-date', fmtDate(staff.date_of_joining));
             setText('sys-created-by', staff.created_by_name || staff.created_by || 'System');
             setText('sys-staff-id', staff.staff_id);
-            setText('sys-total-shifts', String(totalShifts));
 
             // ─── DOCUMENTS ──────────────────────────
             var doc = (documents && documents.length > 0) ? documents[0] : null;
