@@ -1870,7 +1870,7 @@ html[data-theme="light"] #users-table tr {
 }
 
 /* Avatar */
-.admin-avatar {
+.admin-avatar, .manager-avatar {
     width: 38px;
     height: 38px;
     border-radius: 50%;
