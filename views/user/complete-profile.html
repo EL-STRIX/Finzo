@@ -271,13 +271,16 @@
 </div>
 
 <script>
-buildSidebar('complete-profile');
-buildNavbar('Account Setup', 'Complete Profile');
+(async function initPage() {
+  await fetchUserSession();
+  buildSidebar('complete-profile');
+  buildNavbar('Account Setup', 'Complete Profile');
 
-// Redirect if already under review or active
-const s = UserState.status;
-if (s === 'active') window.location.href = 'dashboard.html';
-if (s === 'under_review') window.location.href = 'account-pending.html';
+  // Redirect if already under review or active
+  const s = UserState.status;
+  if (s === 'active') window.location.href = 'dashboard.html';
+  if (s === 'under_review') window.location.href = 'account-pending.html';
+})();
 
 let currentStep = 1;
 const totalSteps = 4;
@@ -390,7 +393,7 @@ function selectAccountType(type) {
   }
 }
 
-function submitProfile() {
+async function submitProfile() {
   const deposit = parseFloat(document.getElementById('initial-deposit').value);
   const pin = document.getElementById('txn-pin').value;
   const pinConfirm = document.getElementById('txn-pin-confirm').value;
@@ -424,8 +427,18 @@ function submitProfile() {
   const backFile = document.getElementById('back-input').files[0];
   if (frontFile) formData.append('id_front', frontFile);
   if (backFile) formData.append('id_back', backFile);
+  
+  let csrfToken = '';
+  try {
+    const tokenRes = await fetch('../../api/auth/get-csrf-token.php');
+    const tokenData = await tokenRes.json();
+    csrfToken = tokenData.csrf_token || '';
+  } catch (e) {
+    console.warn('Failed to fetch CSRF token', e);
+  }
+  formData.append('csrf_token', csrfToken);
 
-  fetch('/api/user/complete-profile.php', {
+  fetch('../../api/user/complete-profile.php', {
     method: 'POST',
     credentials: 'same-origin',
     body: formData
