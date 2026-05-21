@@ -181,6 +181,50 @@
             });
         }
 
+        // Form Submit Handler
+        const addBranchForm = document.getElementById('addBranchForm');
+        if (addBranchForm) {
+            addBranchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Form is validated by core API script before this fires if invalid
+                const submitBtn = document.getElementById('submit-branch-btn');
+                window.api.setButtonLoading(submitBtn, true);
+                
+                const formData = new FormData(addBranchForm);
+                
+                try {
+                    const endpoint = isEditMode ? '/admin/edit-branch.php' : '/admin/add-branch.php';
+                    if (isEditMode) formData.append('branch_id', currentEditId);
+
+                    const response = await window.api.upload(endpoint, formData);
+                    
+                    if (response.success) {
+                        window.showToast(response.message || 'Branch saved successfully', 'success');
+                        document.getElementById('addBranchModal').classList.add('hidden');
+                        document.getElementById('addBranchModal').classList.remove('flex');
+                        addBranchForm.reset();
+                        // Also clear the file preview
+                        const fileInput = document.getElementById('branch-file-input');
+                        if (fileInput) fileInput.value = '';
+                        const trigger = document.getElementById('upload-trigger');
+                        const preview = document.getElementById('file-preview');
+                        if (trigger) trigger.classList.remove('hidden');
+                        if (preview) preview.classList.add('hidden');
+
+                        loadBranches();
+                    } else {
+                        window.showToast(response.message || 'Failed to save branch', 'error');
+                        if (response.errors) window.api.showFieldErrors(response.errors);
+                    }
+                } catch (err) {
+                    console.error('Submit error:', err);
+                } finally {
+                    window.api.setButtonLoading(submitBtn, false, isEditMode ? 'Update Branch' : 'Create Branch');
+                }
+            });
+        }
+
         // File Upload Handlers (Add Branch)
         const branchFileInput = document.getElementById('branch-file-input');
         const uploadTrigger = document.getElementById('upload-trigger');
