@@ -18,7 +18,7 @@ if ($_SESSION['admin_role'] !== 'super_admin') {
 try {
     $stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(admin_id, 4) AS UNSIGNED)) as max_id FROM admin_users");
     $max_id = $stmt->fetchColumn() ?: 0;
-    $next_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
+    $next_id = 'ADM' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
 
     json_response([
         'success' => true,
