@@ -40,37 +40,39 @@ use PHPMailer\PHPMailer\Exception;
  * @param string $html_body HTML email body content
  * @return array ['success' => bool, 'message' => string]
  */
-function send_email($to_email, $to_name, $subject, $html_body) {
-    $mail = new PHPMailer(true);
+if (!function_exists('send_email')) {
+    function send_email($to_email, $to_name, $subject, $html_body) {
+        $mail = new PHPMailer(true);
 
-    try {
-        // SMTP Configuration
-        $mail->isSMTP();
-        $mail->Host       = SMTP_HOST;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = SMTP_USER;
-        $mail->Password   = SMTP_PASS;
-        $mail->SMTPSecure = SMTP_ENCRYPTION;
-        $mail->Port       = SMTP_PORT;
+        try {
+            // SMTP Configuration
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->SMTPSecure = SMTP_ENCRYPTION;
+            $mail->Port       = SMTP_PORT;
 
-        // Sender and recipient
-        $mail->setFrom(SMTP_FROM, SMTP_FROM_NAME);
-        $mail->addAddress($to_email, $to_name);
+            // Sender and recipient
+            $mail->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+            $mail->addAddress($to_email, $to_name);
 
-        // Email content
-        $mail->isHTML(true);
-        $mail->CharSet = 'UTF-8';
-        $mail->Subject = $subject;
-        $mail->Body    = $html_body;
-        $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $html_body));
+            // Email content
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = $subject;
+            $mail->Body    = $html_body;
+            $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $html_body));
 
-        $mail->send();
+            $mail->send();
 
-        return ['success' => true, 'message' => 'Email sent successfully'];
+            return ['success' => true, 'message' => 'Email sent successfully'];
 
-    } catch (Exception $e) {
-        error_log("Finzo Mailer Error: " . $mail->ErrorInfo);
-        return ['success' => false, 'message' => 'Email could not be sent. Error: ' . $mail->ErrorInfo];
+        } catch (Exception $e) {
+            error_log("Finzo Mailer Error: " . $mail->ErrorInfo);
+            return ['success' => false, 'message' => 'Email could not be sent. Error: ' . $mail->ErrorInfo];
+        }
     }
 }
 
