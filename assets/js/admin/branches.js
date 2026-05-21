@@ -50,7 +50,8 @@
             <tr data-id="${b.id}">
                 <td class="font-bold opacity-40">${countStr}</td>
                 <td><div class="font-bold branch-name-text">${b.name}</div></td>
-                <td class="text-sm font-medium branch-location-text">${b.branch_code || 'N/A'} — ${b.state || 'Local'}</td>
+                <td class="text-sm font-medium font-mono opacity-80">${b.branch_code || 'N/A'}</td>
+                <td class="text-sm font-medium">${b.state || 'Local'}</td>
                 <td>
                     <div class="flex items-center gap-2 manager-info-text">
                         <div class="manager-avatar sm w-6 h-6 text-[9px] bg-blue-100 text-blue-700 flex items-center justify-center rounded-full uppercase overflow-hidden" style="flex-shrink:0;">
