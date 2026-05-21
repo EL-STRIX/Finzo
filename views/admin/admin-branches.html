@@ -242,18 +242,18 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Name *</label>
-                <input type="text" id="add-branch-name" placeholder="e.g. West Branch" required
+                <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. West Branch" required
                   class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Code *</label>
-                <input type="text" id="add-branch-code" placeholder="FNZ-XX-000" required readonly
+                <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly
                   class="w-full px-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary/60">
                 <p class="text-[9px] text-slate-400 mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">City *</label>
-                <input type="text" placeholder="e.g. Kolkata" required
+                <input type="text" name="city" placeholder="e.g. Kolkata" required
                   class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
               </div>
 
@@ -309,7 +309,7 @@
               </div>
               <div class="col-span-1 sm:col-span-2">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Full Address *</label>
-                <textarea rows="2" placeholder="Building no., street name, locality, city, PIN code" required
+                <textarea name="address" rows="2" placeholder="Building no., street name, locality, city, PIN code" required
                   class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium resize-none"></textarea>
               </div>
             </div>
@@ -331,7 +331,7 @@
                    <!-- Manager options injected here -->
                    <div class="p-4 text-center text-xs opacity-50">Loading staff...</div>
                 </div>
-                <input type="hidden" id="manager-id" value="">
+                <input type="hidden" id="manager-id" name="manager_id" value="">
               </div>
 
               <div class="info-banner-premium mt-4 !py-2 !gap-3 !mb-0" style="background:rgba(245,158,11,0.05); border-color:#f59e0b;">
@@ -348,7 +348,7 @@
               <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Admin Password *</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" style="font-size:18px;">admin_panel_settings</span>
-                <input type="password" id="admin-confirm-pw" placeholder="Enter your admin password" required
+                <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your admin password" required
                   class="w-full pl-12 pr-12 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
                 <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
                   <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
@@ -364,7 +364,7 @@
           <!-- SECTION 4 -->
           <div>
              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Description / Notes</label>
-             <textarea id="branch-desc" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
+             <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
                class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium resize-none"></textarea>
              <div class="char-counter" id="branch-desc-counter">0 / 500</div>
           </div>
@@ -374,7 +374,7 @@
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Branch Registration Certificate</label>
             <p class="text-[10px] opacity-40 mb-3 font-bold uppercase tracking-tighter">Upload the official documents</p>
             
-            <input type="file" id="branch-file-input" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
+            <input type="file" id="branch-file-input" name="certificate" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
             <div class="branch-upload-box" id="upload-trigger">
               <span class="material-symbols-outlined text-4xl text-primary/20" id="upload-icon">upload_file</span>
               <div>
@@ -601,6 +601,6 @@
   <script src="../../assets/js/core/api.js"></script>
   <script src="../../assets/js/ui/dropdowns.js"></script>
   <script src="../../assets/js/portals/admin.js"></script>
-  <script src="../../assets/js/admin/branches.js?v=3"></script>
+  <script src="../../assets/js/admin/branches.js?v=4"></script>
 </body>
 </html>
