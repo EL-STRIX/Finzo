@@ -392,12 +392,42 @@
                     <span class="material-symbols-outlined text-amber-500">person</span>
                     <h3 class="font-headline font-bold text-lg">Personal Information</h3>
                 </div>
-                <div class="section-body">
-                    <div class="info-grid">
-                        <div class="info-item">
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
                             <div class="info-label">Full Name</div>
-                            <div class="info-value" id="info-name">—</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-name">—</div>
                         </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-dob">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-gender">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden md:col-span-2 lg:col-span-1">
+                            <div class="info-label">Personal Email</div>
+                            <div class="info-value text-slate-900 dark:text-white truncate" id="info-email">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-amber-100 dark:border-amber-500/20 relative overflow-hidden group">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="info-label">Phone Number</div>
+                                    <div class="info-value text-slate-900 dark:text-white" id="info-phone">—</div>
+                                </div>
+                                <button onclick="openEditModal('phone')" class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-500/40 transition-colors">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                            <div class="info-label">Staff ID</div>
+                            <div class="info-value font-mono text-amber-600 dark:text-amber-400" id="info-staff-id">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         <div class="info-item">
                             <div class="info-label">Date of Birth</div>
                             <div class="info-value" id="info-dob">—</div>
@@ -432,16 +462,39 @@
                 <div class="section-header">
                     <span class="material-symbols-outlined text-red-500">emergency</span>
                     <h3 class="font-headline font-bold text-lg">Emergency Contacts</h3>
-                    <button onclick="openEditModal('emergency')" class="ml-auto px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all">
-                        <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">edit</span> Edit
+                    <button onclick="openEditModal('emergency')" class="ml-auto px-4 py-2 rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 text-[10px] font-black uppercase tracking-widest hover:bg-red-100 dark:hover:bg-red-500/20 transition-all flex items-center gap-1.5 border border-red-100 dark:border-red-500/20">
+                        <span class="material-symbols-outlined text-[14px]">edit</span> Edit
                     </button>
                 </div>
-                <div class="section-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Emergency Contact Name</div>
-                            <div class="info-value" id="info-emergency-name">—</div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-red-50/50 dark:bg-red-500/5 rounded-2xl p-6 border border-red-100 dark:border-red-500/10 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-bl-full -z-0"></div>
+                            <div class="relative z-10 flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">person</span>
+                                </div>
+                                <div>
+                                    <div class="info-label !mb-0">Contact Name</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg" id="info-emergency-name">—</div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="bg-red-50/50 dark:bg-red-500/5 rounded-2xl p-6 border border-red-100 dark:border-red-500/10 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-bl-full -z-0"></div>
+                            <div class="relative z-10 flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">call</span>
+                                </div>
+                                <div>
+                                    <div class="info-label !mb-0">Contact Phone</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg font-mono tracking-tight" id="info-emergency-phone">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         <div class="info-item">
                             <div class="info-label">Emergency Contact Phone</div>
                             <div class="info-value" id="info-emergency-phone">—</div>
@@ -456,12 +509,31 @@
                     <span class="material-symbols-outlined text-blue-500">location_on</span>
                     <h3 class="font-headline font-bold text-lg">Address</h3>
                 </div>
-                <div class="section-body">
-                    <div class="info-grid">
-                        <div class="info-item">
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="col-span-2 md:col-span-4 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
                             <div class="info-label">Street</div>
-                            <div class="info-value" id="info-street">—</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-street">—</div>
                         </div>
+                        <div class="col-span-2 md:col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
+                            <div class="info-label">City</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-city">—</div>
+                        </div>
+                        <div class="col-span-2 md:col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
+                            <div class="info-label">State</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-state">—</div>
+                        </div>
+                        <div class="col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
+                            <div class="info-label">Pincode</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-pincode">—</div>
+                        </div>
+                        <div class="col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
+                            <div class="info-label">Country</div>
+                            <div class="info-value text-slate-900 dark:text-white" id="info-country">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         <div class="info-item">
                             <div class="info-label">City</div>
                             <div class="info-value" id="info-city">—</div>
@@ -488,30 +560,77 @@
                     <span class="material-symbols-outlined text-purple-500">verified_user</span>
                     <h3 class="font-headline font-bold text-lg">ID Documents</h3>
                 </div>
-                <div class="section-body" id="documents-container">
+                <div class="section-body p-6 sm:p-8 bg-slate-50/50 dark:bg-white/2" id="documents-container">
                     <div class="text-center py-8 text-slate-400 font-bold text-sm">Loading documents...</div>
                 </div>
             </div>
+            </div>
 
             <!-- CHANGE PASSWORD -->
-            <div class="section-card animate-section">
-                <div class="section-header">
-                    <span class="material-symbols-outlined text-emerald-500">lock</span>
-                    <h3 class="font-headline font-bold text-lg">Change Password</h3>
+            <div class="section-card animate-section overflow-hidden flex flex-col md:flex-row">
+                <!-- Left Sidebar info -->
+                <div class="w-full md:w-1/3 bg-slate-50 dark:bg-white/5 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+                    <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 rounded-xl flex items-center justify-center mb-4 shadow-sm border border-amber-200 dark:border-amber-500/30 relative z-10">
+                        <span class="material-symbols-outlined text-[24px]">password</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 dark:text-white relative z-10 font-headline">Password Settings</h3>
+                    <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium relative z-10">
+                        Ensure your account remains secure by using a strong, unique password. We recommend at least 8 characters.
+                    </p>
                 </div>
-                <div class="section-body">
-                    <form id="password-form" class="max-w-lg space-y-5">
+                <div class="w-full md:w-2/3 p-6 sm:p-8 bg-white dark:bg-[#161b22]">
+                    <form id="password-form" class="space-y-6">
                         <div>
                             <label class="info-label block mb-2">Current Password *</label>
                             <div class="relative">
                                 <input type="password" id="pw-current" required
-                                    class="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
                                     placeholder="Enter current password">
-                                <button type="button" onclick="togglePwVisibility('pw-current')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <button type="button" onclick="togglePwVisibility('pw-current')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
                                 </button>
                             </div>
                         </div>
+                        <div>
+                            <label class="info-label block mb-2">New Password *</label>
+                            <div class="relative">
+                                <input type="password" id="pw-new" required minlength="8"
+                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
+                                    placeholder="Min 8 characters" oninput="checkPasswordStrength()">
+                                <button type="button" onclick="togglePwVisibility('pw-new')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </button>
+                            </div>
+                            <div class="mt-2 pl-1">
+                                <div class="password-strength-bar bg-slate-100 dark:bg-white/10 rounded-full h-1">
+                                    <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
+                                </div>
+                                <div class="text-[10px] font-bold mt-1 text-slate-500" id="pw-strength-text"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="info-label block mb-2">Confirm New Password *</label>
+                            <div class="relative">
+                                <input type="password" id="pw-confirm" required
+                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
+                                    placeholder="Repeat new password">
+                                <button type="button" onclick="togglePwVisibility('pw-confirm')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pw-error" class="text-red-500 text-xs font-bold hidden bg-red-50 dark:bg-red-500/10 px-4 py-3 rounded-lg border border-red-100 dark:border-red-500/20"></div>
+                        <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-white/5 mt-4">
+                            <button type="submit" id="pw-submit-btn"
+                                class="px-8 py-3.5 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:bg-amber-600 active:scale-95 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined" style="font-size:18px;">lock_reset</span>
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
                         <div>
                             <label class="info-label block mb-2">New Password *</label>
                             <div class="relative">
@@ -556,12 +675,37 @@
                     <span class="material-symbols-outlined text-slate-400">history</span>
                     <h3 class="font-headline font-bold text-lg">Session Information</h3>
                 </div>
-                <div class="section-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Last Login</div>
-                            <div class="info-value text-sm" id="info-last-login">—</div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-blue-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-blue-500 opacity-80 mb-3 relative z-10 text-[28px]">login</span>
+                            <div class="info-label relative z-10">Last Login</div>
+                            <div class="info-value text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-last-login">—</div>
                         </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-purple-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-purple-500 opacity-80 mb-3 relative z-10 text-[28px]">my_location</span>
+                            <div class="info-label relative z-10">Last Login IP</div>
+                            <div class="info-value font-mono text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-last-ip">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-emerald-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]">event_available</span>
+                            <div class="info-label relative z-10">Account Created</div>
+                            <div class="info-value text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-created-at">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group flex flex-col justify-between">
+                            <div>
+                                <div class="absolute right-0 top-0 w-20 h-20 bg-slate-500/5 rounded-bl-full -z-0"></div>
+                                <span class="material-symbols-outlined text-slate-400 opacity-80 mb-3 relative z-10 text-[28px]">admin_panel_settings</span>
+                                <div class="info-label relative z-10">Account Status</div>
+                            </div>
+                            <div class="relative z-10 mt-1" id="info-status">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         <div class="info-item">
                             <div class="info-label">Last Login IP</div>
                             <div class="info-value font-mono text-sm" id="info-last-ip">—</div>
