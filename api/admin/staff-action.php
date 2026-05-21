@@ -73,7 +73,7 @@ try {
             json_response(['success' => false, 'message' => 'Staff is not suspended'], 409);
         }
 
-        $stmt = $pdo->prepare("UPDATE staff SET status = 'active', updated_at = NOW() WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE staff SET status = 'active', suspension_reason = NULL, suspended_by = NULL, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$staff_id]);
 
         write_audit_log($pdo, 'staff_reinstated', $staff['staff_id'], 'staff', $admin_id, 'admin',
