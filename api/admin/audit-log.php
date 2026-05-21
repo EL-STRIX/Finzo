@@ -6,7 +6,6 @@
  */
 
 require_once dirname(__DIR__, 2) . '/middleware/auth-admin.php';
-
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
@@ -83,6 +82,18 @@ try {
     $stmt = $pdo->query("SELECT DISTINCT action_type FROM audit_log ORDER BY action_type");
     $action_types = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
+    // Compute exact counts based on current filters
+    $stmt_stats = $pdo->prepare("
+        SELECT 
+            SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' THEN 1 ELSE 0 END) as admin_count,
+            SUM(CASE WHEN al.actor_role = 'Staff' THEN 1 ELSE 0 END) as staff_count,
+            SUM(CASE WHEN al.actor_role = 'System' THEN 1 ELSE 0 END) as system_count
+        FROM audit_log al
+        WHERE {$where_sql}
+    ");
+    $stmt_stats->execute($params);
+    $stats = $stmt_stats->fetch();
+
     json_response([
         'success'      => true,
         'entries'      => $entries,
@@ -90,7 +101,12 @@ try {
         'pages'        => $pages,
         'current_page' => $page,
         'per_page'     => $per_page,
-        'action_types' => $action_types
+        'action_types' => $action_types,
+        'stats'        => [
+            'admin'  => (int)$stats['admin_count'],
+            'staff'  => (int)$stats['staff_count'],
+            'system' => (int)$stats['system_count']
+        ]
     ]);
 
 } catch (PDOException $e) {
