@@ -148,7 +148,44 @@
             });
         }
 
-        // Action Buttons Delegation
+        const confirmBtn = document.getElementById('confirm-btn-action');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async () => {
+                const name = document.getElementById('confirm-branch-name-input').value;
+                const pw = document.getElementById('confirm-admin-pw').value;
+                const fileInput = document.getElementById('delete-file-input');
+                
+                if (!name || !pw || !fileInput.files.length) return;
+                
+                const formData = new FormData();
+                formData.append('branch_id', window.branchToDelete);
+                formData.append('confirm_name', name);
+                formData.append('admin_password', pw);
+                formData.append('closure_document', fileInput.files[0]);
+                
+                confirmBtn.innerHTML = '<span class="material-symbols-outlined spin">refresh</span> Deleting...';
+                confirmBtn.setAttribute('disabled', 'true');
+                
+                try {
+                    const res = await window.api.upload('/admin/delete-branch.php', formData);
+                    if (res.success) {
+                        window.showToast('Branch deleted successfully');
+                        document.getElementById('confirmModal').classList.add('hidden');
+                        document.getElementById('confirmModal').classList.remove('flex');
+                        loadBranches();
+                    } else {
+                        window.showToast(res.message || 'Failed to delete branch', 'error');
+                    }
+                } catch (e) {
+                    window.showToast('Server error', 'error');
+                } finally {
+                    confirmBtn.innerHTML = 'Confirm Action';
+                    checkDeleteForm();
+                }
+            });
+        }
+
+        // Action Menu Toggles Delegation
         document.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.action-view');
             const editBtn = e.target.closest('.action-edit');
@@ -428,6 +465,19 @@
             return;
         }
         document.getElementById('target-branch-name').textContent = `${name} (${code})`;
+        document.getElementById('confirm-input-area').classList.remove('hidden');
+        document.getElementById('confirm-branch-name-input').value = '';
+        document.getElementById('confirm-admin-pw').value = '';
+        
+        const fileInput = document.getElementById('delete-file-input');
+        if (fileInput) fileInput.value = '';
+        document.getElementById('delete-upload-trigger')?.classList.remove('hidden');
+        document.getElementById('delete-file-preview')?.classList.add('hidden');
+        document.getElementById('delete-file-preview')?.classList.remove('flex');
+        
+        checkDeleteForm();
+        window.branchToDelete = id;
+
         document.getElementById('confirmModal').classList.remove('hidden');
         document.getElementById('confirmModal').classList.add('flex');
     }
