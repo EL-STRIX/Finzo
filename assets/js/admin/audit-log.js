@@ -164,19 +164,10 @@
                 (data.total || 0).toLocaleString();
         }
         
-        // Count from entries if not in top level
-        if (data.entries) {
-            let aCount = 0, sCount = 0, sysCount = 0;
-            data.entries.forEach(e => {
-                const r = (e.actor_role || '').toLowerCase();
-                if (r === 'admin') aCount++;
-                else if (r === 'staff') sCount++;
-                else if (r === 'system') sysCount++;
-            });
-            
-            if (elAdmin) elAdmin.textContent = window.utils && window.utils.formatNumber ? window.utils.formatNumber(aCount) : aCount.toLocaleString();
-            if (elStaff) elStaff.textContent = window.utils && window.utils.formatNumber ? window.utils.formatNumber(sCount) : sCount.toLocaleString();
-            if (elSystem) elSystem.textContent = window.utils && window.utils.formatNumber ? window.utils.formatNumber(sysCount) : sysCount.toLocaleString();
+        if (data.stats) {
+            if (elAdmin) elAdmin.textContent = String(data.stats.admin || 0);
+            if (elStaff) elStaff.textContent = String(data.stats.staff || 0);
+            if (elSystem) elSystem.textContent = String(data.stats.system || 0);
         }
     }
 
