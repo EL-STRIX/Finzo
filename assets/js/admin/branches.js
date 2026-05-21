@@ -335,9 +335,9 @@
         }
 
         document.getElementById('view-branch-code').textContent = branch.branch_code || 'N/A';
-        document.getElementById('view-branch-city').textContent = branch.state || 'N/A'; // DB does not store city
+        document.getElementById('view-branch-city').textContent = branch.city || 'N/A';
         document.getElementById('view-branch-state').textContent = branch.state || 'N/A';
-        document.getElementById('view-branch-address').textContent = 'N/A'; // DB does not store address
+        document.getElementById('view-branch-address').textContent = branch.address || 'N/A';
 
         const avatarEl = document.getElementById('view-manager-avatar');
         const nameEl = document.getElementById('view-manager-name');
@@ -345,12 +345,21 @@
         const linkEl = document.getElementById('view-manager-link');
 
         if (branch.manager_name) {
-            avatarEl.textContent = branch.manager_initials || '??';
-            avatarEl.className = 'admin-avatar premium-gradient-primary';
+            if (branch.manager_avatar) {
+                const src = branch.manager_avatar.startsWith('http') ? branch.manager_avatar : '../../' + branch.manager_avatar;
+                avatarEl.innerHTML = `<img src="${src}?v=${new Date().getTime()}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                avatarEl.className = 'admin-avatar';
+            } else {
+                avatarEl.innerHTML = '';
+                avatarEl.textContent = branch.manager_initials || '??';
+                avatarEl.className = 'admin-avatar premium-gradient-primary';
+            }
             nameEl.textContent = branch.manager_name;
             emailEl.textContent = branch.manager_email || 'N/A';
             linkEl.classList.remove('hidden');
+            linkEl.href = 'admin-staff.html?search=' + encodeURIComponent(branch.manager_staff_id);
         } else {
+            avatarEl.innerHTML = '';
             avatarEl.textContent = '??';
             avatarEl.className = 'admin-avatar bg-slate-200 text-slate-500';
             nameEl.textContent = 'Unassigned';
@@ -381,6 +390,14 @@
         window.lastViewedBranchId = branch.id;
         window.lastViewedBranchName = branch.name;
 
+        document.getElementById('view-btn-edit').onclick = () => {
+            document.getElementById('viewBranchModal').classList.add('hidden');
+            document.getElementById('viewBranchModal').classList.remove('flex');
+            showEditModal(branch.id);
+        };
+        
+        document.getElementById('view-btn-staff').onclick = () => window.showBranchStaff(branch.name);
+
         document.getElementById('viewBranchModal').classList.remove('hidden');
         document.getElementById('viewBranchModal').classList.add('flex');
     }
@@ -410,6 +427,10 @@
         document.getElementById('confirmModal').classList.remove('hidden');
         document.getElementById('confirmModal').classList.add('flex');
     }
+
+    window.showBranchStaff = function(branchName) {
+        window.location.href = 'admin-staff.html?search=' + encodeURIComponent(branchName);
+    };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
