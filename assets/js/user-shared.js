@@ -444,22 +444,8 @@ function buildNavbar(eyebrow, title) {
               <button onclick="markAllRead()" style="font-size:11px;font-weight:700;color:var(--primary);background:none;border:none;cursor:pointer">Mark all read</button>
             </div>
             <div id="notif-list">
-              <div class="notif-item unread">
-                <div class="notif-item-icon" style="background:rgba(8,145,178,0.1)"><span class="material-symbols-outlined" style="font-size:18px;color:#0891b2">info</span></div>
-                <div>
-                  <div class="notif-item-title">Welcome to Finzo!</div>
-                  <div class="notif-item-text">Your account has been registered. Complete your profile to activate.</div>
-                  <div class="notif-item-time">Today</div>
-                </div>
-              </div>
-              <div class="notif-item unread">
-                <div class="notif-item-icon" style="background:rgba(245,158,11,0.1)"><span class="material-symbols-outlined" style="font-size:18px;color:#f59e0b">pending</span></div>
-                <div>
-                  <div class="notif-item-title">Profile Incomplete</div>
-                  <div class="notif-item-text">Please complete your identity verification to unlock banking.</div>
-                  <div class="notif-item-time">Today</div>
-                </div>
-              </div>
+              <!-- Dynamically loaded -->
+              <div style="padding:20px;text-align:center;font-size:12px;color:var(--text-placeholder)">Loading...</div>
             </div>
             <div style="padding:12px;text-align:center;border-top:1px solid var(--border)">
               <a href="notifications.html" style="font-size:12px;font-weight:700;color:var(--primary)">View all notifications →</a>
@@ -483,7 +469,41 @@ function buildNavbar(eyebrow, title) {
 let notifOpen = false;
 function toggleNotifDropdown() {
   const el = document.getElementById('notif-dropdown');
-  if (el) el.classList.toggle('hidden');
+  if (el) {
+    el.classList.toggle('hidden');
+    if (!el.classList.contains('hidden')) {
+      loadNavbarNotifications();
+    }
+  }
+}
+
+async function loadNavbarNotifications() {
+  const list = document.getElementById('notif-list');
+  list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)">autorenew</span></div>';
+  try {
+    const res = await fetch('../../api/user/notifications.php?per_page=5', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.success && data.notifications) {
+      if (data.notifications.length === 0) {
+        list.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--text-placeholder)">No recent notifications</div>';
+      } else {
+        list.innerHTML = data.notifications.map(n => `
+          <div class="notif-item ${!n.is_read ? 'unread' : ''}">
+            <div class="notif-item-icon" style="background:${n.icon_bg || 'rgba(8,145,178,0.1)'}">
+              <span class="material-symbols-outlined" style="font-size:18px;color:${n.icon_color || '#0891b2'}">${n.icon || 'notifications'}</span>
+            </div>
+            <div>
+              <div class="notif-item-title">${n.title}</div>
+              <div class="notif-item-text" style="font-size:11px;color:var(--text-secondary);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${n.message}</div>
+              <div class="notif-item-time" style="font-size:10px;color:var(--text-placeholder);margin-top:4px">${n.created_at ? new Date(n.created_at).toLocaleDateString() : 'Recently'}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  } catch (e) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--danger)">Failed to load</div>';
+  }
 }
 
 async function markAllRead() {
@@ -496,9 +516,14 @@ async function markAllRead() {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       credentials: 'same-origin',
-      body: 'action=mark_all_read&csrf_token=' + encodeURIComponent(getCSRFToken ? getCSRFToken() : '')
+      body: 'action=mark_all_read'
     });
-  } catch (e) { console.warn('Failed to mark all read:', e); }
+    // refresh the dropdown if open
+    loadNavbarNotifications();
+    // also refresh the badge
+    const badge = document.querySelector('.navbar-right .nav-icon-btn span[style*="absolute"]');
+    if (badge) badge.remove();
+  } catch (e) { console.error('Failed to mark read', e); }
 }
 
 // Close dropdowns on outside click
