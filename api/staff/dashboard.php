@@ -79,7 +79,7 @@ try {
     // STAFF INFO
     // =====================================================
     $stmt = $pdo->prepare("
-        SELECT s.staff_id, s.full_name, s.role, b.name as branch_name
+        SELECT s.staff_id, s.full_name, s.designation, s.profile_photo, b.name as branch_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
         WHERE s.id = ?
@@ -93,10 +93,11 @@ try {
     json_response([
         'success' => true,
         'staff' => [
-            'staff_id'    => $staff_info['staff_id'] ?? $_SESSION['staff_display_id'],
-            'name'        => $staff_info['full_name'] ?? $_SESSION['staff_name'],
-            'role'        => $staff_info['role'] ?? 'teller',
-            'branch_name' => $staff_info['branch_name'] ?? 'Unassigned'
+            'staff_id'      => $staff_info['staff_id'] ?? $_SESSION['staff_display_id'],
+            'name'          => $staff_info['full_name'] ?? $_SESSION['staff_name'],
+            'role'          => $staff_info['designation'] ?? 'Teller',
+            'profile_photo' => $staff_info['profile_photo'] ?? null,
+            'branch_name'   => $staff_info['branch_name'] ?? 'Unassigned'
         ],
         'shift_stats' => [
             'deposits_count'     => (int)$deposits['count'],
@@ -107,7 +108,8 @@ try {
             'net_cash_flow'      => (float)$deposits['total'] - (float)$withdrawals['total']
         ],
         'recent_activity' => $recent_activity,
-        'greeting'         => get_greeting()
+        'greeting'         => get_greeting(),
+        'csrf_token'       => $_SESSION['csrf_token'] ?? ''
     ]);
 
 } catch (PDOException $e) {
