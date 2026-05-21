@@ -58,7 +58,7 @@ try {
         SELECT 
             COUNT(*) as total,
             COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
-            (SELECT COUNT(*) FROM staff) as total_staff
+            (SELECT COUNT(*) FROM staff WHERE branch_id IS NOT NULL) as total_staff
         FROM branches
     ");
     $stats = $stmt_stats->fetch();
