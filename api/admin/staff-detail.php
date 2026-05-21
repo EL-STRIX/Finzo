@@ -110,6 +110,19 @@ try {
     $stmt->execute([$staff_id]);
     $address = $stmt->fetch();
 
+    // Recent activity (audit log)
+    // Recent activity (audit log)
+    $stmt = $pdo->prepare("
+        SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at
+        FROM audit_log
+        WHERE (actor_id = ? AND actor_role = 'Staff') 
+           OR (entity_id = ? AND entity_type = 'staff')
+        ORDER BY created_at DESC
+        LIMIT 20
+    ");
+    $stmt->execute([$staff['staff_id'], $staff['staff_id']]);
+    $activities = $stmt->fetchAll();
+
     json_response([
         'success'           => true,
         'staff'             => $staff,
@@ -117,6 +130,7 @@ try {
         'today_performance' => $today_performance,
         'total_shifts'      => $total_shifts,
         'transactions'      => $transactions,
+        'activities'        => $activities,
         'documents'         => $documents,
         'address'           => $address
     ]);

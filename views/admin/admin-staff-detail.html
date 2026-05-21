@@ -418,6 +418,31 @@
                 </div>
             </div>
 
+            <!-- ═══ RECENT ACTIVITY (Full Width) ═══ -->
+            <div class="admin-card overflow-hidden mt-6">
+                <div class="p-5 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
+                    <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
+                        <span class="material-symbols-outlined text-primary text-lg">local_activity</span> Recent Activity
+                    </h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full text-left">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Action Type</th>
+                                <th>Target Entity</th>
+                                <th>Details</th>
+                                <th class="text-right">IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-activities-body">
+                            <tr><td colspan="5" class="text-center py-12 text-slate-400 text-xs font-bold">Loading activity...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </main>
     </div>
 
