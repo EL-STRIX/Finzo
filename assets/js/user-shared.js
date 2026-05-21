@@ -47,6 +47,7 @@ const _userCache = {
   balance: '0',
   rejectionReason: '',
   notifCount: parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '0'),
+  avatarUrl: null,
   _loaded: false,
 };
 
@@ -72,6 +73,7 @@ async function fetchUserSession() {
       _userCache.balance = data.account?.balance || '0';
       _userCache.rejectionReason = data.user?.rejection_reason || '';
       _userCache.notifCount = data.notification_count || 0;
+      _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
 
       // Only sync non-sensitive metadata back to localStorage
@@ -92,6 +94,7 @@ const UserState = {
   get balance() { return _userCache.balance; },
   get rejectionReason() { return _userCache.rejectionReason; },
   get notifCount() { return _userCache.notifCount; },
+  get avatarUrl() { return _userCache.avatarUrl; },
   get isActive() { return this.status === 'active'; },
   get isPending() { return this.status === 'pending'; },
   get isUnderReview() { return this.status === 'under_review'; },
@@ -339,7 +342,7 @@ function buildSidebar(activePage) {
       </div>
       <div class="sidebar-user">
         <div class="sidebar-user-card">
-          <div class="sidebar-avatar">${UserState.initials}</div>
+          <div class="sidebar-avatar" ${UserState.avatarUrl ? `style="background-image:url(${UserState.avatarUrl});background-size:cover;color:transparent"` : ''}>${UserState.initials}</div>
           <div>
             <div class="sidebar-user-name">${UserState.name}</div>
             <div class="sidebar-user-status">

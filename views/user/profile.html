@@ -208,7 +208,17 @@
   document.getElementById('edit-phone').value = UserState.phone;
   document.getElementById('edit-email').value = UserState.email;
   document.getElementById('profile-name').textContent = UserState.name;
-  document.getElementById('avatar-circle').textContent = UserState.initials;
+  
+  const circle = document.getElementById('avatar-circle');
+  if (UserState.avatarUrl) {
+    circle.style.backgroundImage = `url(${UserState.avatarUrl})`;
+    circle.style.backgroundSize = 'cover';
+    circle.textContent = '';
+  } else {
+    circle.textContent = UserState.initials;
+    circle.style.backgroundImage = 'none';
+  }
+  
   document.getElementById('info-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
   
   if (UserState.isActive) {
@@ -237,7 +247,7 @@
     // Upload to backend
     const fd = new FormData();
     fd.append('avatar', f);
-    fetch('/api/user/upload-avatar.php', { method: 'POST', credentials: 'same-origin', body: fd })
+    fetch('../../api/user/upload-avatar.php', { method: 'POST', credentials: 'same-origin', body: fd })
     .then(r=>r.json()).then(data=>{
       if(data.success) showToast('Avatar updated','success');
       else showToast(data.message||'Upload failed','error');

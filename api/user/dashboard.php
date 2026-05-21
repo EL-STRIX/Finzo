@@ -145,6 +145,10 @@ try {
     // =====================================================
     $greeting = get_greeting();
 
+    // Avatar URL
+    $avatar_path = dirname(__DIR__, 2) . '/uploads/avatars/user_' . $user_id . '.jpg';
+    $avatar_url = file_exists($avatar_path) ? '../../uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
+
     // =====================================================
     // RESPONSE
     // =====================================================
@@ -157,7 +161,8 @@ try {
             'phone'            => $user['phone'],
             'status'           => $user['status'],
             'rejection_reason' => $user['rejection_reason'],
-            'member_since'     => $user['created_at']
+            'member_since'     => $user['created_at'],
+            'avatar_url'       => $avatar_url
         ],
         'account' => $account ? [
             'account_no'    => $account['account_no'],
