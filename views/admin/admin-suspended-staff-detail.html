@@ -243,24 +243,34 @@
 </div>
 
 <!-- REINSTATE MODAL -->
-<div class="modal-overlay hidden" id="reinstate-modal">
-  <div class="modal-card">
-    <div class="modal-icon" style="background:var(--green-soft)">
-      <span class="material-symbols-outlined" style="color:var(--green);font-size:32px">verified_user</span>
-    </div>
-    <div class="modal-title">Confirm Reinstatement</div>
-    <div class="modal-text">You are removing the suspension from <strong id="modal-name">Ravi Patel</strong>'s staff account <strong id="modal-id" class="mono">STF006</strong>. Their system privileges will be restored immediately.</div>
-    <div class="mt-6 w-full text-left px-8">
-      <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Authorize Action (Admin Password)</label>
-      <div class="relative">
-        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
-        <input type="password" id="admin-password" placeholder="••••••••" 
-          class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white">
+<div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all" id="reinstate-modal">
+  <div class="relative w-full max-w-lg">
+    <div class="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5">
+      <div class="p-8 pb-4 text-center shrink-0">
+        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10">
+          <span class="material-symbols-outlined text-4xl">verified_user</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Confirm Reinstatement</h3>
+        <p class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
       </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">Confirm & Authorize</button>
+      <div class="px-8 py-4 space-y-6 overflow-y-auto">
+        <div class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
+          You are removing the suspension from <strong id="modal-name" class="text-slate-900 dark:text-white font-bold">...</strong>'s staff account <strong id="modal-id" class="font-mono text-emerald-600 dark:text-emerald-400">...</strong>. Their system privileges will be restored immediately.
+        </div>
+        
+        <div class="pt-6 border-t border-slate-100 dark:border-white/5">
+          <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+            <input type="password" id="admin-password" placeholder="••••••••" 
+              class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white outline-none shadow-inner">
+          </div>
+        </div>
+      </div>
+      <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
+        <button onclick="closeModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+        <button id="confirm-btn" onclick="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20 hover:bg-emerald-600 hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
+      </div>
     </div>
   </div>
 </div>
