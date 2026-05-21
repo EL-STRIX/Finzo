@@ -253,16 +253,26 @@
       else showToast(data.message||'Upload failed','error');
     }).catch(()=>showToast('Upload failed','error'));
   }
-  function saveProfile(){
+  async function saveProfile(){
+    const name=document.getElementById('edit-name').value.trim();
     const phone=document.getElementById('edit-phone').value.trim();
     const email=document.getElementById('edit-email').value.trim();
     if(!email){showToast('Email is required','error');return;}
     
-    fetch('/api/user/profile.php',{
+    let csrfToken = '';
+    try {
+      const tokenRes = await fetch('../../api/auth/get-csrf-token.php');
+      const tokenData = await tokenRes.json();
+      csrfToken = tokenData.csrf_token || '';
+    } catch (e) {
+      console.warn('Failed to fetch CSRF token', e);
+    }
+    
+    fetch('../../api/user/profile.php',{
       method:'POST',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
       credentials:'same-origin',
-      body:'phone='+encodeURIComponent(phone)+'&email='+encodeURIComponent(email)
+      body:'full_name='+encodeURIComponent(name)+'&phone='+encodeURIComponent(phone)+'&email='+encodeURIComponent(email)+'&csrf_token='+encodeURIComponent(csrfToken)
     })
     .then(r=>r.json())
     .then(data=>{
