@@ -87,7 +87,7 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const res = await fetch('/api/staff/dashboard.php', { credentials: 'same-origin' });
+        const res = await fetch('../../api/staff/dashboard.php', { credentials: 'same-origin' });
         if (res.status === 401 || res.status === 403) {
             window.location.href = '../auth/staff-login.html';
             return null;

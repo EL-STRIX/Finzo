@@ -56,9 +56,8 @@ const _userCache = {
  */
 async function fetchUserSession() {
   try {
-    const res = await fetch('/api/user/dashboard.php', { credentials: 'same-origin' });
-    if (res.status === 401) {
-      // Not logged in — redirect to login
+    const res = await fetch('../../api/user/dashboard.php', { credentials: 'same-origin' });
+    if (res.status === 401 || res.status === 403) {   // Not logged in — redirect to login
       window.location.href = '../auth/login.html';
       return;
     }
@@ -490,7 +489,7 @@ async function markAllRead() {
   localStorage.setItem(STATE_KEYS.NOTIF_COUNT, '0');
   // Call API to mark all as read
   try {
-    await fetch('/api/user/notifications.php', {
+    await fetch('../../api/user/notifications.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       credentials: 'same-origin',
@@ -632,7 +631,7 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await fetch('/api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
+      await fetch('../../api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
       // Clear local cache
       Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
