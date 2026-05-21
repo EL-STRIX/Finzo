@@ -114,6 +114,15 @@ try {
     $_SESSION['role']        = 'customer';
     $_SESSION['last_activity'] = time();
 
+    // Insert welcome notifications
+    $notif_stmt = $pdo->prepare("
+        INSERT INTO notifications (user_id, type, title, message)
+        VALUES 
+        (?, 'system', 'Welcome to Finzo!', 'Your account has been registered. Complete your profile to activate.'),
+        (?, 'security', 'Profile Incomplete', 'Please complete your identity verification to unlock banking.')
+    ");
+    $notif_stmt->execute([$user_id, $user_id]);
+
     // Build redirect relative to project root (consistent with login.php)
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
     $redirect = $base . '/views/user/dashboard.html';
