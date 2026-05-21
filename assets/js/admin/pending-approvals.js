@@ -14,7 +14,7 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const searchInput = document.getElementById('filter-search');
+            const searchInput = document.getElementById('approval-search');
             const response = await window.api.get('/admin/pending-approvals.php', {
                 status: currentStatus,
                 search: searchInput ? searchInput.value : '',
@@ -91,24 +91,18 @@
      * Update pagination UI
      */
     function updatePagination(total, pages) {
-        const info = document.querySelector('.admin-card + div span') || document.querySelector('.text-xs.font-bold.opacity-40');
+        const info = document.getElementById('pagination-info');
         if (info) {
-            info.textContent = `Showing ${Math.min((currentPage - 1) * 10 + 1, total)}-${Math.min(currentPage * 10, total)} of ${total} applications`;
+            info.textContent = `Showing ${Math.min((currentPage - 1) * 10 + 1, total)}-${Math.min(currentPage * 10, total)} of ${total} Items`;
         }
 
-        const nextBtn = document.getElementById('next-page');
+        const nextBtn = document.getElementById('next-btn');
         if (!nextBtn) return;
-        const parent = nextBtn.parentElement;
+        const parent = document.getElementById('page-numbers');
         
-        const prevBtn = document.getElementById('prev-page');
+        const prevBtn = document.getElementById('prev-btn');
         if (prevBtn) prevBtn.disabled = (currentPage === 1);
         nextBtn.disabled = (currentPage === pages || pages === 0);
-
-        // Remove old page buttons
-        const oldBtns = parent.querySelectorAll('button:not(#prev-page):not(#next-page)');
-        oldBtns.forEach(b => b.remove());
-        const oldSpans = parent.querySelectorAll('span.opacity-50');
-        oldSpans.forEach(s => s.remove());
 
         let html = '';
         for (let i = 1; i <= pages; i++) {
@@ -121,8 +115,7 @@
             html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" style="${style}" data-page="${i}">${i}</button>`;
         }
         
-        // Insert after prev button
-        if (prevBtn) prevBtn.insertAdjacentHTML('afterend', html);
+        if (parent) parent.innerHTML = html;
     }
 
     /**
@@ -170,17 +163,13 @@
         });
 
         // Filter Apply/Reset
-        const applyBtn = document.getElementById('apply-filters');
-        const resetBtn = document.getElementById('reset-filters');
-        const searchInput = document.getElementById('filter-search');
-
-        if (applyBtn) applyBtn.addEventListener('click', () => { currentPage = 1; loadApplications(); });
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                if (searchInput) searchInput.value = '';
-                currentStatus = 'all';
-                currentPage = 1;
-                loadApplications();
+        const searchInput = document.getElementById('approval-search');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    currentPage = 1;
+                    loadApplications();
+                }
             });
         }
 
@@ -193,10 +182,10 @@
             }
         });
 
-        const prevBtn = document.getElementById('prev-page');
+        const prevBtn = document.getElementById('prev-btn');
         if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadApplications(); } });
 
-        const nextBtn = document.getElementById('next-page');
+        const nextBtn = document.getElementById('next-btn');
         if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; loadApplications(); });
     }
 

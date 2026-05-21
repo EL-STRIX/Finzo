@@ -21,7 +21,9 @@
 .tl-subtitle { font-size:12px; color:var(--text-secondary); margin-top:3px; }
 .tl-time { font-size:10px; color:var(--text-placeholder); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
 body { background:var(--bg-page); }
-.page-wrap { min-height:100vh; display:flex; flex-direction:column; }
+/* Hide entire page until session status confirmed — prevents redirect flash */
+.page-wrap { min-height:100vh; display:flex; flex-direction:column; visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
+.page-wrap.ready { visibility:visible; opacity:1; }
 .top-nav { background:var(--bg-card); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
 </style>
 </head>
@@ -129,11 +131,26 @@ body { background:var(--bg-page); }
   </div>
 </div>
 <script>
-// PHP_BACKEND: Check $_SESSION['user_status'] !== 'under_review' → redirect
-if (UserState.status === 'active') window.location.href = 'dashboard.html';
-if (UserState.status === 'pending') window.location.href = 'complete-profile.html';
-if (UserState.status === 'rejected') window.location.href = 'account-rejected.html';
-document.getElementById('user-email-show').textContent = UserState.email;
+(async function() {
+  await fetchUserSession();
+  const s = UserState.status;
+  if (s === 'active') {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  if (s === 'pending') {
+    window.location.href = 'complete-profile.html';
+    return;
+  }
+  if (s === 'rejected') {
+    window.location.href = 'account-rejected.html';
+    return;
+  }
+  // Status is under_review — reveal the page
+  const emailEl = document.getElementById('user-email-show');
+  if (emailEl) emailEl.textContent = UserState.email || 'your registered email';
+  document.querySelector('.page-wrap').classList.add('ready');
+})();
 </script>
 </body>
 </html>

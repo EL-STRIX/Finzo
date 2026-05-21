@@ -154,6 +154,7 @@ if ($txn_pin !== $confirm_pin) {
 // RETURN ERRORS IF ANY
 // =====================================================
 if (!empty($errors)) {
+    error_log("KYC Validation Errors: " . print_r($errors, true));
     json_response(['success' => false, 'errors' => $errors], 422);
 }
 

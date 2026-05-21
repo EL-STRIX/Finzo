@@ -21,10 +21,14 @@
 .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: var(--radius-md); }
 .progress-bar-outer { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 28px; }
 .progress-bar-inner { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.4s ease; }
+/* Prevent redirect flash — hide until session check completes */
+body { visibility: hidden; opacity: 0; transition: opacity 0.2s ease; }
+body.ready { visibility: visible; opacity: 1; }
 </style>
 </head>
 <body>
 <script src="../../assets/js/user-shared.js"></script>
+<script src="../../assets/js/ui/dropdowns.js"></script>
 <div id="sidebar-root"></div>
 <div class="main">
   <div id="navbar-root"></div>
@@ -77,10 +81,20 @@
         </div>
         <div class="form-group">
           <label class="form-label">Gender *</label>
-          <select class="form-input" id="gender" required>
-            <option value="">Select gender</option>
-            <option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option>
-          </select>
+
+          <div class="finzo-dropdown">
+            <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+              <span class="dropdown-label">Select gender</span>
+              <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Male">Male</div>
+              <div class="finzo-dropdown-option" data-value="Female">Female</div>
+              <div class="finzo-dropdown-option" data-value="Other">Other</div>
+              <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+            </div>
+            <input type="hidden" id="gender" value="">
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Father's Name *</label>
@@ -88,17 +102,37 @@
         </div>
         <div class="form-group">
           <label class="form-label">Occupation *</label>
-          <select class="form-input" id="occupation" required>
-            <option value="">Select occupation</option>
-            <option>Student</option><option>Employed</option><option>Self-Employed</option><option>Business</option><option>Retired</option><option>Other</option>
-          </select>
+          <div class="finzo-dropdown">
+            <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+              <span class="dropdown-label">Select occupation</span>
+              <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Student">Student</div>
+              <div class="finzo-dropdown-option" data-value="Employed">Employed</div>
+              <div class="finzo-dropdown-option" data-value="Self-Employed">Self-Employed</div>
+              <div class="finzo-dropdown-option" data-value="Business">Business</div>
+              <div class="finzo-dropdown-option" data-value="Retired">Retired</div>
+              <div class="finzo-dropdown-option" data-value="Other">Other</div>
+            </div>
+            <input type="hidden" id="occupation" value="">
+          </div>
         </div>
         <div class="form-group form-grid-2" style="grid-column:span 2">
           <label class="form-label">Annual Income *</label>
-          <select class="form-input" id="income" required>
-            <option value="">Select income range</option>
-            <option>Below ₹1 Lakh</option><option>₹1L – ₹5L</option><option>₹5L – ₹10L</option><option>Above ₹10L</option>
-          </select>
+          <div class="finzo-dropdown">
+            <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+              <span class="dropdown-label">Select income range</span>
+              <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Below ₹1 Lakh">Below ₹1 Lakh</div>
+              <div class="finzo-dropdown-option" data-value="₹1L – ₹5L">₹1L – ₹5L</div>
+              <div class="finzo-dropdown-option" data-value="₹5L – ₹10L">₹5L – ₹10L</div>
+              <div class="finzo-dropdown-option" data-value="Above ₹10L">Above ₹10L</div>
+            </div>
+            <input type="hidden" id="income" value="">
+          </div>
         </div>
       </div>
       <div class="flex justify-between mt-6">
@@ -125,10 +159,16 @@
           </div>
           <div class="form-group">
             <label class="form-label">State *</label>
-            <select class="form-input" id="state" required>
-              <option value="">Select state</option>
-              <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
-            </select>
+            <div class="finzo-dropdown">
+              <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+                <span class="dropdown-label">Select state</span>
+                <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+              </div>
+              <div class="finzo-dropdown-menu" style="max-height: 200px; overflow-y: auto;">
+                <div class="finzo-dropdown-option" data-value="Andhra Pradesh">Andhra Pradesh</div><div class="finzo-dropdown-option" data-value="Assam">Assam</div><div class="finzo-dropdown-option" data-value="Bihar">Bihar</div><div class="finzo-dropdown-option" data-value="Delhi">Delhi</div><div class="finzo-dropdown-option" data-value="Goa">Goa</div><div class="finzo-dropdown-option" data-value="Gujarat">Gujarat</div><div class="finzo-dropdown-option" data-value="Haryana">Haryana</div><div class="finzo-dropdown-option" data-value="Himachal Pradesh">Himachal Pradesh</div><div class="finzo-dropdown-option" data-value="Jharkhand">Jharkhand</div><div class="finzo-dropdown-option" data-value="Karnataka">Karnataka</div><div class="finzo-dropdown-option" data-value="Kerala">Kerala</div><div class="finzo-dropdown-option" data-value="Madhya Pradesh">Madhya Pradesh</div><div class="finzo-dropdown-option" data-value="Maharashtra">Maharashtra</div><div class="finzo-dropdown-option" data-value="Odisha">Odisha</div><div class="finzo-dropdown-option" data-value="Punjab">Punjab</div><div class="finzo-dropdown-option" data-value="Rajasthan">Rajasthan</div><div class="finzo-dropdown-option" data-value="Tamil Nadu">Tamil Nadu</div><div class="finzo-dropdown-option" data-value="Telangana">Telangana</div><div class="finzo-dropdown-option" data-value="Uttar Pradesh">Uttar Pradesh</div><div class="finzo-dropdown-option" data-value="Uttarakhand">Uttarakhand</div><div class="finzo-dropdown-option" data-value="West Bengal">West Bengal</div>
+              </div>
+              <input type="hidden" id="state" value="">
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">PIN Code *</label>
@@ -155,10 +195,20 @@
       <div class="form-grid form-grid-2">
         <div class="form-group">
           <label class="form-label">ID Type *</label>
-          <select class="form-input" id="id-type" required>
-            <option value="">Select document type</option>
-            <option>Aadhaar Card</option><option>PAN Card</option><option>Passport</option><option>Voter ID</option><option>Driving License</option>
-          </select>
+          <div class="finzo-dropdown">
+            <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+              <span class="dropdown-label">Select document type</span>
+              <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Aadhaar">Aadhaar Card</div>
+              <div class="finzo-dropdown-option" data-value="PAN">PAN Card</div>
+              <div class="finzo-dropdown-option" data-value="Passport">Passport</div>
+              <div class="finzo-dropdown-option" data-value="Voter ID">Voter ID</div>
+              <div class="finzo-dropdown-option" data-value="Driving License">Driving License</div>
+            </div>
+            <input type="hidden" id="id-type" value="">
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">ID Number *</label>
@@ -278,8 +328,12 @@
 
   // Redirect if already under review or active
   const s = UserState.status;
-  if (s === 'active') window.location.href = 'dashboard.html';
-  if (s === 'under_review') window.location.href = 'account-pending.html';
+  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
+  if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
+  if (s === 'rejected') { window.location.href = 'account-rejected.html'; return; }
+
+  // Status is pending — reveal the page
+  document.body.classList.add('ready');
 })();
 
 let currentStep = 1;
@@ -420,8 +474,9 @@ async function submitProfile() {
   formData.append('id_number', document.getElementById('id-number').value);
   formData.append('account_type', document.querySelector('input[name="account-type"]:checked').value);
   formData.append('initial_deposit', deposit);
-  formData.append('transaction_pin', pin);
-
+  formData.append('txn_pin', pin);
+  formData.append('confirm_pin', pinConfirm);
+  
   // Attach ID document files
   const frontFile = document.getElementById('front-input').files[0];
   const backFile = document.getElementById('back-input').files[0];
@@ -449,7 +504,11 @@ async function submitProfile() {
       showToast('Profile submitted! Redirecting...', 'success');
       setTimeout(() => { window.location.href = 'account-pending.html'; }, 1500);
     } else {
-      showToast(data.message || 'Submission failed. Please try again.', 'error');
+      let errorMsg = data.message || 'Submission failed. Please try again.';
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        errorMsg = Object.values(data.errors)[0];
+      }
+      showToast(errorMsg, 'error');
       btn.disabled = false;
       btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">send</span> Submit for Approval';
     }
