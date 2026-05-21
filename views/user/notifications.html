@@ -146,14 +146,17 @@
 </div>
 
 <script>
-  buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
+  (async function initPage() {
+    await fetchUserSession();
+    buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
+  })();
   let activeFilter = 'all';
   let notifs = [];
 
   // Load notifications from API
   async function loadNotifications() {
     try {
-      const res = await fetch('/api/user/notifications.php', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/notifications.php', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.notifications) {
         notifs = data.notifications.map((n, i) => ({
@@ -225,7 +228,7 @@
       iconContainer.innerHTML = `<span class="material-symbols-outlined" style="font-size:32px; color:${n.iconColor}">${n.icon}</span>`;
 
       // Mark as read on backend
-      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&id=' + id }).catch(() => {});
+      fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&notification_id=' + id }).catch(() => {});
       
       renderNotifs();
       openModal('viewNotifModal');
@@ -234,7 +237,7 @@
 
   function deleteCurrentNotif() {
     if (currentViewNotifId !== null) {
-      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&id=' + currentViewNotifId }).catch(() => {});
+      fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&notification_id=' + currentViewNotifId }).catch(() => {});
       notifs = notifs.filter(n => n.id !== currentViewNotifId);
       currentViewNotifId = null;
       renderNotifs();
@@ -244,7 +247,7 @@
   }
 
   function markAllRead() {
-    fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
+    fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
     notifs.forEach(n => n.unread = false);
     renderNotifs();
     showToast('All broadcasts acknowledged', 'success');
@@ -252,7 +255,7 @@
 
   function clearAll() {
     openConfirm('Purge All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
-      fetch('/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
+      fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
       notifs = [];
       renderNotifs();
       showToast('Activity feed cleared', 'success');

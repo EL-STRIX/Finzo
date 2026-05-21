@@ -84,6 +84,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'updated' => $stmt->rowCount()
             ]);
 
+        } elseif ($action === 'delete') {
+            // Delete a single notification
+            $notification_id = intval($_POST['notification_id'] ?? 0);
+            if (!$notification_id) {
+                json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
+            }
+
+            $stmt = $pdo->prepare("DELETE FROM notifications WHERE id = ? AND user_id = ?");
+            $stmt->execute([$notification_id, $user_id]);
+
+            json_response(['success' => true, 'message' => 'Notification deleted']);
+
+        } elseif ($action === 'clear_all') {
+            // Delete all notifications
+            $stmt = $pdo->prepare("DELETE FROM notifications WHERE user_id = ?");
+            $stmt->execute([$user_id]);
+
+            json_response([
+                'success' => true,
+                'message' => 'All notifications cleared',
+                'deleted' => $stmt->rowCount()
+            ]);
+
         } else {
             json_response(['success' => false, 'message' => 'Invalid action'], 422);
         }
