@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $search    = sanitize_input($_GET['search'] ?? '');
     $status    = sanitize_input($_GET['status'] ?? 'all');
+    $filter    = sanitize_input($_GET['filter'] ?? '');
     $branch_id = intval($_GET['branch_id'] ?? 0);
     $page      = max(1, intval($_GET['page'] ?? 1));
     $per_page  = 20; // As per spec
@@ -28,6 +29,10 @@ try {
     if ($branch_id > 0) {
         $where_clauses[] = "s.branch_id = ?";
         $params[] = $branch_id;
+    }
+
+    if ($filter === 'unassigned') {
+        $where_clauses[] = "s.branch_id IS NULL";
     }
 
     if (!empty($search)) {
