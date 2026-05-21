@@ -323,7 +323,64 @@
 
     function showViewModal(branch) {
         document.getElementById('view-branch-title').textContent = branch.name;
-        // Populate other fields...
+        
+        const badgesContainer = document.getElementById('view-branch-badges');
+        if (badgesContainer) {
+            const typeStyle = branch.type === 'MAIN' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
+            const statusStyle = branch.status === 'active' ? 'badge-success' : 'badge-error';
+            badgesContainer.innerHTML = `
+                <span class="status-badge" style="${typeStyle}font-size:9px;padding:2px 6px;">${branch.type || 'BRANCH'}</span>
+                <span class="status-badge ${statusStyle}" style="font-size:9px;padding:2px 6px;">${(branch.status || 'ACTIVE').toUpperCase()}</span>
+            `;
+        }
+
+        document.getElementById('view-branch-code').textContent = branch.branch_code || 'N/A';
+        document.getElementById('view-branch-city').textContent = branch.state || 'N/A'; // DB does not store city
+        document.getElementById('view-branch-state').textContent = branch.state || 'N/A';
+        document.getElementById('view-branch-address').textContent = 'N/A'; // DB does not store address
+
+        const avatarEl = document.getElementById('view-manager-avatar');
+        const nameEl = document.getElementById('view-manager-name');
+        const emailEl = document.getElementById('view-manager-email');
+        const linkEl = document.getElementById('view-manager-link');
+
+        if (branch.manager_name) {
+            avatarEl.textContent = branch.manager_initials || '??';
+            avatarEl.className = 'admin-avatar premium-gradient-primary';
+            nameEl.textContent = branch.manager_name;
+            emailEl.textContent = branch.manager_email || 'N/A';
+            linkEl.classList.remove('hidden');
+        } else {
+            avatarEl.textContent = '??';
+            avatarEl.className = 'admin-avatar bg-slate-200 text-slate-500';
+            nameEl.textContent = 'Unassigned';
+            emailEl.textContent = 'No manager assigned';
+            linkEl.classList.add('hidden');
+        }
+
+        document.getElementById('view-staff-count').textContent = branch.staff_count || 0;
+        document.getElementById('view-txn-count').textContent = branch.txn_count || 0;
+
+        const certContainer = document.getElementById('view-cert-container');
+        const certEmpty = document.getElementById('view-cert-empty');
+        if (branch.cert_path) {
+            certContainer.classList.remove('hidden');
+            certContainer.classList.add('flex');
+            certEmpty.classList.add('hidden');
+            document.getElementById('view-cert-name').textContent = branch.cert_path.split('/').pop();
+            const dlLink = document.getElementById('view-cert-download');
+            dlLink.href = '../../' + branch.cert_path;
+        } else {
+            certContainer.classList.add('hidden');
+            certContainer.classList.remove('flex');
+            certEmpty.classList.remove('hidden');
+        }
+
+        document.getElementById('view-branch-desc').textContent = branch.description || 'No description provided.';
+        
+        window.lastViewedBranchId = branch.id;
+        window.lastViewedBranchName = branch.name;
+
         document.getElementById('viewBranchModal').classList.remove('hidden');
         document.getElementById('viewBranchModal').classList.add('flex');
     }
