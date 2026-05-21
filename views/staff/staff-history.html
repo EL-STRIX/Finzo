@@ -183,11 +183,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="lg:col-span-2">
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
-                        <input type="text" id="search-input" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                        <input type="text" id="search-input" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
                     </div>
                     <div class="relative custom-dropdown" id="dropdown-type">
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
-                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-slate-200 flex items-center justify-between dropdown-trigger">
+                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between dropdown-trigger">
                             <span class="flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">list</span>
                                 <span class="selected-text">All Types</span>
@@ -212,7 +212,7 @@
 
                     <div class="relative custom-dropdown" id="dropdown-status">
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
-                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold dark:text-slate-200 flex items-center justify-between dropdown-trigger">
+                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between dropdown-trigger">
                             <span class="flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">rule</span>
                                 <span class="selected-text">All Status</span>
@@ -438,28 +438,45 @@
             }
         }
 
-        // Event Listeners
-        $('#apply-filters-btn').on('click', function() {
+        // Event Listeners for Dropdowns and Search
+        $('.dropdown-trigger').on('click', function(e) {
+            e.stopPropagation();
+            const menu = $(this).siblings('.dropdown-menu');
+            $('.dropdown-menu').not(menu).removeClass('show');
+            menu.toggleClass('show');
+            $(this).find('.dropdown-arrow').css('transform', menu.hasClass('show') ? 'rotate(180deg)' : 'rotate(0deg)');
+        });
+
+        $('.dropdown-menu button').on('click', function(e) {
+            e.stopPropagation();
+            const val = $(this).data('value');
+            const text = $(this).text().trim();
+            const dd = $(this).closest('.custom-dropdown');
+            dd.find('.selected-text').text(text);
+            dd.find('input[type="hidden"]').val(val);
+            dd.find('.dropdown-menu').removeClass('show');
+            dd.find('.dropdown-arrow').css('transform', 'rotate(0deg)');
+            applyFilters();
+        });
+
+        $(document).on('click', function() {
+            $('.dropdown-menu').removeClass('show');
+            $('.dropdown-arrow').css('transform', 'rotate(0deg)');
+        });
+
+        $('#search-input').on('keyup', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        function applyFilters() {
             currentFilters.search = $('#search-input').val().trim();
-            // Dropdown values are set in their separate listeners
             currentFilters.type = $('#filter-type').val().toLowerCase().replace('all types', 'all').replace('deposits', 'deposit').replace('withdrawals', 'withdrawal');
             currentFilters.status = $('#filter-status').val().toLowerCase().replace('all status', 'all');
             currentPage = 1;
             renderTransactions();
-        });
-
-        $('#reset-filters-btn').on('click', function() {
-            $('#search-input').val('');
-            currentFilters = { search: '', type: 'all', status: 'all', range: 'All Time' };
-            $('#dropdown-type .selected-text').text('All Types');
-            $('#filter-type').val('All Types');
-            $('#dropdown-status .selected-text').text('All Status');
-            $('#filter-status').val('All Status');
-            $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
-            $('.time-tab:first').addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
-            currentPage = 1;
-            renderTransactions();
-        });
+        }
 
         $('.time-tab').on('click', function() {
             $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
