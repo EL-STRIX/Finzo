@@ -448,20 +448,15 @@
     }
 
     // Wire up filter controls using event delegation (bulletproof approach)
-    // Search: direct listener on the input element
-    document.addEventListener('input', function(e) {
-        if (e.target && e.target.id === 'admin-search-input') {
-            filterAdminList();
-        }
-    });
+    // Wire up filter controls directly
+    const searchInput = document.getElementById('admin-search-input');
+    if (searchInput) searchInput.addEventListener('input', filterAdminList);
 
-    // Dropdowns: listen for 'change' events bubbling from hidden inputs
-    // dropdowns.js dispatches change with bubbles:true when an option is selected
-    document.addEventListener('change', function(e) {
-        if (e.target && (e.target.id === 'admin-status-filter' || e.target.id === 'admin-role-filter')) {
-            filterAdminList();
-        }
-    });
+    const statusFilter = document.getElementById('admin-status-filter');
+    if (statusFilter) statusFilter.addEventListener('change', filterAdminList);
+
+    const roleFilter = document.getElementById('admin-role-filter');
+    if (roleFilter) roleFilter.addEventListener('change', filterAdminList);
 
     // Exported Object
     window.AdminProfile = {
