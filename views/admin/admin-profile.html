@@ -34,7 +34,15 @@
         .pw-meter { @apply h-1 w-full bg-slate-100 dark:bg-white/5 rounded-full mt-2 overflow-hidden; }
         .pw-meter-bar { @apply h-full w-0 transition-all duration-500 bg-red-500; }
         .modal-btn { @apply px-6 py-3 rounded-xl font-bold text-sm transition-all; }
-    </style>
+    
+        .profile-hero { background: linear-gradient(135deg, #0d1117 0%, #002645 50%, #0ea5e9 150%); position: relative; overflow: hidden; }
+        .profile-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%); border-radius: 50%; }
+        .profile-avatar-wrapper { position: relative; width: 100px; height: 100px; }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 4px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: white; background: linear-gradient(135deg, #0ea5e9, #0284c7); overflow: hidden; transition: all 0.3s; }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-upload-btn { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; background: #0ea5e9; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid #0d1117; transition: transform 0.2s; }
+        .avatar-upload-btn:hover { transform: scale(1.1); }
+</style>
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
@@ -126,137 +134,87 @@
         <main class="p-4 sm:p-6 lg:p-10">
             <div class="max-w-6xl mx-auto space-y-8">
 
-                <!-- PROFILE CARD -->
-                <div class="admin-card overflow-hidden">
-                    <!-- Banner -->
-                    <div
-                        class="h-32 bg-gradient-to-r from-[#002645] to-[#1a4b77] dark:from-slate-800 dark:to-slate-900 relative">
-                        <div class="absolute inset-0 opacity-10"
-                            style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;">
+                <!-- PROFILE HERO CARD -->
+                <div class="profile-hero rounded-3xl p-8 sm:p-10 mb-6 shadow-sm">
+                    <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-end gap-6">
+                        <div class="profile-avatar-wrapper">
+                            <div class="profile-avatar" id="avatar-preview-container">
+                                <span id="avatar-initials" class="uppercase"></span>
+                                <img id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
+                            </div>
+                            <label for="photo-upload" class="avatar-upload-btn">
+                                <span class="material-symbols-outlined" style="font-size:16px;">photo_camera</span>
+                            </label>
+                            <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
+                        </div>
+                        <div class="text-center sm:text-left">
+                            <h1 class="text-2xl sm:text-3xl font-black font-headline text-white mb-1" id="profile-name-display">-</h1>
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2">
+                                <span id="badge-role" class="px-3.5 py-1 text-[10px] font-black rounded-xl uppercase tracking-widest bg-blue-500/20 text-blue-400 shadow-sm transition-colors">Loading</span>
+                                <span id="badge-access" class="px-3.5 py-1 text-[10px] font-black rounded-xl uppercase tracking-widest bg-emerald-500/20 text-emerald-400 shadow-sm transition-colors">Loading</span>
+                                <span id="badge-status" class="px-3.5 py-1 text-[10px] font-black rounded-xl uppercase tracking-widest bg-white/10 text-white/70 shadow-sm transition-colors">Loading</span>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="p-6 sm:p-8 flex flex-col lg:flex-row gap-8 relative">
-                        <!-- Left Col -->
-                        <div
-                            class="w-full lg:w-1/3 flex flex-col items-center text-center space-y-4 -mt-16 z-10 relative">
-                            <div class="relative group cursor-pointer"
-                                onclick="document.getElementById('photo-upload').click()">
-                                <div id="avatar-preview-container"
-                                    class="w-28 h-28 sm:w-36 sm:h-36 rounded-full premium-gradient-primary flex items-center justify-center text-5xl font-black text-white shadow-2xl overflow-hidden ring-4 ring-white dark:ring-slate-900 transition-all group-hover:scale-105">
-                                    <span id="avatar-initials" class="uppercase"></span>
-                                    <img id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
-                                </div>
-                                <div class="absolute bottom-2 right-2 w-7 h-7 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-lg"
-                                    title="Verified Account">
-                                    <span class="material-symbols-outlined text-[14px] text-white">verified</span>
-                                </div>
-                                <div
-                                    class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="material-symbols-outlined text-white">photo_camera</span>
-                                </div>
-                            </div>
+                <!-- PERSONAL DETAILS CARD -->
+                <div class="admin-card overflow-hidden p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
+                        <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
+                            <span class="material-symbols-outlined text-primary dark:text-blue-400">person</span>
+                            Personal Details
+                        </h3>
+                    </div>
 
-                            <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden"
-                                onchange="window.AdminProfile.uploadPhoto(this)">
-
-                            <div>
-                                <h2 id="profile-name-display"
-                                    class="text-2xl font-black font-headline text-primary dark:text-slate-200">-</h2>
-                                <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Administrator
-                                </p>
-                            </div>
-
-                            <div
-                                class="flex flex-wrap justify-center gap-2 mt-2 w-full border-t border-slate-100 dark:border-white/5 pt-5">
-                                <span id="badge-role"
-                                    class="px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest bg-[#002645] text-white shadow-sm transition-colors">Loading</span>
-                                <span id="badge-access"
-                                    class="px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 transition-colors">Loading</span>
-                                <span id="badge-status"
-                                    class="px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 transition-colors">Loading</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="profile-label flex justify-between">Admin ID <span class="text-slate-400 font-normal normal-case tracking-normal">System Generated</span></label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">badge</span>
+                                <input type="text" id="profile-admin-id-input" class="profile-input locked-input !pl-11 font-mono" readonly>
                             </div>
                         </div>
-
-                        <!-- Right Col -->
-                        <div class="w-full lg:w-2/3 lg:pl-4">
-                            <div
-                                class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
-                                <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
-                                    <span
-                                        class="material-symbols-outlined text-primary dark:text-blue-400">person</span>
-                                    Personal Details
-                                </h3>
-                                <div
-                                    class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1.5 uppercase tracking-widest dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 shadow-sm">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Profile
-                                    Active
+                        <div>
+                            <label class="profile-label">Full Name *</label>
+                            <input type="text" id="profile-name-input" class="profile-input" placeholder="Loading...">
+                        </div>
+                        <div>
+                            <label class="profile-label">Date of Birth</label>
+                            <input type="date" id="profile-dob-input" class="profile-input">
+                        </div>
+                        <div>
+                            <label class="profile-label">Gender</label>
+                            <div class="finzo-dropdown">
+                                <div class="finzo-dropdown-trigger profile-input flex items-center justify-between">
+                                    <span class="dropdown-label">Select Gender</span>
+                                    <span class="material-symbols-outlined text-[18px] opacity-40 transition-transform">expand_more</span>
                                 </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div>
-                                    <label class="profile-label flex justify-between">Admin ID <span
-                                            class="text-slate-400 font-normal normal-case tracking-normal">System
-                                            Generated</span></label>
-                                    <div class="relative">
-                                        <span
-                                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">badge</span>
-                                        <input type="text" id="profile-admin-id-input"
-                                            class="profile-input locked-input !pl-11 font-mono" readonly>
-                                    </div>
+                                <input type="hidden" id="profile-gender-input" value="">
+                                <div class="finzo-dropdown-menu">
+                                    <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                                    <div class="finzo-dropdown-option" data-value="Female">Female</div>
+                                    <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                                    <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
                                 </div>
-                                <div>
-                                    <label class="profile-label">Full Name *</label>
-                                    <input type="text" id="profile-name-input" class="profile-input"
-                                        placeholder="Loading...">
-                                </div>
-                                <div>
-                                    <label class="profile-label">Date of Birth</label>
-                                    <input type="date" id="profile-dob-input" class="profile-input">
-                                </div>
-                                <div>
-                                    <label class="profile-label">Gender</label>
-                                    <div class="finzo-dropdown">
-                                        <div
-                                            class="finzo-dropdown-trigger profile-input flex items-center justify-between">
-                                            <span class="dropdown-label">Select Gender</span>
-                                            <span
-                                                class="material-symbols-outlined text-[18px] opacity-40 transition-transform">expand_more</span>
-                                        </div>
-                                        <input type="hidden" id="profile-gender-input" value="">
-                                        <div class="finzo-dropdown-menu">
-                                            <div class="finzo-dropdown-option" data-value="Male">Male</div>
-                                            <div class="finzo-dropdown-option" data-value="Female">Female</div>
-                                            <div class="finzo-dropdown-option" data-value="Other">Other</div>
-                                            <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not
-                                                to say</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="profile-label">Phone Number</label>
-                                    <input type="text" id="profile-phone-input" class="profile-input"
-                                        placeholder="Loading...">
-                                </div>
-                                <div class="md:col-span-2 flex flex-col">
-                                    <label class="profile-label flex justify-between">Email Address <span
-                                            class="text-slate-400 font-normal normal-case tracking-normal">Read-only</span></label>
-                                    <div class="relative">
-                                        <span
-                                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">lock</span>
-                                        <input type="email" id="profile-email-input"
-                                            class="profile-input locked-input !pl-11" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex justify-end border-t border-slate-100 dark:border-white/5 pt-6">
-                                <button onclick="window.AdminProfile.saveProfile()"
-                                    class="admin-btn-primary !px-8 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[18px]">save</span> Save Changes
-                                </button>
                             </div>
                         </div>
+                        <div>
+                            <label class="profile-label">Phone Number</label>
+                            <input type="text" id="profile-phone-input" class="profile-input" placeholder="Loading...">
+                        </div>
+                        <div class="md:col-span-2 flex flex-col">
+                            <label class="profile-label flex justify-between">Email Address <span class="text-slate-400 font-normal normal-case tracking-normal">Read-only</span></label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">lock</span>
+                                <input type="email" id="profile-email-input" class="profile-input locked-input !pl-11" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end border-t border-slate-100 dark:border-white/5 pt-6">
+                        <button onclick="window.AdminProfile.saveProfile()" class="admin-btn-primary !px-8 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">save</span> Save Changes
+                        </button>
                     </div>
                 </div>
 

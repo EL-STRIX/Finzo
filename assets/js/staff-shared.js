@@ -103,7 +103,12 @@ async function fetchStaffSession() {
             // Populate basic DOM if present
             $('.staff-name-display').text(StaffState.name);
             $('.staff-id-display').text(StaffState.staff_id);
-            $('.staff-initials-display').text(StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());
+            if (data.staff.profile_photo) {
+                const src = data.staff.profile_photo.startsWith('http') ? data.staff.profile_photo : '../../' + data.staff.profile_photo;
+                $('.staff-initials-display').html(`<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`);
+            } else {
+                $('.staff-initials-display').text(StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());
+            }
             $('.staff-branch-display').text(StaffState.branch_name);
             
             return data;
