@@ -53,7 +53,9 @@
                 <td class="text-sm font-medium branch-location-text">${b.branch_code || 'N/A'} — ${b.state || 'Local'}</td>
                 <td>
                     <div class="flex items-center gap-2 manager-info-text">
-                        <div class="admin-avatar sm w-6 h-6 text-[9px] bg-blue-100 text-blue-700 flex items-center justify-center rounded-full uppercase">${b.manager_initials || '??'}</div>
+                        <div class="manager-avatar sm w-6 h-6 text-[9px] bg-blue-100 text-blue-700 flex items-center justify-center rounded-full uppercase overflow-hidden" style="flex-shrink:0;">
+                            ${b.manager_avatar ? `<img src="${(b.manager_avatar.startsWith('http') ? '' : '../../') + b.manager_avatar}?v=${new Date().getTime()}" style="width:100%;height:100%;object-fit:cover;">` : (b.manager_initials || '??')}
+                        </div>
                         <div class="text-[12px] font-bold"><span class="manager-name-text">${b.manager_name || 'Unassigned'}</span> <span class="opacity-40 font-mono">(${b.manager_staff_id || 'N/A'})</span></div>
                     </div>
                 </td>
@@ -348,11 +350,11 @@
             if (branch.manager_avatar) {
                 const src = branch.manager_avatar.startsWith('http') ? branch.manager_avatar : '../../' + branch.manager_avatar;
                 avatarEl.innerHTML = `<img src="${src}?v=${new Date().getTime()}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                avatarEl.className = 'admin-avatar';
+                avatarEl.className = 'manager-avatar';
             } else {
                 avatarEl.innerHTML = '';
                 avatarEl.textContent = branch.manager_initials || '??';
-                avatarEl.className = 'admin-avatar premium-gradient-primary';
+                avatarEl.className = 'manager-avatar premium-gradient-primary';
             }
             nameEl.textContent = branch.manager_name;
             emailEl.textContent = branch.manager_email || 'N/A';
@@ -361,7 +363,7 @@
         } else {
             avatarEl.innerHTML = '';
             avatarEl.textContent = '??';
-            avatarEl.className = 'admin-avatar bg-slate-200 text-slate-500';
+            avatarEl.className = 'manager-avatar bg-slate-200 text-slate-500';
             nameEl.textContent = 'Unassigned';
             emailEl.textContent = 'No manager assigned';
             linkEl.classList.add('hidden');
