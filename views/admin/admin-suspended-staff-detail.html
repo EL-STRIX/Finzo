@@ -250,6 +250,14 @@
     </div>
     <div class="modal-title">Confirm Reinstatement</div>
     <div class="modal-text">You are removing the suspension from <strong id="modal-name">Ravi Patel</strong>'s staff account <strong id="modal-id" class="mono">STF006</strong>. Their system privileges will be restored immediately.</div>
+    <div class="mt-6 w-full text-left px-8">
+      <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Authorize Action (Admin Password)</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+        <input type="password" id="admin-password" placeholder="••••••••" 
+          class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white">
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">Confirm & Authorize</button>

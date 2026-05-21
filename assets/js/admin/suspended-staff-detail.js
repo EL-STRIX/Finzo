@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detail-phone').textContent = staff.phone || 'N/A';
         document.getElementById('detail-branch').textContent = staff.branch_name || 'N/A';
         document.getElementById('detail-onboarding').textContent = staff.onboarding_date || 'N/A';
-        document.getElementById('detail-volume').textContent = staff.lifetime_volume || '₹0.00';
+
         
         document.getElementById('detail-reason').textContent = staff.suspension_reason || 'Administrative Review';
         document.getElementById('detail-reason-detail').textContent = staff.suspension_notes || `Staff account suspended for ${staff.suspension_reason || 'administrative reasons'}. Policy compliance review pending.`;
@@ -62,9 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detail-date').textContent = staff.suspended_at || 'N/A';
         document.getElementById('detail-duration').textContent = staff.duration || 'Indefinite';
 
-        document.getElementById('detail-avg-volume').textContent = staff.avg_daily_volume || '₹0.00';
-        document.getElementById('detail-deposits').textContent = staff.deposit_count || '0';
-        document.getElementById('detail-withdrawals').textContent = staff.withdrawal_count || '0';
+
 
         const mName = document.getElementById('modal-name');
         if (mName) mName.textContent = staff.full_name || 'N/A';
