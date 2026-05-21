@@ -17,10 +17,11 @@
 
         try {
             const response = await window.api.get('/admin/branches.php');
-            if (response.success) {
-                currentBranches = response.branches || [];
+            if (response.success || response.status === 'success') {
+                const data = response.data || response;
+                currentBranches = data.branches || [];
                 renderTable(currentBranches);
-                updateStats(response.stats || {});
+                updateStats(data.stats || {});
             }
         } catch (error) {
             console.error('Failed to load branches:', error);
