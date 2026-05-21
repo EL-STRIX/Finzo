@@ -209,10 +209,10 @@
 }
 
 /* Avatar initials subtle remap */
-[data-theme="dark"] .admin-avatar[style*="background:#dbeafe"] { background: var(--dk-blue-t) !important; color: var(--dk-blue) !important; }
-[data-theme="dark"] .admin-avatar[style*="background:#ffeef0"] { background: var(--dk-red-t) !important; color: var(--dk-red) !important; }
-[data-theme="dark"] .admin-avatar[style*="background:#e8f8f2"] { background: var(--dk-green-t) !important; color: var(--dk-green) !important; }
-[data-theme="dark"] .admin-avatar[style*="background:#f3e8ff"] { background: var(--dk-purple-t) !important; color: var(--dk-purple) !important; }
+[data-theme="dark"] .admin-avatar[style*="background:#dbeafe"], [data-theme="dark"] .manager-avatar[style*="background:#dbeafe"] { background: var(--dk-blue-t) !important; color: var(--dk-blue) !important; }
+[data-theme="dark"] .admin-avatar[style*="background:#ffeef0"], [data-theme="dark"] .manager-avatar[style*="background:#ffeef0"] { background: var(--dk-red-t) !important; color: var(--dk-red) !important; }
+[data-theme="dark"] .admin-avatar[style*="background:#e8f8f2"], [data-theme="dark"] .manager-avatar[style*="background:#e8f8f2"] { background: var(--dk-green-t) !important; color: var(--dk-green) !important; }
+[data-theme="dark"] .admin-avatar[style*="background:#f3e8ff"], [data-theme="dark"] .manager-avatar[style*="background:#f3e8ff"] { background: var(--dk-purple-t) !important; color: var(--dk-purple) !important; }
 
 /* --------------------------------
    STATUS BADGES — DARK VARIANTS
