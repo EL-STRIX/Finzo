@@ -181,6 +181,73 @@
             });
         }
 
+        // File Upload Handlers (Add Branch)
+        const branchFileInput = document.getElementById('branch-file-input');
+        const uploadTrigger = document.getElementById('upload-trigger');
+        const filePreview = document.getElementById('file-preview');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const removeFileBtn = document.getElementById('remove-file');
+
+        if (uploadTrigger && branchFileInput) {
+            uploadTrigger.addEventListener('click', () => branchFileInput.click());
+            
+            branchFileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    fileName.textContent = file.name;
+                    fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                    uploadTrigger.classList.add('hidden');
+                    filePreview.classList.remove('hidden');
+                }
+            });
+
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', () => {
+                    branchFileInput.value = '';
+                    uploadTrigger.classList.remove('hidden');
+                    filePreview.classList.add('hidden');
+                });
+            }
+        }
+
+        // File Upload Handlers (Delete Branch)
+        const deleteFileInput = document.getElementById('delete-file-input');
+        const deleteUploadTrigger = document.getElementById('delete-upload-trigger');
+        const deleteFilePreview = document.getElementById('delete-file-preview');
+        const deleteFileName = document.getElementById('delete-file-name');
+        const removeDeleteFileBtn = document.getElementById('remove-delete-file');
+        
+        const confirmNameInput = document.getElementById('confirm-branch-name-input');
+        const confirmPwInput = document.getElementById('confirm-admin-pw');
+        
+        if (confirmNameInput) confirmNameInput.addEventListener('input', checkDeleteForm);
+        if (confirmPwInput) confirmPwInput.addEventListener('input', checkDeleteForm);
+
+        if (deleteUploadTrigger && deleteFileInput) {
+            deleteUploadTrigger.addEventListener('click', () => deleteFileInput.click());
+            
+            deleteFileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    deleteFileName.textContent = this.files[0].name;
+                    deleteUploadTrigger.classList.add('hidden');
+                    deleteFilePreview.classList.remove('hidden');
+                    deleteFilePreview.classList.add('flex');
+                    checkDeleteForm(); // If there is a validation func
+                }
+            });
+
+            if (removeDeleteFileBtn) {
+                removeDeleteFileBtn.addEventListener('click', () => {
+                    deleteFileInput.value = '';
+                    deleteUploadTrigger.classList.remove('hidden');
+                    deleteFilePreview.classList.add('hidden');
+                    deleteFilePreview.classList.remove('flex');
+                    checkDeleteForm();
+                });
+            }
+        }
+
         // Close Modals
         document.querySelectorAll('[onclick*="addClass(\'hidden\')"]').forEach(btn => {
             btn.removeAttribute('onclick');
@@ -192,6 +259,22 @@
                 }
             });
         });
+    }
+
+    function checkDeleteForm() {
+        const btn = document.getElementById('confirm-btn-action');
+        if (!btn) return;
+        const name = document.getElementById('confirm-branch-name-input')?.value;
+        const pw = document.getElementById('confirm-admin-pw')?.value;
+        const file = document.getElementById('delete-file-input')?.files?.length > 0;
+        
+        if (name && pw && file) {
+            btn.removeAttribute('disabled');
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+            btn.setAttribute('disabled', 'true');
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
     }
 
     function showViewModal(branch) {
