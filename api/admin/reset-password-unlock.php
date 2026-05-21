@@ -74,7 +74,8 @@ $updateStmt->execute([$new_hash, $admin['id']]);
 // 7. Insert admin_lock_log
 $logStmt = $pdo->prepare("
     INSERT INTO admin_lock_log (admin_id, event_type, details) 
-    VALUES (?, 'password_reset_completed', 'Password reset after security question unlock')
+    SELECT admin_id, 'password_reset_completed', 'Password reset after security question unlock'
+    FROM admin_users WHERE id = ?
 ");
 $logStmt->execute([$admin['id']]);
 

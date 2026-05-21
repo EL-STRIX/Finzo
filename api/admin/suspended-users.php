@@ -35,7 +35,7 @@ try {
     $offset = ($page - 1) * $per_page;
 
     $stmt = $pdo->prepare("
-        SELECT u.id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
+        SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
                a.account_no, a.account_type, a.balance
         FROM users u
         LEFT JOIN accounts a ON u.id = a.user_id

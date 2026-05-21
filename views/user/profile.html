@@ -98,6 +98,7 @@
       <div style="flex:1">
         <div class="profile-main-meta">
           <div class="profile-name-big" id="profile-name"><span class="skeleton" style="width: 200px; height: 32px;"></span></div>
+          <div style="font-size:14px; font-weight:700; color:var(--text-secondary); margin-bottom:12px; font-family:'Courier New', monospace" id="info-customer-id">—</div>
           <div class="profile-badges">
             <span class="badge badge-teal">Premium Client</span>
             <span class="badge badge-green">Identity Verified</span>
@@ -208,6 +209,7 @@
   document.getElementById('edit-phone').value = UserState.phone;
   document.getElementById('edit-email').value = UserState.email;
   document.getElementById('profile-name').textContent = UserState.name;
+  document.getElementById('info-customer-id').textContent = UserState.customerId || 'FNZ-USR-PENDING';
   
   const circle = document.getElementById('avatar-circle');
   if (UserState.avatarUrl) {

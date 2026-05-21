@@ -30,6 +30,7 @@ async function loadUserData() {
             if (placeholder) placeholder.textContent = user.initials;
 
             // Update Info
+            document.getElementById('info-customer-id').textContent = user.customer_id || 'FNZ-USR-PENDING';
             document.getElementById('info-full-name').textContent = user.name || user.full_name;
             document.getElementById('info-dob').textContent = user.dob;
             document.getElementById('info-gender').textContent = user.gender;

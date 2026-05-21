@@ -59,7 +59,7 @@
                     <div class="flex items-center gap-3 applicant-info">
                         <div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>
                         <div>
-                            <div class="font-bold applicant-name text-slate-800 dark:text-slate-100">${app.full_name}</div>
+                            <div class="font-bold applicant-name text-slate-800 dark:text-slate-100">${app.full_name} <span class="ml-2 font-mono text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500">${app.customer_id || 'FNZ-USR-PENDING'}</span></div>
                             <div class="text-[11px] opacity-60 applicant-email">${app.email}</div>
                         </div>
                     </div>

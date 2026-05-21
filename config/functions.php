@@ -258,11 +258,17 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
  * @param string $message Notification message body
  */
 function send_notification($pdo, $user_id, $type, $title, $message) {
-    $stmt = $pdo->prepare("
-        INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
-        VALUES (?, ?, ?, ?, 0, NOW())
-    ");
-    $stmt->execute([$user_id, $type, $title, $message]);
+    $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $customer_id = $stmt->fetchColumn();
+
+    if ($customer_id) {
+        $stmt = $pdo->prepare("
+            INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
+            VALUES (?, ?, ?, ?, 0, NOW())
+        ");
+        $stmt->execute([$customer_id, $type, $title, $message]);
+    }
 }
 
 // =====================================================

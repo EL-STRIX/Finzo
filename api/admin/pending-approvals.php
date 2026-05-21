@@ -47,7 +47,7 @@ try {
     $offset = ($page - 1) * $per_page;
 
     $stmt = $pdo->prepare("
-        SELECT u.id, u.full_name, u.email, u.phone, u.status, u.kyc_submitted_at, u.created_at,
+        SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.kyc_submitted_at, u.created_at,
                a.account_type, a.balance as initial_deposit,
                k.application_no, k.submission_count, k.submitted_at
         FROM users u

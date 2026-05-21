@@ -113,9 +113,10 @@ if (!password_verify($password, $admin['password_hash'])) {
         // Insert into admin_lock_log
         $logStmt = $pdo->prepare("
             INSERT INTO admin_lock_log (admin_id, event_type, ip_address, details) 
-            VALUES (?, 'locked_password', ?, 'Locked after 3 failed password attempts')
+            SELECT admin_id, 'locked_password', ?, 'Locked after 3 failed password attempts'
+            FROM admin_users WHERE id = ?
         ");
-        $logStmt->execute([$admin['id'], $ip]);
+        $logStmt->execute([$ip, $admin['id']]);
         
         // Write audit log
         write_audit_log($pdo, 'admin_account_locked', $admin['id'], 'admin', $admin['id'], 'admin', 'Account locked: 3 wrong passwords');

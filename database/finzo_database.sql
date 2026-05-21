@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(20) UNIQUE,
     full_name VARCHAR(150) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(15) NOT NULL UNIQUE,

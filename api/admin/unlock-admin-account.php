@@ -70,7 +70,9 @@ $updateStmt->execute([$target_admin_id]);
 // 8. Insert admin_lock_log
 $logStmt = $pdo->prepare("
     INSERT INTO admin_lock_log (admin_id, event_type, triggered_by, details) 
-    VALUES (?, 'unlocked_by_super_admin', ?, 'Manually unlocked by Super Admin')
+    SELECT t.admin_id, 'unlocked_by_super_admin', tr.admin_id, 'Manually unlocked by Super Admin'
+    FROM admin_users t, admin_users tr
+    WHERE t.id = ? AND tr.id = ?
 ");
 $logStmt->execute([$target_admin_id, $_SESSION['admin_id']]);
 

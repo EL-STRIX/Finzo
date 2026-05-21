@@ -7,7 +7,12 @@
 
 require_once dirname(__DIR__, 2) . '/middleware/auth-user.php';
 
-$user_id = $_SESSION['user_id'];
+if (!isset($_SESSION['user_customer_id'])) {
+    $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $_SESSION['user_customer_id'] = $stmt->fetchColumn();
+}
+$user_id = $_SESSION['user_customer_id'];
 
 // =====================================================
 // GET: FETCH NOTIFICATIONS

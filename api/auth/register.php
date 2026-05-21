@@ -105,6 +105,10 @@ try {
 
     $user_id = $pdo->lastInsertId();
 
+    $customer_id = 'FNZ-USR-' . str_pad($user_id, 3, '0', STR_PAD_LEFT);
+    $updateStmt = $pdo->prepare("UPDATE users SET customer_id = ? WHERE id = ?");
+    $updateStmt->execute([$customer_id, $user_id]);
+
     // Start session for the new user
     $_SESSION['user_id']     = (int)$user_id;
     $_SESSION['user_name']   = $full_name;
@@ -114,14 +118,22 @@ try {
     $_SESSION['role']        = 'customer';
     $_SESSION['last_activity'] = time();
 
-    // Insert welcome notifications
-    $notif_stmt = $pdo->prepare("
-        INSERT INTO notifications (user_id, type, title, message)
-        VALUES 
-        (?, 'system', 'Welcome to Finzo!', 'Your account has been registered. Complete your profile to activate.'),
-        (?, 'security', 'Profile Incomplete', 'Please complete your identity verification to unlock banking.')
+    // =====================================================
+    // INSERT DEFAULT NOTIFICATIONS
+    // =====================================================
+    $stmt = $pdo->prepare("
+    INSERT INTO notifications (user_id, type, title, message)
+    VALUES (?, 'system', 'Welcome to Finzo!', ?)
     ");
-    $notif_stmt->execute([$user_id, $user_id]);
+    $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
+    $stmt->execute([$customer_id, $welcomeMsg]);
+    
+    $stmt = $pdo->prepare("
+    INSERT INTO notifications (user_id, type, title, message)
+    VALUES (?, 'security', 'Profile Incomplete', ?)
+    ");
+    $profileMsg = "Please complete your identity verification to unlock full banking services.";
+    $stmt->execute([$customer_id, $profileMsg]);
 
     // Build redirect relative to project root (consistent with login.php)
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');

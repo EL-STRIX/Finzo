@@ -20,7 +20,7 @@ try {
     // FETCH USER DATA
     // =====================================================
     $stmt = $pdo->prepare("
-        SELECT id, full_name, email, phone, status, rejection_reason, created_at
+        SELECT id, customer_id, full_name, email, phone, status, rejection_reason, created_at
         FROM users
         WHERE id = ? AND is_deleted = 0
     ");
@@ -136,8 +136,16 @@ try {
     // =====================================================
     // NOTIFICATION COUNT (unread)
     // =====================================================
+    // Fetch unread notifications count using customer_id
+    if (!isset($_SESSION['user_customer_id'])) {
+        $stmt_cid = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+        $stmt_cid->execute([$user_id]);
+        $_SESSION['user_customer_id'] = $stmt_cid->fetchColumn();
+    }
+    $customer_id = $_SESSION['user_customer_id'];
+    
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$customer_id]);
     $notification_count = (int)$stmt->fetchColumn();
 
     // =====================================================
@@ -156,6 +164,7 @@ try {
         'success' => true,
         'user' => [
             'id'               => (int)$user['id'],
+            'customer_id'      => $user['customer_id'],
             'name'             => $user['full_name'],
             'email'            => $user['email'],
             'phone'            => $user['phone'],

@@ -15,7 +15,7 @@ $user_id = $_SESSION['user_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare("
-            SELECT id, full_name, email, phone, status, dob, gender, father_name,
+            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
                    occupation, annual_income, street, city, state, pincode, country,
                    id_type, id_number, created_at
             FROM users

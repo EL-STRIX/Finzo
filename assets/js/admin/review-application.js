@@ -45,18 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adminAvatar) adminAvatar.textContent = user.initials || (user.full_name ? user.full_name.charAt(0) : 'A');
 
         // Personal Details
-        const personalFields = document.querySelectorAll('#personal-fields .font-bold');
-        if (personalFields.length >= 10) {
-            personalFields[0].textContent = user.full_name;
-            personalFields[1].textContent = user.dob;
-            personalFields[2].textContent = user.gender;
-            personalFields[3].textContent = user.father_name;
-            personalFields[4].textContent = user.occupation;
-            personalFields[5].textContent = user.annual_income;
-            personalFields[6].textContent = user.phone;
-            personalFields[7].textContent = user.email;
-            personalFields[8].textContent = user.kyc_submitted_at;
-            personalFields[9].textContent = user.created_at;
+        const pFields = document.querySelectorAll('#personal-fields > div > div');
+        if (pFields.length >= 10) {
+            pFields[0].textContent = user.customer_id || 'FNZ-USR-PENDING';
+            pFields[1].textContent = user.full_name || 'N/A';
+            pFields[2].textContent = user.dob || 'N/A';
+            pFields[3].textContent = user.gender || 'N/A';
+            pFields[4].textContent = user.father_name || 'N/A';
+            pFields[5].textContent = user.occupation || 'N/A';
+            pFields[6].textContent = user.annual_income || 'N/A';
+            pFields[7].textContent = user.phone || 'N/A';
+            pFields[8].textContent = user.email || 'N/A';
+            pFields[9].textContent = user.kyc_submitted_at || 'N/A';
+            pFields[10].textContent = user.created_at || 'N/A';
         }
 
         // Address

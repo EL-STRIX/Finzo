@@ -79,7 +79,8 @@ if (!password_verify($security_answer_lower, $admin['security_answer_hash']) &&
         // Insert log
         $logStmt = $pdo->prepare("
             INSERT INTO admin_lock_log (admin_id, event_type, details) 
-            VALUES (?, 'locked_answer', 'Locked after 5 wrong security answers')
+            SELECT admin_id, 'locked_answer', 'Locked after 5 wrong security answers'
+            FROM admin_users WHERE id = ?
         ");
         $logStmt->execute([$admin['id']]);
         
@@ -99,7 +100,8 @@ if (!password_verify($security_answer_lower, $admin['security_answer_hash']) &&
         // Insert log
         $logStmt = $pdo->prepare("
             INSERT INTO admin_lock_log (admin_id, event_type, details) 
-            VALUES (?, 'answer_attempt_failed', 'Failed security answer attempt')
+            SELECT admin_id, 'answer_attempt_failed', 'Failed security answer attempt'
+            FROM admin_users WHERE id = ?
         ");
         $logStmt->execute([$admin['id']]);
         
@@ -129,7 +131,8 @@ if (!password_verify($security_answer_lower, $admin['security_answer_hash']) &&
     // Insert log
     $logStmt = $pdo->prepare("
         INSERT INTO admin_lock_log (admin_id, event_type, details) 
-        VALUES (?, 'unlocked_self', 'Unlocked via correct security answer')
+        SELECT admin_id, 'unlocked_self', 'Unlocked via correct security answer'
+        FROM admin_users WHERE id = ?
     ");
     $logStmt->execute([$admin['id']]);
     

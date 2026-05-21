@@ -31,7 +31,7 @@ if (empty($identity) || empty($password)) {
 
 // Search by Email OR Account Number
 $stmt = $pdo->prepare("
-    SELECT u.id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
+    SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
     FROM users u
     LEFT JOIN accounts a ON u.id = a.user_id
     WHERE (u.email = ? OR a.account_no = ?) AND u.is_deleted = 0
@@ -130,6 +130,7 @@ $account = $acct_stmt->fetch();
 
 // Set session variables
 $_SESSION['user_id']        = (int)$user['id'];
+$_SESSION['user_customer_id'] = $user['customer_id'];
 $_SESSION['user_name']      = $user['full_name'];
 $_SESSION['user_email']     = $user['email'];
 $_SESSION['user_phone']     = $user['phone'] ?? '';

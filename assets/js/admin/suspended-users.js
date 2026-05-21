@@ -87,7 +87,7 @@
                         <div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" style="background:${gradient}">${initials}</div>
                         <div style="display:flex; flex-direction:column;">
                             <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
-                            <span class="user-email text-xs opacity-60">${u.email}</span>
+                            <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>
                         </div>
                     </div>
                 </td>

@@ -93,9 +93,9 @@
                 <td>
                     <div class="flex items-center gap-3">
                         <div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" style="background:${gradient}">${initials}</div>
-                        <div>
-                            <div class="text-sm font-bold dark:text-slate-200">${u.full_name}</div>
-                            <div class="text-[11px] opacity-60 font-medium">${u.email}</div>
+                        <div style="display:flex; flex-direction:column;">
+                            <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
+                            <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>
                         </div>
                     </div>
                 </td>

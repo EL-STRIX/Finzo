@@ -55,7 +55,10 @@
                 <td>
                     <div class="flex items-center gap-3">
                         <div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>
-                        <div class="font-bold text-sm">${u.full_name}</div>
+                        <div>
+                            <div class="font-bold text-sm">${u.full_name}</div>
+                            <div class="text-[11px] opacity-60 font-mono mt-0.5">${u.customer_id || 'FNZ-USR-PENDING'}</div>
+                        </div>
                     </div>
                 </td>
                 <td class="text-xs opacity-70">${u.email}</td>

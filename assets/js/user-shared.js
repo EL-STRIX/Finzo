@@ -39,6 +39,8 @@ const STATE_KEYS = {
 // Internal cache — populated by fetchUserSession()
 const _userCache = {
   status: 'pending',
+  id: 0,
+  customerId: '',
   name: 'User',
   email: '',
   phone: '',
@@ -65,6 +67,8 @@ async function fetchUserSession() {
     const data = await res.json();
     if (data.success) {
       _userCache.status = data.user?.status || 'pending';
+      _userCache.id = data.user?.id || 0;
+      _userCache.customerId = data.user?.customer_id || '';
       _userCache.name = data.user?.name || 'User';
       _userCache.email = data.user?.email || '';
       _userCache.phone = data.user?.phone || '';
@@ -86,6 +90,8 @@ async function fetchUserSession() {
 
 const UserState = {
   get status() { return _userCache.status; },
+  get id() { return _userCache.id; },
+  get customerId() { return _userCache.customerId; },
   get name() { return _userCache.name; },
   get email() { return _userCache.email; },
   get phone() { return _userCache.phone; },
