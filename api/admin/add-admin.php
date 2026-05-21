@@ -103,10 +103,10 @@ try {
     $access_level = ($admin_role === 'admin') ? 'full' : 'restricted';
 
 
-    // Generate next Admin ID (STF00x)
+    // Generate next Admin ID (ADM00x)
     $id_stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(admin_id, 4) AS UNSIGNED)) as max_id FROM admin_users");
     $max_id = $id_stmt->fetchColumn() ?: 0;
-    $next_admin_id = 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
+    $next_admin_id = 'ADM' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
 
     // Fetch creator's alphanumeric admin_id (e.g., STF001)
     $creator_stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
