@@ -43,7 +43,7 @@
         }
 
         tbody.innerHTML = branches.map((b, i) => {
-            const typeStyle = b.type === 'MAIN' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
+            const typeStyle = b.type === 'system' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
             const countStr = String(i + 1).padStart(2, '0');
             
             return `
@@ -58,7 +58,7 @@
                     </div>
                 </td>
                 <td class="text-center font-bold">${b.staff_count || 0}</td>
-                <td><span class="status-badge" style="${typeStyle}">${b.type || 'BRANCH'}</span></td>
+                <td><span class="status-badge" style="${typeStyle}">${(b.type || 'BRANCH').toUpperCase()}</span></td>
                 <td><span class="status-badge badge-success">ACTIVE</span></td>
                 <td class="text-right">
                     <div class="flex justify-end gap-2">
@@ -68,7 +68,7 @@
                         <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-primary action-edit" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Edit">
                             <span class="material-symbols-outlined !text-[18px]">edit</span>
                         </button>
-                        ${b.type !== 'MAIN' ? `
+                        ${b.type !== 'system' ? `
                         <button type="button" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 action-delete" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Delete">
                             <span class="material-symbols-outlined !text-[18px]">delete</span>
                         </button>` : ''}
@@ -326,7 +326,7 @@
         
         const badgesContainer = document.getElementById('view-branch-badges');
         if (badgesContainer) {
-            const typeStyle = branch.type === 'MAIN' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
+            const typeStyle = branch.type === 'system' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
             const statusStyle = branch.status === 'active' ? 'badge-success' : 'badge-error';
             badgesContainer.innerHTML = `
                 <span class="status-badge" style="${typeStyle}font-size:9px;padding:2px 6px;">${branch.type || 'BRANCH'}</span>
@@ -419,8 +419,9 @@
     }
 
     function showDeleteModal(id, name, code) {
-        if (name.toLowerCase() === 'barasat') {
-            alert("The main branch 'Barasat' cannot be deleted.");
+        const branch = currentBranches.find(b => b.id == id);
+        if (branch && branch.type === 'system') {
+            alert("System branches cannot be deleted.");
             return;
         }
         document.getElementById('target-branch-name').textContent = `${name} (${code})`;
