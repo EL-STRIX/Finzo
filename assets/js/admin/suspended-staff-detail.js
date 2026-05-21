@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderHistory(data.history);
                 // The global window.AdminPortal handles the rest
             } else {
-                window.FinzoUtils.showToast(response.message || 'Record not found', 'error');
+                window.showToast(response.message || 'Record not found', 'error');
                 setTimeout(() => window.location.href = 'admin-suspended-staff.html', 2000);
             }
         } catch (error) {
             console.error('Error loading detail:', error);
-            window.FinzoUtils.showToast('Connection error', 'error');
+            window.showToast('Connection error', 'error');
         }
     }
 
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('admin-password')?.value;
 
         if(!password) {
-            window.FinzoUtils.showToast('Administrator password is required', 'error');
+            window.showToast('Administrator password is required', 'error');
             return;
         }
 
@@ -128,15 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.success || response.status === 'success') {
-                window.FinzoUtils.showToast('Staff account reinstated. Redirecting...', 'success');
+                window.showToast('Staff account reinstated. Redirecting...', 'success');
                 setTimeout(() => window.location.href = 'admin-suspended-staff.html', 1500);
             } else {
-                window.FinzoUtils.showToast(response.message || 'Action failed', 'error');
+                window.showToast(response.message || 'Action failed', 'error');
                 window.api.setButtonLoading(btn, false, 'Confirm & Authorize');
             }
         } catch (error) {
             console.error('Reinstate failed:', error);
-            window.FinzoUtils.showToast('Server error', 'error');
+            window.showToast('Server error', 'error');
             window.api.setButtonLoading(btn, false, 'Confirm & Authorize');
         }
     };
