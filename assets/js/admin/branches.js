@@ -357,7 +357,7 @@
             nameEl.textContent = branch.manager_name;
             emailEl.textContent = branch.manager_email || 'N/A';
             linkEl.classList.remove('hidden');
-            linkEl.href = 'admin-staff.html?search=' + encodeURIComponent(branch.manager_staff_id);
+            linkEl.href = 'admin-staff-detail.html?id=' + encodeURIComponent(branch.manager_id);
         } else {
             avatarEl.innerHTML = '';
             avatarEl.textContent = '??';
