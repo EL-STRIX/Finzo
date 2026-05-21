@@ -121,8 +121,8 @@
             <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors" data-value="${s.id}">
                 <div class="admin-avatar sm w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase">${s.initials || '??'}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold truncate">${s.name}</div>
-                    <div class="text-[10px] opacity-50 font-medium">${s.staff_id} — ${s.email}</div>
+                    <div class="text-xs font-bold truncate">${s.full_name}</div>
+                    <div class="text-[10px] opacity-50 font-medium">${s.staff_id} — ${s.personal_email}</div>
                 </div>
             </div>
         `).join('');
