@@ -198,13 +198,19 @@
 </div>
 
 <script>
-  buildSidebar('profile'); buildNavbar('Settings','My Profile');
+(async function initProfile() {
+  await fetchUserSession();
+  
+  buildSidebar('profile'); 
+  buildNavbar('Settings','My Profile');
+  
   document.getElementById('edit-name').value = UserState.name;
   document.getElementById('edit-phone').value = UserState.phone;
   document.getElementById('edit-email').value = UserState.email;
   document.getElementById('profile-name').textContent = UserState.name;
   document.getElementById('avatar-circle').textContent = UserState.initials;
   document.getElementById('info-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
+  
   if (UserState.isActive) {
     const realBalance = formatINR(UserState.balance);
     const balEl = document.getElementById('info-balance');
@@ -222,6 +228,7 @@
   const sMap = {pending:'badge-amber',under_review:'badge-teal',active:'badge-green',rejected:'badge-red'};
   const sLabel = {pending:'PENDING',under_review:'IN REVIEW',active:'ACTIVE',rejected:'REJECTED'};
   document.getElementById('info-status').innerHTML = `<span class="badge ${sMap[UserState.status]||'badge-gray'}">${sLabel[UserState.status]||'OFFLINE'}</span>`;
+})();
   
   function handleAvatarChange(input){
     const f=input.files[0];if(!f)return;

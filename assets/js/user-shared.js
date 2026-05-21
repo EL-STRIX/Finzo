@@ -64,14 +64,14 @@ async function fetchUserSession() {
     const data = await res.json();
     if (data.success) {
       _userCache.status = data.user?.status || 'pending';
-      _userCache.name = data.user?.full_name || 'User';
+      _userCache.name = data.user?.name || 'User';
       _userCache.email = data.user?.email || '';
       _userCache.phone = data.user?.phone || '';
       _userCache.accountNo = data.account?.account_no || '';
       _userCache.accountType = data.account?.account_type || 'savings';
       _userCache.balance = data.account?.balance || '0';
       _userCache.rejectionReason = data.user?.rejection_reason || '';
-      _userCache.notifCount = data.unread_notifications || 0;
+      _userCache.notifCount = data.notification_count || 0;
       _userCache._loaded = true;
 
       // Only sync non-sensitive metadata back to localStorage
