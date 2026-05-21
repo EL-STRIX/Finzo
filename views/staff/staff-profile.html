@@ -372,7 +372,7 @@
                         <input type="file" id="photo-upload" accept="image/*" style="display:none;">
                     </div>
                     <div class="text-center sm:text-left">
-                        <h1 class="text-2xl sm:text-3xl font-black font-headline text-white mb-1" id="profile-name">Loading...</h1>
+                        <h1 class="text-2xl sm:text-3xl font-black font-headline !text-white mb-1" style="color: white !important;" id="profile-name">Loading...</h1>
                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
                             <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest" id="profile-designation">—</span>
                             <span class="px-3 py-1 rounded-full bg-white/10 text-white/70 text-[10px] font-black uppercase tracking-widest" id="profile-department">—</span>
@@ -394,32 +394,28 @@
                 </div>
                 <div class="section-body p-6 sm:p-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
                             <div class="info-label">Full Name</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-name">—</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-name">—</div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
                             <div class="info-label">Date of Birth</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-dob">—</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-dob">—</div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
                             <div class="info-label">Gender</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-gender">—</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-gender">—</div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden md:col-span-2 lg:col-span-1">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden md:col-span-2 lg:col-span-1 min-w-0">
                             <div class="info-label">Personal Email</div>
-                            <div class="info-value text-slate-900 dark:text-white truncate" id="info-email">—</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-email">—</div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-amber-100 dark:border-amber-500/20 relative overflow-hidden group">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="info-label">Phone Number</div>
-                                    <div class="info-value text-slate-900 dark:text-white" id="info-phone">—</div>
-                                </div>
-                                <button onclick="openEditModal('phone')" class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-500/40 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px]">edit</span>
-                                </button>
-                            </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0 group">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar pr-10" id="info-phone">—</div>
+                            <button onclick="openEditModal('phone')" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
                         </div>
                         <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
                             <div class="info-label">Staff ID</div>
@@ -446,9 +442,9 @@
                                 <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center">
                                     <span class="material-symbols-outlined text-[20px]">person</span>
                                 </div>
-                                <div>
+                                <div class="min-w-0 overflow-x-auto no-scrollbar">
                                     <div class="info-label !mb-0 whitespace-nowrap">Contact Name</div>
-                                    <div class="info-value text-slate-900 dark:text-white text-lg whitespace-nowrap truncate" id="info-emergency-name">—</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg whitespace-nowrap" id="info-emergency-name">—</div>
                                 </div>
                             </div>
                         </div>
@@ -458,9 +454,9 @@
                                 <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center flex-shrink-0">
                                     <span class="material-symbols-outlined text-[20px]">call</span>
                                 </div>
-                                <div>
+                                <div class="min-w-0 overflow-x-auto no-scrollbar">
                                     <div class="info-label !mb-0 whitespace-nowrap">Contact Phone</div>
-                                    <div class="info-value text-slate-900 dark:text-white text-lg font-mono tracking-tight whitespace-nowrap truncate" id="info-emergency-phone">—</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg font-mono tracking-tight whitespace-nowrap" id="info-emergency-phone">—</div>
                                 </div>
                             </div>
                         </div>
@@ -475,26 +471,26 @@
                     <h3 class="font-headline font-bold text-lg">Address</h3>
                 </div>
                 <div class="section-body p-6 sm:p-8">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="col-span-2 md:col-span-4 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
-                            <div class="info-label">Street</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-street">—</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="col-span-1 md:col-span-2 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Street</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-street">—</div>
                         </div>
-                        <div class="col-span-2 md:col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
-                            <div class="info-label">City</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-city">—</div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">City</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-city">—</div>
                         </div>
-                        <div class="col-span-2 md:col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
-                            <div class="info-label">State</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-state">—</div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">State</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-state">—</div>
                         </div>
-                        <div class="col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
-                            <div class="info-label">Pincode</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-pincode">—</div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Pincode</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-pincode">—</div>
                         </div>
-                        <div class="col-span-1 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10">
-                            <div class="info-label">Country</div>
-                            <div class="info-value text-slate-900 dark:text-white" id="info-country">—</div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Country</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-country">—</div>
                         </div>
                     </div>
                 </div>
@@ -735,12 +731,12 @@
                             </div>
                             <span class="ml-auto px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase">Verified</span>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            ${doc.front_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 h-32 bg-slate-100 dark:bg-white/5">
-                                <img src="../../${doc.front_image}" class="w-full h-full object-cover" alt="Front">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            ${doc.front_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 flex items-center justify-center p-2">
+                                <img src="../../${doc.front_image}" class="w-full h-auto max-h-60 object-contain rounded-lg" alt="Front">
                             </div>` : ''}
-                            ${doc.back_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 h-32 bg-slate-100 dark:bg-white/5">
-                                <img src="../../${doc.back_image}" class="w-full h-full object-cover" alt="Back">
+                            ${doc.back_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 flex items-center justify-center p-2">
+                                <img src="../../${doc.back_image}" class="w-full h-auto max-h-60 object-contain rounded-lg" alt="Back">
                             </div>` : ''}
                         </div>
                     </div>
@@ -826,7 +822,11 @@
                     document.getElementById('pw-strength-bar').style.width = '0%';
                     document.getElementById('pw-strength-text').textContent = '';
                 } else {
-                    errEl.textContent = data.message || 'Failed to change password';
+                    let errMsg = data.message;
+                    if (!errMsg && data.errors) {
+                        errMsg = Object.values(data.errors)[0];
+                    }
+                    errEl.textContent = errMsg || 'Failed to change password';
                     errEl.classList.remove('hidden');
                 }
             } catch (e) {
