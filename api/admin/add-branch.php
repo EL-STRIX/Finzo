@@ -57,7 +57,14 @@ try {
     }
 
     // Generate branch code (FNZ-ST-XXX format)
-    $state_code = strtoupper(substr(preg_replace('/[^a-zA-Z]/', '', $state), 0, 2));
+    $state_clean = trim(preg_replace('/[^a-zA-Z\s]/', '', $state));
+    $words = preg_split('/\s+/', $state_clean);
+    if (count($words) >= 2) {
+        $state_code = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+    } else {
+        $state_code = strtoupper(substr(str_replace(' ', '', $state_clean), 0, 2));
+    }
+    
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM branches WHERE branch_code LIKE ?");
     $stmt->execute(["FNZ-{$state_code}-%"]);
     $count = (int)$stmt->fetchColumn();
