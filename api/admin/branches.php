@@ -43,7 +43,7 @@ try {
         SELECT
             b.id, b.name, b.branch_code, b.state, b.city, b.address, b.description,
             b.type, b.status, b.cert_path, b.created_at,
-            s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
+            s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
             (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id) as staff_count,
             (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id) as txn_count
         FROM branches b
