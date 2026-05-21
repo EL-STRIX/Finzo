@@ -258,57 +258,67 @@
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Type *</label>
-                <select class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold">
-                  <option value="Custom">Custom Branch</option>
-                </select>
+                <div class="finzo-dropdown w-full" id="branch-type-dropdown">
+                  <div class="finzo-dropdown-trigger !bg-slate-50 dark:!bg-surface-container !border-none !rounded-xl !py-3">
+                    <span class="dropdown-label font-bold text-sm text-slate-800 dark:text-slate-200">Custom Branch</span>
+                    <span class="material-symbols-outlined chevron text-slate-400">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu w-full !relative !mt-2 !shadow-sm !border !border-slate-100 dark:!border-white/5">
+                    <div class="finzo-dropdown-option is-selected" data-value="Custom">Custom Branch</div>
+                  </div>
+                  <input type="hidden" name="branch_type" value="Custom">
+                </div>
                 <p class="text-[9px] text-slate-400 mt-1 font-bold">Only one Main Branch (Barasat) is allowed by the system.</p>
               </div>
               <div class="col-span-1">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">State *</label>
-                <select id="branch-state" name="state" required
-                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold">
-                  <option value="" disabled selected>Select State / UT</option>
-                  <optgroup label="States">
-                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                    <option value="Assam">Assam</option>
-                    <option value="Bihar">Bihar</option>
-                    <option value="Chhattisgarh">Chhattisgarh</option>
-                    <option value="Goa">Goa</option>
-                    <option value="Gujarat">Gujarat</option>
-                    <option value="Haryana">Haryana</option>
-                    <option value="Himachal Pradesh">Himachal Pradesh</option>
-                    <option value="Jharkhand">Jharkhand</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Kerala">Kerala</option>
-                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                    <option value="Maharashtra">Maharashtra</option>
-                    <option value="Manipur">Manipur</option>
-                    <option value="Meghalaya">Meghalaya</option>
-                    <option value="Mizoram">Mizoram</option>
-                    <option value="Nagaland">Nagaland</option>
-                    <option value="Odisha">Odisha</option>
-                    <option value="Punjab">Punjab</option>
-                    <option value="Rajasthan">Rajasthan</option>
-                    <option value="Sikkim">Sikkim</option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Telangana">Telangana</option>
-                    <option value="Tripura">Tripura</option>
-                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                    <option value="Uttarakhand">Uttarakhand</option>
-                    <option value="West Bengal">West Bengal</option>
-                  </optgroup>
-                  <optgroup label="Union Territories">
-                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                    <option value="Chandigarh">Chandigarh</option>
-                    <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
-                    <option value="Delhi">Delhi</option>
-                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                    <option value="Ladakh">Ladakh</option>
-                    <option value="Lakshadweep">Lakshadweep</option>
-                    <option value="Puducherry">Puducherry</option>
-                  </optgroup>
-                </select>
+                <div class="finzo-dropdown w-full" id="branch-state-dropdown">
+                  <div class="finzo-dropdown-trigger !bg-slate-50 dark:!bg-surface-container !border-none !rounded-xl !py-3">
+                    <span class="dropdown-label font-bold text-sm text-slate-400">Select State / UT</span>
+                    <span class="material-symbols-outlined chevron text-slate-400">expand_more</span>
+                  </div>
+                  <div class="finzo-dropdown-menu w-full !relative !mt-2 !shadow-sm !border !border-slate-100 dark:!border-white/5 !max-h-[240px] !overflow-y-auto">
+                    <div class="px-4 py-2 text-[10px] font-black uppercase text-slate-400 tracking-widest bg-slate-50 dark:bg-white/5 sticky top-0 z-10 backdrop-blur-md">States</div>
+                    <div class="finzo-dropdown-option" data-value="Andhra Pradesh">Andhra Pradesh</div>
+                    <div class="finzo-dropdown-option" data-value="Arunachal Pradesh">Arunachal Pradesh</div>
+                    <div class="finzo-dropdown-option" data-value="Assam">Assam</div>
+                    <div class="finzo-dropdown-option" data-value="Bihar">Bihar</div>
+                    <div class="finzo-dropdown-option" data-value="Chhattisgarh">Chhattisgarh</div>
+                    <div class="finzo-dropdown-option" data-value="Goa">Goa</div>
+                    <div class="finzo-dropdown-option" data-value="Gujarat">Gujarat</div>
+                    <div class="finzo-dropdown-option" data-value="Haryana">Haryana</div>
+                    <div class="finzo-dropdown-option" data-value="Himachal Pradesh">Himachal Pradesh</div>
+                    <div class="finzo-dropdown-option" data-value="Jharkhand">Jharkhand</div>
+                    <div class="finzo-dropdown-option" data-value="Karnataka">Karnataka</div>
+                    <div class="finzo-dropdown-option" data-value="Kerala">Kerala</div>
+                    <div class="finzo-dropdown-option" data-value="Madhya Pradesh">Madhya Pradesh</div>
+                    <div class="finzo-dropdown-option" data-value="Maharashtra">Maharashtra</div>
+                    <div class="finzo-dropdown-option" data-value="Manipur">Manipur</div>
+                    <div class="finzo-dropdown-option" data-value="Meghalaya">Meghalaya</div>
+                    <div class="finzo-dropdown-option" data-value="Mizoram">Mizoram</div>
+                    <div class="finzo-dropdown-option" data-value="Nagaland">Nagaland</div>
+                    <div class="finzo-dropdown-option" data-value="Odisha">Odisha</div>
+                    <div class="finzo-dropdown-option" data-value="Punjab">Punjab</div>
+                    <div class="finzo-dropdown-option" data-value="Rajasthan">Rajasthan</div>
+                    <div class="finzo-dropdown-option" data-value="Sikkim">Sikkim</div>
+                    <div class="finzo-dropdown-option" data-value="Tamil Nadu">Tamil Nadu</div>
+                    <div class="finzo-dropdown-option" data-value="Telangana">Telangana</div>
+                    <div class="finzo-dropdown-option" data-value="Tripura">Tripura</div>
+                    <div class="finzo-dropdown-option" data-value="Uttar Pradesh">Uttar Pradesh</div>
+                    <div class="finzo-dropdown-option" data-value="Uttarakhand">Uttarakhand</div>
+                    <div class="finzo-dropdown-option" data-value="West Bengal">West Bengal</div>
+                    <div class="px-4 py-2 mt-2 text-[10px] font-black uppercase text-slate-400 tracking-widest bg-slate-50 dark:bg-white/5 sticky top-0 z-10 backdrop-blur-md">Union Territories</div>
+                    <div class="finzo-dropdown-option" data-value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</div>
+                    <div class="finzo-dropdown-option" data-value="Chandigarh">Chandigarh</div>
+                    <div class="finzo-dropdown-option" data-value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</div>
+                    <div class="finzo-dropdown-option" data-value="Delhi">Delhi</div>
+                    <div class="finzo-dropdown-option" data-value="Jammu and Kashmir">Jammu and Kashmir</div>
+                    <div class="finzo-dropdown-option" data-value="Ladakh">Ladakh</div>
+                    <div class="finzo-dropdown-option" data-value="Lakshadweep">Lakshadweep</div>
+                    <div class="finzo-dropdown-option" data-value="Puducherry">Puducherry</div>
+                  </div>
+                  <input type="hidden" id="branch-state" name="state" required value="">
+                </div>
               </div>
               <div class="col-span-1 sm:col-span-2">
                 <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Full Address *</label>
