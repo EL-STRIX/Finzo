@@ -21,6 +21,8 @@ check_admin_permission($pdo, $admin_id, 'add_branch');
 // Collect inputs
 $branch_name  = sanitize_input($_POST['branch_name'] ?? '');
 $state        = sanitize_input($_POST['state'] ?? '');
+$city         = sanitize_input($_POST['city'] ?? '');
+$address      = sanitize_input($_POST['address'] ?? '');
 $manager_id   = intval($_POST['manager_id'] ?? 0);
 $description  = sanitize_input($_POST['description'] ?? '');
 $admin_password = $_POST['admin_password'] ?? '';
@@ -97,10 +99,10 @@ try {
 
     // Insert branch
     $stmt = $pdo->prepare("
-        INSERT INTO branches (name, branch_code, state, description, manager_id, cert_path, type, status, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, 'custom', 'active', NOW())
+        INSERT INTO branches (name, branch_code, state, city, address, description, manager_id, cert_path, type, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'custom', 'active', NOW())
     ");
-    $stmt->execute([$branch_name, $branch_code, $state, $description, $mgr_id, $cert_path]);
+    $stmt->execute([$branch_name, $branch_code, $state, $city, $address, $description, $mgr_id, $cert_path]);
 
     $branch_id_new = $pdo->lastInsertId();
 
