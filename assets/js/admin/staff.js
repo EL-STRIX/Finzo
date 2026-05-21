@@ -533,10 +533,18 @@
         }
     }
 
-    // Initialize
+    // Initial Load
     document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        if (searchQuery) {
+            const searchInput = document.getElementById('admin-staff-finder');
+            if (searchInput) searchInput.value = searchQuery;
+            loadStaff(); // the fetch reads from the input
+        } else {
+            loadStaff();
+        }
         loadBranches();
-        loadStaff();
         bindEvents();
     });
 })();
