@@ -129,12 +129,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Get user info
-        $stmt = $pdo->prepare("SELECT id, full_name, email, status FROM users WHERE id = ? AND is_deleted = 0");
+        $stmt = $pdo->prepare("SELECT id, customer_id, full_name, email, status FROM users WHERE id = ? AND is_deleted = 0");
         $stmt->execute([$user_id]);
         $user = $stmt->fetch();
 
         if (!$user) {
             json_response(['success' => false, 'message' => 'User not found'], 404);
+        }
+
+        $customer_id = $user['customer_id'];
+        
+        $admin_display_id = $_SESSION['admin_display_id'] ?? null;
+        if (!$admin_display_id) {
+            $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+            $stmt->execute([$_SESSION['admin_id']]);
+            $admin_display_id = $stmt->fetchColumn() ?: $_SESSION['admin_id'];
         }
 
         switch ($action) {
@@ -186,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         reviewed_at = NOW()
                     WHERE user_id = ?
                 ");
-                $stmt->execute([$_SESSION['admin_id'], $user_id]);
+                $stmt->execute([$admin_display_id, $customer_id]);
 
                 $pdo->commit();
 
@@ -238,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         rejection_reason = ?
                     WHERE user_id = ?
                 ");
-                $stmt->execute([$_SESSION['admin_id'], $reason, $user_id]);
+                $stmt->execute([$admin_display_id, $reason, $customer_id]);
 
                 $pdo->commit();
 
@@ -273,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         admin_notes = ?
                     WHERE user_id = ?
                 ");
-                $stmt->execute([$notes, $user_id]);
+                $stmt->execute([$notes, $customer_id]);
 
                 json_response(['success' => true, 'message' => 'Notes saved successfully']);
                 break;
