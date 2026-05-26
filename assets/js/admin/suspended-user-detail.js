@@ -31,9 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('bc-name').textContent = user.full_name || 'N/A';
         
         const avatar = document.getElementById('detail-avatar');
-        avatar.textContent = user.initials || '??';
-        avatar.className = 'avatar-lg premium-gradient-primary';
-        avatar.style.background = '';
+        if (avatar) {
+            if (user.avatar_url) {
+                avatar.innerHTML = `<img src="${user.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
+                avatar.style.background = 'none';
+            } else {
+                avatar.textContent = user.initials || '??';
+                avatar.style.background = '';
+            }
+        }
         
         document.getElementById('detail-name').textContent = user.full_name || 'N/A';
         document.getElementById('detail-email').textContent = user.email || 'N/A';
@@ -50,7 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
         document.getElementById('detail-balance').textContent = balance;
-        document.getElementById('snap-balance').textContent = balance;
+        
+        const snap = document.getElementById('snap-balance');
+        if (snap) snap.textContent = balance;
         
         document.getElementById('detail-reason').textContent = user.suspension_reason || 'Administrative Suspensions';
         document.getElementById('detail-reason-detail').textContent = user.suspension_notes || 'This account was suspended for administrative review.';

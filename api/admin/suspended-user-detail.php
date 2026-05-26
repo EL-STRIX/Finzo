@@ -103,6 +103,11 @@ try {
         }
     }
 
+    // Avatar URL
+    $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+    $avatar_path = $base_avatar_dir . 'user_' . $user_id . '.jpg';
+    $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
+
     // Format fields for UI
     $formatted_user = [
         'id' => $user['id'],
@@ -111,6 +116,7 @@ try {
         'email' => $user['email'],
         'phone' => $user['phone'],
         'initials' => implode('', array_map(function($n) { return $n[0]; }, explode(' ', $user['full_name']))),
+        'avatar_url' => $avatar_url,
         'account_no' => $account ? $account['account_no'] : 'N/A',
         'account_type' => $account ? ucfirst($account['account_type']) : 'N/A',
         'balance' => $account ? $account['balance'] : 0,

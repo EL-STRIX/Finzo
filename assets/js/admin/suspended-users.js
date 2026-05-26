@@ -82,12 +82,16 @@
             const rowNum = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
+            const avatarHtml = u.avatar_url 
+                ? `<img src="${u.avatar_url}" class="avatar-circle object-cover w-10 h-10 rounded-full" alt="${u.full_name}">` 
+                : `<div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" style="background:${gradient}">${initials}</div>`;
+            
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td class="py-4 px-6 text-xs font-black opacity-30 tracking-widest">${rowNum}</td>
                 <td class="py-4 px-6">
                     <div class="user-cell flex items-center gap-3">
-                        <div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" style="background:${gradient}">${initials}</div>
+                        ${avatarHtml}
                         <div style="display:flex; flex-direction:column;">
                             <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
                             <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>

@@ -105,6 +105,7 @@ try {
     $users = $stmt->fetchAll();
 
     // Parse details to extract clean suspension reason and format date
+    $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
     foreach ($users as &$u) {
         // Extract reason
         if (preg_match('/Reason:\s*(.*)$/i', $u['raw_reason'], $matches)) {
@@ -120,6 +121,10 @@ try {
         } else {
             $u['suspended_at'] = 'N/A';
         }
+        
+        // Avatar URL
+        $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
+        $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
         
         // Duration (Always "Permanent" or calculated dynamically, standard is "Permanent" / "Eternal")
         $u['duration'] = 'Permanent';
