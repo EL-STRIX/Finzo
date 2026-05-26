@@ -253,7 +253,7 @@
             <button onclick="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
               <span class="material-symbols-outlined">power_settings_new</span> Reinstate Account
             </button>
-            <button onclick="window.SuspendedUserDetail.permanentDelete()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
+            <button onclick="openDeleteModal()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
               Permanent Deletion Request
             </button>
           </div>
@@ -280,6 +280,34 @@
       <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">
         <span class="material-symbols-outlined" style="font-size:16px">check</span>
         Confirm & Reinstate
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PERMANENT DELETION MODAL -->
+<div class="modal-overlay hidden" id="delete-modal">
+  <div class="modal-card">
+    <div class="modal-icon" style="background:#ffeef0">
+      <span class="material-symbols-outlined" style="color:#ff3b30;font-size:30px">delete_forever</span>
+    </div>
+    <div class="modal-title">Confirm Permanent Deletion</div>
+    <div class="modal-text">You are permanently deleting <strong id="delete-modal-name">--</strong>'s account. This action will close all bank accounts and archive their dossier permanently.</div>
+    
+    <div class="mt-6 w-full text-left">
+      <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Confirm Identity (Admin Password)</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+        <input type="password" id="delete-admin-password" placeholder="••••••••" 
+          class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
+      </div>
+    </div>
+
+    <div class="modal-actions mt-8">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" id="delete-confirm-btn" onclick="processDelete()" style="background:#ff3b30 !important; color:#fff !important;">
+        <span class="material-symbols-outlined" style="font-size:16px">check</span>
+        Confirm & Delete
       </button>
     </div>
   </div>

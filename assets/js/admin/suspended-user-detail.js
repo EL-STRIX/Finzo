@@ -96,9 +96,51 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openReinstateModal = () => document.getElementById('reinstate-modal').classList.remove('hidden');
     window.closeModal = () => document.getElementById('reinstate-modal').classList.add('hidden');
 
+    window.openDeleteModal = () => {
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            document.getElementById('delete-modal-name').textContent = document.getElementById('detail-name').textContent;
+            modal.classList.remove('hidden');
+        }
+    };
+    window.closeDeleteModal = () => {
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            const pwd = document.getElementById('delete-admin-password');
+            if (pwd) pwd.value = '';
+        }
+    };
+    window.processDelete = async () => {
+        const btn = document.getElementById('delete-confirm-btn');
+        const password = document.getElementById('delete-admin-password')?.value;
+        if (!password) {
+            window.FinzoUtils.showToast('Administrator password is required', 'error');
+            return;
+        }
+        window.api.setButtonLoading(btn, true, 'Confirming...');
+        try {
+            const response = await window.api.post('/admin/user-action.php', {
+                user_id: userId,
+                action: 'delete',
+                password: password
+            });
+            if (response.status === 'success' || response.success) {
+                window.FinzoUtils.showToast('Account archived successfully', 'success');
+                setTimeout(() => window.location.href = 'admin-deleted-users.html', 1500);
+            } else {
+                alert(response.message || 'Action failed.');
+                window.api.setButtonLoading(btn, false);
+            }
+        } catch (error) {
+            alert('Action failed.');
+            window.api.setButtonLoading(btn, false);
+        }
+    };
+
     window.processReinstate = async () => {
         const btn = document.getElementById('confirm-btn');
-        window.api.setButtonLoading(btn, true);
+        window.api.setButtonLoading(btn, true, 'Confirming...');
         
         try {
             const response = await window.api.post('/admin/user-action.php', {
@@ -111,11 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => window.location.href = 'admin-suspended-users.html', 1500);
             } else {
                 alert(response.message);
-                window.api.setButtonLoading(btn, false, '<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
+                window.api.setButtonLoading(btn, false);
             }
         } catch (error) {
             alert('Action failed.');
-            window.api.setButtonLoading(btn, false, '<span class="material-symbols-outlined" style="font-size:16px">check</span> Confirm & Reinstate');
+            window.api.setButtonLoading(btn, false);
         }
     };
 
