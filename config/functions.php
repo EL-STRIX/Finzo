@@ -330,6 +330,12 @@ function format_currency($amount) {
  * @return bool True if PIN is correct
  */
 function validate_pin($pdo, $user_id, $pin) {
+    // Resolve to customer_id if numeric
+    if (is_numeric($user_id)) {
+        $r = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+        $r->execute([$user_id]);
+        $user_id = $r->fetchColumn() ?: $user_id;
+    }
     $stmt = $pdo->prepare("SELECT txn_pin_hash FROM accounts WHERE user_id = ? AND status = 'active'");
     $stmt->execute([$user_id]);
     $hash = $stmt->fetchColumn();
@@ -565,6 +571,12 @@ function get_setting($pdo, $key, $default = null) {
  * @return bool True on success, false on failure
  */
 function update_setting($pdo, $key, $value, $admin_id) {
+    // Resolve to alphanumeric admin_id if numeric
+    if (is_numeric($admin_id)) {
+        $r = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+        $r->execute([$admin_id]);
+        $admin_id = $r->fetchColumn() ?: $admin_id;
+    }
     try {
         $stmt = $pdo->prepare("
             UPDATE system_settings 

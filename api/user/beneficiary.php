@@ -8,6 +8,9 @@
 require_once dirname(__DIR__, 2) . '/middleware/auth-user.php';
 
 $user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user_id = $stmt->fetchColumn() ?: $user_id;
 
 // =====================================================
 // GET: LIST BENEFICIARIES
