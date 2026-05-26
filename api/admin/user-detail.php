@@ -68,11 +68,16 @@ try {
     $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
     $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
 
+    // Avatar URL
+    $avatar_path = dirname(__DIR__, 2) . '/uploads/avatars/user_' . $user_id . '.jpg';
+    $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
+
     json_response([
         'success' => true,
         'user' => $user,
         'account' => $account,
         'transactions' => $transactions,
+        'avatar_url' => $avatar_url,
         'id_documents' => [
             'front_url' => $id_front_url,
             'back_url'  => $id_back_url

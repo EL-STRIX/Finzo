@@ -31,9 +31,21 @@ async function loadUserData() {
             if (topbarTitle) topbarTitle.textContent = fullName;
             
             const adminAvatar = document.getElementById('admin-user-avatar');
-            if (adminAvatar) adminAvatar.textContent = initials;
+            if (adminAvatar) {
+                if (data.avatar_url) {
+                    adminAvatar.innerHTML = `<img src="${data.avatar_url}" class="w-full h-full object-cover rounded-full">`;
+                } else {
+                    adminAvatar.textContent = initials;
+                }
+            }
             const placeholder = document.getElementById('user-avatar-placeholder');
-            if (placeholder) placeholder.textContent = initials;
+            if (placeholder) {
+                if (data.avatar_url) {
+                    placeholder.innerHTML = `<img src="${data.avatar_url}" class="w-full h-full object-cover">`;
+                } else {
+                    placeholder.textContent = initials;
+                }
+            }
 
             // Update Info
             document.getElementById('info-customer-id').textContent = user.customer_id || 'FNZ-USR-PENDING';
@@ -238,10 +250,12 @@ window.executeGovernanceAction = async () => {
     
     if (!reason) { alert("Please select a primary reason for this action."); return; }
 
+    const mappedAction = currentMode === 'block' ? 'suspend' : 'delete';
+
     try {
-        const response = await window.api.post('/admin/user-detail.php', {
-            action: currentMode,
-            id: userId,
+        const response = await window.api.post('/admin/user-action.php', {
+            action: mappedAction,
+            user_id: userId,
             reason: reason,
             notes: document.getElementById('governance-notes').value,
             password: pass
