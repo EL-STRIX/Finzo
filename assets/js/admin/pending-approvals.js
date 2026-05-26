@@ -122,24 +122,37 @@
      * Update stat cards
      */
     function updateStats(stats) {
-        const cardLabels = document.querySelectorAll('.admin-stat-label');
-        cardLabels.forEach(label => {
-            const nextEl = label.nextElementSibling;
-            if (!nextEl) return;
-            label.classList.remove('skeleton');
-            nextEl.classList.remove('skeleton');
+        // Map each label text → value from stats
+        const labelMap = {
+            'PENDING REVIEW': String(stats.pending_review ?? 0),
+            'UNDER REVIEW':   String(stats.under_review   ?? 0),
+            'APPROVED TODAY': String(stats.approved_today ?? 0),
+            'TOTAL APPROVED': String(stats.total_approved ?? 0),
+        };
 
-            const txt = label.textContent.trim();
-            if (txt === 'PENDING REVIEW' && stats.pending_review !== undefined) {
-                nextEl.innerHTML = `${stats.pending_review} <span class="admin-stat-delta negative">Action Required</span>`;
-            } else if (txt === 'APPROVED TODAY' && stats.approved_today !== undefined) {
-                nextEl.textContent = stats.approved_today;
-            } else if (txt === 'REJECTED TODAY' && stats.rejected_today !== undefined) {
-                nextEl.textContent = stats.rejected_today;
-            } else if (txt === 'TOTAL APPROVED' && stats.total_approved !== undefined) {
-                nextEl.textContent = stats.total_approved;
+        document.querySelectorAll('.admin-stat-label').forEach(label => {
+            const key = label.textContent.trim();
+            const valueEl = label.nextElementSibling;
+            if (valueEl && labelMap[key] !== undefined) {
+                valueEl.classList.remove('skeleton');
+                valueEl.textContent = labelMap[key];
             }
         });
+
+        // Topbar pending badge
+        const badge = document.getElementById('pending-badge');
+        const badgeCount = document.getElementById('pending-badge-count');
+        const pending = (stats.pending_review ?? 0) + (stats.under_review ?? 0);
+        if (badge && badgeCount) {
+            if (pending > 0) {
+                badge.classList.remove('hidden');
+                badge.classList.add('flex');
+                badgeCount.textContent = `${pending} Pending`;
+            } else {
+                badge.classList.add('hidden');
+                badge.classList.remove('flex');
+            }
+        }
     }
 
     /**
