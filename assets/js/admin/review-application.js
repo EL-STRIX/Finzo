@@ -97,15 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Account Details
         const accountBlock = document.getElementById('account-fields');
-        if (accountBlock) {
-             const accTypeDiv = accountBlock.querySelector('div:first-child');
-             if(accTypeDiv) accTypeDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">${account.account_type || 'Savings'} Account</span>`;
+        if (accountBlock && accountBlock.children.length >= 3) {
+             const accTypeDiv = accountBlock.children[0];
+             const initDepDiv = accountBlock.children[1];
+             const pinDiv = accountBlock.children[2];
              
-             const initDepDiv = accountBlock.querySelector('div:nth-child(2) .font-bold');
-             if(initDepDiv) initDepDiv.textContent = `₹${parseFloat(account.initial_deposit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+             if (accTypeDiv) accTypeDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">${account.account_type || 'Savings'} Account</span>`;
              
-             const pinDiv = accountBlock.querySelector('div:last-child');
-             if (pinDiv) pinDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Transaction PIN</label><div class="flex items-center gap-2 text-on-tertiary-container font-black"><span class="material-symbols-outlined text-lg">check_circle</span><span>Set ✅</span></div>`;
+             if (initDepDiv) {
+                 initDepDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initial Deposit</label><div class="font-bold text-lg">₹${parseFloat(account.initial_deposit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>`;
+             }
+             
+             if (pinDiv) {
+                 pinDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Transaction PIN</label><div class="flex items-center gap-2.5 font-bold"><span class="font-mono text-base tracking-widest text-slate-600 dark:text-slate-400">••••</span><span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30">Encrypted</span></div>`;
+             }
         }
 
         // Timeline
