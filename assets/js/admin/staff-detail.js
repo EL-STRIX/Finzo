@@ -301,14 +301,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '<tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">';
                         html += '<td class="text-xs font-medium">' + dateStr + '</td>';
                         html += '<td class="font-bold text-[11px] uppercase tracking-wider text-slate-800 dark:text-slate-100"><span class="px-2 py-1 bg-slate-100 dark:bg-white/10 rounded-md">' + a.action_type + '</span></td>';
-                        html += '<td class="font-mono text-xs opacity-60">' + (a.entity_type ? (a.entity_type + ' #' + a.entity_id) : '—') + '</td>';
                         html += '<td class="text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="' + (a.details || '') + '">' + (a.details || '—') + '</td>';
                         html += '<td class="text-right text-xs font-mono opacity-60">' + (a.ip_address || '—') + '</td>';
                         html += '</tr>';
                     }
                     actBody.innerHTML = html;
                 } else {
-                    actBody.innerHTML = '<tr><td colspan="5" class="py-12 text-center opacity-40 font-bold">No recent activity recorded</td></tr>';
+                    actBody.innerHTML = '<tr><td colspan="4" class="py-12 text-center opacity-40 font-bold">No recent activity recorded</td></tr>';
                 }
             }
 
