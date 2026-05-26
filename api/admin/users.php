@@ -75,6 +75,14 @@ try {
     $stmt->execute($params);
     $users = $stmt->fetchAll();
 
+    // Add avatar_url to each user
+    $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+    foreach ($users as &$u) {
+        $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
+        $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+    }
+    unset($u);
+
     json_response([
         'success'      => true,
         'users'        => $users,

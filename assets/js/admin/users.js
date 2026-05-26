@@ -54,11 +54,15 @@
             const statusText = statusVal.toUpperCase();
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
+            const avatarHtml = u.avatar_url 
+                ? `<img src="${u.avatar_url}" class="admin-avatar object-cover" alt="${name}">` 
+                : `<div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>`;
+            
             return `
             <tr>
                 <td>
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>
+                        ${avatarHtml}
                         <div>
                             <div class="font-bold text-sm">${name}</div>
                             <div class="text-[11px] opacity-60 font-mono mt-0.5">${u.customer_id || 'FNZ-USR-PENDING'}</div>
