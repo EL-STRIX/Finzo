@@ -62,32 +62,100 @@
             const prefix = isNegative ? '-' : '+';
             const amountFormatted = `${prefix}₹${rawAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-            // Initials for avatar
-            const senderInitials = r.from_user_name ? r.from_user_name.charAt(0) : 'U';
-            const receiverInitials = r.to_user_name ? r.to_user_name.charAt(0) : 'U';
+            // Determine From Account (Source) HTML
+            let fromAccountHtml = '';
+            if (typeClass === 'deposit') {
+                if (r.description && (r.description.includes('Initial Deposit') || r.description.includes('Account Opening'))) {
+                    fromAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">rocket_launch</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">Opening Bal</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Init</div>
+                        </div>
+                    </div>`;
+                } else if (r.processed_by) {
+                    fromAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">badge</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">OTC Cash</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff: ${r.processed_by}</div>
+                        </div>
+                    </div>`;
+                } else {
+                    fromAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">account_balance_wallet</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">Direct Deposit</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Direct</div>
+                        </div>
+                    </div>`;
+                }
+            } else if (typeClass === 'interest_credit') {
+                fromAccountHtml = `
+                <div class="flex items-center gap-3">
+                    <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">percent</span></div>
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-slate-100">Interest Credit</div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Auto</div>
+                    </div>
+                </div>`;
+            } else {
+                // For withdrawals and transfers, From Account is the source customer
+                const senderInitials = r.from_user_name ? r.from_user_name.charAt(0) : 'U';
+                fromAccountHtml = `
+                <div class="flex items-center gap-3">
+                    <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${senderInitials}</div>
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-slate-100">${r.from_user_name}</div>
+                        <div class="text-[11px] opacity-40 font-mono font-semibold">${r.from_account_no}</div>
+                    </div>
+                </div>`;
+            }
+
+            // Determine To Account (Destination) HTML
+            let toAccountHtml = '';
+            if (typeClass === 'withdrawal') {
+                if (r.processed_by) {
+                    toAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">badge</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">OTC Cash</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff: ${r.processed_by}</div>
+                        </div>
+                    </div>`;
+                } else {
+                    toAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">atm</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">Direct Withdrawal</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ATM / Direct</div>
+                        </div>
+                    </div>`;
+                }
+            } else {
+                // For deposits, transfers, and interest, To Account is the recipient customer
+                const receiverInitials = r.to_user_name ? r.to_user_name.charAt(0) : 'U';
+                toAccountHtml = `
+                <div class="flex items-center gap-3">
+                    <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;">${receiverInitials}</div>
+                    <div>
+                        <div class="font-bold text-slate-800 dark:text-slate-100">${r.to_user_name}</div>
+                        <div class="text-[11px] opacity-40 font-mono font-semibold">${r.to_account_no}</div>
+                    </div>
+                </div>`;
+            }
 
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td class="font-bold opacity-30 text-[11px] tracking-widest">${countStr}</td>
                 <td class="text-[11px] font-bold opacity-50 font-mono tracking-tighter">${r.txn_id}</td>
-                <td>
-                    <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${senderInitials}</div>
-                        <div>
-                            <div class="font-bold text-slate-800 dark:text-slate-100">${r.from_user_name}</div>
-                            <div class="text-[11px] opacity-40 font-mono font-semibold">${r.from_account_no}</div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;">${receiverInitials}</div>
-                        <div>
-                            <div class="font-bold text-slate-800 dark:text-slate-100">${r.to_user_name}</div>
-                            <div class="text-[11px] opacity-40 font-mono font-semibold">${r.to_account_no}</div>
-                        </div>
-                    </div>
-                </td>
+                <td>${fromAccountHtml}</td>
+                <td>${toAccountHtml}</td>
                 <td><span class="badge badge-${typeClass}">${r.type.toUpperCase()}</span></td>
                 <td class="text-sm font-black ${amountClass}">${amountFormatted}</td>
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
