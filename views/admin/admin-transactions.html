@@ -146,16 +146,18 @@
                     <table id="transactions-table" class="admin-table w-full text-left min-w-[900px]">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>TXN ID</th>
-                                <th>User</th>
+                                <th>From Account</th>
+                                <th>To Account</th>
                                 <th>Type</th>
-                                <th>Branch</th>
                                 <th>Amount</th>
                                 <th>Date</th>
+                                <th>Status</th>
                                 <th class="text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="txn-table-body">
                             <!-- Data injected by transactions.js -->
                         </tbody>
                     </table>

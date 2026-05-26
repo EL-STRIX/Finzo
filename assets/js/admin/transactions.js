@@ -15,26 +15,22 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const statusInput = document.getElementById('filter-status');
-            const accountInput = document.getElementById('filter-account');
-            const searchInput = document.getElementById('filter-search');
-            const dateFrom = document.getElementById('date-from');
-            const dateTo = document.getElementById('date-to');
+            const searchInput = document.getElementById('transaction-search');
 
             const response = await window.api.get('/admin/transactions.php', {
                 type: currentType,
-                status: statusInput ? statusInput.value : 'all',
-                account_type: accountInput ? accountInput.value : 'all',
+                status: 'all',
+                account_type: 'all',
                 search: searchInput ? searchInput.value : '',
-                date_from: dateFrom ? dateFrom.value : '',
-                date_to: dateTo ? dateTo.value : '',
+                date_from: '',
+                date_to: '',
                 page: currentPage,
                 per_page: rowsPerPage
             });
 
             if (response.success) {
-                renderTable(response.data.transactions, response.data.total, response.data.pages);
-                updateStats(response.data.stats || {});
+                renderTable(response.transactions, response.total, response.pages);
+                updateStats(response.summary || {});
             }
         } catch (error) {
             console.error('Failed to load transactions:', error);
@@ -56,31 +52,48 @@
         }
 
         tbody.innerHTML = transactions.map((r, i) => {
-            const initials = r.initials || r.full_name.charAt(0);
-            const typeClass = r.type.toLowerCase();
-            const amountClass = r.amount_formatted.startsWith('+') ? 'text-emerald-500' : 'text-rose-500';
             const countStr = String((currentPage - 1) * rowsPerPage + i + 1).padStart(2, '0');
+            const typeClass = r.type.toLowerCase();
+            
+            // Format amount nicely with Rupee symbol
+            const rawAmount = parseFloat(r.amount);
+            const isNegative = ['withdrawal', 'transfer'].includes(typeClass) && r.from_user_name !== 'N/A';
+            const amountClass = isNegative ? 'text-rose-500' : 'text-emerald-500';
+            const prefix = isNegative ? '-' : '+';
+            const amountFormatted = `${prefix}₹${rawAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            // Initials for avatar
+            const senderInitials = r.from_user_name ? r.from_user_name.charAt(0) : 'U';
+            const receiverInitials = r.to_user_name ? r.to_user_name.charAt(0) : 'U';
 
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td class="font-bold opacity-30 text-[11px] tracking-widest">${countStr}</td>
+                <td class="text-[11px] font-bold opacity-50 font-mono tracking-tighter">${r.txn_id}</td>
                 <td>
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${initials}</div>
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${senderInitials}</div>
                         <div>
-                            <div class="font-bold text-slate-800 dark:text-slate-100">${r.full_name}</div>
-                            <div class="text-[11px] opacity-40 font-semibold">${r.email}</div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">${r.from_user_name}</div>
+                            <div class="text-[11px] opacity-40 font-mono font-semibold">${r.from_account_no}</div>
                         </div>
                     </div>
                 </td>
-                <td class="text-xs font-bold font-mono text-slate-600 dark:text-slate-400 opacity-80">${r.account_no}</td>
-                <td class="text-[11px] font-bold opacity-50 font-mono tracking-tighter">${r.transaction_id}</td>
-                <td><span class="badge ${getBadgeClass(typeClass)}">${r.type.toUpperCase()}</span></td>
+                <td>
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;">${receiverInitials}</div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">${r.to_user_name}</div>
+                            <div class="text-[11px] opacity-40 font-mono font-semibold">${r.to_account_no}</div>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="badge badge-${typeClass}">${r.type.toUpperCase()}</span></td>
+                <td class="text-sm font-black ${amountClass}">${amountFormatted}</td>
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
-                <td class="text-sm font-black ${amountClass}">${r.amount_formatted}</td>
                 <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
                 <td class="text-right">
-                    <button class="p-2 opacity-30 hover:opacity-100 transition-all text-slate-500 font-bold hover:text-primary">
+                    <button onclick="window.open('../../api/pdf/receipt-pdf.php?id=${r.txn_id}', '_blank')" class="p-2 opacity-30 hover:opacity-100 transition-all text-slate-500 font-bold hover:text-primary">
                         <span class="material-symbols-outlined text-lg">print</span>
                     </button>
                 </td>
@@ -91,26 +104,17 @@
     }
 
     /**
-     * Get badge class based on transaction type
-     */
-    function getBadgeClass(type) {
-        if (type === 'deposit') return 'badge-deposit';
-        if (type === 'withdrawal') return 'badge-withdrawal';
-        return 'badge-transfer';
-    }
-
-    /**
      * Update pagination UI
      */
     function updatePagination(total, pages) {
-        const info = document.getElementById('pag-info');
+        const info = document.getElementById('pagination-info');
         if (info) {
             info.textContent = `Showing ${Math.min((currentPage - 1) * rowsPerPage + 1, total)}-${Math.min(currentPage * rowsPerPage, total)} of ${total}`;
         }
 
-        const prevBtn = document.getElementById('prev-page');
-        const nextBtn = document.getElementById('next-page');
-        const pagNumbers = document.getElementById('pag-numbers');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pagNumbers = document.getElementById('page-numbers');
 
         if (prevBtn) {
             prevBtn.disabled = (currentPage === 1);
@@ -138,25 +142,13 @@
     }
 
     /**
-     * Update stat cards
+     * Update stat cards (safely, if present)
      */
     function updateStats(stats) {
         const cards = document.querySelectorAll('.stat-card');
-        if (cards.length >= 1 && stats.volume_today) {
+        if (cards.length >= 1 && stats.total_amount !== undefined) {
             const val = cards[0].querySelector('.text-2xl');
-            if (val) { val.textContent = stats.volume_today; val.classList.remove('skeleton'); }
-        }
-        if (cards.length >= 2 && stats.deposits_today !== undefined) {
-            const val = cards[1].querySelector('.text-2xl');
-            if (val) { val.textContent = stats.deposits_today; val.classList.remove('skeleton'); }
-        }
-        if (cards.length >= 3 && stats.withdrawals_today !== undefined) {
-            const val = cards[2].querySelector('.text-2xl');
-            if (val) { val.textContent = stats.withdrawals_today; val.classList.remove('skeleton'); }
-        }
-        if (cards.length >= 4 && stats.transfers_today !== undefined) {
-            const val = cards[3].querySelector('.text-2xl');
-            if (val) { val.textContent = stats.transfers_today; val.classList.remove('skeleton'); }
+            if (val) { val.textContent = '₹' + parseFloat(stats.total_amount).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
         }
     }
 
@@ -164,56 +156,30 @@
      * Bind events
      */
     function bindEvents() {
-        // Tabs
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                tabs.forEach(t => {
-                    t.classList.remove('active', 'bg-primary', 'text-white', 'shadow-lg');
-                    t.classList.add('text-slate-500');
-                });
-                this.classList.add('active', 'bg-primary', 'text-white', 'shadow-lg');
-                this.classList.remove('text-slate-500');
-                
-                currentType = this.getAttribute('data-type');
+        // Auto filter on Type Dropdown Change
+        const typeInput = document.getElementById('filter-type');
+        if (typeInput) {
+            typeInput.addEventListener('change', function() {
+                currentType = this.value;
                 currentPage = 1;
                 loadTransactions();
             });
-        });
+        }
 
-        // Apply Filters
-        const applyBtn = document.getElementById('apply-filters');
-        if (applyBtn) applyBtn.addEventListener('click', () => { currentPage = 1; loadTransactions(); });
-
-        // Reset Filters
-        const resetBtn = document.getElementById('reset-filters');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                const searchInput = document.getElementById('filter-search');
-                const dateFrom = document.getElementById('date-from');
-                const dateTo = document.getElementById('date-to');
-                const statusInput = document.getElementById('filter-status');
-                const accountInput = document.getElementById('filter-account');
-
-                if (searchInput) searchInput.value = '';
-                if (dateFrom) dateFrom.value = '';
-                if (dateTo) dateTo.value = '';
-                
-                // Reset dropdowns manually if needed
-                if (statusInput) statusInput.value = 'all';
-                if (accountInput) accountInput.value = 'all';
-
-                const statusLabel = document.querySelector('#status-dropdown .dropdown-label');
-                if (statusLabel) statusLabel.textContent = 'All Status';
-                const accountLabel = document.querySelector('#account-dropdown .dropdown-label');
-                if (accountLabel) accountLabel.textContent = 'All Accounts';
-
-                const firstTab = document.querySelector('.filter-tab-btn');
-                if (firstTab) firstTab.click(); // This will trigger loadTransactions
+        // Auto filter on Search Input (Debounced)
+        const searchInput = document.getElementById('transaction-search');
+        if (searchInput) {
+            let debounceTimer;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    currentPage = 1;
+                    loadTransactions();
+                }, 300);
             });
         }
 
-        // Pagination
+        // Pagination Click Events
         document.addEventListener('click', (e) => {
             const span = e.target.closest('span[data-page]');
             if (span) {
@@ -222,10 +188,10 @@
             }
         });
 
-        const prevBtn = document.getElementById('prev-page');
+        const prevBtn = document.getElementById('prev-btn');
         if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadTransactions(); } });
 
-        const nextBtn = document.getElementById('next-page');
+        const nextBtn = document.getElementById('next-btn');
         if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; loadTransactions(); });
     }
 
