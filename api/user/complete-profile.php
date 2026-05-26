@@ -20,6 +20,9 @@ if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
 }
 
 $user_id = $_SESSION['user_id'];
+$cid_stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+$cid_stmt->execute([$user_id]);
+$customer_id_str = $cid_stmt->fetchColumn();
 $errors = [];
 
 // =====================================================
@@ -243,15 +246,14 @@ try {
     }
 
     // Generate unique application number
-    $stmt = $pdo->query("SELECT MAX(id) FROM kyc_applications");
-    $max_id = $stmt->fetchColumn() ?: 0;
-    $next_num = $max_id + 1;
     $year = date('Y');
+    $stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(application_no, 8) AS UNSIGNED)) FROM kyc_applications WHERE application_no LIKE 'KYC{$year}%'");
+    $next_num = ($stmt->fetchColumn() ?: 0) + 1;
     $application_no = 'KYC' . $year . str_pad($next_num, 7, '0', STR_PAD_LEFT);
 
     // Check if user already has a kyc_applications row
     $stmt = $pdo->prepare("SELECT id, submission_count FROM kyc_applications WHERE user_id = ?");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$customer_id_str]);
     $existing_app = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($existing_app) {
@@ -288,7 +290,7 @@ try {
             $street, $city, $state, $pincode,
             $id_type, $id_number, $id_front_path, $id_back_path,
             $account_type, $initial_deposit,
-            $user_id
+            $customer_id_str
         ]);
     } else {
         // First submission
@@ -308,7 +310,7 @@ try {
             )
         ");
         $stmt->execute([
-            $user_id, $application_no,
+            $customer_id_str, $application_no,
             $dob, $gender, $father_name, $occupation, $annual_income,
             $street, $city, $state, $pincode,
             $id_type, $id_number, $id_front_path, $id_back_path,
