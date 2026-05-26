@@ -78,6 +78,9 @@ async function loadUserData() {
             const addressEl = document.querySelector('.info-value.text-sm.leading-tight');
             if(addressEl) addressEl.textContent = addressParts.length > 0 ? addressParts.join(', ') : 'N/A';
 
+            // Explicitly remove all skeletons inside updated info fields
+            document.querySelectorAll('[id^="info-"] .skeleton, .info-value .skeleton').forEach(el => el.remove());
+
             // Update Status
             const userStatus = user.status || 'pending';
             const statusColors = {
@@ -101,6 +104,31 @@ async function loadUserData() {
                 if (span) span.textContent = `${userStatus.replace('_', ' ')} Account`;
                 const dot = tbContainer.querySelector('.w-2');
                 if (dot) dot.className = `w-2 h-2 bg-${color}-500 rounded-full animate-pulse`;
+            }
+
+            // Update Suspend/Reactivate Button State
+            const suspendBtn = document.getElementById('suspend-btn');
+            const suspendIcon = document.getElementById('suspend-btn-icon');
+            const suspendText = document.getElementById('suspend-btn-text');
+            
+            if (suspendBtn && suspendIcon && suspendText) {
+                if (userStatus === 'suspended') {
+                    suspendIcon.textContent = 'check_circle';
+                    suspendIcon.className = 'material-symbols-outlined text-emerald-500';
+                    suspendText.textContent = 'Reactivate Account';
+                    suspendBtn.onclick = function() {
+                        if (confirm('Are you sure you want to reinstate this user account?')) {
+                            executeReinstatement();
+                        }
+                    };
+                } else {
+                    suspendIcon.textContent = 'block';
+                    suspendIcon.className = 'material-symbols-outlined text-orange-500';
+                    suspendText.textContent = 'Deactivate Account';
+                    suspendBtn.onclick = function() {
+                        openGovernanceModal('block');
+                    };
+                }
             }
 
             // Update Sidebar Accounts
@@ -264,7 +292,13 @@ window.executeGovernanceAction = async () => {
         if (response.status === 'success' || response.success) {
             document.getElementById('confirm-governance-btn').textContent = 'SUCCESS! AUDIT LOGGED';
             setTimeout(() => {
-                location.reload();
+                if (mappedAction === 'suspend') {
+                    window.location.href = 'admin-suspended-users.html';
+                } else if (mappedAction === 'delete') {
+                    window.location.href = 'admin-deleted-users.html';
+                } else {
+                    location.reload();
+                }
             }, 1500);
         } else {
             const errorEl = document.getElementById('auth-error');
@@ -336,4 +370,25 @@ function renderUserTransactions(transactions) {
         `;
     }).join('');
     document.getElementById('user-transactions-body').innerHTML = html;
+}
+
+async function executeReinstatement() {
+    const userId = new URLSearchParams(window.location.search).get('id');
+    try {
+        const response = await window.api.post('/admin/user-action.php', {
+            action: 'reinstate',
+            user_id: userId
+        });
+
+        if (response.status === 'success' || response.success) {
+            window.portal.showToast('User account reactivated successfully', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            alert(response.message || 'Failed to reinstate user.');
+        }
+    } catch (error) {
+        alert('Action failed. Please try again.');
+    }
 }

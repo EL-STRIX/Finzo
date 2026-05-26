@@ -19,11 +19,11 @@ try {
     $per_page     = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
     // Build query
-    $where_clauses = ["u.is_deleted = 0"];
+    $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
     $params = [];
 
     // Status filter
-    if ($status !== 'all' && in_array($status, ['pending', 'under_review', 'active', 'suspended', 'rejected'])) {
+    if ($status !== 'all' && in_array($status, ['pending', 'under_review', 'active', 'rejected'])) {
         $where_clauses[] = "u.status = ?";
         $params[] = $status;
     }

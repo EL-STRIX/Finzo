@@ -221,10 +221,10 @@
           <div class="admin-card p-6">
             <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5 ml-1">ADMIN ACTIONS</h5>
             <div class="space-y-3">
-              <button onclick="openGovernanceModal('block')" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
+              <button id="suspend-btn" onclick="openGovernanceModal('block')" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
                 <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-orange-500">block</span>
-                  <span>Deactivate Account</span>
+                  <span id="suspend-btn-icon" class="material-symbols-outlined text-orange-500">block</span>
+                  <span id="suspend-btn-text">Deactivate Account</span>
                 </div>
                 <span class="material-symbols-outlined text-slate-300">chevron_right</span>
               </button>
