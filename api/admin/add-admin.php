@@ -129,7 +129,7 @@ try {
     
     $new_id = $pdo->lastInsertId();
 
-    write_audit_log($pdo, 'admin_created', $new_id, 'admin', $_SESSION['admin_id'], 'admin', 
+    write_audit_log($pdo, 'admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', 
         "New admin created: {$full_name} | Role: {$admin_role}");
 
     json_response([

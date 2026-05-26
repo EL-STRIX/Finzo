@@ -212,19 +212,19 @@ try {
         INSERT INTO staff_documents (staff_id, id_type, id_number, front_image, back_image)
         VALUES (?, ?, ?, ?, ?)
     ");
-    $stmt->execute([$new_staff_db_id, $id_type, $id_number, $id_front_path, $id_back_path]);
+    $stmt->execute([$staff_id_str, $id_type, $id_number, $id_front_path, $id_back_path]);
 
     // 14. Insert into staff_address (uses integer FK to staff.id)
     $stmt = $pdo->prepare("
         INSERT INTO staff_address (staff_id, street, city, state, pincode, country)
         VALUES (?, ?, ?, ?, ?, 'India')
     ");
-    $stmt->execute([$new_staff_db_id, $street, $city, $state, $pincode]);
+    $stmt->execute([$staff_id_str, $street, $city, $state, $pincode]);
 
     $pdo->commit();
 
     // 16. Write Audit Log
-    write_audit_log($pdo, 'staff_created', $new_staff_db_id, 'staff', $admin_id, 'admin', 
+    write_audit_log($pdo, 'staff_created', $staff_id_str, 'staff', $admin_id, 'admin', 
         "Staff created: $full_name | ID: $staff_id_str | Branch: " . ($branch_id ?? 'None'));
 
     json_response([
