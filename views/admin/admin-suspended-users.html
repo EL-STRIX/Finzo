@@ -118,27 +118,45 @@
 
       <!-- TABLE CARD -->
       <div class="admin-card overflow-hidden">
-        <div class="p-5 sm:p-6 border-b border-slate-200 dark:border-white/5">
-          <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 items-end">
-            <div class="col-span-2 lg:col-span-5">
-              <div class="text-[10px] font-bold tracking-widest text-[#002645]/60 dark:text-slate-400 uppercase mb-2">Search User</div>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-                <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Name, email or account number...">
+        <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
+            <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Suspended Users Audit</h3>
+            <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Full Users Audit</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-slate-50/20 dark:bg-white/[0.02]">
+          <div>
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Search User</div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, email or account number...">
+            </div>
+          </div>
+          <div>
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Start Date</div>
+            <input type="date" id="start-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+          </div>
+          <div>
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">End Date</div>
+            <input type="date" id="end-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+          </div>
+          <div>
+            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Reason</div>
+            <div class="finzo-dropdown w-full" id="reason-dropdown">
+              <input type="hidden" id="reason-filter" value="">
+              <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-slate-200 dark:!border-white/10 !rounded-xl !py-2 !px-4">
+                <span class="material-symbols-outlined text-lg opacity-60">filter_alt</span>
+                <span class="dropdown-label font-bold text-sm text-slate-500">All Reasons</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
               </div>
-            </div>
-            <!-- Date Range Filters -->
-            <div class="lg:col-span-2">
-              <div class="text-[10px] font-bold tracking-widest text-[#002645]/60 dark:text-slate-400 uppercase mb-2">Start Date</div>
-              <input type="date" id="start-date" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
-            </div>
-            <div class="lg:col-span-2">
-              <div class="text-[10px] font-bold tracking-widest text-[#002645]/60 dark:text-slate-400 uppercase mb-2">End Date</div>
-              <input type="date" id="end-date" class="w-full px-4 py-2 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
-            </div>
-            <div class="md:col-span-2 lg:col-span-3 flex gap-2">
-              <button class="flex-1 px-4 py-2.5 bg-[#002645] text-white hover:bg-[#003662] rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all whitespace-nowrap" onclick="window.SuspendedUsers.applyFilters()">Apply Filters</button>
-              <button class="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-all" onclick="window.SuspendedUsers.resetFilters()">Reset</button>
+              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
+                <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
+                <div class="finzo-dropdown-option" data-value="KYC Documentation Expired/Invalid">KYC Documentation Expired/Invalid</div>
+                <div class="finzo-dropdown-option" data-value="Suspicious UPI Transaction Patterns">Suspicious UPI Transaction Patterns</div>
+                <div class="finzo-dropdown-option" data-value="Regulatory Compliance Hold (RBI)">Regulatory Compliance Hold (RBI)</div>
+                <div class="finzo-dropdown-option" data-value="Multiple Failed Auth Attempts">Multiple Failed Auth Attempts</div>
+                <div class="finzo-dropdown-option" data-value="Non-Compliance with IRDAI">Non-Compliance with IRDAI</div>
+                <div class="finzo-dropdown-option" data-value="Legal/Account Dispute">Legal/Account Dispute</div>
+                <div class="finzo-dropdown-option" data-value="Other">Other</div>
+              </div>
             </div>
           </div>
         </div>

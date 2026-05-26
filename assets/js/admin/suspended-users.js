@@ -14,6 +14,7 @@
     const pagControls = document.getElementById('pag-controls');
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
+    const reasonFilter = document.getElementById('reason-filter');
     const reinstateModal = document.getElementById('reinstate-modal');
     const reinstateModalText = document.getElementById('reinstate-modal-text');
     const reinstateConfirmBtn = document.getElementById('reinstate-confirm-btn');
@@ -25,6 +26,7 @@
         const search = searchInput ? searchInput.value : '';
         const startDate = startDateInput ? startDateInput.value : '';
         const endDate = endDateInput ? endDateInput.value : '';
+        const reason = reasonFilter ? reasonFilter.value : '';
 
         if (tableBody) {
             tableBody.innerHTML = `
@@ -37,6 +39,7 @@
         try {
             const response = await window.api.get('/admin/suspended-users.php', {
                 search: search,
+                reason: reason,
                 start_date: startDate,
                 end_date: endDate,
                 page: currentPage,
@@ -147,6 +150,17 @@
             if (searchInput) searchInput.value = ''; 
             if (startDateInput) startDateInput.value = '';
             if (endDateInput) endDateInput.value = '';
+            if (reasonFilter) {
+                reasonFilter.value = '';
+                const dropdown = reasonFilter.closest('.finzo-dropdown');
+                if (dropdown) {
+                    const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value=""]');
+                    const label = dropdown.querySelector('.dropdown-label');
+                    if (label && defaultOpt) label.textContent = defaultOpt.textContent.trim();
+                    dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
+                    if (defaultOpt) defaultOpt.classList.add('is-selected');
+                }
+            }
             currentPage = 1; 
             loadSuspendedUsers(); 
         },
@@ -215,6 +229,11 @@
                 loadSuspendedUsers();
             }, 500));
         }
+
+        // Bind Date & Reason Listeners
+        if (startDateInput) startDateInput.addEventListener('change', window.SuspendedUsers.applyFilters);
+        if (endDateInput) endDateInput.addEventListener('change', window.SuspendedUsers.applyFilters);
+        if (reasonFilter) reasonFilter.addEventListener('change', window.SuspendedUsers.applyFilters);
     });
 
 })();
