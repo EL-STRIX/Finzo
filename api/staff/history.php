@@ -67,7 +67,7 @@ try {
         SELECT COUNT(*)
         FROM transactions t
         LEFT JOIN accounts a ON COALESCE(t.to_account_id, t.from_account_id) = a.id
-        LEFT JOIN users u ON a.user_id = u.id
+        LEFT JOIN users u ON a.user_id = u.customer_id
         WHERE {$where_sql}
     ";
     $stmt = $pdo->prepare($count_sql);
@@ -92,7 +92,7 @@ try {
             COALESCE(u.full_name, 'N/A') as customer_name
         FROM transactions t
         LEFT JOIN accounts a ON COALESCE(t.to_account_id, t.from_account_id) = a.id
-        LEFT JOIN users u ON a.user_id = u.id
+        LEFT JOIN users u ON a.user_id = u.customer_id
         WHERE {$where_sql}
         ORDER BY t.created_at DESC
         LIMIT {$per_page} OFFSET {$offset}

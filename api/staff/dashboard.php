@@ -65,9 +65,9 @@ try {
             COALESCE(tu.full_name, fu.full_name) as customer_name
         FROM transactions t
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
-        LEFT JOIN users tu ON ta.user_id = tu.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
-        LEFT JOIN users fu ON fa.user_id = fu.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         WHERE t.processed_by_staff_id = ?
         ORDER BY t.created_at DESC
         LIMIT 10

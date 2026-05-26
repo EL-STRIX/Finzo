@@ -42,9 +42,9 @@ try {
             b.name as branch_name
         FROM transactions t
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
-        LEFT JOIN users fu ON fa.user_id = fu.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
-        LEFT JOIN users tu ON ta.user_id = tu.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
         LEFT JOIN staff s ON t.processed_by_staff_id = s.id
         LEFT JOIN branches b ON s.branch_id = b.id
         WHERE t.txn_id = ?
