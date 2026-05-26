@@ -19,8 +19,8 @@ try {
     $stmt = $pdo->prepare("
         SELECT a.id, a.account_no, a.account_type, a.balance, a.opened_date, u.full_name
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
-        WHERE a.user_id = ? AND a.status = 'active'
+        JOIN users u ON a.user_id = u.customer_id
+        WHERE u.id = ? AND a.status = 'active'
         LIMIT 1
     ");
     $stmt->execute([$user_id]);
@@ -53,9 +53,9 @@ try {
             COALESCE(tu.full_name, '') as to_name
         FROM transactions t
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
-        LEFT JOIN users fu ON fa.user_id = fu.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
-        LEFT JOIN users tu ON ta.user_id = tu.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
         WHERE (t.from_account_id = ? OR t.to_account_id = ?)
             AND t.status = 'completed'
             AND DATE(t.created_at) BETWEEN ? AND ?

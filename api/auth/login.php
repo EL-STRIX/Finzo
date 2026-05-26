@@ -33,7 +33,7 @@ if (empty($identity) || empty($password)) {
 $stmt = $pdo->prepare("
     SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
     FROM users u
-    LEFT JOIN accounts a ON u.id = a.user_id
+    LEFT JOIN accounts a ON u.customer_id = a.user_id
     WHERE (u.email = ? OR a.account_no = ?) AND u.is_deleted = 0
     LIMIT 1
 ");
@@ -125,7 +125,7 @@ $acct_stmt = $pdo->prepare("
     ORDER BY status = 'active' DESC
     LIMIT 1
 ");
-$acct_stmt->execute([$user['id']]);
+$acct_stmt->execute([$user['customer_id']]);
 $account = $acct_stmt->fetch();
 
 // Set session variables

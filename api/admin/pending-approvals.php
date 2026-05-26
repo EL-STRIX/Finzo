@@ -59,7 +59,7 @@ try {
                END as status_text,
                k.id_type
         FROM users u
-        LEFT JOIN accounts a ON u.id = a.user_id
+        LEFT JOIN accounts a ON u.customer_id = a.user_id
         LEFT JOIN kyc_applications k ON u.id = k.user_id
         WHERE {$where_sql}
         ORDER BY u.kyc_submitted_at DESC, u.created_at DESC

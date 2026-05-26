@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             SELECT account_no, account_type, balance, status, opened_date
             FROM accounts WHERE user_id = ? LIMIT 1
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$user['customer_id']]);
         $account = $stmt->fetch();
 
         json_response([

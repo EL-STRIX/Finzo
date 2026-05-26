@@ -136,7 +136,7 @@ ALTER TABLE branches
 -- =====================================================
 CREATE TABLE IF NOT EXISTS accounts (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
+    user_id VARCHAR(20) NOT NULL UNIQUE,
     account_no VARCHAR(20) NOT NULL UNIQUE,
     account_type ENUM('savings', 'current') NOT NULL,
     balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY fk_accounts_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_accounts_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
 
     INDEX idx_account_no (account_no),
     INDEX idx_user_id (user_id),

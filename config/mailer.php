@@ -47,6 +47,7 @@ if (!function_exists('send_email')) {
         try {
             // SMTP Configuration
             $mail->isSMTP();
+            $mail->Timeout    = 3;
             $mail->Host       = SMTP_HOST;
             $mail->SMTPAuth   = true;
             $mail->Username   = SMTP_USER;

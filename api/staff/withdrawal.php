@@ -50,7 +50,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT a.id, a.account_no, a.balance, a.status, u.id as user_id, u.full_name
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
+        JOIN users u ON a.user_id = u.customer_id
         WHERE a.account_no = ?
         FOR UPDATE
     ");

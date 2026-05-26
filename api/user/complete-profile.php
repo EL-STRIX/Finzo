@@ -146,10 +146,6 @@ if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
     $errors['txn_pin'] = 'Transaction PIN must be exactly 4 digits';
 }
 
-if ($txn_pin !== $confirm_pin) {
-    $errors['confirm_pin'] = 'PINs do not match';
-}
-
 // =====================================================
 // RETURN ERRORS IF ANY
 // =====================================================
@@ -216,10 +212,15 @@ try {
     // Hash the transaction PIN
     $txn_pin_hash = password_hash($txn_pin, PASSWORD_BCRYPT);
 
+    // Fetch customer_id to use in accounts table
+    $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $customer_id = $stmt->fetchColumn();
+
     // Create account record (pending status until admin approves)
     // Check if account already exists for resubmission
     $stmt = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ?");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$customer_id]);
     $existing_account = $stmt->fetch();
 
     if ($existing_account) {
@@ -229,7 +230,7 @@ try {
                 account_type = ?, balance = ?, txn_pin_hash = ?, status = 'pending', updated_at = NOW()
             WHERE user_id = ? AND status IN ('pending', 'rejected')
         ");
-        $stmt->execute([$account_type, $initial_deposit, $txn_pin_hash, $user_id]);
+        $stmt->execute([$account_type, $initial_deposit, $txn_pin_hash, $customer_id]);
     } else {
         // Create new account record
         $stmt = $pdo->prepare("
@@ -238,7 +239,7 @@ try {
         ");
         // Temporary account number — will be replaced with proper one on approval
         $temp_account_no = 'PENDING_' . $user_id;
-        $stmt->execute([$user_id, $temp_account_no, $account_type, $initial_deposit, $txn_pin_hash]);
+        $stmt->execute([$customer_id, $temp_account_no, $account_type, $initial_deposit, $txn_pin_hash]);
     }
 
     // Generate unique application number

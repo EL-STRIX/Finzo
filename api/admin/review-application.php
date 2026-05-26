@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // Account preferences
         $stmt = $pdo->prepare("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$user['customer_id']]);
         $account = $stmt->fetch();
 
         // Document URLs
@@ -157,17 +157,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         account_no = ?, status = 'active', opened_date = CURDATE(), updated_at = NOW()
                     WHERE user_id = ?
                 ");
-                $stmt->execute([$account_no, $user_id]);
+                $stmt->execute([$account_no, $user['customer_id']]);
 
                 // Get initial deposit amount
                 $stmt = $pdo->prepare("SELECT balance FROM accounts WHERE user_id = ?");
-                $stmt->execute([$user_id]);
+                $stmt->execute([$user['customer_id']]);
                 $initial_balance = (float)$stmt->fetchColumn();
 
                 // Credit initial deposit as first transaction
                 if ($initial_balance > 0) {
                     $stmt = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ?");
-                    $stmt->execute([$user_id]);
+                    $stmt->execute([$user['customer_id']]);
                     $acct_id = $stmt->fetchColumn();
 
                     $txn_id = generate_transaction_id();
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Update account status
                 $stmt = $pdo->prepare("UPDATE accounts SET status = 'rejected', updated_at = NOW() WHERE user_id = ?");
-                $stmt->execute([$user_id]);
+                $stmt->execute([$user['customer_id']]);
 
                 // Update kyc_applications status
                 $stmt = $pdo->prepare("

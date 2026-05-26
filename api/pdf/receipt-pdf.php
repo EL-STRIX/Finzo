@@ -48,9 +48,9 @@ try {
             COALESCE(b.name, '') as branch_name
         FROM transactions t
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
-        LEFT JOIN users fu ON fa.user_id = fu.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
-        LEFT JOIN users tu ON ta.user_id = tu.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
         LEFT JOIN staff s ON t.processed_by_staff_id = s.id
         LEFT JOIN branches b ON s.branch_id = b.id
         WHERE t.txn_id = ?
@@ -64,7 +64,7 @@ try {
 
     // Verify ownership for customers
     if ($_SESSION['role'] === 'customer') {
-        $stmt = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ?");
+        $stmt = $pdo->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ?");
         $stmt->execute([$_SESSION['user_id']]);
         $user_accounts = $stmt->fetchAll(PDO::FETCH_COLUMN);
 

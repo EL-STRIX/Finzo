@@ -22,8 +22,8 @@ try {
             a.daily_limit, a.status, a.opened_date, a.created_at,
             u.full_name, u.email, u.phone
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
-        WHERE a.user_id = ?
+        JOIN users u ON a.user_id = u.customer_id
+        WHERE u.id = ?
         ORDER BY a.status = 'active' DESC
         LIMIT 1
     ");

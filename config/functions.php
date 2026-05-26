@@ -234,6 +234,13 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
         if ($staff_id) {
             $resolved_entity_id = $staff_id;
         }
+    } else if ($entity_type === 'user' && !empty($entity_id) && is_numeric($entity_id)) {
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+        $stmt->execute([$entity_id]);
+        $customer_id = $stmt->fetchColumn();
+        if ($customer_id) {
+            $resolved_entity_id = $customer_id;
+        }
     }
 
     $stmt = $pdo->prepare("

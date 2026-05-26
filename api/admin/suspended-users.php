@@ -38,7 +38,7 @@ try {
         SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
                a.account_no, a.account_type, a.balance
         FROM users u
-        LEFT JOIN accounts a ON u.id = a.user_id
+        LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
         ORDER BY u.updated_at DESC
         LIMIT {$per_page} OFFSET {$offset}

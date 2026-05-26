@@ -28,7 +28,7 @@ $admin_id = $_SESSION['admin_id'];
 
 try {
     // Verify user exists
-    $stmt = $pdo->prepare("SELECT id, full_name, email, status, is_deleted FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, customer_id, full_name, email, status, is_deleted FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
 
@@ -48,7 +48,7 @@ try {
 
             // Also suspend the account
             $stmt = $pdo->prepare("UPDATE accounts SET status = 'suspended', updated_at = NOW() WHERE user_id = ?");
-            $stmt->execute([$user_id]);
+            $stmt->execute([$user['customer_id']]);
 
             // Notification
             send_notification($pdo, $user_id, 'security', 'Account Suspended',
@@ -70,7 +70,7 @@ try {
             $stmt->execute([$user_id]);
 
             $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ? AND status = 'suspended'");
-            $stmt->execute([$user_id]);
+            $stmt->execute([$user['customer_id']]);
 
             send_notification($pdo, $user_id, 'security', 'Account Reinstated',
                 'Your account has been reinstated and is now active. You can log in and transact normally.');
@@ -92,7 +92,7 @@ try {
             $stmt->execute([$user_id]);
 
             $stmt = $pdo->prepare("UPDATE accounts SET status = 'closed', updated_at = NOW() WHERE user_id = ?");
-            $stmt->execute([$user_id]);
+            $stmt->execute([$user['customer_id']]);
 
             write_audit_log($pdo, 'user_deleted', $user_id, 'user', $admin_id, 'admin',
                 "User {$user['full_name']} soft-deleted. Reason: {$reason}");
@@ -112,7 +112,7 @@ try {
 
             // Reactivate account
             $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
-            $stmt->execute([$user_id]);
+            $stmt->execute([$user['customer_id']]);
 
             write_audit_log($pdo, 'user_recovered', $user_id, 'user', $admin_id, 'admin',
                 "User {$user['full_name']} recovered from soft-delete state.");

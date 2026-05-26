@@ -74,7 +74,8 @@ try {
     $stmt = $pdo->prepare("
         SELECT a.id
         FROM accounts a
-        WHERE a.user_id = ? AND a.status = 'active'
+        JOIN users u ON a.user_id = u.customer_id
+        WHERE u.id = ? AND a.status = 'active'
     ");
     $stmt->execute([$user_id]);
     $source_id = $stmt->fetchColumn();
@@ -110,7 +111,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT a.id, a.account_no, a.balance, a.daily_limit, u.full_name, u.id as owner_user_id
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
+        JOIN users u ON a.user_id = u.customer_id
         WHERE a.id = ? AND a.status = 'active'
         FOR UPDATE
     ");

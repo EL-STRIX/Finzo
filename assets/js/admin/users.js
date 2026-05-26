@@ -23,8 +23,9 @@
             });
 
             if (response.success) {
-                renderTable(response.data.users);
-                updatePagination(response.data.total, response.data.pages);
+                const data = response.data || response;
+                renderTable(data.users || []);
+                updatePagination(data.total ?? 0, data.pages ?? 1);
             }
         } catch (error) {
             console.error('Failed to load users:', error);
@@ -46,8 +47,11 @@
         }
 
         tbody.innerHTML = users.map(u => {
-            const initials = u.full_name.split(' ').map(n=>n[0]).join('').toUpperCase();
-            const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-neutral' : 'badge-warn');
+            const name = u.full_name || 'User';
+            const initials = name.split(' ').filter(Boolean).map(n => n ? n[0] : '').join('').toUpperCase() || 'U';
+            const statusVal = u.status || 'pending';
+            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-neutral' : 'badge-warn');
+            const statusText = statusVal.toUpperCase();
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
             return `
@@ -56,15 +60,15 @@
                     <div class="flex items-center gap-3">
                         <div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>
                         <div>
-                            <div class="font-bold text-sm">${u.full_name}</div>
+                            <div class="font-bold text-sm">${name}</div>
                             <div class="text-[11px] opacity-60 font-mono mt-0.5">${u.customer_id || 'FNZ-USR-PENDING'}</div>
                         </div>
                     </div>
                 </td>
-                <td class="text-xs opacity-70">${u.email}</td>
+                <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td><span class="text-xs font-semibold">${u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A'}</span></td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
-                <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${u.status.toUpperCase()}</span></td>
+                <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60">${window.FinzoUtils.formatDate(u.created_at)}</td>
                 <td class="text-right">
                     <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg inline-flex items-center gap-2">

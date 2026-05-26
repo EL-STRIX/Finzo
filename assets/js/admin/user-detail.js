@@ -15,84 +15,129 @@ async function loadUserData() {
     }
 
     try {
-        const data = await window.api.get(`/admin/user-detail.php?id=${userId}`);
-        if (data.status === 'success' || data.success) {
-            const user = data.data || data.user;
+        const response = await window.api.get(`/admin/user-detail.php?id=${userId}`);
+        if (response.status === 'success' || response.success) {
+            const data = response;
+            const user = data.user;
+            const account = data.account;
+            const transactions = data.transactions;
+            
+            const fullName = user.full_name || 'N/A';
+            const initials = fullName !== 'N/A' ? fullName.charAt(0).toUpperCase() : 'A';
             
             // Update Header & Avatar
-            document.getElementById('user-name-title').textContent = user.name || user.full_name;
+            document.getElementById('user-name-title').textContent = fullName;
             const topbarTitle = document.querySelector('.admin-topbar .force-black.tracking-tight');
-            if (topbarTitle) topbarTitle.textContent = user.name || user.full_name;
+            if (topbarTitle) topbarTitle.textContent = fullName;
             
             const adminAvatar = document.getElementById('admin-user-avatar');
-            if (adminAvatar) adminAvatar.textContent = user.initials;
+            if (adminAvatar) adminAvatar.textContent = initials;
             const placeholder = document.getElementById('user-avatar-placeholder');
-            if (placeholder) placeholder.textContent = user.initials;
+            if (placeholder) placeholder.textContent = initials;
 
             // Update Info
             document.getElementById('info-customer-id').textContent = user.customer_id || 'FNZ-USR-PENDING';
-            document.getElementById('info-full-name').textContent = user.name || user.full_name;
-            document.getElementById('info-dob').textContent = user.dob;
-            document.getElementById('info-gender').textContent = user.gender;
-            document.getElementById('info-father-name').textContent = user.father_name;
-            document.getElementById('info-occupation').textContent = user.occupation;
-            document.getElementById('info-income').textContent = user.annual_income;
-            document.getElementById('info-phone').textContent = user.phone;
-            document.getElementById('info-email').textContent = user.email;
-            document.getElementById('info-aadhaar').textContent = user.aadhaar;
-            document.getElementById('info-account-type').textContent = user.account_type;
-            document.getElementById('info-submitted').textContent = user.submitted_at;
-            document.getElementById('info-registered').textContent = user.registered_at;
+            document.getElementById('info-full-name').textContent = fullName;
+            document.getElementById('info-dob').textContent = user.dob || 'N/A';
+            document.getElementById('info-gender').textContent = user.gender ? (user.gender.charAt(0).toUpperCase() + user.gender.slice(1)) : 'N/A';
+            document.getElementById('info-father-name').textContent = user.father_name || 'N/A';
+            document.getElementById('info-occupation').textContent = user.occupation || 'N/A';
+            document.getElementById('info-income').textContent = user.annual_income || 'N/A';
+            document.getElementById('info-phone').textContent = user.phone || 'N/A';
+            document.getElementById('info-email').textContent = user.email || 'N/A';
             
+            const idTypeEl = Array.from(document.querySelectorAll('p.info-label')).find(el => el.textContent.includes('AADHAAR'));
+            // we will replace the whole textContent of aadhaar label if possible, or just the value
+            // Since we don't have a reliable selector for the label without changing HTML, let's just set the value
+            document.getElementById('info-aadhaar').textContent = (user.id_type ? user.id_type.toUpperCase() + ': ' : '') + (user.id_number || 'N/A');
+            
+            document.getElementById('info-account-type').textContent = account && account.account_type ? (account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1) + ' Account') : 'N/A';
+            
+            const formatDateTime = (dateStr) => {
+                if (!dateStr) return 'N/A';
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '');
+            };
+            
+            document.getElementById('info-submitted').textContent = formatDateTime(user.kyc_submitted_at);
+            document.getElementById('info-registered').textContent = formatDateTime(user.created_at);
+            
+            const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(p => p);
             const addressEl = document.querySelector('.info-value.text-sm.leading-tight');
-            if(addressEl) addressEl.textContent = user.address;
+            if(addressEl) addressEl.textContent = addressParts.length > 0 ? addressParts.join(', ') : 'N/A';
 
             // Update Status
+            const userStatus = user.status || 'pending';
             const statusColors = {
-                'Active': 'emerald',
-                'Suspended': 'orange',
-                'Pending': 'blue'
+                'active': 'emerald',
+                'suspended': 'orange',
+                'pending': 'blue',
+                'under_review': 'purple',
+                'rejected': 'rose'
             };
-            const color = statusColors[user.status] || 'slate';
+            const color = statusColors[userStatus] || 'slate';
             const badge = document.getElementById('user-status-badge');
-            badge.className = `text-[10px] font-black text-${color}-50 px-2 py-0.5 bg-${color}-500 rounded-md uppercase tracking-widest border border-${color}-100 dark:border-${color}-500/20`;
-            badge.textContent = `Account ${user.status}`;
+            if (badge) {
+                badge.className = `text-[10px] font-black text-${color}-50 px-2 py-0.5 bg-${color}-500 rounded-md uppercase tracking-widest border border-${color}-100 dark:border-${color}-500/20`;
+                badge.textContent = `Account ${userStatus.replace('_', ' ')}`;
+            }
             
             const tbContainer = document.getElementById('topbar-status-container');
             if (tbContainer) {
                 tbContainer.className = `hidden sm:flex items-center gap-2 px-4 py-2 bg-${color}-50 dark:bg-${color}-500/10 border border-${color}-100 dark:border-${color}-500/20 rounded-full`;
                 const span = tbContainer.querySelector('span');
-                if (span) span.textContent = `${user.status} Account`;
+                if (span) span.textContent = `${userStatus.replace('_', ' ')} Account`;
                 const dot = tbContainer.querySelector('.w-2');
                 if (dot) dot.className = `w-2 h-2 bg-${color}-500 rounded-full animate-pulse`;
             }
 
             // Update Sidebar Accounts
-            if (user.bank_accounts && user.bank_accounts.length > 0) {
-                const accountsHtml = user.bank_accounts.map(acc => `
+            if (account) {
+                const balanceFormatted = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(account.balance || 0);
+                const typeFormatted = account.account_type ? account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1) : 'Savings';
+                
+                const accountsHtml = `
                     <div class="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer group">
                     <div class="flex justify-between items-start mb-6">
                         <div class="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-primary dark:text-white shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
                         <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
                         </div>
-                        <span class="status-badge !text-[9px] !px-2 !py-0.5">${acc.type}</span>
+                        <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
                     </div>
-                    <h4 class="font-headline text-xl font-black text-black dark:text-white mt-0.5">${acc.balance}</h4>
+                    <h4 class="font-headline text-xl font-black text-black dark:text-white mt-0.5">${balanceFormatted}</h4>
                     <div class="mt-3 flex items-center gap-2 text-[9px] text-slate-400 font-mono font-bold">
-                        <span>${acc.account_number}</span>
+                        <span>${account.account_no || 'Pending'}</span>
                         <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
                     </div>
                     </div>
-                `).join('');
+                `;
                 document.getElementById('accounts-sidebar-list').innerHTML = accountsHtml;
             } else {
                  document.getElementById('accounts-sidebar-list').innerHTML = '<div class="text-[11px] text-slate-400">No bank accounts</div>';
             }
 
             // Update Transactions
-            renderUserTransactions(user.recent_transactions);
+            renderUserTransactions(transactions);
+            
+            // Append documents to the UI since it wasn't there
+            if (data.id_documents && (data.id_documents.front_url || data.id_documents.back_url)) {
+                let docHtml = '<div class="admin-card p-5 sm:p-8 mt-6 sm:mt-8"><h3 class="font-headline text-lg font-bold text-black dark:text-white mb-6">Identity Documents</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">';
+                if (data.id_documents.front_url) {
+                    docHtml += `<div><label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Front Side</label><div class="aspect-video rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10"><img src="${data.id_documents.front_url}" class="w-full h-full object-cover"></div></div>`;
+                }
+                if (data.id_documents.back_url) {
+                    docHtml += `<div><label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Back Side</label><div class="aspect-video rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10"><img src="${data.id_documents.back_url}" class="w-full h-full object-cover"></div></div>`;
+                }
+                docHtml += '</div></div>';
+                
+                const statsSection = document.querySelector('section.flex.flex-col.lg\\:grid');
+                if (statsSection) {
+                    statsSection.insertAdjacentHTML('afterend', docHtml);
+                }
+            }
+
         } else {
-             window.FinzoUtils.showToast(data.message || 'Error loading details', 'error');
+             window.FinzoUtils.showToast(response.message || 'Error loading details', 'error');
         }
     } catch (error) {
         console.error('Failed to load user data:', error);

@@ -34,8 +34,8 @@ try {
     // Get account info
     $stmt = $pdo->prepare("
         SELECT a.account_no, a.account_type, a.balance, u.full_name, u.email, u.phone
-        FROM accounts a JOIN users u ON a.user_id = u.id
-        WHERE a.user_id = ? AND a.status = 'active' LIMIT 1
+        FROM accounts a JOIN users u ON a.user_id = u.customer_id
+        WHERE u.id = ? AND a.status = 'active' LIMIT 1
     ");
     $stmt->execute([$user_id]);
     $account = $stmt->fetch();
@@ -45,7 +45,7 @@ try {
     }
 
     // Get account ID
-    $stmt = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND status = 'active' LIMIT 1");
+    $stmt = $pdo->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ? AND a.status = 'active' LIMIT 1");
     $stmt->execute([$user_id]);
     $account_id = $stmt->fetchColumn();
 

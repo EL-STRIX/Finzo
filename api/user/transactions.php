@@ -16,7 +16,7 @@ $user_id = $_SESSION['user_id'];
 
 try {
     // Get user's account ID
-    $stmt = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND status = 'active' LIMIT 1");
+    $stmt = $pdo->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ? AND a.status = 'active' LIMIT 1");
     $stmt->execute([$user_id]);
     $account = $stmt->fetch();
 
@@ -107,9 +107,9 @@ try {
             COALESCE(tu.full_name, 'N/A') as to_name
         FROM transactions t
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
-        LEFT JOIN users fu ON fa.user_id = fu.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
-        LEFT JOIN users tu ON ta.user_id = tu.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
         WHERE {$where_sql}
         ORDER BY t.created_at DESC
         LIMIT {$per_page} OFFSET {$offset}

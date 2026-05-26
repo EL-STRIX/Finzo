@@ -52,7 +52,7 @@ try {
                u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
                a.account_no
         FROM users u
-        LEFT JOIN accounts a ON u.id = a.user_id
+        LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
         ORDER BY u.locked_until DESC, u.failed_attempts DESC
         LIMIT {$per_page} OFFSET {$offset}

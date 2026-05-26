@@ -46,7 +46,7 @@ try {
         ORDER BY status = 'active' DESC, created_at DESC
         LIMIT 1
     ");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$user['customer_id']]);
     $account = $stmt->fetch();
 
     // =====================================================
@@ -64,9 +64,9 @@ try {
                 t.created_at,
                 CASE
                     WHEN t.type = 'transfer' AND t.from_account_id = ? THEN
-                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.id WHERE a.id = t.to_account_id)
+                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id)
                     WHEN t.type = 'transfer' AND t.to_account_id = ? THEN
-                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.id WHERE a.id = t.from_account_id)
+                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id)
                     ELSE NULL
                 END as counterparty
             FROM transactions t

@@ -22,7 +22,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT u.full_name, a.account_no, a.account_type, a.status, a.balance, a.daily_limit
         FROM accounts a
-        JOIN users u ON a.user_id = u.id
+        JOIN users u ON a.user_id = u.customer_id
         WHERE a.account_no = ?
     ");
     $stmt->execute([$account_no]);

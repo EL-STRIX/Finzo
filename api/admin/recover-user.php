@@ -20,7 +20,7 @@ $admin_id = $_SESSION['admin_id'];
 
 try {
     // Verify user is deleted
-    $stmt = $pdo->prepare("SELECT id, full_name, is_deleted FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
 
@@ -44,7 +44,7 @@ try {
         UPDATE accounts SET status = 'active', updated_at = NOW()
         WHERE user_id = ? AND status = 'closed'
     ");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$user['customer_id']]);
 
     // Notification
     send_notification($pdo, $user_id, 'system', 'Account Restored',

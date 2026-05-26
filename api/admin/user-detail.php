@@ -41,7 +41,7 @@ try {
                status, opened_date, created_at
         FROM accounts WHERE user_id = ?
     ");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$user['customer_id']]);
     $account = $stmt->fetch();
 
     // Fetch recent transactions (last 20)
