@@ -244,15 +244,6 @@
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
-        // Apply Filters
-        const applyBtn = document.getElementById('apply-filters');
-        if (applyBtn) {
-            applyBtn.addEventListener('click', () => {
-                currentPage = 1;
-                loadAuditLog();
-            });
-        }
-
         // Live Filter Updates
         const searchInput = document.getElementById('filter-search');
         const actionInput = document.getElementById('filter-action-type');
@@ -287,42 +278,6 @@
         if (roleInput) roleInput.addEventListener('change', triggerFilterUpdate);
         if (dateFrom) dateFrom.addEventListener('change', triggerFilterUpdate);
         if (dateTo) dateTo.addEventListener('change', triggerFilterUpdate);
-
-        // Clear Filters
-        const clearBtn = document.getElementById('clear-filters');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                const searchInput = document.getElementById('filter-search');
-                const actionInput = document.getElementById('filter-action-type');
-                const roleInput = document.getElementById('filter-actor-role');
-                const dateFrom = document.getElementById('date-from');
-                const dateTo = document.getElementById('date-to');
-
-                if (searchInput) searchInput.value = '';
-                if (dateFrom) dateFrom.value = '';
-                if (dateTo) dateTo.value = '';
-                if (actionInput) actionInput.value = 'all';
-                if (roleInput) roleInput.value = 'all';
-                
-                // Update dropdown UI labels
-                const actionLabel = document.querySelector('#action-type-dropdown .dropdown-label');
-                if (actionLabel) actionLabel.textContent = 'All Actions';
-                
-                const roleLabel = document.querySelector('#actor-role-dropdown .dropdown-label');
-                if (roleLabel) roleLabel.textContent = 'All Roles';
-                
-                // Also reset dropdown active states if needed
-                document.querySelectorAll('.finzo-dropdown-option').forEach(opt => {
-                    opt.classList.remove('is-selected');
-                });
-                document.querySelectorAll('.finzo-dropdown-option[data-value="all"]').forEach(opt => {
-                    opt.classList.add('is-selected');
-                });
-
-                currentPage = 1;
-                loadAuditLog();
-            });
-        }
 
         // Pagination Clicks
         document.addEventListener('click', (e) => {
