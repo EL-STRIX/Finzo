@@ -110,17 +110,15 @@ try {
     $stmt->execute([$staff_id]);
     $address = $stmt->fetch();
 
-    // Recent activity (audit log)
-    // Recent activity (audit log)
+    // Recent activity (audit log) — only actions performed BY this specific staff member
     $stmt = $pdo->prepare("
         SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at
         FROM audit_log
-        WHERE (actor_id = ? AND actor_role = 'Staff') 
-           OR (entity_id = ? AND entity_type = 'staff')
+        WHERE actor_id = ? AND actor_role = 'Staff'
         ORDER BY created_at DESC
         LIMIT 20
     ");
-    $stmt->execute([$staff['staff_id'], $staff['staff_id']]);
+    $stmt->execute([$staff['staff_id']]);
     $activities = $stmt->fetchAll();
 
     json_response([
