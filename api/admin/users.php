@@ -36,9 +36,8 @@ try {
 
     // Search
     if (!empty($search)) {
-        $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
+        $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR a.account_no LIKE ?)";
         $search_param = "%{$search}%";
-        $params[] = $search_param;
         $params[] = $search_param;
         $params[] = $search_param;
         $params[] = $search_param;

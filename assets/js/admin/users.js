@@ -119,12 +119,37 @@
         }
 
         const searchInput = document.getElementById('user-search');
+        let searchTimeout;
         if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadUsers();
+                }, 300);
+            });
             searchInput.addEventListener('keyup', (e) => {
                 if (e.key === 'Enter') {
+                    clearTimeout(searchTimeout);
                     currentPage = 1;
                     loadUsers();
                 }
+            });
+        }
+
+        const statusInput = document.getElementById('filter-status');
+        if (statusInput) {
+            statusInput.addEventListener('change', () => {
+                currentPage = 1;
+                loadUsers();
+            });
+        }
+
+        const typeInput = document.getElementById('filter-type');
+        if (typeInput) {
+            typeInput.addEventListener('change', () => {
+                currentPage = 1;
+                loadUsers();
             });
         }
 

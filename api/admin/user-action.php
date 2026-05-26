@@ -36,6 +36,17 @@ try {
         json_response(['success' => false, 'message' => 'User not found'], 404);
     }
 
+    // Verify admin password for sensitive actions
+    if (in_array($action, ['suspend', 'delete'])) {
+        $password = $_POST['password'] ?? '';
+        $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+        $stmt->execute([$admin_id]);
+        $admin = $stmt->fetch();
+        if (!$admin || !password_verify($password, $admin['password_hash'])) {
+            json_response(['success' => false, 'message' => 'Invalid administrative credentials. Access denied.'], 401);
+        }
+    }
+
     switch ($action) {
         case 'suspend':
             check_admin_permission($pdo, $admin_id, 'suspend_user');
