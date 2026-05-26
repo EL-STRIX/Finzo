@@ -105,7 +105,9 @@ try {
 
     $user_id = $pdo->lastInsertId();
 
-    $customer_id = 'FNZ-USR-' . str_pad($user_id, 3, '0', STR_PAD_LEFT);
+    $seq_stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(customer_id, 9) AS UNSIGNED)) as max_id FROM users WHERE customer_id LIKE 'FNZ-USR-%'");
+    $max_seq = $seq_stmt->fetchColumn() ?: 0;
+    $customer_id = 'FNZ-USR-' . str_pad($max_seq + 1, 3, '0', STR_PAD_LEFT);
     $updateStmt = $pdo->prepare("UPDATE users SET customer_id = ? WHERE id = ?");
     $updateStmt->execute([$customer_id, $user_id]);
 
