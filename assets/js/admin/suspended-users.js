@@ -48,10 +48,11 @@
 
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
-                renderTable(data.users || [], data.total || 0, data.pages || 1);
+                renderTable(data.users || []);
+                updatePagination(data.total || 0, data.pages || 1);
             } else {
                 if (tableBody) {
-                    tableBody.innerHTML = `<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">${response.message || 'No suspended accounts found.'}</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
                 }
                 if (pagInfo) pagInfo.textContent = 'No results';
                 if (pagControls) pagControls.innerHTML = '';
@@ -67,13 +68,11 @@
     /**
      * Render the users table
      */
-    function renderTable(users, total, pages) {
+    function renderTable(users) {
         if (!tableBody) return;
 
         if (!users || !users.length) {
-            tableBody.innerHTML = `<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No suspended accounts found.</td></tr>`;
-            if (pagInfo) pagInfo.textContent = 'Showing 0 of 0 suspended accounts';
-            if (pagControls) pagControls.innerHTML = '';
+            tableBody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
             return;
         }
 
@@ -116,8 +115,6 @@
                 </td>
             </tr>`;
         }).join('');
-
-        updatePagination(total, pages);
     }
 
     /**
@@ -126,23 +123,23 @@
     function updatePagination(total, pages) {
         if (!pagInfo || !pagControls) return;
 
-        pagInfo.textContent = `Showing ${Math.min((currentPage - 1) * 10 + 1, total)}–${Math.min(currentPage * 10, total)} of ${total} suspended accounts`;
+        const start = (currentPage - 1) * 10 + 1;
+        const end = Math.min(currentPage * 10, total);
+        pagInfo.textContent = total ? `Showing ${start}–${end} of ${total} suspended accounts` : 'No results';
         
-        let html = `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.SuspendedUsers.goPage(-1)">← Previous</button>`;
-        
+        let pcHtml = `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.SuspendedUsers.goPage(-1)">← Previous</button>`;
+        pcHtml += `<div class="flex items-center gap-1.5">`;
         for (let i = 1; i <= pages; i++) {
             if (i > 5 && i < pages - 1) { 
-                if (i === 6) html += '<span class="px-2 opacity-50">...</span>'; 
+                if (i === 6) pcHtml += '<span class="px-2 opacity-50">...</span>'; 
                 continue; 
             }
-            html += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" onclick="window.SuspendedUsers.goPageTo(${i})">${i}</button>`;
+            pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" onclick="window.SuspendedUsers.goPageTo(${i})">${i}</button>`;
         }
+        pcHtml += `</div>`;
+        pcHtml += `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.SuspendedUsers.goPage(1)">Next →</button>`;
         
-        if (pages > 1) {
-            html += `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.SuspendedUsers.goPage(1)">Next →</button>`;
-        }
-        
-        pagControls.innerHTML = `<div class="flex items-center gap-1.5">${html}</div>`;
+        pagControls.innerHTML = `<div class="flex items-center gap-2">${pcHtml}</div>`;
     }
 
     // Exported Object
