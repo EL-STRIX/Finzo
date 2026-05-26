@@ -73,6 +73,9 @@ try {
 
         case 'reinstate':
             check_admin_permission($pdo, $admin_id, 'reinstate_user');
+            if ($user['status'] === 'active') {
+                json_response(['success' => true, 'message' => 'User is already active']);
+            }
             if ($user['status'] !== 'suspended') {
                 json_response(['success' => false, 'message' => 'User is not suspended'], 409);
             }
@@ -95,7 +98,7 @@ try {
         case 'delete':
             check_admin_permission($pdo, $admin_id, 'soft_delete_user');
             if ($user['is_deleted']) {
-                json_response(['success' => false, 'message' => 'User is already deleted'], 409);
+                json_response(['success' => true, 'message' => 'User is already deleted']);
             }
 
             // Soft delete
