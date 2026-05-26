@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS system_settings (
                 NOT NULL DEFAULT 'string',
   label         VARCHAR(255) NOT NULL,
   description   TEXT NULL,
-  updated_by    INT UNSIGNED NULL,
+  updated_by    VARCHAR(20) NULL,
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 ON UPDATE CURRENT_TIMESTAMP,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (updated_by) REFERENCES admin_users(id)
+  FOREIGN KEY (updated_by) REFERENCES admin_users(admin_id)
     ON DELETE SET NULL,
   INDEX idx_setting_key (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -141,7 +141,7 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS kyc_applications (
   id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id           INT UNSIGNED NOT NULL,
+  user_id           VARCHAR(20) NOT NULL,
 
   -- Application Status Tracking
   application_no    VARCHAR(30) NOT NULL UNIQUE,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS kyc_applications (
   initial_deposit   DECIMAL(15,2) NULL,
 
   -- Review Info
-  reviewed_by       INT UNSIGNED NULL,
+  reviewed_by       VARCHAR(20) NULL,
   reviewed_at       TIMESTAMP NULL,
   rejection_reason  TEXT NULL,
   admin_notes       TEXT NULL,
@@ -185,9 +185,9 @@ CREATE TABLE IF NOT EXISTS kyc_applications (
   updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     ON UPDATE CURRENT_TIMESTAMP,
 
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES users(customer_id)
     ON DELETE CASCADE,
-  FOREIGN KEY (reviewed_by) REFERENCES admin_users(id)
+  FOREIGN KEY (reviewed_by) REFERENCES admin_users(admin_id)
     ON DELETE SET NULL,
   INDEX idx_user_id (user_id),
   INDEX idx_status (status),

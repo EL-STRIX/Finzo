@@ -59,14 +59,14 @@ CREATE TABLE staff (
 
 CREATE TABLE staff_documents (
   id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  staff_id        INT UNSIGNED NOT NULL,
+  staff_id        VARCHAR(20) NOT NULL,
   id_type         ENUM('Aadhaar','PAN','Passport') NOT NULL,
   id_number       VARCHAR(100) NOT NULL,
   front_image     VARCHAR(500) NULL,
   back_image      VARCHAR(500) NULL,
   uploaded_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
+  FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE,
   INDEX idx_staff_id (staff_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -74,7 +74,7 @@ CREATE TABLE staff_documents (
 
 CREATE TABLE staff_address (
   id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  staff_id        INT UNSIGNED NOT NULL UNIQUE,
+  staff_id        VARCHAR(20) NOT NULL UNIQUE,
   street          VARCHAR(255) NULL,
   city            VARCHAR(100) NULL,
   state           VARCHAR(100) NULL,
@@ -82,14 +82,14 @@ CREATE TABLE staff_address (
   country         VARCHAR(50) DEFAULT 'India',
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
+  FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- STEP 5: Create staff_shifts table
 
 CREATE TABLE staff_shifts (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    staff_id        INT UNSIGNED NOT NULL,
+    staff_id        VARCHAR(20) NOT NULL,
     shift_date      DATE NOT NULL,
     clock_in        TIMESTAMP NULL DEFAULT NULL,
     clock_out       TIMESTAMP NULL DEFAULT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE staff_shifts (
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE,
     INDEX idx_staff_id (staff_id),
     INDEX idx_shift_date (shift_date),
     UNIQUE KEY uniq_staff_date (staff_id, shift_date)

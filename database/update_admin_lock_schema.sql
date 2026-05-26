@@ -32,7 +32,7 @@ ALTER TABLE admin_users
 
 CREATE TABLE IF NOT EXISTS admin_lock_log (
   id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  admin_id        INT UNSIGNED NOT NULL,
+  admin_id        VARCHAR(20) NOT NULL,
   event_type      ENUM(
                     'locked_password',
                     'locked_answer',
@@ -41,12 +41,14 @@ CREATE TABLE IF NOT EXISTS admin_lock_log (
                     'answer_attempt_failed',
                     'password_reset_completed'
                   ) NOT NULL,
-  triggered_by    INT UNSIGNED NULL,
+  triggered_by    VARCHAR(20) NULL,
   ip_address      VARCHAR(45) NULL,
   details         TEXT NULL,
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (admin_id) REFERENCES admin_users(id)
+  FOREIGN KEY (admin_id) REFERENCES admin_users(admin_id)
     ON DELETE CASCADE,
+  FOREIGN KEY (triggered_by) REFERENCES admin_users(admin_id)
+    ON DELETE SET NULL,
   INDEX idx_admin_id (admin_id),
   INDEX idx_event_type (event_type),
   INDEX idx_created_at (created_at)
