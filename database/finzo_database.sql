@@ -116,6 +116,20 @@ CREATE TABLE IF NOT EXISTS staff (
     last_login_ip VARCHAR(45) NULL DEFAULT NULL,
     failed_attempts TINYINT NOT NULL DEFAULT 0,
     locked_until TIMESTAMP NULL DEFAULT NULL,
+    
+    -- Merged Address Columns
+    street VARCHAR(255) NULL,
+    city VARCHAR(100) NULL,
+    state VARCHAR(100) NULL,
+    pincode CHAR(6) NULL,
+    country VARCHAR(50) DEFAULT 'India',
+    
+    -- Merged Document Columns
+    id_type ENUM('Aadhaar','PAN','Passport') NULL,
+    id_number VARCHAR(100) NULL,
+    front_image VARCHAR(500) NULL,
+    back_image VARCHAR(500) NULL,
+    
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

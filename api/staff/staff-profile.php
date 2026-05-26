@@ -16,7 +16,7 @@ $method   = $_SERVER['REQUEST_METHOD'];
 // =====================================================
 if ($method === 'GET') {
     try {
-        // Staff record with branch info (exclude password_hash)
+        // Staff record with branch info and consolidated address/document columns (exclude password_hash)
         $stmt = $pdo->prepare("
             SELECT
                 s.id, s.full_name, s.date_of_birth, s.gender, s.profile_photo,
@@ -26,6 +26,8 @@ if ($method === 'GET') {
                 s.created_by, s.created_at, s.updated_at,
                 s.last_login_at, s.last_login_ip,
                 s.failed_attempts, s.locked_until,
+                s.street, s.city, s.state, s.pincode, s.country,
+                s.id_type, s.id_number, s.front_image, s.back_image,
                 b.name   AS branch_name,
                 b.branch_code AS branch_code
             FROM staff s
@@ -39,29 +41,33 @@ if ($method === 'GET') {
             json_response(['success' => false, 'message' => 'Staff profile not found'], 404);
         }
 
-        // Staff address
-        $stmt = $pdo->prepare("
-            SELECT id, street, city, state, pincode, country
-            FROM staff_address
-            WHERE staff_id = ?
-        ");
-        $stmt->execute([$staff_id]);
-        $address = $stmt->fetch();
+        // Structure address array from unified staff columns
+        $address = [
+            'id' => $staff['id'],
+            'street' => $staff['street'],
+            'city' => $staff['city'],
+            'state' => $staff['state'],
+            'pincode' => $staff['pincode'],
+            'country' => $staff['country']
+        ];
 
-        // Staff documents
-        $stmt = $pdo->prepare("
-            SELECT id, id_type, id_number, front_image, back_image
-            FROM staff_documents
-            WHERE staff_id = ?
-        ");
-        $stmt->execute([$staff_id]);
-        $documents = $stmt->fetchAll();
+        // Structure documents array from unified staff columns
+        $documents = [];
+        if (!empty($staff['id_type'])) {
+            $documents[] = [
+                'id' => $staff['id'],
+                'id_type' => $staff['id_type'],
+                'id_number' => $staff['id_number'],
+                'front_image' => $staff['front_image'],
+                'back_image' => $staff['back_image']
+            ];
+        }
 
         json_response([
             'success'   => true,
             'staff'     => $staff,
-            'address'   => $address ?: null,
-            'documents' => $documents ?: []
+            'address'   => $address,
+            'documents' => $documents
         ]);
 
     } catch (PDOException $e) {

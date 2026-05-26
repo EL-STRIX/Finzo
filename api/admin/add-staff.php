@@ -189,37 +189,25 @@ try {
     $creator_stmt->execute([$admin_id]);
     $creator_admin_id = $creator_stmt->fetchColumn() ?: null;
 
-    // 12. Insert into staff table
+    // 12. Insert into consolidated staff table
     $stmt = $pdo->prepare("
         INSERT INTO staff (
             full_name, date_of_birth, gender, profile_photo,
             personal_email, phone, emergency_contact_name, emergency_contact_phone,
             staff_id, designation, department, branch_id,
-            date_of_joining, password_hash, status, created_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
+            date_of_joining, password_hash, status, created_by,
+            street, city, state, pincode, country,
+            id_type, id_number, front_image, back_image
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, 'India', ?, ?, ?, ?)
     ");
     $stmt->execute([
         $full_name, $date_of_birth, $gender, $profile_photo_path,
         $personal_email, $phone, $emergency_contact_name, $emergency_contact_phone,
         $staff_id_str, $designation, $department, $branch_id,
-        $date_of_joining, $password_hash, $creator_admin_id
+        $date_of_joining, $password_hash, $creator_admin_id,
+        $street, $city, $state, $pincode,
+        $id_type, $id_number, $id_front_path, $id_back_path
     ]);
-    
-    $new_staff_db_id = $pdo->lastInsertId();
-
-    // 13. Insert into staff_documents (uses integer FK to staff.id)
-    $stmt = $pdo->prepare("
-        INSERT INTO staff_documents (staff_id, id_type, id_number, front_image, back_image)
-        VALUES (?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([$staff_id_str, $id_type, $id_number, $id_front_path, $id_back_path]);
-
-    // 14. Insert into staff_address (uses integer FK to staff.id)
-    $stmt = $pdo->prepare("
-        INSERT INTO staff_address (staff_id, street, city, state, pincode, country)
-        VALUES (?, ?, ?, ?, ?, 'India')
-    ");
-    $stmt->execute([$staff_id_str, $street, $city, $state, $pincode]);
 
     $pdo->commit();
 

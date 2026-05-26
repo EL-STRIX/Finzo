@@ -16,17 +16,15 @@ if (!$staff_id) {
 }
 
 try {
-    // JOIN all 3 tables: staff, staff_address, staff_documents
+    // Fetch details directly from unified staff table
     $stmt = $pdo->prepare("
         SELECT
             s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone,
             s.designation, s.department, s.status, s.profile_photo, s.created_at,
-            sa.street, sa.city, sa.state, sa.pincode, sa.country,
-            sd.id_type, sd.id_number, sd.front_image, sd.back_image,
+            s.street, s.city, s.state, s.pincode, s.country,
+            s.id_type, s.id_number, s.front_image, s.back_image,
             b.name as branch_name
         FROM staff s
-        LEFT JOIN staff_address sa ON sa.staff_id = s.staff_id
-        LEFT JOIN staff_documents sd ON sd.staff_id = s.staff_id
         LEFT JOIN branches b ON b.id = s.branch_id
         WHERE s.id = ?
     ");

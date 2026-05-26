@@ -158,8 +158,6 @@ try {
         ['kyc_applications', 'fk_kyc_app_reviewed'],
         ['interest_rates', 'fk_interest_admin'],
         ['system_settings', 'fk_settings_admin'],
-        ['staff_documents', 'fk_staff_doc_staff'],
-        ['staff_address', 'fk_staff_addr_staff'],
         ['staff_shifts', 'fk_staff_shift_staff'],
         ['admin_lock_log', 'fk_lock_log_admin'],
         ['admin_lock_log', 'fk_lock_log_triggered']
@@ -183,8 +181,9 @@ try {
             }
         }
     }
+    $needsConsolidation = tableExists($pdo, 'staff_address') || tableExists($pdo, 'staff_documents');
     
-    if ($alreadyMigrated && !$missingConstraints) {
+    if ($alreadyMigrated && !$missingConstraints && !$needsConsolidation) {
         logMsg("Database is already migrated to custom alphanumeric ID schema with all constraints enforced. No action needed.", 'success');
         exit(0);
     }
@@ -215,8 +214,6 @@ try {
         ['kyc_applications', 'reviewed_by'],
         ['interest_rates', 'changed_by_admin_id'],
         ['system_settings', 'updated_by'],
-        ['staff_documents', 'staff_id'],
-        ['staff_address', 'staff_id'],
         ['staff_shifts', 'staff_id'],
         ['admin_lock_log', 'admin_id'],
         ['admin_lock_log', 'triggered_by']
@@ -324,7 +321,7 @@ try {
     
     // Map Staff references
     if (tableExists($pdo, 'staff')) {
-        $staffReferencingTables = ['staff_documents', 'staff_address', 'staff_shifts'];
+        $staffReferencingTables = ['staff_shifts'];
         foreach ($staffReferencingTables as $table) {
             if (tableExists($pdo, $table) && columnExists($pdo, $table, 'staff_id')) {
                 logMsg("Migrating staff references in table `$table`...");
@@ -394,8 +391,6 @@ try {
         ['kyc_applications', 'reviewed_by', 'VARCHAR(20) NULL'],
         ['interest_rates', 'changed_by_admin_id', 'VARCHAR(20) NOT NULL'],
         ['system_settings', 'updated_by', 'VARCHAR(20) NULL'],
-        ['staff_documents', 'staff_id', 'VARCHAR(20) NOT NULL'],
-        ['staff_address', 'staff_id', 'VARCHAR(20) NOT NULL UNIQUE'],
         ['staff_shifts', 'staff_id', 'VARCHAR(20) NOT NULL'],
         ['admin_lock_log', 'admin_id', 'VARCHAR(20) NOT NULL'],
         ['admin_lock_log', 'triggered_by', 'VARCHAR(20) NULL'],
@@ -462,8 +457,6 @@ try {
         ['kyc_applications', 'fk_kyc_app_reviewed', 'reviewed_by', 'admin_users(admin_id)', 'ON DELETE SET NULL'],
         ['interest_rates', 'fk_interest_admin', 'changed_by_admin_id', 'admin_users(admin_id)', ''],
         ['system_settings', 'fk_settings_admin', 'updated_by', 'admin_users(admin_id)', 'ON DELETE SET NULL'],
-        ['staff_documents', 'fk_staff_doc_staff', 'staff_id', 'staff(staff_id)', 'ON DELETE CASCADE'],
-        ['staff_address', 'fk_staff_addr_staff', 'staff_id', 'staff(staff_id)', 'ON DELETE CASCADE'],
         ['staff_shifts', 'fk_staff_shift_staff', 'staff_id', 'staff(staff_id)', 'ON DELETE CASCADE'],
         ['admin_lock_log', 'fk_lock_log_admin', 'admin_id', 'admin_users(admin_id)', 'ON DELETE CASCADE'],
         ['admin_lock_log', 'fk_lock_log_triggered', 'triggered_by', 'admin_users(admin_id)', 'ON DELETE SET NULL']
@@ -486,6 +479,74 @@ try {
         }
     }
     
+    // =========================================================================
+    // STEP 5.5: Consolidate staff tables (staff_address and staff_documents)
+    // =========================================================================
+    logMsg("Executing STEP 5.5: Consolidating staff_address and staff_documents into main staff table...");
+    
+    // 1. Add columns to staff if they don't exist
+    $staffColsToAdd = [
+        ['street', 'VARCHAR(255) NULL'],
+        ['city', 'VARCHAR(100) NULL'],
+        ['state', 'VARCHAR(100) NULL'],
+        ['pincode', 'CHAR(6) NULL'],
+        ['country', "VARCHAR(50) DEFAULT 'India'"],
+        ['id_type', "ENUM('Aadhaar','PAN','Passport') NULL"],
+        ['id_number', 'VARCHAR(100) NULL'],
+        ['front_image', 'VARCHAR(500) NULL'],
+        ['back_image', 'VARCHAR(500) NULL']
+    ];
+    
+    foreach ($staffColsToAdd as $col) {
+        list($colName, $colDef) = $col;
+        if (!columnExists($pdo, 'staff', $colName)) {
+            $pdo->exec("ALTER TABLE `staff` ADD COLUMN `$colName` $colDef");
+            logMsg("Added column `staff`.`$colName`", 'info');
+        }
+    }
+    
+    // 2. Migrate data from staff_address if it exists
+    if (tableExists($pdo, 'staff_address')) {
+        $pdo->exec("
+            UPDATE staff s
+            JOIN staff_address sa ON s.staff_id = sa.staff_id
+            SET s.street = sa.street,
+                s.city = sa.city,
+                s.state = sa.state,
+                s.pincode = sa.pincode,
+                s.country = sa.country
+        ");
+        logMsg("Migrated data from staff_address to staff table", 'info');
+    }
+    
+    // 3. Migrate data from staff_documents if it exists
+    if (tableExists($pdo, 'staff_documents')) {
+        $pdo->exec("
+            UPDATE staff s
+            JOIN (
+                SELECT sd1.* FROM staff_documents sd1
+                JOIN (
+                    SELECT staff_id, MAX(id) as max_id FROM staff_documents GROUP BY staff_id
+                ) sd2 ON sd1.id = sd2.max_id
+            ) sd ON s.staff_id = sd.staff_id
+            SET s.id_type = sd.id_type,
+                s.id_number = sd.id_number,
+                s.front_image = sd.front_image,
+                s.back_image = sd.back_image
+        ");
+        logMsg("Migrated data from staff_documents to staff table", 'info');
+    }
+    
+    // 4. Drop staff_address and staff_documents tables
+    if (tableExists($pdo, 'staff_address')) {
+        $pdo->exec("DROP TABLE IF EXISTS `staff_address`");
+        logMsg("Dropped table staff_address", 'success');
+    }
+    if (tableExists($pdo, 'staff_documents')) {
+        $pdo->exec("DROP TABLE IF EXISTS `staff_documents`");
+        logMsg("Dropped table staff_documents", 'success');
+    }
+
     // Commit the entire transaction if still active (MySQL DDL commits implicitly)
     if ($pdo->inTransaction()) {
         $pdo->commit();

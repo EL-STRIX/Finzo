@@ -5,15 +5,12 @@ UPDATE branches SET manager_id = NULL;
 UPDATE transactions SET processed_by_staff_id = NULL;
 
 -- STEP 1: Drop all existing staff related tables
--- Drop in correct order to avoid foreign key errors
-
 DROP TABLE IF EXISTS staff_shifts;
 DROP TABLE IF EXISTS staff_address;
 DROP TABLE IF EXISTS staff_documents;
 DROP TABLE IF EXISTS staff;
 
--- STEP 2: Create staff table (main)
-
+-- STEP 2: Create consolidated staff table (main + address + documents)
 CREATE TABLE staff (
   id                    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
@@ -36,6 +33,19 @@ CREATE TABLE staff (
   branch_id             INT UNSIGNED NULL,
   date_of_joining       DATE NOT NULL DEFAULT (CURDATE()),
 
+  -- Address Information (merged from staff_address)
+  street                VARCHAR(255) NULL,
+  city                  VARCHAR(100) NULL,
+  state                 VARCHAR(100) NULL,
+  pincode               CHAR(6) NULL,
+  country               VARCHAR(50) DEFAULT 'India',
+
+  -- Document Information (merged from staff_documents)
+  id_type               ENUM('Aadhaar','PAN','Passport') NULL,
+  id_number             VARCHAR(100) NULL,
+  front_image           VARCHAR(500) NULL,
+  back_image            VARCHAR(500) NULL,
+
   -- Security & Access
   password_hash         VARCHAR(255) NOT NULL,
   status                ENUM('active','suspended') NOT NULL DEFAULT 'active',
@@ -55,38 +65,7 @@ CREATE TABLE staff (
   INDEX idx_personal_email (personal_email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- STEP 3: Create staff_documents table
-
-CREATE TABLE staff_documents (
-  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  staff_id        VARCHAR(20) NOT NULL,
-  id_type         ENUM('Aadhaar','PAN','Passport') NOT NULL,
-  id_number       VARCHAR(100) NOT NULL,
-  front_image     VARCHAR(500) NULL,
-  back_image      VARCHAR(500) NULL,
-  uploaded_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE,
-  INDEX idx_staff_id (staff_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- STEP 4: Create staff_address table
-
-CREATE TABLE staff_address (
-  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  staff_id        VARCHAR(20) NOT NULL UNIQUE,
-  street          VARCHAR(255) NULL,
-  city            VARCHAR(100) NULL,
-  state           VARCHAR(100) NULL,
-  pincode         CHAR(6) NULL,
-  country         VARCHAR(50) DEFAULT 'India',
-  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- STEP 5: Create staff_shifts table
-
+-- STEP 3: Create staff_shifts table (maintains 1:Many roster relationship)
 CREATE TABLE staff_shifts (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     staff_id        VARCHAR(20) NOT NULL,

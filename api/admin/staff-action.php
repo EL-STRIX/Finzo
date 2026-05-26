@@ -109,15 +109,7 @@ try {
     } elseif ($action === 'delete') {
         $pdo->beginTransaction();
         
-        // Delete from address
-        $stmt = $pdo->prepare("DELETE FROM staff_address WHERE staff_id = ?");
-        $stmt->execute([$staff['staff_id']]);
-
-        // Delete from documents
-        $stmt = $pdo->prepare("DELETE FROM staff_documents WHERE staff_id = ?");
-        $stmt->execute([$staff['staff_id']]);
-
-        // Delete from staff
+        // Delete from staff (Address & Documents are consolidated inside staff)
         $stmt = $pdo->prepare("DELETE FROM staff WHERE id = ?");
         $stmt->execute([$staff_id]);
 

@@ -17,13 +17,15 @@ if (!$staff_id) {
 }
 
 try {
-    // Fetch staff profile
+    // Fetch staff profile with consolidated address and documents columns
     $stmt = $pdo->prepare("
         SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
                s.designation, s.department, s.status,
                s.gender, s.date_of_birth, s.emergency_contact_name, s.emergency_contact_phone,
                s.date_of_joining, s.created_by,
                s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
+               s.street, s.city, s.state, s.pincode, s.country,
+               s.id_type, s.id_number, s.front_image, s.back_image,
                b.name as branch_name, b.branch_code, b.state as branch_state,
                COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name
         FROM staff s
@@ -92,23 +94,25 @@ try {
     $stmt->execute([$staff_id]);
     $transactions = $stmt->fetchAll();
 
-    // Staff documents
-    $stmt = $pdo->prepare("
-        SELECT id_type, id_number, front_image, back_image
-        FROM staff_documents
-        WHERE staff_id = ?
-    ");
-    $stmt->execute([$staff_id]);
-    $documents = $stmt->fetchAll();
+    // Structure documents array from unified staff columns
+    $documents = [];
+    if (!empty($staff['id_type'])) {
+        $documents[] = [
+            'id_type' => $staff['id_type'],
+            'id_number' => $staff['id_number'],
+            'front_image' => $staff['front_image'],
+            'back_image' => $staff['back_image']
+        ];
+    }
 
-    // Staff address
-    $stmt = $pdo->prepare("
-        SELECT street, city, state, pincode, country
-        FROM staff_address
-        WHERE staff_id = ?
-    ");
-    $stmt->execute([$staff_id]);
-    $address = $stmt->fetch();
+    // Structure address array from unified staff columns
+    $address = [
+        'street' => $staff['street'],
+        'city' => $staff['city'],
+        'state' => $staff['state'],
+        'pincode' => $staff['pincode'],
+        'country' => $staff['country']
+    ];
 
     // Recent activity (audit log) — only actions performed BY this specific staff member
     $stmt = $pdo->prepare("
