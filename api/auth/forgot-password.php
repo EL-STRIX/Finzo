@@ -31,7 +31,7 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 // FIND USER
 // =====================================================
 
-$stmt = $pdo->prepare("SELECT id, full_name, email FROM users WHERE email = ? AND is_deleted = 0");
+$stmt = $pdo->prepare("SELECT id, customer_id, full_name, email FROM users WHERE email = ? AND is_deleted = 0");
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
@@ -50,7 +50,7 @@ if (!$user) {
 try {
     // Delete any existing reset tokens for this user
     $stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = ?");
-    $stmt->execute([$user['id']]);
+    $stmt->execute([$user['customer_id']]);
 
     // Generate secure token
     $token = bin2hex(random_bytes(32));
@@ -61,7 +61,7 @@ try {
         INSERT INTO password_resets (user_id, token, expires_at, created_at)
         VALUES (?, ?, ?, NOW())
     ");
-    $stmt->execute([$user['id'], $token, $expires_at]);
+    $stmt->execute([$user['customer_id'], $token, $expires_at]);
 
     // Send reset email
     send_password_reset_email($user['email'], $user['full_name'], $token);
