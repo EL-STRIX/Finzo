@@ -31,7 +31,7 @@ if (empty($email) || empty($password)) {
 
 // 3. Query admin_users
 $stmt = $pdo->prepare("
-    SELECT id, full_name, email, profile_photo, password_hash, status, admin_role, 
+    SELECT id, admin_id, full_name, email, profile_photo, password_hash, status, admin_role, 
            failed_attempts, account_locked, locked_at, auto_unlock_at, answer_locked_until, security_question_set,
            temp_password_expiry
     FROM admin_users
@@ -119,7 +119,7 @@ if (!password_verify($password, $admin['password_hash'])) {
         $logStmt->execute([$ip, $admin['id']]);
         
         // Write audit log
-        write_audit_log($pdo, 'admin_account_locked', $admin['id'], 'admin', $admin['id'], 'admin', 'Account locked: 3 wrong passwords');
+        write_audit_log($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
         
         json_response([
             'success' => false,
@@ -155,11 +155,12 @@ if (!password_verify($password, $admin['password_hash'])) {
     $_SESSION['admin_email']   = $admin['email'];
     $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
     $_SESSION['admin_role']    = $admin['admin_role'];
+    $_SESSION['admin_display_id'] = $admin['admin_id'];
     $_SESSION['role']          = 'admin';
     $_SESSION['last_activity'] = time();
     
     // Write audit log
-    write_audit_log($pdo, 'admin_login', $admin['id'], 'admin', $admin['id'], 'admin', "Admin login from IP: {$ip}");
+    write_audit_log($pdo, 'admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}");
     
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
     $redirect = $base . '/views/admin/admin-dashboard.html';

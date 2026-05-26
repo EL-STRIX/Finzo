@@ -57,7 +57,7 @@ if (!empty($errors)) {
 $stmt = $pdo->prepare("
     SELECT pr.id, pr.user_id, pr.expires_at, u.full_name, u.email
     FROM password_resets pr
-    JOIN users u ON pr.user_id = u.id
+    JOIN users u ON pr.user_id = u.customer_id
     WHERE pr.token = ?
 ");
 $stmt->execute([$token]);
@@ -93,7 +93,7 @@ try {
     $password_hash = password_hash($new_password, PASSWORD_BCRYPT);
 
     // Update user's password
-    $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE customer_id = ?");
     $stmt->execute([$password_hash, $reset['user_id']]);
 
     // Delete the used token (and any other tokens for this user)
@@ -101,7 +101,7 @@ try {
     $stmt->execute([$reset['user_id']]);
 
     // Reset failed attempts and unlock if locked
-    $stmt = $pdo->prepare("UPDATE users SET failed_attempts = 0, locked_until = NULL WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE users SET failed_attempts = 0, locked_until = NULL WHERE customer_id = ?");
     $stmt->execute([$reset['user_id']]);
 
     $pdo->commit();
