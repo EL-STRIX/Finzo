@@ -268,44 +268,58 @@ function renderUserTransactions(transactions) {
         return;
     }
 
+    const accountNo = document.querySelector('#accounts-sidebar-list span')?.textContent?.trim() || '';
+
     const html = transactions.map((t, i) => {
-        const isPositive = t.amount && t.amount.startsWith('+');
-        const isSpecial = t.rawType === 'special';
+        const typeVal = t.type || 'deposit';
+        let isPositive = false;
+        if (typeVal === 'deposit' || typeVal === 'interest_credit') {
+            isPositive = true;
+        } else if (typeVal === 'transfer') {
+            isPositive = (t.to_account === accountNo);
+        }
+
+        const amountFormatted = (isPositive ? '+' : '-') + ' ₹' + parseFloat(t.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const dateFormatted = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '') : 'N/A';
+        const isSpecial = typeVal === 'special';
         
-        return \`
+        const badgeClass = typeVal === 'deposit' ? 'badge-green' : (typeVal === 'withdrawal' ? 'badge-red' : (typeVal === 'transfer' ? 'badge-blue' : 'badge-gray'));
+        const dotClass = typeVal === 'deposit' ? 'bg-emerald-500' : (typeVal === 'withdrawal' ? 'bg-rose-500' : (typeVal === 'transfer' ? 'bg-blue-500' : 'bg-slate-400 animate-pulse'));
+
+        return `
         <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all group">
-            <td class="py-5 px-8 text-center font-black opacity-20 text-[10px] group-hover:opacity-100 transition-opacity">\${i + 1}</td>
+            <td class="py-5 px-8 text-center font-black opacity-20 text-[10px] group-hover:opacity-100 transition-opacity">${i + 1}</td>
             <td class="py-5 px-6">
             <div class="font-mono text-[11px] font-black tracking-widest text-primary dark:text-blue-400 bg-primary/5 dark:bg-blue-400/5 px-3 py-1.5 rounded-lg w-fit">
-                \${t.txId}
+                ${t.txn_id}
             </div>
             </td>
             <td class="py-5 px-6">
             <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full \${t.rawType === 'deposit' ? 'bg-emerald-500' : t.rawType === 'withdrawal' ? 'bg-rose-500' : t.rawType === 'transfer' ? 'bg-blue-500' : 'bg-slate-400 animate-pulse'}"></div>
-                <span class="text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">\${t.type ? t.type.replace('_', ' ') : ''}</span>
+                <div class="w-1.5 h-1.5 rounded-full ${dotClass}"></div>
+                <span class="text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">${typeVal.replace('_', ' ')}</span>
             </div>
             </td>
             <td class="py-5 px-6">
-            <div class="text-[11px] font-bold text-slate-500">\${t.date}</div>
+            <div class="text-[11px] font-bold text-slate-500">${dateFormatted}</div>
             </td>
             <td class="py-5 px-6 text-right">
-            <div class="text-sm font-black \${isPositive ? 'text-emerald-500' : isSpecial ? 'text-slate-400' : 'text-rose-500'} font-mono">
-                \${t.amount}
+            <div class="text-sm font-black ${isPositive ? 'text-emerald-500' : isSpecial ? 'text-slate-400' : 'text-rose-500'} font-mono">
+                ${amountFormatted}
             </div>
             </td>
             <td class="py-5 px-6">
-            <span class="badge \${t.rawType === 'deposit' ? 'badge-green' : t.rawType === 'withdrawal' ? 'badge-red' : t.rawType === 'transfer' ? 'badge-blue' : 'badge-gray'} !text-[9px] !px-3 !py-1 !rounded-full !border-none !font-black !tracking-tighter shadow-sm">
-                \${t.status}
+            <span class="badge ${badgeClass} !text-[9px] !px-3 !py-1 !rounded-full !border-none !font-black !tracking-tighter shadow-sm">
+                ${t.status ? t.status.toUpperCase() : 'COMPLETED'}
             </span>
             </td>
             <td class="py-5 px-8 text-right">
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-primary dark:hover:text-blue-400 transition-all">
+            <button onclick="window.open('../pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-primary dark:hover:text-blue-400 transition-all">
                 <span class="material-symbols-outlined text-[18px]">print</span>
             </button>
             </td>
         </tr>
-        \`;
+        `;
     }).join('');
     document.getElementById('user-transactions-body').innerHTML = html;
 }
