@@ -44,16 +44,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
         $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
 
+        // Generate timeline
+        $timeline = [
+            [
+                'status' => 'Account Registered',
+                'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
+                'completed' => true
+            ],
+            [
+                'status' => 'KYC Submitted',
+                'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'])) : 'Pending',
+                'completed' => (bool)$user['kyc_submitted_at']
+            ]
+        ];
+
+        if ($user['status'] === 'under_review') {
+            $timeline[] = [
+                'status' => 'Under Review',
+                'time' => 'In Progress',
+                'completed' => true
+            ];
+            $timeline[] = [
+                'status' => 'Decision Pending',
+                'time' => null,
+                'completed' => false
+            ];
+        } elseif ($user['status'] === 'pending') {
+            $timeline[] = [
+                'status' => 'Pending Review',
+                'time' => 'Awaiting admin review',
+                'completed' => false
+            ];
+            $timeline[] = [
+                'status' => 'Decision Pending',
+                'time' => null,
+                'completed' => false
+            ];
+        } elseif ($user['status'] === 'active') {
+            $timeline[] = [
+                'status' => 'Approved & Activated',
+                'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
+                'completed' => true
+            ];
+        } elseif ($user['status'] === 'rejected') {
+            $timeline[] = [
+                'status' => 'Application Rejected',
+                'time' => $user['rejection_reason'] ? 'Reason: ' . $user['rejection_reason'] : 'KYC Rejected',
+                'completed' => true
+            ];
+        }
+
+        // Expected account number preview
+        require_once dirname(__DIR__, 2) . '/config/functions.php';
+        $expected_acc = generate_account_number($pdo);
+
         json_response([
             'success' => true,
-            'application' => [
-                'user'         => $user,
-                'account'      => $account,
-                'id_documents' => [
-                    'front_url' => $id_front_url,
-                    'back_url'  => $id_back_url
-                ]
-            ]
+            'user'         => $user,
+            'account'      => $account,
+            'id_documents' => [
+                'front_url' => $id_front_url,
+                'back_url'  => $id_back_url
+            ],
+            'timeline'     => $timeline,
+            'expected_acc' => $expected_acc
         ]);
 
     } catch (PDOException $e) {
