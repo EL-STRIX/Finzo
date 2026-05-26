@@ -80,10 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.id_documents) {
             const docBlocks = document.querySelectorAll('.admin-card .aspect-video');
             if (data.id_documents.front_url && docBlocks.length > 0) {
-                docBlocks[0].innerHTML = `<img src="../../${data.id_documents.front_url.replace('../../','')}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200">`;
+                let url = data.id_documents.front_url;
+                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+                    url = '../../' + url;
+                }
+                docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side">`;
             }
             if (data.id_documents.back_url && docBlocks.length > 1) {
-                docBlocks[1].innerHTML = `<img src="../../${data.id_documents.back_url.replace('../../','')}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200">`;
+                let url = data.id_documents.back_url;
+                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+                    url = '../../' + url;
+                }
+                docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side">`;
             }
         }
 
