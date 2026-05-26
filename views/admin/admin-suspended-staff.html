@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
   <script src="../../assets/js/core/theme.js"></script>
   </head>
-<body class="bg-slate-50 dark:bg-[#0d1117] font-body text-black dark:text-on-surface antialiased">
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
   <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
   <nav class="admin-sidebar" id="admin-sidebar">
@@ -90,8 +90,10 @@
     </div>
   </nav>
 
-  <!-- MAIN -->
-  <div class="flex-1 min-w-0 lg:ml-[260px] transition-all duration-300 overflow-hidden">
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- MAIN AREA -->
+  <div class="admin-main">
     <!-- TOPBAR -->
     <header class="admin-topbar">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
@@ -108,10 +110,10 @@
       </div>
     </header>
 
-    <div class="p-4 sm:p-6 lg:p-6">
+    <main class="p-4 sm:p-6 lg:p-10">
 
       <!-- TABLE CARD -->
-      <div class="admin-card">
+      <div class="admin-card overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
             <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Suspended Personnel Audit</h3>
             <a href="admin-staff.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Full Staff Audit</a>
@@ -184,9 +186,8 @@
           <div class="flex items-center justify-center" id="pag-controls"></div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
-</div>
 
 <div class="modal-overlay hidden" id="reinstate-modal" style="z-index: 2100;">
   <div class="modal-card">
