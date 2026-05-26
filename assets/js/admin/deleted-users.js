@@ -254,6 +254,20 @@
             }, 500));
         }
 
+        // Date Filters change listeners
+        if (filterDateFrom) {
+            filterDateFrom.addEventListener('change', () => {
+                currentPage = 1;
+                loadDeletedUsers();
+            });
+        }
+        if (filterDateTo) {
+            filterDateTo.addEventListener('change', () => {
+                currentPage = 1;
+                loadDeletedUsers();
+            });
+        }
+
         // Tab Filtering
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {

@@ -352,6 +352,20 @@
                 loadData();
             });
         }
+
+        // Dropdown Filters change listeners
+        if (typeFilter) {
+            typeFilter.addEventListener('change', () => {
+                currentPage = 1;
+                loadData();
+            });
+        }
+        if (statusFilter) {
+            statusFilter.addEventListener('change', () => {
+                currentPage = 1;
+                loadData();
+            });
+        }
     });
 
 })();
