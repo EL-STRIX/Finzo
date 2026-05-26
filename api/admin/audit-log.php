@@ -27,13 +27,15 @@ try {
         $params[] = "%{$action_type}%";
     }
 
-    if ($actor_role !== 'all' && in_array($actor_role, ['admin', 'staff', 'system'])) {
+    if ($actor_role !== 'all' && in_array($actor_role, ['admin', 'staff', 'system', 'user'])) {
         if ($actor_role === 'admin') {
             $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator')";
         } else if ($actor_role === 'staff') {
             $where_clauses[] = "al.actor_role = 'Staff'";
         } else if ($actor_role === 'system') {
             $where_clauses[] = "al.actor_role = 'System'";
+        } else if ($actor_role === 'user') {
+            $where_clauses[] = "al.actor_role = 'User'";
         }
     }
 
@@ -87,7 +89,7 @@ try {
         SELECT 
             SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' THEN 1 ELSE 0 END) as admin_count,
             SUM(CASE WHEN al.actor_role = 'Staff' THEN 1 ELSE 0 END) as staff_count,
-            SUM(CASE WHEN al.actor_role = 'System' THEN 1 ELSE 0 END) as system_count
+            SUM(CASE WHEN al.actor_role = 'User' THEN 1 ELSE 0 END) as user_count
         FROM audit_log al
         WHERE {$where_sql}
     ");
@@ -105,7 +107,7 @@ try {
         'stats'        => [
             'admin'  => (int)$stats['admin_count'],
             'staff'  => (int)$stats['staff_count'],
-            'system' => (int)$stats['system_count']
+            'user'   => (int)$stats['user_count']
         ]
     ]);
 

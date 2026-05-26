@@ -74,7 +74,7 @@ if (!password_verify($password, $user['password_hash'])) {
         $stmt->execute([$new_attempts, $lock_until, $user['id']]);
 
         // Write audit log
-        write_audit_log($pdo, 'account_locked', $user['id'], 'user', $user['id'], 'system',
+        write_audit_log($pdo, 'account_locked', $user['id'], 'user', $user['id'], 'user',
             "Account locked after {$new_attempts} failed login attempts");
 
         $lockout_minutes = ceil($lockout_duration / 60);
@@ -141,7 +141,7 @@ $_SESSION['role']           = 'customer';
 $_SESSION['last_activity']  = time();
 
 // Write audit log
-write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'system',
+write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user',
     "Customer login from IP: {$ip}");
 
 // Build redirect relative to project root (works in /Finzo/ subdirectory)

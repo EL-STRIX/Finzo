@@ -18,7 +18,7 @@
             const dateFrom = document.getElementById('date-from');
             const dateTo = document.getElementById('date-to');
 
-            const response = await window.api.get('/admin/audit-log.php', {
+            const params = {
                 search: searchInput ? searchInput.value : '',
                 action_type: actionInput ? actionInput.value : 'all',
                 actor_role: roleInput ? roleInput.value : 'all',
@@ -26,14 +26,27 @@
                 to_date: dateTo ? dateTo.value : '',
                 page: currentPage,
                 per_page: rowsPerPage
-            });
+            };
 
-            if (response.success) {
+            console.log('[AuditLog] Fetching with params:', params);
+            const response = await window.api.get('/admin/audit-log.php', params);
+            console.log('[AuditLog] Response:', response);
+
+            if (response && response.success) {
                 renderTable(response.entries, response.total, response.pages);
                 updateStats(response);
+            } else {
+                console.warn('[AuditLog] API returned failure or empty:', response);
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">Failed to load audit log. Please refresh the page.</td></tr>';
+                    tbody.style.opacity = '1';
+                }
             }
         } catch (error) {
-            console.error('Failed to load audit log:', error);
+            console.error('[AuditLog] Failed to load audit log:', error);
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">Error loading data. Please refresh.</td></tr>';
+            }
         } finally {
             if (tbody) tbody.style.opacity = '1';
         }
@@ -121,6 +134,8 @@
             return `<span class="badge" style="background:#ede9fe;color:#5b21b6">STAFF</span>`;
         } else if (r === 'system') {
             return `<span class="badge" style="background:#f1f5f9;color:#475569">SYSTEM</span>`;
+        } else if (r === 'user') {
+            return `<span class="badge" style="background:#ccfbf1;color:#0f766e">USER</span>`;
         }
         return `<span class="badge">${r.replace(/_/g, ' ').toUpperCase()}</span>`;
     }
@@ -156,7 +171,7 @@
         const elTotal = document.getElementById('stat-total');
         const elAdmin = document.getElementById('stat-admin');
         const elStaff = document.getElementById('stat-staff');
-        const elSystem = document.getElementById('stat-system');
+        const elUser = document.getElementById('stat-user');
         
         if (elTotal) {
             elTotal.textContent = window.utils && window.utils.formatNumber ? 
@@ -167,7 +182,7 @@
         if (data.stats) {
             if (elAdmin) elAdmin.textContent = String(data.stats.admin || 0);
             if (elStaff) elStaff.textContent = String(data.stats.staff || 0);
-            if (elSystem) elSystem.textContent = String(data.stats.system || 0);
+            if (elUser) elUser.textContent = String(data.stats.user || 0);
         }
     }
 

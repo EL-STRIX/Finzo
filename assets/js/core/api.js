@@ -22,7 +22,10 @@
         const fetchOpts = {
             method,
             credentials: 'same-origin',
-            headers: {},
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
         };
 
         if (body && method !== 'GET') {
@@ -124,6 +127,15 @@
                     input.parentNode.appendChild(errorEl);
                 }
             });
+        },
+
+        buildUrl: (endpoint, params = null) => {
+            let url = API_BASE + endpoint;
+            if (params) {
+                const qs = objectToURLParams(params);
+                url += (url.includes('?') ? '&' : '?') + qs;
+            }
+            return url;
         }
     };
 

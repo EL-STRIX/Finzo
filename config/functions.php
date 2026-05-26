@@ -209,6 +209,12 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
         $resolved_actor_id = 'SYSTEM';
         $resolved_actor_role = 'System';
     } else if ($actor_role === 'user') {
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+        $stmt->execute([$actor_id]);
+        $customer_id = $stmt->fetchColumn();
+        if ($customer_id) {
+            $resolved_actor_id = $customer_id;
+        }
         $resolved_actor_role = 'User';
     }
 
