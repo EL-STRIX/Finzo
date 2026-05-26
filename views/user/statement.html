@@ -125,7 +125,7 @@ async function generateStatement(){
         const date = new Date(tx.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
         return `<tr>
           <td style="font-size:12px;font-weight:600">${date}</td>
-          <td class="td-mono">${tx.reference_id || tx.id}</td>
+          <td class="td-mono">${tx.txn_id || tx.reference_id || '-'}</td>
           <td style="font-size:12px">${tx.description || tx.type}</td>
           <td><span class="badge ${isCredit?'badge-green':'badge-red'}">${isCredit?'Credit':'Debit'}</span></td>
           <td class="${isCredit?'amount-pos':'amount-neg'}">${isCredit?'+':'-'}${formatINR(amt)}</td>

@@ -94,7 +94,7 @@ async function loadTransactions() {
     const data = await res.json();
     if (data.success && data.transactions) {
       allTxns = data.transactions.map(tx => ({
-        id: tx.reference_id || tx.id,
+        id: tx.txn_id || tx.reference_id || '-',
         date: new Date(tx.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}),
         time: new Date(tx.created_at).toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'}) + ' IST',
         desc: tx.description || tx.type,
