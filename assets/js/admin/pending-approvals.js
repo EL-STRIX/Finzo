@@ -5,6 +5,7 @@
 (function() {
     let currentStatus = 'all';
     let currentPage = 1;
+    let searchTimeout = null;
 
     /**
      * Load applications with current filters
@@ -161,14 +162,27 @@
     function bindEvents() {
         // Status Tabs
         const tabs = document.querySelectorAll('.tab-btn');
+        const activeClasses = [
+            'bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-[1.02]',
+            'dark:bg-sky-500/20', 'dark:text-sky-300', 'dark:shadow-none', 'dark:ring-1', 'dark:ring-sky-500/30'
+        ];
+        const inactiveClasses = [
+            'bg-slate-100', 'text-slate-600', 'hover:bg-slate-200/80', 'hover:text-slate-800', 'hover:scale-[1.01]',
+            'dark:bg-white/5', 'dark:text-slate-400', 'dark:hover:bg-white/10', 'dark:hover:text-slate-200'
+        ];
+
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {
-                tabs.forEach(t => t.classList.remove('bg-primary', 'text-white', 'shadow-md'));
-                tabs.forEach(t => t.classList.add('text-slate-500'));
-                
-                this.classList.remove('text-slate-500');
-                this.classList.add('bg-primary', 'text-white', 'shadow-md');
-                
+                // Reset all tabs to inactive state
+                tabs.forEach(t => {
+                    t.classList.remove(...activeClasses);
+                    t.classList.add(...inactiveClasses);
+                });
+
+                // Set active state on clicked tab
+                this.classList.remove(...inactiveClasses);
+                this.classList.add(...activeClasses);
+
                 currentStatus = this.getAttribute('data-status');
                 currentPage = 1;
                 loadApplications();
@@ -178,11 +192,12 @@
         // Filter Apply/Reset
         const searchInput = document.getElementById('approval-search');
         if (searchInput) {
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
                     currentPage = 1;
                     loadApplications();
-                }
+                }, 300);
             });
         }
 
