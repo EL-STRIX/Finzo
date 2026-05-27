@@ -19,11 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = response.data || response;
                 populateUI(data);
             } else {
-                window.FinzoUtils.showToast(response.message || 'Failed to load details', 'error');
+                window.showToast(response.message || 'Failed to load details', 'error');
             }
         } catch (error) {
             console.error('Error loading application:', error);
-            window.FinzoUtils.showToast('Connection error', 'error');
+            window.showToast('Connection error', 'error');
         }
     }
 
@@ -218,17 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.status === 'success' || response.success) {
-                    window.FinzoUtils.showToast('Application Approved! Account Number: ' + (response.account_no || response.data?.account_no), 'success');
+                    window.showToast('Application Approved! Account Number: ' + (response.account_no || response.data?.account_no), 'success');
                     setTimeout(() => {
                          window.location.href = 'admin-pending-approvals.html';
                     }, 1500);
                 } else {
-                    window.FinzoUtils.showToast(response.message || 'Action failed', 'error');
+                    window.showToast(response.message || 'Action failed', 'error');
                     window.api.setButtonLoading(this, false, 'Yes, Approve Now');
                 }
             } catch (error) {
                 console.error(error);
-                window.FinzoUtils.showToast('Connection failed', 'error');
+                window.showToast('Connection failed', 'error');
                 window.api.setButtonLoading(this, false, 'Yes, Approve Now');
             }
         });
@@ -256,17 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.status === 'success' || response.success) {
-                    window.FinzoUtils.showToast('Application Rejected.', 'success');
+                    window.showToast('Application Rejected.', 'success');
                     setTimeout(() => {
                         window.location.href = 'admin-pending-approvals.html';
                     }, 1500);
                 } else {
-                    window.FinzoUtils.showToast(response.message || 'Action failed', 'error');
+                    window.showToast(response.message || 'Action failed', 'error');
                     window.api.setButtonLoading(this, false, 'Yes, Reject Application');
                 }
             } catch (error) {
                 console.error(error);
-                window.FinzoUtils.showToast('Connection failed', 'error');
+                window.showToast('Connection failed', 'error');
                 window.api.setButtonLoading(this, false, 'Yes, Reject Application');
             }
         });
