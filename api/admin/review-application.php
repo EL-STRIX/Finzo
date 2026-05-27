@@ -44,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
         $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
         $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
+        if (!$profile_pic_url) {
+            $avatar_path = 'uploads/avatars/user_' . $user['id'] . '.jpg';
+            if (file_exists(dirname(__DIR__, 2) . '/' . $avatar_path)) {
+                $profile_pic_url = APP_URL . '/' . $avatar_path;
+            }
+        }
         $user['profile_picture_url'] = $profile_pic_url;
 
         $stmt = $pdo->prepare("
