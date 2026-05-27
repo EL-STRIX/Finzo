@@ -220,17 +220,17 @@ if (!is_dir($profile_upload_path)) {
     mkdir($profile_upload_path, 0755, true);
 }
 
-$profile_ext = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
-$front_ext = pathinfo($_FILES['id_front']['name'], PATHINFO_EXTENSION);
-$back_ext  = pathinfo($_FILES['id_back']['name'], PATHINFO_EXTENSION);
+$profile_ext = isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK ? pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION) : '';
+$front_ext = isset($_FILES['id_front']) && $_FILES['id_front']['error'] === UPLOAD_ERR_OK ? pathinfo($_FILES['id_front']['name'], PATHINFO_EXTENSION) : '';
+$back_ext  = isset($_FILES['id_back']) && $_FILES['id_back']['error'] === UPLOAD_ERR_OK ? pathinfo($_FILES['id_back']['name'], PATHINFO_EXTENSION) : '';
 
-$profile_filename = 'profile_' . $user_id . '_' . time() . '.' . $profile_ext;
-$front_filename = 'id_front_' . $user_id . '_' . time() . '.' . $front_ext;
-$back_filename  = 'id_back_' . $user_id . '_' . time() . '.' . $back_ext;
+$profile_filename = $profile_ext ? 'profile_' . $user_id . '_' . time() . '.' . $profile_ext : '';
+$front_filename = $front_ext ? 'id_front_' . $user_id . '_' . time() . '.' . $front_ext : '';
+$back_filename  = $back_ext ? 'id_back_' . $user_id . '_' . time() . '.' . $back_ext : '';
 
-$profile_destination = $profile_upload_path . $profile_filename;
-$front_destination = UPLOAD_ID_DOCUMENTS_PATH . $front_filename;
-$back_destination  = UPLOAD_ID_DOCUMENTS_PATH . $back_filename;
+$profile_destination = $profile_filename ? $profile_upload_path . $profile_filename : '';
+$front_destination = $front_filename ? UPLOAD_ID_DOCUMENTS_PATH . $front_filename : '';
+$back_destination  = $back_filename ? UPLOAD_ID_DOCUMENTS_PATH . $back_filename : '';
 
 if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
     if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_destination)) {
