@@ -326,7 +326,7 @@ body.ready { visibility: visible; opacity: 1; }
   const s = UserState.status;
   if (s === 'active') { window.location.href = 'dashboard.html'; return; }
   if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
-  if (s === 'rejected') { window.location.href = 'account-rejected.html'; return; }
+  // If status is rejected, do NOT redirect so they can resubmit!
 
   // Status is pending — reveal the page
   document.body.classList.add('ready');
