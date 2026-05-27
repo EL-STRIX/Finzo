@@ -35,6 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             json_response(['success' => false, 'message' => 'Application not found'], 404);
         }
 
+        // Auto-assign to "under_review" if it's currently "pending"
+        if ($user['status'] === 'pending') {
+            $update_stmt = $pdo->prepare("UPDATE users SET status = 'under_review', updated_at = NOW() WHERE id = ?");
+            $update_stmt->execute([$user_id]);
+            $user['status'] = 'under_review';
+        }
+
         // Account preferences
         $stmt = $pdo->prepare("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?");
         $stmt->execute([$user['customer_id']]);
