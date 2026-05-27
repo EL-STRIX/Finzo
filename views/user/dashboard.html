@@ -87,6 +87,18 @@
 
 .quick-action.locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; pointer-events: none; }
 
+.card.locked { opacity: 0.6; filter: grayscale(1); pointer-events: none; position: relative; }
+.card.locked::after {
+  content: "lock";
+  font-family: 'Material Symbols Outlined';
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 24px;
+  color: var(--text-placeholder);
+  opacity: 0.5;
+}
+
 .quick-action-icon { 
   width: 52px; height: 52px; border-radius: 16px; 
   display: flex; align-items: center; justify-content: center;
@@ -211,7 +223,7 @@
       </div>
 
       <div class="col-4 animate-in animate-delay-2">
-        <div class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center; padding: 32px; background:linear-gradient(135deg, rgba(8,145,178,0.05) 0%, rgba(16,185,129,0.05) 100%);">
+        <div id="activity-card" class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center; padding: 32px; background:linear-gradient(135deg, rgba(8,145,178,0.05) 0%, rgba(16,185,129,0.05) 100%);">
           <div style="margin-bottom:20px">
             <div class="card-title" style="font-size:14px; color:var(--text-secondary)">Monthly Activity</div>
             <div style="font-size:24px; font-weight:800; color:var(--text-primary); margin: 4px 0;" id="activity-total"><span class="skeleton" style="width: 100px; height: 24px;"></span></div>
@@ -484,6 +496,19 @@ buildNavbar('Account Overview', 'Dashboard');
     if (balEl) {
       balEl.textContent = '₹ — — —';
       balEl.classList.add('locked');
+    }
+
+    const activityCard = document.getElementById('activity-card');
+    if (activityCard) {
+      activityCard.classList.add('locked');
+      const totalEl = activityCard.querySelector('#activity-total');
+      const trendEl = activityCard.querySelector('#activity-trend');
+      const incomeEl = activityCard.querySelector('#activity-income');
+      const expensesEl = activityCard.querySelector('#activity-expenses');
+      if (totalEl) totalEl.textContent = '— — —';
+      if (trendEl) trendEl.textContent = 'Data unavailable';
+      if (incomeEl) incomeEl.textContent = '— — —';
+      if (expensesEl) expensesEl.textContent = '— — —';
     }
 
     const cta = document.getElementById('empty-cta');
