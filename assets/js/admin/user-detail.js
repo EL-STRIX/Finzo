@@ -19,8 +19,8 @@ async function loadUserData() {
         if (response.status === 'success' || response.success) {
             const data = response;
             const user = data.user;
-            const account = data.account;
-            const transactions = data.transactions;
+            const accounts = data.accounts || [];
+            const transactions = data.transactions || [];
             
             const fullName = user.full_name || 'N/A';
             const initials = fullName !== 'N/A' ? fullName.charAt(0).toUpperCase() : 'A';
@@ -63,8 +63,6 @@ async function loadUserData() {
             // Since we don't have a reliable selector for the label without changing HTML, let's just set the value
             document.getElementById('info-aadhaar').textContent = (user.id_type ? user.id_type.toUpperCase() + ': ' : '') + (user.id_number || 'N/A');
             
-            document.getElementById('info-account-type').textContent = account && account.account_type ? (account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1) + ' Account') : 'N/A';
-            
             const formatDateTime = (dateStr) => {
                 if (!dateStr) return 'N/A';
                 const d = new Date(dateStr);
@@ -73,6 +71,19 @@ async function loadUserData() {
             
             document.getElementById('info-submitted').textContent = formatDateTime(user.kyc_submitted_at);
             document.getElementById('info-registered').textContent = formatDateTime(user.created_at);
+            
+            // Access Meta
+            document.getElementById('info-last-login').textContent = formatDateTime(user.last_login_at);
+            document.getElementById('info-login-ip').textContent = user.last_login_ip || 'N/A';
+            document.getElementById('info-failed-attempts').textContent = user.failed_attempts || '0';
+            
+            if (user.status === 'rejected' && user.rejection_reason) {
+                const rejContainer = document.getElementById('rejection-reason-container');
+                if (rejContainer) {
+                    rejContainer.classList.remove('hidden');
+                    document.getElementById('info-rejection-reason').textContent = user.rejection_reason;
+                }
+            }
             
             const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(p => p);
             const addressEl = document.querySelector('.info-value.text-sm.leading-tight');
@@ -132,25 +143,28 @@ async function loadUserData() {
             }
 
             // Update Sidebar Accounts
-            if (account) {
-                const balanceFormatted = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(account.balance || 0);
-                const typeFormatted = account.account_type ? account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1) : 'Savings';
-                
-                const accountsHtml = `
-                    <div class="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer group">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-primary dark:text-white shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                        <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+            if (accounts.length > 0) {
+                let accountsHtml = '';
+                accounts.forEach(acc => {
+                    const balanceFormatted = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(acc.balance || 0);
+                    const typeFormatted = acc.account_type ? acc.account_type.charAt(0).toUpperCase() + acc.account_type.slice(1) : 'Savings';
+                    
+                    accountsHtml += `
+                        <div class="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer group mb-4 last:mb-0">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-primary dark:text-white shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                            <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                            </div>
+                            <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
                         </div>
-                        <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
-                    </div>
-                    <h4 class="font-headline text-xl font-black text-black dark:text-white mt-0.5">${balanceFormatted}</h4>
-                    <div class="mt-3 flex items-center gap-2 text-[9px] text-slate-400 font-mono font-bold">
-                        <span>${account.account_no || 'Pending'}</span>
-                        <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
-                    </div>
-                    </div>
-                `;
+                        <h4 class="font-headline text-xl font-black text-black dark:text-white mt-0.5">${balanceFormatted}</h4>
+                        <div class="mt-3 flex items-center gap-2 text-[9px] text-slate-400 font-mono font-bold">
+                            <span>${acc.account_no || 'Pending'}</span>
+                            <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
+                        </div>
+                        </div>
+                    `;
+                });
                 document.getElementById('accounts-sidebar-list').innerHTML = accountsHtml;
             } else {
                  document.getElementById('accounts-sidebar-list').innerHTML = '<div class="text-[11px] text-slate-400">No bank accounts</div>';
@@ -316,7 +330,8 @@ function renderUserTransactions(transactions) {
         return;
     }
 
-    const accountNo = document.querySelector('#accounts-sidebar-list span')?.textContent?.trim() || '';
+    const accountNos = Array.from(document.querySelectorAll('#accounts-sidebar-list span.font-mono.font-bold span:first-child'))
+                              .map(span => span.textContent.trim());
 
     const html = transactions.map((t, i) => {
         const typeVal = t.type || 'deposit';
@@ -324,7 +339,8 @@ function renderUserTransactions(transactions) {
         if (typeVal === 'deposit' || typeVal === 'interest_credit') {
             isPositive = true;
         } else if (typeVal === 'transfer') {
-            isPositive = (t.to_account === accountNo);
+            // A transfer is positive if the destination account belongs to this user
+            isPositive = accountNos.includes(t.to_account);
         }
 
         const amountFormatted = (isPositive ? '+' : '-') + ' ₹' + parseFloat(t.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

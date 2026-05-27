@@ -35,18 +35,21 @@ try {
         json_response(['success' => false, 'message' => 'User not found'], 404);
     }
 
-    // Fetch account
+    // Fetch accounts
     $stmt = $pdo->prepare("
         SELECT id, account_no, account_type, balance, interest_rate, daily_limit,
                status, opened_date, created_at
         FROM accounts WHERE user_id = ?
     ");
     $stmt->execute([$user['customer_id']]);
-    $account = $stmt->fetch();
+    $accounts = $stmt->fetchAll();
 
-    // Fetch recent transactions (last 20)
+    // Fetch recent transactions (last 20) across all accounts
     $transactions = [];
-    if ($account) {
+    if (count($accounts) > 0) {
+        $account_ids = array_column($accounts, 'id');
+        $placeholders = implode(',', array_fill(0, count($account_ids), '?'));
+        
         $stmt = $pdo->prepare("
             SELECT
                 t.txn_id, t.type, t.amount, t.balance_after, t.description,
@@ -56,11 +59,12 @@ try {
             FROM transactions t
             LEFT JOIN accounts fa ON t.from_account_id = fa.id
             LEFT JOIN accounts ta ON t.to_account_id = ta.id
-            WHERE t.from_account_id = ? OR t.to_account_id = ?
+            WHERE t.from_account_id IN ($placeholders) OR t.to_account_id IN ($placeholders)
             ORDER BY t.created_at DESC
             LIMIT 20
         ");
-        $stmt->execute([$account['id'], $account['id']]);
+        $params = array_merge($account_ids, $account_ids);
+        $stmt->execute($params);
         $transactions = $stmt->fetchAll();
     }
 
@@ -75,7 +79,7 @@ try {
     json_response([
         'success' => true,
         'user' => $user,
-        'account' => $account,
+        'accounts' => $accounts,
         'transactions' => $transactions,
         'avatar_url' => $avatar_url,
         'id_documents' => [
