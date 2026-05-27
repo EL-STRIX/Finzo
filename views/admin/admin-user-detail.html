@@ -292,13 +292,12 @@
             <h3 class="font-headline text-xl font-bold text-black dark:text-white">Transaction History</h3>
             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
           </div>
-          <a href="admin-transactions.html" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
-            <span class="material-symbols-outlined text-lg">open_in_new</span>
-            Full Statement
-          </a>
-            <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
-            </a>
+          <div class="flex items-center gap-3">
+              <button onclick="window.open('../../api/pdf/statement.php?user_id=' + new URLSearchParams(window.location.search).get('id'), '_blank')" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
+                <span class="material-symbols-outlined text-lg">print</span>
+                Print Statement
+              </button>
+          </div>
         </div>
         
         <div class="overflow-x-auto">
