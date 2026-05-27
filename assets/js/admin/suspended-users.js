@@ -103,8 +103,8 @@
                 <td class="py-4 px-6 text-xs font-bold text-slate-500">${u.suspended_at || 'N/A'}</td>
                 <td class="py-4 px-6 text-xs font-semibold opacity-60">${u.suspended_by || 'Admin'}</td>
                 <td class="py-4 px-6"><span class="status-badge badge-secondary">${u.duration || 'Eternal'}</span></td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex items-center justify-center gap-2">
+                <td class="py-4 px-6 text-center min-w-[100px] w-28">
+                    <div class="flex items-center justify-center gap-2 flex-nowrap">
                         <a href="admin-suspended-user-detail.html?id=${u.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px">visibility</span>
                         </a>
