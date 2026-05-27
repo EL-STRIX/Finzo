@@ -272,36 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const btnNotes = document.querySelector('.admin-btn-secondary:nth-child(4)'); // Need a specific selector, let's use the save notes text
-    const saveNotesBtns = document.querySelectorAll('.admin-btn-secondary');
-    saveNotesBtns.forEach(btn => {
-        if(btn.textContent.includes('Save Notes')) {
-            btn.addEventListener('click', async function() {
-                const notesArea = this.previousElementSibling;
-                const notes = notesArea ? notesArea.value.trim() : '';
-                
-                window.api.setButtonLoading(this, true);
-                
-                try {
-                    const response = await window.api.post('/admin/review-application.php', {
-                        user_id: userId,
-                        action: 'save_notes',
-                        notes: notes
-                    });
-                    if (response.status === 'success' || response.success) {
-                        window.FinzoUtils.showToast('Notes saved successfully.', 'success');
-                    } else {
-                        window.FinzoUtils.showToast(response.message || 'Error saving notes', 'error');
-                    }
-                } catch (error) {
-                    console.error(error);
-                    window.FinzoUtils.showToast('Connection failed', 'error');
-                } finally {
-                    window.api.setButtonLoading(this, false, 'Save Notes');
-                }
-            });
-        }
-    });
+
 
     loadDetails();
 });
