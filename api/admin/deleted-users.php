@@ -12,23 +12,47 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search   = sanitize_input($_GET['search'] ?? '');
-    $page     = max(1, intval($_GET['page'] ?? 1));
-    $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+    $search       = sanitize_input($_GET['search'] ?? '');
+    $date_from    = sanitize_input($_GET['date_from'] ?? '');
+    $date_to      = sanitize_input($_GET['date_to'] ?? '');
+    $account_type = sanitize_input($_GET['account_type'] ?? '');
+    $page         = max(1, intval($_GET['page'] ?? 1));
+    $per_page     = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
     $where_clauses = ["u.is_deleted = 1"];
     $params = [];
 
     if (!empty($search)) {
-        $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
+        $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
         $s = "%{$search}%";
-        $params = [$s, $s, $s];
+        $params = array_merge($params, [$s, $s, $s, $s]);
+    }
+
+    if (!empty($date_from)) {
+        $where_clauses[] = "DATE(u.deleted_at) >= ?";
+        $params[] = $date_from;
+    }
+
+    if (!empty($date_to)) {
+        $where_clauses[] = "DATE(u.deleted_at) <= ?";
+        $params[] = $date_to;
+    }
+
+    if (!empty($account_type) && in_array(strtolower($account_type), ['savings', 'current'])) {
+        $where_clauses[] = "a.account_type = ?";
+        $params[] = strtolower($account_type);
     }
 
     $where_sql = implode(' AND ', $where_clauses);
 
     // Count
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users u WHERE {$where_sql}");
+    $count_sql = "
+        SELECT COUNT(*) 
+        FROM users u 
+        LEFT JOIN accounts a ON u.customer_id = a.user_id 
+        WHERE {$where_sql}
+    ";
+    $stmt = $pdo->prepare($count_sql);
     $stmt->execute($params);
     $total = (int)$stmt->fetchColumn();
 
@@ -47,6 +71,14 @@ try {
     ");
     $stmt->execute($params);
     $users = $stmt->fetchAll();
+
+    // Add avatar_url to each user
+    $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+    foreach ($users as &$u) {
+        $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
+        $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+    }
+    unset($u);
 
     json_response([
         'success'      => true,

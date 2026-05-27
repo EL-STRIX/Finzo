@@ -14,6 +14,7 @@
     const filterSearch = document.getElementById('filter-search');
     const filterDateFrom = document.getElementById('filter-date-from');
     const filterDateTo = document.getElementById('filter-date-to');
+    const filterType = document.getElementById('filter-type');
     const applyFiltersBtn = document.getElementById('apply-filters');
     const resetFiltersBtn = document.getElementById('reset-filters');
     const pagInfo = document.getElementById('pagination-info');
@@ -36,6 +37,7 @@
                 search: filterSearch ? filterSearch.value : '',
                 date_from: filterDateFrom ? filterDateFrom.value : '',
                 date_to: filterDateTo ? filterDateTo.value : '',
+                account_type: filterType ? filterType.value : '',
                 page: currentPage,
                 per_page: 10
             });
@@ -89,8 +91,8 @@
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             const rowNum = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
             
-            const avatarHtml = u.profile_picture 
-                ? `<img src="${u.profile_picture}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10" alt="DP">`
+            const avatarHtml = u.avatar_url 
+                ? `<img src="${u.avatar_url}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10" alt="DP">`
                 : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" style="background:${gradient}">${initials}</div>`;
 
             return `
@@ -121,6 +123,9 @@
                         </button>
                         <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                        </button>
+                        <button onclick="window.DeletedUsers.deleteAccountOnly(${u.id})" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 rounded-lg transition-colors" title="Delete Account Only">
+                            <span class="material-symbols-outlined" style="font-size:18px;">delete_forever</span>
                         </button>
                     </div>
                 </td>
@@ -169,6 +174,7 @@
             if (filterSearch) filterSearch.value = '';
             if (filterDateFrom) filterDateFrom.value = '';
             if (filterDateTo) filterDateTo.value = '';
+            if (filterType) filterType.value = '';
             currentPage = 1;
             loadDeletedUsers();
         },
@@ -223,6 +229,18 @@
             const regEls = document.querySelectorAll('.details-reg');
             const balanceEls = document.querySelectorAll('.details-balance');
             
+            const avatarContainer = document.getElementById('details-avatar-container');
+            if (avatarContainer) {
+                if (u.avatar_url) {
+                    avatarContainer.innerHTML = `<img src="${u.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
+                    avatarContainer.style.background = 'none';
+                } else {
+                    const initials = u.initials || u.full_name.charAt(0);
+                    avatarContainer.innerHTML = initials;
+                    avatarContainer.style.background = window.FinzoUtils.getAvatarGradient(initials);
+                }
+            }
+
             nameEls.forEach(el => el.textContent = u.full_name);
             accEls.forEach(el => el.textContent = u.account_no || 'N/A');
             emailEls.forEach(el => el.textContent = u.email || 'N/A');
@@ -271,6 +289,26 @@
                 console.error('Delete failed:', error);
                 window.portal.showToast('Server error during deletion', 'error');
             }
+        },
+
+        deleteAccountOnly: async (id) => {
+            if (!confirm('Are you sure you want to PERMANENTLY delete this account (but keep the user)? This action cannot be undone.')) return;
+            
+            try {
+                const response = await window.api.post('/admin/user-action.php', {
+                    user_id: id,
+                    action: 'delete_account_only'
+                });
+                if (response.status === 'success' || response.success) {
+                    window.portal.showToast('Account permanently deleted', 'success');
+                    loadDeletedUsers();
+                } else {
+                    window.portal.showToast(response.message || 'Failed to delete account', 'error');
+                }
+            } catch (error) {
+                console.error('Delete failed:', error);
+                window.portal.showToast('Server error during deletion', 'error');
+            }
         }
     };
 
@@ -299,23 +337,14 @@
                 loadDeletedUsers();
             });
         }
-
-        // Tab Filtering
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.classList.remove('bg-primary', 'text-white', 'shadow-md');
-                    b.classList.add('text-slate-500');
-                });
-                btn.classList.add('bg-primary', 'text-white', 'shadow-md');
-                btn.classList.remove('text-slate-500');
-                
-                // Logic for specific status filtering can be added here
-                // For now it just reloads with general filters
+        if (filterType) {
+            filterType.addEventListener('change', () => {
                 currentPage = 1;
                 loadDeletedUsers();
             });
-        });
+        }
+
+
         
         // Expose helper to global for detail modal button
         window.recoverFromDetails = window.DeletedUsers.recoverFromDetails;
