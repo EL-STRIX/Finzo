@@ -46,20 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
         $user['profile_picture_url'] = $profile_pic_url;
 
-        // Generate timeline
-        $timeline = [
-            [
-                'status' => 'Account Registered',
-                'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
-                'type' => 'completed'
-            ],
-            [
-                'status' => 'Profile Submitted',
-                'time' => 'Today',
-                'type' => 'completed'
-            ]
-        ];
-
         $stmt = $pdo->prepare("
             SELECT details, created_at 
             FROM audit_log 
@@ -69,20 +55,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt->execute([$user['customer_id']]);
         $logs = $stmt->fetchAll();
 
-        foreach ($logs as $log) {
+        // Calculate first submit time
+        $first_submit_time = empty($logs) ? 
+            ($user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'])) : 'Unknown') : 
+            date('d M Y, h:i A', strtotime($logs[0]['created_at']) - 120);
+
+        // Generate timeline
+        $timeline = [
+            [
+                'status' => 'Account Registered',
+                'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
+                'type' => 'completed'
+            ],
+            [
+                'status' => 'Profile Submitted',
+                'time' => $first_submit_time,
+                'type' => 'completed'
+            ]
+        ];
+
+        $total_logs = count($logs);
+        foreach ($logs as $index => $log) {
             $reason = "Application was rejected";
             if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
                 $reason = trim($matches[1]);
             }
             $timeline[] = [
                 'status' => 'Application Rejected',
-                'time' => date('M d, Y \A\T h:i A', strtotime($log['created_at'])),
+                'time' => date('d M Y, h:i A', strtotime($log['created_at'])),
                 'desc' => $reason,
                 'type' => 'error'
             ];
+            
+            $resubmit_time = 'Unknown';
+            if ($index === $total_logs - 1 && $user['kyc_submitted_at']) {
+                $resubmit_time = date('d M Y, h:i A', strtotime($user['kyc_submitted_at']));
+            } elseif (isset($logs[$index + 1])) {
+                $resubmit_time = date('d M Y, h:i A', strtotime($logs[$index + 1]['created_at']) - 60);
+            }
+
             $timeline[] = [
                 'status' => 'Profile Resubmitted',
-                'time' => 'Recent',
+                'time' => $resubmit_time,
                 'type' => 'completed'
             ];
         }
