@@ -48,11 +48,17 @@ try {
     $placeholders = str_repeat('?,', count($account_ids) - 1) . '?';
     $txn_stmt = $pdo->prepare("
         SELECT
-            t.txn_id, t.type, t.amount, t.balance_after, t.created_at, t.status, t.description,
-            fa.account_no as from_acc, ta.account_no as to_acc
+            t.txn_id, t.type, t.amount, t.balance_after, t.created_at, t.status, t.description, t.reference_note,
+            fa.account_no as from_acc, ta.account_no as to_acc,
+            COALESCE(fu.full_name, 'N/A') as from_name,
+            COALESCE(tu.full_name, 'N/A') as to_name,
+            COALESCE(s.full_name, '') as staff_name
         FROM transactions t
         LEFT JOIN accounts fa ON t.from_account_id = fa.id
+        LEFT JOIN users fu ON fa.user_id = fu.customer_id
         LEFT JOIN accounts ta ON t.to_account_id = ta.id
+        LEFT JOIN users tu ON ta.user_id = tu.customer_id
+        LEFT JOIN staff s ON t.processed_by_staff_id = s.id
         WHERE t.from_account_id IN ($placeholders) OR t.to_account_id IN ($placeholders)
         ORDER BY t.created_at DESC
         LIMIT 200
@@ -146,29 +152,41 @@ try {
                             
                             $sign = '';
                             $color = 'text-slate-700';
+                            $counterparty = '';
                             
                             if ($is_credit && !$is_debit) {
                                 $sign = '+';
                                 $color = 'text-emerald-600';
+                                $counterparty = 'From: ' . htmlspecialchars($txn['from_name']) . ' (' . htmlspecialchars($txn['from_acc']) . ')';
                             } elseif ($is_debit && !$is_credit) {
                                 $sign = '-';
                                 $color = 'text-red-500';
+                                $counterparty = 'To: ' . htmlspecialchars($txn['to_name']) . ' (' . htmlspecialchars($txn['to_acc']) . ')';
                             } elseif ($is_credit && $is_debit) {
-                                // Transfer between own accounts
                                 $sign = '';
                                 $color = 'text-slate-500';
+                                $counterparty = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc']) . ' &rarr; ' . htmlspecialchars($txn['to_acc']);
                             }
                         ?>
                         <tr>
-                            <td class="py-4 px-4 text-xs text-slate-500 font-medium whitespace-nowrap"><?= date('d M Y', strtotime($txn['created_at'])) ?></td>
-                            <td class="py-4 px-4">
+                            <td class="py-4 px-4 text-xs text-slate-500 font-medium whitespace-nowrap align-top"><?= date('d M Y', strtotime($txn['created_at'])) ?></td>
+                            <td class="py-4 px-4 align-top">
                                 <div class="text-sm font-semibold text-slate-700"><?= htmlspecialchars($txn['description'] ?: 'Transaction') ?></div>
+                                <?php if ($counterparty): ?>
+                                    <div class="text-[10px] text-slate-500 mt-1"><?= $counterparty ?></div>
+                                <?php endif; ?>
+                                <?php if ($txn['reference_note']): ?>
+                                    <div class="text-[10px] text-slate-400 mt-0.5 italic">Ref: <?= htmlspecialchars($txn['reference_note']) ?></div>
+                                <?php endif; ?>
+                                <?php if ($txn['staff_name']): ?>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">Processed By: <?= htmlspecialchars($txn['staff_name']) ?></div>
+                                <?php endif; ?>
                                 <div class="text-[10px] mono text-slate-400 mt-1 uppercase"><?= htmlspecialchars($txn['txn_id']) ?></div>
                             </td>
-                            <td class="py-4 px-4">
+                            <td class="py-4 px-4 align-top">
                                 <span class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 px-2 py-1 rounded text-slate-500"><?= htmlspecialchars($txn['type']) ?></span>
                             </td>
-                            <td class="py-4 px-4 text-right">
+                            <td class="py-4 px-4 text-right align-top">
                                 <div class="text-sm font-black <?= $color ?>"><?= $sign . ' ' . CURRENCY_SYMBOL . number_format($txn['amount'], 2) ?></div>
                                 <?php if ($txn['balance_after'] !== null): ?>
                                     <div class="text-[10px] font-semibold text-slate-400 mt-1">Bal: <?= CURRENCY_SYMBOL . number_format($txn['balance_after'], 2) ?></div>
