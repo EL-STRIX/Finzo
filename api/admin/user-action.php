@@ -19,7 +19,7 @@ if (!$user_id || empty($action)) {
     json_response(['success' => false, 'message' => 'User ID and action are required'], 422);
 }
 
-$valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete'];
+$valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
 if (!in_array($action, $valid_actions)) {
     json_response(['success' => false, 'message' => 'Invalid action'], 422);
 }
@@ -154,6 +154,19 @@ try {
                 "User {$user['full_name']} permanently deleted.");
 
             json_response(['success' => true, 'message' => 'User permanently deleted']);
+            break;
+
+        case 'delete_account_only':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            
+            // Delete account completely but keep the user
+            $stmt = $pdo->prepare("DELETE FROM accounts WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+            
+            write_audit_log($pdo, 'account_hard_deleted', $user_id, 'user', $admin_id, 'admin',
+                "Account for user {$user['full_name']} permanently deleted.");
+
+            json_response(['success' => true, 'message' => 'Account permanently deleted']);
             break;
     }
 
