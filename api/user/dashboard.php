@@ -158,31 +158,26 @@ try {
     $avatar_url = file_exists($avatar_path) ? '../../uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
 
     // =====================================================
-    // PAST REJECTION HISTORY (if resubmitted)
+    // PAST REJECTION HISTORY
     // =====================================================
-    $past_rejection = null;
-    $stmt = $pdo->prepare("SELECT submission_count FROM kyc_applications WHERE user_id = ?");
-    $stmt->execute([$user['customer_id']]);
-    $kyc_app = $stmt->fetch();
-    if ($kyc_app && $kyc_app['submission_count'] > 1) {
-        $stmt = $pdo->prepare("
-            SELECT details, created_at 
-            FROM audit_log 
-            WHERE action_type = 'REJECT_KYC' AND details LIKE ? 
-            ORDER BY id DESC LIMIT 1
-        ");
-        $stmt->execute(["%customer {$user['customer_id']}%"]);
-        $log = $stmt->fetch();
-        if ($log) {
-            $reason = "Application was rejected";
-            if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
-                $reason = trim($matches[1]);
-            }
-            $past_rejection = [
-                'reason' => $reason,
-                'rejected_at' => $log['created_at']
-            ];
+    $past_rejections = [];
+    $stmt = $pdo->prepare("
+        SELECT details, created_at 
+        FROM audit_log 
+        WHERE action_type = 'REJECT_KYC' AND details LIKE ? 
+        ORDER BY id ASC
+    ");
+    $stmt->execute(["%customer {$user['customer_id']}%"]);
+    $logs = $stmt->fetchAll();
+    foreach ($logs as $log) {
+        $reason = "Application was rejected";
+        if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
+            $reason = trim($matches[1]);
         }
+        $past_rejections[] = [
+            'reason' => $reason,
+            'rejected_at' => $log['created_at']
+        ];
     }
 
     // =====================================================
@@ -211,7 +206,7 @@ try {
             'status'        => $account['status'],
             'opened_date'   => $account['opened_date']
         ] : null,
-        'past_rejection'      => $past_rejection,
+        'past_rejections'     => $past_rejections,
         'recent_transactions' => $recent_transactions,
         'monthly_stats'       => $monthly_stats,
         'notification_count'  => $notification_count,

@@ -151,40 +151,44 @@ body { background:var(--bg-page); }
   const emailEl = document.getElementById('user-email-show');
   if (emailEl && UserState.email) emailEl.textContent = UserState.email;
 
-  if (UserState.pastRejection) {
+  if (UserState.pastRejections && UserState.pastRejections.length > 0) {
     const timeline = document.querySelector('.timeline');
-    const rej = UserState.pastRejection;
-    const d = new Date(rej.rejected_at);
-    const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    let htmlToInsert = '';
     
     timeline.children[1].querySelector('.tl-connector').className = 'tl-connector error';
     
-    const rejectionHTML = `
-      <div class="tl-item">
-        <div class="tl-line">
-          <div class="tl-dot" style="background:rgba(244,63,94,0.15);border:2px solid rgba(244,63,94,0.3);"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e">cancel</span></div>
-          <div class="tl-connector done"></div>
+    UserState.pastRejections.forEach((rej, index) => {
+      const d = new Date(rej.rejected_at);
+      const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      const isLast = index === UserState.pastRejections.length - 1;
+      
+      htmlToInsert += `
+        <div class="tl-item">
+          <div class="tl-line">
+            <div class="tl-dot" style="background:rgba(244,63,94,0.15);border:2px solid rgba(244,63,94,0.3);"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e">cancel</span></div>
+            <div class="tl-connector done"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
+            <div class="tl-subtitle" style="margin-top:8px;padding:12px;background:rgba(244,63,94,0.06);border-radius:var(--radius-sm);border:1px solid rgba(244,63,94,0.2);color:var(--text-primary);line-height:1.5">${rej.reason}</div>
+            <div class="tl-time">${formatted}</div>
+          </div>
         </div>
-        <div class="tl-content">
-          <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
-          <div class="tl-subtitle" style="margin-top:8px;padding:12px;background:rgba(244,63,94,0.06);border-radius:var(--radius-sm);border:1px solid rgba(244,63,94,0.2);color:var(--text-primary);line-height:1.5">${rej.reason}</div>
-          <div class="tl-time">${formatted}</div>
+        <div class="tl-item">
+          <div class="tl-line">
+            <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">refresh</span></div>
+            <div class="tl-connector ${isLast ? 'active' : 'error'}"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Profile Resubmitted</div>
+            <div class="tl-subtitle">Details updated successfully</div>
+            <div class="tl-time">Recent</div>
+          </div>
         </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line">
-          <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">refresh</span></div>
-          <div class="tl-connector active"></div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-title">Profile Resubmitted</div>
-          <div class="tl-subtitle">Details updated successfully</div>
-          <div class="tl-time">Recent</div>
-        </div>
-      </div>
-    `;
+      `;
+    });
     
-    timeline.children[1].insertAdjacentHTML('afterend', rejectionHTML);
+    timeline.children[1].insertAdjacentHTML('afterend', htmlToInsert);
   }
 
   document.querySelector('.page-wrap').classList.add('ready');
