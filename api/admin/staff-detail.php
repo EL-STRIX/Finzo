@@ -118,7 +118,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at
         FROM audit_log
-        WHERE actor_id = ? AND actor_role = 'Staff'
+        WHERE actor_id = ? AND actor_role IN ('Staff', 'staff')
         ORDER BY created_at DESC
         LIMIT 20
     ");

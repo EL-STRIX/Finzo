@@ -49,7 +49,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT action_type, details, ip_address, created_at
         FROM audit_log
-        WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator')
+        WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
         ORDER BY created_at DESC LIMIT 50
     ");
     $stmt->execute([$admin['admin_id']]);

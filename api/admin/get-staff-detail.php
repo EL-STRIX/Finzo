@@ -21,6 +21,7 @@ try {
         SELECT
             s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone,
             s.designation, s.department, s.status, s.profile_photo, s.created_at,
+            s.last_login_at, s.last_login_ip,
             s.street, s.city, s.state, s.pincode, s.country,
             s.id_type, s.id_number, s.front_image, s.back_image,
             b.name as branch_name

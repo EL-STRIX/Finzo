@@ -29,13 +29,13 @@ try {
 
     if ($actor_role !== 'all' && in_array($actor_role, ['admin', 'staff', 'system', 'user'])) {
         if ($actor_role === 'admin') {
-            $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator')";
+            $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
         } else if ($actor_role === 'staff') {
-            $where_clauses[] = "al.actor_role = 'Staff'";
+            $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
         } else if ($actor_role === 'system') {
-            $where_clauses[] = "al.actor_role = 'System'";
+            $where_clauses[] = "al.actor_role IN ('System', 'system')";
         } else if ($actor_role === 'user') {
-            $where_clauses[] = "al.actor_role = 'User'";
+            $where_clauses[] = "al.actor_role IN ('User', 'user')";
         }
     }
 
@@ -92,9 +92,9 @@ try {
     // Compute exact counts based on current filters
     $stmt_stats = $pdo->prepare("
         SELECT 
-            SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' THEN 1 ELSE 0 END) as admin_count,
-            SUM(CASE WHEN al.actor_role = 'Staff' THEN 1 ELSE 0 END) as staff_count,
-            SUM(CASE WHEN al.actor_role = 'User' THEN 1 ELSE 0 END) as user_count
+            SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
+            SUM(CASE WHEN al.actor_role IN ('Staff', 'staff') THEN 1 ELSE 0 END) as staff_count,
+            SUM(CASE WHEN al.actor_role IN ('User', 'user') THEN 1 ELSE 0 END) as user_count
         FROM audit_log al
         WHERE {$where_sql}
     ");

@@ -184,8 +184,8 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
     $resolved_actor_role = $actor_role;
 
     if ($actor_role === 'admin') {
-        $stmt = $pdo->prepare("SELECT admin_id, admin_role FROM admin_users WHERE id = ?");
-        $stmt->execute([$actor_id]);
+        $stmt = $pdo->prepare("SELECT admin_id, admin_role FROM admin_users WHERE id = ? OR admin_id = ?");
+        $stmt->execute([$actor_id, $actor_id]);
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($admin) {
             $resolved_actor_id = $admin['admin_id'];
@@ -198,8 +198,8 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
             }
         }
     } else if ($actor_role === 'staff') {
-        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ?");
-        $stmt->execute([$actor_id]);
+        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
+        $stmt->execute([$actor_id, $actor_id]);
         $staff_id = $stmt->fetchColumn();
         if ($staff_id) {
             $resolved_actor_id = $staff_id;
@@ -209,8 +209,8 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
         $resolved_actor_id = 'SYSTEM';
         $resolved_actor_role = 'System';
     } else if ($actor_role === 'user') {
-        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
-        $stmt->execute([$actor_id]);
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
+        $stmt->execute([$actor_id, $actor_id]);
         $customer_id = $stmt->fetchColumn();
         if ($customer_id) {
             $resolved_actor_id = $customer_id;
@@ -220,23 +220,23 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
 
     // 2. Resolve entity_id to its alphanumeric string format if applicable
     $resolved_entity_id = $entity_id;
-    if ($entity_type === 'admin' && !empty($entity_id) && is_numeric($entity_id)) {
-        $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
-        $stmt->execute([$entity_id]);
+    if ($entity_type === 'admin' && !empty($entity_id)) {
+        $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ? OR admin_id = ?");
+        $stmt->execute([$entity_id, $entity_id]);
         $admin_id = $stmt->fetchColumn();
         if ($admin_id) {
             $resolved_entity_id = $admin_id;
         }
-    } else if ($entity_type === 'staff' && !empty($entity_id) && is_numeric($entity_id)) {
-        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ?");
-        $stmt->execute([$entity_id]);
+    } else if ($entity_type === 'staff' && !empty($entity_id)) {
+        $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
+        $stmt->execute([$entity_id, $entity_id]);
         $staff_id = $stmt->fetchColumn();
         if ($staff_id) {
             $resolved_entity_id = $staff_id;
         }
-    } else if ($entity_type === 'user' && !empty($entity_id) && is_numeric($entity_id)) {
-        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
-        $stmt->execute([$entity_id]);
+    } else if ($entity_type === 'user' && !empty($entity_id)) {
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
+        $stmt->execute([$entity_id, $entity_id]);
         $customer_id = $stmt->fetchColumn();
         if ($customer_id) {
             $resolved_entity_id = $customer_id;
