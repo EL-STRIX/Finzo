@@ -149,21 +149,19 @@
                 </div>
             </div>
 
-            <!-- FILTERS -->
-            <div class="admin-card admin-card-dropdown-fix mb-6 p-4 sm:p-6 relative z-20">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                    <div class="col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Users</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                            <input type="text" id="user-search" placeholder="Search by name, email or mobile..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
-                        </div>
+            <!-- TABLE WITH INTEGRATED FILTERS -->
+            <div class="admin-card overflow-visible z-20 relative">
+                <!-- Header / Filters -->
+                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="relative w-full sm:w-[400px]">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                        <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="w-full pl-11 pr-4 py-2.5 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Status</label>
-                        <div class="finzo-dropdown" id="status-dropdown">
+                    
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="finzo-dropdown w-full sm:w-48" id="status-dropdown">
                             <input type="hidden" id="filter-status" value="all">
-                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
+                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-2.5 !rounded-xl">
                                 <span class="dropdown-label font-bold text-sm">All Status</span>
                                 <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
                             </div>
@@ -171,16 +169,16 @@
                                 <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                                 <div class="finzo-dropdown-option" data-value="active">Active</div>
                                 <div class="finzo-dropdown-option" data-value="pending">Pending</div>
+                                <div class="finzo-dropdown-option" data-value="under_review">Under Review</div>
+                                <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- TABLE -->
-            <div class="admin-card overflow-hidden">
+                <!-- Table Content -->
                 <div class="overflow-x-auto w-full">
-                    <table id="users-table" class="admin-table w-full text-left min-w-[1300px]">
+                    <table id="users-table" class="admin-table w-full text-left min-w-[900px]">
                         <thead>
                             <tr>
                                 <th>User Name</th>
