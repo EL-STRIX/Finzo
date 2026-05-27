@@ -75,6 +75,20 @@ body.ready { visibility: visible; opacity: 1; }
         <div class="card-subtitle">Tell us about yourself</div>
       </div>
       <div class="form-grid form-grid-2">
+        <div class="form-group mb-6" style="grid-column: span 2;">
+          <label class="form-label">Profile Photo (Selfie or Passport Size) *</label>
+          <div class="upload-box flex items-center gap-6" style="padding:16px; min-height:100px; cursor:pointer;" id="profile-box" onclick="document.getElementById('profile-input').click()">
+            <input type="file" id="profile-input" accept="image/*" style="display:none" onchange="handleUpload(this,'profile-box','profile-preview')"/>
+            <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 overflow-hidden shrink-0">
+               <img id="profile-preview" class="w-full h-full object-cover hidden" />
+               <span id="profile-preview-wrap" class="material-symbols-outlined text-slate-400">add_a_photo</span>
+            </div>
+            <div class="flex-1 text-left">
+              <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Click to upload profile photo</div>
+              <div style="font-size:11px;color:var(--text-placeholder);margin-top:4px">JPG or PNG, max 5MB. Must be a clear photo of your face.</div>
+            </div>
+          </div>
+        </div>
         <div class="form-group">
           <label class="form-label">Date of Birth *</label>
           <input type="date" class="form-input" id="dob" required/>
@@ -101,6 +115,31 @@ body.ready { visibility: visible; opacity: 1; }
           <input type="text" class="form-input" id="father-name" placeholder="Enter father's name" required/>
         </div>
         <div class="form-group">
+          <label class="form-label">Mother's Name *</label>
+          <input type="text" class="form-input" id="mother-name" placeholder="Enter mother's name" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Marital Status *</label>
+          <div class="finzo-dropdown">
+            <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
+              <span class="dropdown-label">Select marital status</span>
+              <span class="material-symbols-outlined dropdown-icon" style="font-size:18px">expand_more</span>
+            </div>
+            <div class="finzo-dropdown-menu">
+              <div class="finzo-dropdown-option" data-value="Single">Single</div>
+              <div class="finzo-dropdown-option" data-value="Married">Married</div>
+              <div class="finzo-dropdown-option" data-value="Divorced">Divorced</div>
+              <div class="finzo-dropdown-option" data-value="Widowed">Widowed</div>
+              <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+            </div>
+            <input type="hidden" id="marital-status" value="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nationality *</label>
+          <input type="text" class="form-input" id="nationality" value="Indian" required/>
+        </div>
+        <div class="form-group">
           <label class="form-label">Occupation *</label>
           <div class="finzo-dropdown">
             <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
@@ -118,7 +157,7 @@ body.ready { visibility: visible; opacity: 1; }
             <input type="hidden" id="occupation" value="">
           </div>
         </div>
-        <div class="form-group form-grid-2" style="grid-column:span 2">
+        <div class="form-group">
           <label class="form-label">Annual Income *</label>
           <div class="finzo-dropdown">
             <div class="finzo-dropdown-trigger form-input flex items-center justify-between">
@@ -133,6 +172,10 @@ body.ready { visibility: visible; opacity: 1; }
             </div>
             <input type="hidden" id="income" value="">
           </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Source of Income *</label>
+          <input type="text" class="form-input" id="source-of-income" placeholder="e.g. Salary, Business" required/>
         </div>
       </div>
       <div class="flex justify-between mt-6">
@@ -373,13 +416,19 @@ function prevStep(from) {
 }
 
 function validateStep1() {
+  const profilePhoto = document.getElementById('profile-input').files[0];
   const dob = document.getElementById('dob').value;
   const gender = document.getElementById('gender').value;
   const father = document.getElementById('father-name').value;
+  const mother = document.getElementById('mother-name').value;
+  const marital = document.getElementById('marital-status').value;
+  const nationality = document.getElementById('nationality').value;
   const occ = document.getElementById('occupation').value;
   const income = document.getElementById('income').value;
-  if (!dob || !gender || !father || !occ || !income) {
-    showToast('Please fill in all required fields', 'error');
+  const source = document.getElementById('source-of-income').value;
+  
+  if (!profilePhoto || !dob || !gender || !father || !mother || !marital || !nationality || !occ || !income || !source) {
+    showToast('Please fill in all required fields and upload photo', 'error');
     return false;
   }
   return true;
@@ -419,7 +468,7 @@ function handleUpload(input, boxId, previewId) {
     preview.classList.remove('hidden');
     const box = document.getElementById(boxId);
     box.classList.add('has-file');
-    const wrap = boxId === 'front-box' ? 'front-preview-wrap' : 'back-preview-wrap';
+    const wrap = boxId === 'front-box' ? 'front-preview-wrap' : (boxId === 'back-box' ? 'back-preview-wrap' : 'profile-preview-wrap');
     document.getElementById(wrap).classList.add('hidden');
   };
   reader.readAsDataURL(file);
@@ -458,8 +507,12 @@ async function submitProfile() {
   formData.append('dob', document.getElementById('dob').value);
   formData.append('gender', document.getElementById('gender').value);
   formData.append('father_name', document.getElementById('father-name').value);
+  formData.append('mother_name', document.getElementById('mother-name').value);
+  formData.append('marital_status', document.getElementById('marital-status').value);
+  formData.append('nationality', document.getElementById('nationality').value);
   formData.append('occupation', document.getElementById('occupation').value);
   formData.append('annual_income', document.getElementById('income').value);
+  formData.append('source_of_income', document.getElementById('source-of-income').value);
   formData.append('street', document.getElementById('street').value);
   formData.append('city', document.getElementById('city').value);
   formData.append('state', document.getElementById('state').value);
@@ -471,8 +524,10 @@ async function submitProfile() {
   formData.append('txn_pin', pin);
   
   // Attach ID document files
+  const profileFile = document.getElementById('profile-input').files[0];
   const frontFile = document.getElementById('front-input').files[0];
   const backFile = document.getElementById('back-input').files[0];
+  if (profileFile) formData.append('profile_picture', profileFile);
   if (frontFile) formData.append('id_front', frontFile);
   if (backFile) formData.append('id_back', backFile);
   

@@ -44,20 +44,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminAvatar = document.getElementById('top-admin-avatar');
         if (adminAvatar) adminAvatar.textContent = user.initials || (user.full_name ? user.full_name.charAt(0) : 'A');
 
+        // Header info
+        const headerFullName = document.getElementById('header-full-name');
+        if (headerFullName) headerFullName.textContent = user.full_name || 'N/A';
+        
+        const headerCustomerId = document.getElementById('header-customer-id');
+        if (headerCustomerId) headerCustomerId.textContent = user.customer_id || 'FNZ-USR-PENDING';
+
+        const profilePhoto = document.getElementById('profile-photo');
+        const profilePlaceholder = document.getElementById('profile-photo-placeholder');
+        if (profilePhoto && user.profile_picture_url) {
+            let url = user.profile_picture_url;
+            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+                url = '../../' + url;
+            }
+            profilePhoto.src = url;
+            profilePhoto.classList.remove('hidden');
+            if (profilePlaceholder) profilePlaceholder.classList.add('hidden');
+        }
+
         // Personal Details
         const pFields = document.querySelectorAll('#personal-fields > div > div');
-        if (pFields.length >= 10) {
-            pFields[0].textContent = user.customer_id || 'FNZ-USR-PENDING';
-            pFields[1].textContent = user.full_name || 'N/A';
-            pFields[2].textContent = user.dob || 'N/A';
-            pFields[3].textContent = user.gender || 'N/A';
+        if (pFields.length >= 13) {
+            pFields[0].textContent = user.dob || 'N/A';
+            pFields[1].textContent = user.gender || 'N/A';
+            pFields[2].textContent = user.marital_status || 'N/A';
+            pFields[3].textContent = user.nationality || 'N/A';
             pFields[4].textContent = user.father_name || 'N/A';
-            pFields[5].textContent = user.occupation || 'N/A';
-            pFields[6].textContent = user.annual_income || 'N/A';
-            pFields[7].textContent = user.phone || 'N/A';
-            pFields[8].textContent = user.email || 'N/A';
-            pFields[9].textContent = user.kyc_submitted_at || 'N/A';
-            pFields[10].textContent = user.created_at || 'N/A';
+            pFields[5].textContent = user.mother_name || 'N/A';
+            pFields[6].textContent = user.occupation || 'N/A';
+            pFields[7].textContent = user.source_of_income || 'N/A';
+            pFields[8].textContent = user.annual_income || 'N/A';
+            pFields[9].textContent = user.phone || 'N/A';
+            pFields[10].textContent = user.email || 'N/A';
+            pFields[11].textContent = user.kyc_submitted_at || 'N/A';
+            pFields[12].textContent = user.created_at || 'N/A';
         }
 
         // Address

@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // Full user profile
         $stmt = $pdo->prepare("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   occupation, annual_income, street, city, state, pincode, country,
+            SELECT id, customer_id, full_name, email, phone, status, profile_picture, dob, gender, father_name, mother_name, marital_status, nationality,
+                   occupation, annual_income, source_of_income, street, city, state, pincode, country,
                    id_type, id_number, id_front_path, id_back_path,
                    kyc_submitted_at, rejection_reason, created_at
             FROM users WHERE id = ? AND is_deleted = 0
@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Document URLs
         $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
         $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
+        $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
+        $user['profile_picture_url'] = $profile_pic_url;
 
         // Generate timeline
         $timeline = [

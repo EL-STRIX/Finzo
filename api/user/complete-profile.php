@@ -28,11 +28,15 @@ $errors = [];
 // =====================================================
 // STEP 1: PERSONAL INFO VALIDATION
 // =====================================================
-$dob           = sanitize_input($_POST['dob'] ?? '');
-$gender        = sanitize_input($_POST['gender'] ?? '');
-$father_name   = sanitize_input($_POST['father_name'] ?? '');
-$occupation    = sanitize_input($_POST['occupation'] ?? '');
-$annual_income = sanitize_input($_POST['annual_income'] ?? '');
+$dob              = sanitize_input($_POST['dob'] ?? '');
+$gender           = sanitize_input($_POST['gender'] ?? '');
+$father_name      = sanitize_input($_POST['father_name'] ?? '');
+$mother_name      = sanitize_input($_POST['mother_name'] ?? '');
+$marital_status   = sanitize_input($_POST['marital_status'] ?? '');
+$nationality      = sanitize_input($_POST['nationality'] ?? '');
+$occupation       = sanitize_input($_POST['occupation'] ?? '');
+$annual_income    = sanitize_input($_POST['annual_income'] ?? '');
+$source_of_income = sanitize_input($_POST['source_of_income'] ?? '');
 
 if (empty($dob)) {
     $errors['dob'] = 'Date of birth is required';
@@ -53,8 +57,24 @@ if (empty($father_name) || strlen($father_name) < 2) {
     $errors['father_name'] = "Father's name is required";
 }
 
+if (empty($mother_name) || strlen($mother_name) < 2) {
+    $errors['mother_name'] = "Mother's name is required";
+}
+
+if (empty($marital_status) || !in_array($marital_status, ['Single', 'Married', 'Divorced', 'Widowed', 'Prefer not to say'])) {
+    $errors['marital_status'] = 'Please select a valid marital status';
+}
+
+if (empty($nationality)) {
+    $errors['nationality'] = 'Nationality is required';
+}
+
 if (empty($occupation)) {
     $errors['occupation'] = 'Occupation is required';
+}
+
+if (empty($source_of_income)) {
+    $errors['source_of_income'] = 'Source of income is required';
 }
 
 if (empty($annual_income)) {
@@ -104,6 +124,19 @@ if (empty($id_number)) {
 // Validate file uploads
 $id_front_path = '';
 $id_back_path  = '';
+$profile_pic_path = '';
+
+if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
+    $errors['profile_picture'] = 'Profile photo is required';
+} else {
+    $profile = $_FILES['profile_picture'];
+    if ($profile['size'] > MAX_UPLOAD_SIZE) {
+        $errors['profile_picture'] = 'Profile photo must be less than 5MB';
+    }
+    if (!in_array($profile['type'], ALLOWED_IMAGE_TYPES)) {
+        $errors['profile_picture'] = 'Profile photo must be JPG or PNG format';
+    }
+}
 
 if (!isset($_FILES['id_front']) || $_FILES['id_front']['error'] !== UPLOAD_ERR_OK) {
     $errors['id_front'] = 'Front image of identity document is required';
@@ -166,25 +199,41 @@ if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
     mkdir(UPLOAD_ID_DOCUMENTS_PATH, 0755, true);
 }
 
+// Create profile uploads directory if it doesn't exist
+$profile_upload_path = dirname(__DIR__, 2) . '/uploads/profiles/';
+if (!is_dir($profile_upload_path)) {
+    mkdir($profile_upload_path, 0755, true);
+}
+
+$profile_ext = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
 $front_ext = pathinfo($_FILES['id_front']['name'], PATHINFO_EXTENSION);
 $back_ext  = pathinfo($_FILES['id_back']['name'], PATHINFO_EXTENSION);
 
+$profile_filename = 'profile_' . $user_id . '_' . time() . '.' . $profile_ext;
 $front_filename = 'id_front_' . $user_id . '_' . time() . '.' . $front_ext;
 $back_filename  = 'id_back_' . $user_id . '_' . time() . '.' . $back_ext;
 
+$profile_destination = $profile_upload_path . $profile_filename;
 $front_destination = UPLOAD_ID_DOCUMENTS_PATH . $front_filename;
 $back_destination  = UPLOAD_ID_DOCUMENTS_PATH . $back_filename;
 
+if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_destination)) {
+    json_response(['success' => false, 'message' => 'Failed to upload profile photo'], 500);
+}
+
 if (!move_uploaded_file($_FILES['id_front']['tmp_name'], $front_destination)) {
+    unlink($profile_destination);
     json_response(['success' => false, 'message' => 'Failed to upload front document image'], 500);
 }
 
 if (!move_uploaded_file($_FILES['id_back']['tmp_name'], $back_destination)) {
     // Clean up front image if back fails
+    unlink($profile_destination);
     unlink($front_destination);
     json_response(['success' => false, 'message' => 'Failed to upload back document image'], 500);
 }
 
+$profile_pic_path = 'uploads/profiles/' . $profile_filename;
 $id_front_path = 'uploads/id-documents/' . $front_filename;
 $id_back_path  = 'uploads/id-documents/' . $back_filename;
 
@@ -198,7 +247,7 @@ try {
     // Update users table with KYC data
     $stmt = $pdo->prepare("
         UPDATE users SET
-            dob = ?, gender = ?, father_name = ?, occupation = ?, annual_income = ?,
+            profile_picture = ?, dob = ?, gender = ?, father_name = ?, mother_name = ?, marital_status = ?, nationality = ?, occupation = ?, annual_income = ?, source_of_income = ?,
             street = ?, city = ?, state = ?, pincode = ?,
             id_type = ?, id_number = ?, id_front_path = ?, id_back_path = ?,
             status = 'under_review', kyc_submitted_at = NOW(), rejection_reason = NULL,
@@ -206,7 +255,7 @@ try {
         WHERE id = ?
     ");
     $stmt->execute([
-        $dob, $gender, $father_name, $occupation, $annual_income,
+        $profile_pic_path, $dob, $gender, $father_name, $mother_name, $marital_status, $nationality, $occupation, $annual_income, $source_of_income,
         $street, $city, $state, $pincode,
         $id_type, $id_number, $id_front_path, $id_back_path,
         $user_id

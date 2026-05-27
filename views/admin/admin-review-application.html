@@ -140,19 +140,24 @@
         <div class="lg:w-[60%] space-y-6 sm:space-y-8">
           <!-- Personal Info -->
           <div class="admin-card">
-            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary dark:text-blue-400">person</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Personal Details</h3>
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-slate-100 dark:border-white/5 overflow-hidden shrink-0 bg-slate-50 dark:bg-white/5 flex items-center justify-center relative">
+                 <img id="profile-photo" src="" alt="Profile Photo" class="w-full h-full object-cover hidden absolute inset-0 z-10" />
+                 <span id="profile-photo-placeholder" class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">person</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined text-primary dark:text-blue-400 text-sm">person</span>
+                  <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Personal Details</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold tracking-tight force-black mb-1" id="header-full-name"><div class="skeleton w-40 h-6"></div></h2>
+                <div class="text-[11px] font-mono font-bold tracking-widest text-primary dark:text-blue-400 uppercase bg-primary/5 dark:bg-blue-400/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
+              </div>
+              <div class="hidden sm:block">
+                 <span class="material-symbols-outlined text-primary dark:text-blue-400 opacity-20" style="font-size: 64px;">badge</span>
+              </div>
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6" id="personal-fields">
-              <div>
-                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Customer ID</label>
-                <div class="font-bold font-mono text-[11px]"><div class="skeleton w-32 h-4"></div></div>
-              </div>
-              <div>
-                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Full Name</label>
-                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
-              </div>
               <div>
                 <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Date of Birth</label>
                 <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
@@ -162,11 +167,27 @@
                 <div class="font-bold"><div class="skeleton w-16 h-4"></div></div>
               </div>
               <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Marital Status</label>
+                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Nationality</label>
+                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+              </div>
+              <div>
                 <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Father's Name</label>
                 <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Mother's Name</label>
+                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+              </div>
+              <div>
                 <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Occupation</label>
+                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Source of Income</label>
                 <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
