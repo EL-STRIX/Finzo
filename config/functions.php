@@ -177,7 +177,7 @@ function generate_transaction_id() {
  * @param string|null $details Additional details about the action
  */
 function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id, $actor_role, $details = null) {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ip = get_client_ip();
     
     // 1. Resolve actor_id to its alphanumeric string format (like STF001) and specific role
     $resolved_actor_id = $actor_id;
@@ -431,14 +431,36 @@ function validate_password_strength($password) {
  * Get the client's IP address.
  * @return string IP address
  */
-function get_client_ip() {
+function get_client_ip(): string {
+    $candidates = [];
+
+    // X-Forwarded-For can be a comma-separated list; the leftmost is the original client
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($ips[0]);
+        foreach (explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']) as $ip) {
+            $candidates[] = trim($ip);
+        }
     }
+
     if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
-        return $_SERVER['HTTP_X_REAL_IP'];
+        $candidates[] = trim($_SERVER['HTTP_X_REAL_IP']);
     }
+
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $candidates[] = trim($_SERVER['HTTP_CLIENT_IP']);
+    }
+
+    // REMOTE_ADDR is always last — it is the actual TCP peer and cannot be spoofed
+    $candidates[] = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+    foreach ($candidates as $ip) {
+        // filter_var rejects malformed, private, and reserved ranges when FILTER_FLAG_NO_PRIV_RANGE
+        // | FILTER_FLAG_NO_RES_RANGE is used. Remove those flags if your users are on a LAN.
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return $ip;
+        }
+    }
+
+    // Fallback: return REMOTE_ADDR even if private/reserved (covers localhost dev environments)
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
 
