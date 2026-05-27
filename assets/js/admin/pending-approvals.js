@@ -53,12 +53,21 @@
             const statusText = (app.status_text || app.status || 'Pending').replace('_', ' ');
             const countStr = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
 
+            let avatarHtml = `<div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>`;
+            if (app.profile_picture_url) {
+                let url = app.profile_picture_url;
+                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+                    url = '../../' + url;
+                }
+                avatarHtml = `<img src="${url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${app.full_name}">`;
+            }
+
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" data-status="${app.status}">
                 <td class="font-bold opacity-30 tracking-widest text-[11px]">${countStr}</td>
                 <td>
                     <div class="flex items-center gap-3 applicant-info">
-                        <div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>
+                        ${avatarHtml}
                         <div>
                             <div class="font-bold applicant-name text-slate-800 dark:text-slate-100">${app.full_name} <span class="ml-2 font-mono text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500">${app.customer_id || 'FNZ-USR-PENDING'}</span></div>
                             <div class="text-[11px] opacity-60 applicant-email">${app.email}</div>

@@ -48,7 +48,7 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
-               u.kyc_submitted_at, u.created_at,
+               u.kyc_submitted_at, u.created_at, u.profile_picture,
                a.account_type,
                k.application_no, k.submission_count, k.submitted_at,
                SUBSTRING(u.full_name, 1, 1) as initials,
@@ -66,7 +66,18 @@ try {
         LIMIT {$per_page} OFFSET {$offset}
     ");
     $stmt->execute($params);
-    $applications = $stmt->fetchAll();
+    $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($applications as &$app) {
+        $profile_pic_url = $app['profile_picture'] ? APP_URL . '/' . $app['profile_picture'] : null;
+        if (!$profile_pic_url) {
+            $avatar_path = 'uploads/avatars/user_' . $app['id'] . '.jpg';
+            if (file_exists(dirname(__DIR__, 2) . '/' . $avatar_path)) {
+                $profile_pic_url = APP_URL . '/' . $avatar_path;
+            }
+        }
+        $app['profile_picture_url'] = $profile_pic_url;
+    }
 
     // Stats
     $stats_stmt = $pdo->query("
