@@ -52,7 +52,7 @@
         }
 
         tbody.innerHTML = transactions.map((r, i) => {
-            const countStr = String((currentPage - 1) * rowsPerPage + i + 1).padStart(2, '0');
+            const countStr = String(r.id).padStart(2, '0');
             const typeClass = r.type.toLowerCase();
             
             // Format amount nicely with Rupee symbol
@@ -104,10 +104,16 @@
                 </div>`;
             } else {
                 // For withdrawals and transfers, From Account is the source customer
-                const senderInitials = r.from_user_name ? r.from_user_name.charAt(0) : 'U';
+                const senderInitials = r.from_user_name && r.from_user_name !== 'N/A' ? r.from_user_name.charAt(0).toUpperCase() : 'U';
+                let avatarContent = senderInitials;
+                if (r.from_user_avatar) {
+                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `../../${r.from_user_avatar}`) + '?v=' + new Date().getTime();
+                    avatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                }
+                
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${senderInitials}</div>
+                    <div class="admin-avatar sm uppercase" style="color:#fff; ${r.from_user_avatar ? 'background:none;' : window.FinzoUtils.getAvatarGradient(senderInitials)}">${avatarContent}</div>
                     <div>
                         <div class="font-bold text-slate-800 dark:text-slate-100">${r.from_user_name}</div>
                         <div class="text-[11px] opacity-40 font-mono font-semibold">${r.from_account_no}</div>
@@ -139,10 +145,16 @@
                 }
             } else {
                 // For deposits, transfers, and interest, To Account is the recipient customer
-                const receiverInitials = r.to_user_name ? r.to_user_name.charAt(0) : 'U';
+                const receiverInitials = r.to_user_name && r.to_user_name !== 'N/A' ? r.to_user_name.charAt(0).toUpperCase() : 'U';
+                let receiverAvatarContent = receiverInitials;
+                if (r.to_user_avatar) {
+                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `../../${r.to_user_avatar}`) + '?v=' + new Date().getTime();
+                    receiverAvatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                }
+                
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;">${receiverInitials}</div>
+                    <div class="admin-avatar sm uppercase" style="color:#fff; ${r.to_user_avatar ? 'background:none;' : window.FinzoUtils.getAvatarGradient(receiverInitials)}">${receiverAvatarContent}</div>
                     <div>
                         <div class="font-bold text-slate-800 dark:text-slate-100">${r.to_user_name}</div>
                         <div class="text-[11px] opacity-40 font-mono font-semibold">${r.to_account_no}</div>

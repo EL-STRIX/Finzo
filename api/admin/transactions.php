@@ -120,12 +120,14 @@ try {
 
     $sql = "
         SELECT
-            t.txn_id, t.type, t.amount, t.balance_after, t.description,
+            t.id, t.txn_id, t.type, t.amount, t.balance_after, t.description,
             t.reference_note, t.status, t.created_at,
             COALESCE(fa.account_no, 'N/A') as from_account_no,
             COALESCE(fu.full_name, 'N/A') as from_user_name,
+            fu.profile_photo as from_user_avatar,
             COALESCE(ta.account_no, 'N/A') as to_account_no,
             COALESCE(tu.full_name, 'N/A') as to_user_name,
+            tu.profile_photo as to_user_avatar,
             COALESCE(s.staff_id, '') as processed_by
         {$base_sql}
         ORDER BY t.created_at DESC
