@@ -21,7 +21,8 @@ try {
     // Fetch user profile
     $stmt = $pdo->prepare("
         SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-               occupation, annual_income, street, city, state, pincode, country,
+               mother_name, marital_status, nationality,
+               occupation, annual_income, source_of_income, street, city, state, pincode, country,
                id_type, id_number, id_front_path, id_back_path,
                kyc_submitted_at, rejection_reason, is_deleted, deleted_at,
                failed_attempts, locked_until, last_login_at, last_login_ip,

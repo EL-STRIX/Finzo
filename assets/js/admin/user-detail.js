@@ -57,6 +57,10 @@ async function loadUserData() {
             document.getElementById('info-income').textContent = user.annual_income || 'N/A';
             document.getElementById('info-phone').textContent = user.phone || 'N/A';
             document.getElementById('info-email').textContent = user.email || 'N/A';
+            document.getElementById('info-marital-status').textContent = user.marital_status || 'N/A';
+            document.getElementById('info-nationality').textContent = user.nationality || 'N/A';
+            document.getElementById('info-mother-name').textContent = user.mother_name || 'N/A';
+            document.getElementById('info-source-income').textContent = user.source_of_income || 'N/A';
             
             const idTypeEl = Array.from(document.querySelectorAll('p.info-label')).find(el => el.textContent.includes('AADHAAR'));
             // we will replace the whole textContent of aadhaar label if possible, or just the value
@@ -76,6 +80,8 @@ async function loadUserData() {
             document.getElementById('info-last-login').textContent = formatDateTime(user.last_login_at);
             document.getElementById('info-login-ip').textContent = user.last_login_ip || 'N/A';
             document.getElementById('info-failed-attempts').textContent = user.failed_attempts || '0';
+            document.getElementById('info-locked-until').textContent = user.locked_until ? formatDateTime(user.locked_until) : 'N/A';
+            document.getElementById('info-updated-at').textContent = formatDateTime(user.updated_at);
             
             if (user.status === 'rejected' && user.rejection_reason) {
                 const rejContainer = document.getElementById('rejection-reason-container');
@@ -155,12 +161,22 @@ async function loadUserData() {
                             <div class="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-primary dark:text-white shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
                             </div>
-                            <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
+                                <span class="status-badge !text-[9px] !px-2 !py-0.5 ${acc.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}">${acc.status.toUpperCase()}</span>
+                            </div>
                         </div>
                         <h4 class="font-headline text-xl font-black text-black dark:text-white mt-0.5">${balanceFormatted}</h4>
-                        <div class="mt-3 flex items-center gap-2 text-[9px] text-slate-400 font-mono font-bold">
-                            <span>${acc.account_no || 'Pending'}</span>
-                            <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
+                        <div class="mt-3 flex items-center justify-between text-[9px] text-slate-400 font-mono font-bold">
+                            <div class="flex items-center gap-2">
+                                <span>${acc.account_no || 'Pending'}</span>
+                                <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
+                            </div>
+                            <div>IR: ${acc.interest_rate || '0'}%</div>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between text-[9px] text-slate-400 font-mono font-bold border-t border-slate-200 dark:border-white/10 pt-2">
+                            <div>Limit: ₹${acc.daily_limit || '0'}</div>
+                            <div>Opened: ${acc.opened_date || 'Pending'}</div>
                         </div>
                         </div>
                     `;
