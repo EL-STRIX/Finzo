@@ -61,18 +61,36 @@ window.FinzoUtils = {
      * @returns {string} CSS gradient string
      */
     getAvatarGradient: function(initials) {
-        const gradients = [
-            'linear-gradient(135deg, #002645 0%, #001d36 100%)', // Finzo Navy
-            'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', // Slate
-            'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', // Sky
-            'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)', // Indigo
-            'linear-gradient(135deg, #0abc64 0%, #005228 100%)'  // Emerald
+        if (!initials) return 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)';
+        const charCode = initials.charCodeAt(0) || 65;
+        const colorPairs = [
+            ['#3b82f6', '#2563eb'], // Blue
+            ['#10b981', '#059669'], // Emerald
+            ['#f59e0b', '#d97706'], // Amber
+            ['#ef4444', '#dc2626'], // Red
+            ['#8b5cf6', '#7c3aed'], // Violet
+            ['#ec4899', '#db2777'], // Pink
+            ['#14b8a6', '#0d9488'], // Teal
         ];
-        let hash = 0;
-        for (let i = 0; i < initials.length; i++) {
-            hash = initials.charCodeAt(i) + ((hash << 5) - hash);
+        const index = charCode % colorPairs.length;
+        const [start, end] = colorPairs[index];
+        return `linear-gradient(135deg, ${start} 0%, ${end} 100%)`;
+    },
+
+    /**
+     * Show a toast notification (forwards to portal-specific showToast if available)
+     * @param {string} message 
+     * @param {string} type 
+     * @param {number} duration 
+     */
+    showToast: function(message, type = 'success', duration = 4000) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type, duration);
+        } else if (typeof window.portal !== 'undefined' && typeof window.portal.showToast === 'function') {
+            window.portal.showToast(message, type, duration);
+        } else {
+            alert(message);
         }
-        return gradients[Math.abs(hash) % gradients.length];
     },
 
     /**
