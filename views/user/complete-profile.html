@@ -373,6 +373,15 @@ body.ready { visibility: visible; opacity: 1; }
 
   // Status is pending — reveal the page
   document.body.classList.add('ready');
+
+  // Prepopulate avatar preview if they have one already (resubmission)
+  if (UserState.avatarUrl) {
+    const preview = document.getElementById('profile-preview');
+    preview.src = UserState.avatarUrl;
+    preview.classList.remove('hidden');
+    document.getElementById('profile-box').classList.add('has-file');
+    document.getElementById('profile-preview-wrap').classList.add('hidden');
+  }
 })();
 
 let currentStep = 1;
@@ -427,7 +436,7 @@ function validateStep1() {
   const income = document.getElementById('income').value;
   const source = document.getElementById('source-of-income').value;
   
-  if (!profilePhoto || !dob || !gender || !father || !mother || !marital || !nationality || !occ || !income || !source) {
+  if ((!profilePhoto && !UserState.avatarUrl) || !dob || !gender || !father || !mother || !marital || !nationality || !occ || !income || !source) {
     showToast('Please fill in all required fields and upload photo', 'error');
     return false;
   }

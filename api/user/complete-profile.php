@@ -121,13 +121,24 @@ if (empty($id_number)) {
     $errors['id_number'] = 'Document number is required';
 }
 
+// Fetch existing user to check if files already exist
+$stmt = $pdo->prepare("SELECT profile_picture, id_front_path, id_back_path FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$existing_user = $stmt->fetch();
+
+$has_profile_pic = !empty($existing_user['profile_picture']);
+$has_id_front = !empty($existing_user['id_front_path']);
+$has_id_back = !empty($existing_user['id_back_path']);
+
 // Validate file uploads
 $id_front_path = '';
 $id_back_path  = '';
 $profile_pic_path = '';
 
 if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
-    $errors['profile_picture'] = 'Profile photo is required';
+    if (!$has_profile_pic) {
+        $errors['profile_picture'] = 'Profile photo is required';
+    }
 } else {
     $profile = $_FILES['profile_picture'];
     if ($profile['size'] > MAX_UPLOAD_SIZE) {
@@ -139,7 +150,9 @@ if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !=
 }
 
 if (!isset($_FILES['id_front']) || $_FILES['id_front']['error'] !== UPLOAD_ERR_OK) {
-    $errors['id_front'] = 'Front image of identity document is required';
+    if (!$has_id_front) {
+        $errors['id_front'] = 'Front image of identity document is required';
+    }
 } else {
     $front = $_FILES['id_front'];
     if ($front['size'] > MAX_UPLOAD_SIZE) {
@@ -151,7 +164,9 @@ if (!isset($_FILES['id_front']) || $_FILES['id_front']['error'] !== UPLOAD_ERR_O
 }
 
 if (!isset($_FILES['id_back']) || $_FILES['id_back']['error'] !== UPLOAD_ERR_OK) {
-    $errors['id_back'] = 'Back image of identity document is required';
+    if (!$has_id_back) {
+        $errors['id_back'] = 'Back image of identity document is required';
+    }
 } else {
     $back = $_FILES['id_back'];
     if ($back['size'] > MAX_UPLOAD_SIZE) {
@@ -217,25 +232,35 @@ $profile_destination = $profile_upload_path . $profile_filename;
 $front_destination = UPLOAD_ID_DOCUMENTS_PATH . $front_filename;
 $back_destination  = UPLOAD_ID_DOCUMENTS_PATH . $back_filename;
 
-if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_destination)) {
-    json_response(['success' => false, 'message' => 'Failed to upload profile photo'], 500);
+if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+    if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_destination)) {
+        json_response(['success' => false, 'message' => 'Failed to upload profile photo'], 500);
+    }
 }
 
-if (!move_uploaded_file($_FILES['id_front']['tmp_name'], $front_destination)) {
-    unlink($profile_destination);
-    json_response(['success' => false, 'message' => 'Failed to upload front document image'], 500);
+if (isset($_FILES['id_front']) && $_FILES['id_front']['error'] === UPLOAD_ERR_OK) {
+    if (!move_uploaded_file($_FILES['id_front']['tmp_name'], $front_destination)) {
+        json_response(['success' => false, 'message' => 'Failed to upload front document image'], 500);
+    }
 }
 
-if (!move_uploaded_file($_FILES['id_back']['tmp_name'], $back_destination)) {
-    // Clean up front image if back fails
-    unlink($profile_destination);
-    unlink($front_destination);
-    json_response(['success' => false, 'message' => 'Failed to upload back document image'], 500);
+if (isset($_FILES['id_back']) && $_FILES['id_back']['error'] === UPLOAD_ERR_OK) {
+    if (!move_uploaded_file($_FILES['id_back']['tmp_name'], $back_destination)) {
+        json_response(['success' => false, 'message' => 'Failed to upload back document image'], 500);
+    }
 }
 
-$profile_pic_path = 'uploads/profiles/' . $profile_filename;
-$id_front_path = 'uploads/id-documents/' . $front_filename;
-$id_back_path  = 'uploads/id-documents/' . $back_filename;
+$profile_pic_path = (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) 
+    ? 'uploads/profiles/' . $profile_filename 
+    : $existing_user['profile_picture'];
+
+$id_front_path = (isset($_FILES['id_front']) && $_FILES['id_front']['error'] === UPLOAD_ERR_OK) 
+    ? 'uploads/id-documents/' . $front_filename 
+    : $existing_user['id_front_path'];
+
+$id_back_path = (isset($_FILES['id_back']) && $_FILES['id_back']['error'] === UPLOAD_ERR_OK) 
+    ? 'uploads/id-documents/' . $back_filename 
+    : $existing_user['id_back_path'];
 
 // =====================================================
 // DATABASE TRANSACTION
