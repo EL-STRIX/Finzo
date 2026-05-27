@@ -49,6 +49,7 @@ const _userCache = {
   balance: '0',
   rejectionReason: '',
   rejectedAt: '',
+  pastRejection: null,
   notifCount: parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '0'),
   avatarUrl: null,
   _loaded: false,
@@ -78,6 +79,7 @@ async function fetchUserSession() {
       _userCache.balance = data.account?.balance || '0';
       _userCache.rejectionReason = data.user?.rejection_reason || '';
       _userCache.rejectedAt = data.user?.updated_at || '';
+      _userCache.pastRejection = data.past_rejection || null;
       _userCache.notifCount = data.notification_count || 0;
       _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
@@ -102,6 +104,7 @@ const UserState = {
   get balance() { return _userCache.balance; },
   get rejectionReason() { return _userCache.rejectionReason; },
   get rejectedAt() { return _userCache.rejectedAt; },
+  get pastRejection() { return _userCache.pastRejection; },
   get notifCount() { return _userCache.notifCount; },
   get avatarUrl() { return _userCache.avatarUrl; },
   get isActive() { return this.status === 'active'; },

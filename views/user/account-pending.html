@@ -16,6 +16,7 @@
 .tl-connector { width:2px; flex:1; min-height:32px; background:var(--border); margin:4px 0; }
 .tl-connector.done { background:#10b981; }
 .tl-connector.active { background:linear-gradient(#10b981,#0891b2); }
+.tl-connector.error { background:linear-gradient(#10b981,#f43f5e); }
 .tl-content { padding-bottom:24px; flex:1; }
 .tl-title { font-size:14px; font-weight:700; color:var(--text-primary); }
 .tl-subtitle { font-size:12px; color:var(--text-secondary); margin-top:3px; }
@@ -148,7 +149,44 @@ body { background:var(--bg-page); }
   }
   // Status is under_review — reveal the page
   const emailEl = document.getElementById('user-email-show');
-  if (emailEl) emailEl.textContent = UserState.email || 'your registered email';
+  if (emailEl && UserState.email) emailEl.textContent = UserState.email;
+
+  if (UserState.pastRejection) {
+    const timeline = document.querySelector('.timeline');
+    const rej = UserState.pastRejection;
+    const d = new Date(rej.rejected_at);
+    const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    
+    timeline.children[1].querySelector('.tl-connector').className = 'tl-connector error';
+    
+    const rejectionHTML = `
+      <div class="tl-item">
+        <div class="tl-line">
+          <div class="tl-dot" style="background:rgba(244,63,94,0.15);border:2px solid rgba(244,63,94,0.3);"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e">cancel</span></div>
+          <div class="tl-connector done"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
+          <div class="tl-subtitle" style="margin-top:8px;padding:12px;background:rgba(244,63,94,0.06);border-radius:var(--radius-sm);border:1px solid rgba(244,63,94,0.2);color:var(--text-primary);line-height:1.5">${rej.reason}</div>
+          <div class="tl-time">${formatted}</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-line">
+          <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">refresh</span></div>
+          <div class="tl-connector active"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Profile Resubmitted</div>
+          <div class="tl-subtitle">Details updated successfully</div>
+          <div class="tl-time">Recent</div>
+        </div>
+      </div>
+    `;
+    
+    timeline.children[1].insertAdjacentHTML('afterend', rejectionHTML);
+  }
+
   document.querySelector('.page-wrap').classList.add('ready');
 })();
 </script>
