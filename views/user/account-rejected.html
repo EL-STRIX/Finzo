@@ -10,11 +10,13 @@
 <link rel="stylesheet" href="../../assets/css/user-panel.css"/>
 <style>
 .top-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.page-wrap { visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
+.page-wrap.ready { visibility:visible; opacity:1; }
 </style>
 </head>
 <body>
 <script src="../../assets/js/user-shared.js"></script>
-<div style="min-height:100vh;display:flex;flex-direction:column">
+<div class="page-wrap" style="min-height:100vh;display:flex;flex-direction:column">
   <nav class="top-nav">
     <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
       <div style="width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#fff">account_balance</span></div>
@@ -73,11 +75,18 @@
   </div>
 </div>
 <script>
-if (UserState.status === 'active') window.location.href = 'dashboard.html';
-if (UserState.status === 'pending') window.location.href = 'complete-profile.html';
-if (UserState.status === 'under_review') window.location.href = 'account-pending.html';
-const reason = UserState.rejectionReason;
-if (reason) document.getElementById('rejection-reason-text').textContent = reason;
+(async function() {
+  await fetchUserSession();
+  const s = UserState.status;
+  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
+  if (s === 'pending') { window.location.href = 'complete-profile.html'; return; }
+  if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
+  
+  const reason = UserState.rejectionReason;
+  if (reason) document.getElementById('rejection-reason-text').textContent = reason;
+  
+  document.querySelector('.page-wrap').classList.add('ready');
+})();
 </script>
 </body>
 </html>
