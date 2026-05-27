@@ -84,7 +84,7 @@
                             <span class="material-symbols-outlined !text-xs">settings</span> Manage
                             <span class="material-symbols-outlined !text-[14px]">expand_more</span>
                         </button>
-                        <div class="finzo-dropdown-menu w-48 text-left !rounded-xl !border-none !shadow-2xl z-[100]">
+                        <div class="finzo-dropdown-menu w-48 text-left !rounded-xl !border-none !shadow-2xl z-[100] !right-0 !left-auto">
                             <a href="admin-user-detail.html?id=${u.id}" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3">
                                 <span class="material-symbols-outlined !text-[18px] opacity-70">account_circle</span> View Profile
                             </a>
