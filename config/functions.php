@@ -453,9 +453,8 @@ function get_client_ip(): string {
     $candidates[] = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
     foreach ($candidates as $ip) {
-        // filter_var rejects malformed, private, and reserved ranges when FILTER_FLAG_NO_PRIV_RANGE
-        // | FILTER_FLAG_NO_RES_RANGE is used. Remove those flags if your users are on a LAN.
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+        // filter_var validates that the IP is syntactically correct (IPv4 or IPv6)
+        if (filter_var($ip, FILTER_VALIDATE_IP)) {
             return $ip;
         }
     }
