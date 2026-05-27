@@ -124,9 +124,6 @@
                         <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
                         </button>
-                        <button onclick="window.DeletedUsers.deleteAccountOnly(${u.id})" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 rounded-lg transition-colors" title="Delete Account Only">
-                            <span class="material-symbols-outlined" style="font-size:18px;">delete_forever</span>
-                        </button>
                     </div>
                 </td>
             </tr>`;
