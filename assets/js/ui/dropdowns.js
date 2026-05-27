@@ -35,7 +35,12 @@
             const option = e.target.closest('.finzo-dropdown-option');
             if (!option) return;
             
-            e.preventDefault();
+            if (option.tagName !== 'A' && option.tagName !== 'BUTTON') {
+                e.preventDefault();
+            } else if (option.tagName === 'BUTTON' && !option.hasAttribute('onclick')) {
+                e.preventDefault();
+            }
+            // For A tags and BUTTONs with onclick, we let the default event or inline handler run.
             e.stopPropagation();
             
             const dropdown = option.closest('.finzo-dropdown');
