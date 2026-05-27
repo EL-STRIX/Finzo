@@ -79,27 +79,9 @@
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <div class="finzo-dropdown inline-block" data-align="right">
-                        <button class="finzo-dropdown-trigger admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg inline-flex items-center gap-2">
-                            <span class="material-symbols-outlined !text-xs">settings</span> Manage
-                            <span class="material-symbols-outlined !text-[14px]">expand_more</span>
-                        </button>
-                        <div class="finzo-dropdown-menu w-48 text-left !rounded-xl !border-none !shadow-2xl z-[100] !right-0 !left-auto">
-                            <a href="admin-user-detail.html?id=${u.id}" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3">
-                                <span class="material-symbols-outlined !text-[18px] opacity-70">account_circle</span> View Profile
-                            </a>
-                            <a href="admin-transactions.html?user_id=${u.id}" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3">
-                                <span class="material-symbols-outlined !text-[18px] opacity-70">receipt_long</span> Transactions
-                            </a>
-                            <div class="my-1 border-t border-slate-100 dark:border-white/5"></div>
-                            <button onclick="alert('Feature coming soon!')" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3 !text-amber-600 dark:!text-amber-400">
-                                <span class="material-symbols-outlined !text-[18px]">lock_person</span> Lock Account
-                            </button>
-                            <button onclick="alert('Feature coming soon!')" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3 !text-red-600 dark:!text-red-400">
-                                <span class="material-symbols-outlined !text-[18px]">person_off</span> Suspend User
-                            </button>
-                        </div>
-                    </div>
+                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
+                        <span class="material-symbols-outlined !text-[14px]">visibility</span> View
+                    </a>
                 </td>
             </tr>`;
         }).join('');
