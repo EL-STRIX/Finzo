@@ -393,10 +393,10 @@ function renderUserTransactions(transactions) {
                 ${t.status ? t.status.toUpperCase() : 'COMPLETED'}
             </span>
             </td>
-            <td class="py-5 px-8 text-right">
-            <button onclick="window.open('../pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-primary dark:hover:text-blue-400 transition-all">
-                <span class="material-symbols-outlined text-[18px]">print</span>
-            </button>
+            <td class="text-right p-4">
+                <button onclick="window.open('../pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                    <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
+                </button>
             </td>
         </tr>
         `;

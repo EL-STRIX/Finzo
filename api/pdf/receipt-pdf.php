@@ -1,9 +1,8 @@
 <?php
 /**
- * Finzo Banking System — Transaction Receipt PDF Generator
- * GET endpoint: generates and streams a single transaction receipt as PDF.
- * Uses TCPDF library.
- * Version 1.0 — April 2026
+ * Finzo Banking System — Transaction Receipt Generator
+ * GET endpoint: generates a beautifully styled HTML receipt ready for print.
+ * Version 2.0 — Beautiful HTML Update
  */
 
 require_once dirname(__DIR__, 2) . '/config/db.php';
@@ -16,21 +15,9 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staf
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-// Check for TCPDF
-$tcpdf_autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
-$tcpdf_path = dirname(__DIR__, 2) . '/vendor/tcpdf/tcpdf.php';
-
-if (file_exists($tcpdf_autoload)) {
-    require_once $tcpdf_autoload;
-} elseif (file_exists($tcpdf_path)) {
-    require_once $tcpdf_path;
-} else {
-    json_response(['success' => false, 'message' => 'TCPDF library not installed. Use browser print instead.']);
-}
-
 $txn_id = sanitize_input($_GET['id'] ?? $_GET['txn_id'] ?? '');
 if (empty($txn_id)) {
-    json_response(['success' => false, 'message' => 'Transaction ID is required'], 422);
+    die('Transaction ID is required');
 }
 
 try {
@@ -59,7 +46,7 @@ try {
     $txn = $stmt->fetch();
 
     if (!$txn) {
-        json_response(['success' => false, 'message' => 'Transaction not found'], 404);
+        die('Transaction not found');
     }
 
     // Verify ownership for customers
@@ -74,119 +61,164 @@ try {
 
         if (!in_array($txn_accts['from_account_id'], $user_accounts) &&
             !in_array($txn_accts['to_account_id'], $user_accounts)) {
-            json_response(['success' => false, 'message' => 'Access denied'], 403);
+            die('Access denied');
         }
     }
-
-    // Create PDF
-    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-
-    $pdf->SetCreator('Finzo Banking System');
-    $pdf->SetAuthor('Finzo');
-    $pdf->SetTitle('Transaction Receipt');
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    $pdf->SetAutoPageBreak(false);
-    $pdf->SetMargins(20, 20, 20);
-    $pdf->AddPage();
-
-    // Watermark
-    $pdf->SetFont('helvetica', 'B', 50);
-    $pdf->SetTextColor(240, 240, 240);
-    $pdf->StartTransform();
-    $pdf->Rotate(45, 105, 148);
-    $pdf->Text(40, 130, 'FINZO VERIFIED');
-    $pdf->StopTransform();
-
-    // Header
-    $pdf->SetTextColor(26, 35, 126);
-    $pdf->SetFont('helvetica', 'B', 24);
-    $pdf->Cell(0, 12, 'FINZO', 0, 1, 'C');
-    $pdf->SetFont('helvetica', '', 10);
-    $pdf->SetTextColor(100, 100, 100);
-    $pdf->Cell(0, 5, 'Online Banking System', 0, 1, 'C');
-    $pdf->Ln(3);
-
-    // Receipt title
-    $pdf->SetDrawColor(26, 35, 126);
-    $pdf->Line(20, $pdf->GetY(), 190, $pdf->GetY());
-    $pdf->Ln(3);
-
-    $pdf->SetFont('helvetica', 'B', 16);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(0, 10, 'Transaction Receipt', 0, 1, 'C');
-
-    // Status badge
-    $status_color = ($txn['status'] === 'completed') ? [34, 139, 34] : [200, 0, 0];
-    $pdf->SetTextColor(...$status_color);
-    $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 7, strtoupper($txn['status']), 0, 1, 'C');
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->Ln(5);
-
-    // Transaction details
-    $pdf->SetFont('helvetica', '', 10);
-    $left_margin = 40;
-    $label_width = 50;
-
-    $details = [
-        'Transaction ID'  => $txn['txn_id'],
-        'Date & Time'     => date('d M Y, h:i A', strtotime($txn['created_at'])),
-        'Type'            => ucfirst($txn['type']),
-        'Amount'          => CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2),
-    ];
-
-    if ($txn['type'] === 'transfer') {
-        $details['From Account'] = $txn['from_account_no'] . ' (' . $txn['from_name'] . ')';
-        $details['To Account']   = $txn['to_account_no'] . ' (' . $txn['to_name'] . ')';
-    } elseif ($txn['type'] === 'deposit') {
-        $details['Credited To'] = $txn['to_account_no'] . ' (' . $txn['to_name'] . ')';
-    } elseif ($txn['type'] === 'withdrawal') {
-        $details['Debited From'] = $txn['from_account_no'] . ' (' . $txn['from_name'] . ')';
-    }
-
-    if (!empty($txn['description'])) {
-        $details['Description'] = $txn['description'];
-    }
-    if (!empty($txn['reference_note'])) {
-        $details['Reference'] = $txn['reference_note'];
-    }
-    if ($txn['balance_after'] !== null) {
-        $details['Balance After'] = CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2);
-    }
-    if (!empty($txn['staff_id'])) {
-        $details['Processed By'] = $txn['staff_name'] . ' (' . $txn['staff_id'] . ')';
-    }
-    if (!empty($txn['branch_name'])) {
-        $details['Branch'] = $txn['branch_name'];
-    }
-
-    foreach ($details as $label => $value) {
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->Cell($label_width, 7, $label . ':', 0, 0);
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->Cell(0, 7, $value, 0, 1);
-    }
-
-    // Separator
-    $pdf->Ln(10);
-    $pdf->Line(20, $pdf->GetY(), 190, $pdf->GetY());
-    $pdf->Ln(10);
-
-    // Footer notes
-    $pdf->SetFont('helvetica', 'I', 8);
-    $pdf->SetTextColor(150, 150, 150);
-    $pdf->Cell(0, 5, 'This is a computer-generated receipt and does not require a signature.', 0, 1, 'C');
-    $pdf->Cell(0, 5, 'For any queries, please contact Finzo Customer Support.', 0, 1, 'C');
-    $pdf->Cell(0, 5, 'Generated on: ' . date('d/m/Y H:i:s'), 0, 1, 'C');
-
-    // Output
-    $pdf->Output('Finzo_Receipt_' . $txn['txn_id'] . '.pdf', 'D');
-
 } catch (PDOException $e) {
-    error_log("Receipt PDF error: " . $e->getMessage());
-    json_response(['success' => false, 'message' => 'Failed to generate receipt'], 500);
-} catch (Exception $e) {
-    error_log("TCPDF error: " . $e->getMessage());
-    json_response(['success' => false, 'message' => 'PDF generation error'], 500);
+    error_log("Receipt error: " . $e->getMessage());
+    die('Failed to load transaction data.');
 }
+
+$statusColor = $txn['status'] === 'completed' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-amber-600 bg-amber-50 border-amber-200';
+$typeClass = strtolower($txn['type']);
+$formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Receipt - <?= htmlspecialchars($txn['txn_id']) ?></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding: 40px; }
+        .receipt-card { background: white; max-width: 600px; margin: 0 auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-radius: 24px; padding: 48px; position: relative; overflow: hidden; }
+        .finzo-logo { font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #002645; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80px; font-weight: 900; color: rgba(0, 38, 69, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; }
+        .content-layer { position: relative; z-index: 10; }
+        .receipt-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px dashed #e2e8f0; }
+        .receipt-row:last-child { border-bottom: none; }
+        .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight: 700; }
+        .value { font-size: 14px; color: #0f172a; font-weight: 600; }
+        .value.mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .receipt-card { box-shadow: none; max-width: 100%; border-radius: 0; padding: 20px; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="text-center mb-6 no-print">
+        <button onclick="window.print()" class="bg-[#002645] hover:bg-blue-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Print Receipt
+        </button>
+    </div>
+
+    <div class="receipt-card">
+        <div class="watermark">FINZO VERIFIED</div>
+        
+        <div class="content-layer">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <div class="finzo-logo">Finzo</div>
+                    <div class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-1">Official Banking Receipt</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Status</div>
+                    <div class="inline-block px-3 py-1 rounded-md border font-bold text-xs uppercase tracking-widest <?= $statusColor ?>">
+                        <?= htmlspecialchars($txn['status']) ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-center border border-slate-100">
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Transaction Amount</div>
+                <div class="text-4xl font-black text-[#002645] tracking-tight"><?= $formattedAmount ?></div>
+                <div class="text-xs font-bold text-slate-500 uppercase mt-2 bg-slate-200/50 inline-block px-3 py-1 rounded-full">
+                    <?= htmlspecialchars($txn['type']) ?>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="receipt-row">
+                    <span class="label">Transaction ID</span>
+                    <span class="value mono tracking-tight"><?= htmlspecialchars($txn['txn_id']) ?></span>
+                </div>
+                <div class="receipt-row">
+                    <span class="label">Date & Time</span>
+                    <span class="value"><?= date('d M Y, h:i A', strtotime($txn['created_at'])) ?></span>
+                </div>
+                
+                <?php if ($txn['type'] === 'transfer'): ?>
+                    <div class="receipt-row">
+                        <span class="label">From Account</span>
+                        <div class="text-right">
+                            <div class="value"><?= htmlspecialchars($txn['from_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no']) ?></div>
+                        </div>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="label">To Account</span>
+                        <div class="text-right">
+                            <div class="value"><?= htmlspecialchars($txn['to_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no']) ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'deposit'): ?>
+                    <div class="receipt-row">
+                        <span class="label">Credited To</span>
+                        <div class="text-right">
+                            <div class="value"><?= htmlspecialchars($txn['to_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no']) ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'withdrawal'): ?>
+                    <div class="receipt-row">
+                        <span class="label">Debited From</span>
+                        <div class="text-right">
+                            <div class="value"><?= htmlspecialchars($txn['from_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no']) ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($txn['description']): ?>
+                <div class="receipt-row">
+                    <span class="label">Description</span>
+                    <span class="value text-right max-w-[250px]"><?= htmlspecialchars($txn['description']) ?></span>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($txn['reference_note']): ?>
+                <div class="receipt-row">
+                    <span class="label">Reference</span>
+                    <span class="value mono"><?= htmlspecialchars($txn['reference_note']) ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($txn['balance_after'] !== null): ?>
+                <div class="receipt-row">
+                    <span class="label">Balance After</span>
+                    <span class="value"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="border-t-2 border-slate-900 pt-6 mt-6">
+                <div class="text-center">
+                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-relaxed">
+                        This is a computer-generated receipt.<br>No physical signature is required.
+                    </p>
+                    <p class="text-[10px] text-slate-300 mt-2 font-mono">
+                        Generated on <?= date('d/m/Y H:i:s') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto print when opened in a new tab
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    </script>
+</body>
+</html>
