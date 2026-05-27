@@ -62,7 +62,7 @@ try {
     // Fetch users
     $sql = "
         SELECT
-            u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at,
+            u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
             a.account_no, a.account_type, a.balance, a.status as account_status
         FROM users u
         LEFT JOIN accounts a ON u.customer_id = a.user_id
@@ -75,13 +75,29 @@ try {
     $stmt->execute($params);
     $users = $stmt->fetchAll();
 
-    // Add avatar_url to each user
-    $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+    // Process profile pictures and avatars
     foreach ($users as &$u) {
-        $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
-        $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+        $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;
+        if (!$profile_pic_url) {
+            $avatar_path = 'uploads/avatars/user_' . $u['id'] . '.jpg';
+            if (file_exists(dirname(__DIR__, 2) . '/' . $avatar_path)) {
+                $profile_pic_url = APP_URL . '/' . $avatar_path;
+            }
+        }
+        $u['profile_picture_url'] = $profile_pic_url;
     }
     unset($u);
+
+    // Stats
+    $stats_stmt = $pdo->query("
+        SELECT
+            COUNT(id) as total_users,
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_users,
+            SUM(CASE WHEN status = 'suspended' THEN 1 ELSE 0 END) as suspended_users,
+            SUM(CASE WHEN MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month
+        FROM users WHERE is_deleted = 0
+    ");
+    $stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
 
     json_response([
         'success'      => true,
@@ -89,7 +105,13 @@ try {
         'total'        => $total,
         'pages'        => $pages,
         'current_page' => $page,
-        'per_page'     => $per_page
+        'per_page'     => $per_page,
+        'stats'        => [
+            'total_users'     => (int)($stats['total_users'] ?? 0),
+            'active_users'    => (int)($stats['active_users'] ?? 0),
+            'suspended_users' => (int)($stats['suspended_users'] ?? 0),
+            'new_this_month'  => (int)($stats['new_this_month'] ?? 0)
+        ]
     ]);
 
 } catch (PDOException $e) {

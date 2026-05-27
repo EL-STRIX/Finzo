@@ -26,6 +26,9 @@
                 const data = response.data || response;
                 renderTable(data.users || []);
                 updatePagination(data.total ?? 0, data.pages ?? 1);
+                if (data.stats) {
+                    updateStats(data.stats);
+                }
             }
         } catch (error) {
             console.error('Failed to load users:', error);
@@ -54,9 +57,12 @@
             const statusText = statusVal.toUpperCase();
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
-            const avatarHtml = u.avatar_url 
-                ? `<img src="${u.avatar_url}" class="admin-avatar object-cover" alt="${name}">` 
-                : `<div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>`;
+            const avatarHtml = u.profile_picture_url 
+                ? `<img src="${u.profile_picture_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` 
+                : (u.avatar_url ? `<img src="${u.avatar_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` : `<div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>`);
+
+            const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A';
+            const lastActive = u.last_login_at ? window.FinzoUtils.formatDate(u.last_login_at) : 'Never';
             
             return `
             <tr>
@@ -72,12 +78,31 @@
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td><span class="text-xs font-semibold">${u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A'}</span></td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
+                <td class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">${balanceStr}</td>
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
-                <td class="text-[11px] opacity-60">${window.FinzoUtils.formatDate(u.created_at)}</td>
+                <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined !text-xs">settings</span> Manage
-                    </a>
+                    <div class="finzo-dropdown inline-block" data-align="right">
+                        <button class="finzo-dropdown-trigger admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg inline-flex items-center gap-2">
+                            <span class="material-symbols-outlined !text-xs">settings</span> Manage
+                            <span class="material-symbols-outlined !text-[14px]">expand_more</span>
+                        </button>
+                        <div class="finzo-dropdown-menu w-48 text-left !rounded-xl !border-none !shadow-2xl z-[100]">
+                            <a href="admin-user-detail.html?id=${u.id}" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3">
+                                <span class="material-symbols-outlined !text-[18px] opacity-70">account_circle</span> View Profile
+                            </a>
+                            <a href="admin-transactions.html?user_id=${u.id}" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3">
+                                <span class="material-symbols-outlined !text-[18px] opacity-70">receipt_long</span> Transactions
+                            </a>
+                            <div class="my-1 border-t border-slate-100 dark:border-white/5"></div>
+                            <button onclick="alert('Feature coming soon!')" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3 !text-amber-600 dark:!text-amber-400">
+                                <span class="material-symbols-outlined !text-[18px]">lock_person</span> Lock Account
+                            </button>
+                            <button onclick="alert('Feature coming soon!')" class="finzo-dropdown-option flex items-center gap-2 text-sm !px-4 !py-3 !text-red-600 dark:!text-red-400">
+                                <span class="material-symbols-outlined !text-[18px]">person_off</span> Suspend User
+                            </button>
+                        </div>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -107,6 +132,24 @@
         const nextBtn = document.getElementById('next-btn');
         if (prevBtn) prevBtn.disabled = (currentPage === 1);
         if (nextBtn) nextBtn.disabled = (currentPage === pages || pages === 0);
+    }
+
+    /**
+     * Update stat cards
+     */
+    function updateStats(stats) {
+        const updateEl = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('skeleton');
+                el.textContent = value;
+            }
+        };
+
+        updateEl('stat-total-users', stats.total_users || 0);
+        updateEl('stat-active-users', stats.active_users || 0);
+        updateEl('stat-suspended-users', stats.suspended_users || 0);
+        updateEl('stat-new-month', stats.new_this_month || 0);
     }
 
     /**
@@ -234,14 +277,26 @@
             startExport.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.api.setButtonLoading(this, true, 'Generating...');
+                
+                // Build the URL with current filters
+                const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
+                const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+                const type = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
+                
+                const queryParams = new URLSearchParams({ search, status, account_type: type }).toString();
+                const exportUrl = `${window.api.baseUrl}/admin/export-users.php?${queryParams}`;
+                
+                // Trigger download
+                window.location.href = exportUrl;
+                
                 setTimeout(() => {
-                    this.textContent = 'Excel Ready!';
+                    this.textContent = 'Export Started!';
                     setTimeout(() => {
                         window.api.setButtonLoading(this, false);
                         modal.classList.add('hidden');
                         document.body.classList.remove('overflow-hidden');
-                    }, 2000);
-                }, 2000);
+                    }, 1000);
+                }, 1000);
             });
         }
     }

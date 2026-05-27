@@ -109,6 +109,46 @@
         </header>
 
         <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
+            <!-- STAT CARDS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
+                <div class="admin-card p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">group</span>
+                    </div>
+                    <div>
+                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-slate-400">TOTAL USERS</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]" id="stat-total-users">—</div>
+                    </div>
+                </div>
+                <div class="admin-card p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">verified_user</span>
+                    </div>
+                    <div>
+                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-slate-400">ACTIVE ACCOUNTS</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]" id="stat-active-users">—</div>
+                    </div>
+                </div>
+                <div class="admin-card p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">person_off</span>
+                    </div>
+                    <div>
+                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-slate-400">SUSPENDED</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]" id="stat-suspended-users">—</div>
+                    </div>
+                </div>
+                <div class="admin-card p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">new_releases</span>
+                    </div>
+                    <div>
+                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-slate-400">NEW THIS MONTH</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]" id="stat-new-month">—</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- FILTERS -->
             <div class="admin-card admin-card-dropdown-fix mb-6 p-4 sm:p-6 relative z-20">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
@@ -162,8 +202,9 @@
                                 <th>Email</th>
                                 <th>Type</th>
                                 <th>Phone</th>
+                                <th>Balance</th>
                                 <th>Status</th>
-                                <th>Joined</th>
+                                <th>Last Active</th>
                                 <th class="text-right">Action</th>
                             </tr>
                         </thead>
