@@ -17,7 +17,6 @@
             const response = await window.api.get('/admin/users.php', {
                 search: document.getElementById('user-search').value,
                 status: document.getElementById('filter-status').value,
-                account_type: document.getElementById('filter-type').value,
                 page: currentPage,
                 per_page: 10
             });
@@ -76,9 +75,7 @@
                     </div>
                 </td>
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
-                <td><span class="text-xs font-semibold">${u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A'}</span></td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
-                <td class="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">${balanceStr}</td>
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
@@ -192,21 +189,12 @@
             });
         }
 
-        const typeInput = document.getElementById('filter-type');
-        if (typeInput) {
-            typeInput.addEventListener('change', () => {
-                currentPage = 1;
-                loadUsers();
-            });
-        }
-
         const clearBtn = document.getElementById('clear-filters');
         if (clearBtn) {
             clearBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 document.getElementById('user-search').value = '';
                 document.getElementById('filter-status').value = 'all';
-                document.getElementById('filter-type').value = 'all';
                 
                 // Reset custom dropdown labels
                 document.querySelectorAll('.dropdown-label').forEach(label => {
@@ -281,9 +269,8 @@
                 // Build the URL with current filters
                 const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
                 const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                const type = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
                 
-                const queryParams = new URLSearchParams({ search, status, account_type: type }).toString();
+                const queryParams = new URLSearchParams({ search, status }).toString();
                 const exportUrl = `${window.api.baseUrl}/admin/export-users.php?${queryParams}`;
                 
                 // Trigger download

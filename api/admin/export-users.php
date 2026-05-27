@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $search       = sanitize_input($_GET['search'] ?? '');
     $status       = sanitize_input($_GET['status'] ?? 'all');
-    $account_type = sanitize_input($_GET['account_type'] ?? 'all');
 
     // Build query
     $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
@@ -26,17 +25,10 @@ try {
         $params[] = $status;
     }
 
-    // Account type filter
-    if ($account_type !== 'all' && in_array($account_type, ['savings', 'current'])) {
-        $where_clauses[] = "a.account_type = ?";
-        $params[] = $account_type;
-    }
-
     // Search
     if (!empty($search)) {
-        $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR a.account_no LIKE ?)";
+        $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
         $search_param = "%{$search}%";
-        $params[] = $search_param;
         $params[] = $search_param;
         $params[] = $search_param;
     }
@@ -46,10 +38,8 @@ try {
     // Fetch users for export (NO pagination)
     $sql = "
         SELECT
-            u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at,
-            a.account_no, a.account_type, a.balance
+            u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at
         FROM users u
-        LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
         ORDER BY u.created_at DESC
     ";
@@ -65,7 +55,7 @@ try {
     $output = fopen('php://output', 'w');
     
     // Output column headings
-    fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Account No', 'Account Type', 'Balance', 'Status', 'Joined Date', 'Last Active']);
+    fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Last Active']);
     
     // Output data rows
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -74,9 +64,6 @@ try {
             $row['full_name'],
             $row['email'],
             $row['phone'],
-            $row['account_no'] ?: 'Pending',
-            $row['account_type'] ? ucfirst($row['account_type']) : 'N/A',
-            $row['balance'] !== null ? number_format($row['balance'], 2, '.', '') : '0.00',
             ucfirst($row['status']),
             $row['created_at'],
             $row['last_login_at'] ?: 'Never'

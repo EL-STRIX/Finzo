@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $search       = sanitize_input($_GET['search'] ?? '');
     $status       = sanitize_input($_GET['status'] ?? 'all');
-    $account_type = sanitize_input($_GET['account_type'] ?? 'all');
     $page         = max(1, intval($_GET['page'] ?? 1));
     $per_page     = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
@@ -28,17 +27,10 @@ try {
         $params[] = $status;
     }
 
-    // Account type filter
-    if ($account_type !== 'all' && in_array($account_type, ['savings', 'current'])) {
-        $where_clauses[] = "a.account_type = ?";
-        $params[] = $account_type;
-    }
-
     // Search
     if (!empty($search)) {
-        $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR a.account_no LIKE ?)";
+        $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
         $search_param = "%{$search}%";
-        $params[] = $search_param;
         $params[] = $search_param;
         $params[] = $search_param;
     }
@@ -47,9 +39,8 @@ try {
 
     // Count total
     $count_sql = "
-        SELECT COUNT(DISTINCT u.id)
+        SELECT COUNT(u.id)
         FROM users u
-        LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
     ";
     $stmt = $pdo->prepare($count_sql);
@@ -62,10 +53,8 @@ try {
     // Fetch users
     $sql = "
         SELECT
-            u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
-            a.account_no, a.account_type, a.balance, a.status as account_status
+            u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
         FROM users u
-        LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
         ORDER BY u.created_at DESC
         LIMIT {$per_page} OFFSET {$offset}
