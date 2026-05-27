@@ -13,6 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
+// Prevent caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 $user_id = $_SESSION['user_id'];
 
 try {
@@ -164,10 +169,10 @@ try {
     $stmt = $pdo->prepare("
         SELECT details, created_at 
         FROM audit_log 
-        WHERE action_type = 'REJECT_KYC' AND details LIKE ? 
+        WHERE action_type = 'kyc_rejected' AND entity_id = ? 
         ORDER BY id ASC
     ");
-    $stmt->execute(["%customer {$user['customer_id']}%"]);
+    $stmt->execute([$user['customer_id']]);
     $logs = $stmt->fetchAll();
     foreach ($logs as $log) {
         $reason = "Application was rejected";
