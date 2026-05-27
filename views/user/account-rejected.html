@@ -87,17 +87,10 @@
             </div>
             <div class="tl-content" style="padding-bottom:0">
               <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
-              <div class="tl-subtitle">Account was not approved</div>
+              <div class="tl-subtitle" id="tl-rejection-reason" style="margin-top:8px;padding:12px;background:rgba(244,63,94,0.06);border-radius:var(--radius-sm);border:1px solid rgba(244,63,94,0.2);color:var(--text-primary);line-height:1.5">Account was not approved</div>
+              <div class="tl-time" id="tl-rejection-time"></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="card card-p animate-in animate-delay-2" style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:12px">Rejection Reason</div>
-        <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-md);padding:16px;display:flex;gap:12px">
-          <span class="material-symbols-outlined" style="color:#f43f5e;font-size:20px;flex-shrink:0;margin-top:2px">warning</span>
-          <div id="rejection-reason-text" style="font-size:13px;color:var(--text-primary);line-height:1.6">ID document not clear. Please resubmit with a high-quality scan of your identity document.</div>
         </div>
       </div>
 
@@ -139,7 +132,20 @@
   if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
   
   const reason = UserState.rejectionReason;
-  if (reason) document.getElementById('rejection-reason-text').textContent = reason;
+  if (reason) {
+    const reasonEl = document.getElementById('tl-rejection-reason');
+    if (reasonEl) reasonEl.textContent = reason;
+  }
+  
+  const rejectedAt = UserState.rejectedAt;
+  if (rejectedAt) {
+    const timeEl = document.getElementById('tl-rejection-time');
+    if (timeEl) {
+      const d = new Date(rejectedAt);
+      const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      timeEl.textContent = formatted;
+    }
+  }
   
   document.querySelector('.page-wrap').classList.add('ready');
 })();

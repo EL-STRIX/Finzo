@@ -20,7 +20,7 @@ try {
     // FETCH USER DATA
     // =====================================================
     $stmt = $pdo->prepare("
-        SELECT id, customer_id, full_name, email, phone, status, rejection_reason, created_at
+        SELECT id, customer_id, full_name, email, phone, status, rejection_reason, created_at, updated_at
         FROM users
         WHERE id = ? AND is_deleted = 0
     ");
@@ -170,6 +170,7 @@ try {
             'phone'            => $user['phone'],
             'status'           => $user['status'],
             'rejection_reason' => $user['rejection_reason'],
+            'updated_at'       => $user['updated_at'],
             'member_since'     => $user['created_at'],
             'avatar_url'       => $avatar_url
         ],
