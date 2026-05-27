@@ -89,10 +89,6 @@
     <div class="profile-id-section animate-in">
       <div class="premium-avatar-wrap">
         <div id="avatar-circle"></div>
-        <button onclick="document.getElementById('avatar-input').click()" style="position:absolute;bottom:8px;right:8px;width:36px;height:36px;border-radius:50%;background:var(--primary);border:3px solid var(--bg-card);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow: 0 4px 12px rgba(0,0,0,0.2)">
-          <span class="material-symbols-outlined" style="font-size:18px">photo_camera</span>
-        </button>
-        <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="handleAvatarChange(this)"/>
       </div>
       
       <div style="flex:1">
@@ -241,20 +237,6 @@
   const sLabel = {pending:'PENDING',under_review:'IN REVIEW',active:'ACTIVE',rejected:'REJECTED'};
   document.getElementById('info-status').innerHTML = `<span class="badge ${sMap[UserState.status]||'badge-gray'}">${sLabel[UserState.status]||'OFFLINE'}</span>`;
 })();
-  
-  function handleAvatarChange(input){
-    const f=input.files[0];if(!f)return;
-    // Show preview immediately
-    const r=new FileReader();r.onload=e=>{const c=document.getElementById('avatar-circle');c.style.backgroundImage=`url(${e.target.result})`;c.style.backgroundSize='cover';c.textContent='';};r.readAsDataURL(f);
-    // Upload to backend
-    const fd = new FormData();
-    fd.append('avatar', f);
-    fetch('../../api/user/upload-avatar.php', { method: 'POST', credentials: 'same-origin', body: fd })
-    .then(r=>r.json()).then(data=>{
-      if(data.success) showToast('Avatar updated','success');
-      else showToast(data.message||'Upload failed','error');
-    }).catch(()=>showToast('Upload failed','error'));
-  }
   async function saveProfile(){
     const name=document.getElementById('edit-name').value.trim();
     const phone=document.getElementById('edit-phone').value.trim();
