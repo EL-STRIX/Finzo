@@ -29,6 +29,12 @@
   </script>
   <link rel="stylesheet" href="../../assets/css/admin.css">
   <link rel="stylesheet" href="../../assets/css/dark-mode.css">
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+  </style>
 
   <script src="../../assets/js/core/api.js"></script>
   <script src="../../assets/js/core/utils.js"></script>
@@ -285,7 +291,7 @@
               <span class="material-symbols-outlined text-primary dark:text-blue-400">timeline</span>
               <h3 class="admin-section-title" style="font-size:16px;">Application Status</h3>
             </div>
-            <div class="p-5 sm:p-8">
+            <div class="p-5 sm:p-8 overflow-y-auto max-h-[400px]" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
               <div class="space-y-8 relative" id="timeline-body">
                 <div class="skeleton w-full h-8 mb-4"></div>
                 <div class="skeleton w-full h-8 mb-4"></div>
