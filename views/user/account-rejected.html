@@ -12,6 +12,17 @@
 .top-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
 .page-wrap { visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
 .page-wrap.ready { visibility:visible; opacity:1; }
+.timeline { display:flex; flex-direction:column; gap:0; }
+.tl-item { display:flex; gap:16px; }
+.tl-line { display:flex; flex-direction:column; align-items:center; }
+.tl-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.tl-connector { width:2px; flex:1; min-height:32px; background:var(--border); margin:4px 0; }
+.tl-connector.done { background:#10b981; }
+.tl-connector.error { background:linear-gradient(#10b981,#f43f5e); }
+.tl-content { padding-bottom:24px; flex:1; }
+.tl-title { font-size:14px; font-weight:700; color:var(--text-primary); }
+.tl-subtitle { font-size:12px; color:var(--text-secondary); margin-top:3px; }
+.tl-time { font-size:10px; color:var(--text-placeholder); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
 </style>
 </head>
 <body>
@@ -38,6 +49,51 @@
       </div>
 
       <div class="card card-p animate-in animate-delay-1" style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:20px">Application Status</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-line">
+              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
+              <div class="tl-connector done"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-title">Registered</div>
+              <div class="tl-subtitle">Account created successfully</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line">
+              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
+              <div class="tl-connector done"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-title">Profile Submitted</div>
+              <div class="tl-subtitle">All documents uploaded successfully</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line">
+              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
+              <div class="tl-connector error"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-title">Admin Review</div>
+              <div class="tl-subtitle">Application was reviewed by our team</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line">
+              <div class="tl-dot" style="background:rgba(244,63,94,0.15);border:2px solid rgba(244,63,94,0.3);"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e">cancel</span></div>
+            </div>
+            <div class="tl-content" style="padding-bottom:0">
+              <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
+              <div class="tl-subtitle">Account was not approved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-p animate-in animate-delay-2" style="margin-bottom:16px">
         <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:12px">Rejection Reason</div>
         <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-md);padding:16px;display:flex;gap:12px">
           <span class="material-symbols-outlined" style="color:#f43f5e;font-size:20px;flex-shrink:0;margin-top:2px">warning</span>
@@ -45,7 +101,7 @@
         </div>
       </div>
 
-      <div class="card card-p animate-in animate-delay-2" style="margin-bottom:16px">
+      <div class="card card-p animate-in animate-delay-3" style="margin-bottom:16px">
         <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px">Steps to Resubmit</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;align-items:flex-start;gap:10px">
@@ -63,7 +119,7 @@
         </div>
       </div>
 
-      <div class="flex gap-3 animate-in animate-delay-3">
+      <div class="flex gap-3 animate-in animate-delay-4">
         <a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
         <a href="complete-profile.html" class="btn btn-primary" style="flex:1;justify-content:center">
           <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
