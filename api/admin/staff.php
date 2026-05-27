@@ -21,10 +21,8 @@ try {
     $where_clauses = ["1=1"];
     $params = [];
 
-    if ($status !== 'all' && in_array($status, ['active', 'suspended'])) {
-        $where_clauses[] = "s.status = ?";
-        $params[] = $status;
-    }
+    // Only show non-suspended staff
+    $where_clauses[] = "s.status != 'suspended'";
 
     if ($branch_id > 0) {
         $where_clauses[] = "s.branch_id = ?";

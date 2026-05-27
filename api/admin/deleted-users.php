@@ -37,7 +37,7 @@ try {
 
     // Fetch
     $stmt = $pdo->prepare("
-        SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at,
+        SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
                a.account_no, a.account_type, a.balance
         FROM users u
         LEFT JOIN accounts a ON u.customer_id = a.user_id

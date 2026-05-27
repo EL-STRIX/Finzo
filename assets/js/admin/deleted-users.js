@@ -16,8 +16,8 @@
     const filterDateTo = document.getElementById('filter-date-to');
     const applyFiltersBtn = document.getElementById('apply-filters');
     const resetFiltersBtn = document.getElementById('reset-filters');
-    const pagInfo = document.querySelector('.text-xs.font-bold.opacity-40');
-    const pagControls = document.querySelector('.flex.items-center.gap-2:not(#status-tabs)');
+    const pagInfo = document.getElementById('pagination-info');
+    const pagControls = document.getElementById('pagination-controls');
 
     /**
      * Load deleted users from API
@@ -81,18 +81,24 @@
             emptyState.classList.remove('flex');
         }
 
+        window.DeletedUsers.usersList = users;
+
         tableBody.innerHTML = users.map((u, i) => {
             const initials = u.initials || u.full_name.charAt(0);
             const isSavings = (u.account_type || '').toLowerCase() === 'savings';
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             const rowNum = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
             
+            const avatarHtml = u.profile_picture 
+                ? `<img src="${u.profile_picture}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10" alt="DP">`
+                : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" style="background:${gradient}">${initials}</div>`;
+
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td class="du-num tracking-widest opacity-30 text-[11px] font-bold">${rowNum}</td>
                 <td>
                     <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" style="background:${gradient}">${initials}</div>
+                        ${avatarHtml}
                         <div style="display:flex; flex-direction:column;">
                             <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
                             <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>
@@ -110,10 +116,10 @@
                 </td>
                 <td class="text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="window.DeletedUsers.openRecoverModal('${u.full_name.replace(/'/g, "\\'")}', '${u.account_no}', ${u.id})" class="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition-colors" title="Recover Account">
+                        <button onclick="window.DeletedUsers.openRecoverModal(${u.id})" class="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition-colors" title="Recover Account">
                             <span class="material-symbols-outlined" style="font-size:18px;">restore</span>
                         </button>
-                        <button onclick="window.DeletedUsers.openDetailsModal('${u.full_name.replace(/'/g, "\\'")}', '${u.account_no}', '${u.email}', '${u.phone || ''}', '${u.account_type}', '${u.created_at}', '${u.balance}', '${u.deleted_at}')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
+                        <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
                         </button>
                     </div>
@@ -167,14 +173,15 @@
             loadDeletedUsers();
         },
 
-        openRecoverModal: (name, acc, id) => {
+        openRecoverModal: (id) => {
             pendingUserId = id;
+            const u = (window.DeletedUsers.usersList || []).find(x => x.id == id);
             const nameEl = document.getElementById('recover-user-name');
             const accEl = document.getElementById('recover-user-acc');
             const modal = document.getElementById('recoverModal');
 
-            if (nameEl) nameEl.textContent = name;
-            if (accEl) accEl.textContent = acc;
+            if (nameEl && u) nameEl.textContent = u.full_name;
+            if (accEl && u) accEl.textContent = u.account_no || 'N/A';
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
@@ -183,10 +190,12 @@
 
         confirmRecovery: async () => {
             if (!pendingUserId) return;
+            const option = document.querySelector('input[name="restore-option"]:checked')?.value || 'full';
             try {
                 const response = await window.api.post('/admin/user-action.php', {
                     user_id: pendingUserId,
-                    action: 'recover'
+                    action: 'recover',
+                    balance_option: option
                 });
                 if (response.status === 'success' || response.success) {
                     window.portal.showToast('User account recovered successfully', 'success');
@@ -201,7 +210,11 @@
             }
         },
 
-        openDetailsModal: (name, acc, email, phone, type, reg, balance, deleted) => {
+        openDetailsModal: (id) => {
+            const u = (window.DeletedUsers.usersList || []).find(x => x.id == id);
+            if (!u) return;
+            pendingUserId = u.id; // for recovery
+
             const nameEls = document.querySelectorAll('.details-name');
             const accEls = document.querySelectorAll('.details-acc');
             const emailEls = document.querySelectorAll('.details-email');
@@ -210,13 +223,13 @@
             const regEls = document.querySelectorAll('.details-reg');
             const balanceEls = document.querySelectorAll('.details-balance');
             
-            nameEls.forEach(el => el.textContent = name);
-            accEls.forEach(el => el.textContent = acc);
-            emailEls.forEach(el => el.textContent = email);
-            phoneEls.forEach(el => el.textContent = phone || 'N/A');
-            typeEls.forEach(el => el.textContent = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'N/A');
-            regEls.forEach(el => el.textContent = new Date(reg).toLocaleDateString());
-            balanceEls.forEach(el => el.textContent = window.FinzoUtils.formatCurrency(balance || 0));
+            nameEls.forEach(el => el.textContent = u.full_name);
+            accEls.forEach(el => el.textContent = u.account_no || 'N/A');
+            emailEls.forEach(el => el.textContent = u.email || 'N/A');
+            phoneEls.forEach(el => el.textContent = u.phone || 'N/A');
+            typeEls.forEach(el => el.textContent = u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A');
+            regEls.forEach(el => el.textContent = u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A');
+            balanceEls.forEach(el => el.textContent = window.FinzoUtils.formatINR(u.balance || 0));
             
             const modal = document.getElementById('detailsModal');
             if (modal) {
@@ -234,11 +247,30 @@
         },
 
         recoverFromDetails: () => {
-            // Placeholder if needed, for now just call openRecoverModal or similar
-            const name = document.querySelector('.details-name')?.textContent;
-            const acc = document.querySelector('.details-acc')?.textContent;
             window.DeletedUsers.closeModal('detailsModal');
-            window.DeletedUsers.openRecoverModal(name, acc, pendingUserId);
+            window.DeletedUsers.openRecoverModal(pendingUserId);
+        },
+
+        deletePermanentlyFromDetails: async () => {
+            if (!pendingUserId) return;
+            if (!confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and all data will be lost forever.')) return;
+            
+            try {
+                const response = await window.api.post('/admin/user-action.php', {
+                    user_id: pendingUserId,
+                    action: 'hard_delete'
+                });
+                if (response.status === 'success' || response.success) {
+                    window.portal.showToast('User account permanently deleted', 'success');
+                    window.DeletedUsers.closeModal('detailsModal');
+                    loadDeletedUsers();
+                } else {
+                    window.portal.showToast(response.message || 'Failed to delete account', 'error');
+                }
+            } catch (error) {
+                console.error('Delete failed:', error);
+                window.portal.showToast('Server error during deletion', 'error');
+            }
         }
     };
 

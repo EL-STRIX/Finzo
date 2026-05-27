@@ -90,7 +90,7 @@
     </nav>
 
     <!-- MAIN AREA -->
-    <div class="admin-main">
+    <div class="admin-main min-w-0 flex-1">
         <header class="admin-topbar">
             <div class="flex items-center gap-3 flex-1">
                 <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
@@ -108,7 +108,7 @@
 
         <main class="p-4 sm:p-6 lg:p-10">
             <!-- STATUS TABS -->
-            <div id="status-tabs" class="flex items-center gap-1 mb-8 bg-slate-200/50 dark:bg-white/5 p-1 rounded-xl w-fit">
+            <div id="status-tabs" class="flex items-center gap-1 mb-8 bg-slate-100 dark:bg-white/5 p-1.5 rounded-xl w-fit border border-slate-200 dark:border-white/10">
                 <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all bg-primary text-white shadow-md" data-status="all">All Deleted</button>
                 <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-primary dark:hover:text-slate-300" data-status="recent">Recent</button>
                 <button class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-primary dark:hover:text-slate-300" data-status="recovered">Recovered</button>
@@ -169,8 +169,8 @@
 
                 <!-- PAGINATION -->
                 <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Deleted Users</div>
-                    <div class="flex items-center gap-2">
+                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Deleted Users</div>
+                    <div id="pagination-controls" class="flex items-center gap-2">
                         <!-- Pagination injected by deleted-users.js -->
                     </div>
                 </div>
@@ -194,17 +194,17 @@
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center">RESTORE OPTIONS</label>
                 <div class="space-y-3">
                     <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors">
-                        <input type="radio" name="restore-option" checked class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
+                        <input type="radio" name="restore-option" value="full" checked class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
                         <div class="flex-1">
                             <div class="text-sm font-bold dark:text-white">Full Balance</div>
                             <div class="text-[10px] opacity-50">Restore previous account balance</div>
                         </div>
                     </label>
-                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors opacity-50">
-                        <input type="radio" name="restore-option" disabled class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors">
+                        <input type="radio" name="restore-option" value="mandatory" class="w-5 h-5 text-emerald-500 border-none bg-slate-100 dark:bg-white/10 focus:ring-0">
                         <div class="flex-1">
-                            <div class="text-sm font-bold dark:text-white">Zero Balance</div>
-                            <div class="text-[10px] opacity-50">Reset balance to ₹0.00</div>
+                            <div class="text-sm font-bold dark:text-white">Mandatory Balance</div>
+                            <div class="text-[10px] opacity-50">Restore with mandatory balance (₹500.00)</div>
                         </div>
                     </label>
                 </div>
@@ -289,7 +289,8 @@
             </div>
             <div class="p-6 bg-slate-50/50 dark:bg-white/5 flex gap-3">
                 <button onclick="window.DeletedUsers.recoverFromDetails()" class="admin-btn-primary flex-1 justify-center bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Recover Account</button>
-                <button onclick="window.DeletedUsers.closeModal('detailsModal')" class="admin-btn-secondary px-10">Close</button>
+                <button onclick="window.DeletedUsers.deletePermanentlyFromDetails()" class="admin-btn-primary flex-1 justify-center bg-red-500 hover:bg-red-600 !border-red-600">Delete Permanently</button>
+                <button onclick="window.DeletedUsers.closeModal('detailsModal')" class="admin-btn-secondary px-8">Close</button>
             </div>
         </div>
     </div>
@@ -299,7 +300,7 @@
     <script src="../../assets/js/core/api.js"></script>
     <script src="../../assets/js/ui/dropdowns.js"></script>
     <script src="../../assets/js/portals/admin.js"></script>
-    <script src="../../assets/js/admin/deleted-users.js"></script>
+    <script src="../../assets/js/admin/deleted-users.js?v=3"></script>
 </body>
 
 </html>

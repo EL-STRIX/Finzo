@@ -19,7 +19,7 @@ if (!$user_id || empty($action)) {
     json_response(['success' => false, 'message' => 'User ID and action are required'], 422);
 }
 
-$valid_actions = ['suspend', 'reinstate', 'delete', 'recover'];
+$valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete'];
 if (!in_array($action, $valid_actions)) {
     json_response(['success' => false, 'message' => 'Invalid action'], 422);
 }
@@ -120,18 +120,40 @@ try {
                 json_response(['success' => false, 'message' => 'User is not deleted'], 409);
             }
 
+            $balance_option = sanitize_input($_POST['balance_option'] ?? 'full');
+
             // Restore from soft-delete
             $stmt = $pdo->prepare("UPDATE users SET is_deleted = 0, deleted_at = NULL, status = 'active', updated_at = NOW() WHERE id = ?");
             $stmt->execute([$user_id]);
 
             // Reactivate account
-            $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
+            if ($balance_option === 'mandatory') {
+                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', balance = 500, updated_at = NOW() WHERE user_id = ?");
+            } else {
+                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
+            }
             $stmt->execute([$user['customer_id']]);
 
             write_audit_log($pdo, 'user_recovered', $user_id, 'user', $admin_id, 'admin',
-                "User {$user['full_name']} recovered from soft-delete state.");
+                "User {$user['full_name']} recovered from soft-delete state" . ($balance_option === 'mandatory' ? ' with mandatory balance of 500' : ''));
 
             json_response(['success' => true, 'message' => 'User recovered successfully']);
+            break;
+
+        case 'hard_delete':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            
+            // Delete account completely
+            $stmt = $pdo->prepare("DELETE FROM accounts WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+            
+            $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            
+            write_audit_log($pdo, 'user_hard_deleted', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} permanently deleted.");
+
+            json_response(['success' => true, 'message' => 'User permanently deleted']);
             break;
     }
 

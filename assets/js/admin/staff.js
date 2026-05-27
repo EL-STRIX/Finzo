@@ -106,7 +106,6 @@
                 <td class="text-center font-bold text-xs opacity-60">${s.txn_count || 0}</td>
                 <td class="text-right font-black text-xs text-primary dark:text-blue-400">${window.FinzoUtils.formatINR(s.txn_amount || 0)}</td>
                 <td class="text-[10px] font-bold opacity-40">${s.last_login_at ? window.FinzoUtils.formatDate(s.last_login_at) : 'Never'}</td>
-                <td><span class="status-badge ${statusClass}">${s.status.toUpperCase()}</span></td>
                 <td class="text-right">
                     <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1 group">
                         <span class="text-[10px] font-black uppercase tracking-widest">Manage</span>
