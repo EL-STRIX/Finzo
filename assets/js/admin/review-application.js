@@ -182,6 +182,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.openRejectModal = function() {
+        const reasonArea = document.querySelector('textarea[placeholder*="rejection"]');
+        const reasonPreview = document.getElementById('rejection-reason-preview');
+        if (reasonArea && reasonPreview) {
+            const reason = reasonArea.value.trim();
+            reasonPreview.textContent = reason ? reason : 'No reason provided';
+            if (reason) {
+                reasonPreview.classList.remove('italic', 'text-slate-400');
+                reasonPreview.classList.add('text-slate-800', 'dark:text-white');
+            } else {
+                reasonPreview.classList.add('italic', 'text-slate-400');
+                reasonPreview.classList.remove('text-slate-800', 'dark:text-white');
+            }
+        }
         const modal = document.getElementById('rejectModal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
