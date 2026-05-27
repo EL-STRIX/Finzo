@@ -157,15 +157,15 @@ try {
                             if ($is_credit && !$is_debit) {
                                 $sign = '+';
                                 $color = 'text-emerald-600';
-                                $counterparty = 'From: ' . htmlspecialchars($txn['from_name']) . ' (' . htmlspecialchars($txn['from_acc']) . ')';
+                                $counterparty = 'From: ' . htmlspecialchars($txn['from_name'] ?? '') . ' (' . htmlspecialchars($txn['from_acc'] ?? '') . ')';
                             } elseif ($is_debit && !$is_credit) {
                                 $sign = '-';
                                 $color = 'text-red-500';
-                                $counterparty = 'To: ' . htmlspecialchars($txn['to_name']) . ' (' . htmlspecialchars($txn['to_acc']) . ')';
+                                $counterparty = 'To: ' . htmlspecialchars($txn['to_name'] ?? '') . ' (' . htmlspecialchars($txn['to_acc'] ?? '') . ')';
                             } elseif ($is_credit && $is_debit) {
                                 $sign = '';
                                 $color = 'text-slate-500';
-                                $counterparty = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc']) . ' &rarr; ' . htmlspecialchars($txn['to_acc']);
+                                $counterparty = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc'] ?? '') . ' &rarr; ' . htmlspecialchars($txn['to_acc'] ?? '');
                             }
                         ?>
                         <tr>
