@@ -49,48 +49,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             [
                 'status' => 'Account Registered',
                 'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
-                'completed' => true
+                'type' => 'completed'
             ],
             [
-                'status' => 'KYC Submitted',
-                'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'])) : 'Pending',
-                'completed' => (bool)$user['kyc_submitted_at']
+                'status' => 'Profile Submitted',
+                'time' => 'Today',
+                'type' => 'completed'
             ]
         ];
 
-        if ($user['status'] === 'under_review') {
+        $stmt = $pdo->prepare("
+            SELECT details, created_at 
+            FROM audit_log 
+            WHERE action_type = 'kyc_rejected' AND entity_id = ? 
+            ORDER BY id ASC
+        ");
+        $stmt->execute([$user['customer_id']]);
+        $logs = $stmt->fetchAll();
+
+        foreach ($logs as $log) {
+            $reason = "Application was rejected";
+            if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
+                $reason = trim($matches[1]);
+            }
             $timeline[] = [
-                'status' => 'Under Review',
-                'time' => 'In Progress',
-                'completed' => true
+                'status' => 'Application Rejected',
+                'time' => date('M d, Y \A\T h:i A', strtotime($log['created_at'])),
+                'desc' => $reason,
+                'type' => 'error'
             ];
             $timeline[] = [
-                'status' => 'Decision Pending',
-                'time' => null,
-                'completed' => false
+                'status' => 'Profile Resubmitted',
+                'time' => 'Recent',
+                'type' => 'completed'
+            ];
+        }
+
+        if ($user['status'] === 'under_review') {
+            $timeline[] = [
+                'status' => 'Under Admin Review',
+                'time' => 'In Progress',
+                'type' => 'active'
+            ];
+            $timeline[] = [
+                'status' => 'Account Activated',
+                'time' => 'Waiting for approval',
+                'type' => 'pending'
             ];
         } elseif ($user['status'] === 'pending') {
             $timeline[] = [
                 'status' => 'Pending Review',
                 'time' => 'Awaiting admin review',
-                'completed' => false
+                'type' => 'active'
             ];
             $timeline[] = [
-                'status' => 'Decision Pending',
-                'time' => null,
-                'completed' => false
+                'status' => 'Account Activated',
+                'time' => 'Waiting for approval',
+                'type' => 'pending'
             ];
         } elseif ($user['status'] === 'active') {
             $timeline[] = [
                 'status' => 'Approved & Activated',
                 'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
-                'completed' => true
+                'type' => 'completed'
             ];
         } elseif ($user['status'] === 'rejected') {
             $timeline[] = [
                 'status' => 'Application Rejected',
-                'time' => $user['rejection_reason'] ? 'Reason: ' . $user['rejection_reason'] : 'KYC Rejected',
-                'completed' => true
+                'time' => 'KYC Rejected',
+                'desc' => $user['rejection_reason'] ? $user['rejection_reason'] : '',
+                'type' => 'error'
             ];
         }
 

@@ -149,17 +149,33 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTimeline(events) {
         let html = '<div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-white/5"></div>';
         events.forEach((ev, idx) => {
-            const isLast = idx === events.length - 1;
-            const isDecisionPending = ev.status === 'Decision Pending';
+            let dotClass = 'bg-on-tertiary-container text-white';
+            let icon = 'check';
+            let titleClass = '';
             
+            if (ev.type === 'error') {
+                dotClass = 'bg-red-500 text-white';
+                icon = 'cancel';
+                titleClass = 'text-red-500';
+            } else if (ev.type === 'active') {
+                dotClass = 'bg-blue-500 text-white';
+                icon = 'hourglass_empty';
+                titleClass = 'text-blue-500';
+            } else if (ev.type === 'pending') {
+                dotClass = 'bg-slate-200 dark:bg-slate-700 text-slate-500';
+                icon = '';
+                titleClass = 'opacity-40';
+            }
+
             html += `
               <div class="flex gap-4 relative mb-4">
-                <div class="w-6 h-6 rounded-full ${ev.completed ? 'bg-on-tertiary-container' : (isDecisionPending ? 'bg-slate-200 dark:bg-slate-700' : 'bg-blue-500')} text-white flex items-center justify-center z-10 transition-colors">
-                  <span class="material-symbols-outlined text-[14px] leading-none">${ev.completed ? 'check' : (isDecisionPending ? '' : 'hourglass_empty')}</span>
+                <div class="w-6 h-6 rounded-full ${dotClass} flex items-center justify-center z-10 transition-colors shrink-0">
+                  ${icon ? `<span class="material-symbols-outlined text-[14px] leading-none">${icon}</span>` : ''}
                 </div>
-                <div>
-                  <div class="font-bold text-[13px] ${!ev.completed && !isDecisionPending ? 'text-blue-500' : (isDecisionPending ? 'opacity-40' : '')}">${ev.status}</div>
-                  ${ev.time ? `<div class="text-[11px] opacity-60 italic mt-0.5">${ev.time}</div>` : ''}
+                <div class="flex-1 pb-4">
+                  <div class="font-bold text-[13px] ${titleClass}">${ev.status}</div>
+                  ${ev.desc ? `<div class="text-[12px] mt-2 p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-lg text-slate-700 dark:text-slate-300 leading-relaxed">${ev.desc}</div>` : ''}
+                  ${ev.time ? `<div class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-2">${ev.time}</div>` : ''}
                 </div>
               </div>
             `;
