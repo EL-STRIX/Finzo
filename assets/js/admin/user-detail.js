@@ -92,7 +92,7 @@ async function loadUserData() {
             }
             
             const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(p => p);
-            const addressEl = document.querySelector('.info-value.text-sm.leading-tight');
+            const addressEl = document.getElementById('info-address');
             if(addressEl) addressEl.textContent = addressParts.length > 0 ? addressParts.join(', ') : 'N/A';
 
             // Explicitly remove all skeletons inside updated info fields
