@@ -275,7 +275,7 @@ try {
             profile_picture = ?, dob = ?, gender = ?, father_name = ?, mother_name = ?, marital_status = ?, nationality = ?, occupation = ?, annual_income = ?, source_of_income = ?,
             street = ?, city = ?, state = ?, pincode = ?,
             id_type = ?, id_number = ?, id_front_path = ?, id_back_path = ?,
-            status = 'pending', kyc_submitted_at = NOW(), rejection_reason = NULL,
+            status = 'under_review', kyc_submitted_at = NOW(), rejection_reason = NULL,
             updated_at = NOW()
         WHERE id = ?
     ");
