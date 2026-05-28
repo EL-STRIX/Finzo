@@ -150,37 +150,35 @@
                 </div>
             </div>
 
-            <!-- FILTERS + TABS -->
-            <div class="admin-card mb-6 p-4 sm:p-6">
-                <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                    <!-- Search -->
-                    <div class="w-full md:w-96">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Applications</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                            <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+            <!-- FILTERS + TABS + TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5">
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                        <!-- Search -->
+                        <div class="w-full md:w-96">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Applications</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Status Tabs -->
+                        <div class="flex flex-wrap gap-2">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-status="all">
+                                All
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-status="pending">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">hourglass_empty</span>
+                                Pending
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-status="under_review">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">rate_review</span>
+                                Under Review
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Status Tabs -->
-                    <div class="flex flex-wrap gap-2">
-                        <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-status="all">
-                            All
-                        </button>
-                        <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-status="pending">
-                            <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">hourglass_empty</span>
-                            Pending
-                        </button>
-                        <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-status="under_review">
-                            <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">rate_review</span>
-                            Under Review
-                        </button>
-                    </div>
                 </div>
-            </div>
-
-            <!-- TABLE -->
-            <div class="admin-card overflow-hidden">
                 <div class="overflow-x-auto w-full">
                     <table id="approvals-table" class="admin-table w-full text-left min-w-[1300px]">
                         <thead>
