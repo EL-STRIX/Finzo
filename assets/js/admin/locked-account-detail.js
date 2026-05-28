@@ -128,24 +128,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('audit-logs-body');
         if (!tbody) return;
 
+        // Update event count badge
+        const countBadge = document.getElementById('log-count-badge');
+        if (countBadge) countBadge.textContent = `${logs ? logs.length : 0} Events`;
+
         if (!logs || logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 opacity-40 text-xs font-bold uppercase">No access logs found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 opacity-40 text-xs font-bold uppercase">No login history found</td></tr>';
             return;
         }
 
-        const html = logs.map(log => `
-            <tr>
-                <td class="text-xs font-mono font-bold">${log.ip || 'N/A'}</td>
-                <td class="text-xs">${log.time || 'N/A'}</td>
-                <td class="text-center">
-                    <span class="px-2 py-1 text-[9px] font-black rounded uppercase ${
-                        log.outcome === 'Block'
-                            ? 'bg-red-100 dark:bg-red-500/10 text-red-600'
-                            : 'bg-amber-100 dark:bg-amber-500/10 text-amber-600'
-                    }">${log.outcome || 'N/A'}</span>
-                </td>
-            </tr>
-        `).join('');
+        // Map action types to readable labels and colors
+        const actionMap = {
+            'account_locked': { label: 'Account Locked', icon: 'lock', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
+            'account_unlocked': { label: 'Account Unlocked', icon: 'lock_open', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
+            'login_failed': { label: 'Login Failed', icon: 'error', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+            'login_success': { label: 'Login Success', icon: 'check_circle', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
+            'user_suspended': { label: 'User Suspended', icon: 'person_off', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
+            'user_reinstated': { label: 'User Reinstated', icon: 'person', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
+            'user_recovered': { label: 'User Recovered', icon: 'restore', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+            'user_deleted': { label: 'User Deleted', icon: 'person_remove', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
+            'password_reset': { label: 'Password Reset', icon: 'key', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+        };
+
+        const getActionInfo = (action) => {
+            const key = (action || '').toLowerCase();
+            if (actionMap[key]) return actionMap[key];
+            // Fallback: make it readable
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            return { label, icon: 'info', color: 'text-slate-500', bg: 'bg-slate-50 dark:bg-white/5' };
+        };
+
+        const html = logs.map(log => {
+            const info = getActionInfo(log.action);
+            const isBlock = log.outcome === 'Block';
+            const statusColor = isBlock
+                ? 'bg-red-100 dark:bg-red-500/10 text-red-600'
+                : 'bg-green-100 dark:bg-green-500/10 text-green-600';
+
+            return `
+                <tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg ${info.bg} flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-sm ${info.color}">${info.icon}</span>
+                            </div>
+                            <span class="text-xs font-bold">${info.label}</span>
+                        </div>
+                    </td>
+                    <td class="text-xs font-mono font-bold opacity-60">${log.ip || 'N/A'}</td>
+                    <td class="text-xs opacity-70">${log.time || 'N/A'}</td>
+                    <td class="text-center">
+                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md uppercase ${statusColor}">${log.outcome || 'N/A'}</span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
         tbody.innerHTML = html;
     }
 

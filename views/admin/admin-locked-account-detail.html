@@ -189,30 +189,26 @@
                                 <p class="text-[9px] font-bold opacity-40 uppercase mb-1">IP Address</p>
                                 <p id="d-ip" class="font-black text-xs mono">-</p>
                             </div>
-                        </div>
-                        <div class="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5">
-                            <p class="text-[9px] font-bold opacity-40 mb-1">Temporary Password Status</p>
-                            <p id="d-temp-status" class="font-black text-xs">-</p>
-                        </div>
                     </div>
 
-                    <!-- RECENT ATTEMPTS -->
+                    <!-- LOGIN HISTORY -->
                     <div class="admin-card overflow-hidden">
                         <div class="p-6 border-b border-slate-50 dark:border-white/5 flex items-center justify-between">
-                            <h3 class="text-xs font-black dark:text-white uppercase tracking-widest">Recent Access Logs</h3>
-                            <span class="px-2 py-1 bg-amber-100 dark:bg-amber-500/10 text-amber-600 text-[9px] font-black rounded uppercase">Audit Reference #VAULT-2026</span>
+                            <h3 class="text-xs font-black dark:text-white uppercase tracking-widest">Login History</h3>
+                            <span id="log-count-badge" class="px-2 py-1 bg-slate-100 dark:bg-white/5 text-slate-500 text-[9px] font-black rounded uppercase">0 Events</span>
                         </div>
                         <div class="overflow-x-auto w-full">
-                            <table class="admin-table w-full text-left min-w-[500px]">
+                            <table class="admin-table w-full text-left min-w-[600px]">
                                 <thead>
                                     <tr>
-                                        <th>IP Address</th>
-                                        <th>Timestamp</th>
-                                        <th class="text-center">Outcome</th>
+                                        <th class="text-[9px]">Action</th>
+                                        <th class="text-[9px]">IP Address</th>
+                                        <th class="text-[9px]">Timestamp</th>
+                                        <th class="text-[9px] text-center">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-logs-body">
-                                    <tr><td colspan="3" class="p-10 text-center text-xs opacity-40 font-bold uppercase">Fetching logs...</td></tr>
+                                    <tr><td colspan="4" class="p-10 text-center text-xs opacity-40 font-bold uppercase">Fetching logs...</td></tr>
                                 </tbody>
                             </table>
                         </div>
