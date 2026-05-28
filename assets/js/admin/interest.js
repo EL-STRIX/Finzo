@@ -63,11 +63,25 @@
 
                 // Render Chart
                 if (chartContainer && info.chart_data) {
+                    const maxVal = Math.max(...info.chart_data, 1);
                     const chartHtml = info.chart_data.map(val => {
-                        const height = Math.max(10, val); // Minimum height for visibility
-                        return `<div class="chart-bar flex-1 bg-emerald-500 rounded-t-sm transition-all duration-500 hover:bg-emerald-600 cursor-help" style="height:${height}%; opacity:${0.5 + (height/200)};" title="₹${val}k"></div>`;
+                        const height = Math.max(10, (val / maxVal) * 100); 
+                        return `<div class="chart-bar flex-1 bg-emerald-500 rounded-t-sm transition-all duration-500 hover:bg-emerald-600 cursor-help" style="height:${height}%; opacity:${0.5 + (height/200)};" title="₹${val}"></div>`;
                     }).join('');
                     chartContainer.innerHTML = chartHtml;
+                }
+
+                // Update Chart Labels dynamically
+                const cd1 = document.getElementById('chart-date-1');
+                const cd2 = document.getElementById('chart-date-2');
+                const cd3 = document.getElementById('chart-date-3');
+                if (cd1 && cd2 && cd3) {
+                    const d = new Date();
+                    cd3.textContent = d.toLocaleString('en-US', {month: 'short', year: 'numeric'}).toUpperCase();
+                    const d2 = new Date(); d2.setMonth(d2.getMonth() - 6);
+                    cd2.textContent = d2.toLocaleString('en-US', {month: 'short', year: 'numeric'}).toUpperCase();
+                    const d3 = new Date(); d3.setMonth(d3.getMonth() - 11);
+                    cd1.textContent = d3.toLocaleString('en-US', {month: 'short', year: 'numeric'}).toUpperCase();
                 }
             }
         } catch (error) {
@@ -138,8 +152,8 @@
             try {
                 const response = await window.api.post('/admin/interest.php', {
                     action: 'update_rate',
-                    rate: newRate,
-                    apply_type: applyType,
+                    new_rate: newRate,
+                    apply_from: applyType,
                     custom_date: customDate
                 });
 

@@ -23,9 +23,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ORDER BY ir.created_at DESC
             LIMIT 1
         ");
-        $current_rate = $stmt->fetch();
+        $current_rate_row = $stmt->fetch();
+        
+        $current_rate = $current_rate_row ? (float)$current_rate_row['rate'] : 4.25;
+        $last_change_date = $current_rate_row ? date('d M Y', strtotime($current_rate_row['created_at'])) : '-';
 
-        // Rate change history (last 10)
+        // Stats
+        $stats = [
+            'total_interest_credited' => 0,
+            'interest_delta' => '+0%',
+            'earning_accounts' => 0
+        ];
+        
+        $stmt = $pdo->query("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+        $total_interest = (float)$stmt->fetchColumn();
+        $stats['total_interest_credited'] = '₹' . number_format($total_interest, 2);
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'");
+        $stats['earning_accounts'] = (int)$stmt->fetchColumn();
+        
+        $stmt = $pdo->query("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+        $this_month = (float)$stmt->fetchColumn();
+        $stmt = $pdo->query("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $last_month = (float)$stmt->fetchColumn();
+        if ($last_month > 0) {
+            $delta = (($this_month - $last_month) / $last_month) * 100;
+            $stats['interest_delta'] = ($delta > 0 ? '+' : '') . round($delta, 1) . '%';
+        }
+
+        // Chart Data
+        $chart_data = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $stmt = $pdo->prepare("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL ? MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL ? MONTH)");
+            $stmt->execute([$i, $i]);
+            $chart_data[] = (float)$stmt->fetchColumn();
+        }
+
+        // Rate change history
         $stmt = $pdo->query("
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
@@ -34,12 +68,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ORDER BY ir.created_at DESC
             LIMIT 10
         ");
-        $history = $stmt->fetchAll();
+        $history_rows = $stmt->fetchAll();
+        $history = [];
+        $first = true;
+        foreach ($history_rows as $row) {
+            $status = 'Past';
+            if ($row['apply_from_date'] > date('Y-m-d')) {
+                $status = 'Upcoming';
+            } elseif ($first) {
+                $status = 'Active';
+                $first = false;
+            }
+            $history[] = [
+                'effective_date' => date('d M Y', strtotime($row['apply_from_date'] ?? $row['created_at'])),
+                'rate' => (float)$row['rate'],
+                'updated_by' => $row['changed_by_name'],
+                'status' => $status
+            ];
+        }
 
         json_response([
-            'success'      => true,
-            'current_rate' => $current_rate,
-            'history'      => $history
+            'success'          => true,
+            'current_rate'     => $current_rate,
+            'last_change_date' => $last_change_date,
+            'stats'            => $stats,
+            'chart_data'       => $chart_data,
+            'history'          => $history
         ]);
 
     } catch (PDOException $e) {
