@@ -80,11 +80,12 @@ try {
     // Stats
     $stats_stmt = $pdo->query("
         SELECT
-            COUNT(id) as total_users,
-            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_users,
-            SUM(CASE WHEN status = 'suspended' THEN 1 ELSE 0 END) as suspended_users,
-            SUM(CASE WHEN MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month
-        FROM users WHERE is_deleted = 0
+            SUM(CASE WHEN is_deleted = 0 THEN 1 ELSE 0 END) as total_users,
+            SUM(CASE WHEN is_deleted = 0 AND status = 'active' THEN 1 ELSE 0 END) as active_users,
+            SUM(CASE WHEN is_deleted = 0 AND status = 'suspended' THEN 1 ELSE 0 END) as suspended_users,
+            SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
+            SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as soft_deleted
+        FROM users
     ");
     $stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -99,7 +100,8 @@ try {
             'total_users'     => (int)($stats['total_users'] ?? 0),
             'active_users'    => (int)($stats['active_users'] ?? 0),
             'suspended_users' => (int)($stats['suspended_users'] ?? 0),
-            'new_this_month'  => (int)($stats['new_this_month'] ?? 0)
+            'new_this_month'  => (int)($stats['new_this_month'] ?? 0),
+            'soft_deleted'    => (int)($stats['soft_deleted'] ?? 0)
         ]
     ]);
 
