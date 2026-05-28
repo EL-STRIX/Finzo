@@ -133,6 +133,15 @@
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff: ${r.processed_by}</div>
                         </div>
                     </div>`;
+                } else if (r.description === 'Account Restore Charge') {
+                    toAccountHtml = `
+                    <div class="flex items-center gap-3">
+                        <div class="admin-avatar sm bg-rose-500 uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">settings_backup_restore</span></div>
+                        <div>
+                            <div class="font-bold text-slate-800 dark:text-slate-100">Restore Charge</div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Admin Action</div>
+                        </div>
+                    </div>`;
                 } else {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
