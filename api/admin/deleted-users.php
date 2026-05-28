@@ -23,9 +23,9 @@ try {
     $params = [];
 
     if (!empty($search)) {
-        $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
+        $where_clauses[] = "(u.customer_id LIKE ? OR u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
         $s = "%{$search}%";
-        $params = array_merge($params, [$s, $s, $s, $s]);
+        $params = array_merge($params, [$s, $s, $s, $s, $s]);
     }
 
     if (!empty($date_from)) {
