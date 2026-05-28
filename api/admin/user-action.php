@@ -128,6 +128,18 @@ try {
 
             // Reactivate account
             if ($balance_option === 'mandatory') {
+                // Fetch current account details to log a charge transaction if balance > 500
+                $stmt = $pdo->prepare("SELECT id, balance FROM accounts WHERE user_id = ?");
+                $stmt->execute([$user['customer_id']]);
+                $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($account && $account['balance'] > 500) {
+                    $deduction_amount = $account['balance'] - 500;
+                    $txn_id = 'TXN' . strtoupper(uniqid());
+                    $stmt_txn = $pdo->prepare("INSERT INTO transactions (txn_id, from_account_id, type, amount, balance_after, description, reference_note, status, created_at) VALUES (?, ?, 'withdrawal', ?, 500, 'Account Restore Charge', 'Account recovered from soft-delete', 'completed', NOW())");
+                    $stmt_txn->execute([$txn_id, $account['id'], $deduction_amount]);
+                }
+
                 $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', balance = 500, updated_at = NOW() WHERE user_id = ?");
             } else {
                 $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
