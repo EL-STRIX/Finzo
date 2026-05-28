@@ -148,31 +148,31 @@ $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
                     <div class="receipt-row">
                         <span class="label">From Account</span>
                         <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['from_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no']) ?></div>
+                            <div class="value"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Deleted User' : $txn['from_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
                     <div class="receipt-row">
                         <span class="label">To Account</span>
                         <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['to_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no']) ?></div>
+                            <div class="value"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Deleted User' : $txn['to_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
-                <?php elseif ($txn['type'] === 'deposit'): ?>
+                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit'): ?>
                     <div class="receipt-row">
                         <span class="label">Credited To</span>
                         <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['to_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no']) ?></div>
+                            <div class="value"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Deleted User' : $txn['to_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
                 <?php elseif ($txn['type'] === 'withdrawal'): ?>
                     <div class="receipt-row">
                         <span class="label">Debited From</span>
                         <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['from_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no']) ?></div>
+                            <div class="value"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Deleted User' : $txn['from_name']) ?></div>
+                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
                 <?php endif; ?>
