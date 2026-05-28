@@ -54,8 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Chart Data
         $chart_data = [];
         for ($i = 11; $i >= 0; $i--) {
-            $stmt = $pdo->prepare("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL ? MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL ? MONTH)");
-            $stmt->execute([$i, $i]);
+            $stmt = $pdo->query("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$i} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$i} MONTH)");
             $chart_data[] = (float)$stmt->fetchColumn();
         }
 
