@@ -113,16 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (displayPass) displayPass.textContent = user.temp_password;
         }
 
-        // If account is already unlocked, update the unlock card
-        if (!isLocked && unlockActionCard) {
-            unlockActionCard.innerHTML = `
-                <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest mb-6">Access Control</h3>
-                <div class="p-6 bg-green-50 dark:bg-green-500/5 rounded-2xl border border-green-100 dark:border-green-500/10 text-center">
-                    <span class="material-symbols-outlined text-4xl text-green-500 mb-2">verified_user</span>
-                    <p class="text-sm font-bold text-green-700 dark:text-green-300">Account is Active</p>
-                    <p class="text-[10px] font-bold text-green-600/60 mt-1 uppercase">No action required</p>
-                </div>
-            `;
+        // If account is unlocked (admin already resolved), update badge but keep controls
+        if (!isLocked && mainBadge) {
+            // Badge already updated above
         }
 
         // Modal name
@@ -176,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true);
 
         try {
-            const response = await window.api.post('/admin/unlock-account.php', { id: userId });
+            const response = await window.api.post('/admin/unlock-account.php', { user_id: userId });
             if (response.success || response.status === 'success') {
                 const pass = response.temp_password || response.data?.temp_password || 'N/A';
 

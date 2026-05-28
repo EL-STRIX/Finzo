@@ -36,7 +36,9 @@ try {
     }
 
     // ── 2. Compute derived fields the JS expects ──
-    $is_locked = $user['locked_until'] && strtotime($user['locked_until']) > time();
+    // Account is considered locked if locked_until is set (even if expired) AND failed_attempts >= 5
+    // The lock is only truly cleared when an admin resets failed_attempts to 0
+    $is_locked = ($user['failed_attempts'] >= 5) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
 
     // Lock timestamp — use locked_until or updated_at as best approximation
     $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
