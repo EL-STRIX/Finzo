@@ -44,9 +44,9 @@ try {
 
     // Fetch audit logs for this user
     $stmt = $pdo->prepare("
-        SELECT action, entity_type, entity_id, details, created_at, ip_address
-        FROM audit_logs
-        WHERE user_id = ? OR (entity_type = 'user' AND entity_id = ?)
+        SELECT action_type as action, entity_type, entity_id, details, created_at, ip_address
+        FROM audit_log
+        WHERE (actor_id = ? AND actor_role = 'user') OR (entity_type = 'user' AND entity_id = ?)
         ORDER BY created_at DESC
         LIMIT 20
     ");
