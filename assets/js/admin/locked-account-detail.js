@@ -39,40 +39,50 @@ document.addEventListener('DOMContentLoaded', () => {
         // Breadcrumb removed
         
         const avatarEl = document.getElementById('d-avatar');
-        avatarEl.textContent = user.initials || '??';
-        avatarEl.className = 'profile-avatar premium-gradient-primary';
-        avatarEl.style.background = '';
+        if (avatarEl) {
+            avatarEl.textContent = user.initials || '??';
+            avatarEl.className = 'profile-avatar premium-gradient-primary';
+            avatarEl.style.background = '';
+        }
         
-        document.getElementById('d-name').textContent = user.full_name || 'N/A';
-        document.getElementById('d-email').textContent = user.email || 'N/A';
+        const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
         
-        document.getElementById('d-acc-no').textContent = user.account_no || 'N/A';
-        document.getElementById('d-phone').textContent = user.phone || 'N/A';
-        document.getElementById('d-acc-type').textContent = user.account_type ? (user.account_type + ' Account') : 'N/A';
+        setEl('d-name', user.full_name || 'N/A');
+        setEl('d-email', user.email || 'N/A');
+        setEl('d-acc-no', user.account_no || 'N/A');
+        setEl('d-phone', user.phone || 'N/A');
+        setEl('d-acc-type', user.account_type ? (user.account_type + ' Account') : 'N/A');
         
         const typeBadge = document.getElementById('d-acc-type-badge');
-        typeBadge.textContent = user.account_type || 'N/A';
-        typeBadge.className = 'badge badge-green';
+        if (typeBadge) {
+            typeBadge.textContent = user.account_type || 'N/A';
+            typeBadge.className = 'badge badge-green';
+        }
         
-        document.getElementById('d-opened').textContent = user.opened_at || 'N/A';
+        setEl('d-opened', user.opened_at || 'N/A');
         
         const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
-        document.getElementById('d-balance').textContent = balance;
+        setEl('d-balance', balance);
         
         const isLocked = user.is_locked;
         const mainBadge = document.getElementById('d-main-badge');
-        mainBadge.textContent = isLocked ? 'Locked' : 'Unlocked';
-        mainBadge.className = `badge ${isLocked ? 'badge-red' : 'badge-green'}`;
+        if (mainBadge) {
+            mainBadge.textContent = isLocked ? 'Locked' : 'Unlocked';
+            mainBadge.className = `badge ${isLocked ? 'badge-red' : 'badge-green'}`;
+        }
         
         // Lock Info
-        document.getElementById('d-locked-date').textContent = user.locked_on_date || 'N/A';
-        document.getElementById('d-lock-time').textContent = user.locked_on_ts || 'N/A';
-        document.getElementById('d-locked-by').textContent = user.locked_by || 'System';
-        document.getElementById('d-ip').textContent = user.ip_address || 'N/A';
-        document.getElementById('d-device').textContent = user.device || 'N/A';
+        setEl('d-locked-date', user.locked_on_date || user.locked_at || 'N/A');
+        setEl('d-lock-time', user.locked_on_ts || user.lock_time || 'N/A');
+        setEl('d-locked-by', user.locked_by || 'System');
+        setEl('d-ip', user.ip_address || 'N/A');
+        setEl('d-device', user.device || 'N/A');
         
         const hasPass = user.temp_password_active;
-        document.getElementById('d-temp-status').innerHTML = hasPass ? '<span class="badge badge-green">Generated</span>' : '<span class="badge badge-amber">Not Generated</span>';
+        const tempStatus = document.getElementById('d-temp-status');
+        if (tempStatus) {
+            tempStatus.innerHTML = hasPass ? '<span class="badge badge-green">Generated</span>' : '<span class="badge badge-amber">Not Generated</span>';
+        }
         
         const tempPassCard = document.getElementById('temp-pass-card');
         const unlockActionCard = document.getElementById('unlock-action-card');
