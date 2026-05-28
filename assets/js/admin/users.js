@@ -129,6 +129,7 @@
         updateEl('stat-active-users', stats.active_users || 0);
         updateEl('stat-suspended-users', stats.suspended_users || 0);
         updateEl('stat-new-month', stats.new_this_month || 0);
+        updateEl('stat-soft-deleted', stats.soft_deleted || 0);
     }
 
     /**
