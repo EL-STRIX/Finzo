@@ -17,7 +17,6 @@
     const pagControls = document.getElementById('pag-controls');
     const dateFilter = document.getElementById('date-filter');
     const typeFilter = document.getElementById('type-filter');
-    const statusFilter = document.getElementById('status-filter');
     
     // Modal Elements
     const unlockModal = document.getElementById('unlock-modal');
@@ -39,7 +38,6 @@
         const search = searchInput ? searchInput.value : '';
         const type = typeFilter ? typeFilter.value : '';
         const date = dateFilter ? dateFilter.value : '';
-        const status = statusFilter ? statusFilter.value : '';
 
         if (tableBody) {
             tableBody.innerHTML = `
@@ -54,7 +52,6 @@
                 search: search,
                 type: type,
                 date: date,
-                status: status,
                 page: currentPage,
                 per_page: ROWS_PP
             });
@@ -206,16 +203,7 @@
                 if (firstOpt) firstOpt.classList.add('is-selected');
             }
 
-            const sd = document.getElementById('status-dropdown');
-            if (sd) {
-                const hiddenInput = sd.querySelector('input[type="hidden"]');
-                if (hiddenInput) hiddenInput.value = '';
-                const label = sd.querySelector('.dropdown-label');
-                if (label) label.textContent = 'All Statuses';
-                sd.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
-                const firstOpt = sd.querySelector('.finzo-dropdown-option');
-                if (firstOpt) firstOpt.classList.add('is-selected');
-            }
+
 
             currentPage = 1;
             loadData();
@@ -356,12 +344,6 @@
         // Dropdown Filters change listeners
         if (typeFilter) {
             typeFilter.addEventListener('change', () => {
-                currentPage = 1;
-                loadData();
-            });
-        }
-        if (statusFilter) {
-            statusFilter.addEventListener('change', () => {
                 currentPage = 1;
                 loadData();
             });
