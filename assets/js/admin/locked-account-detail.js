@@ -123,63 +123,57 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modalName) modalName.textContent = user.full_name;
     }
 
-    // ── Render Audit Logs ──
+    // ── Render Audit Logs (Login History only) ──
     function renderAuditLogs(logs) {
         const tbody = document.getElementById('audit-logs-body');
         if (!tbody) return;
 
+        // Filter to login-related events only
+        const loginActions = ['login_failed', 'login_success', 'account_locked', 'account_unlocked', 'password_reset'];
+        const filtered = (logs || []).filter(log => {
+            const action = (log.action || '').toLowerCase();
+            return loginActions.some(a => action.includes(a));
+        });
+
         // Update event count badge
         const countBadge = document.getElementById('log-count-badge');
-        if (countBadge) countBadge.textContent = `${logs ? logs.length : 0} Events`;
+        if (countBadge) countBadge.textContent = `${filtered.length} Event${filtered.length !== 1 ? 's' : ''}`;
 
-        if (!logs || logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 opacity-40 text-xs font-bold uppercase">No login history found</td></tr>';
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-10 opacity-40 text-xs font-bold uppercase">No login history found</td></tr>';
             return;
         }
 
-        // Map action types to readable labels and colors
-        const actionMap = {
+        const statusMap = {
+            'login_success': { label: 'Login Success', icon: 'check_circle', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
+            'login_failed': { label: 'Login Failed', icon: 'cancel', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
             'account_locked': { label: 'Account Locked', icon: 'lock', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
             'account_unlocked': { label: 'Account Unlocked', icon: 'lock_open', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
-            'login_failed': { label: 'Login Failed', icon: 'error', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
-            'login_success': { label: 'Login Success', icon: 'check_circle', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
-            'user_suspended': { label: 'User Suspended', icon: 'person_off', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
-            'user_reinstated': { label: 'User Reinstated', icon: 'person', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
-            'user_recovered': { label: 'User Recovered', icon: 'restore', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-            'user_deleted': { label: 'User Deleted', icon: 'person_remove', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
             'password_reset': { label: 'Password Reset', icon: 'key', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
         };
 
-        const getActionInfo = (action) => {
+        const getStatus = (action) => {
             const key = (action || '').toLowerCase();
-            if (actionMap[key]) return actionMap[key];
-            // Fallback: make it readable
-            const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            return { label, icon: 'info', color: 'text-slate-500', bg: 'bg-slate-50 dark:bg-white/5' };
+            for (const [k, v] of Object.entries(statusMap)) {
+                if (key.includes(k)) return v;
+            }
+            return { label: action, icon: 'info', color: 'text-slate-400', bg: 'bg-slate-50 dark:bg-white/5' };
         };
 
-        const html = logs.map(log => {
-            const info = getActionInfo(log.action);
-            const isBlock = log.outcome === 'Block';
-            const statusColor = isBlock
-                ? 'bg-red-100 dark:bg-red-500/10 text-red-600'
-                : 'bg-green-100 dark:bg-green-500/10 text-green-600';
-
+        const html = filtered.map(log => {
+            const s = getStatus(log.action);
             return `
-                <tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                    <td>
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-lg ${info.bg} flex items-center justify-center flex-shrink-0">
-                                <span class="material-symbols-outlined text-sm ${info.color}">${info.icon}</span>
+                <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                    <td class="pl-6">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-[16px] ${s.color}">${s.icon}</span>
                             </div>
-                            <span class="text-xs font-bold">${info.label}</span>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${s.label}</span>
                         </div>
                     </td>
-                    <td class="text-xs font-mono font-bold opacity-60">${log.ip || 'N/A'}</td>
-                    <td class="text-xs opacity-70">${log.time || 'N/A'}</td>
-                    <td class="text-center">
-                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md uppercase ${statusColor}">${log.outcome || 'N/A'}</span>
-                    </td>
+                    <td class="text-[11px] font-mono font-bold text-slate-500">${log.ip || '—'}</td>
+                    <td class="text-[11px] text-slate-500">${log.time || '—'}</td>
                 </tr>
             `;
         }).join('');
