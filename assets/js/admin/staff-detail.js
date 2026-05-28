@@ -258,12 +258,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // ─── SHIFT HISTORY ────────────────────────
             var shiftHistoryDiv = document.getElementById('staff-shift-history');
-            if (shiftHistoryDiv && res.shifts) {
-                if (res.shifts.length === 0) {
+            var shifts = response.shifts;
+            if (shiftHistoryDiv && shifts) {
+                if (shifts.length === 0) {
                     shiftHistoryDiv.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">No recent shifts found.</div>';
                 } else {
                     var html = '';
-                    res.shifts.forEach(function(s) {
+                    shifts.forEach(function(s) {
                         var dateStr = fmtDate(s.shift_date);
                         var loginTime = new Date(s.login_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         var logoutTime = new Date(s.logout_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
