@@ -63,6 +63,7 @@
                     name: acc.full_name,
                     email: acc.email,
                     initials: acc.initials || acc.full_name.charAt(0),
+                    profile_photo: acc.profile_picture || null,
                     accNo: acc.account_no || 'N/A',
                     accType: acc.account_type === 'savings' ? 'Savings' : 'Current',
                     attempts: acc.failed_attempts,
@@ -119,7 +120,10 @@
                 <td style="font-size:11px;font-weight:800;color:var(--text-secondary);">${rowNum}</td>
                 <td>
                     <div class="user-cell flex items-center gap-3">
-                        <div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" style="background:${gradient}">${r.initials}</div>
+                        ${r.profile_photo 
+                            ? `<img src="../../${r.profile_photo}" class="w-10 h-10 rounded-full object-cover shadow-sm">` 
+                            : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm" style="background:${gradient}">${r.initials}</div>`
+                        }
                         <div>
                             <div class="user-name font-bold text-sm dark:text-slate-200">${r.name}</div>
                             <div class="user-email text-xs opacity-60">${r.email}</div>

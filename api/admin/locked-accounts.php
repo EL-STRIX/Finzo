@@ -48,9 +48,10 @@ try {
     $offset = ($page - 1) * $per_page;
 
     $stmt = $pdo->prepare("
-        SELECT u.id, u.full_name, u.email, u.phone, u.status,
+        SELECT u.id, u.full_name, u.email, u.phone, u.status, u.profile_picture,
                u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
-               a.account_no
+               u.updated_at,
+               a.account_no, a.account_type
         FROM users u
         LEFT JOIN accounts a ON u.customer_id = a.user_id
         WHERE {$where_sql}
@@ -60,9 +61,18 @@ try {
     $stmt->execute($params);
     $accounts = $stmt->fetchAll();
 
+    $formatted_accounts = [];
+    foreach ($accounts as $acc) {
+        // Locked at is approximately updated_at
+        $locked_timestamp = strtotime($acc['updated_at']);
+        $acc['locked_at'] = date('d M Y', $locked_timestamp);
+        $acc['lock_time'] = date('h:i A', $locked_timestamp);
+        $formatted_accounts[] = $acc;
+    }
+
     json_response([
         'success'      => true,
-        'accounts'     => $accounts,
+        'accounts'     => $formatted_accounts,
         'total'        => $total,
         'pages'        => $pages,
         'current_page' => $page
