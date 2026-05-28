@@ -76,14 +76,12 @@ try {
     }
 
     json_response([
-        'status' => 'success',
-        'data'   => [
-            'branches' => $branches,
-            'stats'    => [
-                'total'       => (int)$stats['total'],
-                'active'      => (int)$stats['active'],
-                'total_staff' => (int)$stats['total_staff']
-            ]
+        'success' => true,
+        'branches' => $branches,
+        'stats' => [
+            'total' => (int)$stats['total'],
+            'active' => (int)$stats['active'],
+            'total_staff' => (int)$stats['total_staff']
         ]
     ]);
 
