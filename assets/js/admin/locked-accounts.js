@@ -45,7 +45,7 @@
             const statusFilter = document.getElementById('status-filter')?.value || '';
             const dateFilter = document.getElementById('date-filter')?.value || '';
 
-            let url = `/admin/locked-accounts.php?tab=${currentTab}&page=${currentPage}&per_page=${ROWS_PP}`;
+            let url = `/admin/locked-accounts.php?page=${currentPage}&per_page=${ROWS_PP}`;
             if (search) url += `&search=${encodeURIComponent(search)}`;
             if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
             if (statusFilter) url += `&status=${encodeURIComponent(statusFilter)}`;
