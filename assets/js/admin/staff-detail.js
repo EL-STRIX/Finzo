@@ -215,6 +215,46 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('sys-created-by', staff.created_by_name || staff.created_by || 'System');
             setText('sys-staff-id', staff.staff_id);
             setText('sys-total-shifts', String(totalShifts || 0));
+            setText('sys-failed-logins', String(staff.failed_attempts || 0));
+            
+            var isLocked = staff.locked_until && new Date(staff.locked_until) > new Date();
+            var lockEl = document.getElementById('sys-lock-status');
+            if (lockEl) {
+                if (isLocked) {
+                    lockEl.innerText = 'Locked';
+                    lockEl.className = 'text-xs font-black text-rose-500';
+                } else {
+                    lockEl.innerText = 'Unlocked';
+                    lockEl.className = 'text-xs font-bold text-slate-800 dark:text-slate-200';
+                }
+            }
+            
+            // ─── SECURITY ALERT BANNER ────────────────────────
+            var alertBanner = document.getElementById('security-alert-banner');
+            var alertIcon = document.getElementById('security-alert-icon');
+            var alertTitle = document.getElementById('security-alert-title');
+            var alertMessage = document.getElementById('security-alert-message');
+
+            if (alertBanner && alertIcon && alertTitle && alertMessage) {
+                // reset classes
+                alertBanner.className = 'hidden rounded-2xl p-4 sm:p-5 flex items-start gap-4';
+                
+                if (staff.status === 'suspended') {
+                    alertBanner.classList.remove('hidden');
+                    alertBanner.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200', 'dark:bg-rose-500/10', 'dark:border-rose-500/20', 'dark:text-rose-200');
+                    alertIcon.innerText = 'gavel';
+                    alertTitle.innerText = 'Account Suspended';
+                    var reason = staff.suspension_reason || 'No reason provided';
+                    var suspender = staff.suspended_by_name || 'System Administrator';
+                    alertMessage.innerHTML = 'This staff account has been suspended by <strong>' + suspender + '</strong>.<br>Reason: ' + reason;
+                } else if (isLocked) {
+                    alertBanner.classList.remove('hidden');
+                    alertBanner.classList.add('bg-amber-50', 'text-amber-900', 'border', 'border-amber-200', 'dark:bg-amber-500/10', 'dark:border-amber-500/20', 'dark:text-amber-200');
+                    alertIcon.innerText = 'lock';
+                    alertTitle.innerText = 'Account Temporarily Locked';
+                    alertMessage.innerHTML = 'This account is locked due to too many failed login attempts (' + staff.failed_attempts + ').<br>It will automatically unlock at ' + staff.locked_until + '.';
+                }
+            }
 
             // ─── DOCUMENTS ──────────────────────────
             var doc = (documents && documents.length > 0) ? documents[0] : null;

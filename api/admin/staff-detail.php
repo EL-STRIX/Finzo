@@ -26,12 +26,15 @@ try {
                s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
                s.street, s.city, s.state, s.pincode, s.country,
                s.id_type, s.id_number, s.front_image, s.back_image,
+               s.failed_attempts, s.locked_until, s.suspension_reason, s.suspended_by,
                b.name as branch_name, b.branch_code, b.state as branch_state,
-               COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name
+               COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name,
+               COALESCE(suspender_admin.full_name, s.suspended_by) as suspended_by_name
         FROM staff s
         LEFT JOIN branches b ON s.branch_id = b.id
         LEFT JOIN admin_users creator_admin ON s.created_by = creator_admin.admin_id
         LEFT JOIN staff creator_staff ON s.created_by = creator_staff.staff_id
+        LEFT JOIN admin_users suspender_admin ON s.suspended_by = suspender_admin.admin_id
         WHERE s.id = ?
     ");
     $stmt->execute([$staff_id]);

@@ -113,6 +113,14 @@
 
         <main class="p-4 sm:p-6 lg:p-10 space-y-8">
             
+            <!-- ALERT BANNER FOR SUSPENSION OR LOCK -->
+            <div id="security-alert-banner" class="hidden rounded-2xl p-4 sm:p-5 flex items-start gap-4">
+                <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-1">warning</span>
+                <div>
+                    <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase">Alert</h4>
+                    <p id="security-alert-message" class="text-xs sm:text-sm font-medium leading-relaxed opacity-90"></p>
+                </div>
+            </div>
             <div class="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8">
                 
                 <!-- ════════════════════════════════════════ -->
@@ -209,7 +217,7 @@
                                 <span class="material-symbols-outlined text-primary text-lg">security</span> System Audit Info
                             </h4>
                         </div>
-                        <div class="p-5 grid grid-cols-2 sm:grid-cols-3 gap-5">
+                        <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
                             <div>
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Last Login</label>
                                 <div id="sys-last-login" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
@@ -233,6 +241,14 @@
                             <div>
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Shifts</label>
                                 <div id="sys-total-shifts" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Failed Logins</label>
+                                <div id="sys-failed-logins" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Lock Status</label>
+                                <div id="sys-lock-status" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
                             </div>
                         </div>
                     </div>
