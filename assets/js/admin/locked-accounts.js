@@ -35,28 +35,25 @@
      * Load locked accounts from API
      */
     async function loadData() {
-        const search = searchInput ? searchInput.value : '';
-        const type = typeFilter ? typeFilter.value : '';
-        const date = dateFilter ? dateFilter.value : '';
-
         if (tableBody) {
-            tableBody.innerHTML = `
-                <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-                <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-                <tr><td colspan="10"><div class="skeleton-row"></div></td></tr>
-            `;
+            tableBody.innerHTML = `<tr><td colspan="10" class="py-10"><div class="finzo-spinner mx-auto border-primary"></div></td></tr>`;
         }
         
         try {
-            const response = await window.api.get('/admin/locked-accounts.php', {
-                search: search,
-                type: type,
-                date: date,
-                page: currentPage,
-                per_page: ROWS_PP
-            });
+            const search = document.getElementById('search-input')?.value || '';
+            const typeFilter = document.getElementById('type-filter')?.value || '';
+            const statusFilter = document.getElementById('status-filter')?.value || '';
+            const dateFilter = document.getElementById('date-filter')?.value || '';
+
+            let url = `/admin/locked-accounts.php?tab=${currentTab}&page=${currentPage}&per_page=${ROWS_PP}`;
+            if (search) url += `&search=${encodeURIComponent(search)}`;
+            if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
+            if (statusFilter) url += `&status=${encodeURIComponent(statusFilter)}`;
+            if (dateFilter) url += `&date=${encodeURIComponent(dateFilter)}`;
+
+            const response = await window.api.get(url);
             
-            if (response.status === 'success' || response.success) {
+            if (response.success) {
                 const data = response.data || response;
                 allData = (data.accounts || []).map(acc => ({
                     id: acc.id,
@@ -348,6 +345,14 @@
         // Dropdown Filters change listeners
         if (typeFilter) {
             typeFilter.addEventListener('change', () => {
+                currentPage = 1;
+                loadData();
+            });
+        }
+        
+        const statusFilterInput = document.getElementById('status-filter');
+        if (statusFilterInput) {
+            statusFilterInput.addEventListener('change', () => {
                 currentPage = 1;
                 loadData();
             });

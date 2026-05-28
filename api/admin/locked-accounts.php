@@ -14,37 +14,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $tab     = sanitize_input($_GET['tab'] ?? 'locked');
     $search  = sanitize_input($_GET['search'] ?? '');
+    $status_filter = sanitize_input($_GET['status'] ?? '');
     $page    = max(1, intval($_GET['page'] ?? 1));
     $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
     $where_clauses = ["u.is_deleted = 0"];
     $params = [];
 
-    // Get recently unlocked users with active temp passwords in this admin's session
-    $recent_unlock_ids = [];
-    if (isset($_SESSION['temp_passwords'])) {
-        foreach ($_SESSION['temp_passwords'] as $uid => $data) {
-            if ($data['expires'] > time()) {
-                $recent_unlock_ids[] = intval($uid);
-            } else {
-                unset($_SESSION['temp_passwords'][$uid]);
-            }
-        }
-    }
-    
-    $recent_sql = '';
-    if (!empty($recent_unlock_ids)) {
-        $recent_sql = " OR u.id IN (" . implode(',', $recent_unlock_ids) . ")";
+    // Base logic for locked accounts
+    if ($tab === 'locked') {
+        $where_clauses[] = "u.temp_pass_status IN ('pending', 'done')";
+    } elseif ($tab === 'flagged') {
+        // Flagged: high failed attempts but not locked
+        $where_clauses[] = "u.failed_attempts >= 3 AND u.temp_pass_status = 'none'";
+    } else {
+        $where_clauses[] = "(u.temp_pass_status IN ('pending', 'done') OR u.failed_attempts >= 3)";
     }
 
-    if ($tab === 'locked') {
-        $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5" . $recent_sql . ")";
-    } elseif ($tab === 'flagged') {
-        // Flagged: high failed attempts but not currently locked
-        $where_clauses[] = "u.failed_attempts >= 3 AND u.failed_attempts < 5 AND (u.locked_until IS NULL OR u.locked_until <= NOW())";
-    } else {
-        // All with any failed attempts
-        $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 3" . $recent_sql . ")";
+    // Status filter
+    if ($status_filter === 'pending') {
+        $where_clauses[] = "u.temp_pass_status = 'pending'";
+    } elseif ($status_filter === 'done') {
+        $where_clauses[] = "u.temp_pass_status = 'done'";
     }
 
     if (!empty($search)) {
@@ -67,7 +58,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT u.id, u.full_name, u.email, u.phone, u.status, u.profile_picture,
                u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
-               u.updated_at,
+               u.updated_at, u.temp_pass_status,
                a.account_no, a.account_type
         FROM users u
         LEFT JOIN accounts a ON u.customer_id = a.user_id
@@ -84,6 +75,17 @@ try {
         $locked_timestamp = strtotime($acc['updated_at']);
         $acc['locked_at'] = date('d M Y', $locked_timestamp);
         $acc['lock_time'] = date('h:i A', $locked_timestamp);
+        
+        // Pass the temp_pass_status explicitly
+        $acc['temp_pass_status'] = $acc['temp_pass_status'] ?? 'pending';
+
+        if ($acc['temp_pass_status'] === 'done') {
+            $acc['status_text'] = 'Done';
+            $acc['status_badge'] = 'badge-success';
+        } else {
+            $acc['status_text'] = 'Pending';
+            $acc['status_badge'] = 'badge-warn';
+        }
         $formatted_accounts[] = $acc;
     }
 

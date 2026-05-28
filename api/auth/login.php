@@ -70,7 +70,7 @@ if (!password_verify($password, $user['password_hash'])) {
     if ($new_attempts >= $max_attempts) {
         // Lock the account
         $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
-        $stmt = $pdo->prepare("UPDATE users SET failed_attempts = ?, locked_until = ? WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE users SET failed_attempts = ?, locked_until = ?, temp_pass_status = 'pending' WHERE id = ?");
         $stmt->execute([$new_attempts, $lock_until, $user['id']]);
 
         // Write audit log
@@ -112,7 +112,7 @@ if ($user['status'] === 'suspended') {
 // Reset failed attempts and update login info
 $ip = get_client_ip();
 $stmt = $pdo->prepare("
-    UPDATE users SET failed_attempts = 0, locked_until = NULL, last_login_at = NOW(), last_login_ip = ?
+    UPDATE users SET failed_attempts = 0, locked_until = NULL, temp_pass_status = 'none', last_login_at = NOW(), last_login_ip = ?
     WHERE id = ?
 ");
 $stmt->execute([$ip, $user['id']]);

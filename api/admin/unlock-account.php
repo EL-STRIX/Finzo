@@ -50,6 +50,7 @@ try {
         SET failed_attempts = 0, 
             locked_until = NULL, 
             password_hash = ?, 
+            temp_pass_status = 'done',
             updated_at = NOW() 
         WHERE id = ?
     ");
