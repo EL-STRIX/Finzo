@@ -381,7 +381,7 @@
         body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
       })
       .then(res => {
-        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422) throw new Error('Server Error');
+        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422 && res.status !== 423) throw new Error('Server Error');
         return res.json();
       })
       .then(data => {

@@ -301,11 +301,7 @@
             <span class="material-symbols-outlined input-icon">lock</span>
             <span class="material-symbols-outlined password-toggle" id="toggle-password">visibility</span>
           </div>
-          <div class="flex justify-between items-center mt-3 px-1">
-            <div class="flex items-center gap-2 group cursor-pointer" onclick="$('#remember-check').toggleClass('checked')">
-              <div class="custom-checkbox" id="remember-check"></div>
-              <span class="text-[12px] sm:text-[13px] font-semibold text-slate-500 group-hover:text-primary transition-colors">Remember me</span>
-            </div>
+          <div class="flex justify-end items-center mt-3 px-1">
             <a href="forgot-password.html" class="text-[11px] sm:text-[12px] font-bold text-primary hover:underline tracking-[0.03em]">Forgot Password?</a>
           </div>
         </div>
@@ -386,7 +382,7 @@
         body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
       })
       .then(res => {
-        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422) throw new Error('Server Error');
+        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422 && res.status !== 423) throw new Error('Server Error');
         return res.json();
       })
       .then(data => {
