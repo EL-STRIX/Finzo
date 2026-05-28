@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '<td class="font-mono text-xs opacity-60">' + t.account_no + '</td>';
                         html += '<td><span class="status-badge ' + typeClass + '">' + t.type.toUpperCase() + '</span></td>';
                         html += '<td class="font-black text-xs ' + amtClass + '">' + fmtCurrency(t.amount) + '</td>';
-                        html += '<td class="text-right"><button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
+                        html += '<td class="text-right"><button onclick="window.open(\'../../api/pdf/receipt-pdf.php?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
                         html += '</tr>';
                     }
                     tbody.innerHTML = html;
