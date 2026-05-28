@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateUI(staff) {
-        document.getElementById('bc-name').textContent = staff.full_name || 'N/A';
+        // Breadcrumb removed
         
         // Avatar handling
         const av = document.getElementById('detail-avatar');
