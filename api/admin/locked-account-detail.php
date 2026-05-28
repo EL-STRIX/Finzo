@@ -56,6 +56,22 @@ try {
     $user['temp_password_active'] = false;
     $user['temp_password']    = null;
 
+    // Check if there is an active temporary password generated in the last 5 minutes
+    if (isset($_SESSION['temp_passwords'][$user_id])) {
+        $temp_data = $_SESSION['temp_passwords'][$user_id];
+        if ($temp_data['expires'] > time()) {
+            $user['temp_password_active'] = true;
+            $user['temp_password'] = $temp_data['password'];
+            // Force the account to still appear "locked" in the UI context so the red badges stay
+            // even though the DB says it's technically unlocked (so they can still see it's a locked context)
+            $is_locked = true; 
+            $user['is_locked'] = true;
+        } else {
+            // Clean up expired
+            unset($_SESSION['temp_passwords'][$user_id]);
+        }
+    }
+
     // ── 3. Fetch audit logs related to this user (by customer_id) ──
     $customer_id = $user['customer_id'];
     $logs = [];

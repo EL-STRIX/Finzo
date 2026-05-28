@@ -20,14 +20,31 @@ try {
     $where_clauses = ["u.is_deleted = 0"];
     $params = [];
 
+    // Get recently unlocked users with active temp passwords in this admin's session
+    $recent_unlock_ids = [];
+    if (isset($_SESSION['temp_passwords'])) {
+        foreach ($_SESSION['temp_passwords'] as $uid => $data) {
+            if ($data['expires'] > time()) {
+                $recent_unlock_ids[] = intval($uid);
+            } else {
+                unset($_SESSION['temp_passwords'][$uid]);
+            }
+        }
+    }
+    
+    $recent_sql = '';
+    if (!empty($recent_unlock_ids)) {
+        $recent_sql = " OR u.id IN (" . implode(',', $recent_unlock_ids) . ")";
+    }
+
     if ($tab === 'locked') {
-        $where_clauses[] = "u.locked_until > NOW()";
+        $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5" . $recent_sql . ")";
     } elseif ($tab === 'flagged') {
         // Flagged: high failed attempts but not currently locked
-        $where_clauses[] = "u.failed_attempts >= 3 AND (u.locked_until IS NULL OR u.locked_until <= NOW())";
+        $where_clauses[] = "u.failed_attempts >= 3 AND u.failed_attempts < 5 AND (u.locked_until IS NULL OR u.locked_until <= NOW())";
     } else {
         // All with any failed attempts
-        $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 3)";
+        $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 3" . $recent_sql . ")";
     }
 
     if (!empty($search)) {

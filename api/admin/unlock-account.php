@@ -63,6 +63,15 @@ try {
     write_audit_log($pdo, 'account_unlocked', $user_id, 'user', $admin_id, 'admin',
         "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}");
 
+    // Store the temporary password in session for 5 minutes so the admin can view it if they refresh
+    if (!isset($_SESSION['temp_passwords'])) {
+        $_SESSION['temp_passwords'] = [];
+    }
+    $_SESSION['temp_passwords'][$user_id] = [
+        'password' => $temp_pass,
+        'expires'  => time() + 300 // 5 minutes
+    ];
+
     json_response([
         'success' => true, 
         'message' => 'Account unlocked and temporary password generated.',
