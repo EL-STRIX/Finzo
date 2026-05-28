@@ -39,8 +39,8 @@ window.AdminPortal = {
         const name = admin.full_name;
         const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase();
 
-        // Update all admin avatars
-        document.querySelectorAll('.admin-avatar').forEach(el => {
+        // Update only the topbar admin avatar to prevent overwriting avatars in data tables
+        document.querySelectorAll('header.admin-topbar .admin-avatar').forEach(el => {
             if (admin.profile_photo) {
                 const cacheBuster = '?v=' + new Date().getTime();
                 const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `../../${admin.profile_photo}`) + cacheBuster;
