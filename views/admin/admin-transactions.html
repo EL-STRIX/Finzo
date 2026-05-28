@@ -112,32 +112,39 @@
             <!-- FILTERS & TABLE -->
             <div class="admin-card overflow-hidden">
                 <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5 relative z-20">
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 items-end">
-                    <div class="col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Transactions</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                            <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Transaction Type</label>
-                        <div class="finzo-dropdown" id="type-dropdown">
-                            <input type="hidden" id="filter-type" value="all">
-                            <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-3 !rounded-xl">
-                                <span class="dropdown-label font-bold text-sm">All Transactions</span>
-                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
-                            </div>
-                            <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
-                                <div class="finzo-dropdown-option is-selected" data-value="all">All Transactions</div>
-                                <div class="finzo-dropdown-option" data-value="deposit">Deposits</div>
-                                <div class="finzo-dropdown-option" data-value="withdrawal">Withdrawals</div>
-                                <div class="finzo-dropdown-option" data-value="transfer">Transfers</div>
-                                <div class="finzo-dropdown-option" data-value="interest_credit">Interest</div>
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                        <!-- Search -->
+                        <div class="w-full md:w-96">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Transactions</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                             </div>
                         </div>
+
+                        <!-- Type Tabs -->
+                        <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
+                                All
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="deposit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">south_west</span>
+                                Deposits
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="withdrawal">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">north_east</span>
+                                Withdrawals
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="transfer">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">sync_alt</span>
+                                Transfers
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="interest_credit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">percent</span>
+                                Interest
+                            </button>
+                        </div>
                     </div>
-                </div>
 
                 </div>
             </div>

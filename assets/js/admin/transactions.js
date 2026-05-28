@@ -236,15 +236,25 @@
      * Bind events
      */
     function bindEvents() {
-        // Auto filter on Type Dropdown Change
-        const typeInput = document.getElementById('filter-type');
-        if (typeInput) {
-            typeInput.addEventListener('change', function() {
-                currentType = this.value;
+        // Auto filter on Type Tab Click
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active classes from all tabs
+                tabBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-[1.02]', 'dark:bg-sky-500/20', 'dark:text-sky-300', 'dark:shadow-none', 'dark:ring-1', 'dark:ring-sky-500/30');
+                    b.classList.add('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200/80', 'hover:text-slate-800', 'hover:scale-[1.01]', 'dark:bg-white/5', 'dark:text-slate-400', 'dark:hover:bg-white/10', 'dark:hover:text-slate-200');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.remove('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200/80', 'hover:text-slate-800', 'hover:scale-[1.01]', 'dark:bg-white/5', 'dark:text-slate-400', 'dark:hover:bg-white/10', 'dark:hover:text-slate-200');
+                this.classList.add('bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-[1.02]', 'dark:bg-sky-500/20', 'dark:text-sky-300', 'dark:shadow-none', 'dark:ring-1', 'dark:ring-sky-500/30');
+
+                currentType = this.getAttribute('data-type');
                 currentPage = 1;
                 loadTransactions();
             });
-        }
+        });
 
         // Auto filter on Search Input (Debounced)
         const searchInput = document.getElementById('transaction-search');
