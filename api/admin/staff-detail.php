@@ -97,6 +97,24 @@ try {
     $stmt->execute([$staff_id]);
     $transactions = $stmt->fetchAll();
 
+    // Recent shift history (last 5 days)
+    $stmt = $pdo->prepare("
+        SELECT 
+            DATE(created_at) as shift_date,
+            MIN(created_at) as login_time,
+            MAX(created_at) as logout_time
+        FROM (
+            SELECT created_at FROM transactions WHERE processed_by_staff_id = :id
+            UNION ALL
+            SELECT created_at FROM audit_log WHERE actor_id = :actor_id AND actor_role = 'Staff'
+        ) as activities
+        GROUP BY shift_date
+        ORDER BY shift_date DESC
+        LIMIT 5
+    ");
+    $stmt->execute(['id' => $staff_id, 'actor_id' => $staff['staff_id']]);
+    $shifts = $stmt->fetchAll();
+
     // Structure documents array from unified staff columns
     $documents = [];
     if (!empty($staff['id_type'])) {
@@ -134,6 +152,7 @@ try {
         'performance'       => $performance,
         'today_performance' => $today_performance,
         'total_shifts'      => $total_shifts,
+        'shifts'            => $shifts,
         'transactions'      => $transactions,
         'activities'        => $activities,
         'documents'         => $documents,

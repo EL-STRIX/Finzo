@@ -255,6 +255,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     alertMessage.innerHTML = 'This account is locked due to too many failed login attempts (' + staff.failed_attempts + ').<br>It will automatically unlock at ' + staff.locked_until + '.';
                 }
             }
+            
+            // ─── SHIFT HISTORY ────────────────────────
+            var shiftHistoryDiv = document.getElementById('staff-shift-history');
+            if (shiftHistoryDiv && res.shifts) {
+                if (res.shifts.length === 0) {
+                    shiftHistoryDiv.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">No recent shifts found.</div>';
+                } else {
+                    var html = '';
+                    res.shifts.forEach(function(s) {
+                        var dateStr = fmtDate(s.shift_date);
+                        var loginTime = new Date(s.login_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        var logoutTime = new Date(s.logout_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        html += '<div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5">';
+                        html += '    <div>';
+                        html += '        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">' + dateStr + '</div>';
+                        html += '        <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">' + loginTime + ' — ' + logoutTime + '</div>';
+                        html += '    </div>';
+                        html += '    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 flex items-center justify-center">';
+                        html += '        <span class="material-symbols-outlined text-[16px]">check_circle</span>';
+                        html += '    </div>';
+                        html += '</div>';
+                    });
+                    shiftHistoryDiv.innerHTML = html;
+                }
+            }
 
             // ─── DOCUMENTS ──────────────────────────
             var doc = (documents && documents.length > 0) ? documents[0] : null;
