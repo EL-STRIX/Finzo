@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateUI(user) {
-        document.getElementById('bc-name').textContent = user.full_name || 'N/A';
+        // Breadcrumb removed
         
         const avatar = document.getElementById('detail-avatar');
         if (avatar) {
