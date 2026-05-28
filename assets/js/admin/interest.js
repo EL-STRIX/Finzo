@@ -94,10 +94,9 @@
         handleApplyFromChange: (value) => {
             if (customDateContainer) {
                 if (value === 'Custom Date') {
-                    customDateContainer.style.display = 'block';
-                    // Trigger reflow for animation if needed, or use CSS transitions
+                    customDateContainer.classList.remove('hidden');
                 } else {
-                    customDateContainer.style.display = 'none';
+                    customDateContainer.classList.add('hidden');
                 }
             }
         },
@@ -133,14 +132,16 @@
             }
             
             if (confirmModal) {
-                confirmModal.style.display = 'flex';
+                confirmModal.classList.remove('hidden');
+                confirmModal.classList.add('flex');
                 confirmModal.classList.add('animate-fade-in');
             }
         },
 
         closeModal: () => {
             if (confirmModal) {
-                confirmModal.style.display = 'none';
+                confirmModal.classList.add('hidden');
+                confirmModal.classList.remove('flex');
             }
         },
 

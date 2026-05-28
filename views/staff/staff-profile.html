@@ -510,7 +510,7 @@
             <!-- CHANGE PASSWORD -->
             <div class="section-card animate-section overflow-hidden flex flex-col md:flex-row">
                 <!-- Left Sidebar info -->
-                <div class="w-full md:w-1/3 bg-slate-50 dark:bg-white/5 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+                <div class="w-full md:w-1/3 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden" style="background-color: var(--user-surface-alt);">
                     <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
                     <div class="w-12 h-12 bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 rounded-xl flex items-center justify-center mb-4 shadow-sm border border-amber-200 dark:border-amber-500/30 relative z-10">
                         <span class="material-symbols-outlined text-[24px]">password</span>
@@ -520,13 +520,14 @@
                         Ensure your account remains secure by using a strong, unique password. We recommend at least 8 characters.
                     </p>
                 </div>
-                <div class="w-full md:w-2/3 p-6 sm:p-8 bg-white dark:bg-[#161b22]">
+                <div class="w-full md:w-2/3 p-6 sm:p-8" style="background-color: var(--user-surface);">
                     <form id="password-form" class="space-y-6">
                         <div>
                             <label class="info-label block mb-2">Current Password *</label>
                             <div class="relative">
                                 <input type="password" id="pw-current" required
-                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border);"
                                     placeholder="Enter current password">
                                 <button type="button" onclick="togglePwVisibility('pw-current')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
@@ -537,7 +538,8 @@
                             <label class="info-label block mb-2">New Password *</label>
                             <div class="relative">
                                 <input type="password" id="pw-new" required minlength="8"
-                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border);"
                                     placeholder="Min 8 characters" oninput="checkPasswordStrength()">
                                 <button type="button" onclick="togglePwVisibility('pw-new')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
@@ -554,7 +556,8 @@
                             <label class="info-label block mb-2">Confirm New Password *</label>
                             <div class="relative">
                                 <input type="password" id="pw-confirm" required
-                                    class="w-full px-4 py-3.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border);"
                                     placeholder="Repeat new password">
                                 <button type="button" onclick="togglePwVisibility('pw-confirm')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>

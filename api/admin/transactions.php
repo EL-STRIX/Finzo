@@ -85,7 +85,7 @@ try {
                 COALESCE(s.staff_id, 'N/A') as 'Processed By',
                 t.created_at as 'Date'
             {$base_sql}
-            ORDER BY t.created_at DESC
+            ORDER BY t.created_at DESC, t.id DESC
         ";
 
         $stmt = $pdo->prepare($sql);
@@ -130,7 +130,7 @@ try {
             tu.profile_picture as to_user_avatar,
             COALESCE(s.staff_id, '') as processed_by
         {$base_sql}
-        ORDER BY t.created_at DESC
+        ORDER BY t.created_at DESC, t.id DESC
         LIMIT {$per_page} OFFSET {$offset}
     ";
 

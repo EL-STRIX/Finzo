@@ -13,9 +13,10 @@
         try {
             const response = await window.api.get('/admin/dashboard.php');
             if (response.success) {
-                updateStats(response.data.stats);
-                renderRecentUsers(response.data.recent_users);
-                updateCharts(response.data);
+                const data = response.data || response;
+                updateStats(data.stats);
+                renderRecentUsers(data.recent_users);
+                updateCharts(data);
             }
         } catch (error) {
             console.error('Dashboard load failed:', error);
@@ -27,6 +28,7 @@
      * Update the stat cards with real data
      */
     function updateStats(stats) {
+        if (!stats) return;
         const cards = document.querySelectorAll('.admin-stat-card');
         
         // Define mapping based on card labels (flexible matching)
@@ -39,17 +41,18 @@
             let value = 0;
             let isPrice = false;
 
-            if (label.includes('WITHDRAWALS')) { value = stats.withdrawals_today; isPrice = true; }
-            else if (label.includes('DEPOSITS')) { value = stats.deposits_today; isPrice = true; }
-            else if (label.includes('TRANSFERS')) { value = stats.transfers_today; isPrice = true; }
-            else if (label.includes('TOTAL ACCOUNTS') || label.includes('TOTAL USERS')) { value = stats.total_users; }
-            else if (label.includes('INTEREST')) { value = 0; isPrice = true; } // Logic for interest not in this API yet
-            else if (label.includes('PENDING APPROVALS')) { value = stats.pending_approvals; }
-            else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts; }
-            else if (label.includes('SUSPENDED USERS')) { value = stats.suspended_users; }
-            else if (label.includes('SOFT DELETED')) { value = 0; }
-            else if (label.includes('ACTIVE STAFF')) { value = stats.total_staff; }
-            else if (label.includes('ACTIVE BRANCHES')) { value = stats.total_branches; }
+            if (label.includes('WITHDRAWALS')) { value = stats.withdrawals_today || 0; isPrice = true; }
+            else if (label.includes('DEPOSITS')) { value = stats.deposits_today || 0; isPrice = true; }
+            else if (label.includes('TRANSFERS')) { value = stats.transfers_today || 0; isPrice = true; }
+            else if (label.includes('TOTAL ACCOUNTS')) { value = stats.total_accounts || 0; }
+            else if (label.includes('TOTAL USERS')) { value = stats.total_users || 0; }
+            else if (label.includes('INTEREST')) { value = stats.interest_credited || 0; isPrice = true; }
+            else if (label.includes('PENDING APPROVALS')) { value = stats.pending_approvals || 0; }
+            else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts || 0; }
+            else if (label.includes('SUSPENDED USERS')) { value = stats.suspended_users || 0; }
+            else if (label.includes('SOFT DELETED')) { value = stats.soft_deleted_users || 0; }
+            else if (label.includes('ACTIVE STAFF')) { value = stats.total_staff || 0; }
+            else if (label.includes('ACTIVE BRANCHES')) { value = stats.total_branches || 0; }
 
             valEl.classList.remove('skeleton');
             valEl.textContent = isPrice ? window.FinzoUtils.formatINR(value) : value.toLocaleString();
@@ -73,11 +76,15 @@
             const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-error' : 'badge-warn');
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
+            const avatarHtml = u.profile_picture_url 
+                ? `<img src="${u.profile_picture_url}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover" onerror="this.outerHTML='<div class=\\'admin-avatar !w-10 !h-10 !rounded-xl text-[12px]\\' style=\\'background:${gradient};color:#fff;\\'>${initials}</div>'">` 
+                : `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" style="background:${gradient};color:#fff;">${initials}</div>`;
+
             return `
             <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                 <td>
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" style="background:${gradient};color:#fff;">${initials}</div>
+                        ${avatarHtml}
                         <div class="min-w-0">
                             <div class="font-bold text-sm truncate">${u.full_name}</div>
                             <div class="text-[10px] opacity-40 truncate">${u.email}</div>
@@ -89,7 +96,7 @@
                 <td class="text-xs font-semibold">Savings</td>
                 <td class="text-[11px] opacity-40 font-bold">${window.FinzoUtils.timeAgo(u.created_at)}</td>
                 <td class="text-right">
-                    <a href="admin-users.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
+                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-xs">visibility</span> View
                     </a>
                 </td>
@@ -126,10 +133,15 @@
             const values = [stats.active_users, stats.pending_users, stats.suspended_users, stats.locked_accounts];
             
             // Update Legend numbers
-            document.getElementById('legend-active').textContent = stats.active_users;
-            document.getElementById('legend-pending').textContent = stats.pending_users;
-            document.getElementById('legend-suspended').textContent = stats.suspended_users;
-            document.getElementById('legend-locked').textContent = stats.locked_accounts;
+            const activeEl = document.getElementById('legend-active');
+            const pendingEl = document.getElementById('legend-pending');
+            const suspendedEl = document.getElementById('legend-suspended');
+            const lockedEl = document.getElementById('legend-locked');
+
+            if (activeEl) activeEl.textContent = stats.active_users || 0;
+            if (pendingEl) pendingEl.textContent = stats.pending_users || 0;
+            if (suspendedEl) suspendedEl.textContent = stats.suspended_users || 0;
+            if (lockedEl) lockedEl.textContent = stats.locked_accounts || 0;
             
             // Remove skeleton from legend
             document.querySelectorAll('#donut-legend .skeleton').forEach(el => el.classList.remove('skeleton'));

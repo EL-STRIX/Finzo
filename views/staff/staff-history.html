@@ -23,6 +23,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../../assets/js/core/api.js"></script>
     <script src="../../assets/js/staff-shared.js"></script>
+    <script src="../../assets/js/ui/dropdowns.js"></script>
     <style>
         .brand-sub-staff { color: #f59e0b !important; }
         .staff-sidebar-active {
@@ -45,6 +46,15 @@
             transform: translateY(0) scale(1);
             opacity: 1;
             pointer-events: auto;
+        }
+
+        /* Print button pulse */
+        #print-all-btn:hover .print-icon {
+            animation: printBounce 0.4s ease;
+        }
+        @keyframes printBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
         }
     </style>
 </head>
@@ -171,12 +181,20 @@
 
             <!-- FILTER BAR -->
             <div class="admin-card !overflow-visible relative z-[50] p-4 sm:p-6 mb-8 space-y-6">
-                <!-- TABS -->
-                <div class="flex gap-2 sm:gap-4 border-b border-slate-100 dark:border-white/5 pb-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                    <button class="time-tab px-4 sm:px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-[10px] sm:text-xs uppercase tracking-widest shadow-md flex-shrink-0">All Time</button>
-                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">Today</button>
-                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Week</button>
-                    <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Month</button>
+                <!-- TABS + PRINT BUTTON ROW -->
+                <div class="flex items-center justify-between gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
+                    <div class="flex gap-2 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                        <button class="time-tab px-4 sm:px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-[10px] sm:text-xs uppercase tracking-widest shadow-md flex-shrink-0">All Time</button>
+                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">Today</button>
+                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Week</button>
+                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Month</button>
+                    </div>
+                    <!-- PRINT ALL BUTTON -->
+                    <button id="print-all-btn" onclick="printAllTransactions()"
+                        class="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20 dark:shadow-amber-500/10 hover:translate-y-[-2px] active:scale-95 transition-all duration-200">
+                        <span class="material-symbols-outlined text-[18px] print-icon">print</span>
+                        <span class="hidden sm:inline">Print All</span>
+                    </button>
                 </div>
                 
                 <!-- INPUTS -->
@@ -185,57 +203,59 @@
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
                         <input type="text" id="search-input" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
                     </div>
-                    <div class="relative custom-dropdown" id="dropdown-type">
+                    <!-- TYPE DROPDOWN (finzo-dropdown engine) -->
+                    <div>
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
-                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between dropdown-trigger">
-                            <span class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">list</span>
-                                <span class="selected-text">All Types</span>
-                            </span>
-                            <span class="material-symbols-outlined dropdown-arrow transition-transform">expand_more</span>
-                        </button>
-                        <div class="absolute top-[calc(100%+5px)] left-0 w-full bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl z-[100] dropdown-menu overflow-hidden">
-                            <div class="p-2 space-y-1">
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="All Types">
+                        <div class="finzo-dropdown">
+                            <button type="button" class="finzo-dropdown-trigger w-full h-12 px-4">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">list</span>
+                                    <span class="dropdown-label">All Types</span>
+                                </span>
+                                <span class="material-symbols-outlined chevron">expand_more</span>
+                            </button>
+                            <div class="finzo-dropdown-menu">
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full is-selected" data-value="All Types">
                                     <span class="material-symbols-outlined text-[18px]">list</span> All Types
                                 </button>
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Deposits">
-                                    <span class="material-symbols-outlined text-[18px] text-emerald-500">add_circle</span> Deposits
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Deposits">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:#10b981">add_circle</span> Deposits
                                 </button>
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Withdrawals">
-                                    <span class="material-symbols-outlined text-[18px] text-red-500">remove_circle</span> Withdrawals
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Withdrawals">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:#ef4444">remove_circle</span> Withdrawals
                                 </button>
                             </div>
+                            <input type="hidden" id="filter-type" value="All Types">
                         </div>
-                        <input type="hidden" id="filter-type" value="All Types">
                     </div>
 
-                    <div class="relative custom-dropdown" id="dropdown-status">
+                    <!-- STATUS DROPDOWN (finzo-dropdown engine) -->
+                    <div>
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
-                        <button type="button" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/2 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between dropdown-trigger">
-                            <span class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">rule</span>
-                                <span class="selected-text">All Status</span>
-                            </span>
-                            <span class="material-symbols-outlined dropdown-arrow transition-transform">expand_more</span>
-                        </button>
-                        <div class="absolute top-[calc(100%+5px)] left-0 w-full bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl z-[100] dropdown-menu overflow-hidden">
-                            <div class="p-2 space-y-1">
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="All Status">
+                        <div class="finzo-dropdown">
+                            <button type="button" class="finzo-dropdown-trigger w-full h-12 px-4">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">rule</span>
+                                    <span class="dropdown-label">All Status</span>
+                                </span>
+                                <span class="material-symbols-outlined chevron">expand_more</span>
+                            </button>
+                            <div class="finzo-dropdown-menu">
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full is-selected" data-value="All Status">
                                     <span class="material-symbols-outlined text-[18px]">rule</span> All Status
                                 </button>
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Completed">
-                                    <span class="material-symbols-outlined text-[18px] text-emerald-500">check_circle</span> Completed
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Completed">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:#10b981">check_circle</span> Completed
                                 </button>
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Pending">
-                                    <span class="material-symbols-outlined text-[18px] text-amber-500">pending</span> Pending
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Pending">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:#f59e0b">pending</span> Pending
                                 </button>
-                                <button type="button" class="w-full px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" data-value="Failed">
-                                    <span class="material-symbols-outlined text-[18px] text-red-500">cancel</span> Failed
+                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Failed">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:#ef4444">cancel</span> Failed
                                 </button>
                             </div>
+                            <input type="hidden" id="filter-status" value="All Status">
                         </div>
-                        <input type="hidden" id="filter-status" value="All Status">
                     </div>
 
 
@@ -438,34 +458,20 @@
             }
         }
 
-        // Event Listeners for Dropdowns and Search
-        $('.dropdown-trigger').on('click', function(e) {
-            e.stopPropagation();
-            const menu = $(this).siblings('.dropdown-menu');
-            $('.dropdown-menu').not(menu).removeClass('show');
-            menu.toggleClass('show');
-            $(this).find('.dropdown-arrow').css('transform', menu.hasClass('show') ? 'rotate(180deg)' : 'rotate(0deg)');
-        });
-
-        $('.dropdown-menu button').on('click', function(e) {
-            e.stopPropagation();
-            const val = $(this).data('value');
-            const text = $(this).text().trim();
-            const dd = $(this).closest('.custom-dropdown');
-            dd.find('.selected-text').text(text);
-            dd.find('input[type="hidden"]').val(val);
-            dd.find('.dropdown-menu').removeClass('show');
-            dd.find('.dropdown-arrow').css('transform', 'rotate(0deg)');
+        // Dropdowns: handled by dropdowns.js engine — listen on hidden input 'change'
+        $(document).on('change', '#filter-type, #filter-status', function() {
             applyFilters();
         });
 
-        $(document).on('click', function() {
-            $('.dropdown-menu').removeClass('show');
-            $('.dropdown-arrow').css('transform', 'rotate(0deg)');
+        // Search: live on input (debounced 350ms) + immediate on Enter
+        let _searchTimer;
+        $('#search-input').on('input', function() {
+            clearTimeout(_searchTimer);
+            _searchTimer = setTimeout(applyFilters, 350);
         });
-
         $('#search-input').on('keyup', function(e) {
             if (e.key === 'Enter') {
+                clearTimeout(_searchTimer);
                 applyFilters();
             }
         });
@@ -498,6 +504,252 @@
         $(document).on('click', '#next-btn', function() {
             currentPage++; renderTransactions();
         });
+
+        // ══════════════════════════════════════════════════
+        // PRINT ALL TRANSACTIONS
+        // ══════════════════════════════════════════════════
+        async function printAllTransactions() {
+            const btn = $('#print-all-btn');
+            const originalHtml = btn.html();
+            btn.prop('disabled', true).html('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
+
+            try {
+                // Build the same filters but fetch ALL records (no pagination limit)
+                let from_date = '';
+                const today = new Date().toISOString().split('T')[0];
+                if (currentFilters.range === 'Today') from_date = today;
+
+                const query = new URLSearchParams({
+                    page: 1,
+                    per_page: 999,           // fetch all
+                    search: currentFilters.search,
+                    type: currentFilters.type,
+                    status: currentFilters.status,
+                    from_date: from_date
+                });
+
+                const res = await api.get('/staff/history.php?' + query.toString());
+                btn.prop('disabled', false).html(originalHtml);
+
+                if (!res.success || !res.transactions || res.transactions.length === 0) {
+                    alert('No transactions to print with the current filters.');
+                    return;
+                }
+
+                // Build filter description for header
+                const filterDesc = [];
+                if (currentFilters.range && currentFilters.range !== 'All Time') filterDesc.push('Period: ' + currentFilters.range);
+                if (currentFilters.search) filterDesc.push('Search: "' + currentFilters.search + '"');
+                if (currentFilters.type !== 'all') filterDesc.push('Type: ' + currentFilters.type.charAt(0).toUpperCase() + currentFilters.type.slice(1));
+                if (currentFilters.status !== 'all') filterDesc.push('Status: ' + currentFilters.status.charAt(0).toUpperCase() + currentFilters.status.slice(1));
+
+                // Compute totals
+                let totalDeposits = 0, totalWithdrawals = 0;
+                res.transactions.forEach(t => {
+                    if (t.type === 'deposit') totalDeposits += parseFloat(t.amount);
+                    else totalWithdrawals += parseFloat(t.amount);
+                });
+
+                const fmt = (n) => '₹' + parseFloat(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const now = new Date();
+                const printDate = now.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+
+                // Build table rows HTML
+                let rowsHtml = '';
+                res.transactions.forEach((item, idx) => {
+                    const dateObj = new Date(item.created_at);
+                    const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const isDeposit = item.type === 'deposit';
+                    const amtColor = isDeposit ? '#059669' : '#dc2626';
+                    const amtPrefix = isDeposit ? '+' : '−';
+                    const typeBg = isDeposit ? '#d1fae5' : '#fee2e2';
+                    const typeColor = isDeposit ? '#065f46' : '#991b1b';
+                    const statusBg = item.status === 'completed' ? '#d1fae5' : (item.status === 'pending' ? '#fef3c7' : '#fee2e2');
+                    const statusColor = item.status === 'completed' ? '#065f46' : (item.status === 'pending' ? '#92400e' : '#991b1b');
+
+                    rowsHtml += `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding:10px 8px; font-size:11px; color:#94a3b8; font-weight:700; text-align:center;">${idx + 1}</td>
+                            <td style="padding:10px 8px; font-size:11px;">
+                                <div style="font-weight:700; color:#1e293b;">${dateStr}</div>
+                                <div style="font-size:10px; color:#94a3b8; font-weight:600;">${timeStr}</div>
+                            </td>
+                            <td style="padding:10px 8px; font-size:11px;">
+                                <div style="font-weight:700; color:#1e293b;">${item.customer_name}</div>
+                                <div style="font-size:9px; color:#94a3b8; font-family:monospace;">${item.txn_id}</div>
+                            </td>
+                            <td style="padding:10px 8px; font-size:11px; font-family:monospace; color:#475569; font-weight:600;">${item.account_no}</td>
+                            <td style="padding:10px 8px;">
+                                <span style="font-size:9px; font-weight:800; padding:3px 8px; border-radius:20px; background:${typeBg}; color:${typeColor}; letter-spacing:0.05em; text-transform:uppercase;">${item.type}</span>
+                            </td>
+                            <td style="padding:10px 8px; font-size:12px; font-weight:800; color:${amtColor}; white-space:nowrap;">${amtPrefix}${fmt(item.amount)}</td>
+                            <td style="padding:10px 8px; font-size:11px; font-weight:700; color:#1e293b;">${fmt(item.balance_after)}</td>
+                            <td style="padding:10px 8px;">
+                                <span style="font-size:9px; font-weight:800; padding:3px 8px; border-radius:20px; background:${statusBg}; color:${statusColor}; letter-spacing:0.05em; text-transform:uppercase;">${item.status}</span>
+                            </td>
+                        </tr>`;
+                });
+
+                const printHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Transaction Report — ${StaffState.name}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; background: #fff; }
+        .page { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
+
+        /* Header */
+        .report-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 3px solid #1a3c5e; margin-bottom: 20px; }
+        .brand { display: flex; flex-direction: column; gap: 2px; }
+        .brand-name { font-size: 28px; font-weight: 900; color: #1a3c5e; letter-spacing: -1px; }
+        .brand-sub { font-size: 10px; font-weight: 800; color: #f59e0b; letter-spacing: 0.15em; text-transform: uppercase; }
+        .report-meta { text-align: right; font-size: 11px; color: #64748b; line-height: 1.8; }
+        .report-meta strong { color: #1e293b; }
+
+        /* Info strip */
+        .info-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 16px 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .info-item label { display: block; font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+        .info-item span { font-size: 13px; font-weight: 700; color: #1e293b; }
+
+        /* Filter badge */
+        .filter-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+        .filter-label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
+        .filter-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; background: #e0f2fe; color: #0369a1; border-radius: 20px; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        thead tr { background: #1a3c5e; }
+        thead th { padding: 10px 8px; font-size: 9px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; text-align: left; white-space: nowrap; }
+        thead th:first-child { border-radius: 6px 0 0 6px; text-align: center; }
+        thead th:last-child { border-radius: 0 6px 6px 0; }
+        tbody tr:nth-child(even) { background: #f8fafc; }
+
+        /* Totals row */
+        .totals-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 16px 20px; background: #1a3c5e; border-radius: 12px; margin-top: 20px; }
+        .total-item label { display: block; font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+        .total-item span { font-size: 16px; font-weight: 900; }
+        .total-item.dep span { color: #6ee7b7; }
+        .total-item.with span { color: #fca5a5; }
+        .total-item.count span { color: #fff; }
+
+        /* Footer */
+        .report-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: flex-end; }
+        .sig-block { text-align: center; }
+        .sig-line { border-top: 1px solid #1e293b; padding-top: 6px; margin-top: 32px; font-size: 10px; font-weight: 700; color: #64748b; width: 180px; }
+        .footer-note { font-size: 9px; color: #94a3b8; line-height: 1.6; max-width: 320px; }
+
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .page { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <!-- HEADER -->
+    <div class="report-header">
+        <div class="brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">Staff Transaction Report</div>
+        </div>
+        <div class="report-meta">
+            <div><strong>Printed:</strong> ${printDate}</div>
+            <div><strong>Staff:</strong> ${StaffState.name} (${StaffState.staff_id})</div>
+            <div><strong>Branch:</strong> ${StaffState.branch_name}</div>
+            <div><strong>Total Records:</strong> ${res.transactions.length}</div>
+        </div>
+    </div>
+
+    <!-- INFO STRIP -->
+    <div class="info-strip">
+        <div class="info-item">
+            <label>Staff Name</label>
+            <span>${StaffState.name}</span>
+        </div>
+        <div class="info-item">
+            <label>Staff ID</label>
+            <span>${StaffState.staff_id}</span>
+        </div>
+        <div class="info-item">
+            <label>Branch</label>
+            <span>${StaffState.branch_name}</span>
+        </div>
+        <div class="info-item">
+            <label>Report Period</label>
+            <span>${currentFilters.range || 'All Time'}</span>
+        </div>
+    </div>
+
+    <!-- FILTERS APPLIED -->
+    ${filterDesc.length > 0 ? `<div class="filter-strip"><span class="filter-label">Filters:</span>${filterDesc.map(f => `<span class="filter-badge">${f}</span>`).join('')}</div>` : ''}
+
+    <!-- TABLE -->
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:center;">#</th>
+                <th>Date & Time</th>
+                <th>Customer</th>
+                <th>Account No</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Balance After</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${rowsHtml}
+        </tbody>
+    </table>
+
+    <!-- TOTALS -->
+    <div class="totals-row">
+        <div class="total-item dep">
+            <label>Total Deposits</label>
+            <span>${fmt(totalDeposits)}</span>
+        </div>
+        <div class="total-item with">
+            <label>Total Withdrawals</label>
+            <span>${fmt(totalWithdrawals)}</span>
+        </div>
+        <div class="total-item count">
+            <label>Net Cash Flow</label>
+            <span>${totalDeposits >= totalWithdrawals ? '+' : '−'}${fmt(Math.abs(totalDeposits - totalWithdrawals))}</span>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="report-footer">
+        <div class="footer-note">
+            This report was generated from the Finzo Banking System.<br>
+            All transactions listed were processed by ${StaffState.name}.<br>
+            This document is confidential and for internal use only.
+        </div>
+        <div class="sig-block">
+            <div class="sig-line">Authorised Signatory</div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function() { window.print(); };
+<\/script>
+</body>
+</html>`;
+
+                // Open in a new window and print
+                const printWin = window.open('', '_blank', 'width=1100,height=800');
+                printWin.document.write(printHtml);
+                printWin.document.close();
+
+            } catch (err) {
+                btn.prop('disabled', false).html(originalHtml);
+                alert('Failed to load transactions for printing. Please try again.');
+                console.error('Print error:', err);
+            }
+        }
     </script>
 </body>
 </html>

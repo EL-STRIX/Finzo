@@ -125,7 +125,7 @@ try {
         $stmt->execute([$account['id']]);
         $monthly_stats['income_total'] = (float)$stmt->fetchColumn();
 
-        // Expenses: withdrawals + outgoing transfers
+        // Expenses: withdrawals + outgoing transfers (exclude system restore charges — not user-initiated)
         $stmt = $pdo->prepare("
             SELECT COALESCE(SUM(amount), 0) as total
             FROM transactions
@@ -133,6 +133,7 @@ try {
                 AND status = 'completed'
                 AND MONTH(created_at) = MONTH(CURDATE())
                 AND YEAR(created_at) = YEAR(CURDATE())
+                AND description != 'Account Restore Charge'
         ");
         $stmt->execute([$account['id']]);
         $monthly_stats['expense_total'] = (float)$stmt->fetchColumn();

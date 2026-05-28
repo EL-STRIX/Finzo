@@ -56,23 +56,47 @@ try {
     $stmt = $pdo->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()");
     $transfers_today = (float)$stmt->fetchColumn();
 
-    // 12. Pending approvals (under_review)
-    $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'under_review' AND is_deleted = 0");
+    // 12. Pending approvals (pending + under_review)
+    $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0");
     $pending_approvals = (int)$stmt->fetchColumn();
 
     // 13. Locked accounts
     $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0");
     $locked_accounts = (int)$stmt->fetchColumn();
 
-    // 14. Recent users (last 10)
+    // 13a. Total accounts
+    $stmt = $pdo->query("SELECT COUNT(*) FROM accounts");
+    $total_accounts = (int)$stmt->fetchColumn();
+
+    // 13b. Interest credited
+    $stmt = $pdo->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+    $interest_credited = (float)$stmt->fetchColumn();
+
+    // 13c. Soft deleted users
+    $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE is_deleted = 1");
+    $soft_deleted_users = (int)$stmt->fetchColumn();
+
+    // 14. Recent users (last 10) with profile picture
     $stmt = $pdo->query("
-        SELECT id, full_name, email, status, created_at
+        SELECT id, full_name, email, status, created_at, profile_picture
         FROM users
         WHERE is_deleted = 0
         ORDER BY created_at DESC
         LIMIT 10
     ");
     $recent_users = $stmt->fetchAll();
+
+    foreach ($recent_users as &$u) {
+        $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;
+        if (!$profile_pic_url) {
+            $avatar_path = 'uploads/avatars/user_' . $u['id'] . '.jpg';
+            if (file_exists(dirname(__DIR__, 2) . '/' . $avatar_path)) {
+                $profile_pic_url = APP_URL . '/' . $avatar_path;
+            }
+        }
+        $u['profile_picture_url'] = $profile_pic_url;
+    }
+    unset($u);
 
     // 15. Monthly chart data (last 6 months transaction volumes)
     $monthly_chart_data = [];
@@ -139,7 +163,10 @@ try {
             'transfers_today'    => $transfers_today,
             'pending_approvals'  => $pending_approvals,
             'locked_accounts'    => $locked_accounts,
-            'total_balance'      => $total_balance
+            'total_balance'      => $total_balance,
+            'total_accounts'     => $total_accounts,
+            'interest_credited'  => $interest_credited,
+            'soft_deleted_users' => $soft_deleted_users
         ],
         'recent_users'       => $recent_users,
         'monthly_chart_data' => $monthly_chart_data

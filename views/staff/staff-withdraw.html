@@ -193,7 +193,7 @@
                     <div class="mt-6 admin-card p-5 sm:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                             <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl sm:text-2xl font-black">--</div>
+                                <div id="res-initials" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl sm:text-2xl font-black">--</div>
                                 <div>
                                     <h4 class="text-xl sm:text-2xl font-black font-headline text-primary dark:text-blue-500" id="res-name">Loading...</h4>
                                     <div class="text-slate-500 font-bold text-xs sm:text-sm" id="res-acc">FNZ...</div>
@@ -320,6 +320,10 @@
                                     <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Amount to Debit</div>
                                     <div class="text-2xl font-black text-red-600" id="confirm-amt">₹0.00</div>
                                 </div>
+                                <div class="border-b border-slate-100 dark:border-white/1 pb-4">
+                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</div>
+                                    <div class="font-bold dark:text-blue-500" id="current-date-display">--</div>
+                                </div>
                             </div>
 
                             <div class="space-y-6">
@@ -407,7 +411,7 @@
                     $('#res-name').text(res.account.name);
                     $('#res-acc').text(res.account.account_no);
                     const init = res.account.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-                    $('#account-success .rounded-full').first().text(init);
+                    $('#res-initials').text(init);
                     
                     $('.account-type-val').text(res.account.account_type);
                     $('.current-balance-val').text(formatINR(currentBalance));
@@ -447,14 +451,20 @@
         
         window.goToStep3 = function() { 
             const amt = parseFloat($('#with-amount').val()) || 0;
-            if (amt <= 0 || amt > currentBalance || amt > currentLimit) return;
+            // Staff withdrawals are not capped by the user daily limit — only check balance
+            if (amt <= 0) {
+                alert('Please enter a valid withdrawal amount.');
+                return;
+            }
+            if (amt > currentBalance) {
+                alert('Withdrawal amount exceeds available balance of ' + formatINR(currentBalance));
+                return;
+            }
             $('#section-2').addClass('hidden'); 
             $('#section-3').removeClass('hidden'); 
             updateSteps(3); 
             $('#confirm-amt').text(formatINR(amt));
-            
             $('#confirm-customer-name').text(verifiedName);
-            
             const now = new Date();
             $('#current-date-display').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
         };
@@ -496,10 +506,10 @@
             try {
                 const res = await api.post('/staff/withdrawal.php', reqData);
                 if (res.success) {
-                    window.location.href = res.redirect || 'staff-receipt.html?id=' + res.transaction_id;
+                    window.location.href = 'staff-receipt.html?id=' + res.transaction_id;
                 } else {
                     alert('Error: ' + res.message);
-                    btn.prop('disabled', false).html('Confirm Withdrawal');
+                    btn.prop('disabled', false).html('Confirm Withdrawal ✓');
                 }
             } catch (err) {
                 alert('Connection error. Please try again.');

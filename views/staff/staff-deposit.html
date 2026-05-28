@@ -305,11 +305,11 @@
                                     </div>
                                     <div class="flex justify-between items-center text-sm opacity-60">
                                         <span class="text-white font-medium">Balance Before</span>
-                                        <span class="text-white font-black">₹5,000.00</span>
+                                        <span class="text-white font-black" id="sum-before">₹0.00</span>
                                     </div>
                                     <div class="flex justify-between items-center text-sm">
                                         <span class="text-white font-medium">Balance After</span>
-                                        <span class="text-white font-black" id="sum-after">₹5,000.00</span>
+                                        <span class="text-white font-black" id="sum-after">₹0.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -425,6 +425,7 @@
 
         let verifiedAccountNo = '';
         let verifiedName = '';
+        let verifiedBalance = 0;
         
         $('#find-btn').on('click', async function() {
             const acc = $('#account-lookup').val().trim();
@@ -443,6 +444,7 @@
                     
                     verifiedAccountNo = res.account.account_no;
                     verifiedName      = res.account.name;
+                    verifiedBalance   = parseFloat(res.account.balance) || 0;
                     
                     $('#res-name').text(res.account.name);
                     $('#res-acc').text(res.account.account_no);
@@ -482,6 +484,15 @@
         function goToStep2() {
             $('#section-1, #section-3').addClass('hidden');
             $('#section-2').removeClass('hidden');
+            
+            // Populate original details in Step 2 Live Summary
+            $('#sum-name').text(verifiedName);
+            $('#sum-acc').text(verifiedAccountNo);
+            $('#sum-before').text(formatINR(verifiedBalance));
+            
+            const amt = parseFloat($('#dep-amount').val()) || 0;
+            $('#sum-after').text(formatINR(verifiedBalance + amt));
+            
             updateSteps(2);
         }
 
@@ -493,6 +504,8 @@
             $('#section-3').removeClass('hidden');
             
             // Sync summary to confirmation
+            $('#confirm-name').text(verifiedName);
+            $('#confirm-acc').text(verifiedAccountNo);
             $('#confirm-amt').text(formatINR(amt));
             $('#confirm-type').text($('#dep-type').val());
             
@@ -507,7 +520,7 @@
             const type = $('#dep-type').val();
             
             $('#sum-amt').text(formatINR(val));
-            $('#sum-after').text('₹---');
+            $('#sum-after').text(formatINR(verifiedBalance + val));
             $('#sum-type').text(type);
             
             if (val > 0) {
@@ -524,14 +537,14 @@
             const reqData = {
                 account_no: verifiedAccountNo,
                 amount: parseFloat($('#dep-amount').val()),
-                reference_note: $('#dep-notes').val().trim() || 'Cash Deposit'
+                reference_note: ($('#dep-ref').val() || '').trim() || 'Cash Deposit'
             };
             
             try {
                 const res = await api.post('/staff/deposit.php', reqData);
                 
                 if (res.success) {
-                    window.location.href = res.redirect || 'staff-receipt.html?id=' + res.transaction_id;
+                    window.location.href = 'staff-receipt.html?id=' + res.transaction_id;
                 } else {
                     alert('Error: ' + res.message);
                     btn.prop('disabled', false).html('Confirm Deposit ✓');

@@ -136,13 +136,24 @@ try {
                 if ($account && $account['balance'] > 500) {
                     $deduction_amount = $account['balance'] - 500;
                     $txn_id = 'TXN' . strtoupper(uniqid());
+                    // This is a system-generated charge — excluded from daily limit calculations
                     $stmt_txn = $pdo->prepare("INSERT INTO transactions (txn_id, from_account_id, type, amount, balance_after, description, reference_note, status, created_at) VALUES (?, ?, 'withdrawal', ?, 500, 'Account Restore Charge', 'Account recovered from soft-delete', 'completed', NOW())");
                     $stmt_txn->execute([$txn_id, $account['id'], $deduction_amount]);
+
+                    // Notify user of the balance adjustment
+                    send_notification($pdo, $user_id, 'system', 'Account Restored – Balance Adjusted',
+                        'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
+                } else {
+                    // Balance is at or below 500 — just restore, no deduction needed
+                    send_notification($pdo, $user_id, 'system', 'Account Restored',
+                        'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
                 }
 
-                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', balance = 500, updated_at = NOW() WHERE user_id = ?");
+                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', balance = LEAST(balance, 500), updated_at = NOW() WHERE user_id = ?");
             } else {
                 $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
+                send_notification($pdo, $user_id, 'system', 'Account Restored',
+                    'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
             }
             $stmt->execute([$user['customer_id']]);
 
@@ -151,6 +162,7 @@ try {
 
             json_response(['success' => true, 'message' => 'User recovered successfully']);
             break;
+
 
         case 'hard_delete':
             check_admin_permission($pdo, $admin_id, 'soft_delete_user');

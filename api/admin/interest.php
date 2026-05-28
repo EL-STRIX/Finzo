@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.id
+            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 1
         ");
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.id
+            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 10
         ");
@@ -145,17 +145,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        // Fetch display admin_id (e.g. ADM001) from admin_users to prevent foreign key constraint violation
+        $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
+        $stmt->execute([$admin_id]);
+        $admin_display_id = $stmt->fetchColumn();
+
+        if (!$admin_display_id) {
+            json_response(['success' => false, 'message' => 'Admin account not found'], 404);
+        }
+
         // Insert new rate record
         $stmt = $pdo->prepare("
             INSERT INTO interest_rates (rate, apply_from_type, apply_from_date, changed_by_admin_id, created_at)
             VALUES (?, ?, ?, ?, NOW())
         ");
-        $stmt->execute([$new_rate, $apply_from, $apply_date, $admin_id]);
+        $stmt->execute([$new_rate, $apply_from, $apply_date, $admin_display_id]);
 
-        // If apply immediately, update all active accounts
+        // If apply immediately, update all active accounts and credit the interest!
         if ($apply_from === 'Immediately') {
-            $stmt = $pdo->prepare("UPDATE accounts SET interest_rate = ?, updated_at = NOW() WHERE status = 'active'");
+            // 1. Update the interest rate for all active savings accounts
+            $stmt = $pdo->prepare("UPDATE accounts SET interest_rate = ?, updated_at = NOW() WHERE status = 'active' AND account_type = 'savings'");
             $stmt->execute([$new_rate]);
+
+            // 2. Fetch all active savings accounts with a balance > 0 to credit interest
+            $stmt = $pdo->query("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0");
+            $savings_accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($savings_accounts as $acc) {
+                $balance = (float)$acc['balance'];
+                // Interest = Balance * (Rate / 100) / 12 months
+                $interest_amount = round($balance * ($new_rate / 100) / 12, 2);
+
+                if ($interest_amount >= 0.01) {
+                    $new_balance = $balance + $interest_amount;
+                    
+                    // Generate unique transaction ID
+                    $txn_id = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
+
+                    // Insert transaction record
+                    $txStmt = $pdo->prepare("
+                        INSERT INTO transactions (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, reference_note, status, created_at)
+                        VALUES (?, NULL, ?, 'interest_credit', ?, ?, 'Savings Interest Credit', ?, 'completed', NOW())
+                    ");
+                    $txStmt->execute([
+                        $txn_id,
+                        $acc['id'],
+                        $interest_amount,
+                        $new_balance,
+                        "Interest credited at " . number_format($new_rate, 2) . "% p.a."
+                    ]);
+
+                    // Update the account balance
+                    $upStmt = $pdo->prepare("UPDATE accounts SET balance = ?, updated_at = NOW() WHERE id = ?");
+                    $upStmt->execute([$new_balance, $acc['id']]);
+
+                    // Send notification to the user
+                    $notifStmt = $pdo->prepare("
+                        INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
+                        VALUES (?, 'transaction', 'Interest Credited', ?, 0, NOW())
+                    ");
+                    $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
+                    $notifStmt->execute([$acc['user_id'], $notifMessage]);
+                }
+            }
         }
 
         // Audit log

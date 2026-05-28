@@ -32,11 +32,13 @@ try {
         json_response(['success' => true, 'found' => false]);
     }
 
-    // Calculate daily limit used
+    // Calculate daily limit used (exclude system restore charges — they are not user-initiated)
     $stmt = $pdo->prepare("
         SELECT COALESCE(SUM(amount), 0) FROM transactions 
         WHERE from_account_id = (SELECT id FROM accounts WHERE account_no = ?)
-        AND DATE(created_at) = CURDATE() AND status != 'failed'
+        AND DATE(created_at) = CURDATE()
+        AND status != 'failed'
+        AND description != 'Account Restore Charge'
     ");
     $stmt->execute([$account_no]);
     $used_today = $stmt->fetchColumn();

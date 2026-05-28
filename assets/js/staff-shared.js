@@ -99,6 +99,13 @@ async function fetchStaffSession() {
             StaffState.role = data.staff.role;
             StaffState.branch_name = data.staff.branch_name;
             StaffState.loaded = true;
+
+            // Store CSRF token globally so api.js POST requests can attach it
+            if (data.csrf_token) {
+                window.csrfToken = data.csrf_token;
+                const meta = document.querySelector('meta[name="csrf-token"]');
+                if (meta) meta.setAttribute('content', data.csrf_token);
+            }
             
             // Populate basic DOM if present
             $('.staff-name-display').text(StaffState.name);
@@ -113,6 +120,7 @@ async function fetchStaffSession() {
             
             return data;
         }
+
     } catch(e) {
         console.warn('Failed to load staff session:', e);
     }
