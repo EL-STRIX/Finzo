@@ -436,7 +436,7 @@
             showEditModal(branch.id);
         };
         
-        document.getElementById('view-btn-staff').onclick = () => window.showBranchStaff(branch.name);
+        document.getElementById('view-btn-staff').onclick = () => window.showBranchStaff(branch.id, branch.name);
 
         document.getElementById('viewBranchModal').classList.remove('hidden');
         document.getElementById('viewBranchModal').classList.add('flex');
@@ -482,8 +482,73 @@
         document.getElementById('confirmModal').classList.add('flex');
     }
 
-    window.showBranchStaff = function(branchName) {
-        window.location.href = 'admin-staff.html?search=' + encodeURIComponent(branchName);
+    window.showBranchStaff = async function(branchId, branchName) {
+        document.getElementById('staff-modal-title').textContent = branchName + ' Staff';
+        document.getElementById('staff-modal-subtitle').textContent = 'Loading staff members...';
+        
+        document.getElementById('viewBranchModal').classList.add('hidden');
+        document.getElementById('viewBranchModal').classList.remove('flex');
+        
+        document.getElementById('branchStaffModal').classList.remove('hidden');
+        document.getElementById('branchStaffModal').classList.add('flex');
+        
+        const tbody = document.getElementById('branch-staff-table-body');
+        const noStaff = document.getElementById('no-staff-error');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 opacity-50">Loading...</td></tr>';
+        if (noStaff) noStaff.classList.add('hidden');
+        
+        try {
+            const response = await window.api.get('/admin/staff.php?branch_id=' + branchId);
+            if (response.success) {
+                const staff = response.staff || [];
+                document.getElementById('staff-modal-subtitle').textContent = staff.length + ' STAFF MEMBER(S) FOUND';
+                
+                if (staff.length === 0) {
+                    if (tbody) tbody.innerHTML = '';
+                    if (noStaff) noStaff.classList.remove('hidden');
+                } else {
+                    if (noStaff) noStaff.classList.add('hidden');
+                    let html = '';
+                    staff.forEach(s => {
+                        const statusStyle = s.status === 'active' ? 'badge-success' : 'badge-error';
+                        let avatarHtml = `<div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 font-bold text-xs flex items-center justify-center">${s.initials}</div>`;
+                        if (s.profile_photo_url) {
+                            avatarHtml = `<img src="${s.profile_photo_url}" class="w-8 h-8 rounded-full object-cover">`;
+                        }
+                        
+                        html += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-50 dark:border-white/5">
+                            <td class="px-6 py-4 font-mono text-xs opacity-60 font-bold">${s.staff_id}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    ${avatarHtml}
+                                    <div>
+                                        <div class="text-sm font-bold">${s.full_name}</div>
+                                        <div class="text-[10px] opacity-60 font-bold uppercase tracking-widest">${s.designation || 'Staff'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold">${s.personal_email}</div>
+                                <div class="text-xs opacity-60">${s.phone || 'N/A'}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge ${statusStyle} !text-[9px] !px-2">${(s.status || '').toUpperCase()}</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="admin-staff-detail.html?id=${s.id}" class="admin-btn-secondary !px-4 !py-1.5 !text-[10px]" target="_blank">View Profile</a>
+                            </td>
+                        </tr>
+                        `;
+                    });
+                    if (tbody) tbody.innerHTML = html;
+                }
+            } else {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-red-500 font-bold">Failed to load staff</td></tr>';
+            }
+        } catch (e) {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-red-500 font-bold">Error loading staff</td></tr>';
+        }
     };
 
     // Initialize
