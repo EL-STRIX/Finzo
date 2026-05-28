@@ -206,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('addr-city', address.city);
             setText('addr-state', address.state);
             setText('addr-pincode', address.pincode);
+            setText('addr-country', address.country || 'India');
 
             // ─── SYSTEM AUDIT ────────────────────────
             setText('sys-last-login', staff.last_login_at ? timeAgo(staff.last_login_at) : 'Never');
@@ -213,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('sys-joining-date', fmtDate(staff.date_of_joining));
             setText('sys-created-by', staff.created_by_name || staff.created_by || 'System');
             setText('sys-staff-id', staff.staff_id);
+            setText('sys-total-shifts', String(totalShifts || 0));
 
             // ─── DOCUMENTS ──────────────────────────
             var doc = (documents && documents.length > 0) ? documents[0] : null;
