@@ -9,7 +9,7 @@
 
     // DOM Elements
     const tableBody = document.getElementById('deleted-table-body');
-    const tableContainer = document.querySelector('.du-table')?.parentElement;
+    const tableContainer = tableBody ? tableBody.closest('.overflow-x-auto') : null;
     const emptyState = document.getElementById('empty-state');
     const filterSearch = document.getElementById('filter-search');
     const filterDateFrom = document.getElementById('filter-date-from');
