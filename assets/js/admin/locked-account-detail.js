@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tbody) return;
 
         // Filter to login-related events only
-        const loginActions = ['login_failed', 'login_success', 'account_locked', 'account_unlocked', 'password_reset'];
+        const loginActions = ['login_failed', 'login_success', 'user_login', 'account_locked', 'account_unlocked', 'password_reset'];
         const filtered = (logs || []).filter(log => {
             const action = (log.action || '').toLowerCase();
             return loginActions.some(a => action.includes(a));
@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const statusMap = {
+            'user_login': { label: 'Login Success', icon: 'check_circle', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
             'login_success': { label: 'Login Success', icon: 'check_circle', color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-500/10' },
             'login_failed': { label: 'Login Failed', icon: 'cancel', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
             'account_locked': { label: 'Account Locked', icon: 'lock', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' },
