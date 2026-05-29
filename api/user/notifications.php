@@ -20,7 +20,7 @@ $user_id = $_SESSION['user_customer_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+        $per_page = min(50, max(1, intval($_GET['per_page'] ?? 20)));
         $offset   = ($page - 1) * $per_page;
 
         // Count total
