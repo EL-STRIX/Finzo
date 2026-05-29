@@ -204,13 +204,13 @@ try {
     // =====================================================
 
     // Notify sender
-    send_notification($pdo, $source['customer_id'], 'transaction',
+    send_notification($pdo, $source['owner_user_id'], 'transaction',
         'Transfer Successful',
         "You transferred " . format_currency($amount) . " to {$dest['full_name']} ({$to_account_no}). Transaction ID: {$txn_id}"
     );
 
     // Notify receiver
-    send_notification($pdo, $dest['dest_user_id'], 'transaction',
+    send_notification($pdo, $dest['owner_user_id'], 'transaction',
         'Money Received',
         "You received " . format_currency($amount) . " from {$source['full_name']} ({$source['account_no']}). Transaction ID: {$txn_id}"
     );
