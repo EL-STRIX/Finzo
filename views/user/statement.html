@@ -137,13 +137,14 @@
   } else {
     const d = new Date();
     d.setDate(d.getDate() - 30);
-    document.getElementById('stmt-from').value = d.toISOString().split('T')[0];
+    document.getElementById('stmt-from').value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
   
   if (toParam) {
     document.getElementById('stmt-to').value = toParam;
   } else {
-    document.getElementById('stmt-to').value = new Date().toISOString().split('T')[0];
+    const d = new Date();
+    document.getElementById('stmt-to').value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
   await generateStatement();
