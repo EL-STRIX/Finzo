@@ -95,6 +95,7 @@ try {
             t.type,
             t.amount,
             t.balance_after,
+            t.dest_balance_after,
             t.description,
             t.reference_note,
             t.status,
@@ -127,6 +128,9 @@ try {
             $txn['direction'] = 'debit';
         } elseif ($txn['type'] === 'transfer') {
             $txn['direction'] = ($txn['to_account_id'] == $account_id) ? 'credit' : 'debit';
+            if ($txn['to_account_id'] == $account_id && $txn['dest_balance_after'] !== null) {
+                $txn['balance_after'] = $txn['dest_balance_after'];
+            }
         }
     }
     unset($txn);

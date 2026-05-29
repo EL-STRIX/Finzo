@@ -218,6 +218,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     type ENUM('deposit', 'withdrawal', 'transfer', 'interest_credit') NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
     balance_after DECIMAL(15, 2) NULL DEFAULT NULL,
+    dest_balance_after DECIMAL(15, 2) NULL DEFAULT NULL,
     description VARCHAR(255) NULL DEFAULT NULL,
     reference_note VARCHAR(255) NULL DEFAULT NULL,
     status ENUM('pending', 'completed', 'failed', 'reversed') NOT NULL DEFAULT 'pending',

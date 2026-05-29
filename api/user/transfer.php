@@ -186,8 +186,8 @@ try {
     // Insert transaction record
     $stmt = $pdo->prepare("
         INSERT INTO transactions
-            (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, status, created_at)
-        VALUES (?, ?, ?, 'transfer', ?, ?, ?, 'completed', NOW())
+            (txn_id, from_account_id, to_account_id, type, amount, balance_after, dest_balance_after, description, status, created_at)
+        VALUES (?, ?, ?, 'transfer', ?, ?, ?, ?, 'completed', NOW())
     ");
     $stmt->execute([
         $txn_id,
@@ -195,6 +195,7 @@ try {
         $dest['id'],
         $amount,
         $new_source_balance,
+        $new_dest_balance,
         $description,
     ]);
 
