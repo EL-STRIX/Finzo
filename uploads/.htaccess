@@ -1,0 +1,12 @@
+# Disable PHP execution in uploads directory
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phps)$">
+    Require all denied
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+
+# Only allow certain image/document extensions
+<FilesMatch "\.(?i:jpg|jpeg|png|gif|webp|pdf)$">
+    Require all granted
+</FilesMatch>
