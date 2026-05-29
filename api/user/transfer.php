@@ -156,7 +156,8 @@ try {
     $stmt->execute([$source['id']]);
     $today_total = (float)$stmt->fetchColumn();
 
-    if (($today_total + $amount) > ($daily_limit = get_setting($pdo, 'daily_transfer_limit', 10000))) {
+    $daily_limit = $source['daily_limit'];
+    if (($today_total + $amount) > $daily_limit) {
         $pdo->rollBack();
         $remaining = max(0, $daily_limit - $today_total);
         json_response([
