@@ -8,7 +8,23 @@
 <link rel="stylesheet" href="../../assets/css/user.css"/>
 <link rel="stylesheet" href="../../assets/css/user-panel.css"/>
 <style>
-@media print{.sidebar,.navbar,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important}.print-card{box-shadow:none!important;border:1px solid #e2e8f0!important}}
+@media print{
+  .sidebar, .navbar, .no-print, .page-header { display:none!important; }
+  .main { margin:0!important; padding:0!important; }
+  body { background:#fff!important; color:#000!important; margin:0; }
+  * { color:#000!important; background:transparent!important; box-shadow:none!important; }
+  .card, .print-card { box-shadow:none!important; border:none!important; margin:0!important; padding:0!important; width:100%!important; max-width:100%!important; }
+  .page-content { margin:0!important; max-width:100%!important; }
+  .receipt-row { border-bottom:1px solid #333!important; }
+  .receipt-section { border:1px solid #333!important; background:#fff!important; }
+  .badge { border:none!important; padding:0!important; font-weight:bold!important; font-size:12px!important; }
+  .skeleton, #toast-container, .toast { display:none!important; }
+  .form-grid-2 { display:flex; gap:16px; margin-bottom:16px; }
+  .form-grid-2 > div { flex:1; }
+  .receipt-amount-section { border:1px solid #333!important; background:#fff!important; }
+}
+.receipt-section { background:var(--bg-input); border-radius:var(--radius-md); padding:16px; margin-bottom:16px; }
+.receipt-amount-section { background:rgba(8,145,178,0.06); border:1px solid rgba(8,145,178,0.15); border-radius:var(--radius-md); padding:16px; margin-bottom:16px; text-align:center; }
 .receipt-divider{height:1px;background:var(--border);margin:16px 0}
 .receipt-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
 .receipt-row:last-child{border-bottom:none}
@@ -64,7 +80,7 @@
 </div>
 
 <!-- Receipt details -->
-<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:16px;margin-bottom:16px">
+<div class="receipt-section">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px">Transaction Details</div>
 <div class="receipt-row"><span class="r-label">Transaction ID</span><span class="r-value td-mono" id="rcpt-txn-id"><span class="skeleton" style="width: 120px; height: 13px;"></span></span></div>
 <div class="receipt-row"><span class="r-label">Date & Time</span><span class="r-value" id="rcpt-datetime"><span class="skeleton" style="width: 180px; height: 13px;"></span></span></div>
@@ -73,13 +89,13 @@
 </div>
 
 <div class="form-grid form-grid-2" style="gap:12px;margin-bottom:16px">
-<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
+<div class="receipt-section" style="padding:14px; margin-bottom:0">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">From</div>
 <div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-from-name"><span class="skeleton" style="width: 120px; height: 14px;"></span></div>
 <div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-from-acc"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
 <div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Savings Account</div>
 </div>
-<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px">
+<div class="receipt-section" style="padding:14px; margin-bottom:0">
 <div style="font-size:10px;font-weight:800;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">To</div>
 <div style="font-size:13px;font-weight:700;color:var(--text-primary)" id="rcpt-to-name"><span class="skeleton" style="width: 120px; height: 14px;"></span></div>
 <div style="font-size:11px;font-family:monospace;color:var(--text-secondary);margin-top:4px" id="rcpt-to-acc"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
@@ -87,12 +103,12 @@
 </div>
 </div>
 
-<div style="background:rgba(8,145,178,0.06);border:1px solid rgba(8,145,178,0.15);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;text-align:center">
+<div class="receipt-amount-section">
 <div style="font-size:10px;font-weight:800;color:var(--primary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">Amount Transferred</div>
 <div style="font-size:36px;font-weight:800;color:var(--text-primary)" id="rcpt-amount"><span class="skeleton" style="width: 140px; height: 40px;"></span></div>
 </div>
 
-<div style="background:var(--bg-input);border-radius:var(--radius-md);padding:14px;margin-bottom:16px">
+<div class="receipt-section" style="padding:14px">
 <div class="receipt-row"><span class="r-label">Amount</span><span class="r-value" id="rcpt-amount2">₹500.00</span></div>
 <div class="receipt-row"><span class="r-label">Transfer Charges</span><span class="r-value text-success">₹0.00 (Free)</span></div>
 <div class="receipt-row" style="border-bottom:none"><span style="font-size:13px;font-weight:800;color:var(--text-primary)">Balance After</span><span style="font-size:14px;font-weight:800;color:#10b981" id="rcpt-balance-after">₹0.00</span></div>
