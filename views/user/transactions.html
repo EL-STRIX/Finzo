@@ -143,7 +143,7 @@ function renderTable() {
     if (activeFilter === 'credit' && t.direction !== 'credit') return false;
     if (activeFilter === 'debit' && t.direction !== 'debit') return false;
     if (activeFilter === 'transfer' && t.rawType !== 'transfer') return false;
-    if (search && !t.desc.toLowerCase().includes(search) && !t.id.toLowerCase().includes(search)) return false;
+    if (search && !String(t.desc).toLowerCase().includes(search) && !String(t.id).toLowerCase().includes(search)) return false;
     return true;
   });
   const total = filtered.length;
