@@ -78,8 +78,8 @@
     <div class="page-header animate-in" style="display:flex; align-items:center; gap:20px">
       <a href="accounts.html" class="btn btn-ghost btn-icon-only"><span class="material-symbols-outlined" style="font-size:22px">arrow_back</span></a>
       <div>
-        <div class="page-eyebrow">Portfolio Analytics</div>
-        <h1 class="page-title">Asset Dossier</h1>
+        <div class="page-eyebrow">Banking</div>
+        <h1 class="page-title">Account Details</h1>
       </div>
     </div>
 
@@ -91,28 +91,13 @@
             <div>
               <div style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px" id="acc-type-label">Savings Account</div>
               <div style="font-size:32px; font-weight:800; letter-spacing:-1px" id="acc-balance-big">₹0.00</div>
-              <div style="font-size:10px; opacity:0.5; font-weight:700; margin-top:4px">CURRENT PORTFOLIO VALUE</div>
+              <div style="font-size:10px; opacity:0.5; font-weight:700; margin-top:4px">AVAILABLE BALANCE</div>
             </div>
-            <span class="badge badge-green" style="padding:4px 12px; font-size:10px; letter-spacing:0.05em">SECURED</span>
+            <span class="badge badge-green" style="padding:4px 12px; font-size:10px; letter-spacing:0.05em">ACTIVE</span>
           </div>
 
           <div style="font-size:16px; font-weight:700; font-family:'Courier New', monospace; letter-spacing:0.1em; color:rgba(255,255,255,0.8)" id="acc-no-big">FNZ — — —</div>
-          <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:2px">ACCOUNT REFERENCE IDENTIFIER</div>
-        </div>
-
-        <div class="card card-p mb-6">
-          <div class="card-title mb-4">Operations Hub</div>
-          <div style="display:flex; flex-direction:column; gap:10px">
-            <a href="transfer.html" class="btn btn-primary btn-full">
-              <span class="material-symbols-outlined">send</span> Initialize Transfer
-            </a>
-            <a href="statement.html" class="btn btn-outline btn-full">
-              <span class="material-symbols-outlined">description</span> Export Statement
-            </a>
-            <a href="beneficiary.html" class="btn btn-ghost btn-full">
-              <span class="material-symbols-outlined">group</span> Beneficiary Registry
-            </a>
-          </div>
+          <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:2px">ACCOUNT NUMBER</div>
         </div>
       </div>
 
@@ -122,8 +107,8 @@
         <div class="limit-control-card mb-8">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px">
             <div>
-              <div class="card-title" style="margin-bottom:2px">Daily Threshold Control</div>
-              <div style="font-size:12px; color:var(--text-secondary)">Manage your daily consolidated exposure</div>
+              <div class="card-title" style="margin-bottom:2px">Daily Transfer Limit</div>
+              <div style="font-size:12px; color:var(--text-secondary)">Manage your daily transaction limit</div>
             </div>
             <div style="text-align:right">
               <div style="font-size:11px; font-weight:800; color:var(--text-secondary); text-transform:uppercase">Used Today</div>
@@ -141,7 +126,7 @@
           </div>
 
           <div class="form-group" style="padding-top:20px; border-top:1px dashed var(--border)">
-            <label class="form-label" style="font-size:10px; opacity:0.7">Configure New Daily Threshold</label>
+            <label class="form-label" style="font-size:10px; opacity:0.7">Configure New Limit</label>
             <div style="display:flex; gap:12px">
               <div class="input-wrap" style="flex:1">
                 <span class="input-icon material-symbols-outlined" style="font-size:18px">currency_rupee</span>
@@ -155,7 +140,7 @@
         <!-- Professional Transaction Ledger -->
         <div class="ledger-container">
           <div class="ledger-header">
-            <div class="card-title" style="font-size:15px">Consolidated Activity Ledger</div>
+            <div class="card-title" style="font-size:15px">Recent Transactions</div>
             <a href="transactions.html" class="btn btn-ghost btn-sm" style="font-size:11px; font-weight:800">VIEW FULL HISTORY <span class="material-symbols-outlined" style="font-size:14px; margin-left:4px">open_in_new</span></a>
           </div>
           <div id="mini-txns">
@@ -235,7 +220,7 @@
   // Load recent transactions for mini-ledger
   (async function loadMiniLedger() {
     try {
-      const res = await fetch('../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/transactions.php?limit=3', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {
