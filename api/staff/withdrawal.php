@@ -48,7 +48,7 @@ try {
 
     // Find account with row lock
     $stmt = $pdo->prepare("
-        SELECT a.id, a.account_no, a.balance, a.status, u.id as user_id, u.full_name
+        SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
         FROM accounts a
         JOIN users u ON a.user_id = u.customer_id
         WHERE a.account_no = ?
@@ -76,6 +76,13 @@ try {
         ], 422);
     }
 
+    // Check maximum withdrawal amount
+    $max_withdrawal = get_setting($pdo, 'max_withdrawal_amount', 50000);
+    if ($amount > $max_withdrawal) {
+        $pdo->rollBack();
+        json_response(['success' => false, 'message' => 'Maximum withdrawal amount is ' . format_currency($max_withdrawal)], 422);
+    }
+
     // Debit the account
     $new_balance = (float)$account['balance'] - $amount;
     $stmt = $pdo->prepare("UPDATE accounts SET balance = balance - ?, updated_at = NOW() WHERE id = ?");
@@ -100,7 +107,7 @@ try {
     ]);
 
     // Create notification for account owner
-    send_notification($pdo, $account['user_id'], 'transaction',
+    send_notification($pdo, $account['customer_id'], 'transaction',
         'Cash Withdrawal Processed',
         'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
     );

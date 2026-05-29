@@ -403,7 +403,7 @@ try {
     // Send in-app notification: Application Submitted
     send_notification(
         $pdo,
-        $user_id,
+        $customer_id,
         'system',
         'Application Submitted for Review',
         'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours. You can track the status from your dashboard.'

@@ -60,7 +60,7 @@ if (!empty($errors)) {
 // =====================================================
 
 try {
-    $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT customer_id, password_hash FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
 
@@ -77,7 +77,7 @@ try {
     $stmt->execute([$new_hash, $user_id]);
 
     // Send security notification
-    send_notification($pdo, $user_id, 'security',
+    send_notification($pdo, $user['customer_id'], 'security',
         'Password Changed',
         'Your account password was changed successfully. If you did not make this change, please contact support immediately.'
     );

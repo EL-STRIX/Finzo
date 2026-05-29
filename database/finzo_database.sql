@@ -409,9 +409,9 @@ CREATE TABLE IF NOT EXISTS staff_shifts (
 -- =====================================================
 
 -- IMPORTANT: Change this password immediately after first login.
--- Seed Admin User: admin@finzo.com / Admin@123
+-- Seed Admin User: admin@finzo.com / Admin@Finzo2026!
 INSERT INTO admin_users (admin_id, full_name, email, password_hash, admin_role, access_level, status)
-VALUES ('ADM001', 'Super Admin', 'admin@finzo.com', '$2y$12$rp314gQxjv0kacvc91jhNeV/x6rRY3htLdP8U0z1ztsK8CyVwkkw.', 'super_admin', 'full', 'active');
+VALUES ('ADM001', 'Super Admin', 'admin@finzo.com', '$2y$12$1.GA7mKfOstMarLAKnxFQ.HI2BydufGS6IJ7Jo1uYZgtImsfxtTU6', 'super_admin', 'full', 'active');
 
 INSERT INTO branches (name, branch_code, state, type, status) VALUES
 ('Barasat HQ', 'FNZ-WB-001', 'West Bengal', 'system', 'active'),

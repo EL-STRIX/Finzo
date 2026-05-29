@@ -97,19 +97,19 @@ if ($stmt->fetch()) {
 try {
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-    $stmt = $pdo->prepare("
-        INSERT INTO users (full_name, email, phone, password_hash, status, created_at)
-        VALUES (?, ?, ?, ?, 'pending', NOW())
-    ");
-    $stmt->execute([$full_name, $email, $phone, $password_hash]);
+    $pdo->beginTransaction();
 
-    $user_id = $pdo->lastInsertId();
-
-    $seq_stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(customer_id, 9) AS UNSIGNED)) as max_id FROM users WHERE customer_id LIKE 'FNZ-USR-%'");
+    $seq_stmt = $pdo->query("SELECT MAX(CAST(SUBSTRING(customer_id, 9) AS UNSIGNED)) as max_id FROM users WHERE customer_id LIKE 'FNZ-USR-%' FOR UPDATE");
     $max_seq = $seq_stmt->fetchColumn() ?: 0;
     $customer_id = 'FNZ-USR-' . str_pad($max_seq + 1, 3, '0', STR_PAD_LEFT);
-    $updateStmt = $pdo->prepare("UPDATE users SET customer_id = ? WHERE id = ?");
-    $updateStmt->execute([$customer_id, $user_id]);
+
+    $stmt = $pdo->prepare("
+        INSERT INTO users (customer_id, full_name, email, phone, password_hash, status, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', NOW())
+    ");
+    $stmt->execute([$customer_id, $full_name, $email, $phone, $password_hash]);
+
+    $user_id = $pdo->lastInsertId();
 
     // Start session for the new user
     $_SESSION['user_id']     = (int)$user_id;
@@ -137,6 +137,8 @@ try {
     $profileMsg = "Please complete your identity verification to unlock full banking services.";
     $stmt->execute([$customer_id, $profileMsg]);
 
+    $pdo->commit();
+
     // Build redirect relative to project root (consistent with login.php)
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
     $redirect = $base . '/views/user/dashboard.html';
@@ -148,6 +150,9 @@ try {
     ], 201);
 
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     error_log("Registration error: " . $e->getMessage());
     json_response(['success' => false, 'message' => 'Registration failed. Please try again.'], 500);
 }

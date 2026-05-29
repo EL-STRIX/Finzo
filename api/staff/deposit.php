@@ -48,7 +48,7 @@ try {
 
     // Find account with row lock
     $stmt = $pdo->prepare("
-        SELECT a.id, a.account_no, a.balance, a.status, u.id as user_id, u.full_name
+        SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
         FROM accounts a
         JOIN users u ON a.user_id = u.customer_id
         WHERE a.account_no = ?
@@ -91,7 +91,7 @@ try {
     ]);
 
     // Create notification for account owner
-    send_notification($pdo, $account['user_id'], 'transaction',
+    send_notification($pdo, $account['customer_id'], 'transaction',
         'Cash Deposit Received',
         'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
     );

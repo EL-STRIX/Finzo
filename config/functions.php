@@ -95,8 +95,8 @@ function generate_account_number($pdo) {
     $year = date('Y');
     $prefix = ACCOUNT_NUMBER_PREFIX . $year;
 
-    // Get the max existing account number for this year
-    $stmt = $pdo->prepare("SELECT account_no FROM accounts WHERE account_no LIKE ? ORDER BY account_no DESC LIMIT 1");
+    // Get the max existing account number for this year and lock it to prevent race conditions
+    $stmt = $pdo->prepare("SELECT account_no FROM accounts WHERE account_no LIKE ? ORDER BY account_no DESC LIMIT 1 FOR UPDATE");
     $stmt->execute([$prefix . '%']);
     $last = $stmt->fetchColumn();
 

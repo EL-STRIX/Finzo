@@ -87,6 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        // Check maximum beneficiaries
+        $max_beneficiaries = get_setting($pdo, 'max_beneficiaries', 10);
+        $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM beneficiaries WHERE user_id = ?");
+        $count_stmt->execute([$user_id]);
+        if ($count_stmt->fetchColumn() >= $max_beneficiaries) {
+            json_response(['success' => false, 'message' => 'Maximum limit of ' . $max_beneficiaries . ' beneficiaries reached'], 403);
+        }
+
         // Check for duplicate
         $stmt = $pdo->prepare("SELECT id FROM beneficiaries WHERE user_id = ? AND account_no = ?");
         $stmt->execute([$user_id, $account_no]);

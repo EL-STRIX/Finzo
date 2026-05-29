@@ -109,7 +109,7 @@ try {
     $second_id = max($source_id, $dest_id);
 
     $stmt = $pdo->prepare("
-        SELECT a.id, a.account_no, a.balance, a.daily_limit, u.full_name, u.id as owner_user_id
+        SELECT a.id, a.account_no, a.balance, a.daily_limit, u.full_name, u.id as owner_user_id, u.customer_id
         FROM accounts a
         JOIN users u ON a.user_id = u.customer_id
         WHERE a.id = ? AND a.status = 'active'
@@ -131,12 +131,19 @@ try {
     }
 
     // Populate dest_user_id for notifications
-    $dest['dest_user_id'] = $dest['owner_user_id'];
+    $dest['dest_user_id'] = $dest['customer_id'];
 
     // Check balance
     if ($source['balance'] < $amount) {
         $pdo->rollBack();
         json_response(['success' => false, 'message' => 'Insufficient balance'], 422);
+    }
+
+    // Check minimum transfer amount
+    $min_transfer = get_setting($pdo, 'min_transfer_amount', 10);
+    if ($amount < $min_transfer) {
+        $pdo->rollBack();
+        json_response(['success' => false, 'message' => 'Minimum transfer amount is ' . format_currency($min_transfer)], 422);
     }
 
     // Check daily transfer limit
@@ -195,7 +202,7 @@ try {
     // =====================================================
 
     // Notify sender
-    send_notification($pdo, $user_id, 'transaction',
+    send_notification($pdo, $source['customer_id'], 'transaction',
         'Transfer Successful',
         "You transferred " . format_currency($amount) . " to {$dest['full_name']} ({$to_account_no}). Transaction ID: {$txn_id}"
     );

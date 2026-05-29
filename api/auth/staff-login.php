@@ -47,7 +47,7 @@ if ($staff['failed_attempts'] >= 5 && $staff['locked_until'] && strtotime($staff
 }
 
 if (!password_verify($password, $staff['password_hash'])) {
-    $pdo->prepare("UPDATE staff SET failed_attempts = failed_attempts + 1, locked_until = IF(failed_attempts + 1 >= 5, DATE_ADD(NOW(), INTERVAL 30 MINUTE), locked_until) WHERE id = ?")->execute([$staff['id']]);
+    $pdo->prepare("UPDATE staff SET failed_attempts = failed_attempts + 1, locked_until = IF(failed_attempts >= 5, DATE_ADD(NOW(), INTERVAL 30 MINUTE), locked_until) WHERE id = ?")->execute([$staff['id']]);
     json_response(['success' => false, 'message' => 'Invalid Staff ID or password'], 401);
 }
 
