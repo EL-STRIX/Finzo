@@ -12,13 +12,33 @@ The system solves the complexities of manual banking operations by providing dig
 
 ## 3. Core Features
 
-- **Role-Based Authentication:** Distinct access levels for Administrators, Staff, and Customers.
-- **ACID-Compliant Transactions:** Secure, consistent, and isolated fund transfers ensuring financial integrity.
-- **API-Driven Backend:** Headless PHP architecture communicating via JSON for modularity and speed.
-- **Security Middleware:** Strict session management, route protection, and CSRF validation.
-- **Dynamic Dashboards:** Real-time analytics, account summaries, and transaction ledgers.
-- **Beneficiary Management:** Secure intra-bank payee registry for quick transfers.
-- **Responsive UI/UX:** Clean, modern, and accessible interface built with raw HTML/CSS/JS.
+**Customer Features:**
+- **Secure Registration & Authentication:** Encrypted credential handling and session-based user authentication.
+- **KYC & Profile Verification:** Automated workflows for submitting and verifying ID proofs for account activation.
+- **ACID-Compliant Fund Transfers:** Secure, transaction-wrapped money transfers between Finzo accounts.
+- **Beneficiary Management:** Save, manage, and pre-verify frequent payees for seamless transactions.
+- **Interactive Transaction Ledger:** Detailed, paginated history of all deposits, withdrawals, and interest credits.
+- **Real-Time Balance Obfuscation:** Masked account balances requiring a 4-digit security PIN to reveal.
+- **Automated Interest Distribution:** Engine to calculate and apply periodic interest to savings accounts.
+- **Dynamic Multi-Theme Interface:** Built-in dark and light mode toggling with persistent preferences.
+- **Profile & Avatar Management:** Upload and manage personal information and profile pictures.
+- **Secure Password Resets:** CSRF-protected flows for updating and recovering passwords.
+- **Real-Time Notifications:** In-app alert system for transaction updates and account status changes.
+
+**Branch Staff Features:**
+- **Secure Customer Lookup:** Search and verify customer accounts before processing manual transactions.
+- **Cash Deposit Processing:** Authorized interface for crediting physical cash to customer accounts.
+- **Cash Withdrawal Processing:** Secure withdrawal system with mandatory customer PIN validation.
+- **Branch Transaction Auditing:** Real-time visibility into branch-level daily transaction flow.
+- **Staff Profile Management:** Update branch staff credentials and personal details.
+
+**Administrator Features:**
+- **Global Dashboard Analytics:** High-level metrics on total users, active accounts, and financial volume.
+- **KYC Approval Workflow:** Interface to review, approve, or reject customer applications with custom feedback.
+- **Branch Management:** Create, monitor, and manage physical banking branch locations.
+- **Staff Account Management:** Register and oversee branch staff credentials and assignments.
+- **Account Recovery System:** Robust security question-based recovery flow for locked admin accounts.
+- **System Activity Logging:** Track critical administrative actions and system-level events.
 
 ## 4. Tech Stack
 
