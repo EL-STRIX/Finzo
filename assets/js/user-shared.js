@@ -493,7 +493,7 @@ async function loadNavbarNotifications() {
   const list = document.getElementById('notif-list');
   list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)">autorenew</span></div>';
   try {
-    const res = await fetch('../../api/user/notifications.php?per_page=5', { credentials: 'same-origin' });
+    const res = await fetch('../../api/user/notifications.php?per_page=3', { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.notifications) {
       if (data.notifications.length === 0) {
