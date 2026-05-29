@@ -27,12 +27,16 @@
 </div>
 
 <!-- FILTER -->
-<div class="card card-p animate-in animate-delay-1 no-print" style="margin-bottom:20px">
-<div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap">
-<div class="form-group" style="flex:0 0 200px"><label class="form-label">From Date</label><input type="date" class="form-input" id="stmt-from"/></div>
-<div class="form-group" style="flex:0 0 200px"><label class="form-label">To Date</label><input type="date" class="form-input" id="stmt-to"/></div>
-<button class="btn btn-primary" onclick="generateStatement()">Generate Statement</button>
+<div class="card animate-in animate-delay-1 no-print" style="padding:16px;margin-bottom:24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--bg-card)">
+<div style="flex:1;min-width:150px;">
+<div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">From Date</div>
+<input type="date" id="stmt-from" style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" />
 </div>
+<div style="flex:1;min-width:150px;">
+<div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">To Date</div>
+<input type="date" id="stmt-to" style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" />
+</div>
+<button class="btn btn-primary" onclick="generateStatement()" style="align-self:flex-end;height:42px;min-width:160px;justify-content:center">Generate Statement</button>
 </div>
 
 <!-- STATEMENT PREVIEW -->
@@ -112,15 +116,22 @@
   const toParam = params.get('to');
   const autoPrint = params.get('print') === 'true';
 
-  if (fromParam) document.getElementById('stmt-from').value = fromParam;
-  if (toParam) document.getElementById('stmt-to').value = toParam;
-
-  if (fromParam || toParam || autoPrint) {
-    await generateStatement();
-    if (autoPrint) {
-      setTimeout(() => window.print(), 500);
-    }
+  if (fromParam) {
+    document.getElementById('stmt-from').value = fromParam;
+  } else {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    document.getElementById('stmt-from').value = d.toISOString().split('T')[0];
   }
+  
+  if (toParam) {
+    document.getElementById('stmt-to').value = toParam;
+  } else {
+    document.getElementById('stmt-to').value = new Date().toISOString().split('T')[0];
+  }
+
+  await generateStatement();
+  if (autoPrint) setTimeout(() => window.print(), 500);
 })();
 
 async function generateStatement(){
@@ -137,20 +148,26 @@ async function generateStatement(){
     if (data.success && data.transactions) {
       const tbody = document.querySelector('#statement-preview tbody');
       let totalCredits = 0, totalDebits = 0;
-      tbody.innerHTML = data.transactions.map(tx => {
-        const isCredit = tx.direction === 'credit' || tx.type === 'deposit' || tx.type === 'interest_credit';
-        const amt = parseFloat(tx.amount);
-        if (isCredit) totalCredits += amt; else totalDebits += amt;
-        const date = new Date(tx.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-        return `<tr>
-          <td style="font-size:12px;font-weight:600">${date}</td>
-          <td class="td-mono">${tx.txn_id || tx.reference_id || '-'}</td>
-          <td style="font-size:12px">${tx.description || tx.type}</td>
-          <td><span class="badge ${isCredit?'badge-green':'badge-red'}">${isCredit?'Credit':'Debit'}</span></td>
-          <td class="${isCredit?'amount-pos':'amount-neg'}">${isCredit?'+':'-'}${formatINR(amt)}</td>
-          <td style="font-size:12px;font-weight:700">${formatINR(tx.balance_after || 0)}</td>
-        </tr>`;
-      }).join('');
+      
+      if (data.transactions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--text-secondary);font-size:13px;font-style:italic">No transactions found for the selected period.</td></tr>';
+      } else {
+        tbody.innerHTML = data.transactions.map(tx => {
+          const isCredit = tx.direction === 'credit' || tx.type === 'deposit' || tx.type === 'interest_credit';
+          const amt = parseFloat(tx.amount);
+          if (isCredit) totalCredits += amt; else totalDebits += amt;
+          const date = new Date(tx.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+          return `<tr>
+            <td style="font-size:12px;font-weight:600">${date}</td>
+            <td class="td-mono">${tx.txn_id || tx.reference_id || '-'}</td>
+            <td style="font-size:12px">${tx.description || tx.type}</td>
+            <td><span class="badge ${isCredit?'badge-green':'badge-red'}">${isCredit?'Credit':'Debit'}</span></td>
+            <td class="${isCredit?'amount-pos':'amount-neg'}">${isCredit?'+':'-'}${formatINR(amt)}</td>
+            <td style="font-size:12px;font-weight:700">${formatINR(tx.balance_after || 0)}</td>
+          </tr>`;
+        }).join('');
+      }
+      
       document.getElementById('stmt-credits').textContent = formatINR(totalCredits);
       document.getElementById('stmt-debits').textContent = formatINR(totalDebits);
       showToast('Statement generated','success');
