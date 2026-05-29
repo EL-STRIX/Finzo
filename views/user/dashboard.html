@@ -468,18 +468,16 @@ buildNavbar('Account Overview', 'Dashboard');
       // --- 2. Monthly Stats ---
       if (stData.success && stData.monthly_stats) {
         const ma = stData.monthly_stats;
-        const activityCard = document.querySelector('.col-4.animate-in.animate-delay-2 .card');
-        if (activityCard) {
-          const totalEl = activityCard.querySelector('div[style*="font-size:24px"]');
-          const incomeEl = activityCard.querySelectorAll('div[style*="font-size:14px"]')[0];
-          const expenseEl = activityCard.querySelectorAll('div[style*="font-size:14px"]')[1];
-          if (totalEl) {
-             const net = (ma.income_total || 0) - (ma.expense_total || 0);
-             totalEl.textContent = formatINR(net > 0 ? net : 0);
-          }
-          if (incomeEl) incomeEl.textContent = formatINR(ma.income_total || 0);
-          if (expenseEl) expenseEl.textContent = formatINR(ma.expense_total || 0);
+        const totalEl = document.getElementById('activity-total');
+        const incomeEl = document.getElementById('activity-income');
+        const expenseEl = document.getElementById('activity-expenses');
+        
+        if (totalEl) {
+           const net = (ma.income_total || 0) - (ma.expense_total || 0);
+           totalEl.textContent = formatINR(net > 0 ? net : 0);
         }
+        if (incomeEl) incomeEl.textContent = formatINR(ma.income_total || 0);
+        if (expenseEl) expenseEl.textContent = formatINR(ma.expense_total || 0);
       }
     } catch (err) {
       console.warn('Failed to load dashboard data:', err);
