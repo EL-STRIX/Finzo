@@ -1,0 +1,48 @@
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs and Temporary Files
+*.log
+error_log
+php_errors.log
+tmp/
+temp/
+
+# User uploaded files
+/uploads/*
+!/uploads/.gitkeep
+!/uploads/index.html
+!/uploads/avatars/
+/uploads/avatars/*
+!/uploads/avatars/.gitkeep
+!/uploads/avatars/index.html
+
+# Environment variables and local configs
+.env
+.env.local
+.env.*.local
+config/local.php
+
+# Package managers (if used in future)
+vendor/
+composer.phar
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
