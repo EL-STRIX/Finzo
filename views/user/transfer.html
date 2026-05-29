@@ -211,6 +211,14 @@
     } catch (e) { 
       document.getElementById('beneficiary-chips').innerHTML = '<div style="font-size:12px; color:var(--danger)">Failed to load beneficiaries.</div>';
     }
+    
+    // Check URL params for pre-filling recipient
+    const params = new URLSearchParams(window.location.search);
+    const toAcc = params.get('to');
+    if (toAcc) {
+      document.getElementById('to-account').value = toAcc;
+      lookupAccount();
+    }
   })();
 
   function useBeneficiary(acc, name) {
