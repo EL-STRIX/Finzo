@@ -638,19 +638,37 @@ function requireActive(redirectTo = 'dashboard.html') {
 // ── STATUS REDIRECT LOGIC ──
 function handleStatusRedirect(currentPage) {
   const status = UserState.status;
+  
   // Pages only accessible when NOT active
   const pendingOnlyPages = ['complete-profile', 'account-pending', 'account-rejected'];
   // Pages only accessible when active
   const activeOnlyPages = ['accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
 
-  if (activeOnlyPages.includes(currentPage) && !UserState.isActive) {
+  // Inactive users cannot access active-only pages
+  if (activeOnlyPages.includes(currentPage) && status !== 'active') {
     window.location.href = 'dashboard.html';
     return;
   }
-  if (status === 'under_review' && currentPage === 'complete-profile') {
+
+  // Active users cannot access KYC onboarding pages
+  if (pendingOnlyPages.includes(currentPage) && status === 'active') {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  // Pending users (KYC not submitted) cannot access review or rejected pages
+  if (status === 'pending' && (currentPage === 'account-pending' || currentPage === 'account-rejected')) {
+    window.location.href = 'complete-profile.html';
+    return;
+  }
+
+  // Under review users cannot access KYC form or rejected page
+  if (status === 'under_review' && (currentPage === 'complete-profile' || currentPage === 'account-rejected')) {
     window.location.href = 'account-pending.html';
     return;
   }
+
+  // Rejected users cannot access the under review page
   if (status === 'rejected' && currentPage === 'account-pending') {
     window.location.href = 'account-rejected.html';
     return;
