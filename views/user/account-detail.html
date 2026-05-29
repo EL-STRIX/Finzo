@@ -245,7 +245,7 @@
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {
-          const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+          const isCredit = tx.direction === 'credit' || tx.type === 'deposit' || tx.type === 'interest_credit';
           const icon = isCredit ? 'arrow_downward' : 'arrow_upward';
           const iconColor = isCredit ? '#10b981' : '#f43f5e';
           const iconBg = isCredit ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)';
