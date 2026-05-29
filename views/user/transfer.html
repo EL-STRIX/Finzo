@@ -201,8 +201,8 @@
       const container = document.getElementById('beneficiary-chips');
       if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
         container.innerHTML = data.beneficiaries.map(b => 
-          `<div class="beneficiary-pill" onclick="useBeneficiary('${b.account_no}','${b.name}')">
-            <span class="material-symbols-outlined" style="font-size:15px">star</span> ${b.name}
+          `<div class="beneficiary-pill" onclick="useBeneficiary('${b.account_no}','${b.nickname}')">
+            <span class="material-symbols-outlined" style="font-size:15px">star</span> ${b.nickname}
           </div>`
         ).join('');
       } else {
