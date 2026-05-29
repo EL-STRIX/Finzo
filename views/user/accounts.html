@@ -91,46 +91,9 @@
       <p class="page-subtitle">Unified portfolio and active wealth containers</p>
     </div>
 
-    <div class="accounts-grid-premium">
-      <!-- LEFT: PORTFOLIO SUMMARY -->
+    <div style="max-width:800px; margin: 0 auto; display:flex; flex-direction:column; gap:24px;">
+      <!-- SPECIFIC ACCOUNTS -->
       <div class="animate-in animate-delay-1">
-        <div class="portfolio-summary-card mb-6">
-          <div style="font-size:11px; font-weight:800; opacity:0.6; text-transform:uppercase; letter-spacing:0.15em; margin-bottom:8px">Total Consolidated Assets</div>
-          <div style="font-size:36px; font-weight:800; letter-spacing:-1px" id="total-portfolio-balance" class="balance-display">₹0.00</div>
-          
-          <div style="margin-top:32px; display:flex; flex-direction:column; gap:16px">
-            <div style="display:flex; justify-content:space-between; align-items:center; opacity:0.8">
-              <span style="font-size:12px; font-weight:600">Active Accounts</span>
-              <span style="font-size:14px; font-weight:800">01</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card card-p mb-6">
-          <div class="card-title mb-4" style="font-size:15px">Banking Hub</div>
-          <div style="display:flex; flex-direction:column; gap:12px">
-            <a href="transfer.html" class="banking-action-tile">
-              <div class="action-tile-icon" style="background:var(--primary-light)"><span class="material-symbols-outlined" style="color:var(--primary); font-size:22px">swap_horiz</span></div>
-              <div style="flex:1">
-                <div style="font-size:14px; font-weight:700">Internal Transfer</div>
-                <div style="font-size:11px; color:var(--text-secondary)">Instant settlement</div>
-              </div>
-              <span class="material-symbols-outlined" style="font-size:18px; color:var(--text-placeholder)">chevron_right</span>
-            </a>
-            <a href="statement.html" class="banking-action-tile">
-              <div class="action-tile-icon" style="background:rgba(16,185,129,0.1)"><span class="material-symbols-outlined" style="color:var(--green); font-size:22px">description</span></div>
-              <div style="flex:1">
-                <div style="font-size:14px; font-weight:700">Digital Statement</div>
-                <div style="font-size:11px; color:var(--text-secondary)">Verified PDF documents</div>
-              </div>
-              <span class="material-symbols-outlined" style="font-size:18px; color:var(--text-placeholder)">chevron_right</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT: SPECIFIC ACCOUNTS -->
-      <div class="animate-in animate-delay-2">
         <div class="premium-account-card">
           <div class="account-card-header">
             <div style="display:flex; align-items:center; gap:12px">
@@ -181,14 +144,6 @@
           </div>
         </div>
         
-        <!-- Placeholder for fixed deposits or other accounts -->
-        <div class="card card-p mt-6" style="border-style:dashed; opacity:0.6; display:flex; align-items:center; justify-content:center; min-height:120px; text-align:center">
-          <div>
-            <span class="material-symbols-outlined" style="font-size:32px; color:var(--text-placeholder); margin-bottom:8px">add_circle</span>
-            <div style="font-size:13px; font-weight:700; color:var(--text-secondary)">New Wealth Container</div>
-            <div style="font-size:11px; color:var(--text-placeholder)">Fixed Deposits, Mutual Funds, etc.</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -200,17 +155,15 @@
     buildSidebar('accounts'); buildNavbar('Banking','My Accounts');
     handleStatusRedirect('accounts');
     const realBalance = formatINR(UserState.balance);
-    const balEls = [document.getElementById('acc-balance'), document.getElementById('total-portfolio-balance')];
+    const balEl = document.getElementById('acc-balance');
     
-    balEls.forEach(el => {
-      if (UserState.isBalanceUnlocked) {
-        el.textContent = realBalance;
-      } else {
-        el.textContent = '₹ ••••';
-        el.classList.add('balance-hidden-mask');
-        el.setAttribute('data-real-value', realBalance);
-      }
-    });
+    if (UserState.isBalanceUnlocked) {
+      balEl.textContent = realBalance;
+    } else {
+      balEl.textContent = '₹ ••••';
+      balEl.classList.add('balance-hidden-mask');
+      balEl.setAttribute('data-real-value', realBalance);
+    }
 
     document.getElementById('acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
 
