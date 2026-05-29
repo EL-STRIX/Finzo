@@ -422,18 +422,20 @@ buildNavbar('Account Overview', 'Dashboard');
       }
     });
 
-    // Fetch Recent Transactions from API
+    // Fetch Dashboard Data (Transactions & Monthly Stats)
     try {
-      const txRes = await fetch('../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
-      const txData = await txRes.json();
+      const stRes = await fetch('../../api/user/dashboard.php', { credentials: 'same-origin' });
+      const stData = await stRes.json();
+      
+      // --- 1. Recent Transactions ---
       const txEmpty = document.getElementById('tx-empty');
       const txList = document.getElementById('tx-list');
       const viewAll = document.getElementById('view-all-txns');
-
-      if (txData.success && txData.transactions && txData.transactions.length > 0) {
+      
+      if (stData.success && stData.recent_transactions && stData.recent_transactions.length > 0) {
         if (txEmpty) txEmpty.classList.add('hidden');
         if (txList) {
-          txList.innerHTML = txData.transactions.map(tx => {
+          txList.innerHTML = stData.recent_transactions.map(tx => {
             const isCredit = tx.direction === 'credit';
             const icon = isCredit ? 'arrow_downward' : 'arrow_upward';
             const iconColor = isCredit ? '#10b981' : '#f43f5e';
@@ -459,33 +461,29 @@ buildNavbar('Account Overview', 'Dashboard');
         }
         if (viewAll) viewAll.classList.remove('hidden');
       } else {
-        if (txEmpty) txEmpty.classList.add('hidden');
-        if (txList) {
-          txList.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">receipt_long</span><div class="empty-state-title">No Transactions Yet</div><div class="empty-state-text">Start by sending money or receiving a deposit.</div></div>';
-          txList.classList.remove('hidden');
-        }
+        if (txEmpty) txEmpty.classList.remove('hidden');
+        if (txList) txList.classList.add('hidden');
       }
-    } catch (err) {
-      console.warn('Failed to load transactions:', err);
-    }
 
-    // Fetch monthly activity stats
-    try {
-      const stRes = await fetch('../../api/user/dashboard.php', { credentials: 'same-origin' });
-      const stData = await stRes.json();
-      if (stData.success && stData.monthly_activity) {
-        const ma = stData.monthly_activity;
+      // --- 2. Monthly Stats ---
+      if (stData.success && stData.monthly_stats) {
+        const ma = stData.monthly_stats;
         const activityCard = document.querySelector('.col-4.animate-in.animate-delay-2 .card');
         if (activityCard) {
           const totalEl = activityCard.querySelector('div[style*="font-size:24px"]');
           const incomeEl = activityCard.querySelectorAll('div[style*="font-size:14px"]')[0];
           const expenseEl = activityCard.querySelectorAll('div[style*="font-size:14px"]')[1];
-          if (totalEl) totalEl.textContent = formatINR(ma.total || 0);
-          if (incomeEl) incomeEl.textContent = formatINR(ma.income || 0);
-          if (expenseEl) expenseEl.textContent = formatINR(ma.expenses || 0);
+          if (totalEl) {
+             const net = (ma.income_total || 0) - (ma.expense_total || 0);
+             totalEl.textContent = formatINR(net > 0 ? net : 0);
+          }
+          if (incomeEl) incomeEl.textContent = formatINR(ma.income_total || 0);
+          if (expenseEl) expenseEl.textContent = formatINR(ma.expense_total || 0);
         }
       }
-    } catch (err) { console.warn('Failed to load stats:', err); }
+    } catch (err) {
+      console.warn('Failed to load dashboard data:', err);
+    }
 
   } else {
     // --- INACTIVE STATE ---
