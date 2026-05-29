@@ -224,21 +224,24 @@
 </div>
 
 <script>
-  buildSidebar('transfer'); buildNavbar('Banking', 'Fund Transfer');
-  handleStatusRedirect('transfer');
+  (async function() {
+    await fetchUserSession();
+    buildSidebar('transfer'); buildNavbar('Banking', 'Fund Transfer');
+    handleStatusRedirect('transfer');
 
-  document.getElementById('from-acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
-  document.getElementById('from-acc-type').textContent = UserState.accountType === 'current' ? 'Corporate Current Account' : 'Finzo Platinum Savings';
-  const realBalance = formatINR(UserState.balance);
-  const balEl = document.getElementById('from-balance');
-  
-  if (UserState.isBalanceUnlocked) {
-    balEl.textContent = realBalance;
-  } else {
-    balEl.textContent = '₹ ••••';
-    balEl.classList.add('balance-hidden-mask');
-    balEl.setAttribute('data-real-value', realBalance);
-  }
+    document.getElementById('from-acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+    document.getElementById('from-acc-type').textContent = UserState.accountType === 'current' ? 'Corporate Current Account' : 'Finzo Platinum Savings';
+    const realBalance = formatINR(UserState.balance);
+    const balEl = document.getElementById('from-balance');
+    
+    if (UserState.isBalanceUnlocked) {
+      balEl.textContent = realBalance;
+    } else {
+      balEl.textContent = '₹ ••••';
+      balEl.classList.add('balance-hidden-mask');
+      balEl.setAttribute('data-real-value', realBalance);
+    }
+  })();
 
   let recipientVerified = false;
   let recipientName = '';
@@ -247,7 +250,7 @@
   // Load beneficiaries from API
   (async function loadBeneficiaries() {
     try {
-      const res = await fetch('/api/user/beneficiary.php', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/beneficiary.php', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
         const container = document.getElementById('beneficiary-chips');
@@ -277,7 +280,7 @@
     if (accNo === UserState.accountNo) { showToast('Cannot transfer to your own account', 'error'); return; }
     
     try {
-      const res = await fetch('/api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
       const data = await res.json();
       document.getElementById('lookup-result').classList.remove('hidden');
       
@@ -356,7 +359,7 @@
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Authorizing...';
 
     try {
-      const res = await fetch('/api/user/transfer.php', {
+      const res = await fetch('../../api/user/transfer.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',

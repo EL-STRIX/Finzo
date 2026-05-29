@@ -95,14 +95,17 @@
 </div>
 </div>
 <script>
-buildSidebar('statement'); buildNavbar('Banking','Account Statement');
-handleStatusRedirect('statement');
-document.getElementById('stmt-generated').textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-document.getElementById('stmt-name').textContent = UserState.name;
-document.getElementById('stmt-email').textContent = UserState.email;
-document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
-document.getElementById('stmt-acc-type').textContent = (UserState.accountType||'savings').charAt(0).toUpperCase()+(UserState.accountType||'savings').slice(1)+' Account';
-document.getElementById('stmt-closing').textContent = formatINR(UserState.balance || 0);
+(async function() {
+  await fetchUserSession();
+  buildSidebar('statement'); buildNavbar('Banking','Account Statement');
+  handleStatusRedirect('statement');
+  document.getElementById('stmt-generated').textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('stmt-name').textContent = UserState.name;
+  document.getElementById('stmt-email').textContent = UserState.email;
+  document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
+  document.getElementById('stmt-acc-type').textContent = (UserState.accountType||'savings').charAt(0).toUpperCase()+(UserState.accountType||'savings').slice(1)+' Account';
+  document.getElementById('stmt-closing').textContent = formatINR(UserState.balance || 0);
+})();
 
 async function generateStatement(){
   const f=document.getElementById('stmt-from').value, t=document.getElementById('stmt-to').value;
@@ -113,7 +116,7 @@ async function generateStatement(){
     if (f) params.set('from_date', f);
     if (t) params.set('to_date', t);
     params.set('limit', '500');
-    const res = await fetch('/api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const res = await fetch('../../api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.transactions) {
       const tbody = document.querySelector('#statement-preview tbody');
@@ -145,7 +148,7 @@ function downloadStatement(){
   if(f) params.set('from_date', f);
   if(t) params.set('to_date', t);
   // Download TCPDF-generated statement
-  window.open('/api/pdf/statement.php?' + params.toString(), '_blank');
+  window.open('../../api/pdf/statement.php?' + params.toString(), '_blank');
 }
 </script>
 </body>

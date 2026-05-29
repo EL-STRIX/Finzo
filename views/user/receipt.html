@@ -129,7 +129,7 @@ buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
 
   if (txnId) {
     try {
-      const res = await fetch('/api/user/receipt.php?id=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/receipt.php?id=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transaction) {
         const tx = data.transaction;

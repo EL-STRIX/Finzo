@@ -70,8 +70,12 @@
 </div>
 
 <script>
-buildSidebar('transactions'); buildNavbar('Banking','All Transactions');
-handleStatusRedirect('transactions');
+(async function() {
+  await fetchUserSession();
+  buildSidebar('transactions'); buildNavbar('Banking','All Transactions');
+  handleStatusRedirect('transactions');
+  loadTransactions();
+})();
 
 const ROW_PP = 8;
 let page = 1, activeFilter = 'all';
@@ -90,7 +94,7 @@ async function loadTransactions() {
     if (toDate) params.set('to_date', toDate);
     params.set('limit', '200');
 
-    const res = await fetch('/api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const res = await fetch('../../api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.transactions) {
       allTxns = data.transactions.map(tx => ({
@@ -174,7 +178,6 @@ function renderTable() {
 }
 
 function goPage(dir) { page = Math.max(1, Math.min(Math.ceil(filtered.length/ROW_PP), page+dir)); renderTable(); }
-loadTransactions();
 </script>
 </body>
 </html>

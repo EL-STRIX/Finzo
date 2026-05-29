@@ -193,28 +193,31 @@
 </div>
 
 <script>
-  buildSidebar('accounts'); buildNavbar('Banking','Account Details');
-  handleStatusRedirect('accounts');
+  (async function() {
+    await fetchUserSession();
+    buildSidebar('accounts'); buildNavbar('Banking','Account Details');
+    handleStatusRedirect('accounts');
 
-  const realBalance = formatINR(UserState.balance);
-  const balEl = document.getElementById('acc-balance-big');
-  
-  if (UserState.isBalanceUnlocked) {
-    balEl.textContent = realBalance;
-  } else {
-    balEl.textContent = '₹ ••••';
-    balEl.classList.add('balance-hidden-mask');
-    balEl.setAttribute('data-real-value', realBalance);
-  }
-  document.getElementById('acc-no-big').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
-  const accType = UserState.accountType || 'savings';
-  document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';
+    const realBalance = formatINR(UserState.balance);
+    const balEl = document.getElementById('acc-balance-big');
+    
+    if (UserState.isBalanceUnlocked) {
+      balEl.textContent = realBalance;
+    } else {
+      balEl.textContent = '₹ ••••';
+      balEl.classList.add('balance-hidden-mask');
+      balEl.setAttribute('data-real-value', realBalance);
+    }
+    document.getElementById('acc-no-big').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+    const accType = UserState.accountType || 'savings';
+    document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';
+  })();
 
   // Load daily limit from API
   let dailyLimit = 10000, usedToday = 0;
   (async function loadLimitSettings() {
     try {
-      const res = await fetch('/api/user/account-settings.php', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/account-settings.php', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success) {
         dailyLimit = parseInt(data.daily_limit || 10000);
@@ -232,7 +235,7 @@
   // Load recent transactions for mini-ledger
   (async function loadMiniLedger() {
     try {
-      const res = await fetch('/api/user/transactions.php?limit=5', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {
@@ -266,7 +269,7 @@
     if (!val || val < 1000 || val > 100000){ showToast('Exposure limit must be between ₹1,000 and ₹1,00,000','error'); return; }
     
     try {
-      const res = await fetch('/api/user/account-settings.php', {
+      const res = await fetch('../../api/user/account-settings.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',

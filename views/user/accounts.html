@@ -195,22 +195,25 @@
 </div>
 
 <script>
-  buildSidebar('accounts'); buildNavbar('Banking','My Accounts');
-  handleStatusRedirect('accounts');
-  const realBalance = formatINR(UserState.balance);
-  const balEls = [document.getElementById('acc-balance'), document.getElementById('total-portfolio-balance')];
-  
-  balEls.forEach(el => {
-    if (UserState.isBalanceUnlocked) {
-      el.textContent = realBalance;
-    } else {
-      el.textContent = '₹ ••••';
-      el.classList.add('balance-hidden-mask');
-      el.setAttribute('data-real-value', realBalance);
-    }
-  });
+  (async function() {
+    await fetchUserSession();
+    buildSidebar('accounts'); buildNavbar('Banking','My Accounts');
+    handleStatusRedirect('accounts');
+    const realBalance = formatINR(UserState.balance);
+    const balEls = [document.getElementById('acc-balance'), document.getElementById('total-portfolio-balance')];
+    
+    balEls.forEach(el => {
+      if (UserState.isBalanceUnlocked) {
+        el.textContent = realBalance;
+      } else {
+        el.textContent = '₹ ••••';
+        el.classList.add('balance-hidden-mask');
+        el.setAttribute('data-real-value', realBalance);
+      }
+    });
 
-  document.getElementById('acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+    document.getElementById('acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+  })();
 </script>
 </body>
 </html>

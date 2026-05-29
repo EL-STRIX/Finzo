@@ -424,7 +424,7 @@ buildNavbar('Account Overview', 'Dashboard');
 
     // Fetch Recent Transactions from API
     try {
-      const txRes = await fetch('/api/user/transactions.php?limit=5', { credentials: 'same-origin' });
+      const txRes = await fetch('../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
       const txData = await txRes.json();
       const txEmpty = document.getElementById('tx-empty');
       const txList = document.getElementById('tx-list');
@@ -471,7 +471,7 @@ buildNavbar('Account Overview', 'Dashboard');
 
     // Fetch monthly activity stats
     try {
-      const stRes = await fetch('/api/user/dashboard.php', { credentials: 'same-origin' });
+      const stRes = await fetch('../../api/user/dashboard.php', { credentials: 'same-origin' });
       const stData = await stRes.json();
       if (stData.success && stData.monthly_activity) {
         const ma = stData.monthly_activity;

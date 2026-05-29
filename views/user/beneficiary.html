@@ -56,8 +56,12 @@
 </div>
 
 <script>
-buildSidebar('beneficiary'); buildNavbar('Banking','Beneficiaries');
-handleStatusRedirect('beneficiary');
+(async function() {
+  await fetchUserSession();
+  buildSidebar('beneficiary'); buildNavbar('Banking','Beneficiaries');
+  handleStatusRedirect('beneficiary');
+  loadBeneficiaries();
+})();
 
 let beneficiaries = [];
 let verifiedHolder = '';
@@ -65,7 +69,7 @@ let verifiedHolder = '';
 // Load beneficiaries from API
 async function loadBeneficiaries() {
   try {
-    const res = await fetch('/api/user/beneficiary.php', { credentials: 'same-origin' });
+    const res = await fetch('../../api/user/beneficiary.php', { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.beneficiaries) {
       beneficiaries = data.beneficiaries.map(b => ({
@@ -86,7 +90,7 @@ async function lookupBen() {
   const res = document.getElementById('ben-result');
   if (!acc) return;
   try {
-    const r = await fetch('/api/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
+    const r = await fetch('../../api/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
     const data = await r.json();
     if (data.success && data.account) {
       verifiedHolder = data.account.holder_name;
@@ -114,7 +118,7 @@ async function addBeneficiary() {
   if (!verifiedHolder) { showToast('Please verify the Finzo account number first', 'error'); return; }
 
   try {
-    const res = await fetch('/api/user/beneficiary.php', {
+    const res = await fetch('../../api/user/beneficiary.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       credentials: 'same-origin',
@@ -137,7 +141,7 @@ async function addBeneficiary() {
 function deleteBen(id) {
   openConfirm('Remove Beneficiary', 'Are you sure you want to remove this beneficiary?', async () => {
     try {
-      await fetch('/api/user/beneficiary.php', {
+      await fetch('../../api/user/beneficiary.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',
@@ -167,7 +171,6 @@ function renderList() {
   </div>
   </div>`).join('');
 }
-loadBeneficiaries();
 </script>
 </body>
 </html>
