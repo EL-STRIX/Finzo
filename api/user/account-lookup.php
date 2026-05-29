@@ -30,17 +30,19 @@ try {
     $result = $stmt->fetch();
 
     if (!$result || $result['status'] !== 'active') {
-        json_response(['found' => false]);
+        json_response(['success' => false, 'message' => 'Finzo account not found']);
     }
 
     // Do not return balance or sensitive data
     json_response([
-        'found'        => true,
-        'name'         => $result['full_name'],
-        'account_type' => $result['account_type']
+        'success' => true,
+        'account' => [
+            'holder_name'  => $result['full_name'],
+            'account_type' => $result['account_type']
+        ]
     ]);
 
 } catch (PDOException $e) {
     error_log("Account lookup error: " . $e->getMessage());
-    json_response(['found' => false, 'message' => 'Lookup failed'], 500);
+    json_response(['success' => false, 'message' => 'Lookup failed'], 500);
 }
