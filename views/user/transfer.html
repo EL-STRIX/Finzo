@@ -79,58 +79,33 @@
       <p class="page-subtitle">Instant, ACID-protected digital settlement</p>
     </div>
 
-    <div class="transfer-grid-premium">
-      <!-- LEFT: SOURCE & SUMMARY -->
+    <div style="max-width:800px; margin: 0 auto; display:flex; flex-direction:column; gap:24px; margin-top: 24px;">
+      <!-- SOURCE ACCOUNT -->
       <div class="animate-in animate-delay-1">
         <div class="source-account-card mb-6">
           <div style="font-size:10px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:6px" id="from-acc-type">Savings Account Profile</div>
           <div style="font-size:32px; font-weight:800; letter-spacing:-0.5px" id="from-balance">₹0.00</div>
-          <div style="font-size:10px; opacity:0.5; font-weight:700; margin-top:2px">AVAILABLE CORE LIQUIDITY</div>
+          <div style="font-size:10px; opacity:0.5; font-weight:700; margin-top:2px">AVAILABLE BALANCE</div>
           
           <div style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1)">
              <div style="font-size:15px; font-weight:700; font-family:'Courier New', monospace; letter-spacing:0.12em; color:rgba(255,255,255,0.8)" id="from-acc-no">FNZ — — —</div>
-             <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:4px">SOURCE ACCOUNT IDENTIFIER</div>
+             <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:4px">ACCOUNT NUMBER</div>
           </div>
         </div>
 
-        <div class="card animate-in animate-delay-2" style="overflow:hidden">
-          <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center">
-            <div class="card-title" style="font-size:14px">Settlement Summary</div>
-            <span class="material-symbols-outlined" style="font-size:18px; color:var(--text-placeholder)">receipt</span>
-          </div>
-          <div id="summary-content">
-            <div class="summary-tile"><span class="summary-label">Target Account</span><span class="summary-value" id="sum-to">—</span></div>
-            <div class="summary-tile"><span class="summary-label">Beneficiary</span><span class="summary-value" id="sum-recipient">—</span></div>
-            <div class="summary-tile"><span class="summary-label">Settlement Amount</span><span class="summary-value" id="sum-amount" style="color:var(--primary)">₹0.00</span></div>
-            <div class="summary-tile"><span class="summary-label">Processing Fees</span><span class="summary-value" style="color:var(--green)">0.00 (EXEMPT)</span></div>
-            <div style="padding:16px 20px; background:var(--bg-input); border-top:2px solid var(--border)">
-              <div style="display:flex; justify-content:space-between; align-items:center">
-                <span style="font-size:12px; font-weight:800; color:var(--text-primary)">TOTAL DEBIT</span>
-                <span style="font-size:18px; font-weight:800; color:var(--danger)" id="sum-total">₹0.00</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <!-- RIGHT: DESTINATION & FORM -->
-      <div class="animate-in animate-delay-2">
+      <!-- DESTINATION & FORM -->
+      <div class="animate-in animate-delay-2" style="display:flex; flex-direction:column; gap:24px;">
         <div class="account-lookup-card mb-6">
           <div class="card-title mb-2">Destination Registry</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:24px">Select a verified beneficiary or enter a unique account identifier.</div>
 
           <div style="margin-bottom:28px">
-            <div style="font-size:10px; font-weight:800; color:var(--text-placeholder); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">Pinned Beneficiaries</div>
+            <div style="font-size:10px; font-weight:800; color:var(--text-placeholder); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">Saved Beneficiaries</div>
             <div style="display:flex; flex-wrap:wrap; gap:10px" id="beneficiary-chips">
-              <div class="beneficiary-pill" onclick="useBeneficiary('FNZ20260002','Priya Sharma')">
-                <span class="material-symbols-outlined" style="font-size:15px">star</span> Priya Sharma
-              </div>
-              <div class="beneficiary-pill" onclick="useBeneficiary('FNZ20260003','Amit Mondal')">
-                <span class="material-symbols-outlined" style="font-size:15px">star</span> Amit Mondal
-              </div>
-              <div class="beneficiary-pill" onclick="useBeneficiary('FNZ20260004','Sunita Mehta')">
-                <span class="material-symbols-outlined" style="font-size:15px">star</span> Sunita Mehta
-              </div>
+              <div style="font-size:12px; color:var(--text-secondary); font-style:italic">Loading beneficiaries...</div>
             </div>
           </div>
 
@@ -139,7 +114,7 @@
             <div style="display:flex; gap:12px">
               <div class="input-wrap" style="flex:1">
                 <span class="input-icon material-symbols-outlined" style="font-size:20px">account_box</span>
-                <input type="text" class="form-input with-icon" id="to-account" placeholder="e.g. FNZ20260002" oninput="resetLookup()" style="font-family:monospace; font-weight:700"/>
+                <input type="text" class="form-input with-icon" id="to-account" placeholder="Enter Finzo Account No." oninput="resetLookup()" style="font-family:monospace; font-weight:700"/>
               </div>
               <button class="btn btn-primary" onclick="lookupAccount()" style="padding:0 24px">Verify Account</button>
             </div>
@@ -162,10 +137,10 @@
         </div>
 
         <div class="card card-p animate-in animate-delay-3">
-          <div class="card-title mb-4">Transfer Authorization</div>
+          <div class="card-title mb-4">Transfer Amount & Security</div>
           <div class="form-grid form-grid-2">
             <div class="form-group" style="grid-column: span 2">
-              <label class="form-label">Settlement Amount</label>
+              <label class="form-label">Amount</label>
               <div class="input-wrap">
                 <span class="input-icon material-symbols-outlined" style="font-size:20px">currency_rupee</span>
                 <input type="number" class="form-input with-icon" id="transfer-amount" placeholder="0.00" min="1" oninput="updateSummary()" style="font-size:20px; font-weight:800; color:var(--primary)"/>
@@ -184,7 +159,7 @@
           </div>
           
           <button class="btn btn-primary btn-full btn-lg mt-6" onclick="confirmTransfer()" id="transfer-btn">
-            <span class="material-symbols-outlined">shield_with_heart</span> Execute Secure Transfer
+            <span class="material-symbols-outlined">shield_with_heart</span> Continue to Confirmation
           </button>
           
           <div style="text-align:center; margin-top:16px; font-size:11px; color:var(--text-placeholder); display:flex; align-items:center; justify-content:center; gap:6px">
@@ -213,7 +188,7 @@
          <span style="font-size:22px; font-weight:800; color:var(--danger)" id="cm-amount"></span>
       </div>
     </div>
-    <div style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:28px; line-height:1.6">This transaction is final and ACID-protected. Please ensure the target identity is correct before authorization.</div>
+    <div style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:28px; line-height:1.6">Please review the details carefully. Once confirmed, transfers cannot be reversed.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('confirm-modal')" style="flex:1">Cancel</button>
       <button class="btn btn-primary" id="final-transfer-btn" onclick="processTransfer()" style="flex:2">
@@ -252,15 +227,19 @@
     try {
       const res = await fetch('../../api/user/beneficiary.php', { credentials: 'same-origin' });
       const data = await res.json();
+      const container = document.getElementById('beneficiary-chips');
       if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
-        const container = document.getElementById('beneficiary-chips');
         container.innerHTML = data.beneficiaries.map(b => 
           `<div class="beneficiary-pill" onclick="useBeneficiary('${b.account_no}','${b.name}')">
             <span class="material-symbols-outlined" style="font-size:15px">star</span> ${b.name}
           </div>`
         ).join('');
+      } else {
+        container.innerHTML = '<div style="font-size:12px; color:var(--text-secondary); font-style:italic">No saved beneficiaries found.</div>';
       }
-    } catch (e) { console.warn('Failed to load beneficiaries:', e); }
+    } catch (e) { 
+      document.getElementById('beneficiary-chips').innerHTML = '<div style="font-size:12px; color:var(--danger)">Failed to load beneficiaries.</div>';
+    }
   })();
 
   function useBeneficiary(acc, name) {
@@ -307,12 +286,6 @@
   function updateSummary() {
     const amount = parseFloat(document.getElementById('transfer-amount').value || 0);
     const balance = parseFloat(UserState.balance || 0);
-    const toAcc = document.getElementById('to-account').value.trim();
-
-    document.getElementById('sum-to').textContent = toAcc || '—';
-    document.getElementById('sum-recipient').textContent = recipientVerified ? recipientName : '—';
-    document.getElementById('sum-amount').textContent = '₹' + amount.toLocaleString('en-IN', {minimumFractionDigits:2});
-    document.getElementById('sum-total').textContent = '₹' + amount.toLocaleString('en-IN', {minimumFractionDigits:2});
 
     const wordsDiv = document.getElementById('amount-words');
     const errorDiv = document.getElementById('amount-error');
@@ -404,10 +377,10 @@
     if (num < 20) words = a[num];
     else if (num < 100) words = b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
     else if (num < 1000) words = a[Math.floor(num / 100)] + ' Hundred' + (num % 100 !== 0 ? ' and ' + numberToWords(num % 100) : '');
-    else {
-       // Simple version for demo
-       words = num.toLocaleString('en-IN') + ' (Formatted)';
-    }
+    else if (num < 100000) words = numberToWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 !== 0 ? ' ' + numberToWords(num % 1000) : '');
+    else if (num < 10000000) words = numberToWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 !== 0 ? ' ' + numberToWords(num % 100000) : '');
+    else words = numberToWords(Math.floor(num / 10000000)) + ' Crore' + (num % 10000000 !== 0 ? ' ' + numberToWords(num % 10000000) : '');
+    
     return words;
   }
 </script>
