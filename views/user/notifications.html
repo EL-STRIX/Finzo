@@ -78,7 +78,7 @@
         <h1 class="page-title">Activity Feed</h1>
         <p class="page-subtitle">Unified broadcast from the Finzo ecosystem</p>
       </div>
-      <button onclick="markAllRead()" class="btn btn-outline btn-sm no-print" style="margin-bottom:8px">Mark all as acknowledged</button>
+      <button onclick="markAllRead()" class="btn btn-outline btn-sm no-print" style="margin-bottom:8px">Mark all as read</button>
     </div>
 
     <div class="notif-grid-premium">
@@ -113,7 +113,7 @@
 
           <div style="margin-top:32px; padding-top:24px; border-top:1px dashed var(--border)">
             <button onclick="clearAll()" class="btn btn-ghost btn-full" style="color:var(--danger)">
-              <span class="material-symbols-outlined">delete_sweep</span> Purge All Records
+              <span class="material-symbols-outlined">delete_sweep</span> Delete All Records
             </button>
           </div>
         </div>
@@ -139,7 +139,7 @@
       Message body content.
     </div>
     <div class="modal-actions" style="margin-top:32px; display:flex; gap:12px;">
-      <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="flex:1">Acknowledge</button>
+      <button class="btn btn-ghost" onclick="closeModal('viewNotifModal')" style="flex:1">Read</button>
       <button class="btn btn-danger" onclick="deleteCurrentNotif()" style="flex:1">Delete Record</button>
     </div>
   </div>
@@ -242,7 +242,7 @@
       currentViewNotifId = null;
       renderNotifs();
       closeModal('viewNotifModal');
-      showToast('Record purged from ledger', 'success');
+      showToast('Record deleted from ledger', 'success');
     }
   }
 
@@ -250,11 +250,11 @@
     fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
     notifs.forEach(n => n.unread = false);
     renderNotifs();
-    showToast('All broadcasts acknowledged', 'success');
+    showToast('All broadcasts read', 'success');
   }
 
   function clearAll() {
-    openConfirm('Purge All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
+    openConfirm('Delete All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
       fetch('../../api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
       notifs = [];
       renderNotifs();
