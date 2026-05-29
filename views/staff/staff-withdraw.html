@@ -38,8 +38,49 @@
             background: #f59e0b !important;
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
         }
-        .step-pill.active { background: #1a3c5e; color: white; border-color: #1a3c5e; }
-        .step-pill.completed { background: #10b981; color: white; border-color: #10b981; }
+
+        /* ── Step Indicator ── */
+        .step-indicator {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 12px;
+            color: #94a3b8;
+            background: transparent;
+            transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.3s;
+        }
+        .step-indicator.active {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.15);
+        }
+        .step-indicator.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
+        /* Dark mode overrides */
+        [data-theme="dark"] .step-indicator,
+        .dark .step-indicator {
+            border-color: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.4);
+        }
+        [data-theme="dark"] .step-indicator.active,
+        .dark .step-indicator.active {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.2);
+        }
+        [data-theme="dark"] .step-indicator.completed,
+        .dark .step-indicator.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -145,25 +186,26 @@
             </div>
 
             <!-- STEP INDICATOR -->
+            <!-- STEP INDICATOR -->
             <div class="flex items-center justify-between mb-8 sm:mb-10 px-0 sm:px-4 overflow-x-auto pb-4 sm:pb-0 scrollbar-hide">
                 <div class="flex flex-col items-center gap-3">
-                    <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs step-indicator" data-step="1">1</div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-900">Find Account</span>
+                    <div class="step-indicator" data-step="1">1</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Find Account</span>
                 </div>
-                <div class="flex-1 h-px bg-slate-200 dark:bg-blue-500 mx-4 mb-8"></div>
+                <div class="flex-1 h-px bg-slate-200 mx-4 mb-8"></div>
                 <div class="flex flex-col items-center gap-3">
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-900 step-indicator" data-step="2">2</div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-900">Enter Details</span>
+                    <div class="step-indicator" data-step="2">2</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Enter Details</span>
                 </div>
-                <div class="flex-1 h-px bg-slate-200 dark:bg-blue-500 mx-4 mb-8"></div>
+                <div class="flex-1 h-px bg-slate-200 mx-4 mb-8"></div>
                 <div class="flex flex-col items-center gap-3">
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-900 step-indicator" data-step="3">3</div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-900">Confirm</span>
+                    <div class="step-indicator" data-step="3">3</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Confirm</span>
                 </div>
-                <div class="flex-1 h-px bg-slate-200 dark:bg-blue-500 mx-4 mb-8"></div>
+                <div class="flex-1 h-px bg-slate-200 mx-4 mb-8"></div>
                 <div class="flex flex-col items-center gap-3">
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-900 dark:border-white/10 flex items-center justify-center font-bold text-xs text-slate-900 step-indicator" data-step="4">4</div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-900">Receipt</span>
+                    <div class="step-indicator" data-step="4">4</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Receipt</span>
                 </div>
             </div>
 
@@ -372,14 +414,9 @@
         function updateSteps(num) {
             steps.each(function() {
                 const s = parseInt($(this).data('step'));
-                $(this).removeClass('active completed border-primary border-slate-200 dark:border-white/10 text-slate-400 text-white');
-                if (s < num) {
-                    $(this).addClass('completed bg-emerald-500 border-emerald-500 text-white');
-                } else if (s === num) {
-                    $(this).addClass('active bg-primary text-white border-primary');
-                } else {
-                    $(this).addClass('border-slate-200 dark:border-white/10 text-slate-400');
-                }
+                $(this).removeClass('active completed');
+                if (s < num) $(this).addClass('completed');
+                else if (s === num) $(this).addClass('active');
             });
         }
         updateSteps(1);
