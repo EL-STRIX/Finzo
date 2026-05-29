@@ -9,77 +9,105 @@ $(document).ready(function() {
         
         // --- Grouped Bar Chart (Institutional Ledger) ---
         if (type === 'grouped-bar') {
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [
-                        {
-                            label: 'Deposits',
-                            data: [45, 52, 48, 61, 58, 72],
-                            backgroundColor: '#10B981',
-                            borderRadius: { topLeft: 6, topRight: 6 },
-                            borderSkipped: false,
-                            barThickness: 8
-                        },
-                        {
-                            label: 'Withdrawals',
-                            data: [28, 31, 25, 35, 29, 38],
-                            backgroundColor: '#F87171',
-                            borderRadius: { topLeft: 6, topRight: 6 },
-                            borderSkipped: false,
-                            barThickness: 8
-                        },
-                        {
-                            label: 'Transfers',
-                            data: [18, 22, 19, 27, 24, 31],
-                            backgroundColor: '#3B82F6',
-                            borderRadius: { topLeft: 6, topRight: 6 },
-                            borderSkipped: false,
-                            barThickness: 8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#002645',
-                            titleFont: { size: 10, weight: 'bold' },
-                            bodyFont: { size: 10 },
-                            padding: 10,
-                            displayColors: true,
-                            callbacks: {
-                                label: (context) => ` ₹${context.raw}K`
+            $.ajax({
+                url: './api/public/chart-stats.php',
+                method: 'GET',
+                success: function(response) {
+                    if (!response.success) return;
+
+                    // Update DOM stats if they exist
+                    const updateStat = (idPrefix, val) => {
+                        const iconEl = $('#stat-' + idPrefix + '-icon');
+                        const valEl = $('#stat-' + idPrefix + '-val');
+                        if (iconEl.length && valEl.length) {
+                            if (val > 0) {
+                                iconEl.text('↑').removeClass('text-rose-400 text-blue-500').addClass('text-emerald-500');
+                                valEl.text('+' + val + '%').removeClass('text-rose-400 text-blue-500').addClass('text-emerald-500');
+                            } else if (val < 0) {
+                                iconEl.text('↓').removeClass('text-emerald-500 text-blue-500').addClass('text-rose-400');
+                                valEl.text(val + '%').removeClass('text-emerald-500 text-blue-500').addClass('text-rose-400');
+                            } else {
+                                iconEl.text('→').removeClass('text-emerald-500 text-rose-400').addClass('text-blue-500');
+                                valEl.text('0%').removeClass('text-emerald-500 text-rose-400').addClass('text-blue-500');
                             }
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 75,
-                            grid: { color: 'rgba(0, 0, 0, 0.03)', drawTicks: false },
-                            ticks: {
-                                stepSize: 25,
-                                color: 'rgba(0, 38, 69, 0.4)',
-                                font: { size: 9, weight: 'bold' },
-                                callback: value => '₹' + value + 'K'
-                            }
+                    };
+
+                    updateStat('dep', response.changes.deposits);
+                    updateStat('wit', response.changes.withdrawals);
+                    updateStat('tra', response.changes.transfers);
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: response.labels,
+                            datasets: [
+                                {
+                                    label: 'Deposits',
+                                    data: response.datasets.deposits,
+                                    backgroundColor: '#10B981',
+                                    borderRadius: { topLeft: 6, topRight: 6 },
+                                    borderSkipped: false,
+                                    barThickness: 8
+                                },
+                                {
+                                    label: 'Withdrawals',
+                                    data: response.datasets.withdrawals,
+                                    backgroundColor: '#F87171',
+                                    borderRadius: { topLeft: 6, topRight: 6 },
+                                    borderSkipped: false,
+                                    barThickness: 8
+                                },
+                                {
+                                    label: 'Transfers',
+                                    data: response.datasets.transfers,
+                                    backgroundColor: '#3B82F6',
+                                    borderRadius: { topLeft: 6, topRight: 6 },
+                                    borderSkipped: false,
+                                    barThickness: 8
+                                }
+                            ]
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                color: 'rgba(0, 38, 69, 0.4)',
-                                font: { size: 9, weight: 'bold' }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 2000,
+                                easing: 'easeOutQuart'
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#002645',
+                                    titleFont: { size: 10, weight: 'bold' },
+                                    bodyFont: { size: 10 },
+                                    padding: 10,
+                                    displayColors: true,
+                                    callbacks: {
+                                        label: (context) => ` ₹${context.raw}K`
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(0, 0, 0, 0.03)', drawTicks: false },
+                                    ticks: {
+                                        color: 'rgba(0, 38, 69, 0.4)',
+                                        font: { size: 9, weight: 'bold' },
+                                        callback: value => '₹' + value + 'K'
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: 'rgba(0, 38, 69, 0.4)',
+                                        font: { size: 9, weight: 'bold' }
+                                    }
+                                }
                             }
                         }
-                    }
+                    });
                 }
             });
             return;
