@@ -116,39 +116,49 @@
 </div>
 
 <script>
-buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
+(async function initReceipt() {
+  await fetchUserSession();
+  buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
 
-// Load receipt from API using URL param
-(async function loadReceipt() {
   const params = new URLSearchParams(window.location.search);
   const txnId = params.get('id');
-  
-  // Set sender info from session
-  document.getElementById('rcpt-from-name').textContent = UserState.name;
-  document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'NOT ASSIGNED';
 
   if (txnId) {
     try {
-      const res = await fetch('../../api/user/receipt.php?id=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/transactions.php?search=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
       const data = await res.json();
-      if (data.success && data.transaction) {
-        const tx = data.transaction;
+      if (data.success && data.transactions && data.transactions.length > 0) {
+        const tx = data.transactions.find(t => t.txn_id === txnId) || data.transactions[0];
+        
         const date = new Date(tx.created_at);
         const dateStr = date.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
         const timeStr = date.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
 
-        document.getElementById('rcpt-no').textContent = tx.receipt_no || ('RCP' + txnId.slice(-8));
-        document.getElementById('rcpt-txn-id').textContent = tx.reference_id || txnId;
+        document.getElementById('rcpt-no').textContent = 'RCP' + txnId.slice(-8);
+        document.getElementById('rcpt-txn-id').textContent = tx.txn_id || txnId;
         document.getElementById('rcpt-datetime').textContent = dateStr + ' — ' + timeStr;
         document.getElementById('rcpt-desc').textContent = tx.description || 'Fund Transfer';
 
-        const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+        const isCredit = tx.direction === 'credit' || tx.type === 'deposit' || tx.type === 'interest_credit';
         document.getElementById('rcpt-type').innerHTML = isCredit
-          ? '<span class="badge badge-green">Deposit</span>'
-          : '<span class="badge badge-teal">Transfer</span>';
+          ? '<span class="badge badge-green" style="text-transform:uppercase">' + tx.type + '</span>'
+          : '<span class="badge badge-teal" style="text-transform:uppercase">' + tx.type + '</span>';
 
-        if (tx.to_name) document.getElementById('rcpt-to-name').textContent = tx.to_name;
-        if (tx.to_account) document.getElementById('rcpt-to-acc').textContent = tx.to_account;
+        if (tx.from_name && tx.from_name !== 'N/A') {
+            document.getElementById('rcpt-from-name').textContent = tx.from_name;
+            document.getElementById('rcpt-from-acc').textContent = tx.from_account_no || '-';
+        } else {
+            document.getElementById('rcpt-from-name').textContent = UserState.name;
+            document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'NOT ASSIGNED';
+        }
+        
+        if (tx.to_name && tx.to_name !== 'N/A') {
+            document.getElementById('rcpt-to-name').textContent = tx.to_name;
+            document.getElementById('rcpt-to-acc').textContent = tx.to_account_no || '-';
+        } else {
+            document.getElementById('rcpt-to-name').textContent = 'External Beneficiary';
+            document.getElementById('rcpt-to-acc').textContent = '-';
+        }
 
         const amt = parseFloat(tx.amount || 0);
         document.getElementById('rcpt-amount').textContent = formatINR(amt);
@@ -162,8 +172,17 @@ buildSidebar('transactions'); buildNavbar('Transaction','Receipt');
   // Fallback: show basic info
   const now = new Date();
   document.getElementById('rcpt-no').textContent = 'RCP' + Date.now().toString().slice(-8);
+  document.getElementById('rcpt-txn-id').textContent = txnId || 'UNKNOWN';
   document.getElementById('rcpt-datetime').textContent = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + ' — ' + now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' IST';
   document.getElementById('rcpt-balance-after').textContent = formatINR(UserState.balance || 0);
+  document.getElementById('rcpt-from-name').textContent = UserState.name;
+  document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'NOT ASSIGNED';
+  document.getElementById('rcpt-amount').textContent = '₹0.00';
+  document.getElementById('rcpt-amount2').textContent = '₹0.00';
+  document.getElementById('rcpt-type').innerHTML = '<span class="badge badge-gray">UNKNOWN</span>';
+  document.getElementById('rcpt-desc').textContent = 'Not Available';
+  document.getElementById('rcpt-to-name').textContent = '-';
+  document.getElementById('rcpt-to-acc').textContent = '-';
 })();
 </script>
 </body>
