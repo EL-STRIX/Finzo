@@ -57,7 +57,7 @@
 </div>
 <div class="table-wrap">
 <table>
-<thead><tr><th>#</th><th>Date & Time</th><th>Description</th><th>Type</th><th>Amount</th><th>Balance After</th><th>Status</th><th>Receipt</th></tr></thead>
+<thead><tr><th>Date & Time</th><th>Transaction Details</th><th>Amount</th><th>Balance</th><th style="text-align:right">Action</th></tr></thead>
 <tbody id="txn-body"></tbody>
 </table>
 </div>
@@ -85,7 +85,7 @@ let allTxns = [];
 async function loadTransactions() {
   try {
     const params = new URLSearchParams();
-    if (activeFilter !== 'all') params.set('type', activeFilter);
+    if (activeFilter === 'transfer') params.set('type', 'transfer');
     const search = document.getElementById('search').value;
     if (search) params.set('search', search);
     const fromDate = document.getElementById('from-date').value;
@@ -102,7 +102,8 @@ async function loadTransactions() {
         date: new Date(tx.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}),
         time: new Date(tx.created_at).toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'}) + ' IST',
         desc: tx.description || tx.type,
-        type: tx.type === 'credit' || tx.type === 'deposit' ? 'credit' : tx.type === 'transfer' ? 'transfer' : 'debit',
+        rawType: tx.type,
+        direction: tx.direction || (tx.type === 'deposit' || tx.type === 'interest_credit' ? 'credit' : 'debit'),
         amount: parseFloat(tx.amount),
         balanceAfter: parseFloat(tx.balance_after || 0),
         status: tx.status || 'completed'
@@ -139,7 +140,9 @@ function resetFilters() {
 function renderTable() {
   const search = document.getElementById('search').value.toLowerCase();
   filtered = allTxns.filter(t => {
-    if (activeFilter !== 'all' && t.type !== activeFilter) return false;
+    if (activeFilter === 'credit' && t.direction !== 'credit') return false;
+    if (activeFilter === 'debit' && t.direction !== 'debit') return false;
+    if (activeFilter === 'transfer' && t.rawType !== 'transfer') return false;
     if (search && !t.desc.toLowerCase().includes(search) && !t.id.toLowerCase().includes(search)) return false;
     return true;
   });
@@ -149,22 +152,18 @@ function renderTable() {
   const slice = filtered.slice((page-1)*ROW_PP, page*ROW_PP);
   const tbody = document.getElementById('txn-body');
   if (slice.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><span class="material-symbols-outlined">receipt_long</span><div class="empty-state-title">No transactions found</div><div class="empty-state-text">Try adjusting your filters</div></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><span class="material-symbols-outlined">receipt_long</span><div class="empty-state-title">No transactions found</div><div class="empty-state-text">Try adjusting your filters</div></div></td></tr>';
   } else {
     tbody.innerHTML = slice.map((t,i) => {
-      const rowClass = t.type === 'credit' ? 'tx-row-credit' : 'tx-row-debit';
-      const amtClass = t.type === 'credit' ? 'amount-pos' : 'amount-neg';
-      const amtSign = t.type === 'credit' ? '+' : '-';
-      const typeColors = {credit:'badge-green',debit:'badge-red',transfer:'badge-teal'};
+      const rowClass = t.direction === 'credit' ? 'tx-row-credit' : 'tx-row-debit';
+      const amtClass = t.direction === 'credit' ? 'amount-pos' : 'amount-neg';
+      const amtSign = t.direction === 'credit' ? '+' : '-';
       return `<tr class="${rowClass}">
-        <td class="td-mono">${String((page-1)*ROW_PP+i+1).padStart(2,'0')}</td>
         <td><div style="font-size:12px;font-weight:700;color:var(--text-primary)">${t.date}</div><div style="font-size:10px;color:var(--text-secondary)">${t.time}</div></td>
         <td><div style="font-size:13px;font-weight:600">${t.desc}</div><div class="td-mono">${t.id}</div></td>
-        <td><span class="badge ${typeColors[t.type]||'badge-gray'}" style="text-transform:uppercase">${t.type}</span></td>
-        <td class="${amtClass}">${amtSign}${formatINR(t.amount)}</td>
+        <td class="${amtClass}" style="font-weight:800">${amtSign}${formatINR(t.amount)}</td>
         <td style="font-size:12px;font-weight:700">${formatINR(t.balanceAfter)}</td>
-        <td><span class="badge badge-green">Completed</span></td>
-        <td><button class="btn btn-ghost btn-sm btn-icon-only" onclick="window.location.href='receipt.html?id=${t.id}'" title="View Receipt"><span class="material-symbols-outlined" style="font-size:16px">print</span></button></td>
+        <td style="text-align:right"><button class="btn btn-ghost btn-sm btn-icon-only" onclick="window.location.href='receipt.html?id=${t.id}'" title="Download Receipt"><span class="material-symbols-outlined" style="font-size:18px">download</span></button></td>
       </tr>`;
     }).join('');
   }
