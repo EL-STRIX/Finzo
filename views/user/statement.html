@@ -105,6 +105,22 @@
   document.getElementById('stmt-acc-no').textContent = UserState.accountNo || 'NOT ASSIGNED';
   document.getElementById('stmt-acc-type').textContent = (UserState.accountType||'savings').charAt(0).toUpperCase()+(UserState.accountType||'savings').slice(1)+' Account';
   document.getElementById('stmt-closing').textContent = formatINR(UserState.balance || 0);
+
+  // Auto-generate and print if params exist
+  const params = new URLSearchParams(window.location.search);
+  const fromParam = params.get('from');
+  const toParam = params.get('to');
+  const autoPrint = params.get('print') === 'true';
+
+  if (fromParam) document.getElementById('stmt-from').value = fromParam;
+  if (toParam) document.getElementById('stmt-to').value = toParam;
+
+  if (fromParam || toParam || autoPrint) {
+    await generateStatement();
+    if (autoPrint) {
+      setTimeout(() => window.print(), 500);
+    }
+  }
 })();
 
 async function generateStatement(){
@@ -122,7 +138,7 @@ async function generateStatement(){
       const tbody = document.querySelector('#statement-preview tbody');
       let totalCredits = 0, totalDebits = 0;
       tbody.innerHTML = data.transactions.map(tx => {
-        const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+        const isCredit = tx.direction === 'credit' || tx.type === 'deposit' || tx.type === 'interest_credit';
         const amt = parseFloat(tx.amount);
         if (isCredit) totalCredits += amt; else totalDebits += amt;
         const date = new Date(tx.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
