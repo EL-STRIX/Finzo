@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Login cannot be CSRF-exploited as the attacker would need the victim's credentials.
 
 // Collect and sanitize inputs
-$identity = sanitize_input($_POST['identity'] ?? '');
+$identity = clean_input($_POST['identity'] ?? '');
 $password = $_POST['password'] ?? '';
 
 // Basic validation

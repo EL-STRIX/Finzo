@@ -22,7 +22,7 @@ if (!validate_csrf_token($csrf_token)) {
 }
 
 // 2. Sanitize inputs
-$email    = sanitize_input($_POST['email'] ?? '');
+$email    = clean_input($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if (empty($email) || empty($password)) {

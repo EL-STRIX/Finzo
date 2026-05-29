@@ -22,9 +22,9 @@ $staff_id = $_SESSION['staff_id'];
 // =====================================================
 // INPUT VALIDATION
 // =====================================================
-$account_no     = sanitize_input($_POST['account_no'] ?? '');
+$account_no     = clean_input($_POST['account_no'] ?? '');
 $amount         = floatval($_POST['amount'] ?? 0);
-$identity_notes = sanitize_input($_POST['identity_notes'] ?? '');
+$identity_notes = clean_input($_POST['identity_notes'] ?? '');
 
 $errors = [];
 

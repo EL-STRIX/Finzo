@@ -23,23 +23,23 @@ if (!validate_csrf_token($csrf_token)) {
 check_admin_permission($pdo, $admin_id, 'add_staff');
 
 // 3. Collect and Sanitize Inputs
-$full_name               = sanitize_input($_POST['full_name'] ?? '');
-$date_of_birth           = sanitize_input($_POST['date_of_birth'] ?? '');
-$gender                  = sanitize_input($_POST['gender'] ?? '');
-$personal_email          = sanitize_input($_POST['personal_email'] ?? '');
-$phone                   = sanitize_input($_POST['phone'] ?? '');
-$emergency_contact_name  = sanitize_input($_POST['emergency_contact_name'] ?? '');
-$emergency_contact_phone = sanitize_input($_POST['emergency_contact_phone'] ?? '');
-$designation             = sanitize_input($_POST['designation'] ?? 'Teller');
+$full_name               = clean_input($_POST['full_name'] ?? '');
+$date_of_birth           = clean_input($_POST['date_of_birth'] ?? '');
+$gender                  = clean_input($_POST['gender'] ?? '');
+$personal_email          = clean_input($_POST['personal_email'] ?? '');
+$phone                   = clean_input($_POST['phone'] ?? '');
+$emergency_contact_name  = clean_input($_POST['emergency_contact_name'] ?? '');
+$emergency_contact_phone = clean_input($_POST['emergency_contact_phone'] ?? '');
+$designation             = clean_input($_POST['designation'] ?? 'Teller');
 $branch_id_raw           = $_POST['branch_id'] ?? '';
 $branch_id               = ($branch_id_raw !== '' && $branch_id_raw !== 'null') ? intval($branch_id_raw) : null;
-$date_of_joining         = sanitize_input($_POST['date_of_joining'] ?? date('Y-m-d'));
-$street                  = sanitize_input($_POST['street'] ?? '');
-$city                    = sanitize_input($_POST['city'] ?? '');
-$state                   = sanitize_input($_POST['state'] ?? '');
-$pincode                 = sanitize_input($_POST['pincode'] ?? '');
-$id_type                 = sanitize_input($_POST['id_type'] ?? '');
-$id_number               = sanitize_input($_POST['id_number'] ?? '');
+$date_of_joining         = clean_input($_POST['date_of_joining'] ?? date('Y-m-d'));
+$street                  = clean_input($_POST['street'] ?? '');
+$city                    = clean_input($_POST['city'] ?? '');
+$state                   = clean_input($_POST['state'] ?? '');
+$pincode                 = clean_input($_POST['pincode'] ?? '');
+$id_type                 = clean_input($_POST['id_type'] ?? '');
+$id_number               = clean_input($_POST['id_number'] ?? '');
 $password                = $_POST['password'] ?? '';
 
 // Default values

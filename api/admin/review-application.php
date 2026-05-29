@@ -35,12 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             json_response(['success' => false, 'message' => 'Application not found'], 404);
         }
 
-        // Auto-assign to "under_review" if it's currently "pending"
-        if ($user['status'] === 'pending') {
-            $update_stmt = $pdo->prepare("UPDATE users SET status = 'under_review', updated_at = NOW() WHERE id = ?");
-            $update_stmt->execute([$user_id]);
-            $user['status'] = 'under_review';
-        }
+        // Auto-assign logic removed to keep user in pending status until explicitly acted upon
 
         // Account preferences
         $stmt = $pdo->prepare("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?");
@@ -178,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = intval($_POST['user_id'] ?? 0);
-    $action  = sanitize_input($_POST['action'] ?? '');
+    $action  = clean_input($_POST['action'] ?? '');
 
     if (!$user_id || empty($action)) {
         json_response(['success' => false, 'message' => 'User ID and action are required'], 422);
@@ -278,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // REJECT APPLICATION
             // =====================================================
             case 'reject':
-                $reason = sanitize_input($_POST['reason'] ?? '');
+                $reason = clean_input($_POST['reason'] ?? '');
                 if (empty($reason)) {
                     json_response(['success' => false, 'message' => 'Rejection reason is required'], 422);
                 }
@@ -326,7 +321,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // SAVE ADMIN NOTES
             // =====================================================
             case 'save_notes':
-                $notes = sanitize_input($_POST['notes'] ?? '');
+                $notes = clean_input($_POST['notes'] ?? '');
 
                 // Store notes in rejection_reason field (reused for admin notes during review)
                 // In a production system, you'd have a separate admin_notes column

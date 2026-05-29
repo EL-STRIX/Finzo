@@ -8,8 +8,8 @@
 // =====================================================
 // ENVIRONMENT & ERROR REPORTING
 // =====================================================
-// Set to false in production
-define('APP_DEBUG', true);
+// Set APP_DEBUG=true in your .env for development only. NEVER true in production.
+define('APP_DEBUG', getenv('APP_DEBUG') === 'true' ? true : false);
 
 if (APP_DEBUG) {
     error_reporting(E_ALL);
@@ -48,7 +48,7 @@ define('SESSION_LIFETIME', 3600); // 1 hour
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
     ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_secure', '0'); // Set to '1' in production with HTTPS
+    ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
     ini_set('session.cookie_path', '/');
     session_start();
 }

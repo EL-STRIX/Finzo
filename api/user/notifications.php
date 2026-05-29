@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // POST: MARK NOTIFICATIONS AS READ
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = sanitize_input($_POST['action'] ?? '');
+    $action = clean_input($_POST['action'] ?? '');
 
     try {
         if ($action === 'mark_read') {

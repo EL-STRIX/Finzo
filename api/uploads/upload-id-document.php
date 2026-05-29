@@ -29,7 +29,7 @@ if (!isset($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_O
 }
 
 $file = $_FILES['document'];
-$side = sanitize_input($_POST['side'] ?? 'front'); // 'front' or 'back'
+$side = clean_input($_POST['side'] ?? 'front'); // 'front' or 'back'
 
 // Validate file type
 if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {

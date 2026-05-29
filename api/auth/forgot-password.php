@@ -20,7 +20,7 @@ if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
 }
 
 // Collect and sanitize input
-$email = sanitize_input($_POST['email'] ?? '');
+$email = clean_input($_POST['email'] ?? '');
 
 // Validate email
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {

@@ -87,9 +87,9 @@ if ($method === 'POST') {
     }
 
     // ---- Collect & validate inputs ----
-    $phone                   = sanitize_input($_POST['phone'] ?? '');
-    $emergency_contact_name  = sanitize_input($_POST['emergency_contact_name'] ?? '');
-    $emergency_contact_phone = sanitize_input($_POST['emergency_contact_phone'] ?? '');
+    $phone                   = clean_input($_POST['phone'] ?? '');
+    $emergency_contact_name  = clean_input($_POST['emergency_contact_name'] ?? '');
+    $emergency_contact_phone = clean_input($_POST['emergency_contact_phone'] ?? '');
 
     $errors = [];
 

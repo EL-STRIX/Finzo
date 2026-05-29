@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $status_filter = sanitize_input($_GET['status'] ?? 'all');
-    $search        = sanitize_input($_GET['search'] ?? '');
+    $status_filter = clean_input($_GET['status'] ?? 'all');
+    $search        = clean_input($_GET['search'] ?? '');
     $page          = max(1, intval($_GET['page'] ?? 1));
     $per_page      = min(50, max(10, intval($_GET['per_page'] ?? 10)));
 

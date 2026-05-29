@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$email = sanitize_input($_GET['email'] ?? '');
+$email = clean_input($_GET['email'] ?? '');
 
 if (empty($email)) {
     json_response(['found' => false]);

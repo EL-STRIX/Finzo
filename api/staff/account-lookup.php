@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$account_no = sanitize_input($_GET['account_no'] ?? '');
+$account_no = clean_input($_GET['account_no'] ?? '');
 
 if (empty($account_no)) {
     json_response(['success' => false, 'found' => false, 'message' => 'Account number is required'], 422);

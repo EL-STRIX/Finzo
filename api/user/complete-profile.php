@@ -28,15 +28,15 @@ $errors = [];
 // =====================================================
 // STEP 1: PERSONAL INFO VALIDATION
 // =====================================================
-$dob              = sanitize_input($_POST['dob'] ?? '');
-$gender           = sanitize_input($_POST['gender'] ?? '');
-$father_name      = sanitize_input($_POST['father_name'] ?? '');
-$mother_name      = sanitize_input($_POST['mother_name'] ?? '');
-$marital_status   = sanitize_input($_POST['marital_status'] ?? '');
-$nationality      = sanitize_input($_POST['nationality'] ?? '');
-$occupation       = sanitize_input($_POST['occupation'] ?? '');
-$annual_income    = sanitize_input($_POST['annual_income'] ?? '');
-$source_of_income = sanitize_input($_POST['source_of_income'] ?? '');
+$dob              = clean_input($_POST['dob'] ?? '');
+$gender           = clean_input($_POST['gender'] ?? '');
+$father_name      = clean_input($_POST['father_name'] ?? '');
+$mother_name      = clean_input($_POST['mother_name'] ?? '');
+$marital_status   = clean_input($_POST['marital_status'] ?? '');
+$nationality      = clean_input($_POST['nationality'] ?? '');
+$occupation       = clean_input($_POST['occupation'] ?? '');
+$annual_income    = clean_input($_POST['annual_income'] ?? '');
+$source_of_income = clean_input($_POST['source_of_income'] ?? '');
 
 if (empty($dob)) {
     $errors['dob'] = 'Date of birth is required';
@@ -84,10 +84,10 @@ if (empty($annual_income)) {
 // =====================================================
 // STEP 2: ADDRESS VALIDATION
 // =====================================================
-$street  = sanitize_input($_POST['street'] ?? '');
-$city    = sanitize_input($_POST['city'] ?? '');
-$state   = sanitize_input($_POST['state'] ?? '');
-$pincode = sanitize_input($_POST['pincode'] ?? '');
+$street  = clean_input($_POST['street'] ?? '');
+$city    = clean_input($_POST['city'] ?? '');
+$state   = clean_input($_POST['state'] ?? '');
+$pincode = clean_input($_POST['pincode'] ?? '');
 
 if (empty($street)) {
     $errors['street'] = 'Street address is required';
@@ -108,8 +108,8 @@ if (empty($pincode) || !validate_pincode($pincode)) {
 // =====================================================
 // STEP 3: IDENTITY DOCUMENTS VALIDATION
 // =====================================================
-$id_type   = sanitize_input($_POST['id_type'] ?? '');
-$id_number = sanitize_input($_POST['id_number'] ?? '');
+$id_type   = clean_input($_POST['id_type'] ?? '');
+$id_number = clean_input($_POST['id_number'] ?? '');
 
 $valid_id_types = ['Aadhaar', 'PAN', 'Passport', 'Voter ID', 'Driving License'];
 
@@ -180,7 +180,7 @@ if (!isset($_FILES['id_back']) || $_FILES['id_back']['error'] !== UPLOAD_ERR_OK)
 // =====================================================
 // STEP 4: ACCOUNT PREFERENCES VALIDATION
 // =====================================================
-$account_type   = sanitize_input($_POST['account_type'] ?? '');
+$account_type   = clean_input($_POST['account_type'] ?? '');
 $initial_deposit = floatval($_POST['initial_deposit'] ?? 0);
 $txn_pin         = $_POST['txn_pin'] ?? '';
 $confirm_pin     = $_POST['confirm_pin'] ?? '';

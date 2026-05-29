@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search       = sanitize_input($_GET['search'] ?? '');
-    $date_from    = sanitize_input($_GET['date_from'] ?? '');
-    $date_to      = sanitize_input($_GET['date_to'] ?? '');
-    $account_type = sanitize_input($_GET['account_type'] ?? '');
+    $search       = clean_input($_GET['search'] ?? '');
+    $date_from    = clean_input($_GET['date_from'] ?? '');
+    $date_to      = clean_input($_GET['date_to'] ?? '');
+    $account_type = clean_input($_GET['account_type'] ?? '');
     $page         = max(1, intval($_GET['page'] ?? 1));
     $per_page     = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 

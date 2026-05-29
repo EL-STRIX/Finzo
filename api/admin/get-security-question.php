@@ -18,7 +18,7 @@ if (!validate_csrf_token($csrf_token)) {
 }
 
 // 2. Sanitize email
-$email = sanitize_input($_POST['email'] ?? '');
+$email = clean_input($_POST['email'] ?? '');
 
 if (empty($email)) {
     json_response(['success' => false, 'message' => 'Email is required'], 422);

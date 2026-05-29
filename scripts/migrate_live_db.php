@@ -43,12 +43,10 @@ function logMsg($message, $type = 'info') {
     }
 }
 
-// Start HTML output if on web
+// Enforce CLI only
 if (php_sapi_name() !== 'cli') {
-    echo '<!DOCTYPE html><html><head><title>Finzo DB Migration</title></head>';
-    echo '<body style="font-family: monospace; background: #f4f4f9; padding: 20px; line-height: 1.5;">';
-    echo '<h2>Finzo Custom ID Database Migration</h2>';
-    echo '<hr style="border: 1px solid #ccc; margin-bottom: 20px;">';
+    http_response_code(403);
+    die("Error: This script can only be run from the command line.");
 }
 
 logMsg("Connecting to database: " . DB_NAME);

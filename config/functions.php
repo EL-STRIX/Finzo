@@ -16,10 +16,18 @@ require_once __DIR__ . '/config.php';
  * @param string $data Raw input string
  * @return string Sanitized string
  */
-function sanitize_input($data) {
+function clean_input($data) {
     $data = trim($data);
-    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     return $data;
+}
+
+/**
+ * Encode HTML entities for safe output display.
+ * @param string $data Raw string
+ * @return string Encoded string
+ */
+function html_encode($data) {
+    return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 }
 
 // =====================================================
@@ -602,7 +610,7 @@ function update_setting($pdo, $key, $value, $admin_id) {
         $stmt = $pdo->prepare("
             UPDATE system_settings 
             SET setting_value = ?, updated_by = ?, updated_at = NOW() 
-            WHERE setting_key = ?
+            WHERE setting_key = ? LIMIT 1
         ");
         return $stmt->execute([$value, $admin_id, $key]);
     } catch (PDOException $e) {

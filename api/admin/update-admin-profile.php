@@ -73,11 +73,11 @@ try {
     }
 
     // 2. General Profile Update Logic
-    $full_name = sanitize_input($_POST['full_name'] ?? '');
-    $phone = sanitize_input($_POST['phone'] ?? '');
-    $date_of_birth = sanitize_input($_POST['date_of_birth'] ?? '');
-    $gender = sanitize_input($_POST['gender'] ?? '');
-    $security_question = isset($_POST['security_question']) ? sanitize_input($_POST['security_question']) : null;
+    $full_name = clean_input($_POST['full_name'] ?? '');
+    $phone = clean_input($_POST['phone'] ?? '');
+    $date_of_birth = clean_input($_POST['date_of_birth'] ?? '');
+    $gender = clean_input($_POST['gender'] ?? '');
+    $security_question = isset($_POST['security_question']) ? clean_input($_POST['security_question']) : null;
     $security_answer = $_POST['security_answer'] ?? '';
 
     // Validations (Email is read-only)

@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // POST: UPDATE ADMIN PROFILE
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = sanitize_input($_POST['action'] ?? 'update_profile');
+    $action = clean_input($_POST['action'] ?? 'update_profile');
 
     if ($action === 'change_password') {
         $current_password = $_POST['current_password'] ?? '';
@@ -156,9 +156,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
         // Update profile info
-        $full_name = sanitize_input($_POST['full_name'] ?? $_POST['name'] ?? '');
-        $email     = sanitize_input($_POST['email'] ?? '');
-        $phone     = sanitize_input($_POST['phone'] ?? '');
+        $full_name = clean_input($_POST['full_name'] ?? $_POST['name'] ?? '');
+        $email     = clean_input($_POST['email'] ?? '');
+        $phone     = clean_input($_POST['phone'] ?? '');
         $password  = $_POST['password'] ?? '';
 
         if (empty($full_name)) {

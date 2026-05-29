@@ -22,7 +22,7 @@ if ($_SESSION['admin_role'] !== 'super_admin') {
     json_response(['success' => false, 'message' => 'Forbidden: Only Super Administrator can perform this action.'], 403);
 }
 
-$action = sanitize_input($_POST['action'] ?? '');
+$action = clean_input($_POST['action'] ?? '');
 $target_numeric_id = isset($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0;
 
 if ($target_numeric_id <= 0) {

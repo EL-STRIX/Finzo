@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         json_response(['success' => false, 'message' => 'Invalid security token'], 403);
     }
 
-    $full_name = sanitize_input($_POST['full_name'] ?? '');
-    $phone     = sanitize_input($_POST['phone'] ?? '');
-    $email     = sanitize_input($_POST['email'] ?? '');
+    $full_name = clean_input($_POST['full_name'] ?? '');
+    $phone     = clean_input($_POST['phone'] ?? '');
+    $email     = clean_input($_POST['email'] ?? '');
 
     $errors = [];
 

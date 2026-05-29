@@ -20,15 +20,15 @@ if ($_SESSION['admin_role'] !== 'super_admin') {
 }
 
 try {
-    $full_name = sanitize_input($_POST['full_name'] ?? '');
-    $date_of_birth = sanitize_input($_POST['date_of_birth'] ?? '');
-    $gender = sanitize_input($_POST['gender'] ?? '');
-    $email = sanitize_input($_POST['email'] ?? '');
-    $phone = sanitize_input($_POST['phone'] ?? '');
+    $full_name = clean_input($_POST['full_name'] ?? '');
+    $date_of_birth = clean_input($_POST['date_of_birth'] ?? '');
+    $gender = clean_input($_POST['gender'] ?? '');
+    $email = clean_input($_POST['email'] ?? '');
+    $phone = clean_input($_POST['phone'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
-    $admin_role = sanitize_input($_POST['admin_role'] ?? '');
-    $security_question = sanitize_input($_POST['security_question'] ?? '');
+    $admin_role = clean_input($_POST['admin_role'] ?? '');
+    $security_question = clean_input($_POST['security_question'] ?? '');
     $security_answer = $_POST['security_answer'] ?? '';
 
     // Validations

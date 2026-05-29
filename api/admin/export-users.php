@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search       = sanitize_input($_GET['search'] ?? '');
-    $status       = sanitize_input($_GET['status'] ?? 'all');
+    $search       = clean_input($_GET['search'] ?? '');
+    $status       = clean_input($_GET['status'] ?? 'all');
 
     // Build query
     $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];

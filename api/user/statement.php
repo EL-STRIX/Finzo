@@ -31,8 +31,8 @@ try {
     }
 
     // Parse date range (default: last 30 days)
-    $from_date = sanitize_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
-    $to_date   = sanitize_input($_GET['to_date'] ?? date('Y-m-d'));
+    $from_date = clean_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
+    $to_date   = clean_input($_GET['to_date'] ?? date('Y-m-d'));
 
     // Fetch transactions within date range
     $stmt = $pdo->prepare("

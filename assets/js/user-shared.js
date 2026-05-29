@@ -34,6 +34,7 @@ initTheme();
 // Populated from PHP session via API. Falls back to localStorage for offline demo mode.
 const STATE_KEYS = {
   NOTIF_COUNT: 'finzo_notif_count',
+  STATUS: 'finzo_user_status',
 };
 
 // Internal cache — populated by fetchUserSession()
@@ -280,21 +281,36 @@ function showPINModal() {
         currentPin += btn.getAttribute('data-val');
         updateDots();
         if (currentPin.length === 4) {
-          setTimeout(() => {
-            if (currentPin.length === 4) { // PIN accepted (client-side demo mode)
+          btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:16px">progress_activity</span>';
+          fetch('../../api/user/verify-pin.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ pin: currentPin })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
               UserState.unlockBalance();
               showToast('Security Verified', 'success');
               closePINModal();
             } else {
               currentPin = '';
               updateDots();
-              showToast('Incorrect PIN', 'error');
-              // Optional: Add a shake animation to the dots
+              showToast(data.message || 'Incorrect PIN', 'error');
               document.getElementById('pin-dots').style.animation = 'none';
               void document.getElementById('pin-dots').offsetWidth;
               document.getElementById('pin-dots').style.animation = 'shake 0.4s';
             }
-          }, 200);
+          })
+          .catch(err => {
+            currentPin = '';
+            updateDots();
+            showToast('Connection error', 'error');
+          })
+          .finally(() => {
+            btn.innerHTML = btn.getAttribute('data-val');
+          });
         }
       }
     };
@@ -653,7 +669,11 @@ function handleStatusRedirect(currentPage) {
 
   // Inactive users cannot access active-only pages
   if (activeOnlyPages.includes(currentPage) && status !== 'active') {
-    window.location.href = 'dashboard.html';
+    if (status === 'under_review') {
+      window.location.href = 'account-pending.html';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
     return;
   }
 

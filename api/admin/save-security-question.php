@@ -21,7 +21,7 @@ if (!validate_csrf_token($csrf_token)) {
 }
 
 // 2. Validate inputs
-$security_question = sanitize_input($_POST['security_question'] ?? '');
+$security_question = clean_input($_POST['security_question'] ?? '');
 $security_answer = $_POST['security_answer'] ?? '';
 $current_password = $_POST['current_password'] ?? '';
 

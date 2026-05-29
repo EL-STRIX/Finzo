@@ -19,7 +19,7 @@ if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
 }
 
 // Collect inputs
-$token            = sanitize_input($_POST['token'] ?? '');
+$token            = clean_input($_POST['token'] ?? '');
 $new_password     = $_POST['new_password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 

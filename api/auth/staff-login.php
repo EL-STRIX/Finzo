@@ -11,7 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$identity = sanitize_input($_POST['identity'] ?? '');
+// 1. Validate CSRF token
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (empty($csrf_token)) {
+    json_response(['success' => false, 'message' => 'Security token missing. Please refresh the page.'], 403);
+}
+if (!validate_csrf_token($csrf_token)) {
+    json_response(['success' => false, 'message' => 'Invalid or expired security session. Please try again.'], 403);
+}
+
+// 2. Sanitize inputs
+$identity = clean_input($_POST['identity'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if (empty($identity) || empty($password)) {

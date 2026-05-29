@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check for delete action via POST (for forms that don't support DELETE)
-    $action = sanitize_input($_POST['action'] ?? 'add');
+    $action = clean_input($_POST['action'] ?? 'add');
 
     if ($action === 'delete') {
         $beneficiary_id = intval($_POST['beneficiary_id'] ?? 0);
@@ -68,9 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Add new beneficiary
-    $nickname   = sanitize_input($_POST['nickname'] ?? '');
-    $account_no = sanitize_input($_POST['account_no'] ?? '');
-    $bank_name  = sanitize_input($_POST['bank_name'] ?? 'Finzo');
+    $nickname   = clean_input($_POST['nickname'] ?? '');
+    $account_no = clean_input($_POST['account_no'] ?? '');
+    $bank_name  = clean_input($_POST['bank_name'] ?? 'Finzo');
 
     $errors = [];
 

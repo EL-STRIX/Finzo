@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.openRejectModal = function() {
-        const reasonArea = document.querySelector('textarea[placeholder*="rejection"]');
+        const reasonArea = document.getElementById('reject-reason-input');
         const reasonPreview = document.getElementById('rejection-reason-preview');
         if (reasonArea && reasonPreview) {
             const reason = reasonArea.value.trim();
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnReject = document.getElementById('confirmReject');
     if(btnReject) {
         btnReject.addEventListener('click', async function() {
-            const reasonArea = document.querySelector('textarea[placeholder*="rejection"]');
+            const reasonArea = document.getElementById('reject-reason-input');
             const reason = reasonArea ? reasonArea.value.trim() : '';
 
             if (!reason) {

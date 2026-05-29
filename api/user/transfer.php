@@ -28,9 +28,9 @@ $user_id = $_SESSION['user_id'];
 // =====================================================
 // INPUT VALIDATION
 // =====================================================
-$to_account_no = sanitize_input($_POST['to_account_no'] ?? '');
+$to_account_no = clean_input($_POST['to_account_no'] ?? '');
 $amount        = floatval($_POST['amount'] ?? 0);
-$description   = sanitize_input($_POST['description'] ?? '');
+$description   = clean_input($_POST['description'] ?? '');
 $txn_pin       = $_POST['txn_pin'] ?? '';
 
 $errors = [];

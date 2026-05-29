@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $staff_id = intval($_POST['staff_id'] ?? 0);
-$action   = sanitize_input($_POST['action'] ?? '');
-$reason   = sanitize_input($_POST['reason'] ?? '');
+$action   = clean_input($_POST['action'] ?? '');
+$reason   = clean_input($_POST['reason'] ?? '');
 
 if (!$staff_id || empty($action)) {
     json_response(['success' => false, 'message' => 'Staff ID and action are required'], 422);

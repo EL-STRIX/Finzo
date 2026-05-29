@@ -12,9 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search = sanitize_input($_GET['search'] ?? '');
-    $type   = sanitize_input($_GET['type'] ?? 'all');
-    $status = sanitize_input($_GET['status'] ?? 'all');
+    $search = clean_input($_GET['search'] ?? '');
+    $type   = clean_input($_GET['type'] ?? 'all');
+    $status = clean_input($_GET['status'] ?? 'all');
 
     $where_clauses = ["1=1"];
     $params = [];

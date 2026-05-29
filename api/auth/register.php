@@ -19,9 +19,9 @@ if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
 }
 
 // Collect and sanitize inputs
-$full_name        = sanitize_input($_POST['full_name'] ?? '');
+$full_name        = clean_input($_POST['full_name'] ?? '');
 $email            = trim($_POST['email'] ?? '');
-$phone            = sanitize_input($_POST['phone'] ?? '');
+$phone            = clean_input($_POST['phone'] ?? '');
 $password         = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 

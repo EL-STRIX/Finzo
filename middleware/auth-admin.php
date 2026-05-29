@@ -105,7 +105,7 @@ if ($admin_status_row) {
                     'success' => false,
                     'locked'  => true,
                     'message' => 'Your account has been locked. Please use the unlock process.',
-                    'redirect' => '/Finzo/views/auth/admin-login.html?locked=1&email=' . urlencode($session_email)
+                    'redirect' => '/views/auth/admin-login.html?locked=1&email=' . urlencode($session_email)
                 ], 401);
             }
             header('Location: ' . APP_URL . '/views/auth/admin-login.html?locked=1&email=' . urlencode($session_email));
@@ -122,7 +122,7 @@ if ($admin_status_row) {
             json_response([
                 'success' => false,
                 'message' => 'Your account has been suspended. Contact the system administrator.',
-                'redirect' => '/Finzo/views/auth/admin-login.html?suspended=1'
+                'redirect' => '/views/auth/admin-login.html?suspended=1'
             ], 403);
         }
         header('Location: ' . APP_URL . '/views/auth/admin-login.html?suspended=1');

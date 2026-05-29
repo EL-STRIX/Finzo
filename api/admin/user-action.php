@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $user_id = intval($_POST['user_id'] ?? 0);
-$action  = sanitize_input($_POST['action'] ?? '');
-$reason  = sanitize_input($_POST['reason'] ?? '');
+$action  = clean_input($_POST['action'] ?? '');
+$reason  = clean_input($_POST['reason'] ?? '');
 
 if (!$user_id || empty($action)) {
     json_response(['success' => false, 'message' => 'User ID and action are required'], 422);
@@ -120,7 +120,7 @@ try {
                 json_response(['success' => false, 'message' => 'User is not deleted'], 409);
             }
 
-            $balance_option = sanitize_input($_POST['balance_option'] ?? 'full');
+            $balance_option = clean_input($_POST['balance_option'] ?? 'full');
 
             // Restore from soft-delete
             $stmt = $pdo->prepare("UPDATE users SET is_deleted = 0, deleted_at = NULL, status = 'active', updated_at = NOW() WHERE id = ?");

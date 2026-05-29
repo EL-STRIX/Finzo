@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    $search      = sanitize_input($_GET['search'] ?? '');
-    $action_type = sanitize_input($_GET['action_type'] ?? 'all');
-    $actor_role  = sanitize_input($_GET['actor_role'] ?? 'all');
-    $from_date   = sanitize_input($_GET['from_date'] ?? '');
-    $to_date     = sanitize_input($_GET['to_date'] ?? '');
+    $search      = clean_input($_GET['search'] ?? '');
+    $action_type = clean_input($_GET['action_type'] ?? 'all');
+    $actor_role  = clean_input($_GET['actor_role'] ?? 'all');
+    $from_date   = clean_input($_GET['from_date'] ?? '');
+    $to_date     = clean_input($_GET['to_date'] ?? '');
     $page        = max(1, intval($_GET['page'] ?? 1));
     $per_page    = min(100, max(10, intval($_GET['per_page'] ?? 25)));
 

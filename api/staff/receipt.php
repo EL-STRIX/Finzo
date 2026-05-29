@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$txn_id = sanitize_input($_GET['id'] ?? $_GET['txn_id'] ?? '');
+$txn_id = clean_input($_GET['id'] ?? $_GET['txn_id'] ?? '');
 
 if (empty($txn_id)) {
     json_response(['success' => false, 'message' => 'Transaction ID is required'], 422);

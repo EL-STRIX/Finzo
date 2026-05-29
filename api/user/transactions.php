@@ -34,11 +34,11 @@ try {
     $account_id = $account['id'];
 
     // Parse filters
-    $search    = sanitize_input($_GET['search'] ?? '');
-    $type      = sanitize_input($_GET['type'] ?? 'all');
-    $status    = sanitize_input($_GET['status'] ?? 'all');
-    $from_date = sanitize_input($_GET['from_date'] ?? '');
-    $to_date   = sanitize_input($_GET['to_date'] ?? '');
+    $search    = clean_input($_GET['search'] ?? '');
+    $type      = clean_input($_GET['type'] ?? 'all');
+    $status    = clean_input($_GET['status'] ?? 'all');
+    $from_date = clean_input($_GET['from_date'] ?? '');
+    $to_date   = clean_input($_GET['to_date'] ?? '');
     $page      = max(1, intval($_GET['page'] ?? 1));
     $per_page  = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 

@@ -124,13 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
     //  LOAD STAFF DATA
     // =============================
     async function loadStaffData() {
-        console.log('[StaffDetail] Loading staff data for id=' + staffId);
         try {
             var response = await window.api.get('/admin/staff-detail.php?id=' + staffId);
-            console.log('[StaffDetail] API Response:', response);
 
             if (!response || (!response.success && response.status !== 'success')) {
-                console.error('[StaffDetail] API error:', response);
                 if (window.showToast) window.showToast(response?.message || 'Error loading staff details', 'error');
                 return;
             }
@@ -143,10 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var documents = response.documents || [];
             var address = response.address || {};
             var appBase = window.location.origin + '/Finzo/';
-
-            console.log('[StaffDetail] Staff:', staff);
-            console.log('[StaffDetail] Documents:', documents);
-            console.log('[StaffDetail] Address:', address);
 
             // ─── HEADER ─────────────────────────────
             setText('header-staff-name', staff.full_name);
@@ -380,10 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            console.log('[StaffDetail] Render complete.');
-
         } catch (error) {
-            console.error('[StaffDetail] Load error:', error);
             if (window.showToast) window.showToast('Connection error. Please try again.', 'error');
         }
     }

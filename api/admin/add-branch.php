@@ -19,12 +19,12 @@ $admin_id = $_SESSION['admin_id'];
 check_admin_permission($pdo, $admin_id, 'add_branch');
 
 // Collect inputs
-$branch_name  = sanitize_input($_POST['branch_name'] ?? '');
-$state        = sanitize_input($_POST['state'] ?? '');
-$city         = sanitize_input($_POST['city'] ?? '');
-$address      = sanitize_input($_POST['address'] ?? '');
+$branch_name  = clean_input($_POST['branch_name'] ?? '');
+$state        = clean_input($_POST['state'] ?? '');
+$city         = clean_input($_POST['city'] ?? '');
+$address      = clean_input($_POST['address'] ?? '');
 $manager_id   = intval($_POST['manager_id'] ?? 0);
-$description  = sanitize_input($_POST['description'] ?? '');
+$description  = clean_input($_POST['description'] ?? '');
 $admin_password = $_POST['admin_password'] ?? '';
 
 $errors = [];

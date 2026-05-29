@@ -65,7 +65,7 @@ try {
     $locked_accounts = (int)$stmt->fetchColumn();
 
     // 13a. Total accounts
-    $stmt = $pdo->query("SELECT COUNT(*) FROM accounts");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM accounts WHERE status = 'active'");
     $total_accounts = (int)$stmt->fetchColumn();
 
     // 13b. Interest credited

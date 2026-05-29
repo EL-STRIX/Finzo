@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_admin_permission($pdo, $admin_id, 'change_interest_rate');
 
-    $action = sanitize_input($_POST['action'] ?? 'update_rate');
+    $action = clean_input($_POST['action'] ?? 'update_rate');
 
     $new_rate       = floatval($_POST['new_rate'] ?? 0);
-    $apply_from     = sanitize_input($_POST['apply_from'] ?? 'Immediately');
-    $custom_date    = sanitize_input($_POST['custom_date'] ?? '');
+    $apply_from     = clean_input($_POST['apply_from'] ?? 'Immediately');
+    $custom_date    = clean_input($_POST['custom_date'] ?? '');
 
     $errors = [];
 
