@@ -136,7 +136,7 @@
             <div style="display:flex; align-items:center; gap:12px">
               <span class="material-symbols-outlined" style="color:var(--primary); font-size:24px">account_balance</span>
               <div>
-                <div style="font-size:14px; font-weight:800; color:var(--text-primary)">Finzo Platinum Savings</div>
+                <div style="font-size:14px; font-weight:800; color:var(--text-primary)" id="acc-type-name">Finzo Platinum Savings</div>
                 <div style="font-size:11px; color:var(--text-secondary); font-weight:600">Primary Wealth Container</div>
               </div>
             </div>
@@ -158,15 +158,15 @@
             <div class="account-meta-grid">
               <div class="meta-item">
                 <div class="meta-item-label">Opened date</div>
-                <div class="meta-item-value">12 APR 2026</div>
+                <div class="meta-item-value" id="acc-opened">—</div>
               </div>
               <div class="meta-item">
                 <div class="meta-item-label">INTEREST APY</div>
-                <div class="meta-item-value">4.25% p.a.</div>
+                <div class="meta-item-value" id="acc-interest">—</div>
               </div>
               <div class="meta-item">
                 <div class="meta-item-label">DAILY LIMIT</div>
-                <div class="meta-item-value">₹10,000</div>
+                <div class="meta-item-value" id="acc-limit">—</div>
               </div>
             </div>
 
@@ -213,6 +213,22 @@
     });
 
     document.getElementById('acc-no').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
+
+    // Populate Account Meta Data
+    const openedDate = new Date(UserState.openedDate);
+    const dateStr = !isNaN(openedDate) ? openedDate.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}).toUpperCase() : '—';
+    const accOpenedEl = document.getElementById('acc-opened');
+    if (accOpenedEl) accOpenedEl.textContent = dateStr;
+    
+    const accInterestEl = document.getElementById('acc-interest');
+    if (accInterestEl) accInterestEl.textContent = UserState.interestRate + '% p.a.';
+    
+    const accLimitEl = document.getElementById('acc-limit');
+    if (accLimitEl) accLimitEl.textContent = '₹' + parseInt(UserState.dailyLimit).toLocaleString('en-IN');
+    
+    const accTypeMap = { 'savings': 'Finzo Platinum Savings', 'current': 'Finzo Current Account' };
+    const accNameEl = document.getElementById('acc-type-name');
+    if (accNameEl) accNameEl.textContent = accTypeMap[UserState.accountType] || 'Finzo Account';
   })();
 </script>
 </body>

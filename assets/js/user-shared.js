@@ -77,6 +77,9 @@ async function fetchUserSession() {
       _userCache.accountNo = data.account?.account_no || '';
       _userCache.accountType = data.account?.account_type || 'savings';
       _userCache.balance = data.account?.balance || '0';
+      _userCache.interestRate = data.account?.interest_rate || '0';
+      _userCache.dailyLimit = data.account?.daily_limit || '0';
+      _userCache.openedDate = data.account?.opened_date || '';
       _userCache.rejectionReason = data.user?.rejection_reason || '';
       _userCache.rejectedAt = data.user?.updated_at || '';
       _userCache.pastRejections = data.past_rejections || [];
@@ -103,6 +106,9 @@ const UserState = {
   get accountNo() { return _userCache.accountNo; },
   get accountType() { return _userCache.accountType; },
   get balance() { return _userCache.balance; },
+  get interestRate() { return _userCache.interestRate; },
+  get dailyLimit() { return _userCache.dailyLimit; },
+  get openedDate() { return _userCache.openedDate; },
   get rejectionReason() { return _userCache.rejectionReason; },
   get rejectedAt() { return _userCache.rejectedAt; },
   get pastRejections() { return _userCache.pastRejections; },
