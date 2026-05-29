@@ -144,21 +144,42 @@
           ? '<span class="badge badge-green" style="text-transform:uppercase">' + tx.type + '</span>'
           : '<span class="badge badge-teal" style="text-transform:uppercase">' + tx.type + '</span>';
 
-        if (tx.from_name && tx.from_name !== 'N/A') {
-            document.getElementById('rcpt-from-name').textContent = tx.from_name;
-            document.getElementById('rcpt-from-acc').textContent = tx.from_account_no || '-';
+        let fromName, fromAcc, toName, toAcc;
+        
+        if (tx.type === 'deposit') {
+            fromName = 'Cash Deposit';
+            fromAcc = 'Branch / ATM';
+            toName = UserState.name;
+            toAcc = UserState.accountNo;
+        } else if (tx.type === 'withdrawal') {
+            fromName = UserState.name;
+            fromAcc = UserState.accountNo;
+            toName = 'Cash Withdrawal';
+            toAcc = 'Branch / ATM';
+        } else if (tx.type === 'interest_credit') {
+            fromName = 'Finzo Bank';
+            fromAcc = 'Interest Settlement';
+            toName = UserState.name;
+            toAcc = UserState.accountNo;
         } else {
-            document.getElementById('rcpt-from-name').textContent = UserState.name;
-            document.getElementById('rcpt-from-acc').textContent = UserState.accountNo || 'NOT ASSIGNED';
+            // Transfer
+            if (tx.direction === 'credit') {
+                fromName = (tx.from_name && tx.from_name !== 'N/A') ? tx.from_name : 'External Account';
+                fromAcc = tx.from_account_no || '-';
+                toName = UserState.name;
+                toAcc = UserState.accountNo;
+            } else {
+                fromName = UserState.name;
+                fromAcc = UserState.accountNo;
+                toName = (tx.to_name && tx.to_name !== 'N/A') ? tx.to_name : 'External Beneficiary';
+                toAcc = tx.to_account_no || '-';
+            }
         }
         
-        if (tx.to_name && tx.to_name !== 'N/A') {
-            document.getElementById('rcpt-to-name').textContent = tx.to_name;
-            document.getElementById('rcpt-to-acc').textContent = tx.to_account_no || '-';
-        } else {
-            document.getElementById('rcpt-to-name').textContent = 'External Beneficiary';
-            document.getElementById('rcpt-to-acc').textContent = '-';
-        }
+        document.getElementById('rcpt-from-name').textContent = fromName;
+        document.getElementById('rcpt-from-acc').textContent = fromAcc;
+        document.getElementById('rcpt-to-name').textContent = toName;
+        document.getElementById('rcpt-to-acc').textContent = toAcc;
 
         const amt = parseFloat(tx.amount || 0);
         document.getElementById('rcpt-amount').textContent = formatINR(amt);
