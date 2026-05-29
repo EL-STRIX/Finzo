@@ -270,7 +270,7 @@
                 });
 
                 if (response.status === 'success' || response.success) {
-                    generatedPass = response.data.temp_password;
+                    generatedPass = response.temp_password || (response.data && response.data.temp_password) || 'N/A';
 
                     if (unlockModalIconBox) {
                         unlockModalIconBox.style.background = 'var(--green-soft)';
