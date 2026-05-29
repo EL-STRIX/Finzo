@@ -187,6 +187,7 @@
                         <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">Today</button>
                         <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Week</button>
                         <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Month</button>
+                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0" id="tab-custom">Custom Range</button>
                     </div>
                     <!-- PRINT ALL BUTTON -->
                     <button id="print-all-btn" onclick="printAllTransactions()"
@@ -256,8 +257,20 @@
                             <input type="hidden" id="filter-status" value="All Status">
                         </div>
                     </div>
+                </div>
 
-
+                <!-- Custom Date Inputs (Hidden by default) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="custom-date-row" style="display: none;">
+                    <div class="lg:col-span-2 hidden lg:block"></div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">From Date</label>
+                        <input type="date" id="filter-from-date" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">To Date</label>
+                        <input type="date" id="filter-to-date" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
             </div>
 
             <!-- HISTORY TABLE -->
@@ -343,7 +356,9 @@
             search: '',
             type: 'all',
             status: 'all',
-            range: 'All Time'
+            range: 'All Time',
+            from_date: '',
+            to_date: ''
         };
 
         async function renderTransactions() {
@@ -351,10 +366,24 @@
             tbody.html('<tr><td colspan="9" class="text-center py-12"><div class="flex items-center justify-center gap-3 font-bold text-slate-400"><span class="material-symbols-outlined animate-spin">sync</span> Loading transactions...</div></td></tr>');
 
             try {
-                // Map range to dates if needed (backend handles simple filters better)
-                let from_date = '';
+                // Map range to dates
+                let from_date = currentFilters.from_date;
+                let to_date = currentFilters.to_date;
                 const today = new Date().toISOString().split('T')[0];
-                if (currentFilters.range === 'Today') from_date = today;
+                if (currentFilters.range === 'Today') {
+                    from_date = today;
+                    to_date = today;
+                } else if (currentFilters.range === 'This Week') {
+                    const d = new Date();
+                    d.setDate(d.getDate() - 7);
+                    from_date = d.toISOString().split('T')[0];
+                    to_date = today;
+                } else if (currentFilters.range === 'This Month') {
+                    const d = new Date();
+                    d.setDate(1);
+                    from_date = d.toISOString().split('T')[0];
+                    to_date = today;
+                }
                 
                 const query = new URLSearchParams({
                     page: currentPage,
@@ -479,6 +508,8 @@
             currentFilters.search = $('#search-input').val().trim();
             currentFilters.type = $('#filter-type').val().toLowerCase().replace('all types', 'all').replace('deposits', 'deposit').replace('withdrawals', 'withdrawal');
             currentFilters.status = $('#filter-status').val().toLowerCase().replace('all status', 'all');
+            currentFilters.from_date = $('#filter-from-date').val();
+            currentFilters.to_date = $('#filter-to-date').val();
             currentPage = 1;
             renderTransactions();
         }
@@ -487,8 +518,23 @@
             $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
             $(this).addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
             currentFilters.range = $(this).text().trim();
+            
+            if (currentFilters.range === 'Custom Range') {
+                $('#custom-date-row').slideDown(200);
+            } else {
+                $('#custom-date-row').slideUp(200);
+                $('#filter-from-date').val('');
+                $('#filter-to-date').val('');
+                currentFilters.from_date = '';
+                currentFilters.to_date = '';
+            }
+            
             currentPage = 1;
             renderTransactions();
+        });
+
+        $('#filter-from-date, #filter-to-date').on('change', function() {
+            applyFilters();
         });
 
         $(document).on('click', '.page-num', function() {
@@ -513,10 +559,24 @@
             btn.prop('disabled', true).html('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
 
             try {
-                // Build the same filters but fetch ALL records (no pagination limit)
-                let from_date = '';
+                // Build the same filters but fetch ALL records (up to 1000)
+                let from_date = currentFilters.from_date;
+                let to_date = currentFilters.to_date;
                 const today = new Date().toISOString().split('T')[0];
-                if (currentFilters.range === 'Today') from_date = today;
+                if (currentFilters.range === 'Today') {
+                    from_date = today;
+                    to_date = today;
+                } else if (currentFilters.range === 'This Week') {
+                    const d = new Date();
+                    d.setDate(d.getDate() - 7);
+                    from_date = d.toISOString().split('T')[0];
+                    to_date = today;
+                } else if (currentFilters.range === 'This Month') {
+                    const d = new Date();
+                    d.setDate(1);
+                    from_date = d.toISOString().split('T')[0];
+                    to_date = today;
+                }
 
                 const query = new URLSearchParams({
                     page: 1,
@@ -537,7 +597,15 @@
 
                 // Build filter description for header
                 const filterDesc = [];
-                if (currentFilters.range && currentFilters.range !== 'All Time') filterDesc.push('Period: ' + currentFilters.range);
+                if (currentFilters.range && currentFilters.range !== 'All Time') {
+                    if (currentFilters.range === 'Custom Range') {
+                        if (from_date && to_date) filterDesc.push('Period: ' + from_date + ' to ' + to_date);
+                        else if (from_date) filterDesc.push('Period: From ' + from_date);
+                        else if (to_date) filterDesc.push('Period: Up to ' + to_date);
+                    } else {
+                        filterDesc.push('Period: ' + currentFilters.range);
+                    }
+                }
                 if (currentFilters.search) filterDesc.push('Search: "' + currentFilters.search + '"');
                 if (currentFilters.type !== 'all') filterDesc.push('Type: ' + currentFilters.type.charAt(0).toUpperCase() + currentFilters.type.slice(1));
                 if (currentFilters.status !== 'all') filterDesc.push('Status: ' + currentFilters.status.charAt(0).toUpperCase() + currentFilters.status.slice(1));

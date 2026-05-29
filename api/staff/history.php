@@ -22,7 +22,10 @@ try {
     $from_date = clean_input($_GET['from_date'] ?? '');
     $to_date   = clean_input($_GET['to_date'] ?? '');
     $page      = max(1, intval($_GET['page'] ?? 1));
-    $per_page  = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+    $per_page  = intval($_GET['per_page'] ?? 20);
+    if ($per_page !== 999) {
+        $per_page = min(50, max(10, $per_page));
+    }
 
     // Build query conditions
     $where_clauses = ["t.processed_by_staff_id = ?"];
