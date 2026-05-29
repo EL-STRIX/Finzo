@@ -21,7 +21,7 @@ try {
     // Fetch user profile
     $stmt = $pdo->prepare("
         SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-               mother_name, marital_status, nationality,
+               mother_name, marital_status, nationality, profile_picture,
                occupation, annual_income, source_of_income, street, city, state, pincode, country,
                id_type, id_number, id_front_path, id_back_path,
                kyc_submitted_at, rejection_reason, is_deleted, deleted_at,
@@ -74,8 +74,7 @@ try {
     $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
 
     // Avatar URL
-    $avatar_path = dirname(__DIR__, 2) . '/uploads/avatars/user_' . $user_id . '.jpg';
-    $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
+    $avatar_url = !empty($user['profile_picture']) ? APP_URL . '/' . $user['profile_picture'] : null;
 
     json_response([
         'success' => true,

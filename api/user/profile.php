@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
+                   mother_name, marital_status, nationality, source_of_income, profile_picture,
                    occupation, annual_income, street, city, state, pincode, country,
                    id_type, id_number, created_at
             FROM users

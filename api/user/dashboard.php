@@ -25,7 +25,7 @@ try {
     // FETCH USER DATA
     // =====================================================
     $stmt = $pdo->prepare("
-        SELECT id, customer_id, full_name, email, phone, status, rejection_reason, created_at, updated_at
+        SELECT id, customer_id, full_name, email, phone, status, rejection_reason, profile_picture, created_at, updated_at
         FROM users
         WHERE id = ? AND is_deleted = 0
     ");
@@ -160,8 +160,7 @@ try {
     $greeting = get_greeting();
 
     // Avatar URL
-    $avatar_path = dirname(__DIR__, 2) . '/uploads/avatars/user_' . $user_id . '.jpg';
-    $avatar_url = file_exists($avatar_path) ? '../../uploads/avatars/user_' . $user_id . '.jpg?t=' . filemtime($avatar_path) : null;
+    $avatar_url = !empty($user['profile_picture']) ? '../../' . $user['profile_picture'] : null;
 
     // =====================================================
     // PAST REJECTION HISTORY
