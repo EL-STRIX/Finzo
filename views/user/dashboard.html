@@ -434,7 +434,7 @@ buildNavbar('Account Overview', 'Dashboard');
         if (txEmpty) txEmpty.classList.add('hidden');
         if (txList) {
           txList.innerHTML = txData.transactions.map(tx => {
-            const isCredit = tx.type === 'credit' || tx.type === 'deposit';
+            const isCredit = tx.direction === 'credit';
             const icon = isCredit ? 'arrow_downward' : 'arrow_upward';
             const iconColor = isCredit ? '#10b981' : '#f43f5e';
             const iconBg = isCredit ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)';
@@ -446,7 +446,7 @@ buildNavbar('Account Overview', 'Dashboard');
                 <div class="tx-icon" style="background:${iconBg}"><span class="material-symbols-outlined" style="color:${iconColor};font-size:20px">${icon}</span></div>
                 <div>
                   <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${tx.description || tx.type}</div>
-                  <div style="font-size:11px;color:var(--text-secondary)">${tx.reference_id || ''} • ${date}</div>
+                  <div style="font-size:11px;color:var(--text-secondary)">${tx.txn_id || ''} • ${date}</div>
                 </div>
               </div>
               <div style="text-align:right">

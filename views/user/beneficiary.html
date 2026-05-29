@@ -141,7 +141,7 @@ function deleteBen(id) {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',
-        body: 'action=delete&id=' + encodeURIComponent(id)
+        body: 'action=delete&beneficiary_id=' + encodeURIComponent(id)
       });
     } catch(e) {}
     beneficiaries = beneficiaries.filter(b => b.id !== id);

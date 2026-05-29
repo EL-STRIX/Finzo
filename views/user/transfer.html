@@ -360,10 +360,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',
-        body: 'to_account=' + encodeURIComponent(recipientAccNo) +
+        body: 'to_account_no=' + encodeURIComponent(recipientAccNo) +
               '&amount=' + encodeURIComponent(amount) +
               '&description=' + encodeURIComponent(desc || 'Fund transfer via Finzo') +
-              '&pin=' + encodeURIComponent(pin) +
+              '&txn_pin=' + encodeURIComponent(pin) +
               '&csrf_token=' + encodeURIComponent(typeof getCSRFToken === 'function' ? getCSRFToken() : '')
       });
       const data = await res.json();
