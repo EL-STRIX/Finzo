@@ -98,6 +98,21 @@
 
           <div style="font-size:16px; font-weight:700; font-family:'Courier New', monospace; letter-spacing:0.1em; color:rgba(255,255,255,0.8)" id="acc-no-big">FNZ — — —</div>
           <div style="font-size:9px; opacity:0.4; font-weight:700; margin-top:2px">ACCOUNT NUMBER</div>
+
+          <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div>
+              <div style="font-size:9px; opacity:0.6; font-weight:700; text-transform:uppercase; margin-bottom:4px; color:rgba(255,255,255,0.7)">Opened Date</div>
+              <div style="font-size:13px; font-weight:600; color:#fff" id="acc-opened">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; opacity:0.6; font-weight:700; text-transform:uppercase; margin-bottom:4px; color:rgba(255,255,255,0.7)">Interest APY</div>
+              <div style="font-size:13px; font-weight:600; color:#fff" id="acc-interest">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; opacity:0.6; font-weight:700; text-transform:uppercase; margin-bottom:4px; color:rgba(255,255,255,0.7)">Routing #</div>
+              <div style="font-size:13px; font-weight:600; font-family:'Courier New', monospace; color:#fff">FINZ0001</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -196,6 +211,12 @@
     document.getElementById('acc-no-big').textContent = (UserState.accountNo || 'NOT ASSIGNED').replace(/(.{4})/g, '$1 ').trim();
     const accType = UserState.accountType || 'savings';
     document.getElementById('acc-type-label').textContent = accType.charAt(0).toUpperCase()+accType.slice(1)+' Account Profile';
+
+    // Populate Meta Grid
+    if (UserState.openedDate) {
+      document.getElementById('acc-opened').textContent = new Date(UserState.openedDate).toLocaleDateString('en-IN', {month:'short', year:'numeric', day:'numeric'}).toUpperCase();
+    }
+    document.getElementById('acc-interest').textContent = UserState.interestRate + '% p.a.';
   })();
 
   // Load daily limit from API
@@ -220,7 +241,7 @@
   // Load recent transactions for mini-ledger
   (async function loadMiniLedger() {
     try {
-      const res = await fetch('../../api/user/transactions.php?limit=3', { credentials: 'same-origin' });
+      const res = await fetch('../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {
