@@ -394,7 +394,8 @@
                     search: currentFilters.search,
                     type: currentFilters.type,
                     status: currentFilters.status,
-                    from_date: from_date
+                    from_date: from_date,
+                    to_date: to_date
                 });
 
                 const res = await api.get('/staff/history.php?' + query.toString());
@@ -595,7 +596,8 @@
                     search: currentFilters.search,
                     type: currentFilters.type,
                     status: currentFilters.status,
-                    from_date: from_date
+                    from_date: from_date,
+                    to_date: to_date
                 });
 
                 const res = await api.get('/staff/history.php?' + query.toString());
