@@ -84,7 +84,8 @@ async function fetchUserSession() {
       _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
 
-      // Only sync non-sensitive metadata back to localStorage
+      // Sync metadata back to localStorage
+      localStorage.setItem(STATE_KEYS.STATUS, _userCache.status);
       localStorage.setItem(STATE_KEYS.NOTIF_COUNT, String(_userCache.notifCount));
     }
   } catch (err) {
