@@ -8,7 +8,23 @@
 <link rel="stylesheet" href="../../assets/css/user.css"/>
 <link rel="stylesheet" href="../../assets/css/user-panel.css"/>
 <style>
-@media print{.sidebar,.navbar,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important}}
+@media print{
+  .sidebar, .navbar, .no-print, .page-header { display:none!important; }
+  .main { margin:0!important; padding:0!important; }
+  body { background:#fff!important; color:#000!important; margin:0; }
+  * { color:#000!important; background:transparent!important; box-shadow:none!important; }
+  .card, .print-card { box-shadow:none!important; border:none!important; margin:0!important; padding:0!important; }
+  table { border-collapse:collapse; width:100%; margin-top:20px; }
+  th, td { border:1px solid #333!important; padding:10px!important; font-size:12px!important; text-align:left; }
+  th { border-bottom:2px solid #000!important; font-weight:800!important; text-transform:uppercase; font-size:10px!important; }
+  .form-grid-3 > div, .form-grid-2 > div { border:1px solid #333!important; padding:16px!important; background:#fff!important; }
+  .form-grid-3 { display:flex; gap:16px; margin-bottom:24px; }
+  .form-grid-3 > div { flex:1; text-align:center; }
+  .form-grid-2 { display:flex; gap:16px; margin-bottom:24px; }
+  .form-grid-2 > div { flex:1; }
+  .badge { border:none!important; padding:0!important; font-weight:bold!important; font-size:12px!important; }
+  .skeleton { display:none!important; }
+}
 .print-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid var(--primary);margin-bottom:20px}
 </style>
 </head>
@@ -32,7 +48,8 @@
 <div style="font-size:9px;font-weight:800;color:var(--text-secondary);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px">To Date</div>
 <input type="date" id="stmt-to" style="width:100%;height:42px;border-radius:var(--radius-md);border:1.5px solid var(--border-input);background:var(--bg-input);color:var(--text-primary);font-size:13px;padding:0 12px;outline:none;font-family:inherit" />
 </div>
-<button class="btn btn-primary" onclick="generateStatement()" style="align-self:flex-end;height:42px;min-width:160px;justify-content:center">Generate Statement</button>
+<button class="btn btn-primary" onclick="generateStatement()" style="align-self:flex-end;height:42px;min-width:160px;justify-content:center">Generate</button>
+<button class="btn btn-outline" onclick="window.print()" style="align-self:flex-end;height:42px;justify-content:center"><span class="material-symbols-outlined" style="font-size:16px;margin-right:6px">print</span>Print</button>
 </div>
 
 <!-- STATEMENT PREVIEW -->
