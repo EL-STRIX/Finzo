@@ -260,7 +260,7 @@
                 </div>
 
                 <!-- Custom Date Inputs (Hidden by default) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="custom-date-row" style="display: none;">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="custom-date-row" style="display: none;">
                     <div class="lg:col-span-2 hidden lg:block"></div>
                     <div>
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">From Date</label>
@@ -269,6 +269,9 @@
                     <div>
                         <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">To Date</label>
                         <input type="date" id="filter-to-date" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="apply-custom-date" class="w-full h-12 bg-slate-800 dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-[10px] uppercase tracking-widest shadow-md hover:opacity-90 transition-all">Apply</button>
                     </div>
                 </div>
             </div>
@@ -533,7 +536,15 @@
             renderTransactions();
         });
 
-        $('#filter-from-date, #filter-to-date').on('change', function() {
+        $(document).on('change', '#filter-from-date, #filter-to-date', function() {
+            applyFilters();
+        });
+        
+        $(document).on('keyup', '#filter-from-date, #filter-to-date', function(e) {
+            if (e.key === 'Enter') applyFilters();
+        });
+        
+        $(document).on('click', '#apply-custom-date', function() {
             applyFilters();
         });
 
