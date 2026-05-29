@@ -311,6 +311,10 @@
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Authorizing...';
 
     try {
+      const tokenRes = await fetch('../../api/auth/get-csrf-token.php');
+      const tokenData = await tokenRes.json();
+      const csrfToken = tokenData.csrf_token || '';
+
       const res = await fetch('../../api/user/transfer.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -319,7 +323,7 @@
               '&amount=' + encodeURIComponent(amount) +
               '&description=' + encodeURIComponent(desc || 'Fund transfer via Finzo') +
               '&txn_pin=' + encodeURIComponent(pin) +
-              '&csrf_token=' + encodeURIComponent(typeof getCSRFToken === 'function' ? getCSRFToken() : '')
+              '&csrf_token=' + encodeURIComponent(csrfToken)
       });
       const data = await res.json();
       
