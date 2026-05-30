@@ -721,6 +721,8 @@ window.FinzoSession = {
       Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
       window.location.href = '../auth/login.html';
+    } catch (e) {
+      window.location.href = '../auth/login.html';
     }
   }
 };
