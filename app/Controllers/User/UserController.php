@@ -527,13 +527,16 @@ class UserController {
             $txn_id = generate_transaction_id();
             $this->repository->insertTransaction($txn_id, $source['id'], $dest['id'], $amount, $new_source_balance, $new_dest_balance, $description);
 
-            send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$dest['full_name']} ({$to_account_no}). Transaction ID: {$txn_id}");
-            send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$source['full_name']} ({$source['account_no']}). Transaction ID: {$txn_id}");
+            $safe_dest_name = html_encode($dest['full_name']);
+            $safe_source_name = html_encode($source['full_name']);
+
+            send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$txn_id}");
+            send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$txn_id}");
             write_audit_log($pdo, 'fund_transfer', $txn_id, 'transaction', $user_id, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
 
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
-            json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $txn_id, 'amount' => $amount, 'to_name' => $dest['full_name'], 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/views/user/receipt.html?id=' . $txn_id]);
+            json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $txn_id, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/views/user/receipt.html?id=' . $txn_id]);
         } catch (PDOException $e) { if (isset($pdo)) $pdo->rollBack(); json_response(['success' => false, 'message' => 'Transfer failed. Please try again.'], 500); }
     }
 

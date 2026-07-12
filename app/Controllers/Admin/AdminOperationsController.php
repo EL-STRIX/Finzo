@@ -114,9 +114,15 @@ class AdminOperationsController {
             fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Last Active']);
             
             foreach ($users as $row) {
+                // Prevent CSV Formula Injection
+                $safe_name = $row['full_name'];
+                if (preg_match('/^[=\-+@\t\r]/', $safe_name)) {
+                    $safe_name = "'" . $safe_name;
+                }
+
                 fputcsv($output, [
                     $row['customer_id'] ?: 'Pending',
-                    $row['full_name'],
+                    $safe_name,
                     $row['email'],
                     $row['phone'],
                     ucfirst($row['status']),
