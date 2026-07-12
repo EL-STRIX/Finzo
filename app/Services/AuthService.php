@@ -68,6 +68,7 @@ class AuthService {
 
         $account = $this->repository->fetchActiveAccount($user['customer_id']);
 
+        session_regenerate_id(true);
         $_SESSION['user_id']        = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
         $_SESSION['user_name']      = $user['full_name'];
@@ -158,6 +159,7 @@ class AuthService {
 
         $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
 
+        session_regenerate_id(true);
         $_SESSION['admin_id']      = (int)$admin['id'];
         $_SESSION['admin_name']    = $admin['full_name'];
         $_SESSION['admin_email']   = $admin['email'];
@@ -228,6 +230,7 @@ class AuthService {
         $ip = get_client_ip();
         $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
 
+        session_regenerate_id(true);
         $_SESSION['staff_id']      = (int)$staff['id'];
         $_SESSION['staff_display_id'] = $staff['staff_id'];
         $_SESSION['staff_name']    = $staff['full_name'];

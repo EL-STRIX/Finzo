@@ -18,6 +18,10 @@ class AuthController {
         $identity = clean_input($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
 
+        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+            json_response(['success' => false, 'message' => 'Invalid or missing CSRF token'], 403);
+        }
+
         if (empty($identity) || empty($password)) {
             json_response(['success' => false, 'message' => 'Email/Account Number and password are required'], 422);
         }
