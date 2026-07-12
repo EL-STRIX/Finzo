@@ -47,4 +47,42 @@ class RequestHelper {
         
         return $decoded;
     }
+
+    /**
+     * Simulates a GET request and captures the output.
+     */
+    public static function get(string $controllerPath, array $getData, array $sessionData = []) {
+        $_POST = [];
+        $_GET = $getData;
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SESSION = $sessionData;
+        
+        ob_start();
+        $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
+        
+        if (!file_exists($path)) {
+            ob_end_clean();
+            throw new \Exception("Controller not found at: $path");
+        }
+        
+        (function() use ($path) {
+            require $path;
+        })();
+        
+        return ob_get_clean();
+    }
+
+    /**
+     * Simulates a GET request and parses the output as JSON.
+     */
+    public static function getJson(string $controllerPath, array $getData, array $sessionData = []) {
+        $output = self::get($controllerPath, $getData, $sessionData);
+        $decoded = json_decode($output, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception("Failed to decode JSON. Output was: \n" . $output);
+        }
+        
+        return $decoded;
+    }
 }
