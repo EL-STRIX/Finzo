@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beneficiaries | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
+<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
+</head>
+<body>
+<script src="../../../public/assets/js/user/user-shared.js"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+<div id="navbar-root"></div>
+<div class="page-content">
+<div class="page-header animate-in" style="display:flex;justify-content:space-between;align-items:flex-end">
+<div><div class="page-eyebrow">Banking</div><div class="page-title">Beneficiaries</div><div class="page-subtitle">Manage your saved transfer recipients</div></div>
+<!-- <button onclick="openModal('add-modal')" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px">add</span>Add Beneficiary</button> -->
+</div>
+
+<style>
+.beneficiary-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+@media(max-width:1024px) { .beneficiary-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="beneficiary-grid">
+<!-- LIST -->
+<div class="card animate-in animate-delay-1" style="overflow:hidden">
+<div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-input)">
+<div style="font-size:13px;font-weight:800;color:var(--text-primary);letter-spacing:0.08em;text-transform:uppercase">Saved Beneficiaries</div>
+</div>
+<div id="beneficiary-list"></div>
+</div>
+
+<!-- ADD FORM -->
+<div class="card card-p animate-in animate-delay-2" style="height:fit-content">
+<div class="card-title" style="margin-bottom:4px">Add New Beneficiary</div>
+<div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Save an account for quick future transfers</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="form-group"><label class="form-label">Nick Name *</label><input type="text" class="form-input" id="new-nick" placeholder="e.g. Mom, Office Rent"/></div>
+<div class="form-group">
+<label class="form-label">Account Number *</label>
+<div style="display:flex;gap:8px"><input type="text" class="form-input" id="new-acc" placeholder="e.g. FNZ20260002" style="flex:1;font-family:monospace"/><button class="btn btn-primary" onclick="lookupBen()">Verify</button></div>
+<div id="ben-result" class="hidden" style="margin-top:12px; padding:10px 12px; font-size:12px; font-weight:700; border-radius:var(--radius-md); display:flex; align-items:center; gap:8px;"></div>
+</div>
+<div class="form-group">
+  <label class="form-label">Network</label>
+  <div style="padding:12px 14px; background:rgba(8,145,178,0.06); border:1px solid rgba(8,145,178,0.2); border-radius:var(--radius-md); display:flex; align-items:center; gap:8px;">
+    <span class="material-symbols-outlined" style="font-size:18px; color:var(--primary)">account_balance</span>
+    <span style="font-size:13px; font-weight:700; color:var(--primary)">Finzo Internal Network</span>
+  </div>
+  <div style="font-size:10px; color:var(--text-placeholder); margin-top:6px; font-weight:600">Cross-bank transfers are currently disabled.</div>
+</div>
+<button class="btn btn-primary btn-full" onclick="addBeneficiary()">Save Beneficiary</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+(async function() {
+  await fetchUserSession();
+  buildSidebar('beneficiary'); buildNavbar('Banking','Beneficiaries');
+  handleStatusRedirect('beneficiary');
+  loadBeneficiaries();
+})();
+
+let beneficiaries = [];
+let verifiedHolder = '';
+
+// Load beneficiaries from API
+async function loadBeneficiaries() {
+  try {
+    const res = await fetch('../../../app/Controllers/user/beneficiary.php', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.success && data.beneficiaries) {
+      beneficiaries = data.beneficiaries.map(b => ({
+        id: b.id,
+        nick: b.nickname || b.name,
+        account: b.account_no,
+        holder: b.name,
+        bank: b.bank_name || 'Finzo Banking System',
+        added: b.created_at ? new Date(b.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—'
+      }));
+    }
+  } catch(e) { console.warn('Failed to load beneficiaries:', e); }
+  renderList();
+}
+
+async function lookupBen() {
+  const acc = document.getElementById('new-acc').value.trim().toUpperCase();
+  const res = document.getElementById('ben-result');
+  if (!acc) return;
+  try {
+    const r = await fetch('../../../api/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
+    const data = await r.json();
+    if (data.success && data.account) {
+      verifiedHolder = data.account.holder_name;
+      res.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check_circle</span> Verified: ' + verifiedHolder;
+      res.style.background = 'rgba(16,185,129,0.1)';
+      res.style.color = '#10b981';
+      res.classList.remove('hidden');
+    } else {
+      verifiedHolder = '';
+      res.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">error</span> Finzo account not found';
+      res.style.background = 'rgba(244,63,94,0.1)';
+      res.style.color = '#f43f5e';
+      res.classList.remove('hidden');
+    }
+  } catch(e) {
+    verifiedHolder = '';
+    res.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">error</span> Lookup failed';
+    res.style.background = 'rgba(244,63,94,0.1)';
+    res.style.color = '#f43f5e';
+    res.classList.remove('hidden');
+  }
+}
+
+async function addBeneficiary() {
+  const nick = document.getElementById('new-nick').value.trim();
+  const acc = document.getElementById('new-acc').value.trim().toUpperCase();
+  if (!nick || !acc) { showToast('Please fill in all fields', 'error'); return; }
+  if (!verifiedHolder) { showToast('Please verify the Finzo account number first', 'error'); return; }
+
+  try {
+    const res = await fetch('../../../app/Controllers/user/beneficiary.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      credentials: 'same-origin',
+      body: 'action=add&nickname=' + encodeURIComponent(nick) + '&account_no=' + encodeURIComponent(acc) + '&holder_name=' + encodeURIComponent(verifiedHolder)
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('new-nick').value = '';
+      document.getElementById('new-acc').value = '';
+      document.getElementById('ben-result').classList.add('hidden');
+      verifiedHolder = '';
+      showToast('Beneficiary saved successfully', 'success');
+      loadBeneficiaries();
+    } else {
+      showToast(data.message || 'Failed to save beneficiary', 'error');
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+function deleteBen(id) {
+  openConfirm('Remove Beneficiary', 'Are you sure you want to remove this beneficiary?', async () => {
+    try {
+      await fetch('../../../app/Controllers/user/beneficiary.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
+        body: 'action=delete&beneficiary_id=' + encodeURIComponent(id)
+      });
+    } catch(e) {}
+    beneficiaries = beneficiaries.filter(b => b.id !== id);
+    renderList();
+    showToast('Beneficiary removed', 'success');
+  }, true);
+}
+
+function renderList() {
+  const list = document.getElementById('beneficiary-list');
+  if (!beneficiaries.length) { list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">group</span><div class="empty-state-title">No saved beneficiaries</div><div class="empty-state-text">Add your first beneficiary using the form on the right.</div></div>'; return; }
+  list.innerHTML = beneficiaries.map(b => `
+  <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg-input)'" onmouseout="this.style.background='transparent'">
+  <div style="width:44px;height:44px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">${b.nick.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+  <div style="flex:1">
+  <div style="font-size:14px;font-weight:700;color:var(--text-primary)">${b.nick}</div>
+  <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;font-family:monospace">${b.account}</div>
+  <div style="font-size:10px;color:var(--text-placeholder);margin-top:2px">Added ${b.added}</div>
+  </div>
+  <div style="display:flex;gap:6px">
+  <a href="transfer.html?to=${b.account}" class="btn btn-primary btn-sm">Transfer</a>
+  <button class="btn btn-ghost btn-sm btn-icon-only" onclick="deleteBen(${b.id})" title="Remove"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+  </div>
+  </div>`).join('');
+}
+</script>
+</body>
+</html>
+

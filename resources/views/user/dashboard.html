@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard | Finzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
+<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
+<style>
+/* --- Premium Typography & Grid System --- */
+:root {
+  --card-radius: 20px;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+.col-8 { grid-column: span 8; }
+.col-4 { grid-column: span 4; }
+.col-12 { grid-column: span 12; }
+
+@media (max-width: 1100px) {
+  .col-8, .col-4 { grid-column: span 12; }
+  .grid-12 { gap: 16px; }
+}
+
+/* --- Institutional Balance Card --- */
+.balance-card {
+  background: linear-gradient(135deg, #0d121f 0%, #064e3b 50%, #0891b2 100%);
+  border-radius: 24px; padding: 32px; color: #fff;
+  position: relative; overflow: hidden; min-height: 240px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: 0 20px 50px rgba(0, 38, 69, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.balance-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); }
+
+/* Decorative Elements (Fixed Syntax) */
+.balance-card::before { 
+  content: ''; position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; 
+  border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); 
+}
+.balance-card::after { 
+  content: ''; position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; 
+  border-radius: 50%; background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, transparent 60%); 
+}
+
+.balance-amount { 
+  font-size: 48px; font-weight: 800; letter-spacing: -2.5px; 
+  background: linear-gradient(to bottom, #ffffff 60%, rgba(255,255,255,0.7)); 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1; margin: 8px 0;
+}
+.balance-amount.locked { 
+  color: rgba(255,255,255,0.2); -webkit-text-fill-color: initial; background: none; filter: blur(4px); 
+}
+
+.account-status-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px; border-radius: 20px; backdrop-filter: blur(10px);
+}
+
+/* --- Premium Glass Quick Actions --- */
+.quick-action-list { display: flex; flex-direction: column; gap: 16px; }
+
+.quick-action {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px; background: #fff; border: 1px solid var(--border);
+  border-radius: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none; color: var(--text-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.dark .quick-action { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.06); }
+
+.quick-action:hover { 
+  border-color: var(--primary); transform: translateX(8px);
+  background: #fff; box-shadow: 0 10px 25px rgba(8, 145, 178, 0.08);
+}
+.dark .quick-action:hover { background: rgba(255, 255, 255, 0.05); }
+
+.quick-action.locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; pointer-events: none; }
+
+.card.locked { opacity: 0.6; filter: grayscale(1); pointer-events: none; position: relative; }
+.card.locked::after {
+  content: "lock";
+  font-family: 'Material Symbols Outlined';
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 24px;
+  color: var(--text-placeholder);
+  opacity: 0.5;
+}
+
+.quick-action-icon { 
+  width: 52px; height: 52px; border-radius: 16px; 
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s ease;
+}
+.quick-action:hover .quick-action-icon { transform: scale(1.1) rotate(-5deg); }
+
+/* --- Transactions List --- */
+.tx-item { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 20px 0; border-bottom: 1px solid var(--border); transition: transform 0.2s ease;
+}
+.tx-item:hover { transform: scale(1.005); }
+.tx-item:last-child { border-bottom: none; }
+.tx-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* --- Responsive Polish --- */
+.page-header { margin-bottom: 40px; }
+.card-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; color: var(--text-primary); }
+
+@media (max-width: 640px) {
+  .balance-amount { font-size: 36px; }
+  .balance-card { padding: 24px; min-height: 220px; }
+  .page-header { margin-bottom: 24px; }
+}
+</style>
+</head>
+<body>
+<script src="../../../assets/js/user/user-shared.js?v=3"></script>
+<div id="sidebar-root"></div>
+<div class="main">
+  <div id="navbar-root"></div>
+  <div class="page-content">
+
+    <!-- STATUS BANNERS -->
+    <div id="banner-pending" class="banner banner-pending hidden animate-in">
+      <div class="banner-left">
+        <div class="banner-icon" style="background:rgba(8,145,178,0.12)">
+          <span class="material-symbols-outlined" style="color:#0891b2;font-size:20px">assignment_ind</span>
+        </div>
+        <div>
+          <div class="banner-title">Complete Your Profile to Start Banking</div>
+          <div class="banner-text">Verify your identity to unlock deposits, transfers, and all banking features.</div>
+        </div>
+      </div>
+      <a href="complete-profile.html" class="btn btn-primary" style="flex-shrink:0">Complete Profile →</a>
+    </div>
+
+    <div id="banner-review" class="banner banner-warning hidden animate-in">
+      <div class="banner-left">
+        <div class="banner-icon" style="background:rgba(245,158,11,0.12)">
+          <span class="material-symbols-outlined" style="color:#f59e0b;font-size:20px">hourglass_top</span>
+        </div>
+        <div>
+          <div class="banner-title">Your Application is Under Review</div>
+          <div class="banner-text">Our team is reviewing your details. You'll be notified within 24 hours.</div>
+        </div>
+      </div>
+      <a href="account-pending.html" class="badge badge-amber" style="text-decoration:none;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.background='rgba(245,158,11,0.2)'" onmouseout="this.style.background=''">
+        <span class="material-symbols-outlined" style="font-size:12px">open_in_new</span>
+        View Status
+      </a>
+    </div>
+
+    <div id="banner-rejected" class="banner banner-danger hidden animate-in">
+      <div class="banner-left">
+        <div class="banner-icon" style="background:rgba(244,63,94,0.12)">
+          <span class="material-symbols-outlined" style="color:#f43f5e;font-size:20px">cancel</span>
+        </div>
+        <div>
+          <div class="banner-title">Application Rejected — Action Required</div>
+          <div class="banner-text">Your application was not approved. Please update your profile and resubmit.</div>
+        </div>
+      </div>
+      <a href="account-rejected.html" class="btn btn-danger" style="flex-shrink:0">View Status →</a>
+    </div>
+
+    <div id="banner-approved" class="banner banner-success hidden animate-in">
+      <div class="banner-left">
+        <div class="banner-icon" style="background:rgba(16,185,129,0.12)">
+          <span class="material-symbols-outlined" style="color:#10b981;font-size:20px">check_circle</span>
+        </div>
+        <div>
+          <div class="banner-title" id="approved-msg">🎉 Your Finzo account has been activated!</div>
+          <div class="banner-text">You now have full access to all banking features.</div>
+        </div>
+      </div>
+      <button onclick="this.closest('.banner').classList.add('hidden')" class="nav-icon-btn">
+        <span class="material-symbols-outlined" style="font-size:18px">close</span>
+      </button>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header animate-in animate-delay-1">
+      <div class="page-eyebrow">Account Overview</div>
+      <div class="page-title" id="page-greeting"><span class="skeleton" style="width: 250px; height: 32px;"></span></div>
+      <div class="page-subtitle">Here's what's happening with your Finzo account today.</div>
+    </div>
+
+    <div class="grid-12">
+      <!-- ROW 1: BALANCE & STATS -->
+      <div class="col-8 animate-in animate-delay-2">
+        <div class="balance-card">
+          <div style="position:relative;z-index:1">
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.18em;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:6px">Total Available Balance</div>
+            <div class="balance-amount" id="dash-balance">₹ — — —</div>
+          </div>
+          <div style="position:relative;z-index:1">
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:6px">Account Number</div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div id="dash-account" style="font-size:16px;font-weight:700;letter-spacing:0.14em;font-family:monospace;color:rgba(255,255,255,0.8)">NOT YET ASSIGNED</div>
+              <span class="material-symbols-outlined" id="lock-icon" style="font-size:16px;color:rgba(255,255,255,0.4)">lock</span>
+            </div>
+            <div id="account-badge" style="margin-top:12px">
+              <span class="account-status-badge">
+                <span style="width:8px;height:8px;border-radius:50%;background:#0891b2;box-shadow: 0 0 10px #0891b2;"></span>
+                <span style="font-size:10px;font-weight:800;letter-spacing:0.1em;color:#fff;text-transform:uppercase;opacity:0.9" id="account-status-text">Awaiting Verification</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4 animate-in animate-delay-2">
+        <div id="activity-card" class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center; padding: 32px; background:linear-gradient(135deg, rgba(8,145,178,0.05) 0%, rgba(16,185,129,0.05) 100%);">
+          <div style="margin-bottom:20px">
+            <div class="card-title" style="font-size:14px; color:var(--text-secondary)">Monthly Activity</div>
+            <div style="font-size:24px; font-weight:800; color:var(--text-primary); margin: 4px 0;" id="activity-total"><span class="skeleton" style="width: 100px; height: 24px;"></span></div>
+            <div style="font-size:12px; color:#10b981; font-weight:600" id="activity-trend">↑ 0% from last month</div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:11px; color:var(--text-placeholder); text-transform:uppercase; font-weight:700">Income</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary)" id="activity-income"><span class="skeleton" style="width: 60px; height: 14px;"></span></div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-placeholder); text-transform:uppercase; font-weight:700">Expenses</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary)" id="activity-expenses"><span class="skeleton" style="width: 60px; height: 14px;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: QUICK ACTIONS (HORIZONTAL) -->
+      <div class="col-12 animate-in animate-delay-3">
+        <div style="margin: 12px 0 20px; padding-left: 4px; display:flex; align-items:center; gap:12px">
+          <div class="card-title">Quick Actions</div>
+          <div style="width:1px; height:14px; background:var(--border)"></div>
+          <div class="card-subtitle">One-tap banking</div>
+        </div>
+        <div class="grid-12" style="gap:20px">
+          <div class="col-4">
+            <a id="qa-transfer" href="transfer.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.15);">
+                  <span class="material-symbols-outlined" style="color:#0891b2;font-size:24px">swap_horiz</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Fund Transfer</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Send money instantly</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-transfer-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+          <div class="col-4">
+            <a id="qa-txns" href="transactions.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);">
+                  <span class="material-symbols-outlined" style="color:#10b981;font-size:24px">receipt_long</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Transactions</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">View full history</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-txns-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+          <div class="col-4">
+            <a id="qa-stmt" href="statement.html" class="quick-action locked">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div class="quick-action-icon" style="background:rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);">
+                  <span class="material-symbols-outlined" style="color:#f59e0b;font-size:24px">description</span>
+                </div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.2px">Statement</div>
+                  <div style="font-size:12px;color:var(--text-secondary);opacity:0.8">Download PDF</div>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" id="qa-stmt-icon" style="font-size:20px;color:var(--text-placeholder);opacity:0.5">lock</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: RECENT TRANSACTIONS -->
+      <div class="col-12 card animate-in animate-delay-4">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Transactions</div>
+            <div class="card-subtitle">Your latest account activity</div>
+          </div>
+          <a id="view-all-txns" href="transactions.html" class="btn btn-outline btn-sm hidden">View All</a>
+        </div>
+        <div style="padding:0 24px 20px">
+          <!-- Empty state (pending) -->
+          <div id="tx-empty" class="empty-state">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <div class="empty-state-title">No Transactions Yet</div>
+            <div class="empty-state-text">Your transaction history will appear here once your account is activated and you start banking.</div>
+            <a href="complete-profile.html" class="btn btn-primary" id="empty-cta">Complete Profile →</a>
+          </div>
+          <!-- Active transactions / Skeletons -->
+          <div id="tx-list" class="hidden">
+            <!-- Skeleton items (visible while loading) -->
+            <div class="tx-skeleton">
+              <div class="tx-item">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="skeleton-circle skeleton"></div>
+                  <div>
+                    <div class="skeleton-text skeleton" style="width: 120px;"></div>
+                    <div class="skeleton-text skeleton" style="width: 80px; height: 8px;"></div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="skeleton-text skeleton" style="width: 60px;"></div>
+                  <div class="skeleton-text skeleton" style="width: 40px; height: 8px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /grid -->
+
+  </div>
+</div>
+
+
+<script>
+// Initial render with cached data
+buildSidebar('dashboard');
+buildNavbar('Account Overview', 'Dashboard');
+
+(async function initDashboard() {
+  // Fetch fresh session data from backend
+  await fetchUserSession();
+  
+  // Rebuild with fresh data
+  buildSidebar('dashboard');
+  buildNavbar('Account Overview', 'Dashboard');
+
+  // 1. Greeting
+  document.getElementById('page-greeting').textContent = getGreeting() + ', ' + UserState.name + ' 👋';
+  const status = UserState.status;
+
+  // 2. Banner Management
+  const banners = {
+    pending: document.getElementById('banner-pending'),
+    review: document.getElementById('banner-review'),
+    rejected: document.getElementById('banner-rejected'),
+    approved: document.getElementById('banner-approved')
+  };
+  Object.values(banners).forEach(b => b && b.classList.add('hidden'));
+
+  if (status === 'active') {
+    // --- ACTIVE STATE ---
+    if (banners.approved) {
+      banners.approved.classList.remove('hidden');
+      const msgEl = document.getElementById('approved-msg');
+      if (msgEl) msgEl.textContent = '🎉 Your Finzo account ' + UserState.accountNo + ' has been activated!';
+      setTimeout(() => banners.approved.classList.add('hidden'), 8000);
+    }
+
+    // Update Balance
+    const balEl = document.getElementById('dash-balance');
+    if (balEl) {
+      const realBalance = formatINR(UserState.balance);
+      if (UserState.isBalanceUnlocked) {
+        balEl.textContent = realBalance;
+      } else {
+        balEl.textContent = '₹ ••••';
+        balEl.classList.add('balance-hidden-mask');
+        balEl.setAttribute('data-real-value', realBalance);
+      }
+    }
+
+    // Update Account Info
+    const accEl = document.getElementById('dash-account');
+    if (accEl) accEl.textContent = UserState.accountNo;
+    
+    const lockEl = document.getElementById('lock-icon');
+    if (lockEl) lockEl.style.display = 'none';
+
+    // Update Status Badge
+    const badgeEl = document.getElementById('account-badge');
+    if (badgeEl) {
+      const mainSpan = badgeEl.querySelector('.account-status-badge');
+      const statusText = document.getElementById('account-status-text');
+      if (mainSpan) {
+        mainSpan.style.background = 'rgba(16,185,129,0.1)';
+        mainSpan.style.borderColor = 'rgba(16,185,129,0.2)';
+      }
+      if (statusText) {
+        statusText.textContent = UserState.accountType.charAt(0).toUpperCase() + UserState.accountType.slice(1) + ' Account · Active';
+        statusText.style.color = '#10b981';
+      }
+    }
+
+    // Unlock Quick Actions
+    ['qa-transfer','qa-txns','qa-stmt'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('locked');
+    });
+    ['qa-transfer-icon','qa-txns-icon','qa-stmt-icon'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { 
+        el.textContent = 'chevron_right'; 
+        el.style.color = 'var(--text-placeholder)'; 
+      }
+    });
+
+    // Fetch Dashboard Data (Transactions & Monthly Stats)
+    try {
+      const stRes = await fetch('../../../app/Controllers/user/dashboard.php', { credentials: 'same-origin' });
+      const stData = await stRes.json();
+      
+      // --- 1. Recent Transactions ---
+      const txEmpty = document.getElementById('tx-empty');
+      const txList = document.getElementById('tx-list');
+      const viewAll = document.getElementById('view-all-txns');
+      
+      if (stData.success && stData.recent_transactions && stData.recent_transactions.length > 0) {
+        if (txEmpty) txEmpty.classList.add('hidden');
+        if (txList) {
+          txList.innerHTML = stData.recent_transactions.map(tx => {
+            const isCredit = tx.direction === 'credit';
+            const icon = isCredit ? 'arrow_downward' : 'arrow_upward';
+            const iconColor = isCredit ? '#10b981' : '#f43f5e';
+            const iconBg = isCredit ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)';
+            const amountClass = isCredit ? 'amount-pos' : 'amount-neg';
+            const amountPrefix = isCredit ? '+' : '-';
+            const date = new Date(tx.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            return `<div class="tx-item">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="tx-icon" style="background:${iconBg}"><span class="material-symbols-outlined" style="color:${iconColor};font-size:20px">${icon}</span></div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${tx.description || tx.type}</div>
+                  <div style="font-size:11px;color:var(--text-secondary)">${tx.txn_id || ''} • ${date}</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="${amountClass}">${amountPrefix}${formatINR(tx.amount)}</div>
+                <span class="badge badge-green" style="font-size:9px">${tx.status || 'Completed'}</span>
+              </div>
+            </div>`;
+          }).join('');
+          txList.classList.remove('hidden');
+        }
+        if (viewAll) viewAll.classList.remove('hidden');
+      } else {
+        if (txEmpty) txEmpty.classList.remove('hidden');
+        if (txList) txList.classList.add('hidden');
+      }
+
+      // --- 2. Monthly Stats ---
+      if (stData.success && stData.monthly_stats) {
+        const ma = stData.monthly_stats;
+        const totalEl = document.getElementById('activity-total');
+        const incomeEl = document.getElementById('activity-income');
+        const expenseEl = document.getElementById('activity-expenses');
+        
+        if (totalEl) {
+           const net = (ma.income_total || 0) - (ma.expense_total || 0);
+           totalEl.textContent = formatINR(net > 0 ? net : 0);
+           
+           const trendEl = document.getElementById('activity-trend');
+           if (trendEl) {
+             if (ma.income_total > ma.expense_total) {
+               trendEl.textContent = 'Net Positive Cashflow';
+               trendEl.style.color = '#10b981';
+             } else if (ma.expense_total > ma.income_total) {
+               trendEl.textContent = 'Net Negative Cashflow';
+               trendEl.style.color = '#f43f5e';
+             } else {
+               trendEl.textContent = 'No Net Activity';
+               trendEl.style.color = 'var(--text-placeholder)';
+             }
+           }
+        }
+        if (incomeEl) incomeEl.textContent = formatINR(ma.income_total || 0);
+        if (expenseEl) expenseEl.textContent = formatINR(ma.expense_total || 0);
+      }
+    } catch (err) {
+      console.warn('Failed to load dashboard data:', err);
+    }
+
+  } else {
+    // --- INACTIVE STATE ---
+    const banner = banners[status === 'under_review' ? 'review' : status];
+    if (banner) banner.classList.remove('hidden');
+
+    const balEl = document.getElementById('dash-balance');
+    if (balEl) {
+      balEl.textContent = '₹ — — —';
+      balEl.classList.add('locked');
+    }
+
+    const activityCard = document.getElementById('activity-card');
+    if (activityCard) {
+      activityCard.classList.add('locked');
+      const totalEl = activityCard.querySelector('#activity-total');
+      const trendEl = activityCard.querySelector('#activity-trend');
+      const incomeEl = activityCard.querySelector('#activity-income');
+      const expensesEl = activityCard.querySelector('#activity-expenses');
+      if (totalEl) totalEl.textContent = '— — —';
+      if (trendEl) trendEl.textContent = 'Data unavailable';
+      if (incomeEl) incomeEl.textContent = '— — —';
+      if (expensesEl) expensesEl.textContent = '— — —';
+    }
+
+    const cta = document.getElementById('empty-cta');
+    if (cta) {
+      cta.textContent = status === 'under_review' ? 'View Status' : status === 'rejected' ? 'Resubmit Profile' : 'Complete Profile →';
+      if (status === 'under_review') cta.href = 'account-pending.html';
+      if (status === 'rejected') cta.href = 'account-rejected.html';
+    }
+  }
+})();
+</script>
+</body>
+</html>
+

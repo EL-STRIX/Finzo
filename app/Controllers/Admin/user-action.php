@@ -1,0 +1,200 @@
+<?php
+/**
+ * Finzo Banking System — Admin User Action API
+ * POST endpoint: suspend, reinstate, or soft-delete a customer account.
+ * Version 1.0 — April 2026
+ */
+
+require_once dirname(__DIR__, 3) . '/middleware/auth-admin.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+$user_id = intval($_POST['user_id'] ?? 0);
+$action  = clean_input($_POST['action'] ?? '');
+$reason  = clean_input($_POST['reason'] ?? '');
+
+if (!$user_id || empty($action)) {
+    json_response(['success' => false, 'message' => 'User ID and action are required'], 422);
+}
+
+$valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
+if (!in_array($action, $valid_actions)) {
+    json_response(['success' => false, 'message' => 'Invalid action'], 422);
+}
+
+$admin_id = $_SESSION['admin_id'];
+
+try {
+    // Verify user exists
+    $stmt = $pdo->prepare("SELECT id, customer_id, full_name, email, status, is_deleted FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        json_response(['success' => false, 'message' => 'User not found'], 404);
+    }
+
+    // Verify admin password for sensitive actions
+    if (in_array($action, ['suspend', 'delete'])) {
+        $password = $_POST['password'] ?? '';
+        $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+        $stmt->execute([$admin_id]);
+        $admin = $stmt->fetch();
+        if (!$admin || !password_verify($password, $admin['password_hash'])) {
+            json_response(['success' => false, 'message' => 'Invalid administrative credentials. Access denied.'], 401);
+        }
+    }
+
+    switch ($action) {
+        case 'suspend':
+            check_admin_permission($pdo, $admin_id, 'suspend_user');
+            if ($user['status'] === 'suspended') {
+                json_response(['success' => false, 'message' => 'User is already suspended'], 409);
+            }
+
+            $stmt = $pdo->prepare("UPDATE users SET status = 'suspended', updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$user_id]);
+
+            // Also suspend the account
+            $stmt = $pdo->prepare("UPDATE accounts SET status = 'suspended', updated_at = NOW() WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+
+            // Notification
+            send_notification($pdo, $user_id, 'security', 'Account Suspended',
+                'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.');
+
+            write_audit_log($pdo, 'user_suspended', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} suspended. Reason: {$reason}");
+
+            json_response(['success' => true, 'message' => 'User suspended successfully']);
+            break;
+
+        case 'reinstate':
+            check_admin_permission($pdo, $admin_id, 'reinstate_user');
+            if ($user['status'] === 'active') {
+                json_response(['success' => true, 'message' => 'User is already active']);
+            }
+            if ($user['status'] !== 'suspended') {
+                json_response(['success' => false, 'message' => 'User is not suspended'], 409);
+            }
+
+            $stmt = $pdo->prepare("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$user_id]);
+
+            $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ? AND status = 'suspended'");
+            $stmt->execute([$user['customer_id']]);
+
+            send_notification($pdo, $user_id, 'security', 'Account Reinstated',
+                'Your account has been reinstated and is now active. You can log in and transact normally.');
+
+            write_audit_log($pdo, 'user_reinstated', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} reinstated");
+
+            json_response(['success' => true, 'message' => 'User reinstated successfully']);
+            break;
+
+        case 'delete':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            if ($user['is_deleted']) {
+                json_response(['success' => true, 'message' => 'User is already deleted']);
+            }
+
+            // Soft delete
+            $stmt = $pdo->prepare("UPDATE users SET is_deleted = 1, deleted_at = NOW(), status = 'suspended', updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$user_id]);
+
+            $stmt = $pdo->prepare("UPDATE accounts SET status = 'closed', updated_at = NOW() WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+
+            write_audit_log($pdo, 'user_deleted', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} soft-deleted. Reason: {$reason}");
+
+            json_response(['success' => true, 'message' => 'User deleted successfully']);
+            break;
+
+        case 'recover':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            if (!$user['is_deleted']) {
+                json_response(['success' => false, 'message' => 'User is not deleted'], 409);
+            }
+
+            $balance_option = clean_input($_POST['balance_option'] ?? 'full');
+
+            // Restore from soft-delete
+            $stmt = $pdo->prepare("UPDATE users SET is_deleted = 0, deleted_at = NULL, status = 'active', updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$user_id]);
+
+            // Reactivate account
+            if ($balance_option === 'mandatory') {
+                // Fetch current account details to log a charge transaction if balance > 500
+                $stmt = $pdo->prepare("SELECT id, balance FROM accounts WHERE user_id = ?");
+                $stmt->execute([$user['customer_id']]);
+                $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($account && $account['balance'] > 500) {
+                    $deduction_amount = $account['balance'] - 500;
+                    $txn_id = 'TXN' . strtoupper(uniqid());
+                    // This is a system-generated charge — excluded from daily limit calculations
+                    $stmt_txn = $pdo->prepare("INSERT INTO transactions (txn_id, from_account_id, type, amount, balance_after, description, reference_note, status, created_at) VALUES (?, ?, 'withdrawal', ?, 500, 'Account Restore Charge', 'Account recovered from soft-delete', 'completed', NOW())");
+                    $stmt_txn->execute([$txn_id, $account['id'], $deduction_amount]);
+
+                    // Notify user of the balance adjustment
+                    send_notification($pdo, $user_id, 'system', 'Account Restored – Balance Adjusted',
+                        'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
+                } else {
+                    // Balance is at or below 500 — just restore, no deduction needed
+                    send_notification($pdo, $user_id, 'system', 'Account Restored',
+                        'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
+                }
+
+                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', balance = LEAST(balance, 500), updated_at = NOW() WHERE user_id = ?");
+            } else {
+                $stmt = $pdo->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
+                send_notification($pdo, $user_id, 'system', 'Account Restored',
+                    'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
+            }
+            $stmt->execute([$user['customer_id']]);
+
+            write_audit_log($pdo, 'user_recovered', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} recovered from soft-delete state" . ($balance_option === 'mandatory' ? ' with mandatory balance of 500' : ''));
+
+            json_response(['success' => true, 'message' => 'User recovered successfully']);
+            break;
+
+
+        case 'hard_delete':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            
+            // Delete account completely
+            $stmt = $pdo->prepare("DELETE FROM accounts WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+            
+            $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            
+            write_audit_log($pdo, 'user_hard_deleted', $user_id, 'user', $admin_id, 'admin',
+                "User {$user['full_name']} permanently deleted.");
+
+            json_response(['success' => true, 'message' => 'User permanently deleted']);
+            break;
+
+        case 'delete_account_only':
+            check_admin_permission($pdo, $admin_id, 'soft_delete_user');
+            
+            // Delete account completely but keep the user
+            $stmt = $pdo->prepare("DELETE FROM accounts WHERE user_id = ?");
+            $stmt->execute([$user['customer_id']]);
+            
+            write_audit_log($pdo, 'account_hard_deleted', $user_id, 'user', $admin_id, 'admin',
+                "Account for user {$user['full_name']} permanently deleted.");
+
+            json_response(['success' => true, 'message' => 'Account permanently deleted']);
+            break;
+    }
+
+} catch (PDOException $e) {
+    error_log("Admin user action error: " . $e->getMessage());
+    json_response(['success' => false, 'message' => 'Action failed. Please try again.'], 500);
+}

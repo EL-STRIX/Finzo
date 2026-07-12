@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Finzo Admin â€” Review Application</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#002645", "error": "#ba1a1a",
+            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
+            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
+          },
+          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../../../public/assets/css/admin.css">
+  <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+  </style>
+
+  <script src="../../../public/assets/js/core/api.js"></script>
+  <script src="../../../public/assets/js/core/utils.js"></script>
+  <script src="../../../public/assets/js/admin/admin-shared.js"></script>
+</head>
+
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+
+  <!-- SIDEBAR -->
+  <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div class="brand-name">Finzo</div>
+      <div class="brand-sub">ADMIN CONSOLE</div>
+    </div>
+    <div class="admin-nav">
+      <div class="admin-nav-section">MAIN</div>
+      <a href="admin-dashboard.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">analytics</span> Overview
+      </a>
+      <a href="admin-pending-approvals.html" class="admin-nav-item active">
+        <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+      </a>
+      <a href="admin-users.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">group</span> User Management
+      </a>
+      <a href="admin-staff.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">badge</span> Staff Management
+      </a>
+      <a href="admin-branches.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">store</span> Branch Management
+      </a>
+      <a href="admin-transactions.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">swap_horiz</span> Transactions
+      </a>
+            <a href="admin-audit-log.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">manage_search</span> Audit Log
+            </a>
+
+      <div class="admin-nav-section">System</div>
+
+      <a href="admin-suspended-users.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">person_off</span> Suspended Users
+      </a>
+      <a href="admin-suspended-staff.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">work_off</span> Suspended Staff
+      </a>
+      <a href="admin-locked-accounts.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+      </a>
+      <a href="admin-deleted-users.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">person_remove</span> Deleted Users
+      </a>
+      <a href="admin-interest.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">percent</span> Interest Management
+      </a>
+
+      <div class="admin-nav-section">ACCOUNT</div>
+      <a href="admin-profile.html" class="admin-nav-item">
+        <span class="material-symbols-outlined">account_circle</span> Admin Profile
+      </a>
+      <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+        <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+        <span data-theme-label>Dark Mode</span>
+      </button>
+      <a href="../auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+        <span class="material-symbols-outlined">logout</span> Logout
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="admin-main">
+    <!-- TOP BAR -->
+    <div class="admin-topbar">
+      <div class="flex items-center gap-2 sm:gap-4 flex-1">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+            <span class="material-symbols-outlined force-black">menu</span>
+        </button>
+        <a href="admin-pending-approvals.html" class="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 transition-all text-slate-500">
+          <span class="material-symbols-outlined force-black">arrow_back</span>
+        </a>
+        <div class="flex flex-col">
+          <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">
+             <span class="hidden sm:inline">Admin</span>
+             <span class="material-symbols-outlined text-[10px] hidden sm:inline force-black">chevron_right</span>
+             <span class="whitespace-nowrap">Pending Approvals</span>
+             <span class="material-symbols-outlined text-[10px] force-black">chevron_right</span>
+             <span class="text-primary dark:text-blue-400 whitespace-nowrap" id="bc-name"><div class="skeleton w-24 h-3 inline-block"></div></span>
+          </div>
+          <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Review Application</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="status-badge px-4 py-2 text-[11px]" id="top-status-badge">PENDING</span>
+        </div>
+    </div>
+
+    <div class="p-4 sm:p-6 lg:p-8">
+      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
+        <!-- LEFT COLUMN (60%) -->
+        <div class="lg:w-[60%] space-y-6 sm:space-y-8">
+          <!-- Personal Info -->
+          <div class="admin-card">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-slate-100 dark:border-white/5 overflow-hidden shrink-0 bg-slate-50 dark:bg-white/5 flex items-center justify-center relative">
+                 <img id="profile-photo" src="" alt="Profile Photo" class="w-full h-full object-cover hidden absolute inset-0 z-10" />
+                 <span id="profile-photo-placeholder" class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">person</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined text-primary dark:text-blue-400 text-sm">person</span>
+                  <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Personal Details</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold tracking-tight force-black mb-1" id="header-full-name"><div class="skeleton w-40 h-6"></div></h2>
+                <div class="text-[11px] font-mono font-bold tracking-widest text-primary dark:text-blue-400 uppercase bg-primary/5 dark:bg-blue-400/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
+              </div>
+              <div class="hidden sm:block">
+                 <span class="material-symbols-outlined text-primary dark:text-blue-400 opacity-20" style="font-size: 64px;">badge</span>
+              </div>
+            </div>
+            <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6" id="personal-fields">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Date of Birth</label>
+                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Gender</label>
+                <div class="font-bold"><div class="skeleton w-16 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Marital Status</label>
+                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Nationality</label>
+                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Father's Name</label>
+                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Mother's Name</label>
+                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Occupation</label>
+                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Source of Income</label>
+                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Annual Income</label>
+                <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Phone</label>
+                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Email</label>
+                <div class="font-bold"><div class="skeleton w-40 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">SUBMITTED ON</label>
+                <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">REGISTERED ON</label>
+                <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Info -->
+          <div class="admin-card">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400">home</span>
+              <h3 class="admin-section-title" style="font-size:16px;">Address Information</h3>
+            </div>
+            <div class="p-5 sm:p-8 space-y-6" id="address-fields">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Street Address</label>
+                <div class="font-bold"><div class="skeleton w-full max-w-sm h-4"></div></div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">City</label>
+                  <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">State</label>
+                  <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">PIN Code</label>
+                  <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Country</label>
+                  <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Identity Verification -->
+          <div class="admin-card">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400">verified_user</span>
+              <h3 class="admin-section-title" style="font-size:16px;">Identity Verification</h3>
+            </div>
+            <div class="p-5 sm:p-8">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-6 sm:mb-8" id="identity-fields">
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">ID Type</label>
+                  <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">ID Number</label>
+                  <div class="font-bold tracking-widest"><div class="skeleton w-36 h-4"></div></div>
+                </div>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-6">
+                <div class="flex-1">
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Front Side</label>
+                  <div class="aspect-video bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
+                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2">image</span>
+                    <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Back Side</label>
+                  <div class="aspect-video bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
+                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2">image</span>
+                    <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Preference -->
+          <div class="admin-card">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400">account_balance_wallet</span>
+              <h3 class="admin-section-title" style="font-size:16px;">Account Details</h3>
+            </div>
+            <div class="p-5 sm:p-8 grid grid-cols-2 gap-4" id="account-fields">
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label>
+                <div class="skeleton w-24 h-6 rounded-full"></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initial Deposit</label>
+                <div class="font-bold text-lg"><div class="skeleton w-20 h-6"></div></div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Transaction PIN</label>
+                <div class="skeleton w-16 h-6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN (40%) -->
+        <div class="lg:w-[40%] space-y-6 sm:space-y-8">
+          <!-- Timeline -->
+          <div class="admin-card">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400">timeline</span>
+              <h3 class="admin-section-title" style="font-size:16px;">Application Status</h3>
+            </div>
+            <div class="p-5 sm:p-8 overflow-y-auto max-h-[400px]" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
+              <div class="space-y-8 relative" id="timeline-body">
+                <div class="skeleton w-full h-8 mb-4"></div>
+                <div class="skeleton w-full h-8 mb-4"></div>
+                <div class="skeleton w-full h-8"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decision Card -->
+          <div class="admin-card overflow-visible">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary dark:text-blue-400">gavel</span>
+              <h3 class="admin-section-title" style="font-size:16px;">Make Decision</h3>
+            </div>
+            <div class="p-5 sm:p-8 space-y-6 sm:space-y-8">
+              <!-- Approve Section -->
+              <div class="p-6 rounded-2xl border border-green-100 dark:border-green-900/40 bg-green-50/30 dark:bg-green-900/5">
+                <div class="flex items-start gap-4 mb-6">
+                  <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined">check_circle</span>
+                  </div>
+                  <div>
+                    <div class="font-bold text-green-900 dark:text-green-300">Approve this application</div>
+                    <div class="text-xs text-green-800/60 dark:text-green-400/60">Account number will be auto-generated</div>
+                  </div>
+                </div>
+                <!-- Account Preview -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-green-100 dark:border-green-900/40 text-center mb-6 shadow-sm">
+                   <div class="text-[9px] font-black uppercase tracking-widest text-green-600 mb-1">Expected Account Number</div>
+                   <div class="font-code text-xl font-black text-green-700 dark:text-green-400 tracking-wider">FNZ2026<span class="opacity-30">XXXX</span></div>
+                </div>
+                <button onclick="openApproveModal()" class="w-full admin-btn-primary py-4" style="background: #00b894 !important; border:none !important;">Approve & Activate Account</button>
+              </div>
+
+              <div class="flex items-center gap-4 px-4">
+                <div class="flex-1 h-px bg-slate-100 dark:bg-white/5"></div>
+                <div class="text-[10px] font-black opacity-30 tracking-widest">OR</div>
+                <div class="flex-1 h-px bg-slate-100 dark:bg-white/5"></div>
+              </div>
+
+              <!-- Reject Section -->
+              <div class="p-6 rounded-2xl border border-red-100 dark:border-red-900/40">
+                <div class="flex items-start gap-4 mb-6">
+                  <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined">cancel</span>
+                  </div>
+                  <div>
+                    <div class="font-bold text-red-900 dark:text-red-300">Reject this application</div>
+                  </div>
+                </div>
+                <textarea id="reject-reason-input" placeholder="Enter reason for rejection. This will be shown to the applicant." class="w-full bg-slate-50 dark:bg-white/5 border border-red-100 dark:border-red-900/40 rounded-xl p-4 text-xs min-h-[100px] mb-6 focus:ring-red-500/20"></textarea>
+                <button onclick="openRejectModal()" class="w-full admin-btn-secondary py-4" style="border-color: #ef4444; color: #ef4444;">Reject Application</button>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROVE MODAL -->
+  <div id="approveModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="closeApproveModal()"></div>
+    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
+      <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center">
+        <span class="material-symbols-outlined text-4xl">check_circle</span>
+      </div>
+      <h3 class="admin-section-title text-2xl mb-4">Confirm Account Approval</h3>
+      <p class="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+        You are approving the account application of <span class="font-bold text-slate-900 dark:text-white" id="modal-approve-name">--</span>.
+        A <span id="modal-acc-type">Savings</span> Account with number <span class="font-code font-bold text-green-600" id="modal-approve-acc">FNZ---</span> will be generated and activated. An email will be sent to the applicant immediately.
+      </p>
+      <div class="flex gap-3">
+        <button onclick="closeApproveModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
+        <button id="confirmApprove" class="flex-1 admin-btn-primary py-4" style="background:#00b894 !important; border:none !important;">Yes, Approve Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REJECT MODAL -->
+  <div id="rejectModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="closeRejectModal()"></div>
+    <div class="admin-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
+      <div class="w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 mx-auto mb-6 flex items-center justify-center">
+        <span class="material-symbols-outlined text-4xl">cancel</span>
+      </div>
+      <h3 class="admin-section-title text-2xl mb-4">Confirm Rejection</h3>
+      <p class="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+        You are rejecting the application of <span class="font-bold text-slate-900 dark:text-white" id="modal-reject-name">--</span>. The rejection reason will be sent to their email address.
+      </p>
+      
+      <!-- Rejection Reason Preview -->
+      <div class="bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-xl p-4 mb-8 text-left">
+        <div class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">REJECTION REASON:</div>
+        <div id="rejection-reason-preview" class="text-xs font-semibold text-slate-600 dark:text-slate-300 italic">No reason provided</div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="closeRejectModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
+        <button id="confirmReject" class="flex-1 admin-btn-primary py-4" style="background:#ef4444 !important; border:none !important;">Yes, Reject Application</button>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script src="../../../assets/js/admin/review-application.js?v=5"></script>
+</body>
+
+</html>
+
+

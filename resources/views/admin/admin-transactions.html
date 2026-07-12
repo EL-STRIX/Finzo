@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Admin â€” Transactions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645", "error": "#ba1a1a",
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../../../public/assets/css/admin.css">
+    <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
+
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
+        </div>
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="admin-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Overview
+            </a>
+            <a href="admin-pending-approvals.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            </a>
+            <a href="admin-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">group</span> User Management
+            </a>
+            <a href="admin-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">badge</span> Staff Management
+            </a>
+            <a href="admin-branches.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">store</span> Branch Management
+            </a>
+            <a href="admin-transactions.html" class="admin-nav-item active">
+                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            </a>
+            <a href="admin-audit-log.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">manage_search</span> Audit Log
+            </a>
+
+            <div class="admin-nav-section">System</div>
+            <a href="admin-suspended-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            </a>
+            <a href="admin-suspended-staff.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            </a>
+            <a href="admin-locked-accounts.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            </a>
+            <a href="admin-deleted-users.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            </a>
+            <a href="admin-interest.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">percent</span> Interest Management
+            </a>
+
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="admin-profile.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
+                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </button>
+            <a href="../auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN AREA -->
+    <div class="admin-main min-w-0 flex-1">
+        <header class="admin-topbar">
+            <div class="flex items-center gap-3 flex-1">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined force-black">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">LEDGER</div>
+                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Global Transactions</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="open-export-modal" class="admin-btn-secondary hidden sm:flex items-center gap-2">
+                    <span class="material-symbols-outlined">download</span> Export
+                </button>
+            </div>
+        </header>
+
+        <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
+            <!-- FILTERS & TABLE -->
+            <div class="admin-card overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5 relative z-20">
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                        <!-- Search -->
+                        <div class="w-full md:w-96">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search Transactions</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Type Tabs -->
+                        <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
+                                All
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="deposit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">south_west</span>
+                                Deposits
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="withdrawal">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">north_east</span>
+                                Withdrawals
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="transfer">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">sync_alt</span>
+                                Transfers
+                            </button>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="interest_credit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">percent</span>
+                                Interest
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="overflow-x-auto w-full">
+                    <table id="transactions-table" class="admin-table w-full text-left min-w-[1300px]">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>TXN ID</th>
+                                <th>From Account</th>
+                                <th>To Account</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txn-table-body">
+                            <!-- Data injected by transactions.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Records</div>
+                    <div class="flex items-center gap-2">
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <div id="page-numbers" class="flex gap-1.5">
+                            <!-- Page numbers injected by transactions.js -->
+                        </div>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm close-export-modal"></div>
+        <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
+            <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-emerald-600 text-3xl">download</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Export Data</h3>
+            <p class="text-sm opacity-60 mb-8 leading-relaxed">Download a complete ledger of transactions filtered by your currently selected criteria in Microsoft Excel format.</p>
+            <div class="flex flex-col gap-3">
+                <button id="start-export" class="admin-btn-primary w-full justify-center !py-3" style="background:#002645 !important;">Generate Excel Report</button>
+                <button class="admin-btn-secondary w-full justify-center !py-3 border-none close-export-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="../../../public/assets/js/core/utils.js"></script>
+    <script src="../../../public/assets/js/core/api.js"></script>
+    <script src="../../../public/assets/js/admin/admin-shared.js"></script>
+    <script src="../../../public/assets/js/admin/transactions.js"></script>
+</body>
+
+</html>
+
+

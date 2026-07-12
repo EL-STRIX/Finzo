@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Staff — My Profile</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a3c5e",
+                        "amber-staff": "#f59e0b",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#0d1117"
+                    },
+                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="../../../public/assets/css/admin.css">
+    <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../../public/assets/js/staff/staff-shared.js"></script>
+    <style>
+        .brand-sub-staff {
+            color: #f59e0b !important;
+        }
+
+        .staff-sidebar-active {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
+            color: #f59e0b !important;
+        }
+
+        .staff-sidebar-active::before {
+            background: #f59e0b !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
+        }
+
+        .admin-nav-item:hover {
+            color: #f59e0b !important;
+        }
+
+        .profile-hero {
+            background: linear-gradient(135deg, #0d1117 0%, #1a3c5e 50%, #f59e0b 150%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f59e0b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid #0d1117;
+            transition: transform 0.2s;
+        }
+
+        .avatar-upload-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .info-item {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .info-label {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .section-card {
+            background: #161b22;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        [data-theme="dark"] .section-header {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        .doc-card {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .doc-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .password-strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #e2e8f0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-section {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .animate-section:nth-child(1) { animation-delay: 0.05s; }
+        .animate-section:nth-child(2) { animation-delay: 0.1s; }
+        .animate-section:nth-child(3) { animation-delay: 0.15s; }
+        .animate-section:nth-child(4) { animation-delay: 0.2s; }
+        .animate-section:nth-child(5) { animation-delay: 0.25s; }
+        .animate-section:nth-child(6) { animation-delay: 0.3s; }
+
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            transform: translateX(120%);
+            transition: transform 0.3s;
+        }
+
+        .toast.active {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            background: #059669;
+            color: white;
+        }
+
+        .toast-error {
+            background: #dc2626;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
+        <div class="admin-sidebar-brand">
+            <div class="brand-name">Finzo</div>
+            <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
+        </div>
+
+        <!-- Staff Info Card -->
+        <div class="px-4 py-6 border-b border-white/5">
+            <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">
+                        --</div>
+                    <div>
+                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
+                    </div>
+                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-nav">
+            <div class="admin-nav-section">MAIN</div>
+            <a href="staff-dashboard.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">analytics</span> Dashboard
+            </a>
+            <a href="staff-deposit.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">add_circle</span> New Deposit
+            </a>
+            <a href="staff-withdraw.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">remove_circle</span> New Withdrawal
+            </a>
+            <a href="staff-history.html" class="admin-nav-item">
+                <span class="material-symbols-outlined">receipt_long</span> Transaction History
+            </a>
+
+            <div class="admin-nav-section">ACCOUNT</div>
+            <a href="staff-profile.html" class="admin-nav-item staff-sidebar-active">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <button class="admin-nav-item w-full text-left" id="toggle-theme-btn"
+                style="background:none;border:none;cursor:pointer;">
+                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+                <span id="theme-label">Dark Mode</span>
+            </button>
+            <button class="admin-nav-item w-full text-left end-shift-trigger"
+                style="background:none;border:none;cursor:pointer;color:#ff3b30;">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+        <!-- TOP NAVBAR -->
+        <div class="admin-topbar">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] opacity-60 uppercase">ACCOUNT</div>
+                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight">My Profile</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex flex-col items-end">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="live-date"></div>
+                    <div class="text-sm font-black text-primary dark:text-blue-500" id="live-clock"></div>
+                </div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <div class="text-xs font-bold text-black dark:text-blue-500 staff-name-display">Loading...</div>
+                        <div class="text-[10px] text-slate-400 font-bold staff-id-display">STF---</div>
+                    </div>
+                    <button
+                        class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300 end-shift-trigger">
+                        End Shift
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 sm:p-6 lg:p-8 space-y-6">
+
+            <!-- PROFILE HERO CARD -->
+            <div class="profile-hero rounded-3xl p-8 sm:p-10 animate-section">
+                <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-end gap-6">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar" id="profile-avatar">
+                            <span id="profile-avatar-text">--</span>
+                        </div>
+                        <label for="photo-upload" class="avatar-upload-btn">
+                            <span class="material-symbols-outlined" style="font-size:16px;">photo_camera</span>
+                        </label>
+                        <input type="file" id="photo-upload" accept="image/*" style="display:none;">
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-2xl sm:text-3xl font-black font-headline !text-white mb-1" style="color: white !important;" id="profile-name">Loading...</h1>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest" id="profile-designation">—</span>
+                            <span class="px-3 py-1 rounded-full bg-white/10 text-white/70 text-[10px] font-black uppercase tracking-widest" id="profile-department">—</span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-white/50 text-xs font-bold">
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:16px;">badge</span> <span id="profile-staff-id">—</span></span>
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:16px;">apartment</span> <span id="profile-branch">—</span></span>
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span> Joined <span id="profile-joined">—</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONAL INFORMATION -->
+            <div class="section-card animate-section">
+                <div class="section-header">
+                    <span class="material-symbols-outlined text-amber-500">person</span>
+                    <h3 class="font-headline font-bold text-lg">Personal Information</h3>
+                </div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-name">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-dob">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-gender">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden md:col-span-2 lg:col-span-1 min-w-0">
+                            <div class="info-label">Personal Email</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar" id="info-email">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0 group">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value text-slate-900 dark:text-white whitespace-nowrap overflow-x-auto no-scrollbar pr-10" id="info-phone">—</div>
+                            <button onclick="openEditModal('phone')" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden">
+                            <div class="info-label">Staff ID</div>
+                            <div class="info-value font-mono text-amber-600 dark:text-amber-400" id="info-staff-id">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EMERGENCY CONTACTS -->
+            <div class="section-card animate-section">
+                <div class="section-header">
+                    <span class="material-symbols-outlined text-red-500">emergency</span>
+                    <h3 class="font-headline font-bold text-lg">Emergency Contacts</h3>
+                    <button onclick="openEditModal('emergency')" class="ml-auto px-4 py-2 rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 text-[10px] font-black uppercase tracking-widest hover:bg-red-100 dark:hover:bg-red-500/20 transition-all flex items-center gap-1.5 border border-red-100 dark:border-red-500/20">
+                        <span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                    </button>
+                </div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-red-50/50 dark:bg-red-500/5 rounded-2xl p-6 border border-red-100 dark:border-red-500/10 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-bl-full -z-0"></div>
+                            <div class="relative z-10 flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">person</span>
+                                </div>
+                                <div class="min-w-0 overflow-x-auto no-scrollbar">
+                                    <div class="info-label !mb-0 whitespace-nowrap">Contact Name</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg whitespace-nowrap" id="info-emergency-name">—</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-red-50/50 dark:bg-red-500/5 rounded-2xl p-6 border border-red-100 dark:border-red-500/10 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-bl-full -z-0"></div>
+                            <div class="relative z-10 flex items-center gap-4 mb-2">
+                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center flex-shrink-0">
+                                    <span class="material-symbols-outlined text-[20px]">call</span>
+                                </div>
+                                <div class="min-w-0 overflow-x-auto no-scrollbar">
+                                    <div class="info-label !mb-0 whitespace-nowrap">Contact Phone</div>
+                                    <div class="info-value text-slate-900 dark:text-white text-lg font-mono tracking-tight whitespace-nowrap" id="info-emergency-phone">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADDRESS -->
+            <div class="section-card animate-section">
+                <div class="section-header">
+                    <span class="material-symbols-outlined text-blue-500">location_on</span>
+                    <h3 class="font-headline font-bold text-lg">Address</h3>
+                </div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="col-span-1 md:col-span-2 bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Street</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-street">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">City</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-city">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">State</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-state">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Pincode</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-pincode">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden min-w-0">
+                            <div class="info-label mb-1">Country</div>
+                            <div class="info-value text-slate-900 dark:text-white !text-left text-base" id="info-country">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ID DOCUMENTS -->
+            <div class="section-card animate-section">
+                <div class="section-header">
+                    <span class="material-symbols-outlined text-purple-500">verified_user</span>
+                    <h3 class="font-headline font-bold text-lg">ID Documents</h3>
+                </div>
+                <div class="section-body p-6 sm:p-8 bg-slate-50/50 dark:bg-white/2" id="documents-container">
+                    <div class="text-center py-8 text-slate-400 font-bold text-sm">Loading documents...</div>
+                </div>
+            </div>
+
+            <!-- CHANGE PASSWORD -->
+            <div class="section-card animate-section overflow-hidden flex flex-col md:flex-row">
+                <!-- Left Sidebar info -->
+                <div class="w-full md:w-1/3 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden" style="background-color: var(--user-surface-alt);">
+                    <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 rounded-xl flex items-center justify-center mb-4 shadow-sm border border-amber-200 dark:border-amber-500/30 relative z-10">
+                        <span class="material-symbols-outlined text-[24px]">password</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 dark:text-white relative z-10 font-headline">Password Settings</h3>
+                    <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium relative z-10">
+                        Ensure your account remains secure by using a strong, unique password. We recommend at least 8 characters.
+                    </p>
+                </div>
+                <div class="w-full md:w-2/3 p-6 sm:p-8" style="background-color: var(--user-surface);">
+                    <form id="password-form" class="space-y-6">
+                        <div>
+                            <label class="info-label block mb-2">Current Password *</label>
+                            <div class="relative">
+                                <input type="password" id="pw-current" required
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border); color: var(--user-text-1);"
+                                    placeholder="Enter current password">
+                                <button type="button" onclick="togglePwVisibility('pw-current')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="info-label block mb-2">New Password *</label>
+                            <div class="relative">
+                                <input type="password" id="pw-new" required minlength="8"
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border); color: var(--user-text-1);"
+                                    placeholder="Min 8 characters" oninput="checkPasswordStrength()">
+                                <button type="button" onclick="togglePwVisibility('pw-new')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </button>
+                            </div>
+                            <div class="mt-2 pl-1">
+                                <div class="password-strength-bar bg-slate-100 dark:bg-white/10 rounded-full h-1">
+                                    <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
+                                </div>
+                                <div class="text-[10px] font-bold mt-1 text-slate-500" id="pw-strength-text"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="info-label block mb-2">Confirm New Password *</label>
+                            <div class="relative">
+                                <input type="password" id="pw-confirm" required
+                                    class="w-full px-4 py-3.5 border rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-slate-900 dark:text-white"
+                                    style="background-color: var(--user-input-bg); border-color: var(--user-border); color: var(--user-text-1);"
+                                    placeholder="Repeat new password">
+                                <button type="button" onclick="togglePwVisibility('pw-confirm')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pw-error" class="text-red-500 text-xs font-bold hidden bg-red-50 dark:bg-red-500/10 px-4 py-3 rounded-lg border border-red-100 dark:border-red-500/20"></div>
+                        <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-white/5 mt-4">
+                            <button type="submit" id="pw-submit-btn"
+                                class="px-8 py-3.5 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:bg-amber-600 active:scale-95 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined" style="font-size:18px;">lock_reset</span>
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SESSION INFO -->
+            <div class="section-card animate-section">
+                <div class="section-header">
+                    <span class="material-symbols-outlined text-slate-400">history</span>
+                    <h3 class="font-headline font-bold text-lg">Session Information</h3>
+                </div>
+                <div class="section-body p-6 sm:p-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-blue-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-blue-500 opacity-80 mb-3 relative z-10 text-[28px]">login</span>
+                            <div class="info-label relative z-10">Last Login</div>
+                            <div class="info-value text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-last-login">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-purple-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-purple-500 opacity-80 mb-3 relative z-10 text-[28px]">my_location</span>
+                            <div class="info-label relative z-10">Last Login IP</div>
+                            <div class="info-value font-mono text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-last-ip">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-20 h-20 bg-emerald-500/5 rounded-bl-full -z-0"></div>
+                            <span class="material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]">event_available</span>
+                            <div class="info-label relative z-10">Account Created</div>
+                            <div class="info-value text-[13px] dark:text-slate-200 relative z-10 truncate" id="info-created-at">—</div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/10 relative overflow-hidden group flex flex-col justify-between">
+                            <div>
+                                <div class="absolute right-0 top-0 w-20 h-20 bg-slate-500/5 rounded-bl-full -z-0"></div>
+                                <span class="material-symbols-outlined text-slate-400 opacity-80 mb-3 relative z-10 text-[28px]">admin_panel_settings</span>
+                                <div class="info-label relative z-10">Account Status</div>
+                            </div>
+                            <div class="relative z-10 mt-1" id="info-status">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeEditModal()"></div>
+        <div class="bg-white dark:bg-[#161b22] rounded-3xl w-full max-w-md relative z-10 p-8 shadow-2xl transform scale-95 transition-transform" id="edit-modal-content">
+            <h3 class="font-headline font-bold text-xl mb-6" id="edit-modal-title">Edit</h3>
+            <form id="edit-form" class="space-y-4">
+                <div id="edit-fields"></div>
+                <div id="edit-error" class="text-red-500 text-xs font-bold hidden"></div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeEditModal()"
+                        class="flex-1 py-3 bg-slate-100 dark:bg-white/5 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all">Cancel</button>
+                    <button type="submit" id="edit-submit-btn"
+                        class="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:bg-amber-600 transition-all">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- END SHIFT MODAL -->
+    <div id="modal-overlay"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div id="logout-modal"
+            class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden">
+            <div class="w-16 h-16 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mb-6 mx-auto">
+                <span class="material-symbols-outlined text-4xl">logout</span>
+            </div>
+            <h3 class="text-2xl font-black font-headline text-center mb-2 dark:text-white">End Shift?</h3>
+            <p class="text-slate-500 dark:text-slate-400 text-center mb-8">Are you sure you want to end your shift and
+                logout?</p>
+            <div class="flex gap-4">
+                <button
+                    class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <a href="../../../app/Controllers/auth/logout.php"
+                    class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl hover:bg-red-700 shadow-lg shadow-red-600/30 transition-all">End
+                    Shift</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let profileData = null;
+        let csrfToken = '';
+
+        $(document).ready(async function () {
+            const session = await fetchStaffSession();
+            if (!session) return;
+            csrfToken = session.csrf_token || '';
+            loadProfile();
+        });
+
+        async function loadProfile() {
+            try {
+                const res = await fetch('../../../app/Controllers/staff/staff-profile.php', { credentials: 'same-origin' });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+                profileData = data;
+                renderProfile(data);
+            } catch (err) {
+                console.error('Profile load error:', err);
+            }
+        }
+
+        function renderProfile(data) {
+            const s = data.staff;
+            const addr = data.address || {};
+            const docs = data.documents || [];
+
+            // Hero
+            document.getElementById('profile-name').textContent = s.full_name;
+            document.getElementById('profile-designation').textContent = s.designation || 'Staff';
+            document.getElementById('profile-department').textContent = s.department || 'Operations';
+            document.getElementById('profile-staff-id').textContent = s.staff_id;
+            document.getElementById('profile-branch').textContent = s.branch_name || 'Unassigned';
+            document.getElementById('profile-joined').textContent = s.date_of_joining ? new Date(s.date_of_joining).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+
+            // Avatar
+            const avatarEl = document.getElementById('profile-avatar');
+            const avatarText = document.getElementById('profile-avatar-text');
+            if (s.profile_photo) {
+                const src = s.profile_photo.startsWith('http') ? s.profile_photo : '../../../' + s.profile_photo;
+                avatarEl.innerHTML = `<img src="${src}?v=${Date.now()}" alt="${s.full_name}">`;
+            } else {
+                const initials = s.full_name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase();
+                avatarText.textContent = initials;
+            }
+
+            // Personal Info
+            document.getElementById('info-name').textContent = s.full_name;
+            document.getElementById('info-dob').textContent = s.date_of_birth ? new Date(s.date_of_birth).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set';
+            document.getElementById('info-gender').textContent = s.gender || 'Not set';
+            document.getElementById('info-email').textContent = s.personal_email;
+            document.getElementById('info-phone').textContent = s.phone || 'Not set';
+            document.getElementById('info-staff-id').textContent = s.staff_id;
+
+            // Emergency
+            document.getElementById('info-emergency-name').textContent = s.emergency_contact_name || 'Not set';
+            document.getElementById('info-emergency-phone').textContent = s.emergency_contact_phone || 'Not set';
+
+            // Address
+            document.getElementById('info-street').textContent = addr.street || 'Not set';
+            document.getElementById('info-city').textContent = addr.city || 'Not set';
+            document.getElementById('info-state').textContent = addr.state || 'Not set';
+            document.getElementById('info-pincode').textContent = addr.pincode || 'Not set';
+            document.getElementById('info-country').textContent = addr.country || 'India';
+
+            // Documents
+            const docsContainer = document.getElementById('documents-container');
+            if (docs.length > 0) {
+                docsContainer.innerHTML = docs.map(doc => `
+                    <div class="doc-card mb-4">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-symbols-outlined text-purple-500">credit_card</span>
+                            <div>
+                                <div class="font-bold text-sm">${doc.id_type}</div>
+                                <div class="text-xs text-slate-400 font-mono">${maskIdNumber(doc.id_number)}</div>
+                            </div>
+                            <span class="ml-auto px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase">Verified</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            ${doc.front_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 flex items-center justify-center p-2">
+                                <img src="../../../${doc.front_image}" class="w-full h-auto max-h-60 object-contain rounded-lg" alt="Front">
+                            </div>` : ''}
+                            ${doc.back_image ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 flex items-center justify-center p-2">
+                                <img src="../../../${doc.back_image}" class="w-full h-auto max-h-60 object-contain rounded-lg" alt="Back">
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                docsContainer.innerHTML = '<div class="text-center py-8 text-slate-400 font-bold text-sm">No documents uploaded yet.</div>';
+            }
+
+            // Session Info
+            document.getElementById('info-last-login').textContent = s.last_login_at ? new Date(s.last_login_at).toLocaleString('en-IN') : 'First login';
+            document.getElementById('info-last-ip').textContent = s.last_login_ip || 'N/A';
+            document.getElementById('info-created-at').textContent = s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : '—';
+
+            const statusEl = document.getElementById('info-status');
+            if (s.status === 'active') {
+                statusEl.innerHTML = '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase">Active</span>';
+            } else {
+                statusEl.innerHTML = '<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-[10px] font-black uppercase">Suspended</span>';
+            }
+        }
+
+        function maskIdNumber(num) {
+            if (!num || num.length < 4) return num || '—';
+            return '•'.repeat(num.length - 4) + num.slice(-4);
+        }
+
+        // Photo Upload
+        document.getElementById('photo-upload').addEventListener('change', async function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { showToast('Image must be under 5MB', 'error'); return; }
+
+            const formData = new FormData();
+            formData.append('profile_photo', file);
+            formData.append('csrf_token', csrfToken);
+
+            try {
+                const res = await fetch('../../../app/Controllers/staff/staff-profile.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Profile photo updated!');
+                    loadProfile();
+                } else {
+                    showToast(data.message || 'Upload failed', 'error');
+                }
+            } catch (e) {
+                showToast('Connection error', 'error');
+            }
+        });
+
+        // Password Form
+        document.getElementById('password-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const errEl = document.getElementById('pw-error');
+            errEl.classList.add('hidden');
+
+            const current = document.getElementById('pw-current').value;
+            const newPw = document.getElementById('pw-new').value;
+            const confirm = document.getElementById('pw-confirm').value;
+
+            if (newPw.length < 8) { errEl.textContent = 'Password must be at least 8 characters'; errEl.classList.remove('hidden'); return; }
+            if (newPw !== confirm) { errEl.textContent = 'Passwords do not match'; errEl.classList.remove('hidden'); return; }
+
+            const btn = document.getElementById('pw-submit-btn');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:18px;">progress_activity</span> Updating...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('../../../app/Controllers/staff/change-password.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `current_password=${encodeURIComponent(current)}&new_password=${encodeURIComponent(newPw)}&confirm_password=${encodeURIComponent(confirm)}&csrf_token=${encodeURIComponent(csrfToken)}`
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Password changed successfully!');
+                    this.reset();
+                    document.getElementById('pw-strength-bar').style.width = '0%';
+                    document.getElementById('pw-strength-text').textContent = '';
+                } else {
+                    let errMsg = data.message;
+                    if (!errMsg && data.errors) {
+                        errMsg = Object.values(data.errors)[0];
+                    }
+                    errEl.textContent = errMsg || 'Failed to change password';
+                    errEl.classList.remove('hidden');
+                }
+            } catch (e) {
+                errEl.textContent = 'Connection error';
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">lock_reset</span> Update Password';
+                btn.disabled = false;
+            }
+        });
+
+        function checkPasswordStrength() {
+            const pw = document.getElementById('pw-new').value;
+            const bar = document.getElementById('pw-strength-bar');
+            const text = document.getElementById('pw-strength-text');
+            let score = 0;
+            if (pw.length >= 8) score++;
+            if (pw.length >= 12) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+            const levels = [
+                { width: '0%', color: '#e2e8f0', label: '' },
+                { width: '20%', color: '#ef4444', label: 'Very Weak' },
+                { width: '40%', color: '#f97316', label: 'Weak' },
+                { width: '60%', color: '#eab308', label: 'Fair' },
+                { width: '80%', color: '#22c55e', label: 'Strong' },
+                { width: '100%', color: '#059669', label: 'Very Strong' }
+            ];
+
+            const level = levels[score];
+            bar.style.width = level.width;
+            bar.style.background = level.color;
+            text.textContent = level.label;
+            text.style.color = level.color;
+        }
+
+        function togglePwVisibility(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Edit Modal
+        let editType = '';
+
+        function openEditModal(type) {
+            editType = type;
+            const fieldsEl = document.getElementById('edit-fields');
+            const title = document.getElementById('edit-modal-title');
+            document.getElementById('edit-error').classList.add('hidden');
+
+            if (type === 'phone') {
+                title.textContent = 'Update Phone Number';
+                fieldsEl.innerHTML = `
+                    <label class="info-label block mb-2">Phone Number</label>
+                    <input type="tel" id="edit-phone" value="${profileData?.staff?.phone || ''}" maxlength="10"
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 transition-all"
+                        placeholder="10-digit phone number">
+                `;
+            } else if (type === 'emergency') {
+                title.textContent = 'Update Emergency Contact';
+                fieldsEl.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <label class="info-label block mb-2">Contact Name</label>
+                            <input type="text" id="edit-emergency-name" value="${profileData?.staff?.emergency_contact_name || ''}"
+                                class="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 transition-all"
+                                placeholder="Full name">
+                        </div>
+                        <div>
+                            <label class="info-label block mb-2">Contact Phone</label>
+                            <input type="tel" id="edit-emergency-phone" value="${profileData?.staff?.emergency_contact_phone || ''}" maxlength="10"
+                                class="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl font-medium focus:ring-2 focus:ring-amber-500/20 transition-all"
+                                placeholder="10-digit phone number">
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+            document.getElementById('edit-modal').classList.add('flex');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            document.getElementById('edit-modal').classList.remove('flex');
+        }
+
+        document.getElementById('edit-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const errEl = document.getElementById('edit-error');
+            errEl.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+
+            if (editType === 'phone') {
+                formData.append('phone', document.getElementById('edit-phone').value);
+            } else if (editType === 'emergency') {
+                formData.append('emergency_contact_name', document.getElementById('edit-emergency-name').value);
+                formData.append('emergency_contact_phone', document.getElementById('edit-emergency-phone').value);
+            }
+
+            try {
+                const res = await fetch('../../../app/Controllers/staff/staff-profile.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Updated successfully!');
+                    closeEditModal();
+                    loadProfile();
+                } else {
+                    errEl.textContent = data.message || 'Update failed';
+                    errEl.classList.remove('hidden');
+                }
+            } catch (e) {
+                errEl.textContent = 'Connection error';
+                errEl.classList.remove('hidden');
+            }
+        });
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;">${type === 'success' ? 'check_circle' : 'error'}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('active'), 10);
+            setTimeout(() => {
+                toast.classList.remove('active');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
+
