@@ -160,7 +160,7 @@ async function generateStatement(){
     if (f) params.set('from_date', f);
     if (t) params.set('to_date', t);
     params.set('limit', '500');
-    const res = await fetch('../../../api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const res = await fetch('../../../app/Controllers/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.transactions) {
       const tbody = document.querySelector('#statement-preview tbody');
@@ -198,7 +198,7 @@ function downloadStatement(){
   if(f) params.set('from_date', f);
   if(t) params.set('to_date', t);
   // Download TCPDF-generated statement
-  window.open('../../../api/pdf/statement.php?' + params.toString(), '_blank');
+  window.open('../../../app/Controllers/pdf/statement.php?' + params.toString(), '_blank');
 }
 </script>
 </body>

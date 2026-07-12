@@ -141,7 +141,7 @@
 
   if (txnId) {
     try {
-      const res = await fetch('../../../api/user/transactions.php?search=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
+      const res = await fetch('../../../app/Controllers/user/transactions.php?search=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         const tx = data.transactions.find(t => t.txn_id === txnId) || data.transactions[0];

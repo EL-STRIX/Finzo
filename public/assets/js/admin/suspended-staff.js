@@ -87,7 +87,7 @@
                 <td class="py-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg uppercase overflow-hidden" style="background:${gradient}">
-                            ${s.profile_photo ? `<img src="../../../../assets/${s.profile_photo}" class="w-full h-full object-cover" alt="${s.full_name}">` : initials}
+                            ${s.profile_photo ? `<img src="../../../../public/assets/${s.profile_photo}" class="w-full h-full object-cover" alt="${s.full_name}">` : initials}
                         </div>
                         <div>
                             <div class="font-headline font-bold text-sm text-black dark:text-white">${s.full_name}</div>

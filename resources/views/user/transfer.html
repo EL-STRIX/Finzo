@@ -238,7 +238,7 @@
     if (accNo === UserState.accountNo) { showToast('Cannot transfer to your own account', 'error'); return; }
     
     try {
-      const res = await fetch('../../../api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
+      const res = await fetch('../../../app/Controllers/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
       const data = await res.json();
       document.getElementById('lookup-result').classList.remove('hidden');
       

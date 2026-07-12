@@ -93,7 +93,7 @@ async function lookupBen() {
   const res = document.getElementById('ben-result');
   if (!acc) return;
   try {
-    const r = await fetch('../../../api/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
+    const r = await fetch('../../../app/Controllers/user/account-lookup.php?account_no=' + encodeURIComponent(acc), { credentials: 'same-origin' });
     const data = await r.json();
     if (data.success && data.account) {
       verifiedHolder = data.account.holder_name;

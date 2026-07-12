@@ -87,9 +87,9 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const res = await fetch('../../../../assets/api/staff/dashboard.php', { credentials: 'same-origin' });
+        const res = await fetch('../../../../public/assets/api/staff/dashboard.php', { credentials: 'same-origin' });
         if (res.status === 401 || res.status === 403) {
-            window.location.href = '../../../../assets/js/auth/staff-login.html';
+            window.location.href = '../../../../public/assets/js/auth/staff-login.html';
             return null;
         }
         const data = await res.json();
@@ -111,7 +111,7 @@ async function fetchStaffSession() {
             $('.staff-name-display').text(StaffState.name);
             $('.staff-id-display').text(StaffState.staff_id);
             if (data.staff.profile_photo) {
-                const src = data.staff.profile_photo.startsWith('http') ? data.staff.profile_photo : '../../../../assets/' + data.staff.profile_photo;
+                const src = data.staff.profile_photo.startsWith('http') ? data.staff.profile_photo : '../../../../public/assets/' + data.staff.profile_photo;
                 $('.staff-initials-display').html(`<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`);
             } else {
                 $('.staff-initials-display').text(StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());

@@ -609,7 +609,7 @@
     $loginBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
 
     function refreshCsrfToken() {
-      return fetch('../../../api/auth/get-csrf-token.php?v=' + Date.now())
+      return fetch('../../../app/Controllers/auth/get-csrf-token.php?v=' + Date.now())
         .then(res => res.json())
         .then(data => { 
           if(data.csrf_token) {
@@ -682,7 +682,7 @@
       }
 
       // Check lock status
-      fetch('../../../api/admin/check-lock-status.php?email=' + encodeURIComponent(email))
+      fetch('../../../app/Controllers/admin/check-lock-status.php?email=' + encodeURIComponent(email))
         .then(res => res.json())
         .then(data => {
           if (data.found && data.locked) {
@@ -751,7 +751,7 @@
     });
 
     function checkLockStatus(email) {
-      fetch('../../../api/admin/check-lock-status.php?email=' + encodeURIComponent(email))
+      fetch('../../../app/Controllers/admin/check-lock-status.php?email=' + encodeURIComponent(email))
         .then(res => res.json())
         .then(data => {
           if (data.found && data.locked) {

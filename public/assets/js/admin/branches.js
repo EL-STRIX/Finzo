@@ -55,7 +55,7 @@
                 <td>
                     <div class="flex items-center gap-2 manager-info-text">
                         <div class="manager-avatar sm w-6 h-6 text-[9px] bg-blue-100 text-blue-700 flex items-center justify-center rounded-full uppercase overflow-hidden" style="flex-shrink:0;">
-                            ${b.manager_avatar ? `<img src="${(b.manager_avatar.startsWith('http') ? '' : '../../../../assets/') + b.manager_avatar}?v=${new Date().getTime()}" style="width:100%;height:100%;object-fit:cover;">` : (b.manager_initials || '??')}
+                            ${b.manager_avatar ? `<img src="${(b.manager_avatar.startsWith('http') ? '' : '../../../../public/assets/') + b.manager_avatar}?v=${new Date().getTime()}" style="width:100%;height:100%;object-fit:cover;">` : (b.manager_initials || '??')}
                         </div>
                         <div class="text-[12px] font-bold"><span class="manager-name-text">${b.manager_name || 'Unassigned'}</span> <span class="opacity-40 font-mono">(${b.manager_staff_id || 'N/A'})</span></div>
                     </div>
@@ -386,7 +386,7 @@
 
         if (branch.manager_name) {
             if (branch.manager_avatar) {
-                const src = branch.manager_avatar.startsWith('http') ? branch.manager_avatar : '../../../../assets/' + branch.manager_avatar;
+                const src = branch.manager_avatar.startsWith('http') ? branch.manager_avatar : '../../../../public/assets/' + branch.manager_avatar;
                 avatarEl.innerHTML = `<img src="${src}?v=${new Date().getTime()}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
                 avatarEl.className = 'manager-avatar';
             } else {
@@ -418,7 +418,7 @@
             certEmpty.classList.add('hidden');
             document.getElementById('view-cert-name').textContent = branch.cert_path.split('/').pop();
             const dlLink = document.getElementById('view-cert-download');
-            dlLink.href = '../../../../assets/' + branch.cert_path;
+            dlLink.href = '../../../../public/assets/' + branch.cert_path;
         } else {
             certContainer.classList.add('hidden');
             certContainer.classList.remove('flex');

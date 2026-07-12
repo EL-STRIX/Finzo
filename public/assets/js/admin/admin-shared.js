@@ -81,9 +81,9 @@ window.AdminPortal = {
                     e.preventDefault();
                     try {
                         await window.api.post('/auth/logout.php');
-                        window.location.href = '../../../../assets/views/auth/admin-login.html';
+                        window.location.href = '../../../../public/assets/views/auth/admin-login.html';
                     } catch (error) {
-                        window.location.href = '../../../../assets/views/auth/admin-login.html';
+                        window.location.href = '../../../../public/assets/views/auth/admin-login.html';
                     }
                 });
             }

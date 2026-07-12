@@ -241,7 +241,7 @@
   // Load recent transactions for mini-ledger
   (async function loadMiniLedger() {
     try {
-      const res = await fetch('../../../api/user/transactions.php?limit=5', { credentials: 'same-origin' });
+      const res = await fetch('../../../app/Controllers/user/transactions.php?limit=5', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.transactions && data.transactions.length > 0) {
         document.getElementById('mini-txns').innerHTML = data.transactions.map(tx => {

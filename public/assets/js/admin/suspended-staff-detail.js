@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Avatar handling
         const av = document.getElementById('detail-avatar');
         if (staff.profile_photo) {
-            av.innerHTML = `<img src="../../../../assets/${staff.profile_photo}" class="w-full h-full object-cover rounded-lg">`;
+            av.innerHTML = `<img src="../../../../public/assets/${staff.profile_photo}" class="w-full h-full object-cover rounded-lg">`;
             av.style.background = 'none';
         } else {
             av.textContent = staff.initials || (staff.full_name ? staff.full_name.charAt(0) : 'S');

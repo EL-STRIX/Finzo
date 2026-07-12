@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (profilePhoto && user.profile_picture_url) {
             let url = user.profile_picture_url;
             if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                url = '../../../../assets/' + url;
+                url = '../../../../public/assets/' + url;
             }
             profilePhoto.src = url;
             profilePhoto.classList.remove('hidden');
@@ -103,14 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.id_documents.front_url && docBlocks.length > 0) {
                 let url = data.id_documents.front_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '../../../../assets/' + url;
+                    url = '../../../../public/assets/' + url;
                 }
                 docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side">`;
             }
             if (data.id_documents.back_url && docBlocks.length > 1) {
                 let url = data.id_documents.back_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '../../../../assets/' + url;
+                    url = '../../../../public/assets/' + url;
                 }
                 docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side">`;
             }

@@ -17,7 +17,7 @@
 </style>
 </head>
 <body>
-<script src="../../../assets/js/user/user-shared.js?v=3"></script>
+<script src="../../../public/assets/js/user/user-shared.js?v=3"></script>
 <div id="sidebar-root"></div>
 <div class="main">
 <div id="navbar-root"></div>
@@ -94,7 +94,7 @@ async function loadTransactions() {
     if (toDate) params.set('to_date', toDate);
     params.set('limit', '200');
 
-    const res = await fetch('../../../api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
+    const res = await fetch('../../../app/Controllers/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.transactions) {
       allTxns = data.transactions.map(tx => ({
