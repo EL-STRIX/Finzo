@@ -110,7 +110,10 @@ class UserService {
             if ($profile['size'] > MAX_UPLOAD_SIZE) {
                 $errors['profile_picture'] = 'Profile photo must be less than 5MB';
             }
-            if (!in_array($profile['type'], ALLOWED_IMAGE_TYPES)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $profile['tmp_name']);
+            finfo_close($finfo);
+            if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['profile_picture'] = 'Profile photo must be JPG or PNG format';
             }
         }
@@ -124,7 +127,10 @@ class UserService {
             if ($front['size'] > MAX_UPLOAD_SIZE) {
                 $errors['id_front'] = 'Front image must be less than 5MB';
             }
-            if (!in_array($front['type'], ALLOWED_IMAGE_TYPES)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $front['tmp_name']);
+            finfo_close($finfo);
+            if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['id_front'] = 'Front image must be JPG or PNG format';
             }
         }
@@ -138,7 +144,10 @@ class UserService {
             if ($back['size'] > MAX_UPLOAD_SIZE) {
                 $errors['id_back'] = 'Back image must be less than 5MB';
             }
-            if (!in_array($back['type'], ALLOWED_IMAGE_TYPES)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $back['tmp_name']);
+            finfo_close($finfo);
+            if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['id_back'] = 'Back image must be JPG or PNG format';
             }
         }
@@ -171,9 +180,19 @@ class UserService {
             mkdir($profile_upload_path, 0755, true);
         }
 
-        $profile_ext = isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK ? pathinfo($files['profile_picture']['name'], PATHINFO_EXTENSION) : '';
-        $front_ext = isset($files['id_front']) && $files['id_front']['error'] === UPLOAD_ERR_OK ? pathinfo($files['id_front']['name'], PATHINFO_EXTENSION) : '';
-        $back_ext  = isset($files['id_back']) && $files['id_back']['error'] === UPLOAD_ERR_OK ? pathinfo($files['id_back']['name'], PATHINFO_EXTENSION) : '';
+        $get_ext = function($file_arr) {
+            if (isset($file_arr) && $file_arr['error'] === UPLOAD_ERR_OK) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_file($finfo, $file_arr['tmp_name']);
+                finfo_close($finfo);
+                return ($mime === 'image/jpeg') ? 'jpg' : 'png';
+            }
+            return '';
+        };
+
+        $profile_ext = $get_ext($files['profile_picture'] ?? null);
+        $front_ext   = $get_ext($files['id_front'] ?? null);
+        $back_ext    = $get_ext($files['id_back'] ?? null);
 
         $profile_filename = $profile_ext ? 'profile_' . $user_id . '_' . time() . '.' . $profile_ext : '';
         $front_filename = $front_ext ? 'id_front_' . $user_id . '_' . time() . '.' . $front_ext : '';

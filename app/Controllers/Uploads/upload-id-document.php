@@ -32,7 +32,11 @@ $file = $_FILES['document'];
 $side = clean_input($_POST['side'] ?? 'front'); // 'front' or 'back'
 
 // Validate file type
-if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+
+if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
     json_response(['success' => false, 'message' => 'Only JPG and PNG images are allowed'], 422);
 }
 
@@ -51,9 +55,9 @@ if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
     mkdir(UPLOAD_ID_DOCUMENTS_PATH, 0755, true);
 }
 
-// Generate unique filename
-$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-$filename = "id_{$side}_{$user_id}_" . time() . '.' . strtolower($ext);
+// Generate unique filename securely based on real MIME type
+$ext = ($mime === 'image/jpeg') ? 'jpg' : 'png';
+$filename = "id_{$side}_{$user_id}_" . time() . '.' . $ext;
 $destination = UPLOAD_ID_DOCUMENTS_PATH . $filename;
 
 // Move uploaded file

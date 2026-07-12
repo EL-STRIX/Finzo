@@ -26,7 +26,12 @@ if ($file['size'] > MAX_UPLOAD_SIZE) {
 
 // Allow images and PDFs for certificates
 $allowed_types = array_merge(ALLOWED_IMAGE_TYPES, ['application/pdf']);
-if (!in_array($file['type'], $allowed_types)) {
+
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+
+if (!in_array($mime, $allowed_types)) {
     json_response(['success' => false, 'message' => 'Only JPG, PNG, and PDF files are allowed'], 422);
 }
 
@@ -35,9 +40,14 @@ if (!is_dir(UPLOAD_BRANCH_CERTS_PATH)) {
     mkdir(UPLOAD_BRANCH_CERTS_PATH, 0755, true);
 }
 
-// Generate filename
-$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-$filename = 'branch_cert_' . ($branch_id ?: 'new') . '_' . time() . '.' . strtolower($ext);
+// Generate filename securely based on real MIME type
+$ext_map = [
+    'image/jpeg' => 'jpg',
+    'image/png' => 'png',
+    'application/pdf' => 'pdf'
+];
+$ext = $ext_map[$mime] ?? 'bin';
+$filename = 'branch_cert_' . ($branch_id ?: 'new') . '_' . time() . '.' . $ext;
 $destination = UPLOAD_BRANCH_CERTS_PATH . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $destination)) {

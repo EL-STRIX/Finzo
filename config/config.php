@@ -66,7 +66,7 @@ define('LOCKOUT_DURATION', 1800); // 30 minutes in seconds
 // =====================================================
 // FILE UPLOAD CONFIGURATION
 // =====================================================
-define('UPLOAD_PATH', dirname(__DIR__) . '/uploads/');
+define('UPLOAD_PATH', dirname(__DIR__) . '/public/uploads/');
 define('UPLOAD_ID_DOCUMENTS_PATH', UPLOAD_PATH . 'id-documents/');
 define('UPLOAD_BRANCH_CERTS_PATH', UPLOAD_PATH . 'branch-certs/');
 define('UPLOAD_STAFF_PHOTOS_PATH', UPLOAD_PATH . 'staff-photos/');
