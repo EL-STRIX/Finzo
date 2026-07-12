@@ -32,6 +32,19 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Load .env file if exists
+$envFile = FINZO_ROOT . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2) + [NULL, NULL];
+        if ($name !== null) {
+            putenv(trim($name) . '=' . trim($value));
+        }
+    }
+}
+
 // Load legacy configuration and functions
 require_once FINZO_ROOT . '/config/config.php';
 require_once FINZO_ROOT . '/config/db.php';
