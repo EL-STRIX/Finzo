@@ -18,8 +18,8 @@ class UserFactory {
         $phone = $overrides['phone'] ?? '9' . rand(100000000, 999999999);
         $password = password_hash($overrides['password'] ?? 'Password123!', PASSWORD_BCRYPT);
         
-        $sql = "INSERT INTO users (customer_id, full_name, email, phone, password_hash, status, kyc_status, id_type, id_number) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (customer_id, full_name, email, phone, password_hash, status) 
+                VALUES (?, ?, ?, ?, ?, ?)";
         
         $stmt = $db->prepare($sql);
         $stmt->execute([
@@ -29,10 +29,13 @@ class UserFactory {
             $phone,
             $password,
             $overrides['status'] ?? 'active',
-            $overrides['kyc_status'] ?? 'approved',
-            $overrides['id_type'] ?? 'aadhaar',
-            $overrides['id_number'] ?? '123456789012'
         ]);
+
+        // Apply any optional overrides like locked_until
+        if (isset($overrides['locked_until'])) {
+            $db->prepare("UPDATE users SET locked_until = ? WHERE customer_id = ?")
+               ->execute([$overrides['locked_until'], $customerId]);
+        }
         
         return $customerId;
     }
@@ -43,10 +46,12 @@ class UserFactory {
     public static function createAccount(string $customerId, array $overrides = []): string {
         $db = Database::getInstance();
         
-        $accountNo = $overrides['account_no'] ?? '100' . rand(1000000, 9999999);
+        $accountNo = $overrides['account_no'] ?? 'FNZ' . date('Y') . rand(10000, 99999);
+        // Default PIN is 1234 — this is the bcrypt hash of '1234'
+        $txnPinHash = $overrides['txn_pin_hash'] ?? password_hash('1234', PASSWORD_BCRYPT);
         
-        $sql = "INSERT INTO accounts (user_id, account_no, account_type, balance, status, daily_limit) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO accounts (user_id, account_no, account_type, balance, status, daily_limit, txn_pin_hash) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
                 
         $stmt = $db->prepare($sql);
         $stmt->execute([
@@ -55,7 +60,8 @@ class UserFactory {
             $overrides['account_type'] ?? 'savings',
             $overrides['balance'] ?? 5000.00,
             $overrides['status'] ?? 'active',
-            $overrides['daily_limit'] ?? 100000.00
+            $overrides['daily_limit'] ?? 100000.00,
+            $txnPinHash,
         ]);
         
         return $accountNo;

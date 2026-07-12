@@ -15,7 +15,7 @@ class AdminOperationsTest extends TestCase {
         parent::setUp();
         
         $this->adminId = AdminFactory::createAdmin([
-            'email' => 'admin@finzo.com',
+            'email' => 'admin_' . rand(10000, 99999) . '@finzo.com',
             'admin_role' => 'admin'
         ]);
         

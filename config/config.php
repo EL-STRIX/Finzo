@@ -44,8 +44,8 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 // =====================================================
 define('SESSION_LIFETIME', 3600); // 1 hour
 
-// Start session if not already active
-if (session_status() === PHP_SESSION_NONE) {
+// Start session if not already active (skip in CLI testing mode)
+if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');

@@ -19,9 +19,12 @@ try {
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
 
-    // Add MySQL specific options if driver is available
-    if (defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
-        $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci";
+    // Add MySQL specific options if driver is available (PHP 8.5 uses Pdo\Mysql::ATTR_INIT_COMMAND)
+    $init_command_key = defined('Pdo\Mysql::ATTR_INIT_COMMAND')
+        ? \Pdo\Mysql::ATTR_INIT_COMMAND
+        : (defined('PDO::MYSQL_ATTR_INIT_COMMAND') ? PDO::MYSQL_ATTR_INIT_COMMAND : null);
+    if ($init_command_key !== null) {
+        $options[$init_command_key] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci";
     }
 
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);

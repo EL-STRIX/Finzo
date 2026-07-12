@@ -11,40 +11,34 @@ class RequestHelper {
         $_POST = $postData;
         $_GET = [];
         $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['HTTP_ACCEPT'] = 'application/json';
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
         $_SESSION = $sessionData;
-        
-        // Output buffer to capture what the controller echoes
-        ob_start();
-        
-        // Execute the controller
+
         $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
-        
+
         if (!file_exists($path)) {
-            ob_end_clean();
             throw new \Exception("Controller not found at: $path");
         }
-        
-        // Isolate scope
-        (function() use ($path) {
-            require $path;
-        })();
-        
-        $output = ob_get_clean();
-        
-        return $output;
+
+        ob_start();
+        try {
+            (function() use ($path) { require $path; })();
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
+        return ob_get_clean();
     }
-    
-    /**
-     * Simulates a POST request and parses the output as JSON.
-     */
+
     public static function postJson(string $controllerPath, array $postData, array $sessionData = []) {
         $output = self::post($controllerPath, $postData, $sessionData);
+        if (empty($output)) return [];
         $decoded = json_decode($output, true);
-        
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception("Failed to decode JSON. Output was: \n" . $output);
         }
-        
         return $decoded;
     }
 
@@ -56,19 +50,21 @@ class RequestHelper {
         $_GET = $getData;
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SESSION = $sessionData;
-        
-        ob_start();
+
         $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
-        
+
         if (!file_exists($path)) {
-            ob_end_clean();
             throw new \Exception("Controller not found at: $path");
         }
-        
-        (function() use ($path) {
-            require $path;
-        })();
-        
+
+        ob_start();
+        try {
+            (function() use ($path) { require $path; })();
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
         return ob_get_clean();
     }
 
