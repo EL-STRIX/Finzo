@@ -483,8 +483,7 @@ class AdminOperationsRepository extends BaseRepository {
                    occupation, annual_income, street, city, state, pincode, country,
                    id_type, id_number, kyc_submitted_at, created_at, updated_at
             FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
-        $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        ", [$userId]);
     }
 
     public function getSuspendedUserAccount(string $customerId) {
