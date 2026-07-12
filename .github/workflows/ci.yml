@@ -20,7 +20,7 @@ jobs:
         extensions: pdo, pdo_mysql
 
     - name: PHP Syntax Check
-      run: find app config bootstrap -name "*.php" -exec php -l {} \; | grep -v "No syntax errors detected" || true
+      run: find app config bootstrap -name "*.php" -exec php -l {} \; > /dev/null
 
     - name: Run PHPUnit Tests
       run: phpunit --configuration phpunit.xml
