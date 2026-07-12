@@ -1,0 +1,362 @@
+<?php
+namespace App\Services;
+
+use App\Repositories\AuthRepository;
+use PDOException;
+
+class AuthService {
+    private AuthRepository $repository;
+
+    public function __construct(AuthRepository $repository) {
+        $this->repository = $repository;
+    }
+
+    public function loginUser(string $identity, string $password) {
+        $user = $this->repository->findUserByIdentity($identity);
+
+        if (!$user) {
+            json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
+        }
+
+        if ($user['locked_until'] && strtotime($user['locked_until']) > time()) {
+            $remaining = ceil((strtotime($user['locked_until']) - time()) / 60);
+            json_response([
+                'success' => false,
+                'message' => "Account locked due to too many failed attempts. Try again in {$remaining} minute(s)."
+            ], 423);
+        }
+
+        if (!password_verify($password, $user['password_hash'])) {
+            $new_attempts = $user['failed_attempts'] + 1;
+            
+            $pdo = $this->repository->getDb();
+            $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
+            $lockout_duration = get_setting($pdo, 'customer_lockout_duration', 1800);
+
+            if ($new_attempts >= $max_attempts) {
+                $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
+                $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
+                
+                write_audit_log($pdo, 'account_locked', $user['id'], 'user', $user['id'], 'user',
+                    "Account locked after {$new_attempts} failed login attempts");
+
+                $lockout_minutes = ceil($lockout_duration / 60);
+                json_response([
+                    'success' => false,
+                    'message' => "Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes."
+                ], 423);
+            } else {
+                $this->repository->updateFailedAttempts($user['id'], $new_attempts);
+                
+                $remaining = $max_attempts - $new_attempts;
+                json_response([
+                    'success' => false,
+                    'message' => "Invalid email or password. {$remaining} attempt(s) remaining."
+                ], 401);
+            }
+        }
+
+        if ($user['status'] === 'suspended') {
+            json_response([
+                'success' => false,
+                'message' => 'Your account has been suspended. Please contact support.'
+            ], 403);
+        }
+
+        $ip = get_client_ip();
+        $this->repository->updateSuccessfulLogin($user['id'], $ip);
+
+        $account = $this->repository->fetchActiveAccount($user['customer_id']);
+
+        $_SESSION['user_id']        = (int)$user['id'];
+        $_SESSION['user_customer_id'] = $user['customer_id'];
+        $_SESSION['user_name']      = $user['full_name'];
+        $_SESSION['user_email']     = $user['email'];
+        $_SESSION['user_phone']     = $user['phone'] ?? '';
+        $_SESSION['user_status']    = $user['status'];
+        $_SESSION['user_account_no'] = $account ? $account['account_no'] : null;
+        $_SESSION['user_balance']   = $account ? $account['balance'] : null;
+        $_SESSION['role']           = 'customer';
+        $_SESSION['last_activity']  = time();
+
+        $pdo = $this->repository->getDb();
+        write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}");
+
+        return [
+            'user' => $user,
+            'account' => $account
+        ];
+    }
+
+    public function loginAdmin(string $email, string $password) {
+        $admin = $this->repository->findAdminByEmail($email);
+
+        if (!$admin) {
+            json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
+        }
+
+        if ($admin['temp_password_expiry'] && strtotime($admin['temp_password_expiry']) < time()) {
+            json_response([
+                'success' => false,
+                'message' => 'Your temporary password has expired. Please contact a super administrator for a new one.'
+            ], 401);
+        }
+
+        if ($admin['status'] === 'suspended') {
+            json_response([
+                'success' => false,
+                'message' => 'Your account has been suspended. Contact the system administrator.'
+            ], 403);
+        }
+
+        if ($admin['account_locked'] == 1) {
+            if ($admin['auto_unlock_at'] && strtotime($admin['auto_unlock_at']) <= time()) {
+                $this->repository->autoUnlockAdmin($admin['id']);
+                $admin['account_locked'] = 0;
+                $admin['failed_attempts'] = 0;
+            } else {
+                json_response([
+                    'success' => false,
+                    'locked' => true,
+                    'security_question_set' => (bool)$admin['security_question_set'],
+                    'auto_unlock_at' => $admin['auto_unlock_at'],
+                    'message' => 'Account locked.'
+                ], 401);
+            }
+        }
+
+        $ip = get_client_ip();
+
+        if (!password_verify($password, $admin['password_hash'])) {
+            $new_attempts = (int)$admin['failed_attempts'] + 1;
+            
+            if ($new_attempts >= 3) {
+                $auto_unlock_at = $this->repository->lockAdmin($admin['id']);
+                $this->repository->logAdminLock($admin['admin_id'], $ip, $admin['id']);
+                
+                $pdo = $this->repository->getDb();
+                write_audit_log($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
+                
+                json_response([
+                    'success' => false,
+                    'locked' => true,
+                    'security_question_set' => (bool)$admin['security_question_set'],
+                    'auto_unlock_at' => $auto_unlock_at,
+                    'message' => 'Account locked.'
+                ], 401);
+            } else {
+                $this->repository->updateAdminFailedAttempts($admin['id'], $new_attempts);
+                
+                $remaining = 3 - $new_attempts;
+                json_response([
+                    'success' => false,
+                    'locked' => false,
+                    'message' => "Invalid password. {$remaining} attempt(s) remaining before lockout."
+                ], 401);
+            }
+        }
+
+        $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
+
+        $_SESSION['admin_id']      = (int)$admin['id'];
+        $_SESSION['admin_name']    = $admin['full_name'];
+        $_SESSION['admin_email']   = $admin['email'];
+        $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
+        $_SESSION['admin_role']    = $admin['admin_role'];
+        $_SESSION['admin_display_id'] = $admin['admin_id'];
+        $_SESSION['role']          = 'admin';
+        $_SESSION['last_activity'] = time();
+
+        $pdo = $this->repository->getDb();
+        write_audit_log($pdo, 'admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}");
+
+        return $admin;
+    }
+
+    public function loginStaff(string $identity, string $password) {
+        $staff = $this->repository->findStaffByIdentity($identity);
+
+        if (!$staff) {
+            json_response(['success' => false, 'message' => 'Invalid email/ID or password'], 401);
+        }
+
+        if ($staff['locked_until'] && strtotime($staff['locked_until']) > time()) {
+            $remaining = ceil((strtotime($staff['locked_until']) - time()) / 60);
+            json_response([
+                'success' => false,
+                'message' => "Account locked due to too many failed attempts. Try again in {$remaining} minute(s)."
+            ], 423);
+        }
+
+        if (!password_verify($password, $staff['password_hash'])) {
+            $new_attempts = $staff['failed_attempts'] + 1;
+            
+            $pdo = $this->repository->getDb();
+            $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
+            $lockout_duration = get_setting($pdo, 'staff_lockout_duration', 1800);
+
+            if ($new_attempts >= $max_attempts) {
+                $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
+                $this->repository->lockStaff($staff['id'], $new_attempts, $lock_until);
+
+                write_audit_log($pdo, 'account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff',
+                    "Staff account locked after {$new_attempts} failed login attempts");
+
+                $lockout_minutes = ceil($lockout_duration / 60);
+                json_response([
+                    'success' => false,
+                    'message' => "Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes."
+                ], 423);
+            } else {
+                $this->repository->updateStaffFailedAttempts($staff['id'], $new_attempts);
+                
+                $remaining = $max_attempts - $new_attempts;
+                json_response([
+                    'success' => false,
+                    'message' => "Invalid email/ID or password. {$remaining} attempt(s) remaining."
+                ], 401);
+            }
+        }
+
+        if ($staff['status'] === 'suspended') {
+            json_response([
+                'success' => false,
+                'message' => 'Your account has been suspended. Please contact the administrator.'
+            ], 403);
+        }
+
+        $ip = get_client_ip();
+        $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
+
+        $_SESSION['staff_id']      = (int)$staff['id'];
+        $_SESSION['staff_display_id'] = $staff['staff_id'];
+        $_SESSION['staff_name']    = $staff['full_name'];
+        $_SESSION['staff_email']   = $staff['email'];
+        $_SESSION['staff_role']    = $staff['role'];
+        $_SESSION['role']          = 'staff';
+        $_SESSION['last_activity'] = time();
+
+        $pdo = $this->repository->getDb();
+        write_audit_log($pdo, 'staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}");
+
+        return $staff;
+    }
+
+    public function forgotPassword(string $email) {
+        $user = $this->repository->findUserByEmail($email);
+
+        if (!$user) {
+            json_response([
+                'success' => true,
+                'message' => 'If an account with this email exists, a password reset link has been sent.'
+            ]);
+        }
+
+        try {
+            $this->repository->deletePasswordResets($user['customer_id']);
+
+            $token = bin2hex(random_bytes(32));
+            $expires_at = date('Y-m-d H:i:s', time() + 3600); 
+
+            $this->repository->createPasswordReset($user['customer_id'], $token, $expires_at);
+
+            require_once FINZO_ROOT . '/config/mailer.php';
+            send_password_reset_email($user['email'], $user['full_name'], $token);
+
+            json_response([
+                'success' => true,
+                'message' => 'If an account with this email exists, a password reset link has been sent.'
+            ]);
+
+        } catch (PDOException $e) {
+            error_log("Forgot password error: " . $e->getMessage());
+            json_response(['success' => false, 'message' => 'An error occurred. Please try again.'], 500);
+        }
+    }
+
+    public function resetPassword(string $token, string $new_password) {
+        $reset = $this->repository->findPasswordReset($token);
+
+        if (!$reset) {
+            json_response([
+                'success' => false,
+                'message' => 'Invalid or expired reset link. Please request a new one.'
+            ], 400);
+        }
+
+        if (strtotime($reset['expires_at']) < time()) {
+            $this->repository->deletePasswordResetById($reset['id']);
+
+            json_response([
+                'success' => false,
+                'message' => 'This reset link has expired. Please request a new one.'
+            ], 400);
+        }
+
+        try {
+            $this->repository->beginTransaction();
+
+            $password_hash = password_hash($new_password, PASSWORD_BCRYPT);
+
+            $this->repository->resetUserPassword($reset['user_id'], $password_hash);
+            $this->repository->deletePasswordResets($reset['user_id']);
+            $this->repository->resetUserAttempts($reset['user_id']);
+
+            $this->repository->commit();
+
+            json_response([
+                'success'  => true,
+                'message'  => 'Password has been reset successfully. You can now log in with your new password.',
+                'redirect' => '/views/auth/login.html'
+            ]);
+
+        } catch (PDOException $e) {
+            $this->repository->rollBack();
+            error_log("Reset password error: " . $e->getMessage());
+            json_response(['success' => false, 'message' => 'An error occurred. Please try again.'], 500);
+        }
+    }
+
+    public function registerUser(string $full_name, string $email, string $phone, string $password) {
+        if ($this->repository->findUserByEmailAny($email)) {
+            json_response(['success' => false, 'errors' => ['email' => 'This email is already registered']], 409);
+        }
+
+        if ($this->repository->findUserByPhone($phone)) {
+            json_response(['success' => false, 'errors' => ['phone' => 'This phone number is already registered']], 409);
+        }
+
+        try {
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
+
+            $this->repository->beginTransaction();
+
+            $customer_id = $this->repository->getNextCustomerId();
+            
+            $user_id = $this->repository->createUser($customer_id, $full_name, $email, $phone, $password_hash);
+
+            $_SESSION['user_id']     = (int)$user_id;
+            $_SESSION['user_name']   = $full_name;
+            $_SESSION['user_email']  = $email;
+            $_SESSION['user_phone']  = $phone;
+            $_SESSION['user_status'] = 'pending';
+            $_SESSION['role']        = 'customer';
+            $_SESSION['last_activity'] = time();
+
+            $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
+            $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo!', $welcomeMsg);
+            
+            $profileMsg = "Please complete your identity verification to unlock full banking services.";
+            $this->repository->createNotification($customer_id, 'security', 'Profile Incomplete', $profileMsg);
+
+            $this->repository->commit();
+
+            return true;
+
+        } catch (PDOException $e) {
+            $this->repository->rollBack();
+            error_log("Registration error: " . $e->getMessage());
+            json_response(['success' => false, 'message' => 'Registration failed. Please try again.'], 500);
+        }
+    }
+}

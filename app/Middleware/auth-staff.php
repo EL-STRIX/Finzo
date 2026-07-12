@@ -6,9 +6,9 @@
  * Version 1.0 — April 2026
  */
 
-require_once dirname(__DIR__) . '/config/config.php';
-require_once dirname(__DIR__) . '/config/db.php';
-require_once dirname(__DIR__) . '/config/functions.php';
+require_once dirname(__DIR__, 2) . '/config/config.php';
+require_once dirname(__DIR__, 2) . '/config/db.php';
+require_once dirname(__DIR__, 2) . '/config/functions.php';
 
 // Check if session has required staff role
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'staff') {

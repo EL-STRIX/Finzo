@@ -1,0 +1,329 @@
+<?php
+namespace App\Services;
+
+use App\Repositories\StaffRepository;
+use Exception;
+use PDOException;
+use finfo;
+
+class StaffService {
+    private StaffRepository $repository;
+
+    public function __construct(StaffRepository $repository) {
+        $this->repository = $repository;
+    }
+
+    public function accountLookup(string $account_no) {
+        $result = $this->repository->findAccountByNo($account_no);
+        if (!$result) {
+            return ['found' => false];
+        }
+
+        $used_today = $this->repository->getUsedDailyLimit($account_no);
+        $limit_left = max(0, $result['daily_limit'] - $used_today);
+
+        return [
+            'found' => true,
+            'account' => [
+                'name'         => $result['full_name'],
+                'account_no'   => $result['account_no'],
+                'account_type' => $result['account_type'],
+                'status'       => $result['status'],
+                'balance'      => $result['balance'],
+                'daily_limit_left' => $limit_left
+            ]
+        ];
+    }
+
+    public function changePassword(int $staff_id, string $current_password, string $new_password) {
+        $hash = $this->repository->findStaffPasswordHash($staff_id);
+        if (!$hash) {
+            throw new Exception("Staff account not found", 404);
+        }
+
+        if (!password_verify($current_password, $hash)) {
+            throw new Exception("Current password is incorrect", 401);
+        }
+
+        $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
+        $this->repository->updateStaffPassword($staff_id, $new_hash);
+
+        // write_audit_log requires pdo
+        write_audit_log($this->repository->getPDO(), 'staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password');
+        return true;
+    }
+
+    public function getDashboardData(int $staff_id) {
+        $deposits = $this->repository->getStaffShiftDeposits($staff_id);
+        $withdrawals = $this->repository->getStaffShiftWithdrawals($staff_id);
+        $total_today = $this->repository->getStaffTotalTransactionsToday($staff_id);
+        $recent_activity = $this->repository->getStaffRecentActivity($staff_id);
+        $staff_info = $this->repository->getStaffInfoWithBranch($staff_id);
+
+        return [
+            'staff' => [
+                'staff_id'      => $staff_info['staff_id'] ?? $_SESSION['staff_display_id'],
+                'name'          => $staff_info['full_name'] ?? $_SESSION['staff_name'],
+                'role'          => $staff_info['designation'] ?? 'Teller',
+                'profile_photo' => $staff_info['profile_photo'] ?? null,
+                'branch_name'   => $staff_info['branch_name'] ?? 'Unassigned'
+            ],
+            'shift_stats' => [
+                'deposits_count'     => (int)$deposits['count'],
+                'deposits_total'     => (float)$deposits['total'],
+                'withdrawals_count'  => (int)$withdrawals['count'],
+                'withdrawals_total'  => (float)$withdrawals['total'],
+                'total_transactions' => $total_today,
+                'net_cash_flow'      => (float)$deposits['total'] - (float)$withdrawals['total']
+            ],
+            'recent_activity' => $recent_activity
+        ];
+    }
+
+    public function processDeposit(int $staff_id, string $account_no, float $amount, string $reference_note) {
+        try {
+            $this->repository->beginTransaction();
+            
+            $account = $this->repository->findAccountForUpdate($account_no);
+            if (!$account) {
+                throw new Exception("Account not found", 404);
+            }
+            if ($account['status'] !== 'active') {
+                throw new Exception("Account is not active. Status: " . $account['status'], 403);
+            }
+
+            $new_balance = (float)$account['balance'] + $amount;
+            $this->repository->creditAccount($account['id'], $amount);
+
+            $txn_id = generate_transaction_id();
+
+            $this->repository->recordTransaction([
+                'txn_id' => $txn_id,
+                'from_account_id' => null,
+                'to_account_id' => $account['id'],
+                'type' => 'deposit',
+                'amount' => $amount,
+                'balance_after' => $new_balance,
+                'description' => 'Cash Deposit',
+                'reference_note' => $reference_note,
+                'status' => 'completed',
+                'processed_by_staff_id' => $staff_id
+            ]);
+
+            send_notification($this->repository->getPDO(), $account['customer_id'], 'transaction',
+                'Cash Deposit Received',
+                'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
+            );
+
+            write_audit_log($this->repository->getPDO(), 'staff_deposit', $txn_id, 'transaction', $staff_id, 'staff',
+                "Deposit of " . format_currency($amount) . " to account {$account_no}");
+
+            $this->repository->commit();
+
+            return [
+                'transaction_id' => $txn_id,
+                'customer_name'  => $account['full_name'],
+                'account_no'     => $account_no,
+                'amount'         => $amount,
+                'new_balance'    => $new_balance,
+            ];
+        } catch (Exception $e) {
+            $this->repository->rollBack();
+            throw $e;
+        }
+    }
+
+    public function processWithdrawal(int $staff_id, string $account_no, float $amount, string $identity_notes) {
+        try {
+            $this->repository->beginTransaction();
+
+            $account = $this->repository->findAccountForUpdate($account_no);
+            if (!$account) {
+                throw new Exception("Account not found", 404);
+            }
+            if ($account['status'] !== 'active') {
+                throw new Exception("Account is not active. Status: " . $account['status'], 403);
+            }
+
+            if ((float)$account['balance'] < $amount) {
+                throw new Exception("Insufficient balance. Available: " . format_currency($account['balance']), 422);
+            }
+
+            $max_withdrawal = get_setting($this->repository->getPDO(), 'max_withdrawal_amount', 50000);
+            if ($amount > $max_withdrawal) {
+                throw new Exception("Maximum withdrawal amount is " . format_currency($max_withdrawal), 422);
+            }
+
+            $new_balance = (float)$account['balance'] - $amount;
+            $this->repository->debitAccount($account['id'], $amount);
+
+            $txn_id = generate_transaction_id();
+
+            $this->repository->recordTransaction([
+                'txn_id' => $txn_id,
+                'from_account_id' => $account['id'],
+                'to_account_id' => null,
+                'type' => 'withdrawal',
+                'amount' => $amount,
+                'balance_after' => $new_balance,
+                'description' => 'Cash Withdrawal',
+                'reference_note' => $identity_notes,
+                'status' => 'completed',
+                'processed_by_staff_id' => $staff_id
+            ]);
+
+            send_notification($this->repository->getPDO(), $account['customer_id'], 'transaction',
+                'Cash Withdrawal Processed',
+                'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
+            );
+
+            write_audit_log($this->repository->getPDO(), 'staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff',
+                "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}");
+
+            $this->repository->commit();
+
+            return [
+                'transaction_id' => $txn_id,
+                'customer_name'  => $account['full_name'],
+                'account_no'     => $account_no,
+                'amount'         => $amount,
+                'new_balance'    => $new_balance,
+            ];
+        } catch (Exception $e) {
+            $this->repository->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getHistory(int $staff_id, array $filters) {
+        $where_clauses = ["t.processed_by_staff_id = ?"];
+        $params = [$staff_id];
+
+        if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal'])) {
+            $where_clauses[] = "t.type = ?";
+            $params[] = $filters['type'];
+        }
+        if ($filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
+            $where_clauses[] = "t.status = ?";
+            $params[] = $filters['status'];
+        }
+        if (!empty($filters['from_date'])) {
+            $where_clauses[] = "DATE(t.created_at) >= ?";
+            $params[] = $filters['from_date'];
+        }
+        if (!empty($filters['to_date'])) {
+            $where_clauses[] = "DATE(t.created_at) <= ?";
+            $params[] = $filters['to_date'];
+        }
+        if (!empty($filters['search'])) {
+            $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR a.account_no LIKE ? OR u.full_name LIKE ?)";
+            $search_param = "%{$filters['search']}%";
+            $params = array_merge($params, [$search_param, $search_param, $search_param, $search_param]);
+        }
+
+        $total = $this->repository->countTransactionsByStaff($staff_id, $where_clauses, $params);
+        $pages = max(1, ceil($total / $filters['per_page']));
+        $offset = ($filters['page'] - 1) * $filters['per_page'];
+
+        $transactions = $this->repository->getTransactionsByStaff($staff_id, $where_clauses, $params, $filters['per_page'], $offset);
+
+        return [
+            'transactions' => $transactions,
+            'total'        => $total,
+            'pages'        => $pages
+        ];
+    }
+
+    public function getReceipt(string $txn_id) {
+        $transaction = $this->repository->getTransactionReceipt($txn_id);
+        if (!$transaction) {
+            throw new Exception("Transaction not found", 404);
+        }
+        return $transaction;
+    }
+
+    public function getFullProfile(int $staff_id) {
+        $staff = $this->repository->getFullStaffProfile($staff_id);
+        if (!$staff) {
+            throw new Exception("Staff profile not found", 404);
+        }
+
+        $address = [
+            'id' => $staff['id'],
+            'street' => $staff['street'],
+            'city' => $staff['city'],
+            'state' => $staff['state'],
+            'pincode' => $staff['pincode'],
+            'country' => $staff['country']
+        ];
+
+        $documents = [];
+        if (!empty($staff['id_type'])) {
+            $documents[] = [
+                'id' => $staff['id'],
+                'id_type' => $staff['id_type'],
+                'id_number' => $staff['id_number'],
+                'front_image' => $staff['front_image'],
+                'back_image' => $staff['back_image']
+            ];
+        }
+
+        return [
+            'staff'     => $staff,
+            'address'   => $address,
+            'documents' => $documents
+        ];
+    }
+
+    public function updateProfile(int $staff_id, array $data, $file = null) {
+        $fields = [];
+        $params = [];
+
+        if (isset($data['phone']) && $data['phone'] !== '') {
+            $fields[] = 'phone = ?';
+            $params[] = $data['phone'];
+        }
+        if (isset($data['emergency_contact_name']) && $data['emergency_contact_name'] !== '') {
+            $fields[] = 'emergency_contact_name = ?';
+            $params[] = $data['emergency_contact_name'];
+        }
+        if (isset($data['emergency_contact_phone']) && $data['emergency_contact_phone'] !== '') {
+            $fields[] = 'emergency_contact_phone = ?';
+            $params[] = $data['emergency_contact_phone'];
+        }
+
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $filename  = 'staff_photo_' . uniqid() . '.' . $ext;
+            $dest_path = UPLOAD_STAFF_PHOTOS_PATH . $filename;
+
+            if (!move_uploaded_file($file['tmp_name'], $dest_path)) {
+                throw new Exception("Failed to save profile photo", 500);
+            }
+
+            $new_photo_path = 'uploads/staff-photos/' . $filename;
+            
+            $old_photo = $this->repository->findStaffById($staff_id)['profile_photo'] ?? null;
+            if ($old_photo) {
+                // Determine root path
+                $root_dir = dirname(__DIR__, 2);
+                $old_full = $root_dir . '/' . $old_photo;
+                if (file_exists($old_full)) {
+                    @unlink($old_full);
+                }
+            }
+
+            $fields[] = 'profile_photo = ?';
+            $params[] = $new_photo_path;
+        }
+
+        if (empty($fields)) {
+            throw new Exception("No fields provided to update", 422);
+        }
+
+        $this->repository->updateStaffProfile($staff_id, $fields, $params);
+        write_audit_log($this->repository->getPDO(), 'staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile');
+        
+        return $this->repository->getFullStaffProfile($staff_id);
+    }
+}
