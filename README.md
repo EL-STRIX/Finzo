@@ -1,6 +1,17 @@
-# Finzo Banking Management System
+# Finzo Banking Management System (Enterprise Edition)
 
 Modern secure banking management platform built with PHP and MySQL.
+
+## Enterprise Architecture & Deployment
+This repository has been fully modernized to follow Clean Architecture (MVC).
+- **Core Engine:** Procedural logic has been extracted into `Controllers`, `Services`, and `Repositories`.
+- **Production Configuration:** 
+  1. Copy `.env.example` to `.env`.
+  2. Configure your `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASS`.
+  3. Ensure `APP_DEBUG=false` for production to suppress errors.
+- **CI/CD & Testing:** 
+  - Automated CI pipelines are configured via GitHub Actions (`.github/workflows/ci.yml`).
+  - To run tests locally, install dependencies via Composer (if required) and run: `phpunit --configuration phpunit.xml`
 
 ---
 
