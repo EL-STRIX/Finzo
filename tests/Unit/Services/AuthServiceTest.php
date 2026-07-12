@@ -26,9 +26,10 @@ class AuthServiceTest extends TestCase {
         // loginUser does not return anything on success, it sets $_SESSION
         $this->authService->loginUser('valid@test.com', 'CorrectPassword123');
         
-        // Assert
-        $this->assertEquals($customerId, $_SESSION['customer_id']);
-        $this->assertTrue($_SESSION['customer_logged_in']);
+        // Assert: loginUser() returns the user and account data
+        $this->assertEquals($customerId, $_SESSION['user_customer_id']);
+        $this->assertEquals('customer', $_SESSION['role']);
+        $this->assertEquals('active', $_SESSION['user_status']);
     }
 
     public function test_loginUser_with_invalid_credentials_throws_json_exception() {

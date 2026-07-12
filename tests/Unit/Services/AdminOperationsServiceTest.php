@@ -147,32 +147,46 @@ class AdminOperationsServiceTest extends TestCase {
 
     public function testProcessApplicationApprove() {
         $customerId = UserFactory::createCustomer(['status' => 'pending']);
-        // create unapproved account pref implicitly or just use default empty state
         $userId = $this->db->query("SELECT id FROM users WHERE customer_id = '$customerId'")->fetchColumn();
         $adminId = AdminFactory::createAdmin();
-        
+
+        // The service opens its own transaction internally.
+        // Commit our outer test transaction so nested transactions don't conflict.
+        $this->db->commit();
+
         $result = $this->service->processApplication((int)$userId, 'approve', '', '', $adminId);
-        
+
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('account_no', $result);
-        
+
         // Check DB
         $user = $this->db->query("SELECT status FROM users WHERE id = $userId")->fetch();
         $this->assertEquals('active', $user['status']);
+
+        // Clean up manually since we committed
+        $this->db->exec("DELETE FROM users WHERE id = $userId");
+        $this->db->beginTransaction(); // Restart for tearDown
     }
 
     public function testProcessApplicationReject() {
         $customerId = UserFactory::createCustomer(['status' => 'pending']);
         $userId = $this->db->query("SELECT id FROM users WHERE customer_id = '$customerId'")->fetchColumn();
         $adminId = AdminFactory::createAdmin();
-        
+
+        // Commit outer test transaction so service can open its own
+        $this->db->commit();
+
         $result = $this->service->processApplication((int)$userId, 'reject', 'Missing documents', '', $adminId);
-        
+
         $this->assertTrue($result['success']);
-        
+
         // Check DB
         $user = $this->db->query("SELECT status, rejection_reason FROM users WHERE id = $userId")->fetch();
         $this->assertEquals('rejected', $user['status']);
         $this->assertEquals('Missing documents', $user['rejection_reason']);
+
+        // Clean up manually
+        $this->db->exec("DELETE FROM users WHERE id = $userId");
+        $this->db->beginTransaction(); // Restart for tearDown
     }
 }
