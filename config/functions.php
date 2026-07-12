@@ -74,6 +74,10 @@ function validate_csrf_token($token) {
  * @param int $status HTTP status code (default 200)
  */
 function json_response($data, $status = 200) {
+    if (defined('FINZO_TESTING') && FINZO_TESTING) {
+        throw new \Exception(json_encode(['status' => $status, 'data' => $data]));
+    }
+    
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
     header('X-Content-Type-Options: nosniff');

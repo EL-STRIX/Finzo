@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
-         bootstrap="bootstrap/app.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
          cacheDirectory=".phpunit.cache">
     <testsuites>
@@ -12,4 +12,9 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="DB_NAME" value="finzo_test_db" force="true"/>
+        <env name="APP_DEBUG" value="true" force="true"/>
+    </php>
 </phpunit>
