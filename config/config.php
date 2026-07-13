@@ -11,11 +11,18 @@
 // Set APP_DEBUG=true in your .env for development only. NEVER true in production.
 define('APP_DEBUG', getenv('APP_DEBUG') === 'true' ? true : false);
 
+define('STORAGE_PATH', dirname(__DIR__) . '/storage/');
+
+// Ensure PHP writes errors to our secure log file
+ini_set('log_errors', '1');
+ini_set('error_log', STORAGE_PATH . 'logs/error.log');
+
 if (APP_DEBUG) {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
 } else {
-    error_reporting(0);
+    // In production, log all errors securely but do not display them
+    error_reporting(E_ALL);
     ini_set('display_errors', '0');
 }
 
@@ -46,6 +53,7 @@ define('SESSION_LIFETIME', 3600); // 1 hour
 
 if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
+    ini_set('session.save_path', STORAGE_PATH . 'sessions');
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
     ini_set('session.cookie_samesite', 'Lax'); // Added industry-standard SameSite attribute
