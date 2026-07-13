@@ -55,8 +55,8 @@ class AuthServiceTest extends TestCase {
         ]);
         
         // To properly test this, we should inject the locked_until directly into the DB.
-        // Wait, UserFactory doesn't support locked_until out of the box, let's update it or run a manual query.
-        $this->db->exec("UPDATE users SET locked_until = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = 'locked@test.com'");
+        $lockedTime = date('Y-m-d H:i:s', time() + 3600);
+        $this->db->exec("UPDATE users SET locked_until = '{$lockedTime}' WHERE email = 'locked@test.com'");
 
         // Assert
         $this->expectException(\Exception::class);
