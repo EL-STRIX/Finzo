@@ -43,7 +43,7 @@ trait AdminStaffBranchControllerTrait1 {
             if (isset($_FILES['closure_document']) && $_FILES['closure_document']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['closure_document']['name'], PATHINFO_EXTENSION);
                 $filename = 'closure_doc_' . time() . '_' . rand(1000,9999) . '.' . $ext;
-                $dest_dir = dirname(__DIR__, 3) . '/uploads/branch-certs/';
+                $dest_dir = UPLOAD_BRANCH_CERTS_PATH;
                 if (!is_dir($dest_dir)) mkdir($dest_dir, 0755, true);
                 move_uploaded_file($_FILES['closure_document']['tmp_name'], $dest_dir . $filename);
             }

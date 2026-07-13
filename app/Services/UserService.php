@@ -179,7 +179,7 @@ class UserService {
         if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
             mkdir(UPLOAD_ID_DOCUMENTS_PATH, 0755, true);
         }
-        $profile_upload_path = dirname(__DIR__, 2) . '/uploads/profiles/';
+        $profile_upload_path = UPLOAD_PROFILES_PATH;
         if (!is_dir($profile_upload_path)) {
             mkdir($profile_upload_path, 0755, true);
         }

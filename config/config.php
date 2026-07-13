@@ -78,6 +78,9 @@ define('UPLOAD_PATH', dirname(__DIR__) . '/public/uploads/');
 define('UPLOAD_ID_DOCUMENTS_PATH', UPLOAD_PATH . 'id-documents/');
 define('UPLOAD_BRANCH_CERTS_PATH', UPLOAD_PATH . 'branch-certs/');
 define('UPLOAD_STAFF_PHOTOS_PATH', UPLOAD_PATH . 'staff-photos/');
+define('UPLOAD_PROFILES_PATH', UPLOAD_PATH . 'profiles/');
+define('UPLOAD_ADMIN_PHOTOS_PATH', UPLOAD_PATH . 'admin-photos/');
+define('UPLOAD_AVATARS_PATH', UPLOAD_PATH . 'avatars/');
 define('MAX_UPLOAD_SIZE', 5242880); // 5MB in bytes
 define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png']);
 

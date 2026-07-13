@@ -932,7 +932,7 @@ class AdminOperationsService {
             }
         }
 
-        $base_avatar_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+        $base_avatar_dir = UPLOAD_AVATARS_PATH;
         $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
         $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path) : null;
 

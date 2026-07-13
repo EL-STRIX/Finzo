@@ -88,7 +88,7 @@ class AdminManagementService {
                 return ['success' => false, 'message' => 'Profile photo max size is 5MB', 'code' => 422];
             }
 
-            $upload_dir = dirname(__DIR__, 2) . '/uploads/admin-photos/';
+            $upload_dir = UPLOAD_ADMIN_PHOTOS_PATH;
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
             
             $filename = 'admin_' . uniqid() . '.' . $ext;
