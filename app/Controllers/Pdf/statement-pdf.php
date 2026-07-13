@@ -6,7 +6,7 @@
  * Version 1.0 — April 2026
  */
 
-require_once dirname(__DIR__, 3) . '/middleware/auth-user.php';
+require_once dirname(__DIR__, 2) . '/Middleware/auth-user.php';
 
 // Check for TCPDF library
 $tcpdf_path = dirname(__DIR__, 3) . '/vendor/tcpdf/tcpdf.php';

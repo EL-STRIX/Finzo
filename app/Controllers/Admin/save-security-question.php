@@ -8,7 +8,7 @@ require_once dirname(__DIR__, 3) . '/config/db.php';
 require_once dirname(__DIR__, 3) . '/config/functions.php';
 
 // Auth middleware
-require_once dirname(__DIR__, 3) . '/middleware/auth-admin.php';
+require_once dirname(__DIR__, 2) . '/Middleware/auth-admin.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);

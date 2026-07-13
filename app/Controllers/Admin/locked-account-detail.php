@@ -5,7 +5,7 @@
  * Version 1.1 — May 2026
  */
 
-require_once dirname(__DIR__, 3) . '/middleware/auth-admin.php';
+require_once dirname(__DIR__, 2) . '/Middleware/auth-admin.php';
 require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 
 use App\Controllers\Admin\AdminOperationsController;
