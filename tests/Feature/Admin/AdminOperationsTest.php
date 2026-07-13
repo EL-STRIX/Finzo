@@ -21,7 +21,7 @@ class AdminOperationsTest extends TestCase {
         
         $this->sessionData = [
             'admin_id' => $this->adminId,
-            'admin_role' => 'admin',
+            'role' => 'admin',
             'csrf_token' => 'dummy_token'
         ];
 

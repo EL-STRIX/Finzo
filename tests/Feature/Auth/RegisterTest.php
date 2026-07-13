@@ -24,7 +24,7 @@ class RegisterTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(201, $response['status']);
-            $this->assertTrue($response['data']['success']);
+            $this->assertTrue($response['success']);
             
             // Check session
             $this->assertTrue(isset($_SESSION['user_id']));
@@ -59,8 +59,8 @@ class RegisterTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(409, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertEquals('This email is already registered', $response['data']['errors']['email']);
+            $this->assertFalse($response['success']);
+            $this->assertEquals('This email is already registered', $response['errors']['email']);
         }
     }
 
@@ -81,8 +81,8 @@ class RegisterTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertEquals('Passwords do not match', $response['data']['errors']['confirm_password']);
+            $this->assertFalse($response['success']);
+            $this->assertEquals('Passwords do not match', $response['errors']['confirm_password']);
         }
     }
 
@@ -103,9 +103,9 @@ class RegisterTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertArrayHasKey('email', $response['data']['errors']);
-            $this->assertArrayHasKey('phone', $response['data']['errors']);
+            $this->assertFalse($response['success']);
+            $this->assertArrayHasKey('email', $response['errors']);
+            $this->assertArrayHasKey('phone', $response['errors']);
         }
     }
 }

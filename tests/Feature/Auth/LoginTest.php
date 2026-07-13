@@ -30,8 +30,8 @@ class LoginTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
-            $this->assertEquals('Login successful', $response['data']['message']);
+            $this->assertTrue($response['success']);
+            $this->assertEquals('Login successful', $response['message']);
             
             // Check session for logged-in state
             $this->assertTrue(isset($_SESSION['user_id']));
@@ -58,7 +58,7 @@ class LoginTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(401, $response['status']);
-            $this->assertFalse($response['data']['success']);
+            $this->assertFalse($response['success']);
         }
     }
     
@@ -76,7 +76,7 @@ class LoginTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
-            $this->assertFalse($response['data']['success']);
+            $this->assertFalse($response['success']);
         }
     }
 
@@ -94,7 +94,7 @@ class LoginTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
+            $this->assertFalse($response['success']);
         }
     }
 }

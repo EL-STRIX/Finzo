@@ -14,11 +14,11 @@ class CsrfTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
-            $this->assertNotEmpty($response['data']['csrf_token']);
+            $this->assertTrue($response['success']);
+            $this->assertNotEmpty($response['csrf_token']);
             
             // Check session
-            $this->assertEquals($response['data']['csrf_token'], $_SESSION['csrf_token']);
+            $this->assertEquals($response['csrf_token'], $_SESSION['csrf_token']);
         }
     }
     
@@ -36,8 +36,8 @@ class CsrfTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertStringContainsString('CSRF', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertStringContainsString('CSRF', $response['message']);
         }
     }
     
@@ -55,8 +55,8 @@ class CsrfTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertStringContainsString('CSRF', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertStringContainsString('CSRF', $response['message']);
         }
     }
     
@@ -74,8 +74,8 @@ class CsrfTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertStringContainsString('CSRF', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertStringContainsString('CSRF', $response['message']);
         }
     }
 }

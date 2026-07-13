@@ -28,10 +28,7 @@ class TransferTest extends TestCase {
         $this->destCustomerId = UserFactory::createCustomer(['email' => 'receiver@test.com']);
         $this->destAccountNo = UserFactory::createAccount($this->destCustomerId, ['balance' => 5000.00]);
         
-        // Ensure the transaction PIN is set for the sender (default in factory is 1234 but wait, 
-        // UserFactory doesn't set txn_pin by default, let's update the DB directly for the test)
-        $this->db->exec("UPDATE users SET txn_pin = '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi' WHERE id = " . $this->sourceUserId);
-        // The above hash is for '1234'
+
     }
 
     public function test_successful_transfer() {
@@ -45,7 +42,7 @@ class TransferTest extends TestCase {
         ];
         
         $sessionData = [
-            'user_id' => $this->sourceUserId,
+            'role' => 'customer', 'user_id' => $this->sourceUserId,
             'user_status' => 'active',
             'csrf_token' => 'dummy_token' // Match the post token
         ];
@@ -59,8 +56,8 @@ class TransferTest extends TestCase {
             $response = json_decode($e->getMessage(), true);
             
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
-            $this->assertEquals(8500.00, $response['data']['new_balance']);
+            $this->assertTrue($response['success']);
+            $this->assertEquals(8500.00, $response['new_balance']);
             
             // Verify database state
             $stmt = $this->db->prepare("SELECT balance FROM accounts WHERE account_no = ?");
@@ -84,7 +81,7 @@ class TransferTest extends TestCase {
         ];
         
         $sessionData = [
-            'user_id' => $this->sourceUserId,
+            'role' => 'customer', 'user_id' => $this->sourceUserId,
             'user_status' => 'active',
             'csrf_token' => 'dummy_token'
         ];
@@ -98,8 +95,8 @@ class TransferTest extends TestCase {
             $response = json_decode($e->getMessage(), true);
             
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertEquals('Insufficient balance', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertEquals('Insufficient balance', $response['message']);
             
             throw $e;
         }

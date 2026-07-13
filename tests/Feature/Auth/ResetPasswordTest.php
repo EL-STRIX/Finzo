@@ -24,7 +24,7 @@ class ResetPasswordTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
+            $this->assertTrue($response['success']);
             
             // Verify token in database
             $stmt = $this->db->prepare("SELECT * FROM password_resets WHERE user_id = ?");
@@ -48,8 +48,8 @@ class ResetPasswordTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
-            $this->assertEquals('If an account with this email exists, a password reset link has been sent.', $response['data']['message']);
+            $this->assertTrue($response['success']);
+            $this->assertEquals('If an account with this email exists, a password reset link has been sent.', $response['message']);
         }
     }
     
@@ -77,7 +77,7 @@ class ResetPasswordTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
+            $this->assertTrue($response['success']);
             
             // Verify password updated
             $stmt = $this->db->prepare("SELECT password_hash FROM users WHERE customer_id = ?");
@@ -114,8 +114,8 @@ class ResetPasswordTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(400, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertStringContainsString('expired', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertStringContainsString('expired', $response['message']);
         }
     }
     
@@ -141,8 +141,8 @@ class ResetPasswordTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertArrayHasKey('confirm_password', $response['data']['errors']);
+            $this->assertFalse($response['success']);
+            $this->assertArrayHasKey('confirm_password', $response['errors']);
         }
     }
 }

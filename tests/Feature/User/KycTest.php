@@ -55,10 +55,14 @@ class KycTest extends TestCase {
     }
 
     public function test_complete_profile_successfully() {
-        $user = UserFactory::createCustomer();
+        $customerId = UserFactory::createCustomer();
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         $session = [
-            'user_id' => $user['id'],
+            'role' => 'customer', 'user_id' => $user['id'],
             'user_email' => $user['email'],
             'user_name' => $user['full_name'],
             'csrf_token' => 'test-csrf-token'
@@ -79,8 +83,8 @@ class KycTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
-            $this->assertTrue($response['data']['success']);
-            $this->assertEquals('Your profile has been submitted for review. We will notify you once it is processed.', $response['data']['message']);
+            $this->assertTrue($response['success']);
+            $this->assertEquals('Your profile has been submitted for review. We will notify you once it is processed.', $response['message']);
             
             // Verify db state
             $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
@@ -99,7 +103,7 @@ class KycTest extends TestCase {
             $this->assertNotEmpty($kyc);
             $this->assertEquals('submitted', $kyc['status']);
             
-            $stmt = $this->db->prepare("SELECT * FROM accounts WHERE customer_id = ? AND status = 'pending'");
+            $stmt = $this->db->prepare("SELECT * FROM accounts WHERE user_id = ? AND status = 'pending'");
             $stmt->execute([$user['customer_id']]);
             $account = $stmt->fetch();
             $this->assertNotEmpty($account);
@@ -108,10 +112,14 @@ class KycTest extends TestCase {
     }
 
     public function test_complete_profile_validation_errors() {
-        $user = UserFactory::createCustomer();
+        $customerId = UserFactory::createCustomer();
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         $session = [
-            'user_id' => $user['id'],
+            'role' => 'customer', 'user_id' => $user['id'],
             'user_email' => $user['email'],
             'user_name' => $user['full_name'],
             'csrf_token' => 'test-csrf-token'
@@ -130,9 +138,9 @@ class KycTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(422, $response['status']);
-            $this->assertFalse($response['data']['success']);
+            $this->assertFalse($response['success']);
             
-            $errors = $response['data']['errors'];
+            $errors = $response['errors'];
             $this->assertArrayHasKey('dob', $errors);
             $this->assertArrayHasKey('txn_pin', $errors);
             $this->assertArrayHasKey('profile_picture', $errors);
@@ -142,10 +150,14 @@ class KycTest extends TestCase {
     }
 
     public function test_complete_profile_fails_invalid_csrf() {
-        $user = UserFactory::createCustomer();
+        $customerId = UserFactory::createCustomer();
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         $session = [
-            'user_id' => $user['id'],
+            'role' => 'customer', 'user_id' => $user['id'],
             'user_email' => $user['email'],
             'user_name' => $user['full_name'],
             'csrf_token' => 'valid-token'
@@ -160,8 +172,8 @@ class KycTest extends TestCase {
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
-            $this->assertFalse($response['data']['success']);
-            $this->assertEquals('Invalid security token', $response['data']['message']);
+            $this->assertFalse($response['success']);
+            $this->assertEquals('Invalid security token', $response['message']);
         }
     }
 }
