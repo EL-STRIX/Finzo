@@ -27,7 +27,11 @@ try {
         $options[$init_command_key] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci";
     }
 
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+    if (defined('FINZO_TESTING') && FINZO_TESTING && isset($GLOBALS['pdo'])) {
+        $pdo = $GLOBALS['pdo'];
+    } else {
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+    }
     $db_connected = true;
 
 } catch (PDOException $e) {

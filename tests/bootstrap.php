@@ -21,8 +21,33 @@ define('FINZO_ROOT', dirname(__DIR__));
 define('FINZO_TESTING', true);
 
 // ── 2. Auto-provision the test database ─────────────────────────────────────
+class TestPDO extends PDO {
+    protected int $transactionCount = 0;
+    public function beginTransaction(): bool {
+        if ($this->transactionCount == 0) {
+            parent::beginTransaction();
+        }
+        $this->transactionCount++;
+        return true;
+    }
+    public function commit(): bool {
+        $this->transactionCount--;
+        if ($this->transactionCount == 0) {
+            return parent::commit();
+        }
+        return true;
+    }
+    public function rollBack(): bool {
+        $this->transactionCount--;
+        if ($this->transactionCount == 0) {
+            return parent::rollBack();
+        }
+        return true;
+    }
+}
+
 try {
-    $provisionPdo = new PDO('mysql:host=127.0.0.1;port=3306;charset=utf8mb4', 'root', '', [
+    $provisionPdo = new TestPDO('mysql:host=127.0.0.1;port=3306;charset=utf8mb4', 'root', '', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
     $provisionPdo->exec("CREATE DATABASE IF NOT EXISTS finzo_test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
@@ -92,6 +117,7 @@ spl_autoload_register(function ($class) {
 // Load config constants (but NOT db.php — we already have $pdo)
 require_once FINZO_ROOT . '/config/config.php';
 require_once FINZO_ROOT . '/config/functions.php';
+require_once FINZO_ROOT . '/vendor/autoload.php';
 
 // ── 4. Register Tests\ namespace autoloader ──────────────────────────────────
 spl_autoload_register(function ($class) {
