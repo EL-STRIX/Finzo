@@ -293,9 +293,9 @@ CREATE TABLE IF NOT EXISTS interest_rates (
     rate DECIMAL(5, 2) NOT NULL,
     apply_from_type ENUM('Immediately', 'Next Month', 'Custom Date') NOT NULL,
     apply_from_date DATE NULL DEFAULT NULL,
-    changed_by_admin_id VARCHAR(20) NOT NULL,
+    changed_by_admin_id VARCHAR(20) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_interest_admin (changed_by_admin_id) REFERENCES admin_users(admin_id)
+    FOREIGN KEY fk_interest_admin (changed_by_admin_id) REFERENCES admin_users(admin_id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
