@@ -6,8 +6,14 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel in-progress runs on the same branch to save CI minutes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     
     services:
@@ -21,15 +27,16 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-        tools: phpunit
-        extensions: pdo, pdo_mysql
-
+        extensions: pdo, pdo_mysql, mbstring, fileinfo
+        coverage: none # Disable coverage for faster execution
+        
     - name: PHP Syntax Check
       run: find app config bootstrap -name "*.php" -exec php -l {} \; > /dev/null
 
@@ -38,5 +45,4 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_USER: root
         DB_PASS: ''
-        DB_NAME: finzo_db
-      run: phpunit --configuration phpunit.xml
+      run: php phpunit.phar --configuration phpunit.xml
