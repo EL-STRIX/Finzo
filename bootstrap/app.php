@@ -37,10 +37,26 @@ $envFile = FINZO_ROOT . '/.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        list($name, $value) = explode('=', $line, 2) + [NULL, NULL];
-        if ($name !== null) {
-            putenv(trim($name) . '=' . trim($value));
+        $line = trim($line);
+        // Skip comments and empty lines
+        if ($line === '' || strpos($line, '#') === 0) {
+            continue;
+        }
+        
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = explode('=', $line, 2);
+            $name = trim($name);
+            $value = trim($value);
+            
+            // Remove wrapping quotes if present
+            if (preg_match('/^([\'"])(.*)\1$/', $value, $matches)) {
+                $value = $matches[2];
+            }
+            
+            // Populate environment variables
+            putenv(sprintf('%s=%s', $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
         }
     }
 }
