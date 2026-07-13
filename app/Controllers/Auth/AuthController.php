@@ -31,7 +31,7 @@ class AuthController {
         $user = $result['user'];
         $account = $result['account'];
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '', 3), '/\\');
         $redirect = $base . '/views/user/dashboard.html';
 
         json_response([
@@ -224,8 +224,8 @@ class AuthController {
 
         $this->service->registerUser($full_name, $email, $phone, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
-        $redirect = $base . '/views/user/dashboard.html';
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $redirect = $base . '/views/auth/login.html';
 
         json_response([
             'success'  => true,

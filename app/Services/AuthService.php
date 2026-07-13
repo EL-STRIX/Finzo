@@ -68,7 +68,9 @@ class AuthService {
 
         $account = $this->repository->fetchActiveAccount($user['customer_id']);
 
-        session_regenerate_id(true);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
         $_SESSION['user_id']        = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
         $_SESSION['user_name']      = $user['full_name'];

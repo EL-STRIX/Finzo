@@ -4,7 +4,9 @@
  * Handles PSR-4 Autoloading and core initialization.
  */
 
-define('FINZO_ROOT', dirname(__DIR__));
+if (!defined('FINZO_ROOT')) {
+    define('FINZO_ROOT', dirname(__DIR__));
+}
 
 // Custom PSR-4 Autoloader
 spl_autoload_register(function ($class) {
