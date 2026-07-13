@@ -46,5 +46,8 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 yarn.lock
-C-GAMES-COLLECTION/
 phpunit.phar
+
+# PHPUnit cache files
+.phpunit.cache/
+phpunit.result.cache
