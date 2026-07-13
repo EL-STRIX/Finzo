@@ -42,6 +42,11 @@ use PHPMailer\PHPMailer\Exception;
  */
 if (!function_exists('send_email')) {
     function send_email($to_email, $to_name, $subject, $html_body) {
+        // In testing mode, do not send actual emails
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            return ['success' => true, 'message' => 'Email sent successfully (mocked).'];
+        }
+
         $mail = new PHPMailer(true);
 
         try {
@@ -85,7 +90,7 @@ if (!function_exists('send_email')) {
  * @return string Rendered HTML email content
  */
 function load_email_template($template_name, $variables = []) {
-    $template_path = dirname(__DIR__) . '/views/emails/' . $template_name . '.php';
+    $template_path = dirname(__DIR__) . '/resources/views/emails/' . $template_name . '.php';
 
     if (!file_exists($template_path)) {
         error_log("Email template not found: {$template_path}");

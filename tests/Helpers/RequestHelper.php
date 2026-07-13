@@ -49,6 +49,8 @@ class RequestHelper {
         $_POST = [];
         $_GET = $getData;
         $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['HTTP_ACCEPT'] = 'application/json';
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
         $_SESSION = $sessionData;
 
         $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
