@@ -40,9 +40,12 @@ jobs:
     - name: PHP Syntax Check
       run: find app config bootstrap -name "*.php" -exec php -l {} \; > /dev/null
 
+    - name: Install Dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
     - name: Run PHPUnit Tests
       env:
         DB_HOST: 127.0.0.1
         DB_USER: root
         DB_PASS: ''
-      run: php phpunit.phar --configuration phpunit.xml
+      run: vendor/bin/phpunit --configuration phpunit.xml
