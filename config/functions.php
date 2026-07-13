@@ -12,13 +12,16 @@ require_once __DIR__ . '/config.php';
 // =====================================================
 
 /**
- * Sanitize user input: trim whitespace and encode HTML entities.
- * @param string $data Raw input string
- * @return string Sanitized string
+ * Sanitize user input: trim whitespace recursively.
+ * Note: HTML entity encoding is deliberately omitted here; it should be applied on output via html_encode().
+ * @param mixed $data Raw input string or array
+ * @return mixed Trimmed string or array
  */
 function clean_input($data) {
-    $data = trim($data);
-    return $data;
+    if (is_array($data)) {
+        return array_map('clean_input', $data);
+    }
+    return trim((string)$data);
 }
 
 /**

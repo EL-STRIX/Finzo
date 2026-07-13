@@ -44,11 +44,11 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 // =====================================================
 define('SESSION_LIFETIME', 3600); // 1 hour
 
-// Start session if not already active (skip in CLI testing mode)
 if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
+    ini_set('session.cookie_samesite', 'Lax'); // Added industry-standard SameSite attribute
     ini_set('session.cookie_path', '/');
     session_start();
 }
