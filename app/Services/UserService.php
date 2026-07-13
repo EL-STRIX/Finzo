@@ -12,6 +12,10 @@ class UserService {
         $this->repository = $repository;
     }
 
+    public function getRepository(): UserRepository {
+        return $this->repository;
+    }
+
     public function validateKyc(array $data, array $files) {
         $errors = [];
         $dob = $data['dob'];
@@ -203,17 +207,20 @@ class UserService {
         $back_destination  = $back_filename ? UPLOAD_ID_DOCUMENTS_PATH . $back_filename : '';
 
         if (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) {
-            if (!move_uploaded_file($files['profile_picture']['tmp_name'], $profile_destination)) {
+            $uploaded = (defined('FINZO_TESTING') && FINZO_TESTING) ? copy($files['profile_picture']['tmp_name'], $profile_destination) : move_uploaded_file($files['profile_picture']['tmp_name'], $profile_destination);
+            if (!$uploaded) {
                 throw new Exception('Failed to upload profile photo');
             }
         }
         if (isset($files['id_front']) && $files['id_front']['error'] === UPLOAD_ERR_OK) {
-            if (!move_uploaded_file($files['id_front']['tmp_name'], $front_destination)) {
+            $uploaded = (defined('FINZO_TESTING') && FINZO_TESTING) ? copy($files['id_front']['tmp_name'], $front_destination) : move_uploaded_file($files['id_front']['tmp_name'], $front_destination);
+            if (!$uploaded) {
                 throw new Exception('Failed to upload front document image');
             }
         }
         if (isset($files['id_back']) && $files['id_back']['error'] === UPLOAD_ERR_OK) {
-            if (!move_uploaded_file($files['id_back']['tmp_name'], $back_destination)) {
+            $uploaded = (defined('FINZO_TESTING') && FINZO_TESTING) ? copy($files['id_back']['tmp_name'], $back_destination) : move_uploaded_file($files['id_back']['tmp_name'], $back_destination);
+            if (!$uploaded) {
                 throw new Exception('Failed to upload back document image');
             }
         }

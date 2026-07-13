@@ -132,9 +132,11 @@ class AdminOperationsController {
             }
             
             fclose($output);
+            if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after export');
             exit();
         } catch (PDOException $e) {
             error_log("Admin users export API error: " . $e->getMessage());
+            if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Failed to generate export file.');
             die("Failed to generate export file.");
         }
     }
@@ -373,6 +375,7 @@ class AdminOperationsController {
                     }
                 }
                 fclose($output);
+                if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after export');
                 exit;
             }
 

@@ -262,8 +262,8 @@ class AuthController {
                 'redirect' => $redirect
             ]);
         }
-
         header('Location: ' . APP_URL . $redirect);
+        if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after redirect');
         exit;
     }
 
