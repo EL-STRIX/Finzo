@@ -9,201 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#1a3c5e",
-            "staff-accent": "#f59e0b",
-            "fin-navy": "#0f172a",
-            "fin-slate": "#64748b"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-  </script>
-  <style>
-    .staff-gradient { 
-      background: linear-gradient(135deg, rgba(20,10,5,0.88) 0%, rgba(120,60,0,0.65) 100%);
-    }
-    
-    .role-switcher { 
-      display: flex; 
-      background: #f1f5f9; 
-      padding: 4px; 
-      border-radius: 16px; 
-      border: 1px solid rgba(0,0,0,0.06);
-    }
-    .role-item { 
-      flex: 1; 
-      text-align: center; 
-      padding: 10px 4px; 
-      font-size: 11px; 
-      font-weight: 800; 
-      text-transform: uppercase; 
-      letter-spacing: 0.1em; 
-      color: #64748b; 
-      cursor: pointer; 
-      border-radius: 10px; 
-      transition: all 0.2s ease; 
-      z-index: 10;
-    }
-    .role-item.active { 
-      background: #f59e0b; 
-      color: white; 
-      box-shadow: 0 2px 8px rgba(245,158,11,0.3);
-    }
-    
-    .field-label {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      color: #64748b;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: block;
-      transition: color 0.25s;
-    }
-
-    .fin-input-container { position: relative; width: 100%; transition: all 0.4s ease-out; opacity: 0; transform: translateY(12px); }
-    .fin-input-container.visible { opacity: 1; transform: translateY(0); }
-
-    .fin-input { 
-      width: 100% !important; 
-      height: 52px !important;
-      padding: 0 18px 0 52px !important;
-      background: #f1f5f9 !important; 
-      border: 1.5px solid #e2e8f0 !important; 
-      border-radius: 8px !important; 
-      font-size: 14px !important; 
-      font-weight: 600; 
-      color: #0f172a !important; 
-      outline: none !important; 
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08) !important;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-    }
-    @media (min-width: 640px) {
-      .fin-input { height: 56px !important; padding: 0 18px 0 56px !important; }
-    }
-    .fin-input::placeholder { color: #94a3b8; font-weight: 500; transition: color 0.2s; }
-    .fin-input:focus::placeholder { color: transparent; }
-    .fin-input:hover { background: #e8edf5 !important; }
-    
-    .fin-input:focus { 
-      background: #ffffff !important; 
-      border-color: #f59e0b !important; 
-      box-shadow: 0 0 0 4px rgba(245,158,11,0.10) !important;
-      --tw-ring-shadow: none !important;
-    }
-    .fin-input-container:focus-within .field-label { color: #f59e0b; }
-
-    .fin-input:not(:placeholder-shown) {
-      background: #ffffff !important;
-      border-color: rgba(0,0,0,0.08) !important;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
-    }
-
-    .input-icon { 
-      position: absolute; 
-      left: 14px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      color: #f59e0b; 
-      font-size: 20px; 
-      pointer-events: none; 
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
-      z-index: 2;
-    }
-    @media (min-width: 640px) {
-      .input-icon { left: 16px; }
-    }
-    .fin-input-container:focus-within .input-icon,
-    .input-icon.icon-up {
-      top: -2px;
-      transform: translateY(-50%) scale(0.85);
-      background: white;
-      padding: 0 4px;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 20px;
-      transition: all 0.2s;
-    }
-    @media (min-width: 640px) {
-      .password-toggle { right: 16px; }
-    }
-    .fin-input-container:focus-within .password-toggle { color: #f59e0b; }
-
-    .staff-btn { 
-      width: 100%;
-      height: 50px; 
-      border-radius: 14px; 
-      background: #f59e0b; 
-      color: white;
-      font-size: 14px; 
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      transition: all 0.3s ease; 
-      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
-      opacity: 0; transform: translateY(12px);
-    }
-    @media (min-width: 640px) {
-      .staff-btn { height: 54px; font-size: 15px; }
-    }
-    .staff-btn.visible { opacity: 1; transform: translateY(0); }
-    .staff-btn:hover { background: #d97706; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.45); }
-    .staff-btn:active { transform: translateY(0) scale(0.99); }
-    
-    .error-state .fin-input {
-      border-color: #ef4444 !important;
-      background: rgba(239,68,68,0.04) !important;
-      box-shadow: 0 0 0 4px rgba(239,68,68,0.08) !important;
-    }
-    .error-msg {
-      color: #ef4444; font-size: 12px; font-weight: 600; margin-top: 6px; display: none;
-      animation: slideDown 0.3s ease-out forwards;
-    }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-    .custom-checkbox {
-      width: 18px; height: 18px; border-radius: 4px; border: 2px solid #e2e8f0; background: #f1f5f9;
-      cursor: pointer; transition: all 0.2s; position: relative;
-    }
-    .custom-checkbox.checked { background: #f59e0b; border-color: #f59e0b; }
-    .custom-checkbox::after {
-      content: 'check'; font-family: 'Material Symbols Outlined'; font-size: 14px; color: white;
-      position: absolute; top: -1px; left: -1px; opacity: 0; transition: opacity 0.2s;
-    }
-    .custom-checkbox.checked::after { opacity: 1; }
-
-    ::-webkit-scrollbar { width: 0; display: none; }
-    @media (min-width: 1024px) { body { overflow: hidden; } }
-
-    .mobile-brand-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 16px 0 8px;
-    }
-    @media (min-width: 1024px) {
-      .mobile-brand-bar { display: none; }
-    }
-  </style>
+  <link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
+  <script src="../../../public/assets/js/tailwind-config.js"></script>
+</head>
 </head>
 <body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
 <main class="min-h-screen flex">
@@ -212,7 +20,7 @@
   <section class="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-16 overflow-hidden">
     <div class="absolute inset-0 z-0">
       <img src="../../../public/assets/images/staff_bg.png" class="w-full h-full object-cover" alt="" loading="lazy"/>
-      <div class="absolute inset-0 staff-gradient"></div>
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(20,10,5,0.88) 0%, rgba(120,60,0,0.65) 100%);"></div>
     </div>
 
     <div class="relative z-10">
@@ -268,10 +76,10 @@
       </div>
 
       <!-- Role Switcher -->
-      <div class="role-switcher mb-8 sm:mb-10 lg:mb-12">
-        <div class="role-item" onclick="window.location.href='login.html'">Customer</div>
-        <div class="role-item active" onclick="window.location.href='staff-login.html'">Staff</div>
-        <div class="role-item" onclick="window.location.href='admin-login.html'">Admin</div>
+      <div class="flex bg-slate-50 p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
+        <button onclick="window.location.href='login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Customer</button>
+        <button onclick="window.location.href='staff-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-staff-accent rounded-xl shadow-md transition-all">Staff</button>
+        <button onclick="window.location.href='admin-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Admin</button>
       </div>
 
       <div class="mb-8 sm:mb-10 text-left w-full">
@@ -279,34 +87,33 @@
         <p class="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">Finzo staff panel.</p>
       </div>
 
-      <form class="space-y-4 sm:space-y-5 w-full" novalidate id="staffLoginForm">
+      <form class="space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="staffLoginForm">
         <!-- Field: Staff ID -->
-        <div class="fin-input-container" style="transition-delay: 0ms;">
-          <label class="field-label">Staff ID or Email</label>
+        <div class="fin-input-container">
+          <label class="field-label text-staff-accent">Staff ID or Email</label>
           <div class="relative">
-            <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input"/>
-            <span class="material-symbols-outlined input-icon">badge</span>
+            <span class="material-symbols-outlined input-icon !text-staff-accent">badge</span>
+            <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input has-icon-left !border-staff-accent/30 focus:!border-staff-accent focus:!shadow-none"/>
           </div>
         </div>
 
         <!-- Field: Password -->
-        <div class="fin-input-container" style="transition-delay: 80ms;">
+        <div class="fin-input-container" style="animation-delay: 0.1s;">
           <div class="flex justify-between items-center pr-1">
-            <label class="field-label">Password</label>
+            <label class="field-label text-staff-accent">Password</label>
           </div>
           <div class="relative group">
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input"/>
-            <span class="material-symbols-outlined input-icon">lock</span>
-            <span class="material-symbols-outlined password-toggle" id="toggle-password">visibility</span>
+            <span class="material-symbols-outlined input-icon !text-staff-accent">lock</span>
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-staff-accent/30 focus:!border-staff-accent focus:!shadow-none"/>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-staff-accent transition-colors" id="toggle-password">visibility</span>
           </div>
-
         </div>
 
         <div id="error-box" class="error-msg">Invalid staff credentials</div>
 
         <!-- Action -->
         <div class="pt-3 sm:pt-4">
-          <button type="submit" id="login-btn" class="staff-btn" style="transition-delay: 160ms;">
+          <button type="submit" id="login-btn" class="btn-primary !bg-staff-accent hover:!bg-amber-600" style="animation-delay: 0.2s;">
             <span>Staff Sign In</span>
             <span class="material-symbols-outlined text-xl">login</span>
           </button>
@@ -324,20 +131,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
   $(function() {
-    // Show animations
-    setTimeout(() => {
-      $('.fin-input-container, .staff-btn').addClass('visible');
-    }, 100);
-
-    // Icon float: up when focused or has value, down when empty & unfocused
-    $('.fin-input').on('input focus blur', function() {
-      const $icon = $(this).siblings('.input-icon');
-      if ($(this).val().trim().length > 0) {
-        $icon.addClass('icon-up');
-      } else {
-        $icon.removeClass('icon-up');
-      }
-    });
 
     const $form = $('#staffLoginForm');
     const $btn = $('#login-btn');

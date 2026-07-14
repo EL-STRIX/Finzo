@@ -6,6 +6,8 @@ tailwind.config = {
         "primary-dark": "#0f2a44",
         "accent": "#10b981",       // Emerald green
         "accent-dark": "#059669",
+        "staff-accent": "#f59e0b", // Amber for Staff
+        "admin-accent": "#6366f1", // Indigo for Admin
         "fin-navy": "#0f172a",
         "fin-slate": "#64748b",
         "background": "#f8fafc",   // Light gray bg for pages
