@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -124,7 +124,7 @@
                 <!-- LEFT COLUMN -->
                 <div class="space-y-6">
                     <!-- PROFILE CARD -->
-                    <div class="admin-card p-6 sm:p-8">
+                    <div class="ds-card p-6 sm:p-8">
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 text-center sm:text-left">
                             <div id="d-avatar" class="w-20 h-20 rounded-2xl premium-gradient-primary flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-primary/20 flex-shrink-0 overflow-hidden">
                                 S
@@ -167,7 +167,7 @@
                     </div>
 
                     <!-- INCIDENT REPORT -->
-                    <div class="admin-card p-6 sm:p-8">
+                    <div class="ds-card p-6 sm:p-8">
                         <div class="flex items-center gap-3 mb-5">
                             <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-lg text-red-500">gpp_maybe</span>
@@ -180,7 +180,7 @@
                     </div>
 
                     <!-- LOGIN HISTORY -->
-                    <div class="admin-card overflow-hidden">
+                    <div class="ds-card overflow-hidden">
                         <div class="px-6 py-4 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center">
@@ -191,7 +191,7 @@
                             <span id="log-count-badge" class="px-2.5 py-1 bg-slate-100 dark:bg-white/5 text-slate-500 text-[9px] font-black rounded-md uppercase">0 Events</span>
                         </div>
                         <div class="overflow-x-auto w-full">
-                            <table class="admin-table w-full text-left min-w-[550px]">
+                            <table class="ds-table w-full text-left min-w-[550px]">
                                 <thead>
                                     <tr>
                                         <th class="text-[9px] pl-6">Status</th>
@@ -210,7 +210,7 @@
                 <!-- RIGHT COLUMN -->
                 <div class="space-y-6">
                     <!-- ACCESS CONTROL -->
-                    <div class="admin-card p-6" id="unlock-action-card">
+                    <div class="ds-card p-6" id="unlock-action-card">
                         <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Access Control</h3>
                         <button onclick="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
                             <span class="material-symbols-outlined text-lg">vpn_key</span> Generate & Unlock
@@ -223,7 +223,7 @@
                     </div>
 
                     <!-- TEMP PASS CARD (Hidden initially) -->
-                    <div id="temp-pass-card" class="admin-card p-6 hidden" style="background:rgba(16,185,129,0.05); border:2px solid #10b981;">
+                    <div id="temp-pass-card" class="ds-card p-6 hidden" style="background:rgba(16,185,129,0.05); border:2px solid #10b981;">
                         <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">Account Reinstated</div>
                         <div class="p-4 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-green-900/40 rounded-xl mb-3">
                             <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
@@ -234,7 +234,7 @@
                     </div>
 
                     <!-- LOCK CONTEXT -->
-                    <div class="admin-card p-6">
+                    <div class="ds-card p-6">
                         <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Lock Details</h3>
                         <div class="space-y-4">
                             <div class="flex items-center justify-between py-2 border-b border-slate-50 dark:border-white/5">
@@ -281,4 +281,5 @@
     <script src="../../../public/assets/js/admin/locked-account-detail.js"></script>
 </body>
 </html>
+
 
