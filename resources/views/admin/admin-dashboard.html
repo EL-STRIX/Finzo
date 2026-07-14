@@ -1,248 +1,287 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Finzo Admin â€” Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <title>Finzo Admin — Dashboard</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    
+    <!-- Design System Configuration -->
+    <script src="../../../public/assets/js/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#002645", "error": "#ba1a1a",
-                    },
-                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="../../../public/assets/css/admin.css">
-    <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
+    <link href="../../../public/assets/css/design-system.css" rel="stylesheet" />
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
+<body class="ds-bg ds-text antialiased">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
 
     <!-- SIDEBAR -->
-    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-    <nav class="admin-sidebar" id="admin-sidebar">
-        <div class="admin-sidebar-brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub">ADMIN CONSOLE</div>
+    <nav class="fixed top-0 left-0 h-full w-72 bg-slate-900 text-white z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
+        <!-- Brand -->
+        <div class="h-20 flex flex-col justify-center px-8 border-b border-white/10 bg-slate-950">
+            <div class="font-headline font-black text-2xl tracking-tight text-white">Finzo</div>
+            <div class="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Enterprise Admin</div>
         </div>
-        <div class="admin-nav">
-            <div class="admin-nav-section">MAIN</div>
-            <a href="admin-dashboard.html" class="admin-nav-item active">
-                <span class="material-symbols-outlined">analytics</span> Overview
+
+        <!-- Navigation -->
+        <div class="p-4 space-y-1 overflow-y-auto" style="height: calc(100vh - 80px);">
+            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/20 text-primary font-bold transition-all border border-primary/30">
+                <span class="material-symbols-outlined text-[20px]">analytics</span>
+                <span>Executive Overview</span>
             </a>
-            <a href="admin-pending-approvals.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
+            <a href="admin-pending-approvals.html" class="flex items-center justify-between px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all group">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">rule</span>
+                    <span>Approvals</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black tracking-widest uppercase shadow-sm">3 Pending</span>
             </a>
-            <a href="admin-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">group</span> User Management
+            <a href="admin-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">group</span>
+                <span>User Management</span>
             </a>
-            <a href="admin-staff.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">badge</span> Staff Management
+            <a href="admin-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">badge</span>
+                <span>Staff Management</span>
             </a>
-            <a href="admin-branches.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">store</span> Branch Management
+            <a href="admin-branches.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">store</span>
+                <span>Branch Operations</span>
             </a>
-            <a href="admin-transactions.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">swap_horiz</span> Transactions
+            <a href="admin-transactions.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+                <span>Global Transactions</span>
             </a>
-            <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
+            <a href="admin-audit-log.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">manage_search</span>
+                <span>System Audit Log</span>
             </a>
 
-            <div class="admin-nav-section">System</div>
-            <a href="admin-suspended-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_off</span> Suspended Users
+            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">System & Security</div>
+            <a href="admin-suspended-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">person_off</span>
+                <span>Suspended Users</span>
             </a>
-            <a href="admin-suspended-staff.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">work_off</span> Suspended Staff
+            <a href="admin-suspended-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">work_off</span>
+                <span>Suspended Staff</span>
             </a>
-            <a href="admin-locked-accounts.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
+            <a href="admin-locked-accounts.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">lock_person</span>
+                <span>Locked Accounts</span>
             </a>
-            <a href="admin-deleted-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_remove</span> Deleted Users
+            <a href="admin-deleted-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">person_remove</span>
+                <span>Deleted Users</span>
             </a>
-            <a href="admin-interest.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">percent</span> Interest Management
+            <a href="admin-interest.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">percent</span>
+                <span>Interest Engine</span>
             </a>
 
-            <div class="admin-nav-section">ACCOUNT</div>
-            <a href="admin-profile.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">account_circle</span> Admin Profile
+            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">Account</div>
+            <a href="admin-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">account_circle</span>
+                <span>My Profile</span>
             </a>
-            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-                <span data-theme-label>Dark Mode</span>
+            <button id="toggle-theme-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all text-left">
+                <span class="material-symbols-outlined text-[20px]" id="theme-icon">light_mode</span>
+                <span id="theme-label">Light Mode</span>
             </button>
-            <a href="../auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-                <span class="material-symbols-outlined">logout</span> Logout
+            <a href="../auth/admin-login.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 font-bold transition-all mt-4 border border-red-500/10">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span>Secure Logout</span>
             </a>
         </div>
     </nav>
 
-    <!-- MAIN AREA -->
-    <div class="admin-main transition-all duration-300">
-        <header class="admin-topbar sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5">
-            <div class="flex items-center gap-3 flex-1">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-                    <span class="material-symbols-outlined force-black dark:text-white">menu</span>
+    <!-- MAIN CONTENT -->
+    <div class="lg:ml-72 min-h-screen flex flex-col transition-all duration-300">
+        <!-- TOP NAVBAR -->
+        <header class="h-20 bg-white/80 dark:bg-[#0d1117]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 sticky top-0 z-50 px-4 sm:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div>
-                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">REAL-TIME MONITORING</div>
-                    <div class="text-xl font-black tracking-tight mt-1 truncate max-w-[200px] sm:max-w-none">Admin Dashboard</div>
+                <div class="hidden sm:block">
+                    <div class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-0.5">Global Network</div>
+                    <div class="font-headline text-xl font-black tracking-tight text-slate-900 dark:text-white">Executive Dashboard</div>
                 </div>
             </div>
-            <div class="flex items-center gap-4 px-4">
+
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden md:block">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" id="live-date">...</div>
+                    <div class="font-mono text-sm font-bold text-slate-900 dark:text-white" id="live-clock">...</div>
                 </div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/10 hidden md:block"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-primary/30" id="topbar-avatar">A</div>
+                </div>
+            </div>
         </header>
 
-        <main class="p-4 sm:p-6 lg:p-10">
-            <!-- STATS GRID -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-blue-50 dark:bg-blue-500/10 text-blue-600"><span class="material-symbols-outlined">upload_file</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Withdrawals</div>
-                    <div class="admin-stat-value skeleton">0</div>
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full space-y-8">
+            
+            <!-- KEY PERFORMANCE INDICATORS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+                
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-amber-200 dark:hover:border-amber-500/30 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-amber-500/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-4 border border-amber-100 dark:border-amber-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Assets</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton" id="stat-total-assets">₹0.00</div>
+                    </div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600"><span class="material-symbols-outlined">download_for_offline</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Deposits</div>
-                    <div class="admin-stat-value skeleton">0</div>
+                
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-emerald-500/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 flex items-center justify-center mb-4 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">download_for_offline</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Today's Deposits</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton">0</div>
+                    </div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-purple-50 dark:bg-purple-500/10 text-purple-600"><span class="material-symbols-outlined">swap_horiz</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Today's Transfers</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-amber-50 dark:bg-amber-500/10 text-amber-600"><span class="material-symbols-outlined">group</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Accounts</div>
-                    <div class="admin-stat-value skeleton">0</div>
+                
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-blue-200 dark:hover:border-blue-500/30 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-blue-500/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500 flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Today's Withdrawals</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton">0</div>
+                    </div>
                 </div>
 
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-slate-100 dark:bg-white/5 text-slate-600"><span class="material-symbols-outlined">group</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Total Users</div>
-                    <div class="admin-stat-value skeleton">0</div>
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-purple-200 dark:hover:border-purple-500/30 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-purple-500/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 flex items-center justify-center mb-4 border border-purple-100 dark:border-purple-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">group</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Users</div>
+                        <div class="text-xl font-black tracking-tight text-slate-900 dark:text-white skeleton">0</div>
+                    </div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600"><span class="material-symbols-outlined">percent</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Interest Credited</div>
-                    <div class="admin-stat-value skeleton">0</div>
+
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-primary/20 dark:hover:border-primary/50 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center mb-4 border border-primary/10 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">badge</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Staff</div>
+                        <div class="text-xl font-black tracking-tight text-slate-900 dark:text-white skeleton">0</div>
+                    </div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-amber-50 dark:bg-amber-500/10 text-amber-600"><span class="material-symbols-outlined">rule</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Pending Approvals</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-red-50 dark:bg-red-500/10 text-red-600"><span class="material-symbols-outlined">lock</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Locked Accounts</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-orange-50 dark:bg-orange-500/10 text-orange-600"><span class="material-symbols-outlined">person_off</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Suspended Users</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-slate-100 dark:bg-white/5 text-slate-500"><span class="material-symbols-outlined">delete</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Soft Deleted Users</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-blue-50 dark:bg-blue-500/10 text-blue-600"><span class="material-symbols-outlined">badge</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Active Staff</div>
-                    <div class="admin-stat-value skeleton">0</div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600"><span class="material-symbols-outlined">store</span></div>
-                    <div class="admin-stat-label uppercase tracking-widest text-[9px] font-black">Active Branches</div>
-                    <div class="admin-stat-value skeleton">0</div>
+
+                <div class="ds-card p-5 relative overflow-hidden group hover:border-rose-200 dark:hover:border-rose-500/30 transition-colors">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-rose-500/5 rounded-bl-full -z-0"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-500 flex items-center justify-center mb-4 border border-rose-100 dark:border-rose-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">lock</span>
+                        </div>
+                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Locked Accounts</div>
+                        <div class="text-xl font-black tracking-tight text-slate-900 dark:text-white skeleton">0</div>
+                    </div>
                 </div>
             </div>
 
             <!-- CHARTS ROW -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Transaction Volume Chart -->
-                <div class="lg:col-span-2 admin-card p-6 sm:p-8">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                <div class="lg:col-span-2 ds-card p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-slate-100 dark:border-white/5 pb-6">
                         <div>
-                            <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white">Transaction Volume</h3>
-                            <p class="text-[11px] font-bold text-slate-400 mt-1">Real-time volume analysis (Last 6 Months)</p>
+                            <h3 class="font-headline font-black text-lg text-slate-900 dark:text-white">Transaction Volume</h3>
+                            <p class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Real-time volume analysis (Last 6 Months)</p>
                         </div>
                         <div class="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest">
-                            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span> Deposits</span>
-                            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span> Withdrawals</span>
+                            <span class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span> Deposits</span>
+                            <span class="flex items-center gap-2 text-blue-600 dark:text-blue-400"><span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm"></span> Withdrawals</span>
                         </div>
                     </div>
-                    <div class="relative h-[320px]">
+                    <div class="relative h-[320px] w-full">
                         <canvas id="chart-transactions"></canvas>
                     </div>
                 </div>
 
-                <!-- Account Types Donut -->
-                <div class="admin-card p-6 sm:p-8">
-                    <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white mb-8">Account Spread</h3>
-                    <div class="relative flex items-center justify-center mb-8" style="height: 200px;">
+                <!-- Account Spread Donut -->
+                <div class="ds-card p-6 sm:p-8">
+                    <div class="border-b border-slate-100 dark:border-white/5 pb-6 mb-8">
+                        <h3 class="font-headline font-black text-lg text-slate-900 dark:text-white">Account Distribution</h3>
+                        <p class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Current System State</p>
+                    </div>
+                    <div class="relative flex items-center justify-center mb-8 h-[200px]">
                         <canvas id="chart-accounts"></canvas>
                     </div>
                     <div class="space-y-4" id="donut-legend">
-                        <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active</span>
-                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-active">0</span>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active</span>
+                            <span class="font-black font-mono text-slate-900 dark:text-white skeleton" id="legend-active">0</span>
                         </div>
-                        <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</span>
-                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-pending">0</span>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Pending</span>
+                            <span class="font-black font-mono text-slate-900 dark:text-white skeleton" id="legend-pending">0</span>
                         </div>
-                        <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Suspended</span>
-                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-suspended">0</span>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Suspended</span>
+                            <span class="font-black font-mono text-slate-900 dark:text-white skeleton" id="legend-suspended">0</span>
                         </div>
-                        <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Locked</span>
-                            <span class="font-black text-slate-800 dark:text-white skeleton" id="legend-locked">0</span>
+                        <div class="flex items-center justify-between">
+                            <span class="flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Locked</span>
+                            <span class="font-black font-mono text-slate-900 dark:text-white skeleton" id="legend-locked">0</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- REVENUE CHART -->
-            <div class="admin-card p-6 sm:p-8 mb-10">
-                <h3 class="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-white mb-8">Monthly Revenue Performance</h3>
-                <div class="relative h-[280px]">
+            <div class="ds-card p-6 sm:p-8">
+                <div class="border-b border-slate-100 dark:border-white/5 pb-6 mb-8 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-headline font-black text-lg text-slate-900 dark:text-white">Revenue Performance</h3>
+                        <p class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Monthly Growth Analysis</p>
+                    </div>
+                </div>
+                <div class="relative h-[280px] w-full">
                     <canvas id="chart-revenue"></canvas>
                 </div>
             </div>
 
             <!-- RECENT ACTIVITY TABLE -->
-            <div class="admin-card overflow-hidden">
-                <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
-                    <h3 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-lg text-primary">history</span> Recent Onboarding
+            <div class="ds-card overflow-hidden">
+                <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/2">
+                    <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
+                        <span class="material-symbols-outlined text-primary">history</span> Recent Onboarding
                     </h3>
-                    <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Global Audit Log</a>
+                    <a href="admin-users.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table class="admin-table w-full text-left min-w-[700px]">
+                    <table class="ds-table w-full text-left min-w-[800px]">
                         <thead>
                             <tr>
                                 <th>User Profile</th>
                                 <th>Account Status</th>
                                 <th>Verification</th>
                                 <th>Tier</th>
-                                <th>Joined</th>
+                                <th>Joined Date</th>
                                 <th class="text-right">Action</th>
                             </tr>
                         </thead>
@@ -263,4 +302,3 @@
     <script src="../../../public/assets/js/admin/dashboard.js"></script>
 </body>
 </html>
-
