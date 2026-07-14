@@ -4,289 +4,225 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Finzo Staff — Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#1a3c5e",
-                        "amber-staff": "#f59e0b",
-                        "error": "#ba1a1a",
-                        "surface-container-low": "#0d1117"
-                    },
-                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-                }
-            }
-        }
-    </script>
+    <title>Finzo Staff — Operations Dashboard</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    
+    <!-- Design System Configuration -->
+    <script src="../../../public/assets/js/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link rel="stylesheet" href="../../../public/assets/css/admin.css">
-    <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
+    <link href="../../../public/assets/css/design-system.css" rel="stylesheet" />
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../../../public/assets/js/staff/staff-shared.js"></script>
-    <style>
-        .brand-sub-staff {
-            color: #f59e0b !important;
-            /* Amber for staff panel */
-        }
-
-        .staff-sidebar-active {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
-            color: #f59e0b !important;
-        }
-
-        .staff-sidebar-active::before {
-            background: #f59e0b !important;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
-        }
-
-        .admin-nav-item:hover {
-            color: #f59e0b !important;
-        }
-    </style>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="ds-bg ds-text antialiased">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
 
-    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
     <!-- SIDEBAR -->
-    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
-        <div class="admin-sidebar-brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
+    <nav class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-[#161b22] border-r border-slate-200 dark:border-white/5 z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
+        <!-- Brand -->
+        <div class="h-20 flex flex-col justify-center px-8 border-b border-slate-200 dark:border-white/5">
+            <div class="font-headline font-black text-2xl text-slate-900 dark:text-white tracking-tight">Finzo</div>
+            <div class="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">STAFF OPERATIONS</div>
         </div>
 
-        <!-- Staff Info Card -->
-        <div class="px-4 py-6 border-b border-white/5">
-            <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
-                <div class="flex items-center gap-3 mb-3">
-                    <div
-                        class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">
-                        --</div>
-                    <div>
-                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
-                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
-                    </div>
+        <!-- Staff Identity -->
+        <div class="p-6 border-b border-slate-200 dark:border-white/5">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center font-bold text-white text-lg staff-initials-display shadow-lg shadow-amber-500/20">--</div>
+                <div>
+                    <div class="text-sm font-bold text-slate-900 dark:text-white staff-name-display truncate max-w-[150px]">Loading...</div>
+                    <div class="text-[11px] font-bold text-slate-500 staff-id-display">STF---</div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
-                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
-                    </div>
-                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 w-fit">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                    <span class="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-widest">Active Shift</span>
                 </div>
+                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1 staff-branch-display">Loading Branch...</div>
             </div>
         </div>
 
-        <div class="admin-nav">
-            <div class="admin-nav-section">MAIN</div>
-            <a href="staff-dashboard.html" class="admin-nav-item staff-sidebar-active">
-                <span class="material-symbols-outlined">analytics</span> Dashboard
+        <!-- Navigation -->
+        <div class="p-4 space-y-1 overflow-y-auto" style="height: calc(100vh - 280px);">
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
+            
+            <a href="staff-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 font-bold transition-all border border-amber-200 dark:border-amber-500/20">
+                <span class="material-symbols-outlined text-[20px]">analytics</span>
+                <span>Dashboard</span>
             </a>
-            <a href="staff-deposit.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">add_circle</span> New Deposit
+            <a href="staff-deposit.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                <span>New Deposit</span>
             </a>
-            <a href="staff-withdraw.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">remove_circle</span> New Withdrawal
+            <a href="staff-withdraw.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">remove_circle</span>
+                <span>New Withdrawal</span>
             </a>
-            <a href="staff-history.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">receipt_long</span> Transaction History
+            <a href="staff-history.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                <span>History</span>
             </a>
 
-            <div class="admin-nav-section">ACCOUNT</div>
-            <a href="staff-profile.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person</span> My Profile
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-4 mt-8">Settings</div>
+            
+            <a href="staff-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">person</span>
+                <span>My Profile</span>
             </a>
-            <button class="admin-nav-item w-full text-left" id="toggle-theme-btn"
-                style="background:none;border:none;cursor:pointer;">
-                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+            <button id="toggle-theme-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all text-left">
+                <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
                 <span id="theme-label">Dark Mode</span>
             </button>
-            <button class="admin-nav-item w-full text-left end-shift-trigger"
-                style="background:none;border:none;cursor:pointer;color:#ff3b30;">
-                <span class="material-symbols-outlined">logout</span> Logout
+            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 font-bold transition-all text-left mt-4 end-shift-trigger">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span>End Shift</span>
             </button>
         </div>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <div class="admin-main">
+    <div class="lg:ml-72 min-h-screen flex flex-col">
         <!-- TOP NAVBAR -->
-        <div class="admin-topbar">
-            <div class="flex items-center gap-3 sm:gap-4">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+        <header class="h-20 bg-white/80 dark:bg-[#0d1117]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 sticky top-0 z-50 px-4 sm:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div>
-                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] opacity-60 uppercase">STAFF OVERVIEW</div>
-                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight" id="page-title">Dashboard</div>
+                <div class="hidden sm:block">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">STAFF OVERVIEW</div>
+                    <div class="font-headline text-xl font-bold text-slate-900 dark:text-white" id="page-title">Dashboard</div>
                 </div>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="hidden lg:flex flex-col items-end">
-                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="live-date">12 Apr
-                        2026</div>
-                    <div class="text-sm font-black text-primary dark:text-blue-500" id="live-clock">10:45:00 AM</div>
-                </div>
-                <div class="h-8 w-px bg-slate-200 dark:bg-white/1"></div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <div class="text-xs font-bold text-black dark:text-blue-500 staff-name-display">Loading...</div>
-                        <div class="text-[10px] text-slate-400 font-bold staff-id-display">STF---</div>
-                    </div>
-                    <button
-                        class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300 end-shift-trigger">
-                        End Shift
-                    </button>
-                </div>
-            </div>
-        </div>
 
-        <div class="p-4 sm:p-6 lg:p-8">
-            <!-- PAGE HEADER -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6 lg:mb-8">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-primary dark:text-blue-500 tracking-tight" id="welcome-text">Welcome
-                        back</h2>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Here's what's happening in your shift
-                        today.</p>
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden md:block">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" id="live-date">12 Apr 2026</div>
+                    <div class="font-mono text-sm font-bold text-slate-900 dark:text-white" id="live-clock">10:45:00 AM</div>
                 </div>
-                <div
-                    class="flex items-center gap-3 px-4 py-2 bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                    <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/10 hidden md:block"></div>
+                <button class="px-5 py-2.5 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-all end-shift-trigger">
+                    End Shift
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT -->
+        <main class="flex-1 p-4 sm:p-8 space-y-8 max-w-7xl mx-auto w-full">
+            
+            <!-- Welcome Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-slate-900 dark:text-white" id="welcome-text">Loading...</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 font-medium">Shift Summary & Daily Operations Overview.</p>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-600 dark:text-slate-400">
+                    <span class="material-symbols-outlined text-[16px]">calendar_today</span>
                     <span id="header-date">12 Apr 2026</span>
                 </div>
             </div>
 
-            <!-- QUICK ACTIONS -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div
-                    class="bg-emerald-50 dark:bg-emerald-500/5 p-8 rounded-[2rem] border border-emerald-100 dark:border-emerald-500/10 flex flex-col items-start gap-6 group hover:translate-y-[-4px] transition-all duration-300">
-                    <div
-                        class="w-16 h-16 rounded-3xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                        <span class="material-symbols-outlined text-4xl">upload</span>
+            <!-- Quick Actions (High Density) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <a href="staff-deposit.html" class="ds-card p-6 flex items-center justify-between group hover:border-emerald-500/50 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined">add_circle</span>
+                        </div>
+                        <div>
+                            <div class="font-headline font-bold text-lg text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Process Deposit</div>
+                            <div class="text-xs text-slate-500 font-medium">Credit accounts via cash/cheque</div>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-black font-headline text-emerald-900 dark:text-emerald-500 mb-2">New
-                            Deposit</h3>
-                        <p class="text-emerald-700/60 dark:text-emerald-400/60 font-medium">Credit customer account
-                            instantly via cash or cheque.</p>
+                    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all">arrow_forward</span>
+                </a>
+                
+                <a href="staff-withdraw.html" class="ds-card p-6 flex items-center justify-between group hover:border-red-500/50 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined">remove_circle</span>
+                        </div>
+                        <div>
+                            <div class="font-headline font-bold text-lg text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Process Withdrawal</div>
+                            <div class="text-xs text-slate-500 font-medium">Debit accounts securely</div>
+                        </div>
                     </div>
-                    <a href="staff-deposit.html"
-                        class="px-8 py-3 bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 active:scale-95 transition-all">Start
-                        Deposit →</a>
-                </div>
+                    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-red-500 group-hover:translate-x-1 transition-all">arrow_forward</span>
+                </a>
+            </div>
 
-                <div
-                    class="bg-red-50 dark:bg-red-500/5 p-8 rounded-[2rem] border border-red-100 dark:border-red-500/10 flex flex-col items-start gap-6 group hover:translate-y-[-4px] transition-all duration-300">
-                    <div
-                        class="w-16 h-16 rounded-3xl bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/20">
-                        <span class="material-symbols-outlined text-4xl">download</span>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-black font-headline text-red-900 dark:text-red-500 mb-2">New Withdrawal
-                        </h3>
-                        <p class="text-red-700/60 dark:text-red-400/60 font-medium">Debit money from customer account
-                            safely.</p>
-                    </div>
-                    <a href="staff-withdraw.html"
-                        class="px-8 py-3 bg-red-500 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 hover:bg-red-600 active:scale-95 transition-all">Start
-                        Withdrawal →</a>
+            <!-- Shift Summary Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="ds-card p-5 border-l-4 border-l-emerald-500">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Deposits</div>
+                    <div class="text-2xl font-black text-emerald-600 dark:text-emerald-500" id="stat-deposits">₹0.00</div>
+                </div>
+                <div class="ds-card p-5 border-l-4 border-l-red-500">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Withdrawals</div>
+                    <div class="text-2xl font-black text-red-600 dark:text-red-500" id="stat-withdrawals">₹0.00</div>
+                </div>
+                <div class="ds-card p-5 border-l-4 border-l-amber-500">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Transactions</div>
+                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="stat-transactions">0</div>
+                </div>
+                <div class="ds-card p-5 border-l-4 border-l-blue-500">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Net Flow</div>
+                    <div class="text-2xl font-black text-blue-600 dark:text-blue-500" id="stat-netflow">₹0.00</div>
                 </div>
             </div>
 
-            <!-- RECENT TRANSACTIONS TABLE -->
-            <div class="admin-card">
-                <div
-                    class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-[#ced2d9]">
-                    <h3 class="admin-section-title dark:text-white">Today's Transactions</h3>
-                    <a href="staff-history.html"
-                        class="text-xs font-bold text-primary dark:text-amber-500 hover:underline uppercase tracking-widest">View
-                        All →</a>
+            <!-- Recent Activity Table (High Density Data Grid) -->
+            <div class="ds-card overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/[0.02]">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-amber-500">receipt_long</span>
+                        <h3 class="font-headline font-bold text-slate-900 dark:text-white">Recent Shift Activity</h3>
+                    </div>
+                    <a href="staff-history.html" class="text-xs font-bold text-amber-600 dark:text-amber-500 hover:underline uppercase tracking-widest">View All</a>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="admin-table w-full">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="dark:bg-white/5">
-                                <th class="dark:text-white/60">TIME</th>
-                                <th class="dark:text-white/60">CUSTOMER</th>
-                                <th class="dark:text-white/60">ACCOUNT NO</th>
-                                <th class="dark:text-white/60">TYPE</th>
-                                <th class="dark:text-white/60">AMOUNT</th>
-                                <th class="dark:text-white/60">STATUS</th>
-                                <th class="text-right dark:text-white/60">RECEIPT</th>
+                            <tr class="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Time</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Customer / Ref</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Account</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Type</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Receipt</th>
                             </tr>
                         </thead>
-                        <tbody id="txn-tbody">
-                            <tr class="dark:hover:bg-white/5 border-none">
-                                <td colspan="7" class="text-center py-8 font-bold text-slate-400">Loading today's transactions...</td>
+                        <tbody id="txn-tbody" class="divide-y divide-slate-100 dark:divide-white/5">
+                            <tr>
+                                <td colspan="6" class="text-center py-10 font-bold text-slate-400">Loading today's transactions...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- SHIFT SUMMARY CARD -->
-            <div
-                class="mt-6 lg:mt-8 bg-white dark:bg-[#ffffff] p-5 sm:p-8 rounded-3xl border border-slate-200 dark:border-white/5 shadow-xl transition-all duration-300">
-                <h3 class="admin-section-title dark:text-white mb-4 sm:mb-6">Today's Shift Summary</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div
-                        class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ">Total Deposits
-                        </div>
-                        <div class="text-2xl font-black text-emerald-600" id="stat-deposits">₹0.00</div>
-                    </div>
-                    <div
-                        class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total
-                            Withdrawals</div>
-                        <div class="text-2xl font-black text-red-600" id="stat-withdrawals">₹0.00</div>
-                    </div>
-                    <div
-                        class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total
-                            Transactions</div>
-                        <div class="text-2xl font-black text-primary dark:text-blue-500" id="stat-transactions">0</div>
-                    </div>
-                    <div
-                        class="p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-md hover:shadow-xl transition-all duration-300">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Net Flow</div>
-                        <div class="text-2xl font-black text-emerald-500" id="stat-netflow">₹0.00</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
     <!-- MODAL OVERLAYS -->
-    <div id="modal-overlay"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] hidden items-center justify-center opacity-0 transition-opacity duration-300">
         <!-- End Shift Confirmation -->
-        <div id="logout-modal"
-            class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden">
-            <div class="w-16 h-16 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mb-6 mx-auto">
-                <span class="material-symbols-outlined text-4xl">logout</span>
+        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-slate-100 dark:border-white/10">
+            <div class="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 flex items-center justify-center mb-6 mx-auto border border-red-100 dark:border-red-500/20">
+                <span class="material-symbols-outlined text-3xl">logout</span>
             </div>
-            <h3 class="text-2xl font-black font-headline text-center mb-2 dark:text-white">End Shift?</h3>
-            <p class="text-slate-500 dark:text-slate-400 text-center mb-8">Are you sure you want to end your shift and
-                logout? You will need to login again to process transactions.</p>
-            <div class="flex gap-4">
-                <button
-                    class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
-                <a href="../../../app/Controllers/auth/logout.php"
-                    class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl hover:bg-red-700 shadow-lg shadow-red-600/30 transition-all">End
-                    Shift</a>
+            <h3 class="text-xl font-bold font-headline text-center mb-2 text-slate-900 dark:text-white">End Shift?</h3>
+            <p class="text-slate-500 text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout? You will need to login again.</p>
+            <div class="flex gap-3">
+                <button class="flex-1 py-2.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <a href="../../../app/Controllers/auth/logout.php" class="flex-1 py-2.5 bg-red-600 text-white text-center font-bold text-sm rounded-xl hover:bg-red-700 transition-all shadow-md shadow-red-600/20">End Shift</a>
             </div>
         </div>
     </div>
@@ -309,7 +245,7 @@
                 const netFlow = $('#stat-netflow');
                 netFlow.text((s.net_cash_flow > 0 ? '+' : '') + formatINR(s.net_cash_flow));
                 if (s.net_cash_flow < 0) {
-                    netFlow.removeClass('text-emerald-500').addClass('text-red-500');
+                    netFlow.removeClass('text-blue-600 dark:text-blue-500').addClass('text-red-600 dark:text-red-500');
                 }
             }
 
@@ -322,47 +258,47 @@
             tbody.empty();
 
             if (!txns || txns.length === 0) {
-                tbody.html(`<tr><td colspan="7" class="text-center py-8 font-bold text-slate-400">No transactions processed today.</td></tr>`);
+                tbody.html(`<tr><td colspan="6" class="text-center py-10 font-bold text-slate-400 text-sm">No transactions processed today.</td></tr>`);
                 return;
             }
 
-            txns.forEach((txn, index) => {
+            txns.forEach((txn) => {
                 const isDeposit = txn.type === 'deposit';
                 const time = new Date(txn.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
                 const am = formatINR(txn.amount);
                 
-                // Colors
-                const typeBadge = isDeposit ? 'badge-success' : 'badge-error';
+                // Styles
+                const typeBg = isDeposit ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20';
                 const typeText = txn.type.toUpperCase();
                 const sign = isDeposit ? '+' : '-';
-                const amtColor = isDeposit ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
-                const iconColor = isDeposit ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600';
+                const amtColor = isDeposit ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500';
                 
-                // Extract customer Initials
-                const parts = (txn.customer_name || 'Unknown').split(' ');
-                const initials = (parts[0]?.[0] || '') + (parts[1]?.[0] || '');
-
-                const trClass = index === txns.length - 1 ? 'dark:hover:bg-white/5 border-none' : 'dark:hover:bg-white/5';
+                const initials = (txn.customer_name || 'U').substring(0,2).toUpperCase();
 
                 tbody.append(`
-                    <tr class="${trClass}">
-                        <td class="font-bold dark:text-white">${time}</td>
-                        <td>
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full ${iconColor} flex items-center justify-center text-[11px] font-bold">
-                                    ${initials.toUpperCase()}
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-white/2 transition-colors">
+                        <td class="p-3 text-xs font-bold text-slate-900 dark:text-slate-300">${time}</td>
+                        <td class="p-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded bg-slate-100 dark:bg-white/10 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                                    ${initials}
                                 </div>
-                                <span class="font-bold dark:text-white">${txn.customer_name || 'N/A'}</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-900 dark:text-white leading-tight">${txn.customer_name || 'N/A'}</div>
+                                    <div class="text-[10px] text-slate-500 font-mono leading-tight">REF: ${txn.txn_id}</div>
+                                </div>
                             </div>
                         </td>
-                        <td class="font-mono text-xs dark:text-white/70">${txn.account_no || 'N/A'}</td>
-                        <td><span class="status-badge ${typeBadge}">${typeText}</span></td>
-                        <td class="font-bold ${amtColor}">${sign}${am}</td>
-                        <td><span class="status-badge badge-success">COMPLETED</span></td>
-                        <td class="text-right">
-                            <a href="staff-receipt.html?id=${txn.txn_id}"
-                                class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-all inline-block" title="View Receipt">
-                                <span class="material-symbols-outlined">print</span>
+                        <td class="p-3 font-mono text-xs font-medium text-slate-600 dark:text-slate-400">${txn.account_no || 'N/A'}</td>
+                        <td class="p-3">
+                            <span class="inline-block px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${typeBg}">
+                                ${typeText}
+                            </span>
+                        </td>
+                        <td class="p-3 font-mono font-bold text-sm ${amtColor}">${sign}${am}</td>
+                        <td class="p-3 text-right">
+                            <a href="staff-receipt.html?id=${txn.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="View Receipt">
+                                <span class="material-symbols-outlined text-[18px]">print</span>
                             </a>
                         </td>
                     </tr>
@@ -371,5 +307,4 @@
         }
     </script>
 </body>
-
 </html>
