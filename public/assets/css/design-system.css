@@ -1,0 +1,195 @@
+/* ==========================================================================
+   Finzo Enterprise Design System 
+   ========================================================================== */
+
+/* Typography & Base */
+body {
+  background-color: theme('colors.background');
+  font-family: theme('fontFamily.body');
+  color: theme('colors.fin-navy');
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-headline {
+  font-family: theme('fontFamily.headline');
+}
+
+/* Scrollbar styling for a cleaner look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: theme('colors.slate.300');
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.slate.400');
+}
+
+/* ==========================================================================
+   Form Elements (Inputs & Labels)
+   ========================================================================== */
+
+.fin-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: theme('colors.fin-slate');
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+  transition: color 0.25s;
+}
+
+.fin-input-container:focus-within .field-label {
+  color: theme('colors.primary');
+}
+
+.fin-input { 
+  width: 100% !important; 
+  height: 52px !important;
+  padding: 0 16px !important;
+  background: theme('colors.slate.50') !important; 
+  border: 1.5px solid theme('colors.slate.200') !important; 
+  border-radius: theme('borderRadius.xl') !important; 
+  font-size: 14px !important; 
+  font-weight: 500; 
+  color: theme('colors.fin-navy') !important; 
+  outline: none !important; 
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+@media (min-width: 640px) {
+  .fin-input { height: 56px !important; }
+}
+
+.fin-input::placeholder { 
+  color: theme('colors.slate.400'); 
+  font-weight: 400; 
+  transition: color 0.2s; 
+}
+.fin-input:focus::placeholder { 
+  color: transparent; 
+}
+
+.fin-input:hover { 
+  background: theme('colors.slate.100') !important; 
+}
+
+.fin-input:focus { 
+  background: #ffffff !important; 
+  border-color: theme('colors.primary') !important; 
+  box-shadow: theme('boxShadow.input-focus') !important;
+  --tw-ring-shadow: none !important;
+}
+
+/* Input with Left Icon Padding */
+.fin-input.has-icon-left {
+  padding-left: 50px !important;
+}
+
+/* Form Icons */
+.input-icon { 
+  position: absolute; 
+  left: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  color: theme('colors.slate.400'); 
+  font-size: 22px; 
+  pointer-events: none; 
+  transition: all 0.3s ease; 
+}
+.fin-input-container:focus-within .input-icon {
+  color: theme('colors.primary');
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn-primary { 
+  width: 100%;
+  height: 52px; 
+  border-radius: theme('borderRadius.xl'); 
+  background: theme('colors.primary'); 
+  color: white;
+  font-size: 15px; 
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease; 
+  box-shadow: 0 4px 12px rgba(26,60,94,0.25);
+}
+
+@media (min-width: 640px) {
+  .btn-primary { height: 56px; }
+}
+
+.btn-primary:hover { 
+  background: theme('colors.primary-dark'); 
+  transform: translateY(-1px); 
+  box-shadow: 0 6px 16px rgba(26,60,94,0.35); 
+}
+.btn-primary:active { 
+  transform: translateY(0) scale(0.99); 
+}
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================================
+   Cards & Layouts
+   ========================================================================== */
+.card {
+  background: white;
+  border-radius: theme('borderRadius.2xl');
+  box-shadow: theme('boxShadow.soft');
+  border: 1px solid theme('colors.slate.100');
+  padding: 24px;
+}
+
+/* ==========================================================================
+   Utilities & Animations
+   ========================================================================== */
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error-state .fin-input {
+  border-color: theme('colors.red.500') !important;
+  background: theme('colors.red.50') !important;
+  box-shadow: 0 0 0 4px rgba(239,68,68,0.1) !important;
+}
+
+.error-msg {
+  color: theme('colors.red.500'); 
+  font-size: 13px; 
+  font-weight: 500; 
+  margin-top: 6px; 
+  display: none;
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown { 
+  from { opacity: 0; transform: translateY(-4px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
