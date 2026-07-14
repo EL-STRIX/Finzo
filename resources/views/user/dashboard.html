@@ -4,10 +4,13 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Dashboard | Finzo</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="../../../public/assets/css/user.css"/>
 <link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
+<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
+<script src="../../../public/assets/js/tailwind-config.js"></script>
 <style>
 /* --- Premium Typography & Grid System --- */
 :root {
@@ -134,7 +137,7 @@
   <div class="page-content">
 
     <!-- STATUS BANNERS -->
-    <div id="banner-pending" class="banner banner-pending hidden animate-in">
+    <div id="banner-pending" class="banner banner-pending hidden fade-in-up">
       <div class="banner-left">
         <div class="banner-icon" style="background:rgba(8,145,178,0.12)">
           <span class="material-symbols-outlined" style="color:#0891b2;font-size:20px">assignment_ind</span>
@@ -144,7 +147,7 @@
           <div class="banner-text">Verify your identity to unlock deposits, transfers, and all banking features.</div>
         </div>
       </div>
-      <a href="complete-profile.html" class="btn btn-primary" style="flex-shrink:0">Complete Profile →</a>
+      <a href="complete-profile.html" class="btn-primary" style="flex-shrink:0">Complete Profile →</a>
     </div>
 
     <div id="banner-review" class="banner banner-warning hidden animate-in">
@@ -163,7 +166,7 @@
       </a>
     </div>
 
-    <div id="banner-rejected" class="banner banner-danger hidden animate-in">
+    <div id="banner-rejected" class="banner banner-danger hidden fade-in-up">
       <div class="banner-left">
         <div class="banner-icon" style="background:rgba(244,63,94,0.12)">
           <span class="material-symbols-outlined" style="color:#f43f5e;font-size:20px">cancel</span>
@@ -173,10 +176,10 @@
           <div class="banner-text">Your application was not approved. Please update your profile and resubmit.</div>
         </div>
       </div>
-      <a href="account-rejected.html" class="btn btn-danger" style="flex-shrink:0">View Status →</a>
+      <a href="account-rejected.html" class="btn-secondary !text-red-500 !border-red-200 hover:!bg-red-50" style="flex-shrink:0">View Status →</a>
     </div>
 
-    <div id="banner-approved" class="banner banner-success hidden animate-in">
+    <div id="banner-approved" class="banner banner-success hidden fade-in-up">
       <div class="banner-left">
         <div class="banner-icon" style="background:rgba(16,185,129,0.12)">
           <span class="material-symbols-outlined" style="color:#10b981;font-size:20px">check_circle</span>
@@ -192,7 +195,7 @@
     </div>
 
     <!-- PAGE HEADER -->
-    <div class="page-header animate-in animate-delay-1">
+    <div class="page-header fade-in-up" style="animation-delay: 0.1s;">
       <div class="page-eyebrow">Account Overview</div>
       <div class="page-title" id="page-greeting"><span class="skeleton" style="width: 250px; height: 32px;"></span></div>
       <div class="page-subtitle">Here's what's happening with your Finzo account today.</div>
@@ -200,7 +203,7 @@
 
     <div class="grid-12">
       <!-- ROW 1: BALANCE & STATS -->
-      <div class="col-8 animate-in animate-delay-2">
+      <div class="col-8 fade-in-up" style="animation-delay: 0.2s;">
         <div class="balance-card">
           <div style="position:relative;z-index:1">
             <div style="font-size:10px;font-weight:800;letter-spacing:0.18em;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:6px">Total Available Balance</div>
