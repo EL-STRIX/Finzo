@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -113,29 +113,29 @@
     <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
 
       <!-- TABLE CARD -->
-      <div class="admin-card overflow-hidden">
+      <div class="ds-card overflow-hidden">
         <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
             <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Suspended Personnel Audit</h3>
             <a href="admin-staff.html" class="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Full Staff Audit</a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-slate-50/20 dark:bg-white/[0.02]">
           <div>
-            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Search Staff</div>
+            <div class="ds-label mb-2 ml-1">Search Staff</div>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, staff ID...">
+              <input type="text" id="search-input" class="ds-input pl-10 py-2.5" placeholder="Name, staff ID...">
             </div>
           </div>
           <div>
-            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Start Date</div>
-            <input type="date" id="start-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+            <div class="ds-label mb-2 ml-1">Start Date</div>
+            <input type="date" id="start-date" class="ds-input py-2">
           </div>
           <div>
-            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">End Date</div>
-            <input type="date" id="end-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+            <div class="ds-label mb-2 ml-1">End Date</div>
+            <input type="date" id="end-date" class="ds-input py-2">
           </div>
           <div>
-            <div class="text-[10px] font-black tracking-[0.15em] text-slate-400 uppercase mb-2 ml-1">Reason</div>
+            <div class="ds-label mb-2 ml-1">Reason</div>
             <div class="finzo-dropdown w-full" id="reason-dropdown">
               <input type="hidden" id="reason-filter" value="">
               <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-slate-200 dark:!border-white/10 !rounded-xl !py-2 !px-4">
@@ -157,7 +157,7 @@
           </div>
         </div>
         <div class="w-full overflow-x-auto scrollbar-thin">
-          <table class="admin-table w-full min-w-[1300px]">
+          <table class="ds-table w-full min-w-[1300px]">
             <thead>
               <tr>
                 <th class="w-12">#</th>
@@ -196,10 +196,10 @@
     <div class="modal-text" id="modal-text">You are reinstating this staff account.</div>
     
     <div class="mt-6 w-full text-left">
-      <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Authorize Action (Admin Password)</label>
+      <label class="ds-label mb-3 ml-1">Authorize Action (Admin Password)</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
-        <input type="password" id="admin-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" 
+        <input type="password" id="admin-password" placeholder="••••••••" 
           class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
       </div>
     </div>
@@ -221,5 +221,7 @@
   <script src="../../../public/assets/js/admin/suspended-staff.js"></script>
 </body>
 </html>
+
+
 
 
