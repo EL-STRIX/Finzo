@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="../../../public/assets/css/custom.css">
 </head>
 
-<body class="bg-background font-body text-fin-navy antialiased">
+<body class="bg-background font-body text-[var(--color-text-main)] antialiased">
     <div class="min-h-screen flex flex-col md:flex-row">
         <div class="hidden md:flex md:w-1/2 p-8 sm:p-12 lg:p-16 flex-col justify-between relative overflow-hidden" style="background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);">
             <div class="relative z-10">
@@ -51,7 +51,7 @@
             <div class="absolute inset-0 pointer-events-none z-0">
                 <img alt="Modern Architecture" class="w-full h-full object-cover brightness-[0.4] contrast-[1.2]"
                     src="../../../public/assets/images/register-page-image.png" loading="lazy" />
-                <div class="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
+                <div class="absolute inset-0 bg-primary-600/40 mix-blend-multiply"></div>
             </div>
         </div>
         <div class="flex-1 flex items-center justify-center px-5 py-8 sm:p-8 md:p-12 lg:p-24 bg-background">
@@ -59,15 +59,15 @@
 
                 <!-- Mobile Branding -->
                 <div class="md:hidden flex items-center justify-center gap-2 mb-6">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
-                        <span class="material-symbols-outlined text-primary text-lg">account_balance</span>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
+                        <span class="material-symbols-outlined text-primary-600 text-lg">account_balance</span>
                     </div>
-                    <span class="text-xl font-black tracking-tighter text-primary font-headline">Finzo</span>
+                    <span class="text-xl font-black tracking-tighter text-primary-600 font-headline">Finzo</span>
                 </div>
 
                 <div class="mb-8 sm:mb-10 lg:mb-12">
-                    <h2 class="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-primary">Create Your Account</h2>
-                    <p class="text-fin-slate font-medium text-sm mt-2">Join Finzo and start banking in minutes.</p>
+                    <h2 class="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-primary-600">Create Your Account</h2>
+                    <p class="text-[var(--color-text-muted)] font-medium text-sm mt-2">Join Finzo and start banking in minutes.</p>
                 </div>
 
                 <!-- Institutional Error Banner -->
@@ -78,7 +78,7 @@
                             Please ensure all architectural fields are precisely configured.</span>
                     </div>
                 </div>
-                <form action="#" class="space-y-5 sm:space-y-6 fade-in-up" id="register-form" method="POST" novalidate>
+                <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up" action="#" class="space-y-5 sm:space-y-6 fade-in-up" id="register-form" method="POST" novalidate>
                     <input name="csrf_token" type="hidden" value="static_placeholder_token" />
 
                     <div class="space-y-3 sm:space-y-4">
@@ -98,10 +98,10 @@
                         </div>
                         <div class="fin-input-container">
                             <label class="field-label ml-1">Phone Number</label>
-                            <div class="relative flex items-center border-[1.5px] border-slate-200 bg-slate-50 rounded-xl focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all">
+                            <div class="relative flex items-center border-[1.5px] border-slate-200 bg-[var(--color-surface-subtle)] rounded-xl focus-within:border-primary-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all">
                                 <span class="material-symbols-outlined input-icon !static !transform-none ml-4 mr-2">call</span>
-                                <span class="text-sm font-bold text-primary mr-1">+91</span>
-                                <input class="w-full bg-transparent border-none focus:ring-0 text-fin-navy text-[14px] font-medium h-[52px] sm:h-[56px] px-2 outline-none" id="phone" placeholder="00000-00000" type="tel" />
+                                <span class="text-sm font-bold text-primary-600 mr-1">+91</span>
+                                <input class="w-full bg-transparent border-none focus:ring-0 text-[var(--color-text-main)] text-[14px] font-medium h-[52px] sm:h-[56px] px-2 outline-none" id="phone" placeholder="00000-00000" type="tel" />
                             </div>
                         </div>
 
@@ -110,7 +110,7 @@
                             <div class="relative group">
                                 <span class="material-symbols-outlined input-icon">lock</span>
                                 <input class="fin-input has-icon-left" id="password" placeholder="••••••••••••" type="password" />
-                                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors" id="toggle-password" type="button">
+                                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors" id="toggle-password" type="button">
                                     <span class="material-symbols-outlined text-xl">visibility</span>
                                 </button>
                             </div>
@@ -140,8 +140,8 @@
                     </div>
                 </form>
                 <div class="mt-6 sm:mt-8 text-center">
-                    <span class="text-[12px] sm:text-[13px] font-semibold text-fin-slate">Already have an account?</span>
-                    <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-primary hover:text-accent transition-colors ml-1">Sign In</a>
+                    <span class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-muted)]">Already have an account?</span>
+                    <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-primary-600 hover:text-accent transition-colors ml-1">Sign In</a>
                 </div>
             </div>
         </div>

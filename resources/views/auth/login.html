@@ -12,7 +12,7 @@
   <link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
   <script src="../../../public/assets/js/tailwind-config.js"></script>
 </head>
-<body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
+<body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
 <main class="min-h-screen flex">
 
   <!-- LEFT PANEL -->
@@ -31,12 +31,12 @@
       </div>
       
       <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-emerald-500/10 border border-emerald-500/25 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-[#10b981]"></div>
-          <span class="text-[10px] font-black tracking-widest text-[#10b981] uppercase">● PERSONAL BANKING</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary-600-600/10 border border-primary-600-600/25 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-primary-600-600"></div>
+          <span class="text-[10px] font-black tracking-widest text-primary-600-600 uppercase">● PERSONAL BANKING</span>
         </div>
         <h1 class="text-[48px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
-          Your Money,<br/><span class="text-[#10b981]">Your Control.</span>
+          Your Money,<br/><span class="text-primary-600-600">Your Control.</span>
         </h1>
         <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
           Deposit, transfer and track every rupee from your personal Finzo dashboard — simple, secure and always available.
@@ -44,15 +44,15 @@
 
         <div class="space-y-4 mb-12">
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">ACID Safe Fund Transfers</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">Encrypted Session Security</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-emerald-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">Real-Time Transaction Alerts</span>
           </div>
         </div>
@@ -68,25 +68,25 @@
 
       <!-- Mobile Branding -->
       <div class="mobile-brand-bar">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
           <span class="material-symbols-outlined text-[#1a3c5e] text-lg">account_balance</span>
         </div>
         <span class="text-xl font-black tracking-tighter text-[#1a3c5e] font-headline">Finzo</span>
       </div>
       
       <!-- Role Switcher -->
-      <div class="flex bg-slate-50 p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
-        <button onclick="window.location.href='login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary rounded-xl shadow-md transition-all">Customer</button>
+      <div class="flex bg-[var(--color-surface-subtle)] p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
+        <button onclick="window.location.href='login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600 rounded-xl shadow-md transition-all">Customer</button>
         <button onclick="window.location.href='staff-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Staff</button>
         <button onclick="window.location.href='admin-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Admin</button>
       </div>
 
       <div class="mb-8 sm:mb-10 text-left w-full">
-        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Welcome Back</h2>
-        <p class="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">Sign in to your account and manage your money.</p>
+        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Welcome Back</h2>
+        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Sign in to your account and manage your money.</p>
       </div>
 
-      <form class="space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="loginForm">
+      <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="loginForm">
         <!-- Field: Identity -->
         <div class="fin-input-container">
           <label class="field-label">Email or Account Number</label>
@@ -104,10 +104,10 @@
           <div class="relative group">
             <span class="material-symbols-outlined input-icon">lock</span>
             <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary transition-colors" id="toggle-password">visibility</span>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password">visibility</span>
           </div>
           <div class="flex justify-end items-center mt-3 px-1">
-            <a href="forgot-password.html" class="text-[12px] font-bold text-primary hover:underline tracking-[0.03em]">Forgot Password?</a>
+            <a href="forgot-password.html" class="text-[12px] font-bold text-primary-600 hover:underline tracking-[0.03em]">Forgot Password?</a>
           </div>
         </div>
 
@@ -124,8 +124,8 @@
 
       <!-- Switching link -->
       <div class="mt-6 sm:mt-8 text-center">
-        <span class="text-[12px] sm:text-[13px] font-semibold text-slate-500">Don't have an account?</span>
-        <a href="register.html" class="text-[12px] sm:text-[13px] font-bold text-primary hover:text-emerald-500 transition-colors ml-1">Register Now</a>
+        <span class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-muted)]">Don't have an account?</span>
+        <a href="register.html" class="text-[12px] sm:text-[13px] font-bold text-primary-600 hover:text-primary-600-600 transition-colors ml-1">Register Now</a>
       </div>
 
     </div>

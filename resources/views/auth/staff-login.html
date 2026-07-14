@@ -13,7 +13,7 @@
   <script src="../../../public/assets/js/tailwind-config.js"></script>
 </head>
 </head>
-<body class="bg-white font-body text-slate-900 antialiased overflow-x-hidden">
+<body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
 <main class="min-h-screen flex">
 
   <!-- LEFT PANEL -->
@@ -32,12 +32,12 @@
       </div>
       
       <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-amber-500/10 border border-amber-500/25 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-[#f59e0b]"></div>
-          <span class="text-[10px] font-black tracking-widest text-[#f59e0b] uppercase">● BANK STAFF PORTAL</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary-600-600/10 border border-primary-600-600/25 backdrop-blur-md">
+          <div class="w-2 h-2 rounded-full bg-primary-600-600"></div>
+          <span class="text-[10px] font-black tracking-widest text-primary-600-600 uppercase">● BANK STAFF PORTAL</span>
         </div>
         <h1 class="text-[44px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
-          Process Transactions<br/><span class="text-[#f59e0b]">With Confidence.</span>
+          Process Transactions<br/><span class="text-primary-600-600">With Confidence.</span>
         </h1>
         <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
           Login to process customer deposits and withdrawals. Every action is receipt-ready and audit logged for full accountability.
@@ -45,15 +45,15 @@
 
         <div class="space-y-4 mb-12">
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-amber-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">Process Deposits & Withdrawals</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-amber-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">Generate Printable Receipts</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-amber-500 text-xl font-bold">check_circle</span>
+            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
             <span class="text-white text-[13px] font-medium">All Actions Audit Logged</span>
           </div>
         </div>
@@ -69,43 +69,43 @@
 
       <!-- Mobile Branding -->
       <div class="mobile-brand-bar">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500/10">
-          <span class="material-symbols-outlined text-[#f59e0b] text-lg">account_balance</span>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600-600/10">
+          <span class="material-symbols-outlined text-primary-600-600 text-lg">account_balance</span>
         </div>
-        <span class="text-xl font-black tracking-tighter text-[#f59e0b] font-headline">Finzo</span>
+        <span class="text-xl font-black tracking-tighter text-primary-600-600 font-headline">Finzo</span>
       </div>
 
       <!-- Role Switcher -->
-      <div class="flex bg-slate-50 p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
+      <div class="flex bg-[var(--color-surface-subtle)] p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
         <button onclick="window.location.href='login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Customer</button>
-        <button onclick="window.location.href='staff-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-staff-accent rounded-xl shadow-md transition-all">Staff</button>
+        <button onclick="window.location.href='staff-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Staff</button>
         <button onclick="window.location.href='admin-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Admin</button>
       </div>
 
       <div class="mb-8 sm:mb-10 text-left w-full">
-        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-fin-navy mb-2">Internal Access</h2>
-        <p class="text-slate-500 font-medium leading-relaxed text-sm sm:text-base">Finzo staff panel.</p>
+        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Internal Access</h2>
+        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Finzo staff panel.</p>
       </div>
 
-      <form class="space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="staffLoginForm">
+      <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="staffLoginForm">
         <!-- Field: Staff ID -->
         <div class="fin-input-container">
-          <label class="field-label text-staff-accent">Staff ID or Email</label>
+          <label class="field-label text-primary-600-600">Staff ID or Email</label>
           <div class="relative">
-            <span class="material-symbols-outlined input-icon !text-staff-accent">badge</span>
-            <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input has-icon-left !border-staff-accent/30 focus:!border-staff-accent focus:!shadow-none"/>
+            <span class="material-symbols-outlined input-icon !text-primary-600-600">badge</span>
+            <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input has-icon-left !border-primary-600-600/30 focus:!border-primary-600-600 focus:!shadow-none"/>
           </div>
         </div>
 
         <!-- Field: Password -->
         <div class="fin-input-container" style="animation-delay: 0.1s;">
           <div class="flex justify-between items-center pr-1">
-            <label class="field-label text-staff-accent">Password</label>
+            <label class="field-label text-primary-600-600">Password</label>
           </div>
           <div class="relative group">
-            <span class="material-symbols-outlined input-icon !text-staff-accent">lock</span>
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-staff-accent/30 focus:!border-staff-accent focus:!shadow-none"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-staff-accent transition-colors" id="toggle-password">visibility</span>
+            <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-primary-600-600/30 focus:!border-primary-600-600 focus:!shadow-none"/>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password">visibility</span>
           </div>
         </div>
 
@@ -113,7 +113,7 @@
 
         <!-- Action -->
         <div class="pt-3 sm:pt-4">
-          <button type="submit" id="login-btn" class="btn-primary !bg-staff-accent hover:!bg-amber-600" style="animation-delay: 0.2s;">
+          <button type="submit" id="login-btn" class="btn-primary !bg-primary-600-600 hover:!bg-amber-600" style="animation-delay: 0.2s;">
             <span>Staff Sign In</span>
             <span class="material-symbols-outlined text-xl">login</span>
           </button>
@@ -122,7 +122,7 @@
 
       <!-- Customer switching link -->
       <div class="mt-6 sm:mt-8 text-center">
-        <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary transition-colors">Customer? Login here →</a>
+        <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary-600 transition-colors">Customer? Login here →</a>
       </div>
       
   </section>
