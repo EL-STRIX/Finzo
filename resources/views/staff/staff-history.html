@@ -1,326 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Finzo Staff — My Transactions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: { "primary": "#1a3c5e", "amber-staff": "#f59e0b", "surface-container-low": "#0d1117" },
-                    fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-                }
-            }
-        }
-    </script>
+    
+    <!-- Design System Configuration -->
+    <script src="../../../public/assets/js/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link rel="stylesheet" href="../../../public/assets/css/admin.css">
-    <link rel="stylesheet" href="../../../public/assets/css/dark-mode.css">
+    <link href="../../../public/assets/css/design-system.css" rel="stylesheet" />
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../../../public/assets/js/core/api.js"></script>
     <script src="../../../public/assets/js/staff/staff-shared.js"></script>
-    <style>
-        .brand-sub-staff { color: #f59e0b !important; }
-        .staff-sidebar-active {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
-            color: #f59e0b !important;
-        }
-        .staff-sidebar-active::before {
-            background: #f59e0b !important;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8) !important;
-        }
-
-        /* Custom Dropdown Animations */
-        .dropdown-menu {
-            transform: translateY(10px) scale(0.95);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .dropdown-menu.show {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Print button pulse */
-        #print-all-btn:hover .print-icon {
-            animation: printBounce 0.4s ease;
-        }
-        @keyframes printBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-    </style>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
-    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+<body class="ds-bg ds-text antialiased">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
+
     <!-- SIDEBAR -->
-    <nav class="admin-sidebar" id="admin-sidebar" style="background:#0d1117;">
-        <div class="admin-sidebar-brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub brand-sub-staff">STAFF PANEL</div>
+    <nav class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-[#161b22] border-r border-slate-200 dark:border-white/5 z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
+        <!-- Brand -->
+        <div class="h-20 flex flex-col justify-center px-8 border-b border-slate-200 dark:border-white/5">
+            <div class="font-headline font-black text-2xl text-slate-900 dark:text-white tracking-tight">Finzo</div>
+            <div class="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">STAFF OPERATIONS</div>
         </div>
 
-        <!-- Staff Info Card -->
-        <div class="px-4 py-6 border-b border-white/5">
-            <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-white text-sm staff-initials-display">--</div>
-                    <div>
-                        <div class="text-xs font-bold text-amber-700 staff-name-display">Loading...</div>
-                        <div class="text-[10px] text-white/50 font-medium staff-id-display">STF---</div>
-                    </div>
+        <!-- Staff Identity -->
+        <div class="p-6 border-b border-slate-200 dark:border-white/5">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center font-bold text-white text-lg staff-initials-display shadow-lg shadow-amber-500/20">--</div>
+                <div>
+                    <div class="text-sm font-bold text-slate-900 dark:text-white staff-name-display truncate max-w-[150px]">Loading...</div>
+                    <div class="text-[11px] font-bold text-slate-500 staff-id-display">STF---</div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit">
-                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">BANK STAFF</span>
-                    </div>
-                    <div class="text-[9px] font-bold text-white/30 uppercase tracking-[0.1em] px-1 staff-branch-display">Loading Branch...</div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 w-fit">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                    <span class="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-widest">Active Shift</span>
                 </div>
+                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1 staff-branch-display">Loading Branch...</div>
             </div>
         </div>
 
-        <div class="admin-nav">
-            <div class="admin-nav-section">MAIN</div>
-            <a href="staff-dashboard.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">analytics</span> Dashboard
+        <!-- Navigation -->
+        <div class="p-4 space-y-1 overflow-y-auto" style="height: calc(100vh - 280px);">
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
+            
+            <a href="staff-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">analytics</span>
+                <span>Dashboard</span>
             </a>
-            <a href="staff-deposit.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">add_circle</span> New Deposit
+            <a href="staff-deposit.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                <span>New Deposit</span>
             </a>
-            <a href="staff-withdraw.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">remove_circle</span> New Withdrawal
+            <a href="staff-withdraw.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">remove_circle</span>
+                <span>New Withdrawal</span>
             </a>
-            <a href="staff-history.html" class="admin-nav-item staff-sidebar-active">
-                <span class="material-symbols-outlined">receipt_long</span> Transaction History
+            <a href="staff-history.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 font-bold transition-all border border-amber-200 dark:border-amber-500/20">
+                <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                <span>History</span>
             </a>
 
-            <div class="admin-nav-section">ACCOUNT</div>
-            <a href="staff-profile.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person</span> My Profile
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-4 mt-8">Settings</div>
+            
+            <a href="staff-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all">
+                <span class="material-symbols-outlined text-[20px]">person</span>
+                <span>My Profile</span>
             </a>
-            <button class="admin-nav-item w-full text-left" id="toggle-theme-btn" style="background:none;border:none;cursor:pointer;">
-                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+            <button id="toggle-theme-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-bold transition-all text-left">
+                <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
                 <span id="theme-label">Dark Mode</span>
             </button>
-            <button class="admin-nav-item w-full text-left end-shift-trigger" style="background:none;border:none;cursor:pointer;color:#ff3b30;">
-                <span class="material-symbols-outlined">logout</span> Logout
+            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 font-bold transition-all text-left mt-4 end-shift-trigger">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span>End Shift</span>
             </button>
         </div>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <div class="admin-main">
-        <div class="admin-topbar">
-            <div class="flex items-center gap-3 sm:gap-4">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
+    <div class="lg:ml-72 min-h-screen flex flex-col">
+        <!-- TOP NAVBAR -->
+        <header class="h-20 bg-white/80 dark:bg-[#0d1117]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 sticky top-0 z-50 px-4 sm:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div>
-                    <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-black dark:text-amber-500 uppercase mb-0 sm:mb-1">TRANSACTION HISTORY</div>
-                    <div class="font-headline text-xl sm:text-2xl font-extrabold tracking-tight">My Transactions</div>
+                <div class="hidden sm:block">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">TRANSACTION HISTORY</div>
+                    <div class="font-headline text-xl font-bold text-slate-900 dark:text-white" id="page-title">My Transactions</div>
                 </div>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="hidden lg:flex flex-col items-end text-right">
-                    <div class="text-[11px] font-bold text-black dark:text-slate-400 uppercase tracking-widest" id="live-date">12 Apr 2026</div>
-                    <div class="text-sm font-black text-primary dark:text-blue-500" id="live-clock">10:45:00 AM</div>
-                </div>
-                <div class="h-8 w-px bg-slate-200 dark:bg-white/1 hidden sm:block"></div>
-                <div class="flex items-center gap-3">
-                    <div class="text-xs font-bold dark:text-blue-500 hidden sm:block staff-name-display">Loading...</div>
-                    <button class="px-4 py-2 border-2 border-red-500/20 text-red-500 rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all end-shift-trigger">End Shift</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="p-4 sm:p-6 lg:p-8">
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden md:block">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" id="live-date">12 Apr 2026</div>
+                    <div class="font-mono text-sm font-bold text-slate-900 dark:text-white" id="live-clock">10:45:00 AM</div>
+                </div>
+                <div class="h-8 w-px bg-slate-200 dark:bg-white/10 hidden md:block"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-xs font-bold dark:text-slate-300 hidden sm:block staff-name-display">Loading...</div>
+                    <button class="px-5 py-2.5 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-all end-shift-trigger">End Shift</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4 sm:p-8 w-full max-w-7xl mx-auto space-y-6">
             <!-- STATS ROW -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon" style="background:rgba(16, 185, 129, 0.1);">
-                        <span class="material-symbols-outlined" style="color:#10b981;">add_circle</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="ds-card p-5 border-l-4 border-l-emerald-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Deposits Done</div>
+                        <span class="material-symbols-outlined text-emerald-500">add_circle</span>
                     </div>
-                    <div class="admin-stat-label">TOTAL DEPOSITS DONE</div>
-                    <div class="admin-stat-value">₹5,24,000</div>
-                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500">+12% from last week</span></div>
+                    <div class="text-2xl font-black text-emerald-600 dark:text-emerald-500" id="stat-deposits">₹0</div>
+                    <div class="mt-2 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded inline-block">Total processed</div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon" style="background:rgba(239, 68, 68, 0.1);">
-                        <span class="material-symbols-outlined" style="color:#ef4444;">remove_circle</span>
+                <div class="ds-card p-5 border-l-4 border-l-red-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Withdrawals Done</div>
+                        <span class="material-symbols-outlined text-red-500">remove_circle</span>
                     </div>
-                    <div class="admin-stat-label">TOTAL WITHDRAWALS DONE</div>
-                    <div class="admin-stat-value">₹3,18,000</div>
-                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500">+8% from last week</span></div>
+                    <div class="text-2xl font-black text-red-600 dark:text-red-500" id="stat-withdrawals">₹0</div>
+                    <div class="mt-2 text-[10px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded inline-block">Total processed</div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon" style="background:rgba(59, 130, 246, 0.1);">
-                        <span class="material-symbols-outlined" style="color:#3b82f6;">receipt</span>
+                <div class="ds-card p-5 border-l-4 border-l-amber-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Transactions</div>
+                        <span class="material-symbols-outlined text-amber-500">receipt</span>
                     </div>
-                    <div class="admin-stat-label">TOTAL TRANSACTIONS</div>
-                    <div class="admin-stat-value">342</div>
-                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 uppercase tracking-widest">All Time</span></div>
+                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="stat-transactions">0</div>
+                    <div class="mt-2 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded inline-block uppercase">All Time</div>
                 </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-icon" style="background:rgba(245, 158, 11, 0.1);">
-                        <span class="material-symbols-outlined" style="color:#f59e0b;">calendar_month</span>
+                <div class="ds-card p-5 border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">This Month</div>
+                        <span class="material-symbols-outlined text-blue-500">calendar_month</span>
                     </div>
-                    <div class="admin-stat-label">THIS MONTH</div>
-                    <div class="admin-stat-value">48</div>
-                    <div class="mt-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md bg-amber-500/10 text-amber-500 uppercase tracking-widest">Apr 2026</span></div>
+                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="stat-month-count">0</div>
+                    <div class="mt-2 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-1 rounded inline-block uppercase" id="stat-month-label">Month</div>
                 </div>
             </div>
 
             <!-- FILTER BAR -->
-            <div class="admin-card !overflow-visible relative z-[50] p-4 sm:p-6 mb-8 space-y-6">
-                <!-- TABS + PRINT BUTTON ROW -->
-                <div class="flex items-center justify-between gap-4 border-b border-slate-100 dark:border-white/5 pb-4">
-                    <div class="flex gap-2 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                        <button class="time-tab px-4 sm:px-6 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-bold rounded-xl text-[10px] sm:text-xs uppercase tracking-widest shadow-md flex-shrink-0">All Time</button>
-                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">Today</button>
-                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Week</button>
-                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0">This Month</button>
-                        <button class="time-tab px-4 sm:px-6 py-2 text-black dark:text-slate-400 font-bold hover:text-primary transition-all text-[10px] sm:text-xs uppercase tracking-widest flex-shrink-0" id="tab-custom">Custom Range</button>
+            <div class="ds-card p-4 sm:p-6 space-y-4 relative z-20">
+                <!-- Tabs and Print Row -->
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-4">
+                    <div class="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide pb-2 sm:pb-0">
+                        <button class="time-tab px-4 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs uppercase tracking-widest shadow shadow-amber-500/20">All Time</button>
+                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">Today</button>
+                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Week</button>
+                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Month</button>
+                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest" id="tab-custom">Custom</button>
                     </div>
-                    <!-- PRINT ALL BUTTON -->
-                    <button id="print-all-btn" onclick="printAllTransactions()"
-                        class="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-primary dark:bg-amber-500 text-white dark:text-primary font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20 dark:shadow-amber-500/10 hover:translate-y-[-2px] active:scale-95 transition-all duration-200">
-                        <span class="material-symbols-outlined text-[18px] print-icon">print</span>
-                        <span class="hidden sm:inline">Print All</span>
+                    
+                    <button id="print-all-btn" onclick="printAllTransactions()" class="flex items-center gap-2 px-4 py-2 ds-btn-secondary text-xs bg-white dark:bg-white/5">
+                        <span class="material-symbols-outlined text-[18px]">print</span>
+                        <span class="hidden sm:inline">Print Report</span>
                     </button>
                 </div>
                 
-                <!-- INPUTS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="lg:col-span-2">
-                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Search Customer</label>
-                        <input type="text" id="search-input" placeholder="Search name or account..." class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                <!-- Inputs Row -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2 relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                        <input type="text" id="search-input" placeholder="Search customer name, account no, or ref..." class="w-full ds-input pl-10 h-10 text-sm">
                     </div>
-                    <!-- TYPE DROPDOWN (finzo-dropdown engine) -->
+                    
                     <div>
-                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Type</label>
-                        <div class="finzo-dropdown">
-                            <button type="button" class="finzo-dropdown-trigger w-full h-12 px-4">
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[18px]">list</span>
-                                    <span class="dropdown-label">All Types</span>
-                                </span>
-                                <span class="material-symbols-outlined chevron">expand_more</span>
-                            </button>
-                            <div class="finzo-dropdown-menu">
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full is-selected" data-value="All Types">
-                                    <span class="material-symbols-outlined text-[18px]">list</span> All Types
-                                </button>
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Deposits">
-                                    <span class="material-symbols-outlined text-[18px]" style="color:#10b981">add_circle</span> Deposits
-                                </button>
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Withdrawals">
-                                    <span class="material-symbols-outlined text-[18px]" style="color:#ef4444">remove_circle</span> Withdrawals
-                                </button>
-                            </div>
-                            <input type="hidden" id="filter-type" value="All Types">
-                        </div>
+                        <select id="filter-type" class="w-full ds-input h-10 text-sm appearance-none">
+                            <option value="All Types">All Types</option>
+                            <option value="Deposits">Deposits</option>
+                            <option value="Withdrawals">Withdrawals</option>
+                        </select>
                     </div>
-
-                    <!-- STATUS DROPDOWN (finzo-dropdown engine) -->
+                    
                     <div>
-                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">Status</label>
-                        <div class="finzo-dropdown">
-                            <button type="button" class="finzo-dropdown-trigger w-full h-12 px-4">
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[18px]">rule</span>
-                                    <span class="dropdown-label">All Status</span>
-                                </span>
-                                <span class="material-symbols-outlined chevron">expand_more</span>
-                            </button>
-                            <div class="finzo-dropdown-menu">
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full is-selected" data-value="All Status">
-                                    <span class="material-symbols-outlined text-[18px]">rule</span> All Status
-                                </button>
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Completed">
-                                    <span class="material-symbols-outlined text-[18px]" style="color:#10b981">check_circle</span> Completed
-                                </button>
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Pending">
-                                    <span class="material-symbols-outlined text-[18px]" style="color:#f59e0b">pending</span> Pending
-                                </button>
-                                <button type="button" class="finzo-dropdown-option flex items-center gap-3 w-full" data-value="Failed">
-                                    <span class="material-symbols-outlined text-[18px]" style="color:#ef4444">cancel</span> Failed
-                                </button>
-                            </div>
-                            <input type="hidden" id="filter-status" value="All Status">
-                        </div>
+                        <select id="filter-status" class="w-full ds-input h-10 text-sm appearance-none">
+                            <option value="All Status">All Status</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Failed">Failed</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Custom Date Inputs (Hidden by default) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="custom-date-row" style="display: none;">
-                    <div class="lg:col-span-2 hidden lg:block"></div>
+                <!-- Custom Date Row (Hidden) -->
+                <div id="custom-date-row" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                    <div class="md:col-span-2"></div>
                     <div>
-                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">From Date</label>
-                        <input type="date" id="filter-from-date" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">From</label>
+                        <input type="date" id="filter-from-date" class="w-full ds-input h-10 text-sm">
                     </div>
                     <div>
-                        <label class="text-[10px] font-black text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-2 block">To Date</label>
-                        <input type="date" id="filter-to-date" class="w-full h-12 px-4 bg-slate-50 dark:bg-white/1 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">To</label>
+                        <input type="date" id="filter-to-date" class="w-full ds-input h-10 text-sm">
                     </div>
                 </div>
             </div>
 
-            <!-- HISTORY TABLE -->
-            <div class="admin-card">
+            <!-- HISTORY TABLE (High Density) -->
+            <div class="ds-card overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="admin-table w-full">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="dark:bg-white/5">
-                                <th class="w-12">#</th>
-                                <th class="text-left">DATE & TIME</th>
-                                <th class="text-left">CUSTOMER</th>
-                                <th class="text-left">ACCOUNT NO</th>
-                                <th class="text-left">TYPE</th>
-                                <th class="text-left">AMOUNT</th>
-                                <th class="text-left">BALANCE AFTER</th>
-                                <th class="text-left">STATUS</th>
-                                <th class="text-right">RECEIPT</th>
+                            <tr class="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest w-12 text-center">#</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Time</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Customer / Ref</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Account</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Type</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
+                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Receipt</th>
                             </tr>
                         </thead>
-                        <tbody id="transaction-table-body">
-                            <!-- Transactions will be rendered here by JS -->
+                        <tbody id="transaction-table-body" class="divide-y divide-slate-100 dark:divide-white/5">
+                            <tr><td colspan="8" class="text-center py-8 font-bold text-slate-400 text-sm">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- PAGINATION -->
-                <div id="pagination-container" class="p-6 flex justify-between items-center bg-slate-50/50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5">
-                    <span id="showing-meta" class="text-xs font-bold text-slate-400">Showing 1-6 of 0 transactions</span>
-                    <div class="flex gap-2" id="page-buttons">
-                        <!-- Generated by JS -->
+                <div class="p-4 bg-slate-50/50 dark:bg-white/2 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <span id="showing-meta" class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Showing 0-0 of 0</span>
+                    <div class="flex items-center gap-1" id="page-buttons">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
             </div>
-            </div>
-        </div>
+        </main>
     </div>
 
     <!-- MODAL OVERLAY -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div id="logout-modal" class="bg-white dark:bg-[#1c2128] rounded-[2rem] p-10 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden">
-            <div class="w-16 h-16 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mb-6 mx-auto">
-                <span class="material-symbols-outlined text-4xl font-black">logout</span>
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-slate-100 dark:border-white/10">
+            <div class="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 flex items-center justify-center mb-6 mx-auto border border-red-100 dark:border-red-500/20">
+                <span class="material-symbols-outlined text-3xl font-black">logout</span>
             </div>
-            <h3 class="text-2xl font-black font-headline text-center mb-2 dark:text-white">End Shift?</h3>
-            <p class="text-slate-500 dark:text-slate-400 text-center mb-8 font-bold">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
-            <div class="flex gap-4">
-                <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white font-bold rounded-2xl modal-close">Cancel</button>
-                <button onclick="window.location.href='../../../app/Controllers/auth/logout.php'" class="flex-1 py-4 bg-red-600 text-white text-center font-bold rounded-2xl shadow-lg shadow-red-600/30">End Shift</button>
+            <h3 class="text-xl font-bold font-headline text-center mb-2 text-slate-900 dark:text-white">End Shift?</h3>
+            <p class="text-slate-500 text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
+            <div class="flex gap-3">
+                <button class="flex-1 py-2.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <button onclick="window.location.href='../../../app/Controllers/auth/logout.php'" class="flex-1 py-2.5 bg-red-600 text-white text-center font-bold text-sm rounded-xl hover:bg-red-700 transition-all shadow-md shadow-red-600/20">End Shift</button>
             </div>
         </div>
     </div>
@@ -337,15 +270,13 @@
                 const res = await api.get('/staff/dashboard.php');
                 if (res.success) {
                     const stats = res.shift_stats;
-                    // Update the 4 stat cards
-                    $('.admin-stat-card:eq(0) .admin-stat-value').text(formatINR(stats.deposits_total));
-                    $('.admin-stat-card:eq(1) .admin-stat-value').text(formatINR(stats.withdrawals_total));
-                    $('.admin-stat-card:eq(2) .admin-stat-value').text(stats.total_transactions);
+                    $('#stat-deposits').text(formatINR(stats.deposits_total));
+                    $('#stat-withdrawals').text(formatINR(stats.withdrawals_total));
+                    $('#stat-transactions').text(stats.total_transactions);
                     
-                    // Month stat - just for display
                     const now = new Date();
-                    $('.admin-stat-card:eq(3) .admin-stat-value').text(stats.total_transactions); // reusing for now
-                    $('.admin-stat-card:eq(3) .bg-amber-500\/10').text(now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }));
+                    $('#stat-month-count').text(stats.total_transactions);
+                    $('#stat-month-label').text(now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }));
                 }
             } catch (err) {
                 console.error("Failed to load stats", err);
@@ -365,10 +296,9 @@
 
         async function renderTransactions() {
             const tbody = $('#transaction-table-body');
-            tbody.html('<tr><td colspan="9" class="text-center py-12"><div class="flex items-center justify-center gap-3 font-bold text-slate-400"><span class="material-symbols-outlined animate-spin">sync</span> Loading transactions...</div></td></tr>');
+            tbody.html('<tr><td colspan="8" class="text-center py-10 font-bold text-slate-400 text-sm">Loading transactions...</td></tr>');
 
             try {
-                // Map range to dates
                 let from_date = currentFilters.from_date;
                 let to_date = currentFilters.to_date;
                 const today = new Date().toISOString().split('T')[0];
@@ -401,100 +331,96 @@
                 tbody.empty();
 
                 if (!res.success || !res.transactions || res.transactions.length === 0) {
-                    tbody.append('<tr><td colspan="9" class="text-center py-12 text-slate-400 font-bold">No transactions found matching your filters.</td></tr>');
-                    updateSummary(0, 0, 0);
-                    renderPagination(1, 1);
+                    tbody.append('<tr><td colspan="8" class="text-center py-10 text-slate-400 font-bold text-sm">No transactions found matching your filters.</td></tr>');
+                    renderPagination(1, 1, 0);
                     return;
                 }
 
                 res.transactions.forEach((item, idx) => {
                     const isDeposit = item.type === 'deposit';
-                    const typeClass = isDeposit ? 'badge-success' : 'badge-error';
-                    const statusClass = item.status === 'completed' ? 'badge-success' : (item.status === 'pending' ? 'badge-warn' : 'badge-error');
-                    const amountColor = isDeposit ? 'text-emerald-600' : 'text-red-600';
-                    const amountPrefix = isDeposit ? '+' : '-';
+                    const typeBg = isDeposit ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20';
+                    const statusBg = item.status === 'completed' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20' : (item.status === 'pending' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20');
+                    const amtColor = isDeposit ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500';
+                    const amtPrefix = isDeposit ? '+' : '-';
                     
                     const dateObj = new Date(item.created_at);
-                    const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-                    const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+                    const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const initials = (item.customer_name || 'U').substring(0,2).toUpperCase();
 
                     tbody.append(`
-                        <tr class="dark:hover:bg-white/1">
-                            <td class="text-black dark:text-slate-400 font-bold">${(currentPage-1)*itemsPerPage + idx + 1}</td>
-                            <td>
-                                <div class="font-bold dark:text-blue-500">${dateStr}</div>
-                                <div class="text-[10px] text-slate-400 uppercase font-black">${timeStr}</div>
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/2 transition-colors">
+                            <td class="p-3 text-xs font-bold text-slate-400 text-center">${(currentPage-1)*itemsPerPage + idx + 1}</td>
+                            <td class="p-3 text-xs font-bold text-slate-900 dark:text-slate-300">
+                                ${dateStr} <span class="text-[10px] text-slate-500 ml-1">${timeStr}</span>
                             </td>
-                            <td>
-                                <div class="font-bold dark:text-blue-500">${item.customer_name}</div>
-                                <div class="text-[10px] text-slate-400 font-mono italic">REF: ${item.txn_id}</div>
+                            <td class="p-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded bg-slate-100 dark:bg-white/10 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                                        ${initials}
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-900 dark:text-white leading-tight truncate max-w-[150px]">${item.customer_name}</div>
+                                        <div class="text-[10px] text-slate-500 font-mono leading-tight">REF: ${item.txn_id}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="font-mono text-xs text-slate-600 dark:text-slate-400">${item.account_no}</td>
-                            <td><span class="status-badge ${typeClass}">${item.type.toUpperCase()}</span></td>
-                            <td class="font-bold ${amountColor}">${amountPrefix}${formatINR(item.amount)}</td>
-                            <td class="font-bold dark:text-blue-500">${formatINR(item.balance_after)}</td>
-                            <td><span class="status-badge ${statusClass}">${item.status.toUpperCase()}</span></td>
-                            <td class="text-right">
-                                <a href="staff-receipt.html?id=${item.txn_id}" class="p-2 inline-block text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">print</span>
+                            <td class="p-3 font-mono text-xs font-medium text-slate-600 dark:text-slate-400">${item.account_no}</td>
+                            <td class="p-3">
+                                <span class="inline-block px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${typeBg}">
+                                    ${item.type}
+                                </span>
+                            </td>
+                            <td class="p-3 font-mono font-bold text-sm ${amtColor}">${amtPrefix}${formatINR(item.amount)}</td>
+                            <td class="p-3">
+                                <span class="inline-block px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${statusBg}">
+                                    ${item.status}
+                                </span>
+                            </td>
+                            <td class="p-3 text-right">
+                                <a href="staff-receipt.html?id=${item.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="Print Receipt">
+                                    <span class="material-symbols-outlined text-[18px]">print</span>
                                 </a>
                             </td>
                         </tr>
                     `);
                 });
 
-                // Update Summary (from all visible items in current result)
-                let deps = 0, withs = 0;
-                res.transactions.forEach(t => {
-                    if(t.type === 'deposit') deps += parseFloat(t.amount);
-                    else withs += parseFloat(t.amount);
-                });
-                updateSummary(deps, withs, res.total);
                 renderPagination(res.current_page, res.pages, res.total);
 
             } catch (err) {
-                tbody.html('<tr><td colspan="9" class="text-center py-12 text-red-500 font-bold">Error loading data. Please refresh.</td></tr>');
+                tbody.html('<tr><td colspan="8" class="text-center py-10 text-red-500 font-bold text-sm">Error loading data. Please refresh.</td></tr>');
             }
         }
 
-        function updateSummary(deps, withs, total) {
-            $('#summary-deposits').text(formatINR(deps));
-            $('#summary-withdrawals').text(formatINR(withs));
-            $('#summary-count').text(`Total: ${total} transactions`);
-        }
-
         function renderPagination(current, total, totalItems) {
-            const container = $('#pagination-container');
             const startIdx = (current - 1) * itemsPerPage + 1;
             const endIdx = Math.min(startIdx + itemsPerPage - 1, totalItems);
             
-            $('#showing-meta').text(`Showing ${totalItems > 0 ? startIdx : 0}-${endIdx} of ${totalItems} transactions`);
+            $('#showing-meta').text(`Showing ${totalItems > 0 ? startIdx : 0}-${endIdx} of ${totalItems}`);
 
             const pButtons = $('#page-buttons');
             pButtons.empty();
             if (total > 1) {
-                pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${current === 1 ? 'opacity-50 pointer-events-none' : ''}" id="prev-btn">PREV</button>`);
+                pButtons.append(`<button class="px-2 py-1 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 ${current === 1 ? 'opacity-50 pointer-events-none' : ''}" id="prev-btn"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>`);
                 
-                // Show 5 pages around current
                 let start = Math.max(1, current - 2);
                 let end = Math.min(total, start + 4);
                 if (end - start < 4) start = Math.max(1, end - 4);
                 
                 for (let i = start; i <= end; i++) {
-                    const active = i === current ? 'bg-primary text-white' : 'border border-slate-200 dark:border-white/10 text-slate-400';
-                    pButtons.append(`<button class="px-3 py-1.5 ${active} font-bold rounded-lg text-[10px] page-num" data-page="${i}">${i}</button>`);
+                    const active = i === current ? 'bg-amber-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10';
+                    pButtons.append(`<button class="w-8 h-8 rounded text-[11px] font-bold page-num ${active}" data-page="${i}">${i}</button>`);
                 }
                 
-                pButtons.append(`<button class="px-3 py-1.5 border border-slate-200 dark:border-white/10 text-slate-400 font-bold rounded-lg hover:bg-slate-100 transition-all text-[10px] ${current === total ? 'opacity-50 pointer-events-none' : ''}" id="next-btn">NEXT</button>`);
+                pButtons.append(`<button class="px-2 py-1 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 ${current === total ? 'opacity-50 pointer-events-none' : ''}" id="next-btn"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>`);
             }
         }
 
-        // Dropdowns: handled by dropdowns.js engine — listen on hidden input 'change'
         $(document).on('change', '#filter-type, #filter-status', function() {
             applyFilters();
         });
 
-        // Search: live on input (debounced 350ms) + immediate on Enter
         let _searchTimer;
         $('#search-input').on('input', function() {
             clearTimeout(_searchTimer);
@@ -518,11 +444,11 @@
         }
 
         $('.time-tab').on('click', function() {
-            $('.time-tab').removeClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').addClass('text-black dark:text-slate-400');
-            $(this).addClass('bg-primary dark:bg-amber-500 text-white dark:text-primary shadow-md').removeClass('text-black dark:text-slate-400');
+            $('.time-tab').removeClass('bg-amber-500 text-white shadow shadow-amber-500/20').addClass('text-slate-500 dark:text-slate-400');
+            $(this).addClass('bg-amber-500 text-white shadow shadow-amber-500/20').removeClass('text-slate-500 dark:text-slate-400');
             currentFilters.range = $(this).text().trim();
             
-            if (currentFilters.range === 'Custom Range') {
+            if (currentFilters.range === 'Custom') {
                 $('#custom-date-row').slideDown(200);
             } else {
                 $('#custom-date-row').slideUp(200);
@@ -539,10 +465,6 @@
         $(document).on('change', '#filter-from-date, #filter-to-date', function() {
             applyFilters();
         });
-        
-        $(document).on('keyup', '#filter-from-date, #filter-to-date', function(e) {
-            if (e.key === 'Enter') applyFilters();
-        });
 
         $(document).on('click', '.page-num', function() {
             currentPage = parseInt($(this).data('page'));
@@ -557,16 +479,12 @@
             currentPage++; renderTransactions();
         });
 
-        // ══════════════════════════════════════════════════
-        // PRINT ALL TRANSACTIONS
-        // ══════════════════════════════════════════════════
         async function printAllTransactions() {
             const btn = $('#print-all-btn');
             const originalHtml = btn.html();
             btn.prop('disabled', true).html('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
 
             try {
-                // Build the same filters but fetch ALL records (up to 1000)
                 let from_date = currentFilters.from_date;
                 let to_date = currentFilters.to_date;
                 const today = new Date().toISOString().split('T')[0];
@@ -587,7 +505,7 @@
 
                 const query = new URLSearchParams({
                     page: 1,
-                    per_page: 999,           // fetch all
+                    per_page: 999,
                     search: currentFilters.search,
                     type: currentFilters.type,
                     status: currentFilters.status,
@@ -603,22 +521,6 @@
                     return;
                 }
 
-                // Build filter description for header
-                const filterDesc = [];
-                if (currentFilters.range && currentFilters.range !== 'All Time') {
-                    if (currentFilters.range === 'Custom Range') {
-                        if (from_date && to_date) filterDesc.push('Period: ' + from_date + ' to ' + to_date);
-                        else if (from_date) filterDesc.push('Period: From ' + from_date);
-                        else if (to_date) filterDesc.push('Period: Up to ' + to_date);
-                    } else {
-                        filterDesc.push('Period: ' + currentFilters.range);
-                    }
-                }
-                if (currentFilters.search) filterDesc.push('Search: "' + currentFilters.search + '"');
-                if (currentFilters.type !== 'all') filterDesc.push('Type: ' + currentFilters.type.charAt(0).toUpperCase() + currentFilters.type.slice(1));
-                if (currentFilters.status !== 'all') filterDesc.push('Status: ' + currentFilters.status.charAt(0).toUpperCase() + currentFilters.status.slice(1));
-
-                // Compute totals
                 let totalDeposits = 0, totalWithdrawals = 0;
                 res.transactions.forEach(t => {
                     if (t.type === 'deposit') totalDeposits += parseFloat(t.amount);
@@ -629,205 +531,65 @@
                 const now = new Date();
                 const printDate = now.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
 
-                // Build table rows HTML
                 let rowsHtml = '';
                 res.transactions.forEach((item, idx) => {
                     const dateObj = new Date(item.created_at);
                     const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-                    const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
                     const isDeposit = item.type === 'deposit';
                     const amtColor = isDeposit ? '#059669' : '#dc2626';
-                    const amtPrefix = isDeposit ? '+' : '−';
-                    const typeBg = isDeposit ? '#d1fae5' : '#fee2e2';
-                    const typeColor = isDeposit ? '#065f46' : '#991b1b';
-                    const statusBg = item.status === 'completed' ? '#d1fae5' : (item.status === 'pending' ? '#fef3c7' : '#fee2e2');
-                    const statusColor = item.status === 'completed' ? '#065f46' : (item.status === 'pending' ? '#92400e' : '#991b1b');
-
+                    
                     rowsHtml += `
                         <tr style="border-bottom: 1px solid #f1f5f9;">
-                            <td style="padding:10px 8px; font-size:11px; color:#94a3b8; font-weight:700; text-align:center;">${idx + 1}</td>
-                            <td style="padding:10px 8px; font-size:11px;">
-                                <div style="font-weight:700; color:#1e293b;">${dateStr}</div>
-                                <div style="font-size:10px; color:#94a3b8; font-weight:600;">${timeStr}</div>
-                            </td>
-                            <td style="padding:10px 8px; font-size:11px;">
-                                <div style="font-weight:700; color:#1e293b;">${item.customer_name}</div>
-                                <div style="font-size:9px; color:#94a3b8; font-family:monospace;">${item.txn_id}</div>
-                            </td>
-                            <td style="padding:10px 8px; font-size:11px; font-family:monospace; color:#475569; font-weight:600;">${item.account_no}</td>
-                            <td style="padding:10px 8px;">
-                                <span style="font-size:9px; font-weight:800; padding:3px 8px; border-radius:20px; background:${typeBg}; color:${typeColor}; letter-spacing:0.05em; text-transform:uppercase;">${item.type}</span>
-                            </td>
-                            <td style="padding:10px 8px; font-size:12px; font-weight:800; color:${amtColor}; white-space:nowrap;">${amtPrefix}${fmt(item.amount)}</td>
-                            <td style="padding:10px 8px; font-size:11px; font-weight:700; color:#1e293b;">${fmt(item.balance_after)}</td>
-                            <td style="padding:10px 8px;">
-                                <span style="font-size:9px; font-weight:800; padding:3px 8px; border-radius:20px; background:${statusBg}; color:${statusColor}; letter-spacing:0.05em; text-transform:uppercase;">${item.status}</span>
-                            </td>
+                            <td style="padding:8px; font-size:10px; color:#64748b; text-align:center;">${idx + 1}</td>
+                            <td style="padding:8px; font-size:10px;">${dateStr}</td>
+                            <td style="padding:8px; font-size:10px; font-weight:bold;">${item.customer_name}<br><span style="font-size:8px; font-family:monospace; color:#64748b;">${item.txn_id}</span></td>
+                            <td style="padding:8px; font-size:10px; font-family:monospace;">${item.account_no}</td>
+                            <td style="padding:8px; font-size:10px; text-transform:uppercase;">${item.type}</td>
+                            <td style="padding:8px; font-size:10px; font-weight:bold; color:${amtColor};">${fmt(item.amount)}</td>
+                            <td style="padding:8px; font-size:10px;">${item.status}</td>
                         </tr>`;
                 });
 
                 const printHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>Transaction Report — ${StaffState.name}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; background: #fff; }
-        .page { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
+                <html>
+                <head>
+                    <title>Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th { background: #f8fafc; padding: 8px; text-align: left; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #cbd5e1; }
+                        h2 { font-size: 18px; margin-bottom: 5px; }
+                        p { font-size: 11px; color: #64748b; margin-bottom: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Finzo Staff — Transaction Report</h2>
+                    <p>Generated by ${StaffState.name} (${StaffState.staff_id}) on ${printDate}</p>
+                    <div style="display:flex; gap:20px; margin-bottom: 20px; font-size:12px; font-weight:bold;">
+                        <span>Total Deposits: <span style="color:#059669">${fmt(totalDeposits)}</span></span>
+                        <span>Total Withdrawals: <span style="color:#dc2626">${fmt(totalWithdrawals)}</span></span>
+                        <span>Count: ${res.transactions.length}</span>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Date</th><th>Customer/Ref</th><th>Account</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </body>
+                </html>`;
 
-        /* Header */
-        .report-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 3px solid #1a3c5e; margin-bottom: 20px; }
-        .brand { display: flex; flex-direction: column; gap: 2px; }
-        .brand-name { font-size: 28px; font-weight: 900; color: #1a3c5e; letter-spacing: -1px; }
-        .brand-sub { font-size: 10px; font-weight: 800; color: #f59e0b; letter-spacing: 0.15em; text-transform: uppercase; }
-        .report-meta { text-align: right; font-size: 11px; color: #64748b; line-height: 1.8; }
-        .report-meta strong { color: #1e293b; }
-
-        /* Info strip */
-        .info-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 16px 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .info-item label { display: block; font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
-        .info-item span { font-size: 13px; font-weight: 700; color: #1e293b; }
-
-        /* Filter badge */
-        .filter-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
-        .filter-label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
-        .filter-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; background: #e0f2fe; color: #0369a1; border-radius: 20px; }
-
-        /* Table */
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        thead tr { background: #1a3c5e; }
-        thead th { padding: 10px 8px; font-size: 9px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; text-align: left; white-space: nowrap; }
-        thead th:first-child { border-radius: 6px 0 0 6px; text-align: center; }
-        thead th:last-child { border-radius: 0 6px 6px 0; }
-        tbody tr:nth-child(even) { background: #f8fafc; }
-
-        /* Totals row */
-        .totals-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 16px 20px; background: #1a3c5e; border-radius: 12px; margin-top: 20px; }
-        .total-item label { display: block; font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
-        .total-item span { font-size: 16px; font-weight: 900; }
-        .total-item.dep span { color: #6ee7b7; }
-        .total-item.with span { color: #fca5a5; }
-        .total-item.count span { color: #fff; }
-
-        /* Footer */
-        .report-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: flex-end; }
-        .sig-block { text-align: center; }
-        .sig-line { border-top: 1px solid #1e293b; padding-top: 6px; margin-top: 32px; font-size: 10px; font-weight: 700; color: #64748b; width: 180px; }
-        .footer-note { font-size: 9px; color: #94a3b8; line-height: 1.6; max-width: 320px; }
-
-        @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .page { padding: 16px 20px; }
-        }
-    </style>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
-</head>
-<body>
-<div class="page">
-    <!-- HEADER -->
-    <div class="report-header">
-        <div class="brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub">Staff Transaction Report</div>
-        </div>
-        <div class="report-meta">
-            <div><strong>Printed:</strong> ${printDate}</div>
-            <div><strong>Staff:</strong> ${StaffState.name} (${StaffState.staff_id})</div>
-            <div><strong>Branch:</strong> ${StaffState.branch_name}</div>
-            <div><strong>Total Records:</strong> ${res.transactions.length}</div>
-        </div>
-    </div>
-
-    <!-- INFO STRIP -->
-    <div class="info-strip">
-        <div class="info-item">
-            <label>Staff Name</label>
-            <span>${StaffState.name}</span>
-        </div>
-        <div class="info-item">
-            <label>Staff ID</label>
-            <span>${StaffState.staff_id}</span>
-        </div>
-        <div class="info-item">
-            <label>Branch</label>
-            <span>${StaffState.branch_name}</span>
-        </div>
-        <div class="info-item">
-            <label>Report Period</label>
-            <span>${currentFilters.range || 'All Time'}</span>
-        </div>
-    </div>
-
-    <!-- FILTERS APPLIED -->
-    ${filterDesc.length > 0 ? `<div class="filter-strip"><span class="filter-label">Filters:</span>${filterDesc.map(f => `<span class="filter-badge">${f}</span>`).join('')}</div>` : ''}
-
-    <!-- TABLE -->
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align:center;">#</th>
-                <th>Date & Time</th>
-                <th>Customer</th>
-                <th>Account No</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Balance After</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${rowsHtml}
-        </tbody>
-    </table>
-
-    <!-- TOTALS -->
-    <div class="totals-row">
-        <div class="total-item dep">
-            <label>Total Deposits</label>
-            <span>${fmt(totalDeposits)}</span>
-        </div>
-        <div class="total-item with">
-            <label>Total Withdrawals</label>
-            <span>${fmt(totalWithdrawals)}</span>
-        </div>
-        <div class="total-item count">
-            <label>Net Cash Flow</label>
-            <span>${totalDeposits >= totalWithdrawals ? '+' : '−'}${fmt(Math.abs(totalDeposits - totalWithdrawals))}</span>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="report-footer">
-        <div class="footer-note">
-            This report was generated from the Finzo Banking System.<br>
-            All transactions listed were processed by ${StaffState.name}.<br>
-            This document is confidential and for internal use only.
-        </div>
-        <div class="sig-block">
-            <div class="sig-line">Authorised Signatory</div>
-        </div>
-    </div>
-</div>
-<script>
-    window.onload = function() { window.print(); };
-<\/script>
-</body>
-</html>`;
-
-                // Open in a new window and print
-                const printWin = window.open('', '_blank', 'width=1100,height=800');
+                const printWin = window.open('', '_blank');
                 printWin.document.write(printHtml);
                 printWin.document.close();
+                printWin.focus();
+                setTimeout(() => { printWin.print(); printWin.close(); }, 500);
 
             } catch (err) {
+                alert('Error generating report.');
                 btn.prop('disabled', false).html(originalHtml);
-                alert('Failed to load transactions for printing. Please try again.');
-                console.error('Print error:', err);
             }
         }
     </script>
 </body>
 </html>
-
