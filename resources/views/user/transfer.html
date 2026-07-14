@@ -1,185 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fund Transfer | Finzo</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
-<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
-<style>
-  /* Professional Transfer Design with Grid Layout */
-  .transfer-container { max-width: 1140px; margin: 0 auto; }
-  
-  .transfer-grid-premium { 
-    display: grid; grid-template-columns: 380px 1fr; gap: 32px; 
-    margin-top: 24px;
-  }
-  
-  @media (max-width: 1024px) {
-    .transfer-grid-premium { grid-template-columns: 1fr; gap: 24px; }
-  }
-
-  /* Source Account Card */
-  .source-account-card {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #fff; border-radius: var(--radius-xl); padding: 28px;
-    position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
-  }
-
-
-  /* Summary Section Items */
-  .summary-tile {
-    background: var(--bg-input); border-radius: var(--radius-lg); padding: 16px;
-    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
-  }
-  .summary-tile:last-child { border-bottom: none; }
-  .summary-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-  .summary-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-
-  /* Beneficiary Chips */
-  .beneficiary-pill {
-    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
-    background: var(--bg-card); border: 1.5px solid var(--border);
-    border-radius: 24px; cursor: pointer; transition: var(--transition);
-    font-size: 12px; font-weight: 700; color: var(--text-secondary);
-  }
-  .beneficiary-pill:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); transform: translateY(-2px); }
-  .beneficiary-pill.active { border-color: var(--primary); background: var(--primary); color: #fff; }
-
-  /* Forms & Lookup */
-  .account-lookup-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius-xl); padding: 28px;
-  }
-  .lookup-status { 
-    margin-top: 20px; padding: 16px; border-radius: var(--radius-lg); 
-    display: flex; align-items: center; gap: 12px; animation: slideDown 0.3s ease;
-  }
-  .lookup-found { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
-  .lookup-error { background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.2); }
-
-  @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-</style>
 <link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
 <script src="../../../public/assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
+<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
 </head>
-<body>
+<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
 <script src="../../../public/assets/js/user/user-shared.js"></script>
 <div id="sidebar-root"></div>
 <div class="main">
 <div id="navbar-root"></div>
 
-<div class="page-content">
-  <div class="transfer-container">
-    <div class="page-header animate-in">
-      <div class="page-eyebrow">Banking</div>
-      <h1 class="page-title">Fund Transfer</h1>
-      <p class="page-subtitle">Instant, ACID-protected digital settlement</p>
+<div class="page-content ds-container py-8">
+  <div class="mb-8 ds-animate-fade text-center max-w-2xl mx-auto">
+    <div class="w-16 h-16 bg-primary-surface text-primary-base rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+      <span class="material-symbols-outlined text-3xl">send</span>
     </div>
+    <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight">Send Money</h1>
+    <p class="text-[var(--color-text-muted)] mt-2">Instant, ACID-protected digital settlement</p>
+  </div>
 
-    <div style="max-width:800px; margin: 0 auto; display:flex; flex-direction:column; gap:24px; margin-top: 24px;">
-
-
-      <!-- DESTINATION & FORM -->
-      <div class="animate-in animate-delay-2" style="display:flex; flex-direction:column; gap:24px;">
-        <div class="account-lookup-card mb-6">
-          <div class="card-title mb-2">Destination Registry</div>
-          <div style="font-size:12px; color:var(--text-secondary); margin-bottom:24px">Select a verified beneficiary or enter a unique account identifier.</div>
-
-          <div style="margin-bottom:28px">
-            <div style="font-size:10px; font-weight:800; color:var(--text-placeholder); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">Saved Beneficiaries</div>
-            <div style="display:flex; flex-wrap:wrap; gap:10px" id="beneficiary-chips">
-              <div style="font-size:12px; color:var(--text-secondary); font-style:italic">Loading beneficiaries...</div>
-            </div>
-          </div>
-
-          <div class="form-group mb-0">
-            <label class="form-label">Beneficiary Account Identifier</label>
-            <div style="display:flex; gap:12px">
-              <div class="input-wrap" style="flex:1">
-                <span class="input-icon material-symbols-outlined" style="font-size:20px">account_box</span>
-                <input type="text" class="form-input with-icon" id="to-account" placeholder="Enter Finzo Account No." oninput="resetLookup()" style="font-family:monospace; font-weight:700"/>
-              </div>
-              <button class="btn btn-primary" onclick="lookupAccount()" style="padding:0 24px">Verify Account</button>
-            </div>
-          </div>
-
-          <!-- Lookup Result Placeholder -->
-          <div id="lookup-result" class="hidden">
-            <div id="lookup-found" class="lookup-status lookup-found hidden">
-              <span class="material-symbols-outlined" style="color:var(--green); font-size:22px">check_circle</span>
-              <div>
-                <div style="font-size:13px; font-weight:800; color:var(--text-primary)">Identity Verified</div>
-                <div style="font-size:11px; color:rgba(16,185,129,0.8); font-weight:600"><span id="recipient-name"></span> · <span id="recipient-type"></span></div>
-              </div>
-            </div>
-            <div id="lookup-not-found" class="lookup-status lookup-error hidden">
-              <span class="material-symbols-outlined" style="color:var(--danger); font-size:22px">error</span>
-              <div style="font-size:13px; font-weight:800; color:var(--danger)">Unrecognized Account Identifier</div>
-            </div>
+  <div class="w-full max-w-2xl mx-auto flex flex-col gap-6 ds-animate-slide-up">
+    
+    <!-- DESTINATION CARD -->
+    <div class="ds-card">
+      <div class="ds-card-header border-b border-[var(--color-border-main)]">
+        <h3 class="font-display text-lg font-bold text-[var(--color-text-main)]">1. Destination Registry</h3>
+      </div>
+      <div class="ds-card-body p-6">
+        
+        <div class="mb-6">
+          <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Saved Beneficiaries</label>
+          <div class="flex flex-wrap gap-2" id="beneficiary-chips">
+            <div class="text-xs text-[var(--color-text-muted)] italic">Loading beneficiaries...</div>
           </div>
         </div>
 
-        <div class="card card-p animate-in animate-delay-3">
-          <div class="card-title mb-4">Transfer Amount & Security</div>
-          <div class="form-grid form-grid-2">
-            <div class="form-group" style="grid-column: span 2">
-              <label class="form-label">Amount</label>
-              <div class="input-wrap">
-                <span class="input-icon material-symbols-outlined" style="font-size:20px">currency_rupee</span>
-                <input type="number" class="form-input with-icon" id="transfer-amount" placeholder="0.00" min="1" oninput="updateSummary()" style="font-size:20px; font-weight:800; color:var(--primary)"/>
-              </div>
-              <div id="amount-words" style="font-size:11px; color:var(--text-secondary); margin-top:8px; font-style:italic"></div>
-              <div id="amount-error" class="hidden" style="font-size:12px; color:var(--danger); margin-top:8px; font-weight:700"></div>
+        <div>
+          <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Finzo Account Identifier</label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">account_box</span>
+              <input type="text" class="form-control pl-10 font-mono font-bold tracking-wider uppercase h-12" id="to-account" placeholder="Enter Finzo Account No." oninput="resetLookup()"/>
             </div>
-            <div class="form-group">
-              <label class="form-label">Reference Note</label>
-              <input type="text" class="form-input" id="transfer-desc" placeholder="e.g. Service Payment" maxlength="100"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Security PIN</label>
-              <input type="password" class="form-input" id="transfer-pin" placeholder="••••" maxlength="4" style="letter-spacing:0.5em"/>
+            <button class="btn btn-secondary h-12 px-6" onclick="lookupAccount()">Verify Identity</button>
+          </div>
+        </div>
+
+        <!-- Lookup Result -->
+        <div id="lookup-result" class="hidden mt-4">
+          <div id="lookup-found" class="hidden p-4 rounded-xl bg-success-surface border border-success-base/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+            <span class="material-symbols-outlined text-success-base text-2xl">check_circle</span>
+            <div>
+              <div class="text-sm font-bold text-[var(--color-text-main)]" id="recipient-name">Name</div>
+              <div class="text-[10px] font-bold text-success-base tracking-widest uppercase mt-0.5"><span id="recipient-type">Savings</span> • Verified</div>
             </div>
           </div>
-          
-          <button class="btn btn-primary btn-full btn-lg mt-6" onclick="confirmTransfer()" id="transfer-btn">
-            <span class="material-symbols-outlined">shield_with_heart</span> Continue to Confirmation
-          </button>
-          
-          <div style="text-align:center; margin-top:16px; font-size:11px; color:var(--text-placeholder); display:flex; align-items:center; justify-content:center; gap:6px">
-             <span class="material-symbols-outlined" style="font-size:14px">encrypted</span>
-             End-to-end encrypted · ISO 20022 Compliant
+          <div id="lookup-not-found" class="hidden p-4 rounded-xl bg-danger-surface border border-danger-base/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+            <span class="material-symbols-outlined text-danger-base text-2xl">error</span>
+            <div class="text-sm font-bold text-danger-base">Unrecognized Account Identifier</div>
           </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- AMOUNT & SECURITY CARD -->
+    <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
+      <div class="ds-card-header border-b border-[var(--color-border-main)]">
+        <h3 class="font-display text-lg font-bold text-[var(--color-text-main)]">2. Transfer Details</h3>
+      </div>
+      <div class="ds-card-body p-6">
+        
+        <!-- Hero Amount Input -->
+        <div class="mb-8 text-center relative max-w-xs mx-auto">
+          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-4">Amount to send</label>
+          <div class="relative flex items-center justify-center">
+            <span class="absolute left-4 text-3xl text-[var(--color-text-muted)] font-bold">₹</span>
+            <input type="number" id="transfer-amount" class="w-full bg-transparent border-b-2 border-[var(--color-border-main)] focus:border-primary-base outline-none text-center font-display text-5xl font-black text-primary-600 pb-2 transition-colors placeholder:text-[var(--color-text-disabled)]" placeholder="0" min="1" oninput="updateSummary()"/>
+          </div>
+          <div id="amount-words" class="text-xs font-bold text-[var(--color-text-muted)] mt-3 h-4"></div>
+          <div id="amount-error" class="hidden text-xs font-bold text-danger-base mt-2"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Reference Note</label>
+            <input type="text" class="form-control" id="transfer-desc" placeholder="e.g. Service Payment" maxlength="100"/>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Security PIN</label>
+            <input type="password" class="form-control font-mono tracking-[0.5em] text-center" id="transfer-pin" placeholder="••••" maxlength="4"/>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary w-full h-14 text-lg mt-8 shadow-md hover:shadow-lg transition-all" onclick="confirmTransfer()" id="transfer-btn">
+          Review Transfer
+        </button>
+        
+        <div class="flex items-center justify-center gap-2 mt-6 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
+           <span class="material-symbols-outlined text-[14px]">encrypted</span>
+           End-to-end encrypted • ISO 20022 Compliant
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <!-- CONFIRM MODAL -->
-<div class="modal-overlay hidden" id="confirm-modal">
-  <div class="modal-card">
-    <div class="modal-icon" style="background:rgba(8,145,178,0.1)">
-      <span class="material-symbols-outlined" style="color:var(--primary); font-size:32px">send</span>
+<div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="ds-card max-w-md w-full p-6 sm:p-8 animate-in zoom-in-95 duration-200">
+    <div class="w-16 h-16 bg-info-surface text-info-base rounded-full flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-3xl">verified_user</span>
     </div>
-    <div class="modal-title">Authorize Settlement</div>
-    <div style="background:var(--bg-input); border-radius:var(--radius-lg); padding:20px; margin-bottom:24px; border:1px solid var(--border)">
-      <div class="summary-tile"><span class="summary-label">Source</span><span class="summary-value" id="cm-from"></span></div>
-      <div class="summary-tile"><span class="summary-label">Target</span><span class="summary-value" id="cm-to"></span></div>
-      <div class="summary-tile"><span class="summary-label">Entity</span><span class="summary-value" id="cm-recipient"></span></div>
-      <div class="summary-tile" style="border-bottom:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border)">
-         <span style="font-size:14px; font-weight:800; color:var(--text-primary)">Settlement Value</span>
-         <span style="font-size:22px; font-weight:800; color:var(--danger)" id="cm-amount"></span>
+    <h3 class="font-display text-xl font-bold text-center text-[var(--color-text-main)] mb-6">Authorize Settlement</h3>
+    
+    <div class="bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-main)] overflow-hidden mb-6">
+      <div class="p-4 border-b border-[var(--color-border-main)] flex justify-between items-center bg-white">
+        <span class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Source</span>
+        <span class="font-mono text-sm font-bold text-[var(--color-text-main)]" id="cm-from"></span>
+      </div>
+      <div class="p-4 border-b border-[var(--color-border-main)] flex justify-between items-center bg-white">
+        <span class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Target</span>
+        <span class="font-mono text-sm font-bold text-[var(--color-text-main)]" id="cm-to"></span>
+      </div>
+      <div class="p-4 border-b border-[var(--color-border-main)] flex justify-between items-center bg-white">
+        <span class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Entity</span>
+        <span class="text-sm font-bold text-[var(--color-text-main)]" id="cm-recipient"></span>
+      </div>
+      <div class="p-5 flex flex-col items-center justify-center bg-primary-surface/30">
+        <span class="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-1">Settlement Value</span>
+        <span class="font-display text-3xl font-black text-danger-base" id="cm-amount"></span>
       </div>
     </div>
-    <div style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:28px; line-height:1.6">Please review the details carefully. Once confirmed, transfers cannot be reversed.</div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('confirm-modal')" style="flex:1">Cancel</button>
-      <button class="btn btn-primary" id="final-transfer-btn" onclick="processTransfer()" style="flex:2">
-        <span class="material-symbols-outlined">verified</span> Authorize & Send
+    
+    <p class="text-xs font-bold text-[var(--color-text-muted)] text-center mb-6 px-4">Please review the details carefully. Once confirmed, transfers cannot be reversed.</p>
+    
+    <div class="flex gap-4">
+      <button class="btn btn-secondary flex-1" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn btn-primary flex-[2]" id="final-transfer-btn" onclick="processTransfer()">
+        <span class="material-symbols-outlined">done_all</span> Authorize & Send
       </button>
     </div>
   </div>
@@ -190,14 +157,12 @@
     await fetchUserSession();
     buildSidebar('transfer'); buildNavbar('Banking', 'Fund Transfer');
     handleStatusRedirect('transfer');
-
   })();
 
   let recipientVerified = false;
   let recipientName = '';
   let recipientAccNo = '';
 
-  // Load beneficiaries from API
   (async function loadBeneficiaries() {
     try {
       const res = await fetch('../../../app/Controllers/user/beneficiary.php', { credentials: 'same-origin' });
@@ -205,18 +170,17 @@
       const container = document.getElementById('beneficiary-chips');
       if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
         container.innerHTML = data.beneficiaries.map(b => 
-          `<div class="beneficiary-pill" onclick="useBeneficiary('${b.account_no}','${b.nickname}')">
-            <span class="material-symbols-outlined" style="font-size:15px">star</span> ${b.nickname}
-          </div>`
+          `<button class="px-4 py-2 rounded-full border-2 border-[var(--color-border-main)] bg-[var(--color-surface-subtle)] text-xs font-bold text-[var(--color-text-muted)] hover:border-primary-base hover:text-primary-base transition-colors flex items-center gap-2" onclick="useBeneficiary('${b.account_no}','${b.nickname}')">
+            <span class="material-symbols-outlined text-[14px]">star</span> ${b.nickname}
+          </button>`
         ).join('');
       } else {
-        container.innerHTML = '<div style="font-size:12px; color:var(--text-secondary); font-style:italic">No saved beneficiaries found.</div>';
+        container.innerHTML = '<div class="text-xs text-[var(--color-text-muted)] italic">No saved beneficiaries found.</div>';
       }
     } catch (e) { 
-      document.getElementById('beneficiary-chips').innerHTML = '<div style="font-size:12px; color:var(--danger)">Failed to load beneficiaries.</div>';
+      document.getElementById('beneficiary-chips').innerHTML = '<div class="text-xs text-danger-base font-bold">Failed to load beneficiaries.</div>';
     }
     
-    // Check URL params for pre-filling recipient
     const params = new URLSearchParams(window.location.search);
     const toAcc = params.get('to');
     if (toAcc) {
@@ -253,7 +217,7 @@
         document.getElementById('lookup-found').classList.remove('hidden');
         document.getElementById('lookup-not-found').classList.add('hidden');
         document.getElementById('recipient-name').textContent = data.account.holder_name;
-        document.getElementById('recipient-type').textContent = data.account.account_type || 'Savings Account';
+        document.getElementById('recipient-type').textContent = data.account.account_type || 'Savings';
         showToast('Recipient identity verified', 'success');
         updateSummary();
       } else {
@@ -276,7 +240,7 @@
     if (amount > 0) {
       wordsDiv.textContent = numberToWords(amount) + ' Rupees Only';
       if (amount > balance) {
-        errorDiv.textContent = 'Insufficient balance (Current: ₹' + balance.toLocaleString('en-IN') + ')';
+        errorDiv.textContent = 'Insufficient balance (Current: ₹' + formatINR(balance) + ')';
         errorDiv.classList.remove('hidden');
       } else {
         errorDiv.classList.add('hidden');
@@ -300,77 +264,60 @@
     document.getElementById('cm-from').textContent = (UserState.accountNo || 'FNZ20260001');
     document.getElementById('cm-to').textContent = recipientAccNo;
     document.getElementById('cm-recipient').textContent = recipientName;
-    document.getElementById('cm-amount').textContent = '₹' + amount.toLocaleString('en-IN', {minimumFractionDigits:2});
+    document.getElementById('cm-amount').textContent = '₹' + formatINR(amount);
 
-    openModal('confirm-modal');
+    document.getElementById('confirm-modal').classList.remove('hidden');
+  }
+  
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
   }
 
   async function processTransfer() {
-    const amount = parseFloat(document.getElementById('transfer-amount').value);
-    const desc = document.getElementById('transfer-desc').value;
+    const amount = document.getElementById('transfer-amount').value;
     const pin = document.getElementById('transfer-pin').value;
-    
+    const desc = document.getElementById('transfer-desc').value;
     const btn = document.getElementById('final-transfer-btn');
+
     btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Authorizing...';
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
 
     try {
-      const tokenRes = await fetch('../../../app/Controllers/auth/get-csrf-token.php');
-      const tokenData = await tokenRes.json();
-      const csrfToken = tokenData.csrf_token || '';
+      let csrfToken = '';
+      try {
+        const tokenRes = await fetch('../../../app/Controllers/auth/get-csrf-token.php');
+        const tokenData = await tokenRes.json();
+        csrfToken = tokenData.csrf_token || '';
+      } catch (e) { }
+
+      const params = new URLSearchParams();
+      params.append('to_account', recipientAccNo);
+      params.append('amount', amount);
+      params.append('pin', pin);
+      params.append('description', desc);
+      params.append('csrf_token', csrfToken);
 
       const res = await fetch('../../../app/Controllers/user/transfer.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         credentials: 'same-origin',
-        body: 'to_account_no=' + encodeURIComponent(recipientAccNo) +
-              '&amount=' + encodeURIComponent(amount) +
-              '&description=' + encodeURIComponent(desc || 'Fund transfer via Finzo') +
-              '&txn_pin=' + encodeURIComponent(pin) +
-              '&csrf_token=' + encodeURIComponent(csrfToken)
+        body: params.toString()
       });
       const data = await res.json();
       
       if (data.success) {
-        showToast('Transfer successful!', 'success');
-        closeModal('confirm-modal');
-        // Redirect to receipt
-        const txnId = data.transaction_id || data.reference_id || '';
-        setTimeout(() => { location.href = 'receipt.html?id=' + txnId; }, 800);
+        window.location.href = `receipt.html?id=${data.txn_id}&success=1`;
       } else {
         showToast(data.message || 'Transfer failed', 'error');
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Authorize & Send';
+        btn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Authorize & Send';
       }
-    } catch (err) {
-      console.error('Transfer error:', err);
-      showToast('Connection error. Please try again.', 'error');
+    } catch (e) {
+      showToast('Connection error', 'error');
       btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Authorize & Send';
+      btn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Authorize & Send';
     }
-  }
-
-  function numberToWords(n) {
-    const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    const g = ['', 'Thousand', 'Lakh', 'Crore'];
-    
-    if (n === 0) return 'Zero';
-    
-    let words = '';
-    const numStr = n.toString().split('.')[0];
-    const num = parseInt(numStr);
-
-    if (num < 20) words = a[num];
-    else if (num < 100) words = b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
-    else if (num < 1000) words = a[Math.floor(num / 100)] + ' Hundred' + (num % 100 !== 0 ? ' and ' + numberToWords(num % 100) : '');
-    else if (num < 100000) words = numberToWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 !== 0 ? ' ' + numberToWords(num % 1000) : '');
-    else if (num < 10000000) words = numberToWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 !== 0 ? ' ' + numberToWords(num % 100000) : '');
-    else words = numberToWords(Math.floor(num / 10000000)) + ' Crore' + (num % 10000000 !== 0 ? ' ' + numberToWords(num % 10000000) : '');
-    
-    return words;
   }
 </script>
 </body>
 </html>
-
