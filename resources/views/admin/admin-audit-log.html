@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Finzo Admin â€” Audit Log</title>
+    <title>Finzo Admin — Audit Log</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet" />
@@ -120,7 +120,7 @@
         <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
             <!-- STATS ROW -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
-                <div class="admin-card p-5 flex items-center gap-4">
+                <div class="ds-card p-5 flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">history</span>
@@ -130,7 +130,7 @@
                         <div id="stat-total" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
-                <div class="admin-card p-5 flex items-center gap-4">
+                <div class="ds-card p-5 flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">person</span>
@@ -140,7 +140,7 @@
                         <div id="stat-admin" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
-                <div class="admin-card p-5 flex items-center gap-4">
+                <div class="ds-card p-5 flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-500/10 text-violet-600 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">badge</span>
@@ -150,7 +150,7 @@
                         <div id="stat-staff" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
-                <div class="admin-card p-5 flex items-center gap-4">
+                <div class="ds-card p-5 flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">account_circle</span>
@@ -163,21 +163,21 @@
             </div>
 
             <!-- FILTERS & TABLE -->
-            <div class="admin-card overflow-hidden">
+            <div class="ds-card overflow-hidden">
                 <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5 relative z-20">
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 items-end">
                     <div class="col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Search
+                        <label class="ds-label mb-2">Search
                             Events</label>
                         <div class="relative">
                             <span
                                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                            <input type="text" id="filter-search" placeholder="Search by Staff ID (e.g. STF001)â€¦"
-                                class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
+                            <input type="text" id="filter-search" placeholder="Search by Staff ID (e.g. STF001)…"
+                                class="ds-input pl-12">
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Action
+                        <label class="ds-label mb-2">Action
                             Type</label>
                         <div class="finzo-dropdown" id="action-type-dropdown">
                             <input type="hidden" id="filter-action-type" value="all">
@@ -202,7 +202,7 @@
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Actor
+                        <label class="ds-label mb-2">Actor
                             Role</label>
                         <div class="finzo-dropdown" id="actor-role-dropdown">
                             <input type="hidden" id="filter-actor-role" value="all">
@@ -221,21 +221,21 @@
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">From
+                        <label class="ds-label mb-2">From
                             Date</label>
                         <input type="date" id="date-from"
-                            class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm">
+                            class="ds-input">
                     </div>
                     <div class="col-span-1">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">To
+                        <label class="ds-label mb-2">To
                             Date</label>
                         <input type="date" id="date-to"
-                            class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm">
+                            class="ds-input">
                     </div>
                 </div>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table id="audit-log-table" class="admin-table w-full text-left min-w-[1000px]">
+                    <table id="audit-log-table" class="ds-table w-full text-left min-w-[1000px]">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -274,8 +274,8 @@
 
     <!-- DETAIL MODAL -->
     <div id="detail-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm detail-close"></div>
-        <div class="admin-card w-full max-w-2xl relative z-10 p-0 overflow-hidden animate-modal-enter">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all detail-close"></div>
+        <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter !p-0">
             <!-- Header -->
             <div
                 class="p-6 border-b border-slate-50 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/5">
@@ -295,44 +295,44 @@
             <div class="p-6">
                 <div class="grid grid-cols-2 gap-y-6 gap-x-8 mb-6">
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Event ID</div>
+                        <div class="ds-label mb-1">Event ID</div>
                         <div id="detail-id" class="font-bold text-sm font-mono"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Action</div>
+                        <div class="ds-label mb-1">Action</div>
                         <div id="detail-action" class="font-bold text-sm"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Actor Role
+                        <div class="ds-label mb-1">Actor Role
                         </div>
                         <div id="detail-actor-role" class="font-bold text-sm"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Actor ID</div>
+                        <div class="ds-label mb-1">Actor ID</div>
                         <div id="detail-actor-id" class="font-bold text-sm font-mono"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Entity Type
+                        <div class="ds-label mb-1">Entity Type
                         </div>
                         <div id="detail-entity-type" class="font-bold text-sm"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Entity ID</div>
+                        <div class="ds-label mb-1">Entity ID</div>
                         <div id="detail-entity-id" class="font-bold text-sm font-mono"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">IP Address
+                        <div class="ds-label mb-1">IP Address
                         </div>
                         <div id="detail-ip" class="font-bold text-sm font-mono opacity-80"></div>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Timestamp</div>
+                        <div class="ds-label mb-1">Timestamp</div>
                         <div id="detail-timestamp" class="font-bold text-sm"></div>
                     </div>
                 </div>
 
                 <div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Event Details
+                    <div class="ds-label mb-2">Event Details
                         Payload</div>
                     <div id="detail-details"
                         class="bg-slate-50 dark:bg-[#0a1526] p-4 rounded-xl text-xs font-mono overflow-auto max-h-[200px] border border-slate-100 dark:border-white/5 shadow-inner">
@@ -350,20 +350,23 @@
 
     <!-- EXPORT MODAL -->
     <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm close-export-modal"></div>
-        <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
-            <div
-                class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
-                <span class="material-symbols-outlined text-emerald-600 text-3xl">download</span>
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all close-export-modal"></div>
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter">
+            <div class="p-8 pb-4 text-center shrink-0">
+                <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary bg-primary/5 dark:bg-primary/20">
+                    <span class="material-symbols-outlined text-4xl">download</span>
+                </div>
+                <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Export Data</h3>
+                <p class="text-sm text-slate-500 font-medium mt-1">Download a complete audit trail</p>
             </div>
-            <h3 class="text-xl font-bold mb-2">Export Data</h3>
-            <p class="text-sm opacity-60 mb-8 leading-relaxed">Download a complete audit trail filtered by your
-                currently selected criteria in Microsoft Excel format.</p>
-            <div class="flex flex-col gap-3">
-                <button id="start-export" class="admin-btn-primary w-full justify-center !py-3"
-                    style="background:#002645 !important;">Generate Excel Report</button>
-                <button
-                    class="admin-btn-secondary w-full justify-center !py-3 border-none close-export-modal">Cancel</button>
+            <div class="px-8 py-4 space-y-6 overflow-y-auto">
+                <div class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
+                    The report will be generated in Microsoft Excel format, filtered by your currently selected criteria.
+                </div>
+            </div>
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
+                <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all close-export-modal">Cancel</button>
+                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
             </div>
         </div>
     </div>
@@ -376,4 +379,6 @@
 </body>
 
 </html>
+
+
 

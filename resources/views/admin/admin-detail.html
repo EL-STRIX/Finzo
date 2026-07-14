@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Admin Dossier â€” Finzo Admin</title>
+    <title>Admin Dossier — Finzo Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -120,7 +120,7 @@
                 <div class="lg:col-span-8 space-y-8">
                     
                     <!-- Profile Card -->
-                    <div class="admin-card p-6 sm:p-8">
+                    <div class="ds-card p-6 sm:p-8">
                         <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-slate-50 dark:border-white/5">
                             <div class="relative group">
                                 <div id="admin-photo-container" class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl overflow-hidden ring-4 ring-slate-100 dark:ring-white/5 shadow-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
@@ -144,21 +144,21 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-6">
                                 <div>
-                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Email Address</label>
+                                    <label class="ds-label mb-1.5 block">Email Address</label>
                                     <div id="info-email" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">---</div>
                                 </div>
                                 <div>
-                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Phone Number</label>
+                                    <label class="ds-label mb-1.5 block">Phone Number</label>
                                     <div id="info-phone" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
                                 </div>
                             </div>
                             <div class="space-y-6">
                                 <div>
-                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Gender</label>
+                                    <label class="ds-label mb-1.5 block">Gender</label>
                                     <div id="info-gender" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
                                 </div>
                                 <div>
-                                    <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Date of Birth</label>
+                                    <label class="ds-label mb-1.5 block">Date of Birth</label>
                                     <div id="info-dob" class="text-sm font-bold text-slate-700 dark:text-slate-200">---</div>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                     </div>
 
                     <!-- System Information -->
-                    <div class="admin-card">
+                    <div class="ds-card">
                         <div class="p-6 border-b border-slate-50 dark:border-white/5">
                             <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
                                 <span class="material-symbols-outlined text-primary">security</span> System Audit Info
@@ -174,24 +174,24 @@
                         </div>
                         <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-3 gap-8">
                             <div>
-                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Last Login</label>
+                                <label class="ds-label mb-1.5 block">Last Login</label>
                                 <div id="sys-last-login" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
                                 <div id="sys-last-ip" class="text-[9px] font-black text-slate-500 dark:text-slate-400 mt-1">---</div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">PWD Last Changed</label>
+                                <label class="ds-label mb-1.5 block">PWD Last Changed</label>
                                 <div id="sys-pwd-change" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Failed Attempts</label>
+                                <label class="ds-label mb-1.5 block">Failed Attempts</label>
                                 <div id="sys-failed-attempts" class="text-xs font-bold text-rose-500">0</div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Added By</label>
+                                <label class="ds-label mb-1.5 block">Added By</label>
                                 <div id="sys-created-by" class="text-xs font-bold text-slate-700 dark:text-slate-200">---</div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Account ID</label>
+                                <label class="ds-label mb-1.5 block">Account ID</label>
                                 <div id="sys-id" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-500 dark:text-slate-400">---</div>
                             </div>
                         </div>
@@ -202,8 +202,8 @@
                 <div class="lg:col-span-4 space-y-6">
                     
                     <!-- Action Panel -->
-                    <div class="admin-card p-6">
-                        <h5 class="text-[10px] font-black text-slate-500 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">Administrative Control</h5>
+                    <div class="ds-card p-6">
+                        <h5 class="ds-label mb-6 block">Administrative Control</h5>
                         <div class="space-y-4">
                             <!-- Suspend/Activate -->
                             <button id="action-suspend-btn" onclick="window.AdminDetail.toggleStatus()" class="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
@@ -263,14 +263,14 @@
             </div>
 
             <!-- Activity Table -->
-            <div class="admin-card overflow-hidden">
+            <div class="ds-card overflow-hidden">
                 <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
                     <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
                         <span class="material-symbols-outlined text-primary">history</span> Activity Timeline
                     </h4>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="admin-table w-full text-left">
+                    <table class="ds-table w-full text-left">
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
@@ -293,16 +293,16 @@
     
     <!-- Reset Password Modal -->
     <div id="reset-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.AdminDetail.closeResetModal()"></div>
-        <div class="admin-card w-full max-w-md relative z-10 overflow-hidden !p-0">
-            <div class="p-8 text-center border-b border-slate-50 dark:border-white/5">
-                <div class="w-16 h-16 bg-blue-500/10 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-3xl">lock_reset</span>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-all" onclick="window.AdminDetail.closeResetModal()"></div>
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter !p-0">
+            <div class="p-8 pb-4 text-center shrink-0">
+                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-4xl">lock_reset</span>
                 </div>
-                <h3 class="text-xl font-black dark:text-white">Reset Admin Password</h3>
-                <p class="text-xs text-slate-500 mt-1 font-medium">Set a secure temporary password for this administrator.</p>
+                <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Reset Admin Password</h3>
+                <p class="text-sm text-slate-500 font-medium mt-1">Set a secure temporary password</p>
             </div>
-            <div class="p-8 space-y-6" id="reset-modal-content">
+            <div class="px-8 py-4 space-y-6 overflow-y-auto" id="reset-modal-content">
                 <div class="text-center py-4">
                     <p class="text-sm text-slate-600 dark:text-slate-400 font-medium">Clicking "Generate Now" will create a random password valid for <span class="font-bold text-primary dark:text-blue-400">24 hours</span>.</p>
                 </div>
@@ -310,38 +310,42 @@
                 <!-- Success State (Hidden by default) -->
                 <div id="reset-success-state" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl text-center">
-                        <div class="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">Temporary Password</div>
+                        <div class="ds-label mb-2 text-emerald-600">Temporary Password</div>
                         <div id="generated-password-display" class="text-2xl font-black tracking-widest text-slate-900 dark:text-white font-mono select-all cursor-pointer" title="Click to copy">--------</div>
                         <div class="text-[10px] font-bold text-slate-500 mt-2 italic">Valid until <span id="password-expiry-display">--:--</span></div>
                     </div>
-                    <p class="text-[10px] text-slate-500 text-center font-medium">Copy this password and provide it to the administrator. It will not be shown again.</p>
+                    <p class="text-xs text-slate-500 text-center font-medium">Copy this password and provide it to the administrator. It will not be shown again.</p>
                 </div>
-
-                <div class="pt-4 flex gap-3" id="reset-modal-actions">
-                    <button onclick="window.AdminDetail.closeResetModal()" class="flex-1 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 font-black rounded-xl text-[10px] uppercase tracking-widest transition-all">Cancel</button>
-                    <button id="reset-submit-btn" onclick="window.AdminDetail.submitReset()" class="flex-1 py-3 bg-primary text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2">
-                        Generate Now
-                        <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
-                    </button>
-                </div>
+            </div>
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2" id="reset-modal-actions">
+                <button onclick="window.AdminDetail.closeResetModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+                <button id="reset-submit-btn" onclick="window.AdminDetail.submitReset()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                    Generate Now
+                    <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
     <div id="delete-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.AdminDetail.closeDeleteModal()"></div>
-        <div class="admin-card w-full max-w-md relative z-10 overflow-hidden !p-0">
-            <div class="p-8 text-center">
-                <div class="w-16 h-16 bg-rose-500/10 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-3xl">warning</span>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-all" onclick="window.AdminDetail.closeDeleteModal()"></div>
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter !p-0">
+            <div class="p-8 pb-4 text-center shrink-0">
+                <div class="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-4xl">warning</span>
                 </div>
-                <h3 class="text-xl font-black dark:text-white">Permanent Deletion</h3>
-                <p class="text-sm text-slate-500 mt-2 font-medium">Are you sure you want to delete <span id="delete-admin-name" class="font-black text-rose-600">this admin</span>? This action is irreversible.</p>
+                <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Permanent Deletion</h3>
+                <p class="text-sm text-slate-500 font-medium mt-1">This action is irreversible.</p>
             </div>
-            <div class="p-8 bg-slate-50 dark:bg-white/5 flex gap-3">
-                <button onclick="window.AdminDetail.closeDeleteModal()" class="flex-1 py-3 text-slate-500 font-black rounded-xl text-[10px] uppercase tracking-widest transition-all">Cancel</button>
-                <button id="delete-submit-btn" onclick="window.AdminDetail.submitDelete()" class="flex-1 py-3 bg-rose-600 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2">
+            <div class="px-8 py-4 space-y-6 overflow-y-auto">
+                <p class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
+                    Are you sure you want to delete <span id="delete-admin-name" class="font-black text-slate-900 dark:text-white">this admin</span>? All data will be wiped immediately.
+                </p>
+            </div>
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
+                <button onclick="window.AdminDetail.closeDeleteModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+                <button id="delete-submit-btn" onclick="window.AdminDetail.submitDelete()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-rose-500 shadow-rose-500/20 hover:bg-rose-600 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                     Delete Admin
                     <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
                 </button>
@@ -354,5 +358,6 @@
     <script src="../../../public/assets/js/admin/admin-detail.js?v=20260527"></script>
 </body>
 </html>
+
 
 
