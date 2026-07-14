@@ -3864,3 +3864,136 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+/* ==========================================================================
+   FINZO ENTERPRISE UI MASTER OVERRIDES (Phase 5/6)
+   Overrides the legacy CSS rules to strictly follow the Design System
+   ========================================================================== */
+
+.form-control, .admin-input, input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+  height: 52px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  padding: 0 16px !important;
+  outline: none !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dark .form-control, .dark .admin-input, .dark input[type="text"], .dark input[type="email"], .dark input[type="password"], .dark input[type="number"], .dark select, .dark textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f0f6fc !important;
+}
+
+.form-control:focus, .admin-input:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 4px rgba(8,145,178,0.15) !important;
+  background: #ffffff !important;
+}
+
+.dark .form-control:focus, .dark .admin-input:focus, .dark input[type="text"]:focus, .dark input[type="email"]:focus, .dark input[type="password"]:focus, .dark input[type="number"]:focus, .dark select:focus, .dark textarea:focus {
+  background: #161b22 !important;
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 4px rgba(8,145,178,0.25) !important;
+}
+
+/* Base button override */
+.btn, .admin-btn, .admin-btn-primary, .admin-btn-secondary, .admin-btn-danger, .btn-primary, .btn-success, .btn-danger, .btn-ghost {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 24px !important;
+  height: 52px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+.btn-sm, .admin-btn-sm {
+  height: 38px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+}
+
+.admin-btn-primary, .btn-primary {
+  background: #0891b2 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(8,145,178,0.25) !important;
+}
+
+.admin-btn-primary:hover, .btn-primary:hover {
+  background: #0e7490 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(8,145,178,0.35) !important;
+}
+
+.admin-btn-primary:active, .btn-primary:active {
+  transform: translateY(0) scale(0.99) !important;
+}
+
+.admin-btn-secondary, .btn-ghost {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.dark .admin-btn-secondary, .dark .btn-ghost {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.admin-btn-secondary:hover, .btn-ghost:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  transform: translateY(-1px) !important;
+}
+
+.dark .admin-btn-secondary:hover, .dark .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.admin-btn-danger, .btn-danger {
+  background: #f43f5e !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(244,63,94,0.25) !important;
+}
+
+.admin-btn-danger:hover, .btn-danger:hover {
+  background: #e11d48 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(244,63,94,0.35) !important;
+}
+
+.admin-btn-danger:active, .btn-danger:active {
+  transform: translateY(0) scale(0.99) !important;
+}
+
+/* Cards */
+.card, .admin-card {
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+  transition: all 0.25s ease !important;
+}
+
+.dark .card, .dark .admin-card {
+  border-color: rgba(255,255,255,0.06) !important;
+  background: #161b22 !important;
+}
+
+.card:hover, .admin-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
