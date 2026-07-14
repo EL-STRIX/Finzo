@@ -3871,17 +3871,17 @@ input[type="number"] {
    ========================================================================== */
 
 .form-control, .admin-input, input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
-  height: 52px !important;
-  border-radius: 12px !important;
-  border: 1.5px solid #e2e8f0 !important;
-  background: #f8fafc !important;
-  color: #0f172a !important;
+  height: var(--space-2xl) !important;
+  border-radius: var(--radius-lg) !important;
+  border: 1.5px solid var(--color-border-main) !important;
+  background: var(--color-surface-main) !important;
+  color: var(--color-text-main) !important;
   font-size: 14px !important;
   font-weight: 500 !important;
-  font-family: inherit !important;
-  padding: 0 16px !important;
+  font-family: var(--font-body) !important;
+  padding: 0 var(--space-xs) !important;
   outline: none !important;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: all var(--transition-fast) !important;
 }
 
 .dark .form-control, .dark .admin-input, .dark input[type="text"], .dark input[type="email"], .dark input[type="password"], .dark input[type="number"], .dark select, .dark textarea {
@@ -3907,35 +3907,35 @@ input[type="number"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
-  padding: 0 24px !important;
-  height: 52px !important;
-  border-radius: 12px !important;
+  gap: var(--space-3xs) !important;
+  padding: 0 var(--space-md) !important;
+  height: var(--space-2xl) !important;
+  border-radius: var(--radius-lg) !important;
   font-size: 14px !important;
   font-weight: 600 !important;
-  font-family: inherit !important;
+  font-family: var(--font-body) !important;
   border: none !important;
-  transition: all 0.25s ease !important;
+  transition: all var(--transition-fast) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
 }
 
 .btn-sm, .admin-btn-sm {
-  height: 38px !important;
-  padding: 0 16px !important;
+  height: 36px !important;
+  padding: 0 var(--space-xs) !important;
   font-size: 13px !important;
 }
 
 .admin-btn-primary, .btn-primary {
-  background: #0891b2 !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(8,145,178,0.25) !important;
+  background: var(--color-primary-base) !important;
+  color: var(--color-text-inverse) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .admin-btn-primary:hover, .btn-primary:hover {
-  background: #0e7490 !important;
+  background: var(--color-primary-hover) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 16px rgba(8,145,178,0.35) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .admin-btn-primary:active, .btn-primary:active {
@@ -3983,17 +3983,17 @@ input[type="number"] {
 
 /* Cards */
 .card, .admin-card {
-  border-radius: 16px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
-  transition: all 0.25s ease !important;
+  border-radius: var(--radius-xl) !important;
+  border: 1px solid var(--color-border-main) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-normal) !important;
 }
 
 .dark .card, .dark .admin-card {
   border-color: rgba(255,255,255,0.06) !important;
-  background: #161b22 !important;
+  background: var(--color-surface-subtle) !important;
 }
 
 .card:hover, .admin-card:hover {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+  box-shadow: var(--shadow-md) !important;
 }

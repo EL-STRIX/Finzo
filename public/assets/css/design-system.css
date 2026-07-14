@@ -1,195 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
 /* ==========================================================================
-   Finzo Enterprise Design System 
+   FINZO ENTERPRISE DESIGN SYSTEM (V2 - CORE FOUNDATION)
    ========================================================================== */
 
-/* Typography & Base */
+:root {
+  /* 1. COLOR SYSTEM (Light Mode) */
+  --color-primary-base: #0284c7;
+  --color-primary-hover: #0369a1;
+  --color-primary-surface: #f0f9ff;
+  
+  --color-surface-main: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-surface-hover: #f1f5f9;
+  
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-text-disabled: #94a3b8;
+  --color-text-inverse: #ffffff;
+  
+  --color-border-subtle: #f1f5f9;
+  --color-border-main: #e2e8f0;
+  --color-border-focus: #bae6fd;
+  
+  --color-success-base: #10b981;
+  --color-success-surface: #d1fae5;
+  --color-warning-base: #f59e0b;
+  --color-warning-surface: #fef3c7;
+  --color-danger-base: #ef4444;
+  --color-danger-surface: #fee2e2;
+  --color-info-base: #3b82f6;
+  --color-info-surface: #dbeafe;
+
+  /* 2. TYPOGRAPHY SYSTEM */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* 3. SPACING SYSTEM */
+  --space-4xs: 4px;
+  --space-3xs: 8px;
+  --space-2xs: 12px;
+  --space-xs: 16px;
+  --space-sm: 20px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 40px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  
+  /* 5. SHADOW SYSTEM */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  --shadow-focus: 0 0 0 4px rgba(2, 132, 199, 0.15);
+  
+  /* 6. BORDER RADIUS */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  
+  /* 13. ANIMATION SYSTEM */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --color-surface-main: #0f172a;
+  --color-surface-subtle: #1e293b;
+  --color-surface-hover: #334155;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-border-main: #334155;
+  --color-border-focus: #0369a1;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   BASE & RESET
+   ========================================================================== */
 body {
-  background-color: theme('colors.background');
-  font-family: theme('fontFamily.body');
-  color: theme('colors.fin-navy');
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6, .font-headline {
-  font-family: theme('fontFamily.headline');
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* Scrollbar styling for a cleaner look */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: theme('colors.slate.300');
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.slate.400');
+/* 15. ACCESSIBILITY / FOCUS */
+*:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus) !important;
+  border-color: var(--color-primary-base) !important;
 }
 
 /* ==========================================================================
-   Form Elements (Inputs & Labels)
+   7. BUTTON SYSTEM
    ========================================================================== */
-
-.fin-input-container {
-  position: relative;
-  width: 100%;
-}
-
-.field-label {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: theme('colors.fin-slate');
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  display: block;
-  transition: color 0.25s;
-}
-
-.fin-input-container:focus-within .field-label {
-  color: theme('colors.primary');
-}
-
-.fin-input { 
-  width: 100% !important; 
-  height: 52px !important;
-  padding: 0 16px !important;
-  background: theme('colors.slate.50') !important; 
-  border: 1.5px solid theme('colors.slate.200') !important; 
-  border-radius: theme('borderRadius.xl') !important; 
-  font-size: 14px !important; 
-  font-weight: 500; 
-  color: theme('colors.fin-navy') !important; 
-  outline: none !important; 
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-}
-
-@media (min-width: 640px) {
-  .fin-input { height: 56px !important; }
-}
-
-.fin-input::placeholder { 
-  color: theme('colors.slate.400'); 
-  font-weight: 400; 
-  transition: color 0.2s; 
-}
-.fin-input:focus::placeholder { 
-  color: transparent; 
-}
-
-.fin-input:hover { 
-  background: theme('colors.slate.100') !important; 
-}
-
-.fin-input:focus { 
-  background: #ffffff !important; 
-  border-color: theme('colors.primary') !important; 
-  box-shadow: theme('boxShadow.input-focus') !important;
-  --tw-ring-shadow: none !important;
-}
-
-/* Input with Left Icon Padding */
-.fin-input.has-icon-left {
-  padding-left: 50px !important;
-}
-
-/* Form Icons */
-.input-icon { 
-  position: absolute; 
-  left: 16px; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  color: theme('colors.slate.400'); 
-  font-size: 22px; 
-  pointer-events: none; 
-  transition: all 0.3s ease; 
-}
-.fin-input-container:focus-within .input-icon {
-  color: theme('colors.primary');
-}
-
-/* ==========================================================================
-   Buttons
-   ========================================================================== */
-
-.btn-primary { 
-  width: 100%;
-  height: 52px; 
-  border-radius: theme('borderRadius.xl'); 
-  background: theme('colors.primary'); 
-  color: white;
-  font-size: 15px; 
-  font-weight: 600;
-  display: flex;
+.btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.25s ease; 
-  box-shadow: 0 4px 12px rgba(26,60,94,0.25);
+  gap: var(--space-3xs);
+  height: var(--space-2xl); /* 48px */
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
 }
 
-@media (min-width: 640px) {
-  .btn-primary { height: 56px; }
+.btn-sm { height: 36px; padding: 0 var(--space-xs); font-size: 13px; border-radius: var(--radius-md); }
+.btn-lg { height: 56px; padding: 0 var(--space-lg); font-size: 15px; border-radius: var(--radius-xl); }
+
+.btn-primary {
+  background-color: var(--color-primary-base);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+
+.btn-secondary {
+  background-color: var(--color-surface-main);
+  color: var(--color-text-main);
+  border-color: var(--color-border-main);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover {
+  background-color: var(--color-surface-hover);
 }
 
-.btn-primary:hover { 
-  background: theme('colors.primary-dark'); 
-  transform: translateY(-1px); 
-  box-shadow: 0 6px 16px rgba(26,60,94,0.35); 
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-muted);
 }
-.btn-primary:active { 
-  transform: translateY(0) scale(0.99); 
+.btn-ghost:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-main);
 }
-.btn-primary:disabled {
-  opacity: 0.7;
+
+.btn-danger { background-color: var(--color-danger-base); color: var(--color-text-inverse); }
+.btn-danger:hover { background-color: #dc2626; }
+
+.btn:disabled, .btn.is-loading {
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* ==========================================================================
-   Cards & Layouts
+   8. FORM SYSTEM
    ========================================================================== */
-.card {
-  background: white;
-  border-radius: theme('borderRadius.2xl');
-  box-shadow: theme('boxShadow.soft');
-  border: 1px solid theme('colors.slate.100');
-  padding: 24px;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  margin-bottom: var(--space-xs);
+}
+
+.form-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.form-control {
+  width: 100%;
+  height: var(--space-2xl); /* 48px standard */
+  padding: 0 var(--space-xs);
+  background-color: var(--color-surface-main);
+  border: 1.5px solid var(--color-border-main);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-main);
+  transition: all var(--transition-fast);
+}
+
+.form-control:hover { border-color: #cbd5e1; }
+.form-control:focus {
+  border-color: var(--color-primary-base);
+  box-shadow: var(--shadow-focus);
+}
+.form-control::placeholder { color: var(--color-text-disabled); }
+
+/* Validation States */
+.form-control.is-invalid {
+  border-color: var(--color-danger-base);
+  background-color: var(--color-danger-surface);
+}
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
 }
 
 /* ==========================================================================
-   Utilities & Animations
+   10. CARD SYSTEM
    ========================================================================== */
-.fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.ds-card {
+  background-color: var(--color-surface-main);
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition-normal);
+}
+.ds-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+.ds-card-header {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ds-card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.ds-card-body { padding: var(--space-md); }
+.ds-card-footer { padding: var(--space-md); border-top: 1px solid var(--color-border-main); }
+
+/* ==========================================================================
+   9. TABLE SYSTEM
+   ========================================================================== */
+.ds-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-main);
 }
 
-.error-state .fin-input {
-  border-color: theme('colors.red.500') !important;
-  background: theme('colors.red.50') !important;
-  box-shadow: 0 0 0 4px rgba(239,68,68,0.1) !important;
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
 
-.error-msg {
-  color: theme('colors.red.500'); 
-  font-size: 13px; 
-  font-weight: 500; 
-  margin-top: 6px; 
-  display: none;
-  animation: slideDown 0.2s ease-out forwards;
+.ds-table th {
+  background-color: var(--color-surface-subtle);
+  padding: var(--space-xs) var(--space-md);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border-main);
 }
 
-@keyframes slideDown { 
-  from { opacity: 0; transform: translateY(-4px); } 
-  to { opacity: 1; transform: translateY(0); } 
+.ds-table td {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 14px;
+  color: var(--color-text-main);
+  border-bottom: 1px solid var(--color-border-main);
+  vertical-align: middle;
 }
+
+.ds-table tr:last-child td { border-bottom: none; }
+.ds-table tbody tr:hover { background-color: var(--color-surface-hover); }
+
+/* ==========================================================================
+   11. BADGES & CHIPS (Part of Table/Forms)
+   ========================================================================== */
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.ds-badge-success { background: var(--color-success-surface); color: var(--color-success-base); }
+.ds-badge-warning { background: var(--color-warning-surface); color: var(--color-warning-base); }
+.ds-badge-danger { background: var(--color-danger-surface); color: var(--color-danger-base); }
+.ds-badge-info { background: var(--color-info-surface); color: var(--color-info-base); }
+
+/* ==========================================================================
+   14. CHARTS / DATA VIZ HELPERS
+   ========================================================================== */
+.ds-chart-container {
+  width: 100%;
+  min-height: 300px;
+  position: relative;
+}
+
+/* ==========================================================================
+   4. GRID SYSTEM
+   Built via Tailwind classes in HTML, but helper vars below
+   ========================================================================== */
+.ds-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* ==========================================================================
+   13. ANIMATION SYSTEM HELPERS
+   ========================================================================== */
+.ds-animate-fade { animation: dsFadeIn 0.3s ease-out forwards; }
+.ds-animate-slide-up { animation: dsSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes dsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dsSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
