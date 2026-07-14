@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Finzo Admin â€” Branch Management</title>
+  <title>Finzo Admin — Branch Management</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
@@ -123,21 +123,21 @@
     <div class="p-4 sm:p-6 lg:p-10">
       <!-- STATS ROW -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-        <div class="admin-stat-card">
+        <div class="ds-card p-5">
           <div class="admin-stat-icon" style="background:#e0f2fe;">
             <span class="material-symbols-outlined" style="color:#0369a1;">store</span>
           </div>
           <div class="admin-stat-label">TOTAL BRANCHES</div>
           <div id="stat-total-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
-        <div class="admin-stat-card">
+        <div class="ds-card p-5">
           <div class="admin-stat-icon" style="background:#e8f8f2;">
             <span class="material-symbols-outlined" style="color:#00b894;">check_circle</span>
           </div>
           <div class="admin-stat-label">ACTIVE BRANCHES</div>
           <div id="stat-active-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
-        <div class="admin-stat-card">
+        <div class="ds-card p-5">
           <div class="admin-stat-icon" style="background:#fff8e1;">
             <span class="material-symbols-outlined" style="color:#f39c12;">badge</span>
           </div>
@@ -155,18 +155,18 @@
         </div>
       </div>
       <!-- SEARCH & TABLE CARD -->
-      <div class="admin-card relative z-20">
+      <div class="ds-card relative z-20">
         <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-white/5">
           <div class="relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
             <input type="text" id="admin-branch-finder" name="branch_query_ignore" placeholder="Search by branch name, location or manager..." 
               autocomplete="one-time-code" data-lpignore="true" 
-              class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm">
+              class="ds-input pl-12">
           </div>
         </div>
 
         <div class="overflow-x-auto w-full">
-          <table class="admin-table w-full min-w-[1000px] text-left">
+          <table class="ds-table w-full min-w-[1000px] text-left">
             <thead>
               <tr>
                 <th style="width: 5%;">#</th>
@@ -223,8 +223,8 @@
 
   <!-- ADD BRANCH MODAL -->
   <div id="addBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#addBranchModal').addClass('hidden').removeClass('flex')"></div>
-    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter overflow-y-auto max-h-[90vh]">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#addBranchModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center sticky top-0 bg-white dark:bg-surface-container-lowest z-10">
         <div>
           <h3 class="admin-section-title">Add New Branch</h3>
@@ -241,24 +241,24 @@
             <div class="text-[10px] font-bold tracking-widest text-primary/40 uppercase mb-4 py-1 border-b border-slate-100 dark:border-white/10">SECTION 1: Branch Information</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div class="col-span-1">
-                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Name *</label>
+                <label class="ds-label mb-2">Branch Name *</label>
                 <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. West Branch" required
-                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+                  class="ds-input">
               </div>
               <div class="col-span-1">
-                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Code *</label>
+                <label class="ds-label mb-2">Branch Code *</label>
                 <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly
                   class="w-full px-4 py-3 bg-slate-100 dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary/60">
-                <p class="text-[9px] text-slate-400 mt-1 font-bold">System Generated â€” Cannot be manualy edited.</p>
+                <p class="text-[9px] text-slate-400 mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
               </div>
               <div class="col-span-1">
-                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">City *</label>
+                <label class="ds-label mb-2">City *</label>
                 <input type="text" name="city" placeholder="e.g. Kolkata" required
-                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+                  class="ds-input">
               </div>
 
               <div class="col-span-1">
-                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">State *</label>
+                <label class="ds-label mb-2">State *</label>
                 <div class="finzo-dropdown w-full" id="branch-state-dropdown">
                   <div class="finzo-dropdown-trigger !bg-slate-50 dark:!bg-surface-container !border-none !rounded-xl !py-3">
                     <span class="dropdown-label font-bold text-sm text-slate-400">Select State / UT</span>
@@ -308,9 +308,9 @@
                 </div>
               </div>
               <div class="col-span-1 sm:col-span-2">
-                <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Full Address *</label>
+                <label class="ds-label mb-2">Full Address *</label>
                 <textarea name="address" rows="2" placeholder="Building no., street name, locality, city, PIN code" required
-                  class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium resize-none"></textarea>
+                  class="ds-input"></textarea>
               </div>
             </div>
           </div>
@@ -319,7 +319,7 @@
           <div>
             <div class="text-[10px] font-bold tracking-widest text-primary/40 uppercase mb-4 py-1 border-b border-slate-100 dark:border-white/10">SECTION 2: Branch Manager</div>
             <div class="mb-4">
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Assign Branch Manager *</label>
+              <label class="ds-label mb-2">Assign Branch Manager *</label>
               
               <!-- Custom Styled Manager Dropdown -->
               <div class="finzo-dropdown w-full" id="manager-dropdown">
@@ -345,7 +345,7 @@
           <div>
             <div class="text-[10px] font-bold tracking-widest text-primary/40 uppercase mb-4 py-1 border-b border-slate-100 dark:border-white/10">SECTION 3: Admin Verification</div>
             <div class="mb-2">
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Admin Password *</label>
+              <label class="ds-label mb-2">Admin Password *</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" style="font-size:18px;">admin_panel_settings</span>
                 <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your admin password" required
@@ -363,15 +363,15 @@
 
           <!-- SECTION 4 -->
           <div>
-             <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Branch Description / Notes</label>
-             <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch â€” services offered, operating hours, etc."
-               class="w-full px-4 py-3 bg-slate-50 dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium resize-none"></textarea>
+             <label class="ds-label mb-2">Branch Description / Notes</label>
+             <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
+               class="ds-input"></textarea>
              <div class="char-counter" id="branch-desc-counter">0 / 500</div>
           </div>
 
           <!-- SECTION 5 -->
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Branch Registration Certificate</label>
+            <label class="ds-label mb-1">Branch Registration Certificate</label>
             <p class="text-[10px] opacity-40 mb-3 font-bold uppercase tracking-tighter">Upload the official documents</p>
             
             <input type="file" id="branch-file-input" name="certificate" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
@@ -379,7 +379,7 @@
               <span class="material-symbols-outlined text-4xl text-primary/20" id="upload-icon">upload_file</span>
               <div>
                 <div class="text-[13px] font-bold text-primary">Upload Registration Certificate</div>
-                <div class="text-[11px] opacity-40 font-bold mt-1">PDF, JPG or PNG â€” Max 10MB</div>
+                <div class="text-[11px] opacity-40 font-bold mt-1">PDF, JPG or PNG — Max 10MB</div>
               </div>
               <button type="button" class="admin-btn-secondary px-6 !py-2 mt-2 !rounded-lg !text-[11px] !border-primary/20">Browse Files</button>
             </div>
@@ -413,8 +413,8 @@
 
   <!-- VIEW BRANCH MODAL -->
   <div id="viewBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#viewBranchModal').addClass('hidden').removeClass('flex')"></div>
-    <div class="admin-card w-full max-w-2xl relative z-10 animate-modal-enter overflow-y-auto max-h-[90vh]">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#viewBranchModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div id="view-modal-header" class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
         <div>
           <h3 id="view-branch-title" class="admin-section-title">Barasat</h3>
@@ -429,8 +429,8 @@
       </div>
       <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div class="space-y-6">
-          <div class="admin-card !bg-slate-50 dark:!bg-white/5 !p-5 !border-none">
-            <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Branch Details</label>
+          <div class="ds-card !bg-slate-50 dark:!bg-white/5 !p-5 !border-none">
+            <label class="ds-label mb-3 block">Branch Details</label>
             <div class="space-y-4">
                <div>
                  <div class="text-[10px] opacity-60 font-bold">Branch Code</div>
@@ -453,8 +453,8 @@
             </div>
           </div>
           
-          <div class="admin-card !bg-slate-50 dark:!bg-white/5 !p-5 !border-none">
-            <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Manager Info</label>
+          <div class="ds-card !bg-slate-50 dark:!bg-white/5 !p-5 !border-none">
+            <label class="ds-label mb-3 block">Manager Info</label>
             <div class="flex items-center gap-4">
                <div id="view-manager-avatar" class="manager-avatar premium-gradient-primary">AS</div>
                <div>
@@ -479,7 +479,7 @@
            </div>
 
            <div>
-              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Registration Certificate</label>
+              <label class="ds-label mb-2 block">Registration Certificate</label>
               <div id="view-cert-container" class="flex items-center gap-3 p-3 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5">
                  <span class="material-symbols-outlined text-rose-500">picture_as_pdf</span>
                  <div class="flex-1 min-w-0">
@@ -491,7 +491,7 @@
            </div>
 
            <div>
-              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Branch Description</label>
+              <label class="ds-label mb-2 block">Branch Description</label>
               <div id="view-branch-desc" class="text-[12px] p-4 bg-slate-50 dark:bg-white/5 rounded-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed italic">
                  "Main central hub responsible for high-value corporate accounts and treasury operations. Operates 24/7 with specialized support for international transfers."
               </div>
@@ -507,8 +507,8 @@
 
   <!-- BRANCH STAFF MODAL -->
   <div id="branchStaffModal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')"></div>
-    <div class="admin-card w-full max-w-4xl relative z-10 animate-modal-enter overflow-y-auto max-h-[85vh]">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[85vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center sticky top-0 bg-white dark:bg-surface-container-lowest z-10">
         <div>
           <h3 id="staff-modal-title" class="admin-section-title">Branch Staff List</h3>
@@ -520,7 +520,7 @@
       </div>
       <div class="p-0">
         <div class="overflow-x-auto">
-          <table class="admin-table w-full text-left">
+          <table class="ds-table w-full text-left">
             <thead>
               <tr class="bg-slate-50 dark:bg-white/5">
                 <th class="px-6 py-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Staff ID</th>
@@ -548,8 +548,8 @@
 
   <!-- TOGGLE/DELETE CONFIRM MODALS -->
   <div id="confirmModal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
-     <div class="absolute inset-0 bg-primary/60 backdrop-blur-md"></div>
-     <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
+     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md transition-all"></div>
+     <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 p-8 text-center animate-modal-enter">
         <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-red-50 text-red-500">
            <span class="material-symbols-outlined text-4xl">close</span>
         </div>
@@ -558,17 +558,17 @@
         
         <div id="confirm-input-area" class="hidden space-y-5 text-left mb-8">
            <div>
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Confirm Branch Name *</label>
+              <label class="ds-label mb-2">Confirm Branch Name *</label>
               <input type="text" id="confirm-branch-name-input" placeholder="Type name here" class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl font-bold">
            </div>
            
            <div>
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Admin Security Password *</label>
+              <label class="ds-label mb-2">Admin Security Password *</label>
               <input type="password" id="confirm-admin-pw" placeholder="Enter admin password" class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl font-bold">
            </div>
 
            <div>
-              <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Official Closure Document *</label>
+              <label class="ds-label mb-2">Official Closure Document *</label>
               <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-center">
                  <span class="material-symbols-outlined text-slate-400 mb-1">upload_file</span>
                  <div class="text-[10px] font-bold text-slate-500 uppercase">Click to upload document</div>
@@ -599,5 +599,7 @@
   <script src="../../../public/assets/js/admin/branches.js?v=13"></script>
 </body>
 </html>
+
+
 
 

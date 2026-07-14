@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -112,7 +112,7 @@
                 <!-- LEFT: LIVE RATE & UPDATE -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Live Rate Card -->
-                    <div class="admin-card p-8 relative overflow-hidden">
+                    <div class="ds-card p-8 relative overflow-hidden">
                         <div class="flex justify-between items-center mb-6">
                             <span class="text-[10px] font-black text-slate-400 tracking-[0.2em] uppercase">Live Savings Rate</span>
                             <div class="flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
@@ -138,21 +138,21 @@
                     </div>
 
                     <!-- Update Form Card -->
-                    <div class="admin-card p-8">
+                    <div class="ds-card p-8">
                         <h3 class="text-lg font-bold mb-6 flex items-center gap-2 dark:text-white">
                             <span class="material-symbols-outlined text-primary dark:text-blue-400">edit_square</span>
                             Update Rates
                         </h3>
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">New Interest Rate (%)</label>
+                                <label class="ds-label mb-3 block">New Interest Rate (%)</label>
                                 <div class="relative">
                                     <input type="number" id="new-rate" step="0.01" class="w-full px-6 py-4 bg-slate-100 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-primary/10 font-black text-2xl font-headline tracking-widest text-primary dark:text-slate-200 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [appearance:textfield]">
                                     <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xl font-bold opacity-30 pointer-events-none">%</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Apply From</label>
+                                <label class="ds-label mb-3 block">Apply From</label>
                                 <div class="finzo-dropdown" id="apply-from-dropdown">
                                     <input type="hidden" id="lock_period_input" value="Immediately">
                                     <div class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-white/5 !border-none !py-4 !rounded-2xl">
@@ -167,7 +167,7 @@
                                 </div>
 
                                 <div id="custom-date-container" class="hidden mt-4 animate-fade-in">
-                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Effective Date</label>
+                                    <label class="ds-label mb-2 block">Effective Date</label>
                                     <input type="date" id="custom-apply-date" class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                                 </div>
                             </div>
@@ -181,15 +181,15 @@
                 <div class="lg:col-span-3 space-y-6">
                     <!-- Stats Grid -->
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="admin-card p-6">
+                        <div class="ds-card p-6">
                             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Total Interest Credited</div>
-                            <div id="stat-total-interest" class="text-3xl font-black font-headline text-primary dark:text-slate-200 mb-2">â‚¹0.00</div>
+                            <div id="stat-total-interest" class="text-3xl font-black font-headline text-primary dark:text-slate-200 mb-2">₹0.00</div>
                             <div id="stat-interest-delta" class="text-[10px] font-bold text-emerald-500 flex items-center gap-1.5 uppercase">
                                 <span class="material-symbols-outlined text-[14px]">trending_up</span>
                                 0% from last month
                             </div>
                         </div>
-                        <div class="admin-card p-6">
+                        <div class="ds-card p-6">
                             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Earning Accounts</div>
                             <div class="flex items-baseline gap-2 mb-2">
                                 <span id="stat-earning-accounts" class="text-3xl font-black font-headline text-primary dark:text-slate-200">0</span>
@@ -200,7 +200,7 @@
                     </div>
 
                     <!-- Interest Chart -->
-                    <div class="admin-card p-8">
+                    <div class="ds-card p-8">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Credited Interest (12 Mo)</div>
                         <div id="interest-chart-container" class="h-40 flex items-end gap-2 px-2">
                             <!-- Bars injected by JS -->
@@ -213,12 +213,12 @@
                     </div>
 
                     <!-- History Table -->
-                    <div class="admin-card overflow-hidden">
+                    <div class="ds-card overflow-hidden">
                         <div class="p-6 border-b border-slate-50 dark:border-white/5">
                             <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Rate Change History</h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="admin-table w-full text-left" style="min-width: auto;">
+                            <table class="ds-table w-full text-left" style="min-width: auto;">
                                 <thead>
                                     <tr>
                                         <th>Date</th>
@@ -240,24 +240,27 @@
 
     <!-- CONFIRM MODAL -->
     <div id="confirm-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="window.InterestManagement.closeModal()"></div>
-        <div class="admin-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
-            <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center mx-auto mb-6">
-                <span class="material-symbols-outlined text-amber-500 text-3xl">warning</span>
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="window.InterestManagement.closeModal()"></div>
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter">
+            <div class="p-8 pb-4 text-center shrink-0">
+                <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-amber-500 bg-amber-50 dark:bg-amber-500/10">
+                    <span class="material-symbols-outlined text-4xl">warning</span>
+                </div>
+                <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Confirm Rate Shift</h3>
+                <p class="text-sm text-slate-500 font-medium mt-1">This will affect all relevant savings accounts.</p>
             </div>
-            <h3 class="text-xl font-bold text-center mb-4 dark:text-white">Confirm Rate Shift</h3>
-            <p id="modal-msg" class="text-sm opacity-60 text-center mb-10 leading-relaxed dark:text-slate-400"></p>
-            
-            <div class="flex flex-col gap-3">
-                <button onclick="window.InterestManagement.confirmRate()" class="admin-btn-primary w-full justify-center !py-3 shadow-xl shadow-primary/20">Confirm & Apply</button>
-                <button onclick="window.InterestManagement.closeModal()" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
+            <div class="px-8 py-4 space-y-6 overflow-y-auto">
+                <p id="modal-msg" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4"></p>
+                <div class="mt-4 text-center">
+                    <span class="ds-label flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[14px]">verified_user</span>
+                        Authorization Required
+                    </span>
+                </div>
             </div>
-
-            <div class="mt-8 pt-6 border-t border-slate-50 dark:border-white/5 text-center">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[14px]">verified_user</span>
-                    Authorization Required
-                </span>
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
+                <button onclick="window.InterestManagement.closeModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+                <button onclick="window.InterestManagement.confirmRate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-amber-500 shadow-amber-500/20 hover:bg-amber-600 hover:scale-[1.02] active:scale-[0.98]">Confirm & Apply</button>
             </div>
         </div>
     </div>
@@ -268,4 +271,6 @@
 </body>
 
 </html>
+
+
 
