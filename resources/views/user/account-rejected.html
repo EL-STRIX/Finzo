@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,123 +7,150 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
+<script src="../../../public/assets/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="../../../public/assets/css/user.css"/>
 <link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
 <style>
-.top-nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
-.page-wrap { visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
+/* Hide entire page until session status confirmed — prevents redirect flash */
+.page-wrap { min-height:100vh; display:flex; flex-direction:column; visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
 .page-wrap.ready { visibility:visible; opacity:1; }
-.timeline { display:flex; flex-direction:column; gap:0; }
-.tl-item { display:flex; gap:16px; }
-.tl-line { display:flex; flex-direction:column; align-items:center; }
-.tl-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.tl-connector { width:2px; flex:1; min-height:32px; background:var(--border); margin:4px 0; }
-.tl-connector.done { background:#10b981; }
-.tl-connector.error { background:linear-gradient(#10b981,#f43f5e); }
-.tl-content { padding-bottom:24px; flex:1; }
-.tl-title { font-size:14px; font-weight:700; color:var(--text-primary); }
-.tl-subtitle { font-size:12px; color:var(--text-secondary); margin-top:3px; }
-.tl-time { font-size:10px; color:var(--text-placeholder); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
 </style>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
 </head>
-<body>
+<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
 <script src="../../../public/assets/js/user/user-shared.js"></script>
-<div class="page-wrap" style="min-height:100vh;display:flex;flex-direction:column">
-  <nav class="top-nav">
-    <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
-      <div style="width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#fff">account_balance</span></div>
-      <span style="font-size:18px;font-weight:800;color:var(--text-primary)">Finzo</span>
+<div class="page-wrap">
+  
+  <nav class="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-main)] py-4 px-6 flex items-center justify-between shadow-sm">
+    <a href="dashboard.html" class="flex items-center gap-3 no-underline">
+      <div class="w-10 h-10 rounded-xl bg-primary-base flex items-center justify-center shadow-md">
+        <span class="material-symbols-outlined text-white">account_balance</span>
+      </div>
+      <span class="font-display text-2xl font-extrabold text-[var(--color-text-main)] tracking-tight">Finzo</span>
     </a>
-    <div style="display:flex;align-items:center;gap:10px">
-      <button class="nav-icon-btn" onclick="toggleTheme()"><span class="material-symbols-outlined" data-theme-icon style="font-size:20px">dark_mode</span></button>
-      <a href="../auth/login.html" class="btn btn-ghost btn-sm">Logout</a>
+    <div class="flex items-center gap-3">
+      <button class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] transition-colors" onclick="toggleTheme()">
+        <span class="material-symbols-outlined text-[22px]" data-theme-icon>dark_mode</span>
+      </button>
+      <a href="../auth/login.html" class="btn btn-secondary !py-2 !px-4">Logout</a>
     </div>
   </nav>
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px">
-    <div style="width:100%;max-width:520px">
-      <div style="text-align:center;margin-bottom:28px" class="animate-in">
-        <div style="width:80px;height:80px;border-radius:50%;background:rgba(244,63,94,0.1);border:2px solid rgba(244,63,94,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
-          <span class="material-symbols-outlined" style="font-size:40px;color:#f43f5e">cancel</span>
+
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10 py-12">
+    <div class="w-full max-w-lg">
+      
+      <!-- ICON -->
+      <div class="text-center mb-8 ds-animate-slide-up">
+        <div class="w-20 h-20 rounded-full bg-danger-surface/50 border-2 border-danger-base/20 flex items-center justify-center mx-auto mb-6">
+          <span class="material-symbols-outlined text-[40px] text-danger-base">cancel</span>
         </div>
-        <div style="font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:8px">Application Rejected</div>
-        <div style="font-size:14px;color:var(--text-secondary);line-height:1.6">Your account application was not approved.<br>Please review the reason below and resubmit.</div>
+        <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight mb-2">Application Rejected</h1>
+        <p class="text-[var(--color-text-muted)] text-sm leading-relaxed max-w-sm mx-auto">
+          Your account application was not approved.<br>Please review the reason below and resubmit.
+        </p>
       </div>
 
-      <div class="card card-p animate-in animate-delay-1" style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:20px">Application Status</div>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-line">
-              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
-              <div class="tl-connector done"></div>
+      <!-- TIMELINE CARD -->
+      <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="ds-card-header border-b border-[var(--color-border-main)]">
+          <h3 class="font-display text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Application Status</h3>
+        </div>
+        <div class="ds-card-body p-6 sm:p-8">
+          
+          <div class="timeline flex flex-col">
+            <!-- Item 1 -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
+                </div>
+                <div class="w-0.5 flex-1 min-h-[2rem] bg-success-base my-1"></div>
+              </div>
+              <div class="pb-6 flex-1">
+                <div class="text-sm font-bold text-[var(--color-text-main)]">Registered</div>
+                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Account created successfully</div>
+              </div>
             </div>
-            <div class="tl-content">
-              <div class="tl-title">Registered</div>
-              <div class="tl-subtitle">Account created successfully</div>
+            
+            <!-- Item 2 -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
+                </div>
+                <div class="w-0.5 flex-1 min-h-[2rem] bg-success-base my-1"></div>
+              </div>
+              <div class="pb-6 flex-1">
+                <div class="text-sm font-bold text-[var(--color-text-main)]">Profile Submitted</div>
+                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">All documents uploaded successfully</div>
+              </div>
+            </div>
+            
+            <!-- Item 3 -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
+                </div>
+                <div class="w-0.5 flex-1 min-h-[2rem] bg-gradient-to-b from-success-base to-danger-base my-1"></div>
+              </div>
+              <div class="pb-6 flex-1">
+                <div class="text-sm font-bold text-[var(--color-text-main)]">Admin Review</div>
+                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Application was reviewed by our team</div>
+              </div>
+            </div>
+            
+            <!-- Item 4 (Error) -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center">
+                <div class="w-9 h-9 rounded-full bg-danger-surface border-2 border-danger-base/30 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-danger-base text-lg">cancel</span>
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-danger-base">Application Rejected</div>
+                <div id="tl-rejection-reason" class="text-xs text-[var(--color-text-main)] mt-2 p-3 bg-danger-surface/40 border border-danger-base/20 rounded-lg leading-relaxed">
+                  Account was not approved
+                </div>
+                <div id="tl-rejection-time" class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-2"></div>
+              </div>
             </div>
           </div>
-          <div class="tl-item">
-            <div class="tl-line">
-              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
-              <div class="tl-connector done"></div>
-            </div>
-            <div class="tl-content">
-              <div class="tl-title">Profile Submitted</div>
-              <div class="tl-subtitle">All documents uploaded successfully</div>
-            </div>
+          
+        </div>
+      </div>
+
+      <!-- RESUBMIT INSTRUCTIONS -->
+      <div class="ds-card p-6 mt-4 ds-animate-slide-up" style="animation-delay: 0.2s;">
+        <h3 class="font-display text-sm font-bold text-[var(--color-text-main)] mb-4">Steps to Resubmit</h3>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-primary-surface text-primary-base flex items-center justify-center font-bold text-[10px] shrink-0">1</div>
+            <div class="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5">Click "Update & Resubmit" below to go back to your profile form</div>
           </div>
-          <div class="tl-item">
-            <div class="tl-line">
-              <div class="tl-dot" style="background:rgba(16,185,129,0.15)"><span class="material-symbols-outlined" style="font-size:18px;color:#10b981">check_circle</span></div>
-              <div class="tl-connector error"></div>
-            </div>
-            <div class="tl-content">
-              <div class="tl-title">Admin Review</div>
-              <div class="tl-subtitle">Application was reviewed by our team</div>
-            </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-primary-surface text-primary-base flex items-center justify-center font-bold text-[10px] shrink-0">2</div>
+            <div class="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5">Fix the issue mentioned in the rejection reason</div>
           </div>
-          <div class="tl-item">
-            <div class="tl-line">
-              <div class="tl-dot" style="background:rgba(244,63,94,0.15);border:2px solid rgba(244,63,94,0.3);"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e">cancel</span></div>
-            </div>
-            <div class="tl-content" style="padding-bottom:0">
-              <div class="tl-title" style="color:#f43f5e">Application Rejected</div>
-              <div class="tl-subtitle" id="tl-rejection-reason" style="margin-top:8px;padding:12px;background:rgba(244,63,94,0.06);border-radius:var(--radius-sm);border:1px solid rgba(244,63,94,0.2);color:var(--text-primary);line-height:1.5">Account was not approved</div>
-              <div class="tl-time" id="tl-rejection-time"></div>
-            </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-primary-surface text-primary-base flex items-center justify-center font-bold text-[10px] shrink-0">3</div>
+            <div class="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5">Submit again — our team will review within 24 hours</div>
           </div>
         </div>
       </div>
 
-      <div class="card card-p animate-in animate-delay-3" style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px">Steps to Resubmit</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:flex-start;gap:10px">
-            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">1</div>
-            <div style="font-size:13px;color:var(--text-secondary)">Click "Update & Resubmit" below to go back to your profile form</div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px">
-            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">2</div>
-            <div style="font-size:13px;color:var(--text-secondary)">Fix the issue mentioned in the rejection reason</div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px">
-            <div style="width:24px;height:24px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">3</div>
-            <div style="font-size:13px;color:var(--text-secondary)">Submit again — our team will review within 24 hours</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex gap-3 animate-in animate-delay-4">
-        <a href="dashboard.html" class="btn btn-ghost" style="flex:1;justify-content:center">← Dashboard</a>
-        <a href="complete-profile.html" class="btn btn-primary" style="flex:1;justify-content:center">
-          <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
+      <div class="flex gap-3 mt-6 ds-animate-slide-up" style="animation-delay: 0.3s;">
+        <a href="dashboard.html" class="btn btn-secondary flex-1 justify-center h-12">Return to Dashboard</a>
+        <a href="complete-profile.html" class="btn btn-primary flex-1 justify-center h-12">
+          <span class="material-symbols-outlined text-[18px]">refresh</span>
           Update & Resubmit
         </a>
       </div>
-      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-placeholder)">Need help? <a href="mailto:support@finzobank.com" style="color:var(--primary);font-weight:600">Contact Support</a></div>
+      
+      <div class="text-center mt-6 text-xs font-bold text-[var(--color-text-muted)] tracking-wide ds-animate-slide-up" style="animation-delay: 0.4s;">
+        Need help? <a href="mailto:support@finzobank.com" class="text-primary-base hover:underline ml-1">Contact Support</a>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -156,4 +183,3 @@
 </script>
 </body>
 </html>
-
