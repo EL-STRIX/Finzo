@@ -88,6 +88,8 @@ class Router {
                         $payload = array_merge($payload, $customPayload);
                     }
                     json_response($payload, $e->getStatusCode());
+                } catch (\App\Core\Exceptions\TestResponseException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
                     error_log("Unhandled Error: " . $e->getMessage());
                     json_response(['success' => false, 'message' => 'An unexpected error occurred.'], 500);

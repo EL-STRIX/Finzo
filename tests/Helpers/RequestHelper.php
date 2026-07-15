@@ -2,34 +2,42 @@
 namespace Tests\Helpers;
 
 class RequestHelper {
-    
     /**
-     * Simulates a POST request and captures the output (e.g. from a controller).
+     * Internal dispatcher that bridges tests to the modern MVC Router.
+     * This supports both modernized mapped routes and legacy procedural controllers
+     * (via the Router's Strangler Fig fallback).
      */
-    public static function post(string $controllerPath, array $postData, array $sessionData = []) {
-        // Reset state
+    private static function dispatchRoute(string $method, string $controllerPath, array $postData = [], array $getData = [], array $sessionData = []) {
         $_POST = $postData;
-        $_GET = [];
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_GET = $getData;
+        $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['HTTP_ACCEPT'] = 'application/json';
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+        $_SERVER['REQUEST_URI'] = '/Finzo/api/' . ltrim($controllerPath, '/');
         $_SESSION = $sessionData;
 
-        $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
-
-        if (!file_exists($path)) {
-            throw new \Exception("Controller not found at: $path");
-        }
+        // Ensure database connection is ready for controllers
+        require_once dirname(__DIR__, 2) . '/bootstrap/app.php';
 
         ob_start();
         try {
-            (function() use ($path) { require $path; })();
+            $router = require dirname(__DIR__, 2) . '/routes/api.php';
+            $router->dispatch($method, $_SERVER['REQUEST_URI']);
+        } catch (\App\Core\Exceptions\ApiException $e) {
+            $payload = ['success' => false, 'message' => $e->getMessage()];
+            if (!empty($e->getPayload())) $payload = array_merge($payload, $e->getPayload());
+            // Since we are testing, we can format it like json_response does when testing
+            throw new \Exception(json_encode($payload));
         } catch (\Throwable $e) {
             ob_end_clean();
             throw $e;
         }
-
+        
         return ob_get_clean();
+    }
+
+    public static function post(string $controllerPath, array $postData, array $sessionData = []) {
+        return self::dispatchRoute('POST', $controllerPath, $postData, [], $sessionData);
     }
 
     public static function postJson(string $controllerPath, array $postData, array $sessionData = []) {
@@ -42,45 +50,16 @@ class RequestHelper {
         return $decoded;
     }
 
-    /**
-     * Simulates a GET request and captures the output.
-     */
     public static function get(string $controllerPath, array $getData, array $sessionData = []) {
-        $_POST = [];
-        $_GET = $getData;
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTP_ACCEPT'] = 'application/json';
-        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
-        $_SESSION = $sessionData;
-
-        $path = dirname(__DIR__, 2) . '/app/Controllers/' . ltrim($controllerPath, '/');
-
-        if (!file_exists($path)) {
-            throw new \Exception("Controller not found at: $path");
-        }
-
-        ob_start();
-        try {
-            (function() use ($path) { require $path; })();
-        } catch (\Throwable $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
-        return ob_get_clean();
+        return self::dispatchRoute('GET', $controllerPath, [], $getData, $sessionData);
     }
 
-    /**
-     * Simulates a GET request and parses the output as JSON.
-     */
     public static function getJson(string $controllerPath, array $getData, array $sessionData = []) {
         $output = self::get($controllerPath, $getData, $sessionData);
         $decoded = json_decode($output, true);
-        
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception("Failed to decode JSON. Output was: \n" . $output);
         }
-        
         return $decoded;
     }
 }

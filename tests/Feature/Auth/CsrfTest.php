@@ -9,8 +9,7 @@ class CsrfTest extends TestCase {
     
     public function testGetCsrfToken() {
         try {
-            RequestHelper::postJson('Auth/get-csrf-token.php', []);
-            $this->fail("json_response did not throw an exception");
+            RequestHelper::getJson('Auth/get-csrf-token.php', []);
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);

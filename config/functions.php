@@ -81,7 +81,7 @@ function json_response($data, $status = 200) {
         if (is_array($data)) {
             $data['status'] = $status;
         }
-        throw new \Exception(json_encode($data));
+        throw new \App\Core\Exceptions\TestResponseException(json_encode($data));
     }
     
     if (!headers_sent()) {
