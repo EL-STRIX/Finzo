@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\AdminManagementRepository;
-use Exception;
+use App\Core\Exceptions\ApiException;
 use PDO;
 
 class AdminManagementService {
@@ -13,24 +13,24 @@ class AdminManagementService {
         $this->repository = $repository;
     }
     
-    public function validateCsrf(string $token) {
+    public function validateCsrf(string $token): void {
         if (!validate_csrf_token($token)) {
-            throw new Exception('Invalid or expired session token', 403);
+            throw new ApiException('Invalid or expired session token', 403);
         }
     }
 
-    public function requireSuperAdmin() {
+    public function requireSuperAdmin(): void {
         if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
-            throw new Exception('Forbidden: Only Super Administrator can perform this action.', 403);
+            throw new ApiException('Forbidden: Only Super Administrator can perform this action.', 403);
         }
     }
     
-    public function getNextAdminId() {
+    public function getNextAdminId(): string {
         $max_id = $this->repository->getMaxAdminIdNumber();
-        return 'ADM' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
+        return 'ADM' . str_pad((string)($max_id + 1), 3, '0', STR_PAD_LEFT);
     }
     
-    public function addAdmin(array $data, ?array $file) {
+    public function addAdmin(array $data, ?array $file): array {
         $full_name = clean_input($data['full_name'] ?? '');
         $date_of_birth = clean_input($data['date_of_birth'] ?? '');
         $gender = clean_input($data['gender'] ?? '');
@@ -43,49 +43,49 @@ class AdminManagementService {
         $security_answer = $data['security_answer'] ?? '';
 
         if (strlen($full_name) < 2 || strlen($full_name) > 100) {
-            return ['success' => false, 'field' => 'full_name', 'message' => 'Full name must be between 2 and 100 characters', 'code' => 422];
+            throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
         }
         if (empty($date_of_birth) || strtotime($date_of_birth) > strtotime('-18 years')) {
-            return ['success' => false, 'field' => 'date_of_birth', 'message' => 'Must be at least 18 years old', 'code' => 422];
+            throw new ApiException('Must be at least 18 years old', 422, ['field' => 'date_of_birth']);
         }
         if (!in_array($gender, ['Male', 'Female', 'Other', 'Prefer not to say'])) {
-            return ['success' => false, 'field' => 'gender', 'message' => 'Invalid gender selection', 'code' => 422];
+            throw new ApiException('Invalid gender selection', 422, ['field' => 'gender']);
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['success' => false, 'field' => 'email', 'message' => 'Invalid email format', 'code' => 422];
+            throw new ApiException('Invalid email format', 422, ['field' => 'email']);
         }
         if (!validate_phone($phone)) {
-            return ['success' => false, 'field' => 'phone', 'message' => 'Invalid phone number (must be 10 digits)', 'code' => 422];
+            throw new ApiException('Invalid phone number (must be 10 digits)', 422, ['field' => 'phone']);
         }
         
         if ($this->repository->getAdminByEmail($email)) {
-            return ['success' => false, 'field' => 'email', 'message' => 'An admin with this email already exists', 'code' => 409];
+            throw new ApiException('An admin with this email already exists', 409, ['field' => 'email']);
         }
 
         if ($password !== $confirm_password) {
-            return ['success' => false, 'field' => 'confirm_password', 'message' => 'Passwords do not match', 'code' => 422];
+            throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_password']);
         }
         
         if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[^a-zA-Z0-9]/', $password)) {
-            return ['success' => false, 'field' => 'password', 'message' => 'Password must be min 8 chars with uppercase, number, and special character', 'code' => 422];
+            throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'password']);
         }
 
         if (!in_array($admin_role, ['admin', 'moderator'])) {
-            return ['success' => false, 'field' => 'admin_role', 'message' => 'Invalid role assigned', 'code' => 422];
+            throw new ApiException('Invalid role assigned', 422, ['field' => 'admin_role']);
         }
 
         if (empty($security_question) || empty($security_answer)) {
-            return ['success' => false, 'message' => 'Security question and answer are required', 'code' => 422];
+            throw new ApiException('Security question and answer are required', 422);
         }
 
         $photo_path = null;
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/jpeg', 'image/png'])) {
-                return ['success' => false, 'message' => 'Profile photo must be JPG or PNG', 'code' => 422];
+                throw new ApiException('Profile photo must be JPG or PNG', 422);
             }
             if ($file['size'] > 5 * 1024 * 1024) {
-                return ['success' => false, 'message' => 'Profile photo max size is 5MB', 'code' => 422];
+                throw new ApiException('Profile photo max size is 5MB', 422);
             }
 
             $upload_dir = UPLOAD_ADMIN_PHOTOS_PATH;
@@ -95,7 +95,7 @@ class AdminManagementService {
             $dest = $upload_dir . $filename;
             
             if (!move_uploaded_file($file['tmp_name'], $dest)) {
-                return ['success' => false, 'message' => 'Failed to save profile photo', 'code' => 500];
+                throw new ApiException('Failed to save profile photo', 500);
             }
             $photo_path = '/uploads/admin-photos/' . $filename;
         }
@@ -135,24 +135,24 @@ class AdminManagementService {
             'message' => 'Admin added successfully', 
             'admin_id' => $next_admin_id, 
             'admin_name' => $full_name,
-            'code' => 200
+            'code' => 201
         ];
     }
 
-    public function handleAdminAction(string $action, int $target_numeric_id) {
+    public function handleAdminAction(string $action, int $target_numeric_id): array {
         if ($target_numeric_id <= 0) {
-            throw new Exception('Invalid Admin ID', 400);
+            throw new ApiException('Invalid Admin ID', 400);
         }
         if ($target_numeric_id === (int)$_SESSION['admin_id']) {
-            throw new Exception('Self-management not permitted via this interface.', 400);
+            throw new ApiException('Self-management not permitted via this interface.', 400);
         }
 
         $target = $this->repository->getAdminById($target_numeric_id);
         if (!$target) {
-            throw new Exception('Admin not found.', 404);
+            throw new ApiException('Admin not found.', 404);
         }
         if ($target['admin_role'] === 'super_admin') {
-            throw new Exception('Cannot modify a Super Administrator.', 403);
+            throw new ApiException('Cannot modify a Super Administrator.', 403);
         }
 
         $target_admin_id = $target['admin_id'];
@@ -166,14 +166,13 @@ class AdminManagementService {
                 return [
                     'success' => true, 
                     'message' => "Admin account has been " . ($new_status === 'active' ? 'activated' : 'suspended') . " successfully.",
-                    'new_status' => $new_status,
-                    'code' => 200
+                    'new_status' => $new_status
                 ];
 
             case 'delete':
                 write_audit_log(\App\Core\Database::getInstance(), 'admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}");
                 $this->repository->deleteAdmin($target_numeric_id);
-                return ['success' => true, 'message' => "Admin account has been permanently removed from the system.", 'code' => 200];
+                return ['success' => true, 'message' => "Admin account has been permanently removed from the system."];
 
             case 'reset_password':
                 $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
@@ -187,26 +186,25 @@ class AdminManagementService {
                     'success' => true, 
                     'message' => "A new temporary password has been generated for {$target['full_name']}.",
                     'generated_password' => $generated_password,
-                    'expiry' => date('Y-m-d H:i:s', strtotime('+24 hours')),
-                    'code' => 200
+                    'expiry' => date('Y-m-d H:i:s', strtotime('+24 hours'))
                 ];
                 
             default:
-                throw new Exception('Invalid action', 400);
+                throw new ApiException('Invalid action', 400);
         }
     }
 
-    public function getAdminDetail(int $target_id) {
+    public function getAdminDetail(int $target_id): array {
         if ($target_id <= 0) {
-            throw new Exception('Invalid Admin ID', 400);
+            throw new ApiException('Invalid Admin ID', 400);
         }
         if ($target_id === (int)$_SESSION['admin_id']) {
-            throw new Exception('Please use your profile page for self-management.', 400);
+            throw new ApiException('Please use your profile page for self-management.', 400);
         }
 
         $admin = $this->repository->getAdminDetail($target_id);
         if (!$admin) {
-            throw new Exception('Admin not found or restricted.', 404);
+            throw new ApiException('Admin not found or restricted.', 404);
         }
 
         $activity = $this->repository->getAdminActivity($admin['admin_id'], 50);
@@ -218,10 +216,10 @@ class AdminManagementService {
         ];
     }
     
-    public function getAdminProfileForUser(int $admin_id) {
+    public function getAdminProfileForUser(int $admin_id): array {
         $profile = $this->repository->getAdminProfile($admin_id);
         if (!$profile) {
-            throw new Exception('Profile not found', 404);
+            throw new ApiException('Profile not found', 404);
         }
         $activity = $this->repository->getAdminActivity($profile['admin_id'], 100);
         return [
@@ -231,7 +229,7 @@ class AdminManagementService {
         ];
     }
     
-    public function getAdmins() {
+    public function getAdmins(): array {
         $admins = $this->repository->getAllAdmins();
         return [
             'success' => true,
@@ -240,7 +238,7 @@ class AdminManagementService {
         ];
     }
     
-    public function getLockedAdmins() {
+    public function getLockedAdmins(): array {
         $locked = $this->repository->getLockedAdmins();
         foreach ($locked as &$admin) {
             $admin['security_question_set'] = (bool)$admin['security_question_set'];
@@ -252,10 +250,10 @@ class AdminManagementService {
         ];
     }
     
-    public function getProfileData(int $admin_id) {
+    public function getProfileData(int $admin_id): array {
         $admin = $this->repository->getAdminById($admin_id);
         if (!$admin) {
-            throw new Exception('Admin not found', 404);
+            throw new ApiException('Admin not found', 404);
         }
         $recent_activity = $this->repository->getAdminActivity($admin['admin_id'], 10);
         $total_actions = $this->repository->getActivityCount($admin['admin_id']);
@@ -276,25 +274,25 @@ class AdminManagementService {
         ];
     }
     
-    public function changePassword(int $admin_id, array $data) {
+    public function changePassword(int $admin_id, array $data): array {
         $current = $data['current_password'] ?? '';
         $new_pwd = $data['new_password'] ?? '';
         $confirm = $data['confirm_password'] ?? '';
 
         if (empty($current) || empty($new_pwd)) {
-            return ['success' => false, 'message' => 'All password fields are required', 'code' => 422];
+            throw new ApiException('All password fields are required', 422);
         }
         if ($new_pwd !== $confirm) {
-            return ['success' => false, 'message' => 'Passwords do not match', 'code' => 422];
+            throw new ApiException('Passwords do not match', 422);
         }
         $strength = validate_password_strength($new_pwd);
         if (!$strength['valid']) {
-            return ['success' => false, 'message' => $strength['message'], 'code' => 422];
+            throw new ApiException($strength['message'], 422);
         }
 
         $admin = $this->repository->getAdminById($admin_id);
         if (!password_verify($current, $admin['password_hash'])) {
-            return ['success' => false, 'message' => 'Current password is incorrect', 'code' => 401];
+            throw new ApiException('Current password is incorrect', 401);
         }
 
         $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
@@ -302,12 +300,12 @@ class AdminManagementService {
         
         write_audit_log(\App\Core\Database::getInstance(), 'admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed');
 
-        return ['success' => true, 'message' => 'Password changed successfully', 'code' => 200];
+        return ['success' => true, 'message' => 'Password changed successfully'];
     }
     
-    public function uploadAvatar(int $admin_id, array $file, bool $isProfileEndpoint = false) {
+    public function uploadAvatar(int $admin_id, ?array $file, bool $isProfileEndpoint = false): array {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
-            return ['success' => false, 'message' => $isProfileEndpoint ? 'No file uploaded or upload error' : 'No valid file uploaded', 'code' => 422];
+            throw new ApiException($isProfileEndpoint ? 'No file uploaded or upload error' : 'No valid file uploaded', 422);
         }
         
         $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
@@ -315,16 +313,16 @@ class AdminManagementService {
         $mime = finfo_file($finfo, $file['tmp_name']);
         
         if (!in_array($mime, $allowed_types)) {
-            return ['success' => false, 'message' => $isProfileEndpoint ? 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' : 'Profile photo must be JPG or PNG', 'code' => 422];
+            throw new ApiException($isProfileEndpoint ? 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' : 'Profile photo must be JPG or PNG', 422);
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!$isProfileEndpoint) {
             if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/jpeg', 'image/png'])) {
-                return ['success' => false, 'message' => 'Profile photo must be JPG or PNG', 'code' => 422];
+                throw new ApiException('Profile photo must be JPG or PNG', 422);
             }
             if ($file['size'] > 10 * 1024 * 1024) {
-                return ['success' => false, 'message' => 'Profile photo max size is 10MB', 'code' => 422];
+                throw new ApiException('Profile photo max size is 10MB', 422);
             }
         }
 
@@ -351,30 +349,30 @@ class AdminManagementService {
             $_SESSION['admin_profile_photo'] = $relative_path;
             
             if ($isProfileEndpoint) {
-                return ['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path, 'code' => 200];
+                return ['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path];
             } else {
-                return ['success' => true, 'photo_url' => $relative_path, 'code' => 200];
+                return ['success' => true, 'photo_url' => $relative_path];
             }
         }
-        return ['success' => false, 'message' => 'Failed to move uploaded file', 'code' => 500];
+        throw new ApiException('Failed to move uploaded file', 500);
     }
     
-    public function updateProfile(int $admin_id, array $data) {
+    public function updateProfile(int $admin_id, array $data): array {
         $full_name = clean_input($data['full_name'] ?? $data['name'] ?? '');
         $email     = clean_input($data['email'] ?? '');
         $phone     = clean_input($data['phone'] ?? '');
         $password  = $data['password'] ?? '';
 
         if (empty($full_name)) {
-            return ['success' => false, 'message' => 'Full name is required', 'code' => 422];
+            throw new ApiException('Full name is required', 422);
         }
         if (empty($password)) {
-            return ['success' => false, 'message' => 'Admin password is required for verification', 'code' => 422];
+            throw new ApiException('Admin password is required for verification', 422);
         }
 
         $admin = $this->repository->getAdminById($admin_id);
         if (!$admin || !password_verify($password, $admin['password_hash'])) {
-            return ['success' => false, 'message' => 'Verification failed: Incorrect password', 'code' => 401];
+            throw new ApiException('Verification failed: Incorrect password', 401);
         }
 
         $this->repository->updateProfileFields($admin_id, ["full_name = ?", "email = ?", "phone = ?", "updated_at = NOW()"], [$full_name, $email, $phone]);
@@ -382,40 +380,40 @@ class AdminManagementService {
         $_SESSION['admin_name']  = $full_name;
         $_SESSION['admin_email'] = $email;
 
-        return ['success' => true, 'message' => 'Profile updated successfully', 'code' => 200];
+        return ['success' => true, 'message' => 'Profile updated successfully'];
     }
     
-    public function updateTwoFaSettings(int $admin_id, int $enabled) {
+    public function updateTwoFaSettings(int $admin_id, int $enabled): array {
         $this->repository->updateTwoFa($admin_id, $enabled);
-        return ['success' => true, 'message' => '2FA settings updated', 'code' => 200];
+        return ['success' => true, 'message' => '2FA settings updated'];
     }
     
-    public function updateAdminProfile(int $admin_id, array $data) {
+    public function updateAdminProfile(int $admin_id, array $data): array {
         if (!empty($data['new_password'])) {
             $current_pwd = $data['current_password'] ?? '';
             $new_pwd = $data['new_password'];
             $confirm_pwd = $data['confirm_new_password'] ?? '';
 
             if ($new_pwd !== $confirm_pwd) {
-                return ['success' => false, 'field' => 'confirm_new_password', 'message' => 'Passwords do not match', 'code' => 422];
+                throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_new_password']);
             }
 
             $admin = $this->repository->getAdminById($admin_id);
             if (!password_verify($current_pwd, $admin['password_hash'])) {
-                return ['success' => false, 'field' => 'current_password', 'message' => 'Incorrect current password', 'code' => 422];
+                throw new ApiException('Incorrect current password', 422, ['field' => 'current_password']);
             }
             if ($new_pwd === $current_pwd) {
-                return ['success' => false, 'field' => 'new_password', 'message' => 'New password cannot be the same as current', 'code' => 422];
+                throw new ApiException('New password cannot be the same as current', 422, ['field' => 'new_password']);
             }
             if (strlen($new_pwd) < 8 || !preg_match('/[A-Z]/', $new_pwd) || !preg_match('/[0-9]/', $new_pwd) || !preg_match('/[^a-zA-Z0-9]/', $new_pwd)) {
-                return ['success' => false, 'field' => 'new_password', 'message' => 'Password must be min 8 chars with uppercase, number, and special character', 'code' => 422];
+                throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'new_password']);
             }
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($admin_id, $new_hash);
             write_audit_log(\App\Core\Database::getInstance(), 'admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully');
             
-            return ['success' => true, 'message' => 'Password updated successfully', 'code' => 200];
+            return ['success' => true, 'message' => 'Password updated successfully'];
         }
 
         $full_name = clean_input($data['full_name'] ?? '');
@@ -426,13 +424,13 @@ class AdminManagementService {
         $security_answer = $data['security_answer'] ?? '';
 
         if (strlen($full_name) < 2 || strlen($full_name) > 100) {
-            return ['success' => false, 'field' => 'full_name', 'message' => 'Full name must be between 2 and 100 characters', 'code' => 422];
+            throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
         }
         if (!empty($date_of_birth) && strtotime($date_of_birth) > strtotime('-18 years')) {
-            return ['success' => false, 'field' => 'date_of_birth', 'message' => 'Must be at least 18 years old', 'code' => 422];
+            throw new ApiException('Must be at least 18 years old', 422, ['field' => 'date_of_birth']);
         }
         if (!empty($phone) && !validate_phone($phone)) {
-            return ['success' => false, 'field' => 'phone', 'message' => 'Invalid phone number format', 'code' => 422];
+            throw new ApiException('Invalid phone number format', 422, ['field' => 'phone']);
         }
 
         $fields = ["full_name = ?", "phone = ?", "date_of_birth = ?", "gender = ?"];
@@ -451,6 +449,6 @@ class AdminManagementService {
         $this->repository->updateProfileFields($admin_id, $fields, $params);
         write_audit_log(\App\Core\Database::getInstance(), 'admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated');
 
-        return ['success' => true, 'message' => 'Profile updated successfully', 'code' => 200];
+        return ['success' => true, 'message' => 'Profile updated successfully'];
     }
 }

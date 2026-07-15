@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\AuthRepository;
+use App\Core\Exceptions\ApiException;
 use PDOException;
 
 class AuthService {
@@ -11,19 +12,16 @@ class AuthService {
         $this->repository = $repository;
     }
 
-    public function loginUser(string $identity, string $password) {
+    public function loginUser(string $identity, string $password): array {
         $user = $this->repository->findUserByIdentity($identity);
 
         if (!$user) {
-            json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
+            throw new ApiException('Invalid email or password', 401);
         }
 
         if ($user['locked_until'] && strtotime($user['locked_until']) > time()) {
             $remaining = ceil((strtotime($user['locked_until']) - time()) / 60);
-            json_response([
-                'success' => false,
-                'message' => "Account locked due to too many failed attempts. Try again in {$remaining} minute(s)."
-            ], 423);
+            throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
         if (!password_verify($password, $user['password_hash'])) {
@@ -41,26 +39,17 @@ class AuthService {
                     "Account locked after {$new_attempts} failed login attempts");
 
                 $lockout_minutes = ceil($lockout_duration / 60);
-                json_response([
-                    'success' => false,
-                    'message' => "Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes."
-                ], 423);
+                throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateFailedAttempts($user['id'], $new_attempts);
                 
                 $remaining = $max_attempts - $new_attempts;
-                json_response([
-                    'success' => false,
-                    'message' => "Invalid email or password. {$remaining} attempt(s) remaining."
-                ], 401);
+                throw new ApiException("Invalid email or password. {$remaining} attempt(s) remaining.", 401);
             }
         }
 
         if ($user['status'] === 'suspended') {
-            json_response([
-                'success' => false,
-                'message' => 'Your account has been suspended. Please contact support.'
-            ], 403);
+            throw new ApiException('Your account has been suspended. Please contact support.', 403);
         }
 
         $ip = get_client_ip();
@@ -91,25 +80,19 @@ class AuthService {
         ];
     }
 
-    public function loginAdmin(string $email, string $password) {
+    public function loginAdmin(string $email, string $password): array {
         $admin = $this->repository->findAdminByEmail($email);
 
         if (!$admin) {
-            json_response(['success' => false, 'message' => 'Invalid email or password'], 401);
+            throw new ApiException('Invalid email or password', 401);
         }
 
         if ($admin['temp_password_expiry'] && strtotime($admin['temp_password_expiry']) < time()) {
-            json_response([
-                'success' => false,
-                'message' => 'Your temporary password has expired. Please contact a super administrator for a new one.'
-            ], 401);
+            throw new ApiException('Your temporary password has expired. Please contact a super administrator for a new one.', 401);
         }
 
         if ($admin['status'] === 'suspended') {
-            json_response([
-                'success' => false,
-                'message' => 'Your account has been suspended. Contact the system administrator.'
-            ], 403);
+            throw new ApiException('Your account has been suspended. Contact the system administrator.', 403);
         }
 
         if ($admin['account_locked'] == 1) {
@@ -118,13 +101,11 @@ class AuthService {
                 $admin['account_locked'] = 0;
                 $admin['failed_attempts'] = 0;
             } else {
-                json_response([
-                    'success' => false,
+                throw new ApiException('Account locked.', 401, [
                     'locked' => true,
                     'security_question_set' => (bool)$admin['security_question_set'],
-                    'auto_unlock_at' => $admin['auto_unlock_at'],
-                    'message' => 'Account locked.'
-                ], 401);
+                    'auto_unlock_at' => $admin['auto_unlock_at']
+                ]);
             }
         }
 
@@ -140,28 +121,26 @@ class AuthService {
                 $pdo = $this->repository->getDb();
                 write_audit_log($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
                 
-                json_response([
-                    'success' => false,
+                throw new ApiException('Account locked.', 401, [
                     'locked' => true,
                     'security_question_set' => (bool)$admin['security_question_set'],
-                    'auto_unlock_at' => $auto_unlock_at,
-                    'message' => 'Account locked.'
-                ], 401);
+                    'auto_unlock_at' => $auto_unlock_at
+                ]);
             } else {
                 $this->repository->updateAdminFailedAttempts($admin['id'], $new_attempts);
                 
                 $remaining = 3 - $new_attempts;
-                json_response([
-                    'success' => false,
-                    'locked' => false,
-                    'message' => "Invalid password. {$remaining} attempt(s) remaining before lockout."
-                ], 401);
+                throw new ApiException("Invalid password. {$remaining} attempt(s) remaining before lockout.", 401, [
+                    'locked' => false
+                ]);
             }
         }
 
         $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
 
-        session_regenerate_id(true);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
         $_SESSION['admin_id']      = (int)$admin['id'];
         $_SESSION['admin_name']    = $admin['full_name'];
         $_SESSION['admin_email']   = $admin['email'];
@@ -177,19 +156,16 @@ class AuthService {
         return $admin;
     }
 
-    public function loginStaff(string $identity, string $password) {
+    public function loginStaff(string $identity, string $password): array {
         $staff = $this->repository->findStaffByIdentity($identity);
 
         if (!$staff) {
-            json_response(['success' => false, 'message' => 'Invalid email/ID or password'], 401);
+            throw new ApiException('Invalid email/ID or password', 401);
         }
 
         if ($staff['locked_until'] && strtotime($staff['locked_until']) > time()) {
             $remaining = ceil((strtotime($staff['locked_until']) - time()) / 60);
-            json_response([
-                'success' => false,
-                'message' => "Account locked due to too many failed attempts. Try again in {$remaining} minute(s)."
-            ], 423);
+            throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
         if (!password_verify($password, $staff['password_hash'])) {
@@ -207,32 +183,25 @@ class AuthService {
                     "Staff account locked after {$new_attempts} failed login attempts");
 
                 $lockout_minutes = ceil($lockout_duration / 60);
-                json_response([
-                    'success' => false,
-                    'message' => "Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes."
-                ], 423);
+                throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateStaffFailedAttempts($staff['id'], $new_attempts);
                 
                 $remaining = $max_attempts - $new_attempts;
-                json_response([
-                    'success' => false,
-                    'message' => "Invalid email/ID or password. {$remaining} attempt(s) remaining."
-                ], 401);
+                throw new ApiException("Invalid email/ID or password. {$remaining} attempt(s) remaining.", 401);
             }
         }
 
         if ($staff['status'] === 'suspended') {
-            json_response([
-                'success' => false,
-                'message' => 'Your account has been suspended. Please contact the administrator.'
-            ], 403);
+            throw new ApiException('Your account has been suspended. Please contact the administrator.', 403);
         }
 
         $ip = get_client_ip();
         $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
 
-        session_regenerate_id(true);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
         $_SESSION['staff_id']      = (int)$staff['id'];
         $_SESSION['staff_display_id'] = $staff['staff_id'];
         $_SESSION['staff_name']    = $staff['full_name'];
@@ -247,14 +216,12 @@ class AuthService {
         return $staff;
     }
 
-    public function forgotPassword(string $email) {
+    public function forgotPassword(string $email): bool {
         $user = $this->repository->findUserByEmail($email);
 
         if (!$user) {
-            json_response([
-                'success' => true,
-                'message' => 'If an account with this email exists, a password reset link has been sent.'
-            ]);
+            // Silently succeed to prevent email enumeration
+            return true;
         }
 
         try {
@@ -268,34 +235,23 @@ class AuthService {
             require_once FINZO_ROOT . '/config/mailer.php';
             send_password_reset_email($user['email'], $user['full_name'], $token);
 
-            json_response([
-                'success' => true,
-                'message' => 'If an account with this email exists, a password reset link has been sent.'
-            ]);
-
+            return true;
         } catch (PDOException $e) {
             error_log("Forgot password error: " . $e->getMessage());
-            json_response(['success' => false, 'message' => 'An error occurred. Please try again.'], 500);
+            throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
 
-    public function resetPassword(string $token, string $new_password) {
+    public function resetPassword(string $token, string $new_password): bool {
         $reset = $this->repository->findPasswordReset($token);
 
         if (!$reset) {
-            json_response([
-                'success' => false,
-                'message' => 'Invalid or expired reset link. Please request a new one.'
-            ], 400);
+            throw new ApiException('Invalid or expired reset link. Please request a new one.', 400);
         }
 
         if (strtotime($reset['expires_at']) < time()) {
             $this->repository->deletePasswordResetById($reset['id']);
-
-            json_response([
-                'success' => false,
-                'message' => 'This reset link has expired. Please request a new one.'
-            ], 400);
+            throw new ApiException('This reset link has expired. Please request a new one.', 400);
         }
 
         try {
@@ -309,26 +265,21 @@ class AuthService {
 
             $this->repository->commit();
 
-            json_response([
-                'success'  => true,
-                'message'  => 'Password has been reset successfully. You can now log in with your new password.',
-                'redirect' => '/views/auth/login.html'
-            ]);
-
+            return true;
         } catch (PDOException $e) {
             $this->repository->rollBack();
             error_log("Reset password error: " . $e->getMessage());
-            json_response(['success' => false, 'message' => 'An error occurred. Please try again.'], 500);
+            throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
 
-    public function registerUser(string $full_name, string $email, string $phone, string $password) {
+    public function registerUser(string $full_name, string $email, string $phone, string $password): bool {
         if ($this->repository->findUserByEmailAny($email)) {
-            json_response(['success' => false, 'errors' => ['email' => 'This email is already registered']], 409);
+            throw new ApiException('Validation failed', 409, ['errors' => ['email' => 'This email is already registered']]);
         }
 
         if ($this->repository->findUserByPhone($phone)) {
-            json_response(['success' => false, 'errors' => ['phone' => 'This phone number is already registered']], 409);
+            throw new ApiException('Validation failed', 409, ['errors' => ['phone' => 'This phone number is already registered']]);
         }
 
         try {
@@ -340,6 +291,9 @@ class AuthService {
             
             $user_id = $this->repository->createUser($customer_id, $full_name, $email, $phone, $password_hash);
 
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_regenerate_id(true);
+            }
             $_SESSION['user_id']     = (int)$user_id;
             $_SESSION['user_name']   = $full_name;
             $_SESSION['user_email']  = $email;
@@ -357,11 +311,10 @@ class AuthService {
             $this->repository->commit();
 
             return true;
-
         } catch (PDOException $e) {
             $this->repository->rollBack();
             error_log("Registration error: " . $e->getMessage());
-            json_response(['success' => false, 'message' => 'Registration failed. Please try again.'], 500);
+            throw new ApiException('Registration failed. Please try again.', 500);
         }
     }
 }

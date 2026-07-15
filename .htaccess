@@ -9,8 +9,10 @@
     RewriteEngine On
     RewriteBase /Finzo/
     
-    # Bridge legacy frontend API calls to the new MVC Controllers
-    RewriteRule ^public/assets/api/(.*)$ app/Controllers/$1 [L,QSA]
+    # Bridge legacy frontend API calls to the new Front Controller
+    RewriteRule ^public/assets/api/(.*)$ public/api/index.php [L,QSA]
+    RewriteRule ^api/(.*)$ public/api/index.php [L,QSA]
+    RewriteRule ^app/Controllers/(.*)$ public/api/index.php [L,QSA]
     
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]

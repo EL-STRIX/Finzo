@@ -2,6 +2,7 @@
 namespace App\Controllers\Auth;
 
 use App\Services\AuthService;
+use App\Core\Exceptions\ApiException;
 
 class AuthController {
     private AuthService $service;
@@ -10,20 +11,16 @@ class AuthController {
         $this->service = $service;
     }
 
-    public function login() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
+    public function login(): array {
         $identity = clean_input($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
 
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid or missing CSRF token'], 403);
+            throw new ApiException('Invalid or missing CSRF token', 403);
         }
 
         if (empty($identity) || empty($password)) {
-            json_response(['success' => false, 'message' => 'Email/Account Number and password are required'], 422);
+            throw new ApiException('Email/Account Number and password are required', 422);
         }
 
         $result = $this->service->loginUser($identity, $password);
@@ -34,7 +31,7 @@ class AuthController {
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '', 3), '/\\');
         $redirect = $base . '/views/user/dashboard.html';
 
-        json_response([
+        return [
             'success'  => true,
             'message'  => 'Login successful',
             'redirect' => $redirect,
@@ -46,27 +43,23 @@ class AuthController {
                 'account_type' => $account ? $account['account_type'] : 'savings',
                 'balance'      => $account ? $account['balance'] : '0'
             ]
-        ]);
+        ];
     }
 
-    public function adminLogin() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
+    public function adminLogin(): array {
         $csrf_token = $_POST['csrf_token'] ?? '';
         if (empty($csrf_token)) {
-            json_response(['success' => false, 'message' => 'Security token missing. Please refresh the page.'], 403);
+            throw new ApiException('Security token missing. Please refresh the page.', 403);
         }
         if (!validate_csrf_token($csrf_token)) {
-            json_response(['success' => false, 'message' => 'Invalid or expired security session. Please try again.'], 403);
+            throw new ApiException('Invalid or expired security session. Please try again.', 403);
         }
 
         $email    = clean_input($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
         if (empty($email) || empty($password)) {
-            json_response(['success' => false, 'message' => 'Email and password are required'], 422);
+            throw new ApiException('Email and password are required', 422);
         }
 
         $this->service->loginAdmin($email, $password);
@@ -74,31 +67,27 @@ class AuthController {
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
         $redirect = $base . '/views/admin/admin-dashboard.html';
 
-        json_response([
+        return [
             'success'  => true,
             'message'  => 'Login successful',
             'redirect' => $redirect
-        ]);
+        ];
     }
 
-    public function staffLogin() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
+    public function staffLogin(): array {
         $csrf_token = $_POST['csrf_token'] ?? '';
         if (empty($csrf_token)) {
-            json_response(['success' => false, 'message' => 'Security token missing. Please refresh the page.'], 403);
+            throw new ApiException('Security token missing. Please refresh the page.', 403);
         }
         if (!validate_csrf_token($csrf_token)) {
-            json_response(['success' => false, 'message' => 'Invalid or expired security session. Please try again.'], 403);
+            throw new ApiException('Invalid or expired security session. Please try again.', 403);
         }
 
         $identity = clean_input($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
 
         if (empty($identity) || empty($password)) {
-            json_response(['success' => false, 'message' => 'Email/Staff ID and password are required'], 422);
+            throw new ApiException('Email/Staff ID and password are required', 422);
         }
 
         $this->service->loginStaff($identity, $password);
@@ -106,38 +95,35 @@ class AuthController {
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
         $redirect = $base . '/views/staff/staff-dashboard.html';
 
-        json_response([
+        return [
             'success'  => true,
             'message'  => 'Login successful',
             'redirect' => $redirect
-        ]);
+        ];
     }
 
-    public function forgotPassword() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
+    public function forgotPassword(): array {
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token. Please refresh and try again.'], 403);
+            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
         $email = clean_input($_POST['email'] ?? '');
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            json_response(['success' => false, 'message' => 'Please enter a valid email address'], 422);
+            throw new ApiException('Please enter a valid email address', 422);
         }
 
         $this->service->forgotPassword($email);
+
+        return [
+            'success' => true,
+            'message' => 'If an account with this email exists, a password reset link has been sent.'
+        ];
     }
 
-    public function resetPassword() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
+    public function resetPassword(): array {
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token. Please refresh and try again.'], 403);
+            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
         $token            = clean_input($_POST['token'] ?? '');
@@ -147,7 +133,7 @@ class AuthController {
         $errors = [];
 
         if (empty($token)) {
-            json_response(['success' => false, 'message' => 'Reset token is required'], 422);
+            throw new ApiException('Reset token is required', 422);
         }
 
         if (empty($new_password)) {
@@ -164,19 +150,21 @@ class AuthController {
         }
 
         if (!empty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
+            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
         $this->service->resetPassword($token, $new_password);
+
+        return [
+            'success'  => true,
+            'message'  => 'Password has been reset successfully. You can now log in with your new password.',
+            'redirect' => '/views/auth/login.html'
+        ];
     }
 
     public function register() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        }
-
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token. Please refresh and try again.'], 403);
+            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
         $full_name        = clean_input($_POST['full_name'] ?? '');
@@ -219,7 +207,7 @@ class AuthController {
         }
 
         if (!empty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
+            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
         $this->service->registerUser($full_name, $email, $phone, $password);
@@ -227,6 +215,10 @@ class AuthController {
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
         $redirect = $base . '/views/auth/login.html';
 
+        // Router sends 200 for arrays, but register was sending 201.
+        // Let's call json_response directly for 201, or update router. 
+        // For simplicity, we just return the array and let Router send 200. It's an API, 200 is acceptable for registration if not strictly RESTful.
+        // Actually I can just call json_response here since Router doesn't mind if we exit early.
         json_response([
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
@@ -236,7 +228,6 @@ class AuthController {
 
     public function logout() {
         $role = $_SESSION['role'] ?? '';
-
         destroy_session();
 
         switch ($role) {
@@ -252,31 +243,23 @@ class AuthController {
                 break;
         }
 
-        if (
-            (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') ||
-            (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
-        ) {
-            json_response([
-                'success'  => true,
-                'message'  => 'Logged out successfully',
-                'redirect' => $redirect
-            ]);
-        }
-        header('Location: ' . APP_URL . $redirect);
-        if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after redirect');
-        exit;
+        return [
+            'success'  => true,
+            'message'  => 'Logged out successfully',
+            'redirect' => $redirect
+        ];
     }
 
-    public function getCsrfToken() {
+    public function getCsrfToken(): array {
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');
 
         $token = generate_csrf_token();
 
-        json_response([
+        return [
             'success' => true,
             'csrf_token' => $token
-        ]);
+        ];
     }
 }
