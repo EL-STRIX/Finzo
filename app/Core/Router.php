@@ -97,6 +97,15 @@ class Router {
             }
         }
 
+        // Legacy Strangler Fig Fallback
+        // If the route was not found in the new API mappings, check if the old procedural controller exists.
+        // The URI will look like /user/dashboard.php
+        $legacyFilePath = FINZO_ROOT . '/app/Controllers' . $uri;
+        if (file_exists($legacyFilePath) && is_file($legacyFilePath)) {
+            require $legacyFilePath;
+            return;
+        }
+
         json_response(['success' => false, 'message' => 'Not Found - ' . $uri], 404);
     }
 

@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
-<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
-<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
+<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
+<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/Finzo/public/assets/css/user.css"/>
+<link rel="stylesheet" href="/Finzo/public/assets/css/user-panel.css"/>
 </head>
 <body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
-<script src="../../../public/assets/js/user/user-shared.js?v=3"></script>
+<script src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
 <div id="sidebar-root"></div>
 <div class="main">
   <div id="navbar-root"></div>
@@ -298,7 +298,7 @@ buildNavbar('Account Overview', 'Dashboard');
     });
 
     try {
-      const stRes = await fetch('../../../app/Controllers/user/dashboard.php', { credentials: 'same-origin' });
+      const stRes = await fetch('/Finzo/api/user/dashboard.php', { credentials: 'same-origin' });
       const stData = await stRes.json();
       
       const txEmpty = document.getElementById('tx-empty');

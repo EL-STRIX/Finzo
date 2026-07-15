@@ -6,13 +6,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="../../../public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="../../../public/assets/js/tailwind-config.js"></script>
-<link rel="stylesheet" href="../../../public/assets/css/user.css"/>
-<link rel="stylesheet" href="../../../public/assets/css/user-panel.css"/>
+<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
+<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/Finzo/public/assets/css/user.css"/>
+<link rel="stylesheet" href="/Finzo/public/assets/css/user-panel.css"/>
 </head>
 <body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
-<script src="../../../public/assets/js/user/user-shared.js"></script>
+<script src="/Finzo/public/assets/js/user/user-shared.js"></script>
 <div id="sidebar-root"></div>
 <div class="main">
 <div id="navbar-root"></div>
@@ -119,7 +119,7 @@
 
   async function loadNotifications() {
     try {
-      const res = await fetch('../../../app/Controllers/user/notifications.php', { credentials: 'same-origin' });
+      const res = await fetch('/Finzo/api/user/notifications.php', { credentials: 'same-origin' });
       const data = await res.json();
       if (data.success && data.notifications) {
         notifs = data.notifications.map((n, i) => ({
@@ -210,7 +210,7 @@
       
       iconContainer.innerHTML = `<span class="material-symbols-outlined text-3xl ${isHtmlText ? '' : n.iconColor}" ${isHtmlText ? `style="color:${n.iconColor}"` : ''}>${n.icon}</span>`;
 
-      fetch('../../../app/Controllers/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&notification_id=' + id }).catch(() => {});
+      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&notification_id=' + id }).catch(() => {});
       
       renderNotifs();
       
@@ -225,7 +225,7 @@
 
   function deleteCurrentNotif() {
     if (currentViewNotifId !== null) {
-      fetch('../../../app/Controllers/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&notification_id=' + currentViewNotifId }).catch(() => {});
+      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&notification_id=' + currentViewNotifId }).catch(() => {});
       notifs = notifs.filter(n => n.id !== currentViewNotifId);
       currentViewNotifId = null;
       renderNotifs();
@@ -235,7 +235,7 @@
   }
 
   function markAllRead() {
-    fetch('../../../app/Controllers/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
+    fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
     notifs.forEach(n => n.unread = false);
     renderNotifs();
     showToast('All broadcasts read', 'success');
@@ -243,7 +243,7 @@
 
   function clearAll() {
     openConfirm('Delete All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
-      fetch('../../../app/Controllers/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
+      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
       notifs = [];
       renderNotifs();
       showToast('Activity feed cleared', 'success');
