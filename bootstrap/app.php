@@ -82,8 +82,10 @@ set_exception_handler(function (\Throwable $e) {
         $statusCode = $e->getStatusCode();
     }
     
-    http_response_code($statusCode);
-    header('Content-Type: application/json; charset=utf-8');
+    if (!headers_sent()) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=utf-8');
+    }
     
     $response = [
         'success' => false,
