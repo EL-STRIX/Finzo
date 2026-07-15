@@ -394,7 +394,7 @@ function renderUserTransactions(transactions) {
             </span>
             </td>
             <td class="text-right p-4">
-                <button onclick="window.open('../../../../public/assets/api/pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                <button onclick="window.open('/Finzo/api/pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                     <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
                 </button>
             </td>

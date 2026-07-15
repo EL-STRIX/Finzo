@@ -62,9 +62,9 @@ const _userCache = {
  */
 async function fetchUserSession() {
   try {
-    const res = await fetch('../../../../public/assets/api/user/dashboard.php', { credentials: 'same-origin' });
+    const res = await fetch('/Finzo/api/user/dashboard.php', { credentials: 'same-origin' });
     if (res.status === 401 || res.status === 403) {   // Not logged in — redirect to login
-      window.location.href = '../../../../public/assets/js/auth/login.html';
+      window.location.href = '/Finzo/views/auth/login.html';
       return;
     }
     const data = await res.json();
@@ -282,7 +282,7 @@ function showPINModal() {
         updateDots();
         if (currentPin.length === 4) {
           btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:16px">progress_activity</span>';
-          fetch('../../../../public/assets/api/user/verify-pin.php', {
+          fetch('/Finzo/api/user/verify-pin.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'same-origin',
@@ -516,7 +516,7 @@ async function loadNavbarNotifications() {
   const list = document.getElementById('notif-list');
   list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)">autorenew</span></div>';
   try {
-    const res = await fetch('../../../../public/assets/api/user/notifications.php?per_page=4', { credentials: 'same-origin' });
+    const res = await fetch('/Finzo/api/user/notifications.php?per_page=4', { credentials: 'same-origin' });
     const data = await res.json();
     if (data.success && data.notifications) {
       if (data.notifications.length === 0) {
@@ -547,7 +547,7 @@ async function markAllRead() {
   localStorage.setItem(STATE_KEYS.NOTIF_COUNT, '0');
   // Call API to mark all as read
   try {
-    await fetch('../../../../public/assets/api/user/notifications.php', {
+    await fetch('/Finzo/api/user/notifications.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       credentials: 'same-origin',
@@ -649,7 +649,7 @@ function requireLogin() {
   // Session validation is handled server-side by middleware.
   // This provides a client-side fallback.
   const status = UserState.status;
-  if (!status) { window.location.href = '../../../../public/assets/js/auth/login.html'; return false; }
+  if (!status) { window.location.href = '/Finzo/views/auth/login.html'; return false; }
   return true;
 }
 
@@ -716,13 +716,13 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await fetch('../../../../public/assets/api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
+      await fetch('/Finzo/api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
       // Clear local cache
       Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
-      window.location.href = '../../../../public/assets/js/auth/login.html';
+      window.location.href = '/Finzo/views/auth/login.html';
     } catch (e) {
-      window.location.href = '../../../../public/assets/js/auth/login.html';
+      window.location.href = '/Finzo/views/auth/login.html';
     }
   }
 };

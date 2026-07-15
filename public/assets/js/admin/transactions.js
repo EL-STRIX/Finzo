@@ -107,7 +107,7 @@
                 const senderInitials = r.from_user_name && r.from_user_name !== 'N/A' ? r.from_user_name.charAt(0).toUpperCase() : 'U';
                 let avatarContent = senderInitials;
                 if (r.from_user_avatar) {
-                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `../../${r.from_user_avatar}`) + '?v=' + new Date().getTime();
+                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `/Finzo/public/assets/${r.from_user_avatar}`) + '?v=' + new Date().getTime();
                     avatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 }
                 
@@ -157,7 +157,7 @@
                 const receiverInitials = r.to_user_name && r.to_user_name !== 'N/A' ? r.to_user_name.charAt(0).toUpperCase() : 'U';
                 let receiverAvatarContent = receiverInitials;
                 if (r.to_user_avatar) {
-                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `../../${r.to_user_avatar}`) + '?v=' + new Date().getTime();
+                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `/Finzo/public/assets/${r.to_user_avatar}`) + '?v=' + new Date().getTime();
                     receiverAvatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 }
                 
@@ -182,7 +182,7 @@
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
                 <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
                 <td class="text-right">
-                    <button onclick="window.open('../../../../public/assets/api/pdf/receipt-pdf.php?id=${r.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                    <button onclick="window.open('/Finzo/api/pdf/receipt-pdf.php?id=${r.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                         <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
                     </button>
                 </td>

@@ -118,7 +118,7 @@
                 <td>
                     <div class="user-cell flex items-center gap-3">
                         ${r.profile_photo 
-                            ? `<img src="../../../../public/assets/${r.profile_photo}" class="w-10 h-10 rounded-full object-cover shadow-sm">` 
+                            ? `<img src="/Finzo/public/assets/${r.profile_photo}" class="w-10 h-10 rounded-full object-cover shadow-sm">` 
                             : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm" style="background:${gradient}">${r.initials}</div>`
                         }
                         <div>
