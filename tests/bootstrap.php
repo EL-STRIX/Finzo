@@ -74,20 +74,9 @@ try {
         $schemaSql = preg_replace('/\bUSE\s+`?finzo_db`?\s*;/i', '', $schemaSql);
         $provisionPdo->exec($schemaSql);
 
-        // Apply all schema update patches
-        foreach (['update_admin_schema.sql', 'update_staff_schema.sql', 'update_admin_lock_schema.sql'] as $patch) {
-            $patchPath = FINZO_ROOT . '/database/schema/' . $patch;
-            if (file_exists($patchPath)) {
-                $patchSql = file_get_contents($patchPath);
-                // Strip USE finzo_db if present in patches
-                $patchSql = preg_replace('/\bUSE\s+`?finzo_db`?\s*;/i', '', $patchSql);
-                $provisionPdo->exec($patchSql);
-            }
-        }
-
         // Mark schema as complete
         $provisionPdo->exec("CREATE TABLE _test_schema_version (version INT NOT NULL DEFAULT 1)");
-        echo "[Test Bootstrap] Test DB schema fully imported (base + all patches).\n";
+        echo "[Test Bootstrap] Test DB schema fully imported.\n";
     }
 
     // Set the global $pdo so Database::getInstance() finds it
