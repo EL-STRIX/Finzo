@@ -27,7 +27,7 @@
         <div class="hidden md:flex md:w-1/2 p-8 sm:p-12 lg:p-16 flex-col justify-between relative overflow-hidden" style="background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);">
             <div class="relative z-10">
                 <h1 class="font-headline text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-4 cursor-pointer"
-                    onclick="window.location.href='../../../public/index.html'">Finzo</h1>
+                    onclick="window.location.href='/Finzo/public/index.html'">Finzo</h1>
                 <div class="h-1 w-12 bg-accent"></div>
             </div>
             <div class="relative z-10 max-w-lg">
@@ -244,7 +244,7 @@
                         localStorage.setItem('finzo_status', 'pending');
                         localStorage.setItem('finzo_user_name', nameInput.val().trim());
                         localStorage.setItem('finzo_user_email', emailInput.val().trim());
-                        window.location.href = data.redirect || '../user/dashboard.html';
+                        window.location.href = data.redirect || '/Finzo/views/user/dashboard.html';
                     } else {
                         if (data.errors) {
                             const firstError = Object.values(data.errors)[0];

@@ -441,7 +441,7 @@
             const avatarEl = document.getElementById('profile-avatar');
             const avatarText = document.getElementById('profile-avatar-text');
             if (s.profile_photo) {
-                const src = s.profile_photo.startsWith('http') ? s.profile_photo : '../../../' + s.profile_photo;
+                const src = s.profile_photo.startsWith('http') ? s.profile_photo : '/Finzo/' + s.profile_photo;
                 avatarEl.innerHTML = `<img src="${src}?v=${Date.now()}" alt="${s.full_name}">`;
             } else {
                 const initials = s.full_name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase();
@@ -481,10 +481,10 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             ${doc.front_image ? `<div class="rounded-lg overflow-hidden border border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#0d1117] flex items-center justify-center p-2 h-32">
-                                <img src="../../../${doc.front_image}" class="max-w-full max-h-full object-contain" alt="Front">
+                                <img src="/Finzo/${doc.front_image}" class="max-w-full max-h-full object-contain" alt="Front">
                             </div>` : ''}
                             ${doc.back_image ? `<div class="rounded-lg overflow-hidden border border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#0d1117] flex items-center justify-center p-2 h-32">
-                                <img src="../../../${doc.back_image}" class="max-w-full max-h-full object-contain" alt="Back">
+                                <img src="/Finzo/${doc.back_image}" class="max-w-full max-h-full object-contain" alt="Back">
                             </div>` : ''}
                         </div>
                     </div>

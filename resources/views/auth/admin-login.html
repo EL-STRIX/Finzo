@@ -160,7 +160,7 @@
     </div>
 
     <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='../../../public/index.html'">
+      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
           <span class="material-symbols-outlined text-white">account_balance</span>
         </div>
@@ -566,7 +566,7 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          window.location.href = data.redirect || '../admin/admin-dashboard.html';
+          window.location.href = data.redirect || '/Finzo/views/admin/admin-dashboard.html';
         } else if (data.locked) {
           $('#locked-email-display').text(id);
           setupLockedCard(data);

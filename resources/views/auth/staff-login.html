@@ -24,7 +24,7 @@
     </div>
 
     <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='../../../public/index.html'">
+      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
           <span class="material-symbols-outlined text-white">account_balance</span>
         </div>
@@ -174,7 +174,7 @@
       })
       .then(data => {
         if (data.success) {
-          window.location.href = data.redirect || '../staff/staff-dashboard.html';
+          window.location.href = data.redirect || '/Finzo/views/staff/staff-dashboard.html';
         } else {
           $form.addClass('error-state');
           $error.text(data.message || "Invalid staff credentials").show();
