@@ -84,9 +84,11 @@ function json_response($data, $status = 200) {
         throw new \Exception(json_encode($data));
     }
     
-    http_response_code($status);
-    header('Content-Type: application/json; charset=utf-8');
-    header('X-Content-Type-Options: nosniff');
+    if (!headers_sent()) {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+    }
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
 }
