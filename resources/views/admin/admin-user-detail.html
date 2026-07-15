@@ -11,30 +11,14 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-  <link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
   
   <script src="/Finzo/public/assets/js/core/api.js"></script>
   <script src="/Finzo/public/assets/js/core/utils.js"></script>
   <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
 
-  <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-user-detail.css"/>
 </head>
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
@@ -259,14 +243,14 @@
           <div class="ds-card p-6">
             <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5 ml-1">ADMIN ACTIONS</h5>
             <div class="space-y-3">
-              <button id="suspend-btn" onclick="openGovernanceModal('block')" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
+              <button id="suspend-btn" data-action="openGovernanceModal(&#039;block&#039;)" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
                 <div class="flex items-center gap-3">
                   <span id="suspend-btn-icon" class="material-symbols-outlined text-orange-500">block</span>
                   <span id="suspend-btn-text">Deactivate Account</span>
                 </div>
                 <span class="material-symbols-outlined text-slate-300">chevron_right</span>
               </button>
-              <button onclick="openGovernanceModal('delete')" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-100 text-slate-700 dark:text-slate-300">
+              <button data-action="openGovernanceModal(&#039;delete&#039;)" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-100 text-slate-700 dark:text-slate-300">
                 <div class="flex items-center gap-3">
                   <span class="material-symbols-outlined text-rose-500">delete_forever</span>
                   <span>Soft Delete User</span>
@@ -294,7 +278,7 @@
             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
           </div>
           <div class="flex items-center gap-3">
-              <button onclick="window.open('/Finzo/api/pdf/statement.php?user_id=' + new URLSearchParams(window.location.search).get('id'), '_blank')" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
+              <button data-action="window.open(&#039;/Finzo/api/pdf/statement.php?user_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
                 <span class="material-symbols-outlined text-lg">print</span>
                 Print Statement
               </button>
@@ -386,11 +370,12 @@
 
         <!-- Footer Actions -->
         <div class="p-8 pt-4 flex gap-3">
-          <button onclick="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Abort Action</button>
-          <button id="confirm-governance-btn" onclick="executeGovernanceAction()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Confirm Change</button>
+          <button data-action="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Abort Action</button>
+          <button id="confirm-governance-btn" data-action="executeGovernanceAction()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">Confirm Change</button>
         </div>
       </div>
   <script src="/Finzo/public/assets/js/admin/user-detail.js"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-user-detail.js"></script>
 </body>
 </html>
 

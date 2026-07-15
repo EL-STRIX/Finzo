@@ -1,0 +1,37 @@
+/* Tables */
+.ds-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-main);
+}
+
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ds-table th {
+  background-color: var(--color-surface-subtle);
+  padding: var(--space-xs) var(--space-md);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border-main);
+}
+
+.ds-table td {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 14px;
+  color: var(--color-text-main);
+  border-bottom: 1px solid var(--color-border-main);
+  vertical-align: middle;
+}
+
+.ds-table tr:last-child td { border-bottom: none; }
+.ds-table tbody tr:hover { background-color: var(--color-surface-hover); }

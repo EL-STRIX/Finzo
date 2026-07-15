@@ -12,89 +12,17 @@
     
     <!-- Inject Tailwind Config BEFORE CDN so it registers properly -->
     
-<script>
-      
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#e3e2e5",
-                    "on-secondary-fixed": "#111c2a",
-                    "primary-container": "#1a3c5e",
-                    "on-primary": "#ffffff",
-                    "on-primary-fixed": "#001d36",
-                    "on-error": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-container-low": "#f4f3f6",
-                    "surface-tint": "#416084",
-                    "primary": "#002645",
-                    "outline": "#73777f",
-                    "surface-container-high": "#e8e8eb",
-                    "inverse-on-surface": "#f1f0f4",
-                    "outline-variant": "#c3c6cf",
-                    "on-primary-fixed-variant": "#28496b",
-                    "tertiary-fixed": "#6bfe9c",
-                    "surface-container-highest": "#e3e2e5",
-                    "on-secondary-container": "#5a6575",
-                    "on-surface": "#1a1c1e",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "secondary": "#545f6f",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#a9c9f2",
-                    "surface-container": "#eeedf1",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#d8e3f6",
-                    "on-secondary-fixed-variant": "#3c4856",
-                    "secondary-container": "#d8e3f6",
-                    "tertiary": "#002b12",
-                    "inverse-surface": "#2f3033",
-                    "surface-bright": "#faf9fc",
-                    "primary-fixed-dim": "#a9c9f2",
-                    "surface-dim": "#dad9dd",
-                    "on-tertiary-fixed-variant": "#005228",
-                    "primary-fixed": "#d1e4ff",
-                    "surface": "#faf9fc",
-                    "tertiary-container": "#004420",
-                    "on-background": "#1a1c1e",
-                    "on-tertiary-container": "#0abc64",
-                    "background": "#faf9fc",
-                    "on-primary-container": "#87a7ce",
-                    "tertiary-fixed-dim": "#4ae183",
-                    "on-tertiary-fixed": "#00210c",
-                    "on-surface-variant": "#43474e",
-                    "on-error-container": "#93000a",
-                    "secondary-fixed-dim": "#bcc7d9"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
-        },
-      }
-    
-</script>
+
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     
-<link rel="stylesheet" href="/Finzo/public/assets/css/custom.css">
-<link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
-
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
 <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/errors/500.css"/>
 </head>
 <body class="bg-surface text-on-surface min-h-screen flex flex-col">
 <!-- TopNavBar (Shared Component) -->
@@ -134,11 +62,11 @@
 </div>
 </div>
 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-<button onclick="window.location.reload()" class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform active:scale-95 whitespace-nowrap">
+<button data-action="window.location.reload()" class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform active:scale-95 whitespace-nowrap">
 <span class="material-symbols-outlined text-lg">refresh</span>
                                 Refresh Page
                             </button>
-<button onclick="window.location.href='mailto:sujaypaul892@gmail.com'" class="px-8 py-4 bg-surface-container-high text-on-surface text-sm font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
+<button data-href="mailto:sujaypaul892@gmail.com" class="px-8 py-4 bg-surface-container-high text-on-surface text-sm font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
 <span class="material-symbols-outlined text-lg" data-icon="support_agent">support_agent</span>
                                 Contact Support
                             </button>
@@ -169,4 +97,5 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/Finzo/public/assets/js/public/public-shared.js"></script>
+<script src="/Finzo/public/assets/js/pages/errors/500.js"></script>
 </body></html>

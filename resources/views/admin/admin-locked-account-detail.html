@@ -9,27 +9,11 @@
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/core/utils.js"></script>
     <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
-    <link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-    <link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1a3c5e',
-                        surface: {
-                            card: 'var(--bg-card)',
-                            page: 'var(--bg-page)'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
+    
 <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-locked-account-detail.css"/>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
 
@@ -212,7 +196,7 @@
                     <!-- ACCESS CONTROL -->
                     <div class="ds-card p-6" id="unlock-action-card">
                         <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Access Control</h3>
-                        <button onclick="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
+                        <button data-action="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
                             <span class="material-symbols-outlined text-lg">vpn_key</span> Generate & Unlock
                         </button>
                         <div class="p-3 bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-100 dark:border-amber-500/10 text-center">
@@ -228,7 +212,7 @@
                         <div class="p-4 bg-white dark:bg-slate-800 border border-emerald-100 dark:border-green-900/40 rounded-xl mb-3">
                             <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
                             <div id="display-pass" class="text-center font-mono text-xl font-black text-emerald-700 dark:text-emerald-400 py-2 border-b border-emerald-50 mb-2"></div>
-                            <button onclick="copyDisplayPass()" class="w-full text-emerald-600 text-[9px] font-black uppercase tracking-widest py-1 hover:bg-emerald-50 rounded transition-all">Copy to Clipboard</button>
+                            <button data-action="copyDisplayPass()" class="w-full text-emerald-600 text-[9px] font-black uppercase tracking-widest py-1 hover:bg-emerald-50 rounded transition-all">Copy to Clipboard</button>
                         </div>
                         <div class="text-[9px] opacity-50 text-center uppercase font-bold">Must reset PIN on first login</div>
                     </div>
@@ -271,14 +255,15 @@
                 <p class="text-sm opacity-60 leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name">-</strong>. User must reset their credentials immediately.</p>
                 
                 <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">Cancel</button>
-                    <button id="gen-btn" onclick="doGenerate()" class="flex-1 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-amber-500/20 transition-all">Authorize</button>
+                    <button data-action="closeModal()" class="flex-1 px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">Cancel</button>
+                    <button id="gen-btn" data-action="doGenerate()" class="flex-1 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-amber-500/20 transition-all">Authorize</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="/Finzo/public/assets/js/admin/locked-account-detail.js"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-locked-account-detail.js"></script>
 </body>
 </html>
 

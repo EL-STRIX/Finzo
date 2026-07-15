@@ -12,43 +12,12 @@
     
     <!-- Design System Configuration -->
     <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet" />
-    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <style>
-        .profile-avatar-wrapper { position: relative; width: 100px; height: 100px; }
-        .profile-avatar {
-            width: 100%; height: 100%;
-            border-radius: 24px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: 800;
-            background: theme('colors.primary.DEFAULT'); color: white;
-            overflow: hidden;
-            box-shadow: 0 10px 25px -5px theme('colors.primary.DEFAULT' / 40%);
-        }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-upload-btn {
-            position: absolute; bottom: -8px; right: -8px;
-            width: 36px; height: 36px;
-            border-radius: 12px;
-            background: theme('colors.slate.900'); color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            border: 3px solid theme('colors.white');
-            transition: transform 0.2s;
-        }
-        .dark .avatar-upload-btn {
-            background: theme('colors.white'); color: theme('colors.slate.900');
-            border-color: #0d1117;
-        }
-        .avatar-upload-btn:hover { transform: scale(1.1); }
-        
-        .password-strength-bar { height: 4px; border-radius: 2px; background: theme('colors.slate.200'); overflow: hidden; transition: all 0.3s; }
-        .dark .password-strength-bar { background: rgba(255,255,255,0.1); }
-        .password-strength-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; }
-    </style>
+    
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-profile.css"/>
 </head>
 
 <body class="ds-bg ds-text antialiased">
@@ -224,7 +193,7 @@
                             </div>
                         </div>
                         <div class="mt-8 pt-6 border-t border-slate-100 dark:border-white/5 flex justify-end">
-                            <button onclick="window.AdminProfile.saveProfile()" class="ds-btn-primary px-8">Save Profile</button>
+                            <button data-action="window.AdminProfile.saveProfile()" class="ds-btn-primary px-8">Save Profile</button>
                         </div>
                     </div>
 
@@ -283,8 +252,8 @@
                         <div class="p-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/2 hidden" id="activity-pagination-container">
                             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
                             <div class="flex gap-2">
-                                <button id="activity-prev-btn" onclick="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Prev</button>
-                                <button id="activity-next-btn" onclick="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Next</button>
+                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Prev</button>
+                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Next</button>
                             </div>
                         </div>
                     </div>
@@ -298,7 +267,7 @@
                             </h3>
                             <div class="flex gap-3">
                                 <span id="management-count-badge" class="px-3 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 text-[10px] font-black rounded uppercase tracking-widest border border-amber-200 dark:border-amber-500/30">0 Admins</span>
-                                <button id="header-add-admin-btn" onclick="window.AdminProfile.showAddModal()" class="ds-btn-primary !px-4 !py-1 !text-[10px]">Add Admin</button>
+                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="ds-btn-primary !px-4 !py-1 !text-[10px]">Add Admin</button>
                             </div>
                         </div>
                         <!-- Filters -->
@@ -391,7 +360,7 @@
                                 <label class="ds-label mb-1">Confirm New Password</label>
                                 <input type="password" id="conf-pw" class="ds-input">
                             </div>
-                            <button onclick="window.AdminProfile.updatePassword()" class="w-full ds-btn-primary mt-4">Change Password</button>
+                            <button data-action="window.AdminProfile.updatePassword()" class="w-full ds-btn-primary mt-4">Change Password</button>
                         </div>
                     </div>
 
@@ -422,7 +391,7 @@
 
     <!-- ADD/EDIT ADMIN MODAL -->
     <div id="admin-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.AdminProfile.closeModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-action="window.AdminProfile.closeModal()"></div>
         <div class="ds-card w-full max-w-md relative z-10 p-6 shadow-2xl animate-in zoom-in duration-200">
             <h3 class="font-headline font-bold text-xl mb-6 text-slate-900 dark:text-white" id="admin-modal-title">Add Admin</h3>
             <form id="admin-modal-form" onsubmit="window.AdminProfile.saveAdmin(event)" class="space-y-4">
@@ -451,7 +420,7 @@
                     </select>
                 </div>
                 <div class="flex gap-3 pt-4 border-t border-slate-100 dark:border-white/5 mt-4">
-                    <button type="button" onclick="window.AdminProfile.closeModal()" class="flex-1 py-2.5 ds-btn-secondary">Cancel</button>
+                    <button type="button" data-action="window.AdminProfile.closeModal()" class="flex-1 py-2.5 ds-btn-secondary">Cancel</button>
                     <button type="submit" id="modal-save-btn" class="flex-1 py-2.5 ds-btn-primary">Save Admin</button>
                 </div>
             </form>
@@ -465,5 +434,6 @@
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <script src="/Finzo/public/assets/js/admin/profile.js"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-profile.js"></script>
 </body>
 </html>

@@ -12,28 +12,13 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-  <link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
+  
   <script src="/Finzo/public/assets/js/core/utils.js"></script>
   <script src="/Finzo/public/assets/js/core/api.js"></script>
   <meta name="csrf-token" content="">
-  <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-staff.css"/>
 </head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -116,7 +101,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button id="add-staff-btn" onclick="openAddStaffModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
+        <button id="add-staff-btn" data-action="openAddStaffModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Staff
         </button>
@@ -248,14 +233,14 @@
   <!-- ADD STAFF MODAL -->
   <div id="addStaffModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"
-      onclick="closeAddStaffModal()"></div>
+      data-action="closeAddStaffModal()"></div>
     <div class="ds-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
       <div class="p-6 border-b border-slate-100 dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
         <div>
           <h3 class="text-xl font-bold text-primary dark:text-slate-100">Add New Staff Member</h3>
           <p class="text-[11px] text-slate-400 font-medium">Fill in the details to add a new staff account</p>
         </div>
-        <button onclick="closeAddStaffModal()"
+        <button data-action="closeAddStaffModal()"
            class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -266,7 +251,7 @@
           
           <!-- SECTION A: Profile Photo -->
           <div class="flex flex-col items-center justify-center pb-2">
-            <div class="relative group cursor-pointer" onclick="document.getElementById('profile_photo').click()">
+            <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;profile_photo&#039;).click()">
               <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
                 <span class="material-symbols-outlined text-3xl text-slate-300 group-hover:text-primary transition-colors">person</span>
                 <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1 group-hover:text-primary transition-colors">Upload Photo</span>
@@ -394,7 +379,7 @@
               <div class="col-span-1 sm:col-span-2 space-y-4">
                 <div>
                   <label class="ds-label mb-2">Front of ID Document *</label>
-                  <div class="relative group cursor-pointer" onclick="document.getElementById('id_front').click()">
+                  <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_front&#039;).click()">
                     <div id="front-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="front-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload front image</p>
@@ -408,7 +393,7 @@
 
                 <div>
                   <label class="ds-label mb-2">Back of ID Document *</label>
-                  <div class="relative group cursor-pointer" onclick="document.getElementById('id_back').click()">
+                  <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_back&#039;).click()">
                     <div id="back-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="back-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload back image</p>
@@ -541,11 +526,11 @@
                 <div class="relative flex-1 group">
                   <input type="text" id="staff-password" name="password" placeholder="Generate or enter a password" required
                     class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary dark:text-blue-400">
-                  <button type="button" onclick="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-primary transition-colors">
+                  <button type="button" data-action="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-lg" id="pass-copy-icon">content_copy</span>
                   </button>
                 </div>
-                <button type="button" onclick="generateStaffPassword()" class="admin-btn-secondary !py-3 !px-4 flex items-center justify-center gap-2 whitespace-nowrap">
+                <button type="button" data-action="generateStaffPassword()" class="admin-btn-secondary !py-3 !px-4 flex items-center justify-center gap-2 whitespace-nowrap">
                   <span class="material-symbols-outlined text-sm" id="gen-pass-icon">refresh</span>
                   <span>Generate</span>
                 </button>
@@ -562,7 +547,7 @@
 
         <!-- MODAL FOOTER -->
         <div class="p-6 border-t border-slate-100 dark:border-white/5 sticky bottom-0 bg-white dark:bg-surface-container z-20 flex flex-col-reverse sm:flex-row justify-end gap-3">
-          <button type="button" onclick="closeAddStaffModal()"
+          <button type="button" data-action="closeAddStaffModal()"
             class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
           <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
               <span class="material-symbols-outlined">person_add</span>
@@ -574,6 +559,7 @@
   </div>
   <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
   <script src="/Finzo/public/assets/js/admin/staff.js?v=20260527_1"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-staff.js"></script>
 </body>
 
 </html>

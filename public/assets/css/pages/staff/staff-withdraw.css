@@ -1,0 +1,27 @@
+/* Modernized Step Indicator (Red for Withdrawal) */
+        .step-indicator {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 2px solid theme('colors.slate.200');
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 12px;
+            color: theme('colors.slate.400');
+            background: transparent;
+            transition: all 0.3s;
+        }
+        .dark .step-indicator {
+            border-color: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4);
+        }
+        .step-indicator.active {
+            background: theme('colors.red.600');
+            border-color: theme('colors.red.600');
+            color: theme('colors.white');
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.2);
+        }
+        .step-indicator.completed {
+            background: theme('colors.emerald.500');
+            border-color: theme('colors.emerald.500');
+            color: theme('colors.white');
+        }

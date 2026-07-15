@@ -12,32 +12,14 @@
     
     <!-- Design System Configuration -->
     <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet" />
-    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/staff/staff-shared.js"></script>
     
-    <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; color: black !important; }
-            .receipt-card { 
-                box-shadow: none !important; 
-                border: none !important;
-                width: 100% !important;
-                max-width: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-            }
-            .admin-sidebar, header { display: none !important; }
-            main { margin-left: 0 !important; padding: 0 !important; }
-        }
-        .receipt-dotted { border-top: 2px dotted theme('colors.slate.200'); }
-        .dark .receipt-dotted { border-top-color: theme('colors.slate.800'); }
-    </style>
+    
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/staff/staff-receipt.css"/>
 </head>
 
 <body class="ds-bg ds-text antialiased">
@@ -49,7 +31,7 @@
             <span class="font-headline font-black text-xl text-slate-900 dark:text-white">Transaction Receipt</span>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="window.print()" class="px-5 py-2.5 bg-amber-500 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-amber-600 transition-all flex items-center gap-2">
+            <button data-action="window.print()" class="px-5 py-2.5 bg-amber-500 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-amber-600 transition-all flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">print</span> Print
             </button>
             <a href="staff-dashboard.html" class="px-5 py-2.5 ds-btn-secondary text-xs">
@@ -165,59 +147,7 @@
         </div>
     </main>
 
-    <script>
-        $(document).ready(async function() {
-            const params = new URLSearchParams(window.location.search);
-            const txnId = params.get('id') || params.get('txn_id');
-
-            if (!txnId) {
-                alert('Transaction ID not found.');
-                window.location.href = 'staff-dashboard.html';
-                return;
-            }
-
-            try {
-                const res = await api.get('/staff/receipt.php?id=' + txnId);
-                if (res.success) {
-                    const t = res.transaction;
-                    
-                    $('#receipt-ref-id').text(t.txn_id);
-                    
-                    const dateObj = new Date(t.date);
-                    $('#r-date').text(dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }));
-                    
-                    $('#r-staff').text(t.staff_name);
-                    $('#r-staff-id').text(t.staff_id);
-                    $('#r-branch').text(t.branch_name || 'Finzo Main Branch');
-
-                    $('#r-cust-name').text(t.customer_name);
-                    $('#r-cust-account').text(t.account_no);
-
-                    const isDeposit = t.type === 'deposit';
-                    $('#r-txn-type').text(`Cash ${t.type}`);
-                    $('#r-amount').text(formatINR(t.amount));
-                    
-                    if(isDeposit) {
-                        $('#r-amount').addClass('text-emerald-600 dark:text-emerald-500').text('+' + formatINR(t.amount));
-                    } else {
-                        $('#r-amount').addClass('text-red-600 dark:text-red-500').text('-' + formatINR(t.amount));
-                    }
-
-                    const balance = parseFloat(t.balance_after);
-                    const amount = parseFloat(t.amount);
-                    const prevBalance = isDeposit ? (balance - amount) : (balance + amount);
-                    
-                    $('#r-prev-balance').text(formatINR(prevBalance));
-                    $('#r-avail-balance').text(formatINR(balance));
-
-                } else {
-                    alert('Error: ' + res.message);
-                }
-            } catch (err) {
-                console.error('Receipt Error:', err);
-                alert('Failed to load receipt details.');
-            }
-        });
-    </script>
+    
+<script src="/Finzo/public/assets/js/pages/staff/staff-receipt.js"></script>
 </body>
 </html>

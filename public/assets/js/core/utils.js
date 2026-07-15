@@ -230,3 +230,32 @@ window.formatDate = window.FinzoUtils.formatDate;
         initDropdowns();
     }
 })();
+
+// ==========================================
+// Global Event Delegates
+// ==========================================
+document.addEventListener('click', function(e) {
+    // Handle data-href navigation
+    const navBtn = e.target.closest('[data-href]');
+    if (navBtn) {
+        e.preventDefault();
+        window.location.href = navBtn.getAttribute('data-href');
+        return;
+    }
+
+    // Handle data-action execution
+    const actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+        // Prevent default only if it's an anchor or button that would normally submit/navigate
+        if (actionBtn.tagName === 'A' || actionBtn.tagName === 'BUTTON') {
+            e.preventDefault();
+        }
+        const action = actionBtn.getAttribute('data-action');
+        try {
+            const fn = new Function('event', action);
+            fn.call(actionBtn, e);
+        } catch (err) {
+            console.error('Error executing data-action:', action, err);
+        }
+    }
+});

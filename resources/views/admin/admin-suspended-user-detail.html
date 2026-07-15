@@ -9,27 +9,12 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 <script src="/Finzo/public/assets/js/core/api.js"></script>
 <script src="/Finzo/public/assets/js/core/utils.js"></script>
-    <link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-    <link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
     <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
-<script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#1a3c5e", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-</script>
 
-  <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+
+  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-suspended-user-detail.css"/>
 </head>
 <body>
 
@@ -251,10 +236,10 @@
             </div>
             <h3 class="text-lg font-bold mb-2 dark:text-white">Account Recovery</h3>
             <p class="text-xs opacity-60 leading-relaxed mb-8">Reinstating will restore original access and notify the user via registered mobile/email.</p>
-            <button onclick="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
+            <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
               <span class="material-symbols-outlined">power_settings_new</span> Reinstate Account
             </button>
-            <button onclick="openDeleteModal()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
+            <button data-action="openDeleteModal()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
               Permanent Deletion Request
             </button>
           </div>
@@ -277,8 +262,8 @@
     <div class="modal-text">You are removing the suspension from <strong id="modal-name">--</strong>'s account <strong id="modal-acc">FNZ---</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
 
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-success" id="confirm-btn" onclick="processReinstate()">
+      <button class="btn btn-ghost" data-action="closeModal()">Cancel</button>
+      <button class="btn btn-success" id="confirm-btn" data-action="processReinstate()">
         <span class="material-symbols-outlined" style="font-size:16px">check</span>
         Confirm & Reinstate
       </button>
@@ -305,8 +290,8 @@
     </div>
 
     <div class="modal-actions mt-8">
-      <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
-      <button class="btn btn-danger" id="delete-confirm-btn" onclick="processDelete()" style="background:#ff3b30 !important; color:#fff !important;">
+      <button class="btn btn-ghost" data-action="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" id="delete-confirm-btn" data-action="processDelete()" style="background:#ff3b30 !important; color:#fff !important;">
         <span class="material-symbols-outlined" style="font-size:16px">check</span>
         Confirm & Delete
       </button>
@@ -317,6 +302,7 @@
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script src="/Finzo/public/assets/js/admin/suspended-user-detail.js"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-suspended-user-detail.js"></script>
 </body>
 </html>
 

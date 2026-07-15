@@ -12,25 +12,10 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#002645", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-  <link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
-<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  
+  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-branches.css"/>
 </head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -113,7 +98,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button onclick="openAddModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
+        <button data-action="openAddModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined">add</span> Add New Branch
         </button>
@@ -223,14 +208,14 @@
 
   <!-- ADD BRANCH MODAL -->
   <div id="addBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#addBranchModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)"></div>
     <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center sticky top-0 bg-white dark:bg-surface-container-lowest z-10">
         <div>
           <h3 class="admin-section-title">Add New Branch</h3>
           <p class="text-[11px] opacity-60">Fill in all details to register a new Finzo branch</p>
         </div>
-        <button onclick="$('#addBranchModal').addClass('hidden').removeClass('flex')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+        <button data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -402,7 +387,7 @@
             </div>
 
             <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
-              <button type="button" onclick="$('#addBranchModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary py-3 px-8 text-center justify-center">Cancel</button>
+              <button type="button" data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary py-3 px-8 text-center justify-center">Cancel</button>
               <button type="submit" id="submit-branch-btn" class="admin-btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none" style="background:#002645 !important;">Create Branch</button>
             </div>
           </div>
@@ -413,7 +398,7 @@
 
   <!-- VIEW BRANCH MODAL -->
   <div id="viewBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#viewBranchModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" data-action="$(&#039;#viewBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)"></div>
     <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div id="view-modal-header" class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
         <div>
@@ -423,7 +408,7 @@
             <span class="status-badge badge-success" style="font-size:9px;padding:2px 6px;">ACTIVE</span>
           </div>
         </div>
-        <button onclick="$('#viewBranchModal').addClass('hidden').removeClass('flex')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+        <button data-action="$(&#039;#viewBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -507,14 +492,14 @@
 
   <!-- BRANCH STAFF MODAL -->
   <div id="branchStaffModal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')"></div>
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all" data-action="$(&#039;#branchStaffModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)"></div>
     <div class="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[85vh] border border-slate-100 dark:border-white/5 animate-modal-enter overflow-y-auto">
       <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center sticky top-0 bg-white dark:bg-surface-container-lowest z-10">
         <div>
           <h3 id="staff-modal-title" class="admin-section-title">Branch Staff List</h3>
           <p id="staff-modal-subtitle" class="text-[11px] opacity-60 uppercase font-bold tracking-wider">Loading staff members...</p>
         </div>
-        <button onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+        <button data-action="$(&#039;#branchStaffModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -541,7 +526,7 @@
         </div>
       </div>
       <div class="p-6 border-t border-slate-100 dark:border-white/5 flex justify-end bg-slate-50/50 dark:bg-white/5">
-         <button onclick="$('#branchStaffModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary px-8">Close List</button>
+         <button data-action="$(&#039;#branchStaffModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary px-8">Close List</button>
       </div>
     </div>
   </div>
@@ -589,7 +574,7 @@
 
         <div class="flex flex-col gap-3">
            <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3 bg-red-500 !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
-           <button onclick="$('#confirmModal').addClass('hidden').removeClass('flex')" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
+           <button data-action="$(&#039;#confirmModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
         </div>
      </div>
   </div>
@@ -597,6 +582,7 @@
   <script src="/Finzo/public/assets/js/core/api.js"></script>
   <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
   <script src="/Finzo/public/assets/js/admin/branches.js?v=13"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-branches.js"></script>
 </body>
 </html>
 

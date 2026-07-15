@@ -12,42 +12,14 @@
     
     <!-- Design System Configuration -->
     <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet" />
-    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/staff/staff-shared.js"></script>
     
-    <style>
-        /* Modernized Step Indicator (Red for Withdrawal) */
-        .step-indicator {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            border: 2px solid theme('colors.slate.200');
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 12px;
-            color: theme('colors.slate.400');
-            background: transparent;
-            transition: all 0.3s;
-        }
-        .dark .step-indicator {
-            border-color: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.4);
-        }
-        .step-indicator.active {
-            background: theme('colors.red.600');
-            border-color: theme('colors.red.600');
-            color: theme('colors.white');
-            transform: scale(1.1);
-            box-shadow: 0 0 0 4px rgba(220,38,38,0.2);
-        }
-        .step-indicator.completed {
-            background: theme('colors.emerald.500');
-            border-color: theme('colors.emerald.500');
-            color: theme('colors.white');
-        }
-    </style>
+    
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/staff/staff-withdraw.css"/>
 </head>
 
 <body class="ds-bg ds-text antialiased">
@@ -238,8 +210,8 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button class="flex-1 py-3 ds-btn-secondary text-sm" onclick="resetForm()">Search Again</button>
-                            <button class="flex-1 py-3 bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all text-sm flex items-center justify-center gap-2" onclick="goToStep2()">
+                            <button class="flex-1 py-3 ds-btn-secondary text-sm" data-action="resetForm()">Search Again</button>
+                            <button class="flex-1 py-3 bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all text-sm flex items-center justify-center gap-2" data-action="goToStep2()">
                                 <span>Proceed with Withdrawal</span>
                                 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                             </button>
@@ -323,8 +295,8 @@
                     </div>
                     
                     <div class="mt-8 pt-6 border-t border-slate-100 dark:border-white/5 flex justify-end gap-3">
-                        <button class="px-6 py-2.5 ds-btn-secondary text-sm" onclick="goToStep1()">Back</button>
-                        <button id="confirm-step-btn" class="px-8 py-2.5 bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all text-sm flex items-center gap-2" onclick="goToStep3()">
+                        <button class="px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep1()">Back</button>
+                        <button id="confirm-step-btn" class="px-8 py-2.5 bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all text-sm flex items-center gap-2" data-action="goToStep3()">
                             Review & Confirm <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </div>
@@ -389,7 +361,7 @@
                             Ensure customer ID proof is verified before executing this debit.
                         </div>
                         <div class="flex gap-3 w-full sm:w-auto">
-                            <button class="flex-1 sm:flex-none px-6 py-2.5 ds-btn-secondary text-sm" onclick="goToStep2()">Edit</button>
+                            <button class="flex-1 sm:flex-none px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep2()">Edit</button>
                             <button id="final-withdraw-btn" class="flex-1 sm:flex-none px-8 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">done_all</span>
                                 Confirm Withdrawal
@@ -417,156 +389,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script>
-        $(document).ready(async function() {
-            await fetchStaffSession();
-        });
-
-        // --- Withdrawal Logic ---
-        const steps = $('.step-indicator');
-        function updateSteps(num) {
-            steps.each(function() {
-                const s = parseInt($(this).data('step'));
-                $(this).removeClass('active completed');
-                if (s < num) $(this).addClass('completed');
-                else if (s === num) $(this).addClass('active');
-            });
-        }
-        updateSteps(1);
-
-        let verifiedAccountNo = '';
-        let verifiedName = '';
-        let currentBalance = 0;
-        let currentLimit = 0;
-
-        $('#find-btn').on('click', async function() {
-            const acc = $('#account-lookup').val().trim();
-            if (!acc) return;
-            const btn = $(this);
-            const originalText = btn.html();
-            btn.html('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> <span>Searching</span>');
-            
-            try {
-                const res = await api.get('/staff/account-lookup.php?account_no=' + encodeURIComponent(acc));
-                btn.html(originalText);
-                
-                if(res.success && res.found && res.account) {
-                    $('#account-success').removeClass('hidden');
-                    $('#account-error').addClass('hidden');
-                    
-                    verifiedAccountNo = res.account.account_no;
-                    verifiedName = res.account.name;
-                    currentBalance = parseFloat(res.account.balance) || 0;
-                    currentLimit = parseFloat(res.account.daily_limit_left) || 0;
-                    
-                    $('#res-name').text(res.account.name);
-                    $('#res-acc').text(res.account.account_no);
-                    $('#confirm-acc').text(res.account.account_no);
-                    const init = res.account.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-                    $('#res-initials').text(init);
-                    
-                    $('.account-type-val').text(res.account.account_type);
-                    $('.current-balance-val').text(formatINR(currentBalance));
-                    $('.daily-limit-val').text(formatINR(currentLimit));
-                    
-                } else {
-                    $('#account-error').removeClass('hidden');
-                    $('#account-success').addClass('hidden');
-                }
-            } catch (err) {
-                btn.html(originalText);
-                $('#account-error').removeClass('hidden');
-                $('#account-success').addClass('hidden');
-            }
-        });
-
-        window.resetForm = function() {
-            $('#account-lookup').val('');
-            $('#account-success, #account-error').addClass('hidden');
-            updateSteps(1);
-        };
-
-        window.goToStep1 = function() { 
-            $('#section-1').removeClass('hidden'); 
-            $('#section-2, #section-3').addClass('hidden'); 
-            updateSteps(1); 
-        };
-        
-        window.goToStep2 = function() { 
-            $('#section-1, #section-3').addClass('hidden'); 
-            $('#section-2').removeClass('hidden'); 
-            updateSteps(2); 
-            $('#sum-after').text(formatINR(currentBalance));
-            $('.daily-limit-display').text(formatINR(currentLimit));
-        };
-        
-        window.goToStep3 = function() { 
-            const amt = parseFloat($('#with-amount').val()) || 0;
-            if (amt <= 0) {
-                alert('Please enter a valid withdrawal amount.');
-                return;
-            }
-            if (amt > currentBalance) {
-                alert('Withdrawal amount exceeds available balance of ' + formatINR(currentBalance));
-                return;
-            }
-            $('#section-2').addClass('hidden'); 
-            $('#section-3').removeClass('hidden'); 
-            updateSteps(3); 
-            $('#confirm-amt').text(formatINR(amt));
-            $('#confirm-customer-name').text(verifiedName);
-            const now = new Date();
-            $('#current-date-display').text(now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
-        };
-
-        $('#with-amount').on('input', function() {
-            const val = parseFloat($(this).val()) || 0;
-            const $msg = $('#limit-msg');
-            const $btn = $('#confirm-step-btn');
-
-            $('#sum-amt').text(formatINR(val));
-            $('#sum-after').text(formatINR(currentBalance - val));
-
-            $msg.removeClass('hidden text-emerald-500 text-red-600 text-amber-500');
-            $btn.prop('disabled', false).css('opacity', '1');
-
-            if (val <= 0) { 
-                $msg.addClass('hidden'); 
-            } else if (val > currentBalance) {
-                $msg.removeClass('hidden').addClass('text-red-600').text(`❌ Exceeds balance of ${formatINR(currentBalance)}`);
-                $btn.prop('disabled', true).css('opacity', '0.5');
-            } else if (val > currentLimit) { 
-                $msg.removeClass('hidden').addClass('text-amber-500').text(`⚠️ Exceeds limit. Remaining: ${formatINR(currentLimit)}`);
-                $btn.prop('disabled', true).css('opacity', '0.5');
-            } else {
-                $msg.removeClass('hidden').addClass('text-emerald-500').text('✅ Valid amount');
-            }
-        });
-
-        $('#final-withdraw-btn').on('click', async function() {
-            const btn = $(this);
-            const originalText = btn.html();
-            btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Processing...');
-            
-            const reqData = {
-                account_no: verifiedAccountNo,
-                amount: parseFloat($('#with-amount').val()),
-                identity_notes: $('#with-notes').val().trim() || 'Verified by staff'
-            };
-            
-            try {
-                const res = await api.post('/staff/withdrawal.php', reqData);
-                if (res.success) {
-                    window.location.href = 'staff-receipt.html?id=' + res.transaction_id;
-                } else {
-                    alert('Error: ' + res.message);
-                    btn.prop('disabled', false).html(originalText);
-                }
-            } catch (err) {
-                alert('Connection error. Please try again.');
-                btn.prop('disabled', false).html(originalText);
-            }
-        });
-    </script>
+    
+<script src="/Finzo/public/assets/js/pages/staff/staff-withdraw.js"></script>
 </body>
 </html>

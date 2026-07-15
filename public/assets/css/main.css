@@ -1,0 +1,22 @@
+/* FINZO ENTERPRISE CSS ARCHITECTURE */
+
+/* 1. Base */
+@import 'base/variables.css';
+@import 'base/typography.css';
+@import 'base/reset.css';
+@import 'base/animations.css';
+@import 'base/dark-mode.css';
+@import 'base/custom.css';
+
+/* 2. Components */
+@import 'components/buttons.css';
+@import 'components/forms.css';
+@import 'components/cards.css';
+@import 'components/tables.css';
+@import 'components/badges.css';
+
+/* 3. Layouts */
+@import 'layouts/grid.css';
+@import 'layouts/admin.css';
+@import 'layouts/user.css';
+@import 'layouts/user-panel.css';

@@ -9,9 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
   <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/auth/staff-login.css"/>
 </head>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/auth/staff-login.css"/>
 </head>
 <body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
 <main class="min-h-screen flex">
@@ -24,7 +26,7 @@
     </div>
 
     <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
+      <div class="flex items-center gap-3 mb-16 cursor-pointer" data-href="/Finzo/public/index.html">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
           <span class="material-symbols-outlined text-white">account_balance</span>
         </div>
@@ -77,9 +79,9 @@
 
       <!-- Role Switcher -->
       <div class="flex bg-[var(--color-surface-subtle)] p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
-        <button onclick="window.location.href='login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Customer</button>
-        <button onclick="window.location.href='staff-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Staff</button>
-        <button onclick="window.location.href='admin-login.html'" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Admin</button>
+        <button data-href="login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Customer</button>
+        <button data-href="staff-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Staff</button>
+        <button data-href="admin-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Admin</button>
       </div>
 
       <div class="mb-8 sm:mb-10 text-left w-full">
@@ -129,74 +131,8 @@
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-  $(function() {
 
-    const $form = $('#staffLoginForm');
-    const $btn = $('#login-btn');
-    const $error = $('#error-box');
-    let CSRF_TOKEN = '';
-
-    // Fetch CSRF Token on load
-    fetch('/Finzo/api/auth/get-csrf-token.php')
-      .then(res => res.json())
-      .then(data => { if(data.csrf_token) CSRF_TOKEN = data.csrf_token; })
-      .catch(err => console.error('Token fetch error:', err));
-
-    $form.on('submit', function(e) {
-      e.preventDefault();
-      const id = $('#identity').val().trim();
-      const pw = $('#password').val().trim();
-
-      $form.removeClass('error-state');
-      $error.hide();
-
-      if (!id || !pw) {
-        $form.addClass('error-state');
-        $error.text("Provide staff credentials").show();
-        return;
-      }
-
-      const original = $btn.html();
-      $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
-      $btn.prop('disabled', true);
-
-      // Real API authentication
-      fetch('/Finzo/api/auth/staff-login.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        credentials: 'same-origin',
-        body: 'identity=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(pw) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
-      })
-      .then(res => {
-        if (!res.ok && res.status !== 401 && res.status !== 403 && res.status !== 422 && res.status !== 423) throw new Error('Server Error');
-        return res.json();
-      })
-      .then(data => {
-        if (data.success) {
-          window.location.href = data.redirect || '/Finzo/views/staff/staff-dashboard.html';
-        } else {
-          $form.addClass('error-state');
-          $error.text(data.message || "Invalid staff credentials").show();
-          $btn.html(original).prop('disabled', false);
-        }
-      })
-      .catch(err => {
-        console.error('Staff login error:', err);
-        $form.addClass('error-state');
-        $error.text("Connection error. Please try again.").show();
-        $btn.html(original).prop('disabled', false);
-      });
-    });
-
-    $('#toggle-password').on('click', function() {
-      const p = $('#password');
-      const isPw = p.attr('type') === 'password';
-      p.attr('type', isPw ? 'text' : 'password');
-      $(this).text(isPw ? 'visibility_off' : 'visibility');
-    });
-  });
-</script>
+<script src="/Finzo/public/assets/js/pages/auth/staff-login.js"></script>
 </body>
 </html>
 

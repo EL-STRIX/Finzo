@@ -1,0 +1,17 @@
+/* Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;
+
+body {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}

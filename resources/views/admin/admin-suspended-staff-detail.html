@@ -9,28 +9,12 @@
 <script src="/Finzo/public/assets/js/core/api.js"></script>
 <script src="/Finzo/public/assets/js/core/utils.js"></script>
 <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
-<link rel="stylesheet" href="/Finzo/public/assets/css/admin.css">
-<link rel="stylesheet" href="/Finzo/public/assets/css/dark-mode.css">
-
 <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-<script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#1a3c5e", "error": "#ba1a1a",
-            "surface-container-low": "#f4f3f6", "outline-variant": "#c3c6cf",
-            "on-tertiary-container": "#0abc64", "tertiary-fixed-dim": "#4ae183"
-          },
-          fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }
-        }
-      }
-    }
-</script>
 
-  <link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+
+  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Finzo/public/assets/css/pages/admin/admin-suspended-staff-detail.css"/>
 </head>
 <body class="selection:bg-[#1a3c5e]/10">
 
@@ -231,7 +215,7 @@
               </div>
               <h3 class="text-lg font-bold mb-2 dark:text-white">Reinstate Staff</h3>
               <p class="text-xs opacity-60 leading-relaxed mb-8">This will restore system privileges and allow them to process new transactions.</p>
-              <button onclick="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
+              <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
                 <span class="material-symbols-outlined">how_to_reg</span> Authorize Access
               </button>
            </div>
@@ -268,14 +252,15 @@
         </div>
       </div>
       <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
-        <button onclick="closeModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
-        <button id="confirm-btn" onclick="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20 hover:bg-emerald-600 hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
+        <button data-action="closeModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+        <button id="confirm-btn" data-action="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20 hover:bg-emerald-600 hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
       </div>
     </div>
   </div>
 </div>
 
 <script src="/Finzo/public/assets/js/admin/suspended-staff-detail.js"></script>
+<script src="/Finzo/public/assets/js/pages/admin/admin-suspended-staff-detail.js"></script>
 </body>
 </html>
 

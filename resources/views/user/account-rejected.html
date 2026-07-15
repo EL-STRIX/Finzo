@@ -7,15 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="/Finzo/public/assets/css/design-system.css" rel="stylesheet"/>
 <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
-<link rel="stylesheet" href="/Finzo/public/assets/css/user.css"/>
-<link rel="stylesheet" href="/Finzo/public/assets/css/user-panel.css"/>
-<style>
-/* Hide entire page until session status confirmed — prevents redirect flash */
-.page-wrap { min-height:100vh; display:flex; flex-direction:column; visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
-.page-wrap.ready { visibility:visible; opacity:1; }
-</style>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/Finzo/public/assets/css/pages/user/account-rejected.css"/>
 </head>
 <body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
 <script src="/Finzo/public/assets/js/user/user-shared.js"></script>
@@ -29,7 +23,7 @@
       <span class="font-display text-2xl font-extrabold text-[var(--color-text-main)] tracking-tight">Finzo</span>
     </a>
     <div class="flex items-center gap-3">
-      <button class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] transition-colors" onclick="toggleTheme()">
+      <button class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] transition-colors" data-action="toggleTheme()">
         <span class="material-symbols-outlined text-[22px]" data-theme-icon>dark_mode</span>
       </button>
       <a href="/Finzo/views/auth/login.html" class="btn btn-secondary !py-2 !px-4">Logout</a>
@@ -154,32 +148,7 @@
     </div>
   </div>
 </div>
-<script>
-(async function() {
-  await fetchUserSession();
-  const s = UserState.status;
-  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
-  if (s === 'pending') { window.location.href = 'complete-profile.html'; return; }
-  if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
-  
-  const reason = UserState.rejectionReason;
-  if (reason) {
-    const reasonEl = document.getElementById('tl-rejection-reason');
-    if (reasonEl) reasonEl.textContent = reason;
-  }
-  
-  const rejectedAt = UserState.rejectedAt;
-  if (rejectedAt) {
-    const timeEl = document.getElementById('tl-rejection-time');
-    if (timeEl) {
-      const d = new Date(rejectedAt);
-      const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-      timeEl.textContent = formatted;
-    }
-  }
-  
-  document.querySelector('.page-wrap').classList.add('ready');
-})();
-</script>
+
+<script src="/Finzo/public/assets/js/pages/user/account-rejected.js"></script>
 </body>
 </html>
