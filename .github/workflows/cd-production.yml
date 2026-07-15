@@ -1,0 +1,60 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: https://finzo.example.com
+      
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Dependencies (No Dev)
+      run: composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
+
+    - name: Compress Build Artifact
+      run: tar -czf release.tar.gz .
+      
+    - name: Copy Artifact to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.PROD_SERVER_IP }}
+        username: ${{ secrets.PROD_SERVER_USER }}
+        key: ${{ secrets.PROD_SSH_KEY }}
+        source: "release.tar.gz"
+        target: "/var/www/finzo/deployments/"
+        
+    - name: Execute Deployment Script
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.PROD_SERVER_IP }}
+        username: ${{ secrets.PROD_SERVER_USER }}
+        key: ${{ secrets.PROD_SSH_KEY }}
+        script: |
+          cd /var/www/finzo/deployments/
+          bash ../current/ops/deploy.sh production release.tar.gz
+
+  notify:
+    name: Deployment Notification
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Send Slack Alert
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+        SLACK_TITLE: "Production Deployment: ${{ job.status }}"
+        SLACK_MESSAGE: "Commit ${{ github.sha }} deployed to Production."

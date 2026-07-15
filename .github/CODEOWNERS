@@ -1,0 +1,15 @@
+# Global owners
+*       @finzo-devops @finzo-backend
+
+# Frontend
+/public/assets/css/   @finzo-frontend
+/resources/views/     @finzo-frontend
+
+# Backend Core
+/app/                 @finzo-backend
+/config/              @finzo-backend
+/database/            @finzo-backend
+
+# DevOps & CI/CD
+/.github/             @finzo-devops
+/ops/                 @finzo-devops
