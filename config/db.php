@@ -44,17 +44,7 @@ try {
         $error_message = 'Database connection failed. Please try again later.';
     }
 
-    // If this is an API request, return JSON error
-    if (php_sapi_name() !== 'cli') {
-        http_response_code(500);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
-            'success' => false,
-            'message' => $error_message
-        ]);
-        exit;
-    } else {
-        // CLI usage — throw exception
-        throw new RuntimeException($error_message);
-    }
+    // Always throw RuntimeException so the Global Exception Handler catches it
+    // or CLI scripts can catch it
+    throw new RuntimeException($error_message, 0, $e);
 }

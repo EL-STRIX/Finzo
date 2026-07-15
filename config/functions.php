@@ -450,35 +450,31 @@ function validate_password_strength($password) {
  * @return string IP address
  */
 function get_client_ip(): string {
-    $candidates = [];
+    $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $trustProxies = getenv('TRUSTED_PROXIES') === 'true';
 
-    // X-Forwarded-For can be a comma-separated list; the leftmost is the original client
-    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        foreach (explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']) as $ip) {
-            $candidates[] = trim($ip);
+    if ($trustProxies) {
+        $candidates = [];
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            foreach (explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']) as $ip) {
+                $candidates[] = trim($ip);
+            }
+        }
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            $candidates[] = trim($_SERVER['HTTP_X_REAL_IP']);
+        }
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $candidates[] = trim($_SERVER['HTTP_CLIENT_IP']);
+        }
+
+        foreach ($candidates as $ip) {
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return $ip;
+            }
         }
     }
 
-    if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
-        $candidates[] = trim($_SERVER['HTTP_X_REAL_IP']);
-    }
-
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $candidates[] = trim($_SERVER['HTTP_CLIENT_IP']);
-    }
-
-    // REMOTE_ADDR is always last — it is the actual TCP peer and cannot be spoofed
-    $candidates[] = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-
-    foreach ($candidates as $ip) {
-        // filter_var validates that the IP is syntactically correct (IPv4 or IPv6)
-        if (filter_var($ip, FILTER_VALIDATE_IP)) {
-            return $ip;
-        }
-    }
-
-    // Fallback: return REMOTE_ADDR even if private/reserved (covers localhost dev environments)
-    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    return filter_var($remoteIp, FILTER_VALIDATE_IP) ? $remoteIp : '0.0.0.0';
 }
 
 /**
@@ -513,10 +509,7 @@ function check_admin_permission($pdo, $admin_id, $action) {
     $role = $stmt->fetchColumn();
 
     if (!$role) {
-        json_response([
-            'success' => false,
-            'message' => 'Admin account not found'
-        ], 403);
+        throw new \App\Core\Exceptions\ApiException('Admin account not found', 403);
     }
 
     // Super Admin — zero restrictions, can do everything
@@ -538,10 +531,7 @@ function check_admin_permission($pdo, $admin_id, $action) {
     ];
     
     if ($role === 'admin' && in_array($action, $admin_blocked)) {
-        json_response([
-            'success' => false,
-            'message' => 'You do not have permission to perform this action'
-        ], 403);
+        throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 
     // Moderator role — can ONLY do these actions
@@ -554,10 +544,7 @@ function check_admin_permission($pdo, $admin_id, $action) {
     ];
     
     if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
-        json_response([
-            'success' => false,
-            'message' => 'You do not have permission to perform this action'
-        ], 403);
+        throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 
     return true;
