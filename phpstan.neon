@@ -1,0 +1,12 @@
+parameters:
+    level: 5
+    paths:
+        - app
+        - config
+        - bootstrap
+    excludePaths:
+        - vendor
+    ignoreErrors:
+        # Ignore legacy global DB dependencies until fully injected
+        - '#Undefined variable: \$pdo#'
+        - '#Access to an undefined property#'
