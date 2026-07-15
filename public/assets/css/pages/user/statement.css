@@ -1,7 +1,0 @@
-/* Base print overrides for precise control where Tailwind print: utilities are insufficient */
-@media print {
-  @page { margin: 15mm; }
-  body { background: white !important; color: black !important; }
-  .ds-table th { border-bottom: 2px solid black !important; color: black !important; background: white !important; }
-  .ds-table td { border-bottom: 1px solid #e5e7eb !important; color: black !important; }
-}

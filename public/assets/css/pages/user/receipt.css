@@ -1,4 +1,0 @@
-@media print {
-  @page { margin: 15mm; }
-  body { background: white !important; color: black !important; }
-}

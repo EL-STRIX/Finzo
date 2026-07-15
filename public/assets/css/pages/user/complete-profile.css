@@ -1,6 +1,0 @@
-/* JS toggled classes */
-.step-content { display: none; }
-.step-content.active { display: block; animation: dsFadeInUp 0.3s ease forwards; }
-
-body { visibility: hidden; opacity: 0; transition: opacity 0.2s ease; }
-body.ready { visibility: visible; opacity: 1; }

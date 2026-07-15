@@ -1,3 +1,0 @@
-/* Hide entire page until session status confirmed — prevents redirect flash */
-.page-wrap { min-height:100vh; display:flex; flex-direction:column; visibility:hidden; opacity:0; transition: opacity 0.2s ease; }
-.page-wrap.ready { visibility:visible; opacity:1; }
