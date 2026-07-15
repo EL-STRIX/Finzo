@@ -1,32 +1,33 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: "🐛 Bug Report"
+about: "Help us squash a bug and improve the Finzo experience!"
 title: '[BUG] '
 labels: 'bug, needs-triage'
 assignees: ''
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 🐛 Bug Report
 
-**To Reproduce**
-Steps to reproduce the behavior:
+Hello! Thank you so much for taking the time to report an issue. We want Finzo to be incredibly stable, and your report helps us get there faster.
+
+### What went wrong?
+<!-- Please provide a clear and concise description of what the bug is. What did you expect to happen, and what actually happened instead? -->
+
+### How can we reproduce this?
+<!-- Our engineers need to see the bug to fix it! Please share the exact steps to trigger the issue: -->
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
-4. See error
+4. Observe the error...
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+### Screenshots or Video (Optional but highly appreciated!)
+<!-- A picture is worth a thousand words! If applicable, drag and drop screenshots or screen recordings here to help us visualize the problem. -->
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+### Your Environment
+<!-- This information is critical for our engineers. -->
+ - **Operating System:** [e.g., Windows 11, macOS Sonoma]
+ - **Browser:** [e.g., Chrome 120, Safari 17]
+ - **Finzo Version:** [e.g., 1.2.0 or commit hash]
 
-**Environment:**
- - OS: [e.g. Windows, macOS]
- - Browser [e.g. Chrome, Safari]
- - PHP Version [e.g. 8.3]
- - Finzo Version [e.g. 1.0.0]
-
-**Additional context**
-Add any other context about the problem here.
+### Any additional context?
+<!-- Is there anything else we should know? Maybe a related feature, or a specific user account this happens on? -->
