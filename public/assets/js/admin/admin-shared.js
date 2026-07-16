@@ -43,7 +43,7 @@ window.AdminPortal = {
         document.querySelectorAll('header.admin-topbar .admin-avatar').forEach(el => {
             if (admin.profile_photo) {
                 const cacheBuster = '?v=' + new Date().getTime();
-                const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `/Finzo/public/assets/${admin.profile_photo}`) + cacheBuster;
+                const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `../../../../public/assets/${admin.profile_photo}`) + cacheBuster;
                 el.innerHTML = `<img src="${src}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 el.style.background = 'none';
             } else {
@@ -81,9 +81,9 @@ window.AdminPortal = {
                     e.preventDefault();
                     try {
                         await window.api.post('/auth/logout.php');
-                        window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                        window.location.href = '../../../../resources/views/auth/admin-login.html';
                     } catch (error) {
-                        window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                        window.location.href = '../../../../resources/views/auth/admin-login.html';
                     }
                 });
             }

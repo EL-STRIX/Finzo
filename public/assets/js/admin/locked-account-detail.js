@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarEl = document.getElementById('d-avatar');
         if (avatarEl) {
             if (user.profile_picture) {
-                avatarEl.innerHTML = `<img src="/Finzo/public/assets/${user.profile_picture}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}">`;
+                avatarEl.innerHTML = `<img src="../../../../public/assets/${user.profile_picture}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}">`;
             } else {
                 avatarEl.textContent = user.initials || '??';
             }

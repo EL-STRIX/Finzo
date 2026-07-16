@@ -184,7 +184,7 @@
                 // Avatar handling
                 const initials = admin.full_name.split(' ').map(n => n[0]).join('').substring(0, 2);
                 if (admin.profile_photo) {
-                    document.getElementById('avatar-img-preview').src = '/Finzo/public/assets/' + admin.profile_photo;
+                    document.getElementById('avatar-img-preview').src = '../../../../public/assets/' + admin.profile_photo;
                     document.getElementById('avatar-img-preview').classList.remove('hidden');
                     document.getElementById('avatar-initials').classList.add('hidden');
                 } else {
@@ -356,7 +356,7 @@
                 if (a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
 
                 const photo = a.profile_photo
-                    ? `<img src="/Finzo/public/assets/${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
+                    ? `<img src="../../../../public/assets/${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
                     : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
 
                 const formatDateLocal = (d) => {

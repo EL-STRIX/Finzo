@@ -78,9 +78,9 @@ $(document).ready(function() {
     $(document).on('click', '#terminal-link-btn', function(e) {
         e.preventDefault();
         if (window.isAuthenticated()) {
-            window.location.href = '/Finzo/resources/views/user/dashboard.html';
+            window.location.href = '../../../../resources/views/user/dashboard.html';
         } else {
-            window.location.href = '/Finzo/resources/views/auth/login.html';
+            window.location.href = '../../../../resources/views/auth/login.html';
         }
     });
 
