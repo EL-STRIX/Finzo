@@ -252,7 +252,7 @@ class AdminOperationsController
         }
 
         $path = $_GET['path'] ?? '';
-        
+
         // Basic security check: prevent directory traversal and ensure it's pointing to storage/kyc-documents
         if (empty($path) || strpos($path, '..') !== false || !str_starts_with($path, 'storage/kyc-documents/')) {
             http_response_code(403);
@@ -273,7 +273,7 @@ class AdminOperationsController
 
         header("Content-Type: " . $mime_type);
         header("Content-Length: " . filesize($absolute_path));
-        
+
         // Prevent caching of sensitive documents
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
