@@ -569,15 +569,15 @@ class AdminOperationsService
 
         $id_front_url = null;
         if ($user['id_front_path']) {
-            $id_front_url = str_starts_with($user['id_front_path'], 'storage/') 
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_front_path']) 
+            $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
+                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_front_path'])
                 : APP_URL . '/' . $user['id_front_path'];
         }
 
         $id_back_url = null;
         if ($user['id_back_path']) {
-            $id_back_url = str_starts_with($user['id_back_path'], 'storage/') 
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_back_path']) 
+            $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
+                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_back_path'])
                 : APP_URL . '/' . $user['id_back_path'];
         }
 
