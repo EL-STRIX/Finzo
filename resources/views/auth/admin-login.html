@@ -72,7 +72,7 @@
         <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="adminLoginForm">
           <!-- Field: Admin ID -->
           <div class="fin-input-container">
-            <label class="field-label text-primary-600-600">Admin ID or Email</label>
+            <label for="identity" class="field-label text-primary-600-600">Admin ID or Email</label>
             <div class="relative">
               <span class="material-symbols-outlined input-icon !text-primary-600-600">admin_panel_settings</span>
               <input id="identity" type="text" placeholder="e.g. ADM001 or alice@finzo.com" class="fin-input has-icon-left !border-admin-accent/30 focus:!border-admin-accent focus:!shadow-none"/>
@@ -82,13 +82,13 @@
           <!-- Field: Password -->
           <div class="fin-input-container" style="animation-delay: 0.1s;">
             <div class="flex justify-between items-center pr-1">
-              <label class="field-label text-primary-600-600">Secure Password</label>
+              <label for="password" class="field-label text-primary-600-600">Secure Password</label>
               <a href="#" id="forgot-password-link" class="text-[12px] font-bold text-primary-600-600 hover:underline tracking-[0.03em] hidden">Forgot?</a>
             </div>
             <div class="relative group">
               <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
               <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-admin-accent/30 focus:!border-admin-accent focus:!shadow-none"/>
-              <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password">visibility</span>
+              <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
             </div>
           </div>
 
@@ -177,7 +177,7 @@
 
             <form class="ds-card p-6 md:p-8 space-y-6 " id="sqForm" class="space-y-4">
               <div class="fin-input-container">
-                <label class="field-label">Your Secret Answer</label>
+                <label for="sq_answer" class="field-label">Your Secret Answer</label>
                 <div class="relative group">
                   <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input !pl-12 !h-[50px]" required />
                   <span class="material-symbols-outlined input-icon !left-4">verified_user</span>
@@ -210,7 +210,7 @@
 
             <form class="ds-card p-6 md:p-8 space-y-6 " id="newPwForm" class="space-y-4">
               <div class="fin-input-container">
-                <label class="field-label">New Password</label>
+                <label for="new_password" class="field-label">New Password</label>
                 <div class="relative group">
                   <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
                   <span class="material-symbols-outlined input-icon !left-4">lock_reset</span>
@@ -230,7 +230,7 @@
               </div>
 
               <div class="fin-input-container">
-                <label class="field-label">Confirm New Password</label>
+                <label for="confirm_password" class="field-label">Confirm New Password</label>
                 <div class="relative group">
                   <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
                   <span class="material-symbols-outlined input-icon !left-4">lock_open</span>

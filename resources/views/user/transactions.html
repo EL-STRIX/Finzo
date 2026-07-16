@@ -35,18 +35,18 @@
     <!-- Controls -->
     <div class="p-4 sm:p-6 flex flex-col sm:flex-row gap-4 items-end">
       <div class="w-full sm:flex-1">
-        <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Search</label>
+        <label for="search" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Search</label>
         <div class="relative">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">search</span>
           <input type="text" id="search" class="form-control pl-10 h-11" placeholder="Search transactions..." oninput="renderTable()"/>
         </div>
       </div>
       <div class="w-full sm:w-40">
-        <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">From Date</label>
+        <label for="from-date" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">From Date</label>
         <input type="date" id="from-date" class="form-control h-11" onchange="loadTransactions()"/>
       </div>
       <div class="w-full sm:w-40">
-        <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">To Date</label>
+        <label for="to-date" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">To Date</label>
         <input type="date" id="to-date" class="form-control h-11" onchange="loadTransactions()"/>
       </div>
       <div class="flex gap-2 w-full sm:w-auto">

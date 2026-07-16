@@ -70,7 +70,7 @@
       <div class="ds-card-body p-6 sm:p-8">
         
         <div class="mb-6">
-          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Profile Photo (Selfie or Passport Size) <span class="text-danger-base">*</span></label>
+          <label for="profile-input" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Profile Photo (Selfie or Passport Size) <span class="text-danger-base">*</span></label>
           <div class="border-2 border-dashed border-[var(--color-border-main)] hover:border-primary-base bg-[var(--color-surface-hover)] hover:bg-primary-surface/20 rounded-xl p-5 flex items-center gap-6 cursor-pointer transition-colors" id="profile-box" data-action="document.getElementById(&#039;profile-input&#039;).click()">
             <input type="file" id="profile-input" accept="image/*" class="hidden" onchange="handleUpload(this,'profile-box','profile-preview')"/>
             <div class="w-16 h-16 rounded-full bg-[var(--color-surface-subtle)] border-2 border-[var(--color-border-main)] flex items-center justify-center overflow-hidden shrink-0">
@@ -86,11 +86,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Date of Birth <span class="text-danger-base">*</span></label>
+            <label for="dob" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Date of Birth <span class="text-danger-base">*</span></label>
             <input type="date" class="form-control" id="dob" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Gender <span class="text-danger-base">*</span></label>
+            <label for="gender" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Gender <span class="text-danger-base">*</span></label>
             <div class="finzo-dropdown relative">
               <div class="finzo-dropdown-trigger form-control flex items-center justify-between cursor-pointer">
                 <span class="dropdown-label text-[var(--color-text-muted)]">Select gender</span>
@@ -106,15 +106,15 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Father's Name <span class="text-danger-base">*</span></label>
+            <label for="father-name" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Father's Name <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="father-name" placeholder="Enter father's name" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Mother's Name <span class="text-danger-base">*</span></label>
+            <label for="mother-name" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Mother's Name <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="mother-name" placeholder="Enter mother's name" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Marital Status <span class="text-danger-base">*</span></label>
+            <label for="marital-status" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Marital Status <span class="text-danger-base">*</span></label>
             <div class="finzo-dropdown relative">
               <div class="finzo-dropdown-trigger form-control flex items-center justify-between cursor-pointer">
                 <span class="dropdown-label text-[var(--color-text-muted)]">Select status</span>
@@ -130,11 +130,11 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Nationality <span class="text-danger-base">*</span></label>
+            <label for="nationality" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Nationality <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="nationality" value="Indian" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Occupation <span class="text-danger-base">*</span></label>
+            <label for="occupation" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Occupation <span class="text-danger-base">*</span></label>
             <div class="finzo-dropdown relative">
               <div class="finzo-dropdown-trigger form-control flex items-center justify-between cursor-pointer">
                 <span class="dropdown-label text-[var(--color-text-muted)]">Select occupation</span>
@@ -151,7 +151,7 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Annual Income <span class="text-danger-base">*</span></label>
+            <label for="income" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Annual Income <span class="text-danger-base">*</span></label>
             <div class="finzo-dropdown relative">
               <div class="finzo-dropdown-trigger form-control flex items-center justify-between cursor-pointer">
                 <span class="dropdown-label text-[var(--color-text-muted)]">Select range</span>
@@ -167,7 +167,7 @@
             </div>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Source of Income <span class="text-danger-base">*</span></label>
+            <label for="source-of-income" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Source of Income <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="source-of-income" placeholder="e.g. Salary, Business Returns" required/>
           </div>
         </div>
@@ -187,17 +187,17 @@
       <div class="ds-card-body p-6 sm:p-8">
         
         <div class="mb-6">
-          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Street Address <span class="text-danger-base">*</span></label>
+          <label for="street" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Street Address <span class="text-danger-base">*</span></label>
           <input type="text" class="form-control" id="street" placeholder="House no., building, street" required/>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">City <span class="text-danger-base">*</span></label>
+            <label for="city" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">City <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="city" placeholder="e.g. Kolkata" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">State <span class="text-danger-base">*</span></label>
+            <label for="state" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">State <span class="text-danger-base">*</span></label>
             <div class="finzo-dropdown relative">
               <div class="finzo-dropdown-trigger form-control flex items-center justify-between cursor-pointer">
                 <span class="dropdown-label text-[var(--color-text-muted)]">Select state</span>
@@ -215,11 +215,11 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">PIN Code <span class="text-danger-base">*</span></label>
+            <label for="pincode" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">PIN Code <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="pincode" placeholder="6-digit PIN" maxlength="6" pattern="\d{6}" required/>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Country</label>
+            <label for="id-type" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Country</label>
             <input type="text" class="form-control bg-[var(--color-surface-subtle)]" value="India" readonly />
           </div>
         </div>
@@ -257,14 +257,14 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">ID Number <span class="text-danger-base">*</span></label>
+            <label for="id-number" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">ID Number <span class="text-danger-base">*</span></label>
             <input type="text" class="form-control" id="id-number" placeholder="Enter document number" required/>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Front Side <span class="text-danger-base">*</span></label>
+            <label for="front-input" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Front Side <span class="text-danger-base">*</span></label>
             <div class="border-2 border-dashed border-[var(--color-border-main)] hover:border-primary-base bg-[var(--color-surface-hover)] hover:bg-primary-surface/20 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-40" id="front-box" data-action="document.getElementById(&#039;front-input&#039;).click()">
               <input type="file" id="front-input" accept="image/*" class="hidden" onchange="handleUpload(this,'front-box','front-preview')"/>
               <div id="front-preview-wrap">
@@ -275,7 +275,7 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Back Side <span class="text-danger-base">*</span></label>
+            <label for="back-input" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Back Side <span class="text-danger-base">*</span></label>
             <div class="border-2 border-dashed border-[var(--color-border-main)] hover:border-primary-base bg-[var(--color-surface-hover)] hover:bg-primary-surface/20 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-40" id="back-box" data-action="document.getElementById(&#039;back-input&#039;).click()">
               <input type="file" id="back-input" accept="image/*" class="hidden" onchange="handleUpload(this,'back-box','back-preview')"/>
               <div id="back-preview-wrap">
@@ -310,7 +310,7 @@
       <div class="ds-card-body p-6 sm:p-8">
         
         <div class="mb-6">
-          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Select Account Tier <span class="text-danger-base">*</span></label>
+          <label for="branch" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Select Account Tier <span class="text-danger-base">*</span></label>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="cursor-pointer">
               <input type="radio" name="account-type" value="savings" class="hidden peer" checked/>

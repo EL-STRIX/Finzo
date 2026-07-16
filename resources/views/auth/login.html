@@ -89,7 +89,7 @@
       <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="loginForm">
         <!-- Field: Identity -->
         <div class="fin-input-container">
-          <label class="field-label">Email Address or Account Number</label>
+          <label for="identity" class="field-label">Email Address or Account Number</label>
           <div class="relative">
             <span class="material-symbols-outlined input-icon">alternate_email</span>
             <input id="identity" type="text" placeholder="e.g. FNZ2026XXXX or sujay@email.com" class="fin-input has-icon-left"/>
@@ -99,12 +99,12 @@
         <!-- Field: Password -->
         <div class="fin-input-container" style="animation-delay: 0.1s;">
           <div class="flex justify-between items-center pr-1">
-            <label class="field-label">Password</label>
+            <label for="password" class="field-label">Password</label>
           </div>
           <div class="relative group">
             <span class="material-symbols-outlined input-icon">lock</span>
             <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password">visibility</span>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
           </div>
           <div class="flex justify-end items-center mt-3 px-1">
             <a href="forgot-password.html" class="text-[12px] font-bold text-primary-600 hover:underline tracking-[0.03em]">Forgot Password?</a>
