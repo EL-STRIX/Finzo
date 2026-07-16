@@ -107,7 +107,7 @@
                 const senderInitials = r.from_user_name && r.from_user_name !== 'N/A' ? r.from_user_name.charAt(0).toUpperCase() : 'U';
                 let avatarContent = senderInitials;
                 if (r.from_user_avatar) {
-                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `../../../../public/assets/${r.from_user_avatar}`) + '?v=' + new Date().getTime();
+                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `/Finzo/public/assets/${r.from_user_avatar}`) + '?v=' + new Date().getTime();
                     avatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 }
                 
@@ -157,7 +157,7 @@
                 const receiverInitials = r.to_user_name && r.to_user_name !== 'N/A' ? r.to_user_name.charAt(0).toUpperCase() : 'U';
                 let receiverAvatarContent = receiverInitials;
                 if (r.to_user_avatar) {
-                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `../../../../public/assets/${r.to_user_avatar}`) + '?v=' + new Date().getTime();
+                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `/Finzo/public/assets/${r.to_user_avatar}`) + '?v=' + new Date().getTime();
                     receiverAvatarContent = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 }
                 

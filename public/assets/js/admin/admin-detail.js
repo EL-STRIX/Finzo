@@ -80,7 +80,7 @@
             const photoContainer = document.getElementById('admin-photo-container');
             const initialsSpan = document.getElementById('photo-initials');
             if (admin.profile_photo) {
-                photoContainer.innerHTML = `<img src="../../../../public/assets/${admin.profile_photo}" class="w-full h-full object-cover">`;
+                photoContainer.innerHTML = `<img src="/Finzo/public/assets/${admin.profile_photo}" class="w-full h-full object-cover">`;
             } else {
                 initialsSpan.textContent = admin.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
             }
