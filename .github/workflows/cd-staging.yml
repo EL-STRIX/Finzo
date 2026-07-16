@@ -43,4 +43,5 @@ jobs:
         key: ${{ secrets.STAGING_SSH_KEY }}
         script: |
           cd /var/www/finzo-staging/deployments/
-          bash ../current/ops/deploy.sh staging release.tar.gz
+          tar -xzf release.tar.gz ops/deploy.sh
+          bash ops/deploy.sh staging release.tar.gz

@@ -43,7 +43,8 @@ jobs:
         key: ${{ secrets.PROD_SSH_KEY }}
         script: |
           cd /var/www/finzo/deployments/
-          bash ../current/ops/deploy.sh production release.tar.gz
+          tar -xzf release.tar.gz ops/deploy.sh
+          bash ops/deploy.sh production release.tar.gz
 
   notify:
     name: Deployment Notification
