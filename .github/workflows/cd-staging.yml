@@ -1,8 +1,6 @@
 name: Staging Deployment
 
 on:
-  push:
-    branches: [ develop ]
   workflow_dispatch:
 
 concurrency:

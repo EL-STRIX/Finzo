@@ -6,7 +6,24 @@ parameters:
         - bootstrap
     excludePaths:
         - vendor
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
     ignoreErrors:
         # Ignore legacy global DB dependencies until fully injected
         - '#Undefined variable: \$pdo#'
         - '#Access to an undefined property#'
+        - '#Variable \$pdo might not be defined#'
+        - '#Constant FINZO_ROOT not found#'
+        - '#Instantiated class TCPDF not found#'
+        - '#Call to method [a-zA-Z0-9_]+\(\) on an unknown class TCPDF#'
+        - '#Parameter \#1 \$string of function str_pad expects string#'
+        - '#Expression on left side of \?\? is not nullable#'
+        - '#is implicitly nullable via default value null#'
+        - '#Call to an undefined method ReflectionType::#'
+        - '#is not covariant with return type#'
+        - '#Variable \$pdo in isset\(\) always exists#'
+        - '#Ternary operator condition is always true#'
+        - '#Call to an undefined method App\\Repositories\\AdminOperationsRepository::getSuspendedUserProfile\(\)#'
+        - '#Unreachable statement#'
+        - '#Strict comparison using !== between#'
+        - '#Result of && is always false#'

@@ -25,7 +25,7 @@ class AdminStaffController
         }
     }
 
-    public function addStaff(): array
+    public function addStaff()
     {
         $this->checkCsrf();
         $admin_id = $_SESSION['admin_id'];

@@ -80,6 +80,7 @@ function validate_csrf_token($token)
  * Send a JSON response with appropriate headers and status code.
  * @param mixed $data Data to encode as JSON
  * @param int $status HTTP status code (default 200)
+ * @return never
  */
 function json_response($data, $status = 200)
 {
@@ -128,14 +129,14 @@ function generate_account_number($pdo)
     }
 
     // Pad to 4 digits
-    $accountNo = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+    $accountNo = $prefix . str_pad((string)$nextNum, 4, '0', STR_PAD_LEFT);
 
     // Ensure uniqueness (defensive check)
     $check = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE account_no = ?");
     $check->execute([$accountNo]);
     while ($check->fetchColumn() > 0) {
         $nextNum++;
-        $accountNo = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+        $accountNo = $prefix . str_pad((string)$nextNum, 4, '0', STR_PAD_LEFT);
         $check->execute([$accountNo]);
     }
 
@@ -163,14 +164,14 @@ function generate_staff_id($pdo)
     ");
     $max_id = $stmt->fetchColumn() ?: 0;
     $nextNum = $max_id + 1;
-    $staffId = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+    $staffId = $prefix . str_pad((string)$nextNum, 3, '0', STR_PAD_LEFT);
 
     // Ensure uniqueness (defensive check)
     $check = $pdo->prepare("SELECT COUNT(*) FROM staff WHERE staff_id = ?");
     $check->execute([$staffId]);
     while ($check->fetchColumn() > 0) {
         $nextNum++;
-        $staffId = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+        $staffId = $prefix . str_pad((string)$nextNum, 3, '0', STR_PAD_LEFT);
         $check->execute([$staffId]);
     }
 
@@ -199,7 +200,7 @@ function generate_transaction_id()
  * Write an entry to the audit_log table.
  * @param PDO $pdo Database connection
  * @param string $action_type Type of action (e.g., 'user_login', 'kyc_approved')
- * @param string|null $entity_id ID of the entity acted upon
+ * @param int|string|null $entity_id ID of the entity acted upon
  * @param string|null $entity_type Type of entity (e.g., 'user', 'staff', 'transaction')
  * @param int $actor_id ID of the actor performing the action
  * @param string $actor_role Role of the actor ('admin', 'staff', 'system')

@@ -111,17 +111,17 @@ class StaffRepository extends BaseRepository
         ", [$staff_id]);
     }
 
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         return $this->db->beginTransaction();
     }
 
-    public function commit()
+    public function commit(): bool
     {
         return $this->db->commit();
     }
 
-    public function rollBack()
+    public function rollBack(): bool
     {
         return $this->db->rollBack();
     }

@@ -20,6 +20,43 @@ class AdminStaffBranchService
         return $this->repo;
     }
 
+    public function handleStaffUpload($file, $prefix, $dir, &$errors, $field, $required = false)
+    {
+        if ($required && (!$file || $file['error'] !== UPLOAD_ERR_OK)) {
+            $errors[] = "$field is required.";
+            return '';
+        }
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            return '';
+        }
+
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+        if (!in_array($file['type'], $allowed_types)) {
+            $errors[] = "Invalid file type for $field.";
+            return '';
+        }
+
+        if ($file['size'] > 5 * 1024 * 1024) {
+            $errors[] = "File size for $field must be under 5MB.";
+            return '';
+        }
+
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = $prefix . uniqid() . '.' . $ext;
+        $upload_dir = FINZO_ROOT . '/uploads/' . $dir . '/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        $dest = $upload_dir . $filename;
+        if (move_uploaded_file($file['tmp_name'], $dest)) {
+            return $filename;
+        }
+
+        $errors[] = "Failed to upload $field.";
+        return '';
+    }
+
     public function validateStaffData(array $data)
     {
         $errors = [];
@@ -29,8 +66,8 @@ class AdminStaffBranchService
         if (empty($data['date_of_birth'])) {
             $errors['date_of_birth'] = 'Date of birth is required';
         } else {
-            $dob = new DateTime($data['date_of_birth']);
-            $today = new DateTime();
+            $dob = new \DateTime($data['date_of_birth']);
+            $today = new \DateTime();
             if ($today->diff($dob)->y < 18) {
                 $errors['date_of_birth'] = 'Staff must be at least 18 years old';
             }

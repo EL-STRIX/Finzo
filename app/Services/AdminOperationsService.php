@@ -976,7 +976,7 @@ class AdminOperationsService
             $suspension_notes = $audit['details'];
             $suspended_by = $audit['actor_id'];
 
-            $d = new DateTime($audit['created_at']);
+            $d = new \DateTime($audit['created_at']);
             $suspended_date = $d->format('d M Y');
             $suspended_time = $d->format('h:i A');
         }
@@ -992,7 +992,7 @@ class AdminOperationsService
                     $is_debit = true;
                 }
 
-                $d = new DateTime($tx['created_at']);
+                $d = new \DateTime($tx['created_at']);
                 $transactions[] = [
                     'date' => $d->format('d M Y, h:i A'),
                     'description' => $tx['description'] ?: ucfirst($tx['type']),
@@ -1019,7 +1019,7 @@ class AdminOperationsService
             'account_no' => $account ? $account['account_no'] : 'N/A',
             'account_type' => $account ? ucfirst($account['account_type']) : 'N/A',
             'balance' => $account ? $account['balance'] : 0,
-            'opened_at' => $account && $account['opened_at'] ? (new DateTime($account['opened_at']))->format('d M Y') : 'N/A',
+            'opened_at' => $account && $account['opened_at'] ? (new \DateTime($account['opened_at']))->format('d M Y') : 'N/A',
             'suspension_reason' => $suspension_reason,
             'suspension_notes' => $suspension_notes,
             'suspended_by' => $suspended_by,

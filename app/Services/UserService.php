@@ -27,8 +27,8 @@ class UserService
         if (empty($dob)) {
             $errors['dob'] = 'Date of birth is required';
         } else {
-            $dob_date = new DateTime($dob);
-            $today = new DateTime();
+            $dob_date = new \DateTime($dob);
+            $today = new \DateTime();
             $age = $dob_date->diff($today)->y;
             if ($age < 18) {
                 $errors['dob'] = 'You must be at least 18 years old';
