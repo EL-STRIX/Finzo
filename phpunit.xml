@@ -3,7 +3,9 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
-         cacheDirectory=".phpunit.cache">
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="false"
+         failOnDeprecation="false">
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
@@ -12,6 +14,12 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">app</directory>
+            <directory suffix=".php">config</directory>
+        </include>
+    </source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="DB_NAME" value="finzo_test_db" force="true"/>
