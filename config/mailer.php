@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — PHPMailer Configuration
  * SMTP email wrapper using PHPMailer library.
@@ -20,7 +21,8 @@ if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
     require_once $phpmailer_path . 'Exception.php';
 } else {
     // PHPMailer not found — define a fallback that logs errors
-    function send_email($to_email, $to_name, $subject, $html_body) {
+    function send_email($to_email, $to_name, $subject, $html_body)
+    {
         error_log("PHPMailer not installed. Email to {$to_email} with subject '{$subject}' was not sent.");
         return ['success' => false, 'message' => 'Email service not configured. PHPMailer library not found.'];
     }
@@ -41,7 +43,8 @@ use PHPMailer\PHPMailer\Exception;
  * @return array ['success' => bool, 'message' => string]
  */
 if (!function_exists('send_email')) {
-    function send_email($to_email, $to_name, $subject, $html_body) {
+    function send_email($to_email, $to_name, $subject, $html_body)
+    {
         // In testing mode, do not send actual emails
         if (defined('FINZO_TESTING') && FINZO_TESTING) {
             return ['success' => true, 'message' => 'Email sent successfully (mocked).'];
@@ -74,7 +77,6 @@ if (!function_exists('send_email')) {
             $mail->send();
 
             return ['success' => true, 'message' => 'Email sent successfully'];
-
         } catch (Exception $e) {
             error_log("Finzo Mailer Error: " . $mail->ErrorInfo);
             return ['success' => false, 'message' => 'Email could not be sent. Error: ' . $mail->ErrorInfo];
@@ -89,7 +91,8 @@ if (!function_exists('send_email')) {
  * @param array $variables Associative array of placeholder => value pairs
  * @return string Rendered HTML email content
  */
-function load_email_template($template_name, $variables = []) {
+function load_email_template($template_name, $variables = [])
+{
     $template_path = dirname(__DIR__) . '/resources/views/emails/' . $template_name . '.php';
 
     if (!file_exists($template_path)) {
@@ -116,7 +119,8 @@ function load_email_template($template_name, $variables = []) {
  * @param string $account_no Assigned account number
  * @return array Result from send_email
  */
-function send_welcome_email($pdo, $email, $name, $account_no) {
+function send_welcome_email($pdo, $email, $name, $account_no)
+{
     $html = load_email_template('welcome-email', [
         'name' => $name,
         'account_no' => $account_no,
@@ -140,7 +144,8 @@ function send_welcome_email($pdo, $email, $name, $account_no) {
  * @param string $name Customer full name
  * @return array Result from send_email
  */
-function send_under_review_email($email, $name) {
+function send_under_review_email($email, $name)
+{
     $html = load_email_template('under-review-email', [
         'name' => $name,
         'app_url' => APP_URL
@@ -163,7 +168,8 @@ function send_under_review_email($email, $name) {
  * @param string $account_no Assigned account number
  * @return array Result from send_email
  */
-function send_approved_email($email, $name, $account_no) {
+function send_approved_email($email, $name, $account_no)
+{
     $html = load_email_template('approved-email', [
         'name' => $name,
         'account_no' => $account_no,
@@ -188,7 +194,8 @@ function send_approved_email($email, $name, $account_no) {
  * @param string $reason Rejection reason
  * @return array Result from send_email
  */
-function send_rejected_email($email, $name, $reason) {
+function send_rejected_email($email, $name, $reason)
+{
     $html = load_email_template('rejected-email', [
         'name' => $name,
         'reason' => $reason,
@@ -213,7 +220,8 @@ function send_rejected_email($email, $name, $reason) {
  * @param string $token Reset token
  * @return array Result from send_email
  */
-function send_password_reset_email($email, $name, $token) {
+function send_password_reset_email($email, $name, $token)
+{
     $reset_link = APP_URL . '/views/auth/reset-password.html?token=' . $token;
 
     $html = "<h2>Hi {$name},</h2>"

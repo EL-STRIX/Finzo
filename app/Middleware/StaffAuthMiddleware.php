@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Middleware;
 
 use App\Core\Exceptions\ApiException;
 
-class StaffAuthMiddleware {
-    public function handle() {
+class StaffAuthMiddleware
+{
+    public function handle()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

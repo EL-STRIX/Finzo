@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Helper Functions
  * Shared utility functions used across all API endpoints.
@@ -17,7 +18,8 @@ require_once __DIR__ . '/config.php';
  * @param mixed $data Raw input string or array
  * @return mixed Trimmed string or array
  */
-function clean_input($data) {
+function clean_input($data)
+{
     if (is_array($data)) {
         return array_map('clean_input', $data);
     }
@@ -29,7 +31,8 @@ function clean_input($data) {
  * @param string $data Raw string
  * @return string Encoded string
  */
-function html_encode($data) {
+function html_encode($data)
+{
     return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 }
 
@@ -41,7 +44,8 @@ function html_encode($data) {
  * Generate a new CSRF token and store it in the session.
  * @return string The generated token
  */
-function generate_csrf_token() {
+function generate_csrf_token()
+{
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -56,7 +60,8 @@ function generate_csrf_token() {
  * @param string $token The submitted token
  * @return bool True if valid, false otherwise
  */
-function validate_csrf_token($token) {
+function validate_csrf_token($token)
+{
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -76,14 +81,15 @@ function validate_csrf_token($token) {
  * @param mixed $data Data to encode as JSON
  * @param int $status HTTP status code (default 200)
  */
-function json_response($data, $status = 200) {
+function json_response($data, $status = 200)
+{
     if (defined('FINZO_TESTING') && FINZO_TESTING) {
         if (is_array($data)) {
             $data['status'] = $status;
         }
         throw new \App\Core\Exceptions\TestResponseException(json_encode($data));
     }
-    
+
     if (!headers_sent()) {
         http_response_code($status);
         header('Content-Type: application/json; charset=utf-8');
@@ -103,7 +109,8 @@ function json_response($data, $status = 200) {
  * @param PDO $pdo Database connection
  * @return string Unique account number
  */
-function generate_account_number($pdo) {
+function generate_account_number($pdo)
+{
     $year = date('Y');
     $prefix = ACCOUNT_NUMBER_PREFIX . $year;
 
@@ -145,7 +152,8 @@ function generate_account_number($pdo) {
  * @param PDO $pdo Database connection
  * @return string Unique staff ID
  */
-function generate_staff_id($pdo) {
+function generate_staff_id($pdo)
+{
     $prefix = STAFF_ID_PREFIX;
 
     // Only check the staff table — admin IDs are independent
@@ -178,7 +186,8 @@ function generate_staff_id($pdo) {
  * Format: TXN + 16 hex chars from cryptographic random bytes
  * @return string Transaction ID
  */
-function generate_transaction_id() {
+function generate_transaction_id()
+{
     return 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 }
 
@@ -196,9 +205,10 @@ function generate_transaction_id() {
  * @param string $actor_role Role of the actor ('admin', 'staff', 'system')
  * @param string|null $details Additional details about the action
  */
-function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id, $actor_role, $details = null) {
+function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id, $actor_role, $details = null)
+{
     $ip = get_client_ip();
-    
+
     // 1. Resolve actor_id to its alphanumeric string format (like STF001) and specific role
     $resolved_actor_id = $actor_id;
     $resolved_actor_role = $actor_role;
@@ -211,13 +221,13 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
             $resolved_actor_id = $admin['admin_id'];
             if ($admin['admin_role'] === 'super_admin') {
                 $resolved_actor_role = 'Super Admin';
-            } else if ($admin['admin_role'] === 'moderator') {
+            } elseif ($admin['admin_role'] === 'moderator') {
                 $resolved_actor_role = 'Moderator';
             } else {
                 $resolved_actor_role = 'Admin';
             }
         }
-    } else if ($actor_role === 'staff') {
+    } elseif ($actor_role === 'staff') {
         $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
         $stmt->execute([$actor_id, $actor_id]);
         $staff_id = $stmt->fetchColumn();
@@ -225,10 +235,10 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
             $resolved_actor_id = $staff_id;
         }
         $resolved_actor_role = 'Staff';
-    } else if ($actor_role === 'system') {
+    } elseif ($actor_role === 'system') {
         $resolved_actor_id = 'SYSTEM';
         $resolved_actor_role = 'System';
-    } else if ($actor_role === 'user') {
+    } elseif ($actor_role === 'user') {
         $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
         $stmt->execute([$actor_id, $actor_id]);
         $customer_id = $stmt->fetchColumn();
@@ -247,14 +257,14 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
         if ($admin_id) {
             $resolved_entity_id = $admin_id;
         }
-    } else if ($entity_type === 'staff' && !empty($entity_id)) {
+    } elseif ($entity_type === 'staff' && !empty($entity_id)) {
         $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
         $stmt->execute([$entity_id, $entity_id]);
         $staff_id = $stmt->fetchColumn();
         if ($staff_id) {
             $resolved_entity_id = $staff_id;
         }
-    } else if ($entity_type === 'user' && !empty($entity_id)) {
+    } elseif ($entity_type === 'user' && !empty($entity_id)) {
         $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
         $stmt->execute([$entity_id, $entity_id]);
         $customer_id = $stmt->fetchColumn();
@@ -290,7 +300,8 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
  * @param string $title Notification title
  * @param string $message Notification message body
  */
-function send_notification($pdo, $user_id, $type, $title, $message) {
+function send_notification($pdo, $user_id, $type, $title, $message)
+{
     $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $customer_id = $stmt->fetchColumn();
@@ -313,7 +324,8 @@ function send_notification($pdo, $user_id, $type, $title, $message) {
  * @param float $amount The amount to format
  * @return string Formatted currency string (e.g., ₹1,00,000.00)
  */
-function format_currency($amount) {
+function format_currency($amount)
+{
     // Indian number formatting: 1,00,000.00
     $amount = number_format((float)$amount, 2, '.', '');
     $parts = explode('.', $amount);
@@ -349,7 +361,8 @@ function format_currency($amount) {
  * @param string $pin The 4-digit PIN to verify
  * @return bool True if PIN is correct
  */
-function validate_pin($pdo, $user_id, $pin) {
+function validate_pin($pdo, $user_id, $pin)
+{
     // Resolve to customer_id if numeric
     if (is_numeric($user_id)) {
         $r = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
@@ -375,7 +388,8 @@ function validate_pin($pdo, $user_id, $pin) {
  * Check if the current session has expired.
  * @return bool True if session is expired
  */
-function is_session_expired() {
+function is_session_expired()
+{
     if (isset($_SESSION['last_activity'])) {
         $elapsed = time() - $_SESSION['last_activity'];
         if ($elapsed > SESSION_LIFETIME) {
@@ -388,14 +402,16 @@ function is_session_expired() {
 /**
  * Refresh session activity timestamp.
  */
-function refresh_session_activity() {
+function refresh_session_activity()
+{
     $_SESSION['last_activity'] = time();
 }
 
 /**
  * Destroy the current session completely.
  */
-function destroy_session() {
+function destroy_session()
+{
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
@@ -421,7 +437,8 @@ function destroy_session() {
  * @param string $phone Phone number to validate
  * @return bool True if valid
  */
-function validate_phone($phone) {
+function validate_phone($phone)
+{
     return preg_match('/^[6-9]\d{9}$/', $phone);
 }
 
@@ -430,7 +447,8 @@ function validate_phone($phone) {
  * @param string $pincode Pincode to validate
  * @return bool True if valid
  */
-function validate_pincode($pincode) {
+function validate_pincode($pincode)
+{
     return preg_match('/^[1-9]\d{5}$/', $pincode);
 }
 
@@ -440,7 +458,8 @@ function validate_pincode($pincode) {
  * @param string $password Password to validate
  * @return array ['valid' => bool, 'message' => string]
  */
-function validate_password_strength($password) {
+function validate_password_strength($password)
+{
     if (strlen($password) < 8) {
         return ['valid' => false, 'message' => 'Password must be at least 8 characters long'];
     }
@@ -451,7 +470,8 @@ function validate_password_strength($password) {
  * Get the client's IP address.
  * @return string IP address
  */
-function get_client_ip(): string {
+function get_client_ip(): string
+{
     $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
     $trustProxies = getenv('TRUSTED_PROXIES') === 'true';
 
@@ -483,7 +503,8 @@ function get_client_ip(): string {
  * Get time-based greeting string.
  * @return string "Good Morning", "Good Afternoon", or "Good Evening"
  */
-function get_greeting() {
+function get_greeting()
+{
     $hour = (int) date('H');
     if ($hour < 12) {
         return 'Good Morning';
@@ -505,7 +526,8 @@ function get_greeting() {
  * @param string $action The action they are attempting to perform
  * @return bool True if allowed, otherwise responds with 403 JSON and exits.
  */
-function check_admin_permission($pdo, $admin_id, $action) {
+function check_admin_permission($pdo, $admin_id, $action)
+{
     $stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
     $stmt->execute([$admin_id]);
     $role = $stmt->fetchColumn();
@@ -531,7 +553,7 @@ function check_admin_permission($pdo, $admin_id, $action) {
         'delete_staff'
         // 'add_staff' removed — admin role is allowed to create staff members
     ];
-    
+
     if ($role === 'admin' && in_array($action, $admin_blocked)) {
         throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
@@ -544,7 +566,7 @@ function check_admin_permission($pdo, $admin_id, $action) {
         'approve_kyc_application',
         'reject_kyc_application'
     ];
-    
+
     if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
         throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
@@ -564,7 +586,8 @@ function check_admin_permission($pdo, $admin_id, $action) {
  * @param mixed $default Default value if setting is not found
  * @return mixed Cast setting value
  */
-function get_setting($pdo, $key, $default = null) {
+function get_setting($pdo, $key, $default = null)
+{
     try {
         $stmt = $pdo->prepare("SELECT setting_value, setting_type FROM system_settings WHERE setting_key = ?");
         $stmt->execute([$key]);
@@ -598,7 +621,8 @@ function get_setting($pdo, $key, $default = null) {
  * @param int $admin_id ID of the admin updating the setting
  * @return bool True on success, false on failure
  */
-function update_setting($pdo, $key, $value, $admin_id) {
+function update_setting($pdo, $key, $value, $admin_id)
+{
     // Resolve to alphanumeric admin_id if numeric
     if (is_numeric($admin_id)) {
         $r = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");

@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Core;
 
 use PDO;
 use PDOException;
 use RuntimeException;
 
-class Database {
+class Database
+{
     private static ?Database $instance = null;
     private PDO $pdo;
 
-    private function __construct() {
+    private function __construct()
+    {
         global $pdo;
 
         if ($pdo instanceof PDO) {
@@ -38,7 +41,8 @@ class Database {
         }
     }
 
-    public static function getInstance(): PDO {
+    public static function getInstance(): PDO
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -48,7 +52,8 @@ class Database {
     /**
      * Reset the singleton — used only in tests to get a fresh connection.
      */
-    public static function resetInstance(): void {
+    public static function resetInstance(): void
+    {
         self::$instance = null;
     }
 }

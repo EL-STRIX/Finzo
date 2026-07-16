@@ -1,17 +1,21 @@
 <?php
+
 namespace App\Controllers\Auth;
 
 use App\Services\AuthService;
 use App\Core\Exceptions\ApiException;
 
-class AuthController {
+class AuthController
+{
     private AuthService $service;
 
-    public function __construct(AuthService $service) {
+    public function __construct(AuthService $service)
+    {
         $this->service = $service;
     }
 
-    public function login(): array {
+    public function login(): array
+    {
         $identity = clean_input($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -24,7 +28,7 @@ class AuthController {
         }
 
         $result = $this->service->loginUser($identity, $password);
-        
+
         $user = $result['user'];
         $account = $result['account'];
 
@@ -46,7 +50,8 @@ class AuthController {
         ];
     }
 
-    public function adminLogin(): array {
+    public function adminLogin(): array
+    {
         $csrf_token = $_POST['csrf_token'] ?? '';
         if (empty($csrf_token)) {
             throw new ApiException('Security token missing. Please refresh the page.', 403);
@@ -74,7 +79,8 @@ class AuthController {
         ];
     }
 
-    public function staffLogin(): array {
+    public function staffLogin(): array
+    {
         $csrf_token = $_POST['csrf_token'] ?? '';
         if (empty($csrf_token)) {
             throw new ApiException('Security token missing. Please refresh the page.', 403);
@@ -102,7 +108,8 @@ class AuthController {
         ];
     }
 
-    public function forgotPassword(): array {
+    public function forgotPassword(): array
+    {
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
@@ -121,7 +128,8 @@ class AuthController {
         ];
     }
 
-    public function resetPassword(): array {
+    public function resetPassword(): array
+    {
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
@@ -162,7 +170,8 @@ class AuthController {
         ];
     }
 
-    public function register() {
+    public function register()
+    {
         if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
@@ -216,7 +225,7 @@ class AuthController {
         $redirect = $base . '/views/auth/login.html';
 
         // Router sends 200 for arrays, but register was sending 201.
-        // Let's call json_response directly for 201, or update router. 
+        // Let's call json_response directly for 201, or update router.
         // For simplicity, we just return the array and let Router send 200. It's an API, 200 is acceptable for registration if not strictly RESTful.
         // Actually I can just call json_response here since Router doesn't mind if we exit early.
         json_response([
@@ -226,7 +235,8 @@ class AuthController {
         ], 201);
     }
 
-    public function logout() {
+    public function logout()
+    {
         $role = $_SESSION['role'] ?? '';
         destroy_session();
 
@@ -250,7 +260,8 @@ class AuthController {
         ];
     }
 
-    public function getCsrfToken(): array {
+    public function getCsrfToken(): array
+    {
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');

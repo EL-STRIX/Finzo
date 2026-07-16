@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Services\AdminStaffBranchService;
@@ -6,14 +7,17 @@ use App\Core\Exceptions\ApiException;
 use PDOException;
 use Exception;
 
-class AdminBranchController {
+class AdminBranchController
+{
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service) {
+    public function __construct(AdminStaffBranchService $service)
+    {
         $this->service = $service;
     }
 
-    protected function checkCsrf() {
+    protected function checkCsrf()
+    {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
         if (!validate_csrf_token($csrf)) {
@@ -21,7 +25,8 @@ class AdminBranchController {
         }
     }
 
-    public function deleteBranch(): array {
+    public function deleteBranch(): array
+    {
         $this->checkCsrf();
         $admin_id = $_SESSION['admin_id'];
         $branch_id = intval($_POST['branch_id'] ?? 0);
@@ -35,7 +40,7 @@ class AdminBranchController {
         try {
             $repo = $this->service->getRepo();
             $pdo = $repo->getPDO();
-            
+
             $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
             $stmt->execute([$admin_id]);
             $admin = $stmt->fetch();
@@ -48,17 +53,25 @@ class AdminBranchController {
             $stmt->execute([$branch_id]);
             $branch = $stmt->fetch();
 
-            if (!$branch) throw new ApiException('Branch not found', 404);
-            if ($branch['type'] === 'system') throw new ApiException('System branches cannot be deleted', 403);
-            if (strtolower(trim($branch['name'])) !== strtolower(trim($confirm_name))) throw new ApiException('Branch name confirmation does not match', 400);
+            if (!$branch) {
+                throw new ApiException('Branch not found', 404);
+            }
+            if ($branch['type'] === 'system') {
+                throw new ApiException('System branches cannot be deleted', 403);
+            }
+            if (strtolower(trim($branch['name'])) !== strtolower(trim($confirm_name))) {
+                throw new ApiException('Branch name confirmation does not match', 400);
+            }
 
             $pdo->beginTransaction();
 
             if (isset($_FILES['closure_document']) && $_FILES['closure_document']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['closure_document']['name'], PATHINFO_EXTENSION);
-                $filename = 'closure_doc_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+                $filename = 'closure_doc_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
                 $dest_dir = UPLOAD_BRANCH_CERTS_PATH;
-                if (!is_dir($dest_dir)) mkdir($dest_dir, 0755, true);
+                if (!is_dir($dest_dir)) {
+                    mkdir($dest_dir, 0755, true);
+                }
                 move_uploaded_file($_FILES['closure_document']['tmp_name'], $dest_dir . $filename);
             }
 
@@ -73,25 +86,37 @@ class AdminBranchController {
             $pdo->commit();
             return ['success' => true, 'message' => 'Branch deleted successfully'];
         } catch (PDOException $e) {
-            if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+            if (isset($pdo) && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             throw new ApiException('Database error occurred', 500);
         }
     }
 
-    public function getBranches(): array {
+    public function getBranches(): array
+    {
         $pdo = $this->service->getRepo()->getPDO();
         $search = clean_input($_GET['search'] ?? '');
         $type   = clean_input($_GET['type'] ?? 'all');
         $status = clean_input($_GET['status'] ?? 'all');
-        
+
         $where_clauses = ["1=1"];
         $params = [];
-        
-        if ($type !== 'all' && in_array($type, ['system', 'custom'])) { $where_clauses[] = "b.type = ?"; $params[] = $type; }
-        if ($status !== 'all' && in_array($status, ['active', 'inactive'])) { $where_clauses[] = "b.status = ?"; $params[] = $status; }
+
+        if ($type !== 'all' && in_array($type, ['system', 'custom'])) {
+            $where_clauses[] = "b.type = ?";
+            $params[] = $type;
+        }
+        if ($status !== 'all' && in_array($status, ['active', 'inactive'])) {
+            $where_clauses[] = "b.status = ?";
+            $params[] = $status;
+        }
         if (!empty($search)) {
             $where_clauses[] = "(b.name LIKE ? OR b.branch_code LIKE ? OR b.state LIKE ?)";
-            $s = "%{$search}%"; $params[] = $s; $params[] = $s; $params[] = $s;
+            $s = "%{$search}%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
         }
 
         $where_sql = implode(' AND ', $where_clauses);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Staff Transaction Statement Generator
  * GET endpoint: generates a beautifully styled HTML statement of transactions processed by a staff.
@@ -7,7 +8,9 @@
 require_once dirname(__DIR__, 3) . '/config/db.php';
 require_once dirname(__DIR__, 3) . '/config/functions.php';
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'staff'])) {
     die('Authentication required');
@@ -51,7 +54,6 @@ try {
     ");
     $txn_stmt->execute([$staff_id]);
     $transactions = $txn_stmt->fetchAll();
-
 } catch (PDOException $e) {
     error_log("Statement error: " . $e->getMessage());
     die('Failed to load statement data.');
@@ -105,9 +107,9 @@ try {
         <div>
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Transactions Processed</h4>
             
-            <?php if (empty($transactions)): ?>
+            <?php if (empty($transactions)) : ?>
                 <div class="text-center py-10 text-slate-400 text-sm font-semibold bg-slate-50 rounded-xl">No transactions found for this staff.</div>
-            <?php else: ?>
+            <?php else : ?>
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr>
@@ -118,10 +120,10 @@ try {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <?php foreach ($transactions as $txn): 
+                        <?php foreach ($transactions as $txn) :
                             $color = 'text-slate-700';
                             $details = '';
-                            
+
                             if ($txn['type'] === 'deposit') {
                                 $color = 'text-emerald-600';
                                 $details = 'To: ' . htmlspecialchars($txn['to_name'] ?? '') . ' (' . htmlspecialchars($txn['to_acc'] ?? '') . ')';
@@ -132,13 +134,13 @@ try {
                                 $color = 'text-slate-500';
                                 $details = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc'] ?? '') . ' &rarr; ' . htmlspecialchars($txn['to_acc'] ?? '');
                             }
-                        ?>
+                            ?>
                         <tr>
                             <td class="py-4 px-4 text-xs text-slate-500 font-medium whitespace-nowrap align-top"><?= date('d M Y h:i A', strtotime($txn['created_at'])) ?></td>
                             <td class="py-4 px-4 align-top">
                                 <div class="text-[10px] mono text-slate-400 mb-1 uppercase"><?= htmlspecialchars($txn['txn_id']) ?></div>
                                 <div class="text-sm font-semibold text-slate-700"><?= $details ?></div>
-                                <?php if ($txn['reference_note']): ?>
+                                <?php if ($txn['reference_note']) : ?>
                                     <div class="text-[10px] text-slate-400 mt-0.5 italic">Ref: <?= htmlspecialchars($txn['reference_note']) ?></div>
                                 <?php endif; ?>
                             </td>

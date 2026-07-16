@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FINZO Enterprise Application Bootstrap
  * Handles PSR-4 Autoloading and core initialization.
@@ -21,12 +22,12 @@ if (file_exists($envFile)) {
         if ($line === '' || strpos($line, '#') === 0) {
             continue;
         }
-        
+
         if (strpos($line, '=') !== false) {
             list($name, $value) = explode('=', $line, 2);
             $name = trim($name);
             $value = trim($value);
-            
+
             // Remove inline comments that are not inside quotes
             if (strpos($value, '#') !== false) {
                 // If it starts with quotes, we'll assume it's quoted entirely (simple parser)
@@ -35,12 +36,12 @@ if (file_exists($envFile)) {
                     $value = trim($valueParts[0]);
                 }
             }
-            
+
             // Remove wrapping quotes if present
             if (preg_match('/^([\'"])(.*)\1$/', $value, $matches)) {
                 $value = $matches[2];
             }
-            
+
             // Populate environment variables
             putenv(sprintf('%s=%s', $name, $value));
             $_ENV[$name] = $value;
@@ -55,31 +56,31 @@ if (getenv('APP_ENV') !== 'testing') {
     set_exception_handler(function (\Throwable $e) {
         $debug = getenv('APP_DEBUG') === 'true';
         $statusCode = 500;
-        
+
         // Check if it's our custom ApiException to inherit status codes
         if (method_exists($e, 'getStatusCode')) {
             $statusCode = $e->getStatusCode();
         }
-        
+
         if (!headers_sent()) {
             http_response_code($statusCode);
             header('Content-Type: application/json; charset=utf-8');
         }
-        
+
         $response = [
             'success' => false,
             'message' => $debug ? $e->getMessage() : 'A server error occurred. Please try again later.'
         ];
-        
+
         if (method_exists($e, 'getPayload') && !empty($e->getPayload())) {
             $response = array_merge($response, $e->getPayload());
         }
-        
+
         if ($debug) {
             $response['file'] = $e->getFile();
             $response['line'] = $e->getLine();
         }
-        
+
         error_log("Uncaught Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
         echo json_encode($response);
         exit;

@@ -1,4 +1,5 @@
 <?php
+
 use App\Core\Exceptions\ApiException;
 
 if (session_status() === PHP_SESSION_NONE) {

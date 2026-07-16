@@ -1,36 +1,42 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\AdminManagementRepository;
 use App\Core\Exceptions\ApiException;
 use PDO;
 
-class AdminManagementService {
-    
+class AdminManagementService
+{
     private AdminManagementRepository $repository;
 
-    public function __construct(AdminManagementRepository $repository) {
+    public function __construct(AdminManagementRepository $repository)
+    {
         $this->repository = $repository;
     }
-    
-    public function validateCsrf(string $token): void {
+
+    public function validateCsrf(string $token): void
+    {
         if (!validate_csrf_token($token)) {
             throw new ApiException('Invalid or expired session token', 403);
         }
     }
 
-    public function requireSuperAdmin(): void {
+    public function requireSuperAdmin(): void
+    {
         if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
             throw new ApiException('Forbidden: Only Super Administrator can perform this action.', 403);
         }
     }
-    
-    public function getNextAdminId(): string {
+
+    public function getNextAdminId(): string
+    {
         $max_id = $this->repository->getMaxAdminIdNumber();
         return 'ADM' . str_pad((string)($max_id + 1), 3, '0', STR_PAD_LEFT);
     }
-    
-    public function addAdmin(array $data, ?array $file): array {
+
+    public function addAdmin(array $data, ?array $file): array
+    {
         $full_name = clean_input($data['full_name'] ?? '');
         $date_of_birth = clean_input($data['date_of_birth'] ?? '');
         $gender = clean_input($data['gender'] ?? '');
@@ -57,7 +63,7 @@ class AdminManagementService {
         if (!validate_phone($phone)) {
             throw new ApiException('Invalid phone number (must be 10 digits)', 422, ['field' => 'phone']);
         }
-        
+
         if ($this->repository->getAdminByEmail($email)) {
             throw new ApiException('An admin with this email already exists', 409, ['field' => 'email']);
         }
@@ -65,7 +71,7 @@ class AdminManagementService {
         if ($password !== $confirm_password) {
             throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_password']);
         }
-        
+
         if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[^a-zA-Z0-9]/', $password)) {
             throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'password']);
         }
@@ -89,11 +95,13 @@ class AdminManagementService {
             }
 
             $upload_dir = UPLOAD_ADMIN_PHOTOS_PATH;
-            if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
-            
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+
             $filename = 'admin_' . uniqid() . '.' . $ext;
             $dest = $upload_dir . $filename;
-            
+
             if (!move_uploaded_file($file['tmp_name'], $dest)) {
                 throw new ApiException('Failed to save profile photo', 500);
             }
@@ -124,22 +132,30 @@ class AdminManagementService {
             'access_level' => $access_level,
             'created_by' => $creator_admin_id
         ];
-        
+
         $this->repository->createAdmin($insertData);
-        
-        write_audit_log(\App\Core\Database::getInstance(), 'admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', 
-            "New admin created: {$full_name} | Role: {$admin_role}");
-            
+
+        write_audit_log(
+            \App\Core\Database::getInstance(),
+            'admin_created',
+            $next_admin_id,
+            'admin',
+            $_SESSION['admin_id'],
+            'admin',
+            "New admin created: {$full_name} | Role: {$admin_role}"
+        );
+
         return [
-            'success' => true, 
-            'message' => 'Admin added successfully', 
-            'admin_id' => $next_admin_id, 
+            'success' => true,
+            'message' => 'Admin added successfully',
+            'admin_id' => $next_admin_id,
             'admin_name' => $full_name,
             'code' => 201
         ];
     }
 
-    public function handleAdminAction(string $action, int $target_numeric_id): array {
+    public function handleAdminAction(string $action, int $target_numeric_id): array
+    {
         if ($target_numeric_id <= 0) {
             throw new ApiException('Invalid Admin ID', 400);
         }
@@ -162,9 +178,9 @@ class AdminManagementService {
                 $new_status = ($target['status'] === 'active') ? 'suspended' : 'active';
                 $this->repository->updateStatus($target_numeric_id, $new_status);
                 write_audit_log(\App\Core\Database::getInstance(), 'admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}");
-                
+
                 return [
-                    'success' => true, 
+                    'success' => true,
                     'message' => "Admin account has been " . ($new_status === 'active' ? 'activated' : 'suspended') . " successfully.",
                     'new_status' => $new_status
                 ];
@@ -178,23 +194,24 @@ class AdminManagementService {
                 $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
                 $generated_password = substr(str_shuffle($chars), 0, 10);
                 $hash = password_hash($generated_password, PASSWORD_DEFAULT);
-                
+
                 $this->repository->resetPassword($target_numeric_id, $hash);
                 write_audit_log(\App\Core\Database::getInstance(), 'admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}");
-                
+
                 return [
-                    'success' => true, 
+                    'success' => true,
                     'message' => "A new temporary password has been generated for {$target['full_name']}.",
                     'generated_password' => $generated_password,
                     'expiry' => date('Y-m-d H:i:s', strtotime('+24 hours'))
                 ];
-                
+
             default:
                 throw new ApiException('Invalid action', 400);
         }
     }
 
-    public function getAdminDetail(int $target_id): array {
+    public function getAdminDetail(int $target_id): array
+    {
         if ($target_id <= 0) {
             throw new ApiException('Invalid Admin ID', 400);
         }
@@ -215,8 +232,9 @@ class AdminManagementService {
             'activity' => $activity
         ];
     }
-    
-    public function getAdminProfileForUser(int $admin_id): array {
+
+    public function getAdminProfileForUser(int $admin_id): array
+    {
         $profile = $this->repository->getAdminProfile($admin_id);
         if (!$profile) {
             throw new ApiException('Profile not found', 404);
@@ -228,8 +246,9 @@ class AdminManagementService {
             'activity' => $activity
         ];
     }
-    
-    public function getAdmins(): array {
+
+    public function getAdmins(): array
+    {
         $admins = $this->repository->getAllAdmins();
         return [
             'success' => true,
@@ -237,8 +256,9 @@ class AdminManagementService {
             'total' => count($admins)
         ];
     }
-    
-    public function getLockedAdmins(): array {
+
+    public function getLockedAdmins(): array
+    {
         $locked = $this->repository->getLockedAdmins();
         foreach ($locked as &$admin) {
             $admin['security_question_set'] = (bool)$admin['security_question_set'];
@@ -249,15 +269,16 @@ class AdminManagementService {
             'total' => count($locked)
         ];
     }
-    
-    public function getProfileData(int $admin_id): array {
+
+    public function getProfileData(int $admin_id): array
+    {
         $admin = $this->repository->getAdminById($admin_id);
         if (!$admin) {
             throw new ApiException('Admin not found', 404);
         }
         $recent_activity = $this->repository->getAdminActivity($admin['admin_id'], 10);
         $total_actions = $this->repository->getActivityCount($admin['admin_id']);
-        
+
         return [
             'success' => true,
             'admin'   => [
@@ -273,8 +294,9 @@ class AdminManagementService {
             ]
         ];
     }
-    
-    public function changePassword(int $admin_id, array $data): array {
+
+    public function changePassword(int $admin_id, array $data): array
+    {
         $current = $data['current_password'] ?? '';
         $new_pwd = $data['new_password'] ?? '';
         $confirm = $data['confirm_password'] ?? '';
@@ -297,21 +319,22 @@ class AdminManagementService {
 
         $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
         $this->repository->updateAdminPassword($admin_id, $new_hash);
-        
+
         write_audit_log(\App\Core\Database::getInstance(), 'admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed');
 
         return ['success' => true, 'message' => 'Password changed successfully'];
     }
-    
-    public function uploadAvatar(int $admin_id, ?array $file, bool $isProfileEndpoint = false): array {
+
+    public function uploadAvatar(int $admin_id, ?array $file, bool $isProfileEndpoint = false): array
+    {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new ApiException($isProfileEndpoint ? 'No file uploaded or upload error' : 'No valid file uploaded', 422);
         }
-        
+
         $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file['tmp_name']);
-        
+
         if (!in_array($mime, $allowed_types)) {
             throw new ApiException($isProfileEndpoint ? 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' : 'Profile photo must be JPG or PNG', 422);
         }
@@ -327,12 +350,14 @@ class AdminManagementService {
         }
 
         $filename = 'admin_' . $admin_id . '_' . time() . '.' . $ext;
-        
+
         // upload-admin-photo uses admin-photos, profile uses avatars
         $dir = $isProfileEndpoint ? '/uploads/avatars/' : '/uploads/admin-photos/';
         $upload_dir = dirname(__DIR__, 2) . $dir;
-        if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
-        
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
         $target_path = $upload_dir . $filename;
 
         if (move_uploaded_file($file['tmp_name'], $target_path)) {
@@ -345,9 +370,9 @@ class AdminManagementService {
 
             $relative_path = ($isProfileEndpoint ? 'uploads/avatars/' : '/uploads/admin-photos/') . $filename;
             $this->repository->updateAdminProfileField($admin_id, 'profile_photo', $relative_path);
-            
+
             $_SESSION['admin_profile_photo'] = $relative_path;
-            
+
             if ($isProfileEndpoint) {
                 return ['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path];
             } else {
@@ -356,8 +381,9 @@ class AdminManagementService {
         }
         throw new ApiException('Failed to move uploaded file', 500);
     }
-    
-    public function updateProfile(int $admin_id, array $data): array {
+
+    public function updateProfile(int $admin_id, array $data): array
+    {
         $full_name = clean_input($data['full_name'] ?? $data['name'] ?? '');
         $email     = clean_input($data['email'] ?? '');
         $phone     = clean_input($data['phone'] ?? '');
@@ -382,13 +408,15 @@ class AdminManagementService {
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }
-    
-    public function updateTwoFaSettings(int $admin_id, int $enabled): array {
+
+    public function updateTwoFaSettings(int $admin_id, int $enabled): array
+    {
         $this->repository->updateTwoFa($admin_id, $enabled);
         return ['success' => true, 'message' => '2FA settings updated'];
     }
-    
-    public function updateAdminProfile(int $admin_id, array $data): array {
+
+    public function updateAdminProfile(int $admin_id, array $data): array
+    {
         if (!empty($data['new_password'])) {
             $current_pwd = $data['current_password'] ?? '';
             $new_pwd = $data['new_password'];
@@ -412,7 +440,7 @@ class AdminManagementService {
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($admin_id, $new_hash);
             write_audit_log(\App\Core\Database::getInstance(), 'admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully');
-            
+
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
 

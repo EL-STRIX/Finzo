@@ -1,18 +1,22 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\AuthRepository;
 use App\Core\Exceptions\ApiException;
 use PDOException;
 
-class AuthService {
+class AuthService
+{
     private AuthRepository $repository;
 
-    public function __construct(AuthRepository $repository) {
+    public function __construct(AuthRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function loginUser(string $identity, string $password): array {
+    public function loginUser(string $identity, string $password): array
+    {
         $user = $this->repository->findUserByIdentity($identity);
 
         if (!$user) {
@@ -26,7 +30,7 @@ class AuthService {
 
         if (!password_verify($password, $user['password_hash'])) {
             $new_attempts = $user['failed_attempts'] + 1;
-            
+
             $pdo = $this->repository->getDb();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'customer_lockout_duration', 1800);
@@ -34,15 +38,22 @@ class AuthService {
             if ($new_attempts >= $max_attempts) {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
-                
-                write_audit_log($pdo, 'account_locked', $user['id'], 'user', $user['id'], 'user',
-                    "Account locked after {$new_attempts} failed login attempts");
+
+                write_audit_log(
+                    $pdo,
+                    'account_locked',
+                    $user['id'],
+                    'user',
+                    $user['id'],
+                    'user',
+                    "Account locked after {$new_attempts} failed login attempts"
+                );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateFailedAttempts($user['id'], $new_attempts);
-                
+
                 $remaining = $max_attempts - $new_attempts;
                 throw new ApiException("Invalid email or password. {$remaining} attempt(s) remaining.", 401);
             }
@@ -80,7 +91,8 @@ class AuthService {
         ];
     }
 
-    public function loginAdmin(string $email, string $password): array {
+    public function loginAdmin(string $email, string $password): array
+    {
         $admin = $this->repository->findAdminByEmail($email);
 
         if (!$admin) {
@@ -113,14 +125,14 @@ class AuthService {
 
         if (!password_verify($password, $admin['password_hash'])) {
             $new_attempts = (int)$admin['failed_attempts'] + 1;
-            
+
             if ($new_attempts >= 3) {
                 $auto_unlock_at = $this->repository->lockAdmin($admin['id']);
                 $this->repository->logAdminLock($admin['admin_id'], $ip, $admin['id']);
-                
+
                 $pdo = $this->repository->getDb();
                 write_audit_log($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
-                
+
                 throw new ApiException('Account locked.', 401, [
                     'locked' => true,
                     'security_question_set' => (bool)$admin['security_question_set'],
@@ -128,7 +140,7 @@ class AuthService {
                 ]);
             } else {
                 $this->repository->updateAdminFailedAttempts($admin['id'], $new_attempts);
-                
+
                 $remaining = 3 - $new_attempts;
                 throw new ApiException("Invalid password. {$remaining} attempt(s) remaining before lockout.", 401, [
                     'locked' => false
@@ -156,7 +168,8 @@ class AuthService {
         return $admin;
     }
 
-    public function loginStaff(string $identity, string $password): array {
+    public function loginStaff(string $identity, string $password): array
+    {
         $staff = $this->repository->findStaffByIdentity($identity);
 
         if (!$staff) {
@@ -170,7 +183,7 @@ class AuthService {
 
         if (!password_verify($password, $staff['password_hash'])) {
             $new_attempts = $staff['failed_attempts'] + 1;
-            
+
             $pdo = $this->repository->getDb();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'staff_lockout_duration', 1800);
@@ -179,14 +192,21 @@ class AuthService {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockStaff($staff['id'], $new_attempts, $lock_until);
 
-                write_audit_log($pdo, 'account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff',
-                    "Staff account locked after {$new_attempts} failed login attempts");
+                write_audit_log(
+                    $pdo,
+                    'account_locked',
+                    $staff['staff_id'],
+                    'staff',
+                    $staff['staff_id'],
+                    'staff',
+                    "Staff account locked after {$new_attempts} failed login attempts"
+                );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateStaffFailedAttempts($staff['id'], $new_attempts);
-                
+
                 $remaining = $max_attempts - $new_attempts;
                 throw new ApiException("Invalid email/ID or password. {$remaining} attempt(s) remaining.", 401);
             }
@@ -216,7 +236,8 @@ class AuthService {
         return $staff;
     }
 
-    public function forgotPassword(string $email): bool {
+    public function forgotPassword(string $email): bool
+    {
         $user = $this->repository->findUserByEmail($email);
 
         if (!$user) {
@@ -228,7 +249,7 @@ class AuthService {
             $this->repository->deletePasswordResets($user['customer_id']);
 
             $token = bin2hex(random_bytes(32));
-            $expires_at = date('Y-m-d H:i:s', time() + 3600); 
+            $expires_at = date('Y-m-d H:i:s', time() + 3600);
 
             $this->repository->createPasswordReset($user['customer_id'], $token, $expires_at);
 
@@ -242,7 +263,8 @@ class AuthService {
         }
     }
 
-    public function resetPassword(string $token, string $new_password): bool {
+    public function resetPassword(string $token, string $new_password): bool
+    {
         $reset = $this->repository->findPasswordReset($token);
 
         if (!$reset) {
@@ -273,7 +295,8 @@ class AuthService {
         }
     }
 
-    public function registerUser(string $full_name, string $email, string $phone, string $password): bool {
+    public function registerUser(string $full_name, string $email, string $phone, string $password): bool
+    {
         if ($this->repository->findUserByEmailAny($email)) {
             throw new ApiException('Validation failed', 409, ['errors' => ['email' => 'This email is already registered']]);
         }
@@ -288,7 +311,7 @@ class AuthService {
             $this->repository->beginTransaction();
 
             $customer_id = $this->repository->getNextCustomerId();
-            
+
             $user_id = $this->repository->createUser($customer_id, $full_name, $email, $phone, $password_hash);
 
             if (session_status() === PHP_SESSION_ACTIVE) {
@@ -304,7 +327,7 @@ class AuthService {
 
             $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
             $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo!', $welcomeMsg);
-            
+
             $profileMsg = "Please complete your identity verification to unlock full banking services.";
             $this->repository->createNotification($customer_id, 'security', 'Profile Incomplete', $profileMsg);
 

@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Middleware;
 
 use App\Core\Exceptions\ApiException;
 
-class UserAuthMiddleware {
-    public function handle() {
+class UserAuthMiddleware
+{
+    public function handle()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

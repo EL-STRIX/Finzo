@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Account Statement PDF Generator
  * GET endpoint: generates and streams an account statement as PDF.
@@ -129,7 +130,9 @@ try {
     $fill = false;
 
     foreach ($transactions as $txn) {
-        if ($fill) $pdf->SetFillColor(245, 245, 245);
+        if ($fill) {
+            $pdf->SetFillColor(245, 245, 245);
+        }
 
         $is_credit = ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit' ||
                      ($txn['type'] === 'transfer' && $txn['to_account_id'] == $account_id));
@@ -165,7 +168,6 @@ try {
 
     // Output PDF
     $pdf->Output('Finzo_Statement_' . $account['account_no'] . '_' . date('Ymd') . '.pdf', 'D');
-
 } catch (PDOException $e) {
     error_log("Statement PDF error: " . $e->getMessage());
     json_response(['success' => false, 'message' => 'Failed to generate statement PDF'], 500);

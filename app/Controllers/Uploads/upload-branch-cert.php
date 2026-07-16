@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Upload Branch Certificate Handler
  * POST endpoint: handles branch certificate file uploads.

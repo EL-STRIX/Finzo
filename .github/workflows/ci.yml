@@ -57,7 +57,7 @@ jobs:
       with:
         php-version: '8.4'
     - name: Composer Audit
-      run: composer audit
+      run: composer audit --locked
 
   tests:
     name: Unit & Feature Tests

@@ -1,18 +1,22 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Services\AdminOperationsService;
 use App\Core\Exceptions\ApiException;
 use PDOException;
 
-class AdminOperationsController {
+class AdminOperationsController
+{
     protected AdminOperationsService $service;
 
-    public function __construct(AdminOperationsService $service) {
+    public function __construct(AdminOperationsService $service)
+    {
         $this->service = $service;
     }
 
-    public function auditLog(): array {
+    public function auditLog(): array
+    {
         $filters = [
             'search'      => clean_input($_GET['search'] ?? ''),
             'action_type' => clean_input($_GET['action_type'] ?? 'all'),
@@ -20,7 +24,7 @@ class AdminOperationsController {
             'from_date'   => clean_input($_GET['from_date'] ?? ''),
             'to_date'     => clean_input($_GET['to_date'] ?? '')
         ];
-        
+
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(100, max(10, intval($_GET['per_page'] ?? 25)));
 
@@ -29,7 +33,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function dashboard(): array {
+    public function dashboard(): array
+    {
         $admin_id = $_SESSION['admin_id'];
         $data = $this->service->getDashboardData($admin_id);
 
@@ -53,7 +58,8 @@ class AdminOperationsController {
         ];
     }
 
-    public function deletedUsers(): array {
+    public function deletedUsers(): array
+    {
         $filters = [
             'search'       => clean_input($_GET['search'] ?? ''),
             'date_from'    => clean_input($_GET['date_from'] ?? ''),
@@ -68,7 +74,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function exportUsers() {
+    public function exportUsers()
+    {
         $filters = [
             'search' => clean_input($_GET['search'] ?? ''),
             'status' => clean_input($_GET['status'] ?? 'all')
@@ -78,10 +85,10 @@ class AdminOperationsController {
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=Finzo_Users_Export_' . date('Y-m-d') . '.csv');
-        
+
         $output = fopen('php://output', 'w');
         fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Last Active']);
-        
+
         foreach ($users as $row) {
             $safe_name = $row['full_name'];
             if (preg_match('/^[=\-+@\t\r]/', $safe_name)) {
@@ -98,13 +105,16 @@ class AdminOperationsController {
                 $row['last_login_at'] ?: 'Never'
             ]);
         }
-        
+
         fclose($output);
-        if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after export');
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            throw new \Exception('Exit called after export');
+        }
         exit();
     }
 
-    public function interest(): array {
+    public function interest(): array
+    {
         $admin_id = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -135,7 +145,8 @@ class AdminOperationsController {
         throw new ApiException('Method not allowed', 405);
     }
 
-    public function lockedAccounts(): array {
+    public function lockedAccounts(): array
+    {
         $filters = [
             'tab'    => clean_input($_GET['tab'] ?? 'locked'),
             'search' => clean_input($_GET['search'] ?? ''),
@@ -149,7 +160,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function lockedAccountDetail(): array {
+    public function lockedAccountDetail(): array
+    {
         $user_id = intval($_GET['id'] ?? 0);
         if (!$user_id) {
             throw new ApiException('User ID is required', 422);
@@ -162,7 +174,8 @@ class AdminOperationsController {
         return $result;
     }
 
-    public function pendingApprovals(): array {
+    public function pendingApprovals(): array
+    {
         $filters = [
             'status' => clean_input($_GET['status'] ?? 'all'),
             'search' => clean_input($_GET['search'] ?? '')
@@ -177,7 +190,8 @@ class AdminOperationsController {
         ];
     }
 
-    public function recoverUser(): array {
+    public function recoverUser(): array
+    {
         $user_id = intval($_POST['user_id'] ?? 0);
         if (!$user_id) {
             throw new ApiException('User ID is required', 422);
@@ -191,7 +205,8 @@ class AdminOperationsController {
         return $result;
     }
 
-    public function reviewApplication(): array {
+    public function reviewApplication(): array
+    {
         $admin_id = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -227,7 +242,8 @@ class AdminOperationsController {
         throw new ApiException('Method not allowed', 405);
     }
 
-    public function suspendedUsers(): array {
+    public function suspendedUsers(): array
+    {
         $filters = [
             'search'     => clean_input($_GET['search'] ?? ''),
             'reason'     => clean_input($_GET['reason'] ?? ''),
@@ -242,7 +258,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         $filters = [
             'search'    => clean_input($_GET['search'] ?? ''),
             'type'      => clean_input($_GET['type'] ?? 'all'),
@@ -268,7 +285,9 @@ class AdminOperationsController {
                 }
             }
             fclose($output);
-            if (defined('FINZO_TESTING') && FINZO_TESTING) throw new \Exception('Exit called after export');
+            if (defined('FINZO_TESTING') && FINZO_TESTING) {
+                throw new \Exception('Exit called after export');
+            }
             exit;
         }
 
@@ -277,7 +296,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function users(): array {
+    public function users(): array
+    {
         $filters = [
             'search' => clean_input($_GET['search'] ?? ''),
             'status' => clean_input($_GET['status'] ?? 'all')
@@ -290,9 +310,12 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function suspendedUserDetail(): array {
+    public function suspendedUserDetail(): array
+    {
         $user_id = intval($_GET['id'] ?? 0);
-        if (!$user_id) throw new ApiException('User ID is required', 422);
+        if (!$user_id) {
+            throw new ApiException('User ID is required', 422);
+        }
 
         $data = $this->service->getSuspendedUserDetail($user_id);
         if (!$data['success']) {
@@ -301,10 +324,13 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function unlockAccount(): array {
+    public function unlockAccount(): array
+    {
         $user_id  = intval($_POST['user_id'] ?? 0);
         $admin_id = $_SESSION['admin_id'];
-        if (!$user_id) throw new ApiException('User ID is required', 422);
+        if (!$user_id) {
+            throw new ApiException('User ID is required', 422);
+        }
 
         $data = $this->service->unlockAccount($user_id, $admin_id);
         if (!$data['success']) {
@@ -313,7 +339,8 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function userAction(): array {
+    public function userAction(): array
+    {
         $user_id = intval($_POST['user_id'] ?? 0);
         $action  = clean_input($_POST['action'] ?? '');
         $reason  = clean_input($_POST['reason'] ?? '');
@@ -332,9 +359,12 @@ class AdminOperationsController {
         return $data;
     }
 
-    public function userDetail(): array {
+    public function userDetail(): array
+    {
         $user_id = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
-        if (!$user_id) throw new ApiException('User ID is required', 422);
+        if (!$user_id) {
+            throw new ApiException('User ID is required', 422);
+        }
 
         $data = $this->service->getUserDetail($user_id);
         if (!$data['success']) {

@@ -1,22 +1,27 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\UserRepository;
 use Exception;
 use DateTime;
 
-class UserService {
+class UserService
+{
     protected UserRepository $repository;
 
-    public function __construct(UserRepository $repository) {
+    public function __construct(UserRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function getRepository(): UserRepository {
+    public function getRepository(): UserRepository
+    {
         return $this->repository;
     }
 
-    public function validateKyc(array $data, array $files) {
+    public function validateKyc(array $data, array $files)
+    {
         $errors = [];
         $dob = $data['dob'];
         if (empty($dob)) {
@@ -171,11 +176,12 @@ class UserService {
         if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
             $errors['txn_pin'] = 'Transaction PIN must be exactly 4 digits';
         }
-        
+
         return $errors;
     }
 
-    public function processKycUploads($files, $user_id, $existing_files) {
+    public function processKycUploads($files, $user_id, $existing_files)
+    {
         if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
             mkdir(UPLOAD_ID_DOCUMENTS_PATH, 0755, true);
         }
@@ -184,7 +190,7 @@ class UserService {
             mkdir($profile_upload_path, 0755, true);
         }
 
-        $get_ext = function($file_arr) {
+        $get_ext = function ($file_arr) {
             if (isset($file_arr) && $file_arr['error'] === UPLOAD_ERR_OK) {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mime = finfo_file($finfo, $file_arr['tmp_name']);
@@ -225,18 +231,18 @@ class UserService {
             }
         }
 
-        $profile_pic_path = (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) 
-            ? 'uploads/profiles/' . $profile_filename 
+        $profile_pic_path = (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK)
+            ? 'uploads/profiles/' . $profile_filename
             : $existing_files['profile_picture'];
 
-        $id_front_path = (isset($files['id_front']) && $files['id_front']['error'] === UPLOAD_ERR_OK) 
-            ? 'uploads/id-documents/' . $front_filename 
+        $id_front_path = (isset($files['id_front']) && $files['id_front']['error'] === UPLOAD_ERR_OK)
+            ? 'uploads/id-documents/' . $front_filename
             : $existing_files['id_front_path'];
 
-        $id_back_path = (isset($files['id_back']) && $files['id_back']['error'] === UPLOAD_ERR_OK) 
-            ? 'uploads/id-documents/' . $back_filename 
+        $id_back_path = (isset($files['id_back']) && $files['id_back']['error'] === UPLOAD_ERR_OK)
+            ? 'uploads/id-documents/' . $back_filename
             : $existing_files['id_back_path'];
-            
+
         return [
             'profile_pic_path' => $profile_pic_path,
             'id_front_path' => $id_front_path,

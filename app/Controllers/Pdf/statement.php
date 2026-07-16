@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Account Statement Generator
  * GET endpoint: generates a beautifully styled HTML account statement ready for print.
@@ -7,7 +8,9 @@
 require_once dirname(__DIR__, 3) . '/config/db.php';
 require_once dirname(__DIR__, 3) . '/config/functions.php';
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
     die('Authentication required');
@@ -37,9 +40,9 @@ try {
     $stmt = $pdo->prepare("SELECT id, account_no, account_type, balance, status FROM accounts WHERE user_id = ?");
     $stmt->execute([$user['customer_id']]);
     $accounts = $stmt->fetchAll();
-    
+
     $account_ids = array_column($accounts, 'id');
-    
+
     if (empty($account_ids)) {
         die('No accounts found for user');
     }
@@ -66,7 +69,6 @@ try {
     $params = array_merge($account_ids, $account_ids);
     $txn_stmt->execute($params);
     $transactions = $txn_stmt->fetchAll();
-
 } catch (PDOException $e) {
     error_log("Statement error: " . $e->getMessage());
     die('Failed to load statement data.');
@@ -120,7 +122,7 @@ try {
         <div class="mb-10">
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Account Summary</h4>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <?php foreach ($accounts as $acc): ?>
+                <?php foreach ($accounts as $acc) : ?>
                 <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
                     <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1"><?= htmlspecialchars($acc['account_type']) ?> Account</div>
                     <div class="text-sm font-semibold mono text-slate-600 mb-3"><?= htmlspecialchars($acc['account_no']) ?></div>
@@ -133,9 +135,9 @@ try {
         <div>
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Transaction History</h4>
             
-            <?php if (empty($transactions)): ?>
+            <?php if (empty($transactions)) : ?>
                 <div class="text-center py-10 text-slate-400 text-sm font-semibold bg-slate-50 rounded-xl">No transactions found.</div>
-            <?php else: ?>
+            <?php else : ?>
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr>
@@ -146,14 +148,14 @@ try {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <?php foreach ($transactions as $txn): 
+                        <?php foreach ($transactions as $txn) :
                             $is_credit = in_array($txn['to_acc'], array_column($accounts, 'account_no'));
                             $is_debit = in_array($txn['from_acc'], array_column($accounts, 'account_no'));
-                            
+
                             $sign = '';
                             $color = 'text-slate-700';
                             $counterparty = '';
-                            
+
                             if ($is_credit && !$is_debit) {
                                 $sign = '+';
                                 $color = 'text-emerald-600';
@@ -167,18 +169,18 @@ try {
                                 $color = 'text-slate-500';
                                 $counterparty = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc'] ?? '') . ' &rarr; ' . htmlspecialchars($txn['to_acc'] ?? '');
                             }
-                        ?>
+                            ?>
                         <tr>
                             <td class="py-4 px-4 text-xs text-slate-500 font-medium whitespace-nowrap align-top"><?= date('d M Y', strtotime($txn['created_at'])) ?></td>
                             <td class="py-4 px-4 align-top">
                                 <div class="text-sm font-semibold text-slate-700"><?= htmlspecialchars($txn['description'] ?: 'Transaction') ?></div>
-                                <?php if ($counterparty): ?>
+                                <?php if ($counterparty) : ?>
                                     <div class="text-[10px] text-slate-500 mt-1"><?= $counterparty ?></div>
                                 <?php endif; ?>
-                                <?php if ($txn['reference_note']): ?>
+                                <?php if ($txn['reference_note']) : ?>
                                     <div class="text-[10px] text-slate-400 mt-0.5 italic">Ref: <?= htmlspecialchars($txn['reference_note']) ?></div>
                                 <?php endif; ?>
-                                <?php if ($txn['staff_name']): ?>
+                                <?php if ($txn['staff_name']) : ?>
                                     <div class="text-[10px] text-slate-400 mt-0.5">Processed By: <?= htmlspecialchars($txn['staff_name']) ?></div>
                                 <?php endif; ?>
                                 <div class="text-[10px] mono text-slate-400 mt-1 uppercase"><?= htmlspecialchars($txn['txn_id']) ?></div>
@@ -188,7 +190,7 @@ try {
                             </td>
                             <td class="py-4 px-4 text-right align-top">
                                 <div class="text-sm font-black <?= $color ?>"><?= $sign . ' ' . CURRENCY_SYMBOL . number_format($txn['amount'], 2) ?></div>
-                                <?php if ($txn['balance_after'] !== null): ?>
+                                <?php if ($txn['balance_after'] !== null) : ?>
                                     <div class="text-[10px] font-semibold text-slate-400 mt-1">Bal: <?= CURRENCY_SYMBOL . number_format($txn['balance_after'], 2) ?></div>
                                 <?php endif; ?>
                             </td>

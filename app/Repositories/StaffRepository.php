@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Repositories;
 
 use PDO;
 
-class StaffRepository extends BaseRepository {
-
-    public function findAccountByNo(string $account_no) {
+class StaffRepository extends BaseRepository
+{
+    public function findAccountByNo(string $account_no)
+    {
         return $this->fetchOne("
             SELECT u.full_name, a.account_no, a.account_type, a.status, a.balance, a.daily_limit
             FROM accounts a
@@ -14,7 +16,8 @@ class StaffRepository extends BaseRepository {
         ", [$account_no]);
     }
 
-    public function getUsedDailyLimit(string $account_no) {
+    public function getUsedDailyLimit(string $account_no)
+    {
         $stmt = $this->db->prepare("
             SELECT COALESCE(SUM(amount), 0) FROM transactions 
             WHERE from_account_id = (SELECT id FROM accounts WHERE account_no = ?)
@@ -26,20 +29,24 @@ class StaffRepository extends BaseRepository {
         return (float)$stmt->fetchColumn();
     }
 
-    public function findStaffById(int $staff_id) {
+    public function findStaffById(int $staff_id)
+    {
         return $this->fetchOne("SELECT * FROM staff WHERE id = ?", [$staff_id]);
     }
-    
-    public function findStaffPasswordHash(int $staff_id) {
+
+    public function findStaffPasswordHash(int $staff_id)
+    {
         $row = $this->fetchOne("SELECT password_hash FROM staff WHERE id = ?", [$staff_id]);
         return $row ? $row['password_hash'] : null;
     }
 
-    public function updateStaffPassword(int $staff_id, string $new_hash): bool {
+    public function updateStaffPassword(int $staff_id, string $new_hash): bool
+    {
         return $this->execute("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?", [$new_hash, $staff_id]);
     }
 
-    public function getStaffShiftDeposits(int $staff_id) {
+    public function getStaffShiftDeposits(int $staff_id)
+    {
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
@@ -48,7 +55,8 @@ class StaffRepository extends BaseRepository {
         ", [$staff_id]);
     }
 
-    public function getStaffShiftWithdrawals(int $staff_id) {
+    public function getStaffShiftWithdrawals(int $staff_id)
+    {
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
@@ -57,7 +65,8 @@ class StaffRepository extends BaseRepository {
         ", [$staff_id]);
     }
 
-    public function getStaffTotalTransactionsToday(int $staff_id) {
+    public function getStaffTotalTransactionsToday(int $staff_id)
+    {
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as count
             FROM transactions
@@ -68,7 +77,8 @@ class StaffRepository extends BaseRepository {
         return (int)$stmt->fetchColumn();
     }
 
-    public function getStaffRecentActivity(int $staff_id) {
+    public function getStaffRecentActivity(int $staff_id)
+    {
         return $this->fetchAll("
             SELECT
                 t.txn_id,
@@ -91,7 +101,8 @@ class StaffRepository extends BaseRepository {
         ", [$staff_id]);
     }
 
-    public function getStaffInfoWithBranch(int $staff_id) {
+    public function getStaffInfoWithBranch(int $staff_id)
+    {
         return $this->fetchOne("
             SELECT s.staff_id, s.full_name, s.designation, s.profile_photo, b.name as branch_name
             FROM staff s
@@ -100,19 +111,23 @@ class StaffRepository extends BaseRepository {
         ", [$staff_id]);
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         return $this->db->beginTransaction();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->db->commit();
     }
 
-    public function rollBack() {
+    public function rollBack()
+    {
         return $this->db->rollBack();
     }
 
-    public function findAccountForUpdate(string $account_no) {
+    public function findAccountForUpdate(string $account_no)
+    {
         return $this->fetchOne("
             SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
             FROM accounts a
@@ -122,15 +137,18 @@ class StaffRepository extends BaseRepository {
         ", [$account_no]);
     }
 
-    public function creditAccount(int $account_id, float $amount) {
+    public function creditAccount(int $account_id, float $amount)
+    {
         return $this->execute("UPDATE accounts SET balance = balance + ?, updated_at = NOW() WHERE id = ?", [$amount, $account_id]);
     }
 
-    public function debitAccount(int $account_id, float $amount) {
+    public function debitAccount(int $account_id, float $amount)
+    {
         return $this->execute("UPDATE accounts SET balance = balance - ?, updated_at = NOW() WHERE id = ?", [$amount, $account_id]);
     }
 
-    public function recordTransaction(array $data) {
+    public function recordTransaction(array $data)
+    {
         return $this->execute("
             INSERT INTO transactions
                 (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, reference_note, status, processed_by_staff_id, created_at)
@@ -149,11 +167,13 @@ class StaffRepository extends BaseRepository {
         ]);
     }
 
-    public function getPDO(): PDO {
+    public function getPDO(): PDO
+    {
         return $this->db;
     }
 
-    public function countTransactionsByStaff(int $staff_id, array $where_clauses, array $params) {
+    public function countTransactionsByStaff(int $staff_id, array $where_clauses, array $params)
+    {
         $where_sql = implode(' AND ', $where_clauses);
         $count_sql = "
             SELECT COUNT(*)
@@ -167,7 +187,8 @@ class StaffRepository extends BaseRepository {
         return (int)$stmt->fetchColumn();
     }
 
-    public function getTransactionsByStaff(int $staff_id, array $where_clauses, array $params, int $per_page, int $offset) {
+    public function getTransactionsByStaff(int $staff_id, array $where_clauses, array $params, int $per_page, int $offset)
+    {
         $where_sql = implode(' AND ', $where_clauses);
         $sql = "
             SELECT
@@ -188,13 +209,14 @@ class StaffRepository extends BaseRepository {
             ORDER BY t.created_at DESC
             LIMIT {$per_page} OFFSET {$offset}
         ";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
-    public function getTransactionReceipt(string $txn_id) {
+    public function getTransactionReceipt(string $txn_id)
+    {
         return $this->fetchOne("
             SELECT
                 t.txn_id,
@@ -224,7 +246,8 @@ class StaffRepository extends BaseRepository {
         ", [$txn_id]);
     }
 
-    public function getFullStaffProfile(int $staff_id) {
+    public function getFullStaffProfile(int $staff_id)
+    {
         return $this->fetchOne("
             SELECT
                 s.id, s.full_name, s.date_of_birth, s.gender, s.profile_photo,
@@ -244,7 +267,8 @@ class StaffRepository extends BaseRepository {
         ", [$staff_id]);
     }
 
-    public function updateStaffProfile(int $staff_id, array $fields, array $params) {
+    public function updateStaffProfile(int $staff_id, array $fields, array $params)
+    {
         $fields[] = 'updated_at = NOW()';
         $params[] = $staff_id;
         $sql = "UPDATE staff SET " . implode(', ', $fields) . " WHERE id = ?";

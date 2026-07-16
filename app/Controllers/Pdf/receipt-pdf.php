@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Transaction Receipt Generator
  * GET endpoint: generates a beautifully styled HTML receipt ready for print.
@@ -9,7 +10,9 @@ require_once dirname(__DIR__, 3) . '/config/db.php';
 require_once dirname(__DIR__, 3) . '/config/functions.php';
 
 // Allow both user and staff to generate receipts
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
@@ -59,8 +62,10 @@ try {
         $stmt->execute([$txn_id]);
         $txn_accts = $stmt->fetch();
 
-        if (!in_array($txn_accts['from_account_id'], $user_accounts) &&
-            !in_array($txn_accts['to_account_id'], $user_accounts)) {
+        if (
+            !in_array($txn_accts['from_account_id'], $user_accounts) &&
+            !in_array($txn_accts['to_account_id'], $user_accounts)
+        ) {
             die('Access denied');
         }
     }
@@ -144,7 +149,7 @@ $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
                     <span class="value"><?= date('d M Y, h:i A', strtotime($txn['created_at'])) ?></span>
                 </div>
                 
-                <?php if ($txn['type'] === 'transfer'): ?>
+                <?php if ($txn['type'] === 'transfer') : ?>
                     <div class="receipt-row">
                         <span class="label">From Account</span>
                         <div class="text-right">
@@ -159,7 +164,7 @@ $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
                             <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
-                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit'): ?>
+                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit') : ?>
                     <div class="receipt-row">
                         <span class="label">Credited To</span>
                         <div class="text-right">
@@ -167,7 +172,7 @@ $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
                             <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
                         </div>
                     </div>
-                <?php elseif ($txn['type'] === 'withdrawal'): ?>
+                <?php elseif ($txn['type'] === 'withdrawal') : ?>
                     <div class="receipt-row">
                         <span class="label">Debited From</span>
                         <div class="text-right">
@@ -177,21 +182,21 @@ $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
                     </div>
                 <?php endif; ?>
 
-                <?php if ($txn['description']): ?>
+                <?php if ($txn['description']) : ?>
                 <div class="receipt-row">
                     <span class="label">Description</span>
                     <span class="value text-right max-w-[250px]"><?= htmlspecialchars($txn['description']) ?></span>
                 </div>
                 <?php endif; ?>
 
-                <?php if ($txn['reference_note']): ?>
+                <?php if ($txn['reference_note']) : ?>
                 <div class="receipt-row">
                     <span class="label">Reference</span>
                     <span class="value mono"><?= htmlspecialchars($txn['reference_note']) ?></span>
                 </div>
                 <?php endif; ?>
                 
-                <?php if ($txn['balance_after'] !== null): ?>
+                <?php if ($txn['balance_after'] !== null) : ?>
                 <div class="receipt-row">
                     <span class="label">Balance After</span>
                     <span class="value"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>

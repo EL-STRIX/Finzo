@@ -1,18 +1,22 @@
 <?php
+
 namespace App\Repositories;
 
 use PDO;
 use PDOException;
 
-class AdminOperationsRepository extends BaseRepository {
+class AdminOperationsRepository extends BaseRepository
+{
     // ---------------------------------------------------------
     // Audit Log Methods
     // ---------------------------------------------------------
-    public function countAuditLogs(string $whereSql, array $params): int {
+    public function countAuditLogs(string $whereSql, array $params): int
+    {
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         return $this->fetchAll("
             SELECT al.id, al.action_type, al.entity_id, al.entity_type,
                    al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
@@ -31,12 +35,14 @@ class AdminOperationsRepository extends BaseRepository {
         ", $params);
     }
 
-    public function getAuditLogActionTypes(): array {
+    public function getAuditLogActionTypes(): array
+    {
         $stmt = $this->db->query("SELECT DISTINCT action_type FROM audit_log ORDER BY action_type");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getAuditLogStats(string $whereSql, array $params): array {
+    public function getAuditLogStats(string $whereSql, array $params): array
+    {
         return $this->fetchOne("
             SELECT 
                 SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
@@ -50,13 +56,15 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Dashboard Methods
     // ---------------------------------------------------------
-    public function getSingleStat(string $sql, array $params = []) {
+    public function getSingleStat(string $sql, array $params = [])
+    {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchColumn();
     }
 
-    public function getDashboardRecentUsers(): array {
+    public function getDashboardRecentUsers(): array
+    {
         return $this->fetchAll("
             SELECT id, full_name, email, status, created_at, profile_picture
             FROM users
@@ -66,7 +74,8 @@ class AdminOperationsRepository extends BaseRepository {
         ");
     }
 
-    public function getMonthlyChartDataRow(string $monthDate): array {
+    public function getMonthlyChartDataRow(string $monthDate): array
+    {
         return $this->fetchOne("
             SELECT
                 COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as deposits,
@@ -79,14 +88,16 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$monthDate]);
     }
 
-    public function getAdminById(int $adminId): ?array {
+    public function getAdminById(int $adminId): ?array
+    {
         return $this->fetchOne("SELECT full_name, email, profile_photo, admin_role, admin_id FROM admin_users WHERE id = ?", [$adminId]) ?: null;
     }
 
     // ---------------------------------------------------------
     // Deleted Users Methods
     // ---------------------------------------------------------
-    public function countDeletedUsers(string $whereSql, array $params): int {
+    public function countDeletedUsers(string $whereSql, array $params): int
+    {
         return (int)$this->fetchOne("
             SELECT COUNT(*) as count
             FROM users u 
@@ -95,7 +106,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", $params)['count'] ?? 0;
     }
 
-    public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
                    a.account_no, a.account_type, a.balance
@@ -110,7 +122,8 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Interest Rate Methods
     // ---------------------------------------------------------
-    public function getCurrentInterestRate(): ?array {
+    public function getCurrentInterestRate(): ?array
+    {
         return $this->fetchOne("
             SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
@@ -121,7 +134,8 @@ class AdminOperationsRepository extends BaseRepository {
         ") ?: null;
     }
 
-    public function getInterestHistory(): array {
+    public function getInterestHistory(): array
+    {
         return $this->fetchAll("
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
@@ -132,40 +146,47 @@ class AdminOperationsRepository extends BaseRepository {
         ");
     }
 
-    public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void {
+    public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void
+    {
         $this->execute("
             INSERT INTO interest_rates (rate, apply_from_type, apply_from_date, changed_by_admin_id, created_at)
             VALUES (?, ?, ?, ?, NOW())
         ", [$rate, $applyFrom, $applyDate, $adminDisplayId]);
     }
 
-    public function updateActiveSavingsInterestRate(float $rate): void {
+    public function updateActiveSavingsInterestRate(float $rate): void
+    {
         $this->execute("UPDATE accounts SET interest_rate = ?, updated_at = NOW() WHERE status = 'active' AND account_type = 'savings'", [$rate]);
     }
 
-    public function getActiveSavingsAccounts(): array {
+    public function getActiveSavingsAccounts(): array
+    {
         return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0");
     }
 
-    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void {
+    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
+    {
         $this->execute("
             INSERT INTO transactions (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, reference_note, status, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ", [$txnId, $fromAccountId, $toAccountId, $type, $amount, $balanceAfter, $description, $referenceNote, $status]);
     }
 
-    public function updateAccountBalance(float $balance, int $accountId): void {
+    public function updateAccountBalance(float $balance, int $accountId): void
+    {
         $this->execute("UPDATE accounts SET balance = ?, updated_at = NOW() WHERE id = ?", [$balance, $accountId]);
     }
 
-    public function addNotification(int $userId, string $type, string $title, string $message): void {
+    public function addNotification(int $userId, string $type, string $title, string $message): void
+    {
         $this->execute("
             INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
             VALUES (?, ?, ?, ?, 0, NOW())
         ", [$userId, $type, $title, $message]);
     }
 
-    public function getExportUsers(string $whereSql, array $params): array {
+    public function getExportUsers(string $whereSql, array $params): array
+    {
         return $this->fetchAll("
             SELECT
                 u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at
@@ -178,11 +199,13 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Locked Accounts Methods
     // ---------------------------------------------------------
-    public function countLockedAccounts(string $whereSql, array $params): int {
+    public function countLockedAccounts(string $whereSql, array $params): int
+    {
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         return $this->fetchAll("
             SELECT u.id, u.full_name, u.email, u.phone, u.status, u.profile_picture,
                    u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
@@ -196,7 +219,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", $params);
     }
 
-    public function getLockedAccountDetail(int $userId): ?array {
+    public function getLockedAccountDetail(int $userId): ?array
+    {
         return $this->fetchOne("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.profile_picture, u.failed_attempts, u.locked_until,
@@ -208,7 +232,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$userId]) ?: null;
     }
 
-    public function getUserAuditLogs(string $customerId): array {
+    public function getUserAuditLogs(string $customerId): array
+    {
         return $this->fetchAll("
             SELECT action_type, entity_type, entity_id, ip_address, created_at, details
             FROM audit_log
@@ -222,11 +247,13 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Pending Approvals Methods
     // ---------------------------------------------------------
-    public function countPendingApprovals(string $whereSql, array $params): int {
+    public function countPendingApprovals(string $whereSql, array $params): int
+    {
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.kyc_submitted_at, u.created_at, u.profile_picture,
@@ -248,7 +275,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", $params);
     }
 
-    public function getPendingApprovalsStats(): array {
+    public function getPendingApprovalsStats(): array
+    {
         return $this->fetchOne("
             SELECT
                 SUM(CASE WHEN status = 'pending'      THEN 1 ELSE 0 END) as pending_review,
@@ -263,11 +291,13 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Recover User Methods
     // ---------------------------------------------------------
-    public function getUserForRecovery(int $userId): ?array {
+    public function getUserForRecovery(int $userId): ?array
+    {
         return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId]) ?: null;
     }
 
-    public function recoverUser(int $userId, string $customerId): void {
+    public function recoverUser(int $userId, string $customerId): void
+    {
         $this->execute("UPDATE users SET is_deleted = 0, deleted_at = NULL, status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
         $this->execute("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ? AND status = 'closed'", [$customerId]);
     }
@@ -275,7 +305,8 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Review Application Methods
     // ---------------------------------------------------------
-    public function getApplicationUser(int $userId): ?array {
+    public function getApplicationUser(int $userId): ?array
+    {
         return $this->fetchOne("
             SELECT id, customer_id, full_name, email, phone, status, profile_picture, dob, gender, father_name, mother_name, marital_status, nationality,
                    occupation, annual_income, source_of_income, street, city, state, pincode, country,
@@ -285,11 +316,13 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$userId]) ?: null;
     }
 
-    public function getAccountPreferences(string $customerId): ?array {
+    public function getAccountPreferences(string $customerId): ?array
+    {
         return $this->fetchOne("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?", [$customerId]) ?: null;
     }
 
-    public function getApplicationAuditLogs(string $customerId): array {
+    public function getApplicationAuditLogs(string $customerId): array
+    {
         return $this->fetchAll("
             SELECT details, created_at 
             FROM audit_log 
@@ -298,11 +331,13 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$customerId]);
     }
 
-    public function getAccountIdByCustomerId(string $customerId): ?int {
+    public function getAccountIdByCustomerId(string $customerId): ?int
+    {
         return (int)($this->fetchOne("SELECT id FROM accounts WHERE user_id = ?", [$customerId])['id'] ?? 0) ?: null;
     }
 
-    public function approveApplication(int $userId, string $customerId, string $accountNo, string $adminDisplayId): void {
+    public function approveApplication(int $userId, string $customerId, string $accountNo, string $adminDisplayId): void
+    {
         $this->execute("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
         $this->execute("
             UPDATE accounts SET
@@ -318,7 +353,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$adminDisplayId, $customerId]);
     }
 
-    public function rejectApplication(int $userId, string $customerId, string $reason, string $adminDisplayId): void {
+    public function rejectApplication(int $userId, string $customerId, string $reason, string $adminDisplayId): void
+    {
         $this->execute("UPDATE users SET status = 'rejected', rejection_reason = ?, updated_at = NOW() WHERE id = ?", [$reason, $userId]);
         $this->execute("UPDATE accounts SET status = 'rejected', updated_at = NOW() WHERE user_id = ?", [$customerId]);
         $this->execute("
@@ -331,14 +367,16 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$adminDisplayId, $reason, $customerId]);
     }
 
-    public function saveAdminNotes(string $customerId, string $notes): void {
+    public function saveAdminNotes(string $customerId, string $notes): void
+    {
         $this->execute("UPDATE kyc_applications SET admin_notes = ? WHERE user_id = ?", [$notes, $customerId]);
     }
 
     // ---------------------------------------------------------
     // Suspended Users Methods
     // ---------------------------------------------------------
-    public function countSuspendedUsers(string $whereSql, array $params): int {
+    public function countSuspendedUsers(string $whereSql, array $params): int
+    {
         $sql = "
             SELECT COUNT(DISTINCT u.id) as count
             FROM users u
@@ -358,7 +396,8 @@ class AdminOperationsRepository extends BaseRepository {
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
     }
 
-    public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         $sql = "
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
                    a.account_no, a.account_type, a.balance,
@@ -387,11 +426,13 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Transactions Methods
     // ---------------------------------------------------------
-    public function countTransactions(string $baseSql, array $params): int {
+    public function countTransactions(string $baseSql, array $params): int
+    {
         return (int)$this->fetchOne("SELECT COUNT(*) as count " . $baseSql, $params)['count'] ?? 0;
     }
 
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset): array {
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset): array
+    {
         $sql = "
             SELECT
                 t.id, t.txn_id, t.type, t.amount, t.balance_after, t.description,
@@ -410,7 +451,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $this->fetchAll($sql, $params);
     }
 
-    public function getTransactionsSummary(string $baseSql, array $params): array {
+    public function getTransactionsSummary(string $baseSql, array $params): array
+    {
         $sql = "
             SELECT
                 COUNT(*) as total_count,
@@ -423,7 +465,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $this->fetchOne($sql, $params);
     }
 
-    public function exportTransactions(string $baseSql, array $params): array {
+    public function exportTransactions(string $baseSql, array $params): array
+    {
         $sql = "
             SELECT
                 t.txn_id as 'Transaction ID',
@@ -446,11 +489,13 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Users Methods
     // ---------------------------------------------------------
-    public function countUsers(string $whereSql, array $params): int {
+    public function countUsers(string $whereSql, array $params): int
+    {
         return (int)$this->fetchOne("SELECT COUNT(u.id) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset): array {
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset): array
+    {
         $sql = "
             SELECT
                 u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
@@ -462,7 +507,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $this->fetchAll($sql, $params);
     }
 
-    public function getUsersStats(): array {
+    public function getUsersStats(): array
+    {
         return $this->fetchOne("
             SELECT
                 SUM(CASE WHEN is_deleted = 0 THEN 1 ELSE 0 END) as total_users,
@@ -477,7 +523,8 @@ class AdminOperationsRepository extends BaseRepository {
     // ---------------------------------------------------------
     // Suspended User Detail Methods
     // ---------------------------------------------------------
-    public function getSuspendedUser(int $userId): ?array {
+    public function getSuspendedUser(int $userId): ?array
+    {
         return $this->fetchOne("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
                    occupation, annual_income, street, city, state, pincode, country,
@@ -486,7 +533,8 @@ class AdminOperationsRepository extends BaseRepository {
         ", [$userId]);
     }
 
-    public function getSuspendedUserAccount(string $customerId) {
+    public function getSuspendedUserAccount(string $customerId)
+    {
         $stmt = $this->db->prepare("
             SELECT account_no, account_type, balance, status, created_at as opened_at
             FROM accounts WHERE user_id = ?
@@ -495,7 +543,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getUserSuspensionAudit(string $customerId) {
+    public function getUserSuspensionAudit(string $customerId)
+    {
         $stmt = $this->db->prepare("
             SELECT details, created_at, actor_id
             FROM audit_log
@@ -506,7 +555,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getRecentTransactions(string $accountNo, int $limit) {
+    public function getRecentTransactions(string $accountNo, int $limit)
+    {
         $stmt = $this->db->prepare("
             SELECT t.txn_id, t.type, t.amount, t.description, t.status, t.created_at
             FROM transactions t
@@ -524,13 +574,15 @@ class AdminOperationsRepository extends BaseRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserForUnlock(int $userId) {
+    public function getUserForUnlock(int $userId)
+    {
         $stmt = $this->db->prepare("SELECT id, customer_id, full_name, email, failed_attempts FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function unlockUserAccount(string $passwordHash, int $userId) {
+    public function unlockUserAccount(string $passwordHash, int $userId)
+    {
         $stmt = $this->db->prepare("
             UPDATE users 
             SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'done', updated_at = NOW() 
@@ -539,78 +591,91 @@ class AdminOperationsRepository extends BaseRepository {
         $stmt->execute([$passwordHash, $userId]);
     }
 
-    public function getUserForAction(int $userId) {
+    public function getUserForAction(int $userId)
+    {
         $stmt = $this->db->prepare("SELECT id, customer_id, full_name, email, status, is_deleted FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getUserForActionByCustomer(string $customerId) {
+    public function getUserForActionByCustomer(string $customerId)
+    {
         $stmt = $this->db->prepare("SELECT id, balance FROM accounts WHERE user_id = ?");
         $stmt->execute([$customerId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAdminPassword(int $adminId) {
+    public function getAdminPassword(int $adminId)
+    {
         $stmt = $this->db->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
         $stmt->execute([$adminId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function suspendUserAccount(int $userId, string $customerId) {
+    public function suspendUserAccount(int $userId, string $customerId)
+    {
         $stmt = $this->db->prepare("UPDATE users SET status = 'suspended', updated_at = NOW() WHERE id = ?");
         $stmt->execute([$userId]);
         $stmt = $this->db->prepare("UPDATE accounts SET status = 'suspended', updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
-    public function reinstateUserAccount(int $userId, string $customerId) {
+    public function reinstateUserAccount(int $userId, string $customerId)
+    {
         $stmt = $this->db->prepare("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?");
         $stmt->execute([$userId]);
         $stmt = $this->db->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ? AND status = 'suspended'");
         $stmt->execute([$customerId]);
     }
 
-    public function softDeleteUserAccount(int $userId, string $customerId) {
+    public function softDeleteUserAccount(int $userId, string $customerId)
+    {
         $stmt = $this->db->prepare("UPDATE users SET is_deleted = 1, deleted_at = NOW(), status = 'suspended', updated_at = NOW() WHERE id = ?");
         $stmt->execute([$userId]);
         $stmt = $this->db->prepare("UPDATE accounts SET status = 'closed', updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
-    public function restoreUserFromSoftDelete(int $userId) {
+    public function restoreUserFromSoftDelete(int $userId)
+    {
         $stmt = $this->db->prepare("UPDATE users SET is_deleted = 0, deleted_at = NULL, status = 'active', updated_at = NOW() WHERE id = ?");
         $stmt->execute([$userId]);
     }
 
-    public function addSystemChargeTransaction(string $txnId, int $accountId, float $amount) {
+    public function addSystemChargeTransaction(string $txnId, int $accountId, float $amount)
+    {
         $stmt = $this->db->prepare("INSERT INTO transactions (txn_id, from_account_id, type, amount, balance_after, description, reference_note, status, created_at) VALUES (?, ?, 'withdrawal', ?, 500, 'Account Restore Charge', 'Account recovered from soft-delete', 'completed', NOW())");
         $stmt->execute([$txnId, $accountId, $amount]);
     }
 
-    public function updateAccountBalanceLease500(string $customerId) {
+    public function updateAccountBalanceLease500(string $customerId)
+    {
         $stmt = $this->db->prepare("UPDATE accounts SET status = 'active', balance = LEAST(balance, 500), updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
-    public function activateAccount(string $customerId) {
+    public function activateAccount(string $customerId)
+    {
         $stmt = $this->db->prepare("UPDATE accounts SET status = 'active', updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
-    public function hardDeleteUserAccount(int $userId, string $customerId) {
+    public function hardDeleteUserAccount(int $userId, string $customerId)
+    {
         $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
         $stmt->execute([$customerId]);
         $stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
         $stmt->execute([$userId]);
     }
 
-    public function deleteAccountOnly(string $customerId) {
+    public function deleteAccountOnly(string $customerId)
+    {
         $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
-    public function getUserProfile(int $userId) {
+    public function getUserProfile(int $userId)
+    {
         $stmt = $this->db->prepare("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
                    mother_name, marital_status, nationality, profile_picture,
@@ -625,7 +690,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getUserAccounts(string $customerId) {
+    public function getUserAccounts(string $customerId)
+    {
         $stmt = $this->db->prepare("
             SELECT id, account_no, account_type, balance, interest_rate, daily_limit,
                    status, opened_date, created_at
@@ -635,7 +701,8 @@ class AdminOperationsRepository extends BaseRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAccountsRecentTransactions(array $accountIds, int $limit) {
+    public function getAccountsRecentTransactions(array $accountIds, int $limit)
+    {
         $placeholders = implode(',', array_fill(0, count($accountIds), '?'));
         $stmt = $this->db->prepare("
             SELECT

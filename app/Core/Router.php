@@ -1,20 +1,25 @@
 <?php
+
 namespace App\Core;
 
 use App\Core\Exceptions\ApiException;
 
-class Router {
+class Router
+{
     private array $routes = [];
 
-    public function get(string $path, callable|array $handler, array $middleware = []): void {
+    public function get(string $path, callable|array $handler, array $middleware = []): void
+    {
         $this->addRoute('GET', $path, $handler, $middleware);
     }
 
-    public function post(string $path, callable|array $handler, array $middleware = []): void {
+    public function post(string $path, callable|array $handler, array $middleware = []): void
+    {
         $this->addRoute('POST', $path, $handler, $middleware);
     }
 
-    private function addRoute(string $method, string $path, callable|array $handler, array $middleware): void {
+    private function addRoute(string $method, string $path, callable|array $handler, array $middleware): void
+    {
         // Convert path to regex, e.g., /admin/profile/{id} -> /admin/profile/(?<id>[a-zA-Z0-9_-]+)
         $pattern = preg_replace('/\{([a-zA-Z0-9_-]+)\}/', '(?<$1>[a-zA-Z0-9_-]+)', $path);
         $pattern = '#^' . $pattern . '$#i';
@@ -27,17 +32,18 @@ class Router {
         ];
     }
 
-    public function dispatch(string $method, string $uri): void {
+    public function dispatch(string $method, string $uri): void
+    {
         // Strip query string and base path
         $uri = parse_url($uri, PHP_URL_PATH);
-        
+
         $basePaths = [
             '/Finzo/public/api',
             '/Finzo/public/assets/api',
             '/Finzo/app/Controllers',
             '/Finzo/api'
         ];
-        
+
         foreach ($basePaths as $base) {
             if (strpos($uri, $base) === 0) {
                 $uri = substr($uri, strlen($base));
@@ -65,7 +71,7 @@ class Router {
                     if (is_array($handler) && count($handler) === 2) {
                         $controllerClass = $handler[0];
                         $methodName = $handler[1];
-                        
+
                         // Basic DI for controllers (instantiate via a simple container if needed, but for now we'll rely on manual or simple reflection)
                         // Actually, Finzo passes Services into Controllers. We need a simple container or factory.
                         // For this simple router, let's use a Factory or simple mapping.
@@ -75,7 +81,7 @@ class Router {
                     } else {
                         $response = call_user_func_array($handler, $params);
                     }
-                    
+
                     // Controllers should ideally just return arrays now, and the router handles json_response
                     // But if controllers still call json_response directly, that's fine for now during transition.
                     if (is_array($response)) {
@@ -111,21 +117,22 @@ class Router {
         json_response(['success' => false, 'message' => 'Not Found - ' . $uri], 404);
     }
 
-    private function instantiateController(string $controllerClass) {
+    private function instantiateController(string $controllerClass)
+    {
         // Simple DI container implementation
         $reflection = new \ReflectionClass($controllerClass);
         $constructor = $reflection->getConstructor();
-        
+
         if (is_null($constructor)) {
             return new $controllerClass();
         }
-        
+
         $dependencies = [];
         foreach ($constructor->getParameters() as $parameter) {
             $type = $parameter->getType();
             if ($type && !$type->isBuiltin()) {
                 $dependencyClass = $type->getName();
-                
+
                 // If it's a Service, it might need a Repository
                 if (str_ends_with($dependencyClass, 'Service')) {
                     $dependencies[] = $this->instantiateController($dependencyClass);
@@ -136,7 +143,7 @@ class Router {
                 }
             }
         }
-        
+
         return $reflection->newInstanceArgs($dependencies);
     }
 }

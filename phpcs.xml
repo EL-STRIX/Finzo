@@ -11,7 +11,11 @@
     <exclude-pattern>vendor/</exclude-pattern>
 
     <!-- Use PSR-12 as a base -->
-    <rule ref="PSR12"/>
+    <rule ref="PSR12">
+        <exclude name="Generic.Files.LineLength"/>
+        <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+        <exclude name="Generic.Files.LineEndings"/>
+    </rule>
 
     <!-- Output format -->
     <arg name="colors"/>

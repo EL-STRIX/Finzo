@@ -1,16 +1,20 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\AdminOperationsRepository;
 
-class AdminOperationsService {
+class AdminOperationsService
+{
     protected AdminOperationsRepository $repository;
 
-    public function __construct(AdminOperationsRepository $repository) {
+    public function __construct(AdminOperationsRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function getAuditLog(array $filters, int $page, int $perPage): array {
+    public function getAuditLog(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["1=1"];
         $params = [];
 
@@ -22,11 +26,11 @@ class AdminOperationsService {
         if ($filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
             if ($filters['actor_role'] === 'admin') {
                 $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
-            } else if ($filters['actor_role'] === 'staff') {
+            } elseif ($filters['actor_role'] === 'staff') {
                 $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
-            } else if ($filters['actor_role'] === 'system') {
+            } elseif ($filters['actor_role'] === 'system') {
                 $where_clauses[] = "al.actor_role IN ('System', 'system')";
-            } else if ($filters['actor_role'] === 'user') {
+            } elseif ($filters['actor_role'] === 'user') {
                 $where_clauses[] = "al.actor_role IN ('User', 'user')";
             }
         }
@@ -73,7 +77,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getDashboardData(int $adminId): array {
+    public function getDashboardData(int $adminId): array
+    {
         $stats = [
             'total_users'        => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
             'active_users'       => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'active' AND is_deleted = 0"),
@@ -132,7 +137,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getDeletedUsers(array $filters, int $page, int $perPage): array {
+    public function getDeletedUsers(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["u.is_deleted = 1"];
         $params = [];
 
@@ -180,7 +186,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getInterestData(): array {
+    public function getInterestData(): array
+    {
         $current_rate_row = $this->repository->getCurrentInterestRate();
         $current_rate = $current_rate_row ? (float)$current_rate_row['rate'] : 4.25;
         $last_change_date = $current_rate_row ? date('d M Y', strtotime($current_rate_row['created_at'])) : '-';
@@ -191,10 +198,10 @@ class AdminOperationsService {
             'earning_accounts' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'"),
             'interest_delta' => '+0%'
         ];
-        
+
         $this_month = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
         $last_month = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
-        
+
         if ($last_month > 0) {
             $delta = (($this_month - $last_month) / $last_month) * 100;
             $stats['interest_delta'] = ($delta > 0 ? '+' : '') . round($delta, 1) . '%';
@@ -233,7 +240,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function updateInterestRate(float $new_rate, string $apply_from, string $custom_date, int $adminId): array {
+    public function updateInterestRate(float $new_rate, string $apply_from, string $custom_date, int $adminId): array
+    {
         if ($new_rate < 0.01 || $new_rate > 99.99) {
             return ['success' => false, 'errors' => ['new_rate' => 'Interest rate must be between 0.01% and 99.99%']];
         }
@@ -277,8 +285,15 @@ class AdminOperationsService {
                     $txn_id = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 
                     $this->repository->addTransaction(
-                        $txn_id, NULL, $acc['id'], 'interest_credit', $interest_amount, $new_balance,
-                        "Savings Interest Credit", "Interest credited at " . number_format($new_rate, 2) . "% p.a.", 'completed'
+                        $txn_id,
+                        null,
+                        $acc['id'],
+                        'interest_credit',
+                        $interest_amount,
+                        $new_balance,
+                        "Savings Interest Credit",
+                        "Interest credited at " . number_format($new_rate, 2) . "% p.a.",
+                        'completed'
                     );
 
                     $this->repository->updateAccountBalance($new_balance, $acc['id']);
@@ -292,14 +307,22 @@ class AdminOperationsService {
         // Global function from config/functions.php
         global $pdo;
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log($pdo, 'interest_rate_updated', null, 'system', $adminId, 'admin',
-                "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''));
+            write_audit_log(
+                $pdo,
+                'interest_rate_updated',
+                null,
+                'system',
+                $adminId,
+                'admin',
+                "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
+            );
         }
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }
 
-    public function exportUsers(array $filters): array {
+    public function exportUsers(array $filters): array
+    {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
         $params = [];
 
@@ -316,11 +339,12 @@ class AdminOperationsService {
         }
 
         $where_sql = implode(' AND ', $where_clauses);
-        
+
         return $this->repository->getExportUsers($where_sql, $params);
     }
 
-    public function getLockedAccounts(array $filters, int $page, int $perPage): array {
+    public function getLockedAccounts(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
@@ -359,7 +383,7 @@ class AdminOperationsService {
             $locked_timestamp = strtotime($acc['updated_at']);
             $acc['locked_at'] = date('d M Y', $locked_timestamp);
             $acc['lock_time'] = date('h:i A', $locked_timestamp);
-            
+
             $acc['temp_pass_status'] = $acc['temp_pass_status'] ?? 'pending';
 
             if ($acc['temp_pass_status'] === 'done') {
@@ -380,7 +404,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getLockedAccountDetail(int $userId): array {
+    public function getLockedAccountDetail(int $userId): array
+    {
         $user = $this->repository->getLockedAccountDetail($userId);
 
         if (!$user) {
@@ -437,7 +462,8 @@ class AdminOperationsService {
         return ['success' => true, 'user' => $user, 'logs' => $logs];
     }
 
-    public function getPendingApprovals(array $filters, int $page, int $perPage): array {
+    public function getPendingApprovals(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
@@ -492,7 +518,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function recoverUser(int $userId, int $adminId): array {
+    public function recoverUser(int $userId, int $adminId): array
+    {
         $user = $this->repository->getUserForRecovery($userId);
 
         if (!$user) {
@@ -507,19 +534,32 @@ class AdminOperationsService {
 
         global $pdo;
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification($pdo, $userId, 'system', 'Account Restored',
-                'Your account has been restored and is now active. You can log in and continue banking.');
+            send_notification(
+                $pdo,
+                $userId,
+                'system',
+                'Account Restored',
+                'Your account has been restored and is now active. You can log in and continue banking.'
+            );
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log($pdo, 'user_recovered', $userId, 'user', $adminId, 'admin',
-                "Recovered deleted user: {$user['full_name']}");
+            write_audit_log(
+                $pdo,
+                'user_recovered',
+                $userId,
+                'user',
+                $adminId,
+                'admin',
+                "Recovered deleted user: {$user['full_name']}"
+            );
         }
 
         return ['success' => true, 'message' => 'User recovered successfully'];
     }
 
-    public function getApplicationDetails(int $userId): array {
+    public function getApplicationDetails(int $userId): array
+    {
         $user = $this->repository->getApplicationUser($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'Application not found', 'code' => 404];
@@ -540,8 +580,8 @@ class AdminOperationsService {
 
         $logs = $this->repository->getApplicationAuditLogs($user['customer_id']);
 
-        $first_submit_time = empty($logs) ? 
-            ($user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'])) : 'Unknown') : 
+        $first_submit_time = empty($logs) ?
+            ($user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'])) : 'Unknown') :
             date('d M Y, h:i A', strtotime($logs[0]['created_at']) - 120);
 
         $timeline = [
@@ -569,7 +609,7 @@ class AdminOperationsService {
                 'desc' => $reason,
                 'type' => 'error'
             ];
-            
+
             $resubmit_time = 'Unknown';
             if ($index === $total_logs - 1 && $user['kyc_submitted_at']) {
                 $resubmit_time = date('d M Y, h:i A', strtotime($user['kyc_submitted_at']));
@@ -638,7 +678,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array {
+    public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array
+    {
         $user = $this->repository->getApplicationUser($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'User not found', 'code' => 404];
@@ -647,7 +688,7 @@ class AdminOperationsService {
         $adminData = $this->repository->getAdminById($adminId);
         $admin_display_id = $adminData['admin_id'] ?? $adminId;
         $customer_id = $user['customer_id'];
-        
+
         global $pdo;
         require_once FINZO_ROOT . '/config/functions.php';
         require_once FINZO_ROOT . '/config/mailer.php';
@@ -658,24 +699,37 @@ class AdminOperationsService {
                     $pdo->beginTransaction();
                     $account_no = generate_account_number($pdo);
                     $this->repository->approveApplication($userId, $customer_id, $account_no, $admin_display_id);
-                    
+
                     $accountPref = $this->repository->getAccountPreferences($customer_id);
                     $initial_balance = (float)($accountPref['initial_deposit'] ?? 0);
-                    
+
                     if ($initial_balance > 0) {
                         $acct_id = $this->repository->getAccountIdByCustomerId($customer_id);
                         $txn_id = generate_transaction_id();
                         $this->repository->addTransaction(
-                            $txn_id, NULL, $acct_id, 'deposit', $initial_balance, $initial_balance, 
-                            'Initial Deposit — Account Opening', '', 'completed'
+                            $txn_id,
+                            null,
+                            $acct_id,
+                            'deposit',
+                            $initial_balance,
+                            $initial_balance,
+                            'Initial Deposit — Account Opening',
+                            '',
+                            'completed'
                         );
                     }
                     $pdo->commit();
-                    
-                    if (function_exists('send_approved_email')) send_approved_email($user['email'], $user['full_name'], $account_no);
-                    if (function_exists('send_notification')) send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$account_no}.");
-                    if (function_exists('write_audit_log')) write_audit_log($pdo, 'kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}");
-                    
+
+                    if (function_exists('send_approved_email')) {
+                        send_approved_email($user['email'], $user['full_name'], $account_no);
+                    }
+                    if (function_exists('send_notification')) {
+                        send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$account_no}.");
+                    }
+                    if (function_exists('write_audit_log')) {
+                        write_audit_log($pdo, 'kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}");
+                    }
+
                     return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $account_no];
 
                 case 'reject':
@@ -685,15 +739,23 @@ class AdminOperationsService {
                     $pdo->beginTransaction();
                     $this->repository->rejectApplication($userId, $customer_id, $reason, $admin_display_id);
                     $pdo->commit();
-                    
-                    if (function_exists('send_rejected_email')) send_rejected_email($user['email'], $user['full_name'], $reason);
-                    if (function_exists('send_notification')) send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
-                    if (function_exists('write_audit_log')) write_audit_log($pdo, 'kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}");
-                    
+
+                    if (function_exists('send_rejected_email')) {
+                        send_rejected_email($user['email'], $user['full_name'], $reason);
+                    }
+                    if (function_exists('send_notification')) {
+                        send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
+                    }
+                    if (function_exists('write_audit_log')) {
+                        write_audit_log($pdo, 'kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}");
+                    }
+
                     return ['success' => true, 'message' => 'Application rejected'];
 
                 case 'save_notes':
-                    if (function_exists('write_audit_log')) write_audit_log($pdo, 'admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}");
+                    if (function_exists('write_audit_log')) {
+                        write_audit_log($pdo, 'admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}");
+                    }
                     $this->repository->saveAdminNotes($customer_id, $notes);
                     return ['success' => true, 'message' => 'Notes saved successfully'];
 
@@ -701,12 +763,15 @@ class AdminOperationsService {
                     return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
             }
         } catch (\PDOException $e) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             throw $e;
         }
     }
 
-    public function getSuspendedUsers(array $filters, int $page, int $perPage): array {
+    public function getSuspendedUsers(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["u.status = 'suspended'", "u.is_deleted = 0"];
         $params = [];
 
@@ -745,17 +810,17 @@ class AdminOperationsService {
             } else {
                 $u['suspension_reason'] = 'Administrative Review';
             }
-            
+
             if ($u['raw_suspended_at']) {
                 $d = new \DateTime($u['raw_suspended_at']);
                 $u['suspended_at'] = $d->format('d M Y h:i a');
             } else {
                 $u['suspended_at'] = 'N/A';
             }
-            
+
             $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
             $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
-            
+
             $u['duration'] = 'Permanent';
 
             unset($u['raw_reason']);
@@ -771,7 +836,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array {
+    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array
+    {
         $where_clauses = ["1=1"];
         $params = [];
 
@@ -833,7 +899,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function getUsersList(array $filters, int $page, int $perPage): array {
+    public function getUsersList(array $filters, int $page, int $perPage): array
+    {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
         $params = [];
 
@@ -886,9 +953,12 @@ class AdminOperationsService {
             ]
         ];
     }
-    public function getSuspendedUserDetail(int $userId): array {
+    public function getSuspendedUserDetail(int $userId): array
+    {
         $user = $this->repository->getSuspendedUserProfile($userId);
-        if (!$user) return ['success' => false, 'message' => 'Suspended user not found'];
+        if (!$user) {
+            return ['success' => false, 'message' => 'Suspended user not found'];
+        }
 
         $account = $this->repository->getSuspendedUserAccount($user['customer_id']);
         $audit = $this->repository->getUserSuspensionAudit($user['customer_id']);
@@ -905,7 +975,7 @@ class AdminOperationsService {
             }
             $suspension_notes = $audit['details'];
             $suspended_by = $audit['actor_id'];
-            
+
             $d = new DateTime($audit['created_at']);
             $suspended_date = $d->format('d M Y');
             $suspended_time = $d->format('h:i A');
@@ -918,10 +988,10 @@ class AdminOperationsService {
                 $is_debit = false;
                 if ($tx['type'] === 'withdrawal') {
                     $is_debit = true;
-                } else if ($tx['type'] === 'transfer' && $tx['description'] !== 'Deposit') {
+                } elseif ($tx['type'] === 'transfer' && $tx['description'] !== 'Deposit') {
                     $is_debit = true;
                 }
-                
+
                 $d = new DateTime($tx['created_at']);
                 $transactions[] = [
                     'date' => $d->format('d M Y, h:i A'),
@@ -942,7 +1012,9 @@ class AdminOperationsService {
             'full_name' => $user['full_name'],
             'email' => $user['email'],
             'phone' => $user['phone'],
-            'initials' => implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $user['full_name']))),
+            'initials' => implode('', array_map(function ($n) {
+                return $n[0] ?? '';
+            }, explode(' ', $user['full_name']))),
             'avatar_url' => $avatar_url,
             'account_no' => $account ? $account['account_no'] : 'N/A',
             'account_type' => $account ? ucfirst($account['account_type']) : 'N/A',
@@ -964,7 +1036,8 @@ class AdminOperationsService {
         ];
     }
 
-    public function unlockAccount(int $userId, int $adminId): array {
+    public function unlockAccount(int $userId, int $adminId): array
+    {
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
         $temp_pass = '';
         $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
@@ -977,20 +1050,34 @@ class AdminOperationsService {
         $temp_pass = str_shuffle($temp_pass);
 
         $user = $this->repository->getUserForUnlock($userId);
-        if (!$user) return ['success' => false, 'message' => 'User not found', 'code' => 404];
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found', 'code' => 404];
+        }
 
         $password_hash = password_hash($temp_pass, PASSWORD_BCRYPT);
         $this->repository->unlockUserAccount($password_hash, $userId);
 
         global $pdo;
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification($pdo, $userId, 'security', 'Account Unlocked',
-                'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.');
+            send_notification(
+                $pdo,
+                $userId,
+                'security',
+                'Account Unlocked',
+                'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.'
+            );
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log($pdo, 'account_unlocked', $userId, 'user', $adminId, 'admin',
-                "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}");
+            write_audit_log(
+                $pdo,
+                'account_unlocked',
+                $userId,
+                'user',
+                $adminId,
+                'admin',
+                "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}"
+            );
         }
 
         if (!isset($_SESSION['temp_passwords'])) {
@@ -1002,20 +1089,23 @@ class AdminOperationsService {
         ];
 
         return [
-            'success' => true, 
+            'success' => true,
             'message' => 'Account unlocked and temporary password generated.',
             'temp_password' => $temp_pass
         ];
     }
 
-    public function processUserAction(int $userId, string $action, string $reason, string $password, string $balanceOption, int $adminId): array {
+    public function processUserAction(int $userId, string $action, string $reason, string $password, string $balanceOption, int $adminId): array
+    {
         $valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
         if (!in_array($action, $valid_actions)) {
             return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
         }
 
         $user = $this->repository->getUserForAction($userId);
-        if (!$user) return ['success' => false, 'message' => 'User not found', 'code' => 404];
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found', 'code' => 404];
+        }
 
         if (in_array($action, ['suspend', 'delete'])) {
             $admin = $this->repository->getAdminPassword($adminId);
@@ -1027,14 +1117,23 @@ class AdminOperationsService {
         global $pdo;
         switch ($action) {
             case 'suspend':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'suspend_user');
-                if ($user['status'] === 'suspended') return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
-                
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'suspend_user');
+                }
+                if ($user['status'] === 'suspended') {
+                    return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
+                }
+
                 $this->repository->suspendUserAccount($userId, $user['customer_id']);
-                
+
                 if (function_exists('send_notification') && isset($pdo)) {
-                    send_notification($pdo, $userId, 'security', 'Account Suspended',
-                        'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.');
+                    send_notification(
+                        $pdo,
+                        $userId,
+                        'security',
+                        'Account Suspended',
+                        'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.'
+                    );
                 }
                 if (function_exists('write_audit_log') && isset($pdo)) {
                     write_audit_log($pdo, 'user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}");
@@ -1042,12 +1141,18 @@ class AdminOperationsService {
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
             case 'reinstate':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'reinstate_user');
-                if ($user['status'] === 'active') return ['success' => true, 'message' => 'User is already active'];
-                if ($user['status'] !== 'suspended') return ['success' => false, 'message' => 'User is not suspended', 'code' => 409];
-                
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'reinstate_user');
+                }
+                if ($user['status'] === 'active') {
+                    return ['success' => true, 'message' => 'User is already active'];
+                }
+                if ($user['status'] !== 'suspended') {
+                    return ['success' => false, 'message' => 'User is not suspended', 'code' => 409];
+                }
+
                 $this->repository->reinstateUserAccount($userId, $user['customer_id']);
-                
+
                 if (function_exists('send_notification') && isset($pdo)) {
                     send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
@@ -1057,22 +1162,30 @@ class AdminOperationsService {
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
             case 'delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'soft_delete_user');
-                if ($user['is_deleted']) return ['success' => true, 'message' => 'User is already deleted'];
-                
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                }
+                if ($user['is_deleted']) {
+                    return ['success' => true, 'message' => 'User is already deleted'];
+                }
+
                 $this->repository->softDeleteUserAccount($userId, $user['customer_id']);
-                
+
                 if (function_exists('write_audit_log') && isset($pdo)) {
                     write_audit_log($pdo, 'user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}");
                 }
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
             case 'recover':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'soft_delete_user');
-                if (!$user['is_deleted']) return ['success' => false, 'message' => 'User is not deleted', 'code' => 409];
-                
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                }
+                if (!$user['is_deleted']) {
+                    return ['success' => false, 'message' => 'User is not deleted', 'code' => 409];
+                }
+
                 $this->repository->restoreUserFromSoftDelete($userId);
-                
+
                 if ($balanceOption === 'mandatory') {
                     $account = $this->repository->getUserForActionByCustomer($user['customer_id']);
                     if ($account && $account['balance'] > 500) {
@@ -1094,14 +1207,16 @@ class AdminOperationsService {
                         send_notification($pdo, $userId, 'system', 'Account Restored', 'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
                     }
                 }
-                
+
                 if (function_exists('write_audit_log') && isset($pdo)) {
                     write_audit_log($pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''));
                 }
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
             case 'hard_delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
                     write_audit_log($pdo, 'user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.");
@@ -1109,7 +1224,9 @@ class AdminOperationsService {
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
             case 'delete_account_only':
-                if (function_exists('check_admin_permission') && isset($pdo)) check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                if (function_exists('check_admin_permission') && isset($pdo)) {
+                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                }
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
                     write_audit_log($pdo, 'account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.");
@@ -1119,9 +1236,12 @@ class AdminOperationsService {
         return ['success' => false, 'message' => 'Action failed', 'code' => 500];
     }
 
-    public function getUserDetail(int $userId): array {
+    public function getUserDetail(int $userId): array
+    {
         $user = $this->repository->getUserProfile($userId);
-        if (!$user) return ['success' => false, 'message' => 'User not found'];
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found'];
+        }
 
         $accounts = $this->repository->getUserAccounts($user['customer_id']);
         $transactions = [];

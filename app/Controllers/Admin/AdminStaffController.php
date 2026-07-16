@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Services\AdminStaffBranchService;
@@ -6,14 +7,17 @@ use App\Core\Exceptions\ApiException;
 use PDOException;
 use Exception;
 
-class AdminStaffController {
+class AdminStaffController
+{
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service) {
+    public function __construct(AdminStaffBranchService $service)
+    {
         $this->service = $service;
     }
 
-    protected function checkCsrf() {
+    protected function checkCsrf()
+    {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
         if (!validate_csrf_token($csrf)) {
@@ -21,7 +25,8 @@ class AdminStaffController {
         }
     }
 
-    public function addStaff(): array {
+    public function addStaff(): array
+    {
         $this->checkCsrf();
         $admin_id = $_SESSION['admin_id'];
         $repo = $this->service->getRepo();
@@ -48,7 +53,9 @@ class AdminStaffController {
             'password' => $_POST['password'] ?? ''
         ];
         $data['department'] = 'Teller Operations';
-        if (empty($data['date_of_joining'])) $data['date_of_joining'] = date('Y-m-d');
+        if (empty($data['date_of_joining'])) {
+            $data['date_of_joining'] = date('Y-m-d');
+        }
 
         $errors = $this->service->validateStaffData($data);
 
@@ -64,7 +71,7 @@ class AdminStaffController {
             $repo->beginTransaction();
             $data['staff_id'] = $this->service->generateStaffId();
             $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
-            
+
             $admin = $repo->findAdminById($admin_id);
             $data['created_by'] = $admin['admin_id'] ?? null;
             $data['profile_photo'] = $profile_photo_path;
@@ -78,41 +85,63 @@ class AdminStaffController {
 
             json_response(['success' => true, 'message' => 'Staff member added successfully', 'staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']], 201);
         } catch (Exception $e) {
-            if ($repo->inTransaction()) $repo->rollBack();
-            if ($profile_photo_path) @unlink(FINZO_ROOT . '/' . $profile_photo_path);
-            if ($id_front_path) @unlink(FINZO_ROOT . '/' . $id_front_path);
-            if ($id_back_path) @unlink(FINZO_ROOT . '/' . $id_back_path);
+            if ($repo->inTransaction()) {
+                $repo->rollBack();
+            }
+            if ($profile_photo_path) {
+                @unlink(FINZO_ROOT . '/' . $profile_photo_path);
+            }
+            if ($id_front_path) {
+                @unlink(FINZO_ROOT . '/' . $id_front_path);
+            }
+            if ($id_back_path) {
+                @unlink(FINZO_ROOT . '/' . $id_back_path);
+            }
             throw new ApiException('An error occurred while creating staff account: ' . $e->getMessage(), 500);
         }
     }
 
-    public function getStaffDetail(): array {
+    public function getStaffDetail(): array
+    {
         $staff_id = intval($_GET['staff_id'] ?? $_GET['id'] ?? 0);
-        if (!$staff_id) throw new ApiException('Staff ID is required', 422);
+        if (!$staff_id) {
+            throw new ApiException('Staff ID is required', 422);
+        }
 
         $repo = $this->service->getRepo();
         $staff = $repo->getStaffDetail($staff_id);
-        if (!$staff) throw new ApiException('Staff member not found', 404);
+        if (!$staff) {
+            throw new ApiException('Staff member not found', 404);
+        }
 
         $base_url = APP_URL . '/';
-        if ($staff['profile_photo']) $staff['profile_photo_url'] = $base_url . $staff['profile_photo'];
-        if ($staff['front_image']) $staff['front_image_url'] = $base_url . $staff['front_image'];
-        if ($staff['back_image']) $staff['back_image_url'] = $base_url . $staff['back_image'];
+        if ($staff['profile_photo']) {
+            $staff['profile_photo_url'] = $base_url . $staff['profile_photo'];
+        }
+        if ($staff['front_image']) {
+            $staff['front_image_url'] = $base_url . $staff['front_image'];
+        }
+        if ($staff['back_image']) {
+            $staff['back_image_url'] = $base_url . $staff['back_image'];
+        }
 
         $performance = $repo->getStaffPerformance($staff_id);
         return ['success' => true, 'staff' => $staff, 'performance' => $performance];
     }
 
-    public function generateStaffPassword(): array {
+    public function generateStaffPassword(): array
+    {
         $this->checkCsrf();
         return ['success' => true, 'password' => $this->service->generateStrongPassword(12)];
     }
 
-    public function getNextStaffId(): array {
+    public function getNextStaffId(): array
+    {
         return ['success' => true, 'next_id' => $this->service->generateStaffId()];
     }
 
-    public function resetStaffPassword(): array {
+    public function resetStaffPassword(): array
+    {
         $admin_id = $_SESSION['admin_id'];
         $input = json_decode(file_get_contents('php://input'), true);
         $this->checkCsrf();
@@ -123,14 +152,20 @@ class AdminStaffController {
         $staff_id = intval($input['staff_id'] ?? $_POST['staff_id'] ?? 0);
         $new_password = $input['new_password'] ?? $_POST['new_password'] ?? '';
 
-        if (!$staff_id) throw new ApiException('Staff ID is required', 422);
-        if (strlen($new_password) < 8) throw new ApiException('Password must be at least 8 characters', 422);
+        if (!$staff_id) {
+            throw new ApiException('Staff ID is required', 422);
+        }
+        if (strlen($new_password) < 8) {
+            throw new ApiException('Password must be at least 8 characters', 422);
+        }
 
         $stmt = $pdo->prepare("SELECT id, full_name, staff_id FROM staff WHERE id = ?");
         $stmt->execute([$staff_id]);
         $staff = $stmt->fetch();
 
-        if (!$staff) throw new ApiException('Staff member not found', 404);
+        if (!$staff) {
+            throw new ApiException('Staff member not found', 404);
+        }
 
         $password_hash = password_hash($new_password, PASSWORD_BCRYPT);
         $stmt = $pdo->prepare("UPDATE staff SET password_hash = ? WHERE id = ?");
@@ -140,20 +175,29 @@ class AdminStaffController {
         return ['success' => true, 'message' => 'Password updated successfully'];
     }
 
-    public function staffAction(): array {
+    public function staffAction(): array
+    {
         $staff_id = intval($_POST['staff_id'] ?? 0);
         $action   = clean_input($_POST['action'] ?? '');
         $reason   = clean_input($_POST['reason'] ?? '');
-        
-        if (!$staff_id || empty($action)) throw new ApiException('Staff ID and action are required', 422);
-        if (!in_array($action, ['suspend', 'reinstate', 'reset_password', 'delete'])) throw new ApiException('Invalid action', 422);
-        
+
+        if (!$staff_id || empty($action)) {
+            throw new ApiException('Staff ID and action are required', 422);
+        }
+        if (!in_array($action, ['suspend', 'reinstate', 'reset_password', 'delete'])) {
+            throw new ApiException('Invalid action', 422);
+        }
+
         $admin_id = $_SESSION['admin_id'];
         $password = $_POST['password'] ?? '';
-        if (empty($password)) throw new ApiException('Admin password is required for this action', 422);
-        
+        if (empty($password)) {
+            throw new ApiException('Admin password is required for this action', 422);
+        }
+
         $pdo = $this->service->getRepo()->getPDO();
-        if (in_array($action, ['suspend', 'reinstate', 'delete'])) check_admin_permission($pdo, $admin_id, 'suspend_staff');
+        if (in_array($action, ['suspend', 'reinstate', 'delete'])) {
+            check_admin_permission($pdo, $admin_id, 'suspend_staff');
+        }
 
         $admin_stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
         $admin_stmt->execute([$admin_id]);
@@ -165,17 +209,23 @@ class AdminStaffController {
         $stmt = $pdo->prepare("SELECT id, staff_id, full_name, personal_email as email, status FROM staff WHERE id = ?");
         $stmt->execute([$staff_id]);
         $staff = $stmt->fetch();
-        if (!$staff) throw new ApiException('Staff member not found', 404);
+        if (!$staff) {
+            throw new ApiException('Staff member not found', 404);
+        }
 
         if ($action === 'suspend') {
-            if ($staff['status'] === 'suspended') throw new ApiException('Staff is already suspended', 409);
+            if ($staff['status'] === 'suspended') {
+                throw new ApiException('Staff is already suspended', 409);
+            }
             $suspended_by = $_SESSION['admin_name'] ?? 'Admin';
             $stmt = $pdo->prepare("UPDATE staff SET status = 'suspended', suspension_reason = ?, suspended_by = ?, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$reason, $suspended_by, $staff_id]);
             write_audit_log($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $admin_id, 'admin', "Suspended staff: {$staff['full_name']}. Reason: {$reason}");
             return ['success' => true, 'message' => 'Staff member suspended successfully'];
         } elseif ($action === 'reinstate') {
-            if ($staff['status'] !== 'suspended') throw new ApiException('Staff is not suspended', 409);
+            if ($staff['status'] !== 'suspended') {
+                throw new ApiException('Staff is not suspended', 409);
+            }
             $stmt = $pdo->prepare("UPDATE staff SET status = 'active', suspension_reason = NULL, suspended_by = NULL, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$staff_id]);
             write_audit_log($pdo, 'staff_reinstated', $staff['staff_id'], 'staff', $admin_id, 'admin', "Reinstated staff: {$staff['full_name']}");
@@ -199,34 +249,45 @@ class AdminStaffController {
         return ['success' => false];
     }
 
-    public function uploadStaffPhoto(): array {
+    public function uploadStaffPhoto(): array
+    {
         $staff_id = intval($_POST['staff_id'] ?? 0);
-        if (!$staff_id) throw new ApiException('Staff ID is required', 422);
+        if (!$staff_id) {
+            throw new ApiException('Staff ID is required', 422);
+        }
 
         $pdo = $this->service->getRepo()->getPDO();
         $stmt = $pdo->prepare("SELECT id, profile_photo FROM staff WHERE id = ?");
         $stmt->execute([$staff_id]);
         $staff = $stmt->fetch();
 
-        if (!$staff) throw new ApiException('Staff member not found', 404);
+        if (!$staff) {
+            throw new ApiException('Staff member not found', 404);
+        }
         if (empty($_FILES['photo']['name']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             throw new ApiException('Photo file is required', 422);
         }
-        
+
         $file = $_FILES['photo'];
         $allowed_types = ['image/jpeg', 'image/png'];
-        if (!in_array($file['type'], $allowed_types)) throw new ApiException('Only JPG and PNG images are allowed', 422);
-        if ($file['size'] > 5242880) throw new ApiException('File size exceeds 5MB limit', 422);
+        if (!in_array($file['type'], $allowed_types)) {
+            throw new ApiException('Only JPG and PNG images are allowed', 422);
+        }
+        if ($file['size'] > 5242880) {
+            throw new ApiException('File size exceeds 5MB limit', 422);
+        }
 
         if ($staff['profile_photo']) {
             $old_path = dirname(__DIR__, 3) . '/' . $staff['profile_photo'];
-            if (file_exists($old_path)) @unlink($old_path);
+            if (file_exists($old_path)) {
+                @unlink($old_path);
+            }
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'staff_photo_' . $staff_id . '_' . time() . '.' . $ext;
         $target_dir = dirname(__DIR__, 3) . '/uploads/staff-photos/';
-        
+
         if (!move_uploaded_file($file['tmp_name'], $target_dir . $filename)) {
             throw new ApiException('Failed to save uploaded file', 500);
         }
@@ -238,12 +299,15 @@ class AdminStaffController {
         return ['success' => true, 'message' => 'Photo updated successfully', 'photo_url' => APP_URL . '/' . $new_photo_path];
     }
 
-    public function staffDetail(): array {
+    public function staffDetail(): array
+    {
         $staff_id = intval($_GET['staff_id'] ?? $_GET['id'] ?? 0);
-        if (!$staff_id) throw new ApiException('Staff ID is required', 422);
-        
+        if (!$staff_id) {
+            throw new ApiException('Staff ID is required', 422);
+        }
+
         $pdo = $this->service->getRepo()->getPDO();
-        
+
         $stmt = $pdo->prepare("
             SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
                     s.designation, s.department, s.status,
@@ -265,7 +329,9 @@ class AdminStaffController {
         ");
         $stmt->execute([$staff_id]);
         $staff = $stmt->fetch();
-        if (!$staff) throw new ApiException('Staff member not found', 404);
+        if (!$staff) {
+            throw new ApiException('Staff member not found', 404);
+        }
 
         $stmt = $pdo->prepare("
             SELECT COUNT(*) as total_transactions,
@@ -334,7 +400,8 @@ class AdminStaffController {
         ];
     }
 
-    public function getStaffList(): array {
+    public function getStaffList(): array
+    {
         $pdo = $this->service->getRepo()->getPDO();
         $search    = clean_input($_GET['search'] ?? '');
         $status    = clean_input($_GET['status'] ?? 'all');
@@ -345,11 +412,20 @@ class AdminStaffController {
 
         $where_clauses = ["1=1", "s.status != 'suspended'"];
         $params = [];
-        if ($branch_id > 0) { $where_clauses[] = "s.branch_id = ?"; $params[] = $branch_id; }
-        if ($filter === 'unassigned') $where_clauses[] = "s.branch_id IS NULL";
+        if ($branch_id > 0) {
+            $where_clauses[] = "s.branch_id = ?";
+            $params[] = $branch_id;
+        }
+        if ($filter === 'unassigned') {
+            $where_clauses[] = "s.branch_id IS NULL";
+        }
         if (!empty($search)) {
             $where_clauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ?)";
-            $s = "%{$search}%"; $params[] = $s; $params[] = $s; $params[] = $s; $params[] = $s;
+            $s = "%{$search}%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
         }
 
         $where_sql = implode(' AND ', $where_clauses);
@@ -377,7 +453,9 @@ class AdminStaffController {
 
         $base_url = APP_URL . '/';
         foreach ($staff_list as &$s) {
-            if ($s['profile_photo']) $s['profile_photo_url'] = $base_url . $s['profile_photo'];
+            if ($s['profile_photo']) {
+                $s['profile_photo_url'] = $base_url . $s['profile_photo'];
+            }
             $name_parts = explode(' ', $s['full_name']);
             $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
         }
@@ -388,9 +466,12 @@ class AdminStaffController {
         ];
     }
 
-    public function suspendedStaffDetail(): array {
+    public function suspendedStaffDetail(): array
+    {
         $staff_id = intval($_GET['id'] ?? 0);
-        if (!$staff_id) throw new ApiException('Staff ID is required', 422);
+        if (!$staff_id) {
+            throw new ApiException('Staff ID is required', 422);
+        }
 
         $pdo = $this->service->getRepo()->getPDO();
         $stmt = $pdo->prepare("
@@ -401,7 +482,9 @@ class AdminStaffController {
         $stmt->execute([$staff_id]);
         $staff = $stmt->fetch();
 
-        if (!$staff) throw new ApiException('Suspended staff record not found', 404);
+        if (!$staff) {
+            throw new ApiException('Suspended staff record not found', 404);
+        }
 
         $name_parts = explode(' ', $staff['full_name']);
         $staff['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
@@ -437,7 +520,8 @@ class AdminStaffController {
         return ['status' => 'success', 'data' => ['staff' => $staff, 'history' => $history]];
     }
 
-    public function getSuspendedStaff(): array {
+    public function getSuspendedStaff(): array
+    {
         $pdo = $this->service->getRepo()->getPDO();
         $search     = clean_input($_GET['search'] ?? '');
         $reason     = clean_input($_GET['reason'] ?? '');
@@ -451,11 +535,23 @@ class AdminStaffController {
 
         if (!empty($search)) {
             $where_clauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ?)";
-            $s = "%{$search}%"; $params[] = $s; $params[] = $s; $params[] = $s;
+            $s = "%{$search}%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
         }
-        if (!empty($reason)) { $where_clauses[] = "s.suspension_reason = ?"; $params[] = $reason; }
-        if (!empty($start_date)) { $where_clauses[] = "s.updated_at >= ?"; $params[] = $start_date . ' 00:00:00'; }
-        if (!empty($end_date)) { $where_clauses[] = "s.updated_at <= ?"; $params[] = $end_date . ' 23:59:59'; }
+        if (!empty($reason)) {
+            $where_clauses[] = "s.suspension_reason = ?";
+            $params[] = $reason;
+        }
+        if (!empty($start_date)) {
+            $where_clauses[] = "s.updated_at >= ?";
+            $params[] = $start_date . ' 00:00:00';
+        }
+        if (!empty($end_date)) {
+            $where_clauses[] = "s.updated_at <= ?";
+            $params[] = $end_date . ' 23:59:59';
+        }
 
         $where_sql = implode(' AND ', $where_clauses);
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM staff s WHERE {$where_sql}");

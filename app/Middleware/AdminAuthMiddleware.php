@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Middleware;
 
 use App\Core\Exceptions\ApiException;
 use App\Core\Database;
 
-class AdminAuthMiddleware {
-    public function handle() {
+class AdminAuthMiddleware
+{
+    public function handle()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

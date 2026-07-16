@@ -1,54 +1,86 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\AdminStaffBranchRepository;
 use Exception;
 use DateTime;
 
-class AdminStaffBranchService {
+class AdminStaffBranchService
+{
     protected AdminStaffBranchRepository $repo;
 
-    public function __construct(AdminStaffBranchRepository $repo) {
+    public function __construct(AdminStaffBranchRepository $repo)
+    {
         $this->repo = $repo;
     }
 
-    public function getRepo(): AdminStaffBranchRepository {
+    public function getRepo(): AdminStaffBranchRepository
+    {
         return $this->repo;
     }
 
-    public function validateStaffData(array $data) {
+    public function validateStaffData(array $data)
+    {
         $errors = [];
-        if (empty($data['full_name']) || strlen($data['full_name']) < 2) $errors['full_name'] = 'Full name is required (2-150 chars)';
+        if (empty($data['full_name']) || strlen($data['full_name']) < 2) {
+            $errors['full_name'] = 'Full name is required (2-150 chars)';
+        }
         if (empty($data['date_of_birth'])) {
             $errors['date_of_birth'] = 'Date of birth is required';
         } else {
             $dob = new DateTime($data['date_of_birth']);
             $today = new DateTime();
-            if ($today->diff($dob)->y < 18) $errors['date_of_birth'] = 'Staff must be at least 18 years old';
+            if ($today->diff($dob)->y < 18) {
+                $errors['date_of_birth'] = 'Staff must be at least 18 years old';
+            }
         }
-        if (!in_array($data['gender'], ['Male', 'Female', 'Other', 'Prefer not to say'])) $errors['gender'] = 'Please select a valid gender';
+        if (!in_array($data['gender'], ['Male', 'Female', 'Other', 'Prefer not to say'])) {
+            $errors['gender'] = 'Please select a valid gender';
+        }
         if (empty($data['personal_email']) || !filter_var($data['personal_email'], FILTER_VALIDATE_EMAIL)) {
             $errors['personal_email'] = 'Valid personal email is required';
         } else {
-            if ($this->repo->findStaffByEmail($data['personal_email'])) $errors['personal_email'] = 'This email is already in use by another staff member';
+            if ($this->repo->findStaffByEmail($data['personal_email'])) {
+                $errors['personal_email'] = 'This email is already in use by another staff member';
+            }
         }
-        if (empty($data['phone']) || !validate_phone($data['phone'])) $errors['phone'] = 'Valid 10-digit mobile number is required';
-        if (!in_array($data['id_type'], ['Aadhaar', 'PAN', 'Passport'])) $errors['id_type'] = 'Please select a valid ID type';
-        if (empty($data['id_number']) || strlen($data['id_number']) < 5) $errors['id_number'] = 'ID number is required (5-20 chars)';
-        if (!in_array($data['designation'], ['Teller', 'Supervisor', 'Manager'])) $errors['designation'] = 'Please select a valid designation';
-        
+        if (empty($data['phone']) || !validate_phone($data['phone'])) {
+            $errors['phone'] = 'Valid 10-digit mobile number is required';
+        }
+        if (!in_array($data['id_type'], ['Aadhaar', 'PAN', 'Passport'])) {
+            $errors['id_type'] = 'Please select a valid ID type';
+        }
+        if (empty($data['id_number']) || strlen($data['id_number']) < 5) {
+            $errors['id_number'] = 'ID number is required (5-20 chars)';
+        }
+        if (!in_array($data['designation'], ['Teller', 'Supervisor', 'Manager'])) {
+            $errors['designation'] = 'Please select a valid designation';
+        }
+
         if ($data['branch_id']) {
-            if (!$this->repo->findBranchById($data['branch_id'])) $errors['branch_id'] = 'Invalid branch selected';
+            if (!$this->repo->findBranchById($data['branch_id'])) {
+                $errors['branch_id'] = 'Invalid branch selected';
+            }
         }
-        if (empty($data['password']) || strlen($data['password']) < 8) $errors['password'] = 'Password must be at least 8 characters';
-        
-        if (empty($data['city'])) $errors['city'] = 'City is required';
-        if (empty($data['state'])) $errors['state'] = 'State is required';
-        if (empty($data['pincode']) || !validate_pincode($data['pincode'])) $errors['pincode'] = 'Valid 6-digit pincode is required';
+        if (empty($data['password']) || strlen($data['password']) < 8) {
+            $errors['password'] = 'Password must be at least 8 characters';
+        }
+
+        if (empty($data['city'])) {
+            $errors['city'] = 'City is required';
+        }
+        if (empty($data['state'])) {
+            $errors['state'] = 'State is required';
+        }
+        if (empty($data['pincode']) || !validate_pincode($data['pincode'])) {
+            $errors['pincode'] = 'Valid 6-digit pincode is required';
+        }
         return $errors;
     }
 
-    public function generateBranchCode($state) {
+    public function generateBranchCode($state)
+    {
         $state_clean = trim(preg_replace('/[^a-zA-Z\s]/', '', $state));
         $words = preg_split('/\s+/', $state_clean);
         if (count($words) >= 2) {
@@ -56,10 +88,10 @@ class AdminStaffBranchService {
         } else {
             $state_code = strtoupper(substr(str_replace(' ', '', $state_clean), 0, 2));
         }
-        
+
         $count = $this->repo->countBranchByCode("FNZ-{$state_code}-%");
         $branch_code = "FNZ-{$state_code}-" . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-        
+
         while ($this->repo->countExactBranchCode($branch_code) > 0) {
             $count++;
             $branch_code = "FNZ-{$state_code}-" . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
@@ -67,17 +99,20 @@ class AdminStaffBranchService {
         return $branch_code;
     }
 
-    public function generateStaffId() {
+    public function generateStaffId()
+    {
         $max_id = $this->repo->getMaxStaffId();
         return 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
     }
 
-    public function verifyAdminPassword(int $admin_id, string $password) {
+    public function verifyAdminPassword(int $admin_id, string $password)
+    {
         $admin = $this->repo->findAdminById($admin_id);
         return ($admin && password_verify($password, $admin['password_hash']));
     }
 
-    public function generateStrongPassword($length = 12) {
+    public function generateStrongPassword($length = 12)
+    {
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
         $pass = '';
         $pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 22)];

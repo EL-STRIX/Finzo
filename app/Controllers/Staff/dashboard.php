@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__DIR__, 2) . '/../bootstrap/app.php';
 require_once dirname(__DIR__, 2) . '/Middleware/auth-staff.php';
 

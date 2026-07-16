@@ -1,17 +1,21 @@
 <?php
+
 namespace App\Controllers\Staff;
 
 use App\Services\StaffService;
 use Exception;
 
-class StaffController {
+class StaffController
+{
     private StaffService $service;
 
-    public function __construct(StaffService $service) {
+    public function __construct(StaffService $service)
+    {
         $this->service = $service;
     }
 
-    public function accountLookup() {
+    public function accountLookup()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -38,7 +42,8 @@ class StaffController {
         }
     }
 
-    public function changePassword() {
+    public function changePassword()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -53,9 +58,15 @@ class StaffController {
         $confirm_password  = $_POST['confirm_password'] ?? '';
 
         $errors = [];
-        if (empty($current_password)) $errors['current_password'] = 'Current password is required';
-        if (empty($new_password)) $errors['new_password'] = 'New password is required';
-        if (empty($confirm_password)) $errors['confirm_password'] = 'Please confirm your new password';
+        if (empty($current_password)) {
+            $errors['current_password'] = 'Current password is required';
+        }
+        if (empty($new_password)) {
+            $errors['new_password'] = 'New password is required';
+        }
+        if (empty($confirm_password)) {
+            $errors['confirm_password'] = 'Please confirm your new password';
+        }
 
         if (!empty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
@@ -89,7 +100,8 @@ class StaffController {
         }
     }
 
-    public function dashboard() {
+    public function dashboard()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -98,7 +110,7 @@ class StaffController {
 
         try {
             $data = $this->service->getDashboardData($staff_id);
-            
+
             json_response([
                 'success' => true,
                 'staff' => $data['staff'],
@@ -113,7 +125,8 @@ class StaffController {
         }
     }
 
-    public function deposit() {
+    public function deposit()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -128,8 +141,12 @@ class StaffController {
         $reference_note = clean_input($_POST['reference_note'] ?? '');
 
         $errors = [];
-        if (empty($account_no)) $errors['account_no'] = 'Account number is required';
-        if ($amount < 100) $errors['amount'] = 'Minimum deposit amount is ₹100';
+        if (empty($account_no)) {
+            $errors['account_no'] = 'Account number is required';
+        }
+        if ($amount < 100) {
+            $errors['amount'] = 'Minimum deposit amount is ₹100';
+        }
 
         if (!empty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
@@ -157,13 +174,14 @@ class StaffController {
         }
     }
 
-    public function history() {
+    public function history()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
         $staff_id = $_SESSION['staff_id'];
-        
+
         $filters = [
             'type'      => clean_input($_GET['type'] ?? 'all'),
             'status'    => clean_input($_GET['status'] ?? 'all'),
@@ -194,7 +212,8 @@ class StaffController {
         }
     }
 
-    public function receipt() {
+    public function receipt()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -248,7 +267,8 @@ class StaffController {
         }
     }
 
-    public function profile() {
+    public function profile()
+    {
         $staff_id = $_SESSION['staff_id'];
         $method   = $_SERVER['REQUEST_METHOD'];
 
@@ -328,7 +348,8 @@ class StaffController {
         json_response(['success' => false, 'message' => 'Method not allowed'], 405);
     }
 
-    public function withdrawal() {
+    public function withdrawal()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -343,8 +364,12 @@ class StaffController {
         $identity_notes = clean_input($_POST['identity_notes'] ?? '');
 
         $errors = [];
-        if (empty($account_no)) $errors['account_no'] = 'Account number is required';
-        if ($amount <= 0) $errors['amount'] = 'Amount must be greater than zero';
+        if (empty($account_no)) {
+            $errors['account_no'] = 'Account number is required';
+        }
+        if ($amount <= 0) {
+            $errors['amount'] = 'Amount must be greater than zero';
+        }
 
         if (!empty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Application Configuration
  * All application constants, SMTP config, paths, and environment variables.

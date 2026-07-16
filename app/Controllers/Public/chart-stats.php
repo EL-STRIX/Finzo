@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../../config/db.php';
 
 header('Content-Type: application/json');
@@ -34,7 +35,9 @@ try {
         // Convert to thousands for the chart UI (as it uses 'K' suffix)
         // Ensure minimum 0.1 so small amounts show slightly above 0 if they exist
         $valueInK = max(0, round($row['total_amount'] / 1000, 1));
-        if ($valueInK == 0 && $row['total_amount'] > 0) $valueInK = 0.1;
+        if ($valueInK == 0 && $row['total_amount'] > 0) {
+            $valueInK = 0.1;
+        }
 
         $index = array_search($monthStr, $months);
         if ($index !== false) {
@@ -49,7 +52,7 @@ try {
     }
 
     // Format labels to just month abbreviations like 'Jan', 'Feb'
-    $labels = array_map(function($m) {
+    $labels = array_map(function ($m) {
         return date('M', strtotime($m . '-01'));
     }, $months);
 
@@ -57,9 +60,12 @@ try {
     // If previous month is 0, we can just say +100% or 0%
     $currentMonthIndex = 5;
     $prevMonthIndex = 4;
-    
-    function calcChange($current, $prev) {
-        if ($prev == 0) return $current > 0 ? 100 : 0;
+
+    function calcChange($current, $prev)
+    {
+        if ($prev == 0) {
+            return $current > 0 ? 100 : 0;
+        }
         return round((($current - $prev) / $prev) * 100, 1);
     }
 

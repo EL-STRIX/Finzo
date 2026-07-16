@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Database Connection
  * PDO with MySQL driver, utf8mb4 charset, exception error mode.
@@ -12,7 +13,7 @@ $pdo = null;
 
 try {
     $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
-    
+
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -33,10 +34,9 @@ try {
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     }
     $db_connected = true;
-
 } catch (PDOException $e) {
     $db_connected = false;
-    
+
     // In debug mode, show detailed error
     if (defined('APP_DEBUG') && APP_DEBUG) {
         $error_message = 'Database connection failed: ' . $e->getMessage();

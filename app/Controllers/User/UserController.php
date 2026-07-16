@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\User;
 
 use App\Services\UserService;
@@ -6,16 +7,19 @@ use App\Repositories\UserRepository;
 use PDOException;
 use Exception;
 
-class UserController {
+class UserController
+{
     protected UserService $service;
     protected UserRepository $repository;
 
-    public function __construct(UserService $service) {
+    public function __construct(UserService $service)
+    {
         $this->service = $service;
         $this->repository = $service->getRepository();
     }
 
-    public function accountLookup() {
+    public function accountLookup()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -41,7 +45,8 @@ class UserController {
         }
     }
 
-    public function accountSettings() {
+    public function accountSettings()
+    {
         $user_id = $_SESSION['user_id'];
         try {
             $account = $this->repository->fetchAccountSettings($user_id);
@@ -71,7 +76,8 @@ class UserController {
         }
     }
 
-    public function accounts() {
+    public function accounts()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -111,7 +117,8 @@ class UserController {
         }
     }
 
-    public function beneficiary() {
+    public function beneficiary()
+    {
         $user_id = $_SESSION['user_id'];
         $customer_id = $this->repository->getCustomerId($user_id);
         $user_id = $customer_id ?: $user_id;
@@ -194,7 +201,8 @@ class UserController {
         json_response(['success' => false, 'message' => 'Method not allowed'], 405);
     }
 
-    public function changePassword() {
+    public function changePassword()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
@@ -206,16 +214,26 @@ class UserController {
         $new_password     = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
         $errors = [];
-        if (empty($current_password)) $errors['current_password'] = 'Current password is required';
+        if (empty($current_password)) {
+            $errors['current_password'] = 'Current password is required';
+        }
         if (empty($new_password)) {
             $errors['new_password'] = 'New password is required';
         } else {
             $strength = validate_password_strength($new_password);
-            if (!$strength['valid']) $errors['new_password'] = $strength['message'];
+            if (!$strength['valid']) {
+                $errors['new_password'] = $strength['message'];
+            }
         }
-        if ($new_password !== $confirm_password) $errors['confirm_password'] = 'Passwords do not match';
-        if ($current_password === $new_password && !empty($new_password)) $errors['new_password'] = 'New password must be different from current password';
-        if (!empty($errors)) json_response(['success' => false, 'errors' => $errors], 422);
+        if ($new_password !== $confirm_password) {
+            $errors['confirm_password'] = 'Passwords do not match';
+        }
+        if ($current_password === $new_password && !empty($new_password)) {
+            $errors['new_password'] = 'New password must be different from current password';
+        }
+        if (!empty($errors)) {
+            json_response(['success' => false, 'errors' => $errors], 422);
+        }
 
         try {
             $user = $this->repository->getUserPasswordHash($user_id);
@@ -231,13 +249,18 @@ class UserController {
         }
     }
 
-    public function completeProfile() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        
+    public function completeProfile()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
+        }
+
         $user_id = $_SESSION['user_id'];
         $customer_id_str = $this->repository->getCustomerId($user_id);
-        
+
         $data = [
             'dob' => clean_input($_POST['dob'] ?? ''), 'gender' => clean_input($_POST['gender'] ?? ''),
             'father_name' => clean_input($_POST['father_name'] ?? ''), 'mother_name' => clean_input($_POST['mother_name'] ?? ''),
@@ -249,17 +272,22 @@ class UserController {
             'id_number' => clean_input($_POST['id_number'] ?? ''), 'account_type' => clean_input($_POST['account_type'] ?? ''),
             'initial_deposit' => floatval($_POST['initial_deposit'] ?? 0), 'txn_pin' => $_POST['txn_pin'] ?? '',
         ];
-        
+
         $existing_user = $this->repository->getUserFiles($user_id);
         $data['has_profile_pic'] = !empty($existing_user['profile_picture']);
         $data['has_id_front'] = !empty($existing_user['id_front_path']);
         $data['has_id_back'] = !empty($existing_user['id_back_path']);
 
         $errors = $this->service->validateKyc($data, $_FILES);
-        if (!empty($errors)) json_response(['success' => false, 'errors' => $errors], 422);
+        if (!empty($errors)) {
+            json_response(['success' => false, 'errors' => $errors], 422);
+        }
 
-        try { $paths = $this->service->processKycUploads($_FILES, $user_id, $existing_user); } 
-        catch (Exception $e) { json_response(['success' => false, 'message' => $e->getMessage()], 500); }
+        try {
+            $paths = $this->service->processKycUploads($_FILES, $user_id, $existing_user);
+        } catch (Exception $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 500);
+        }
 
         try {
             $pdo = $this->repository->getDb();
@@ -295,15 +323,24 @@ class UserController {
             send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/views/user/dashboard.html']);
         } catch (PDOException $e) {
-            if (isset($pdo)) $pdo->rollBack();
-            if (file_exists($paths['front_destination'])) unlink($paths['front_destination']);
-            if (file_exists($paths['back_destination'])) unlink($paths['back_destination']);
+            if (isset($pdo)) {
+                $pdo->rollBack();
+            }
+            if (file_exists($paths['front_destination'])) {
+                unlink($paths['front_destination']);
+            }
+            if (file_exists($paths['back_destination'])) {
+                unlink($paths['back_destination']);
+            }
             json_response(['success' => false, 'message' => 'Failed to submit profile. Please try again.'], 500);
         }
     }
 
-    public function dashboard() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+    public function dashboard()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
@@ -311,7 +348,10 @@ class UserController {
         $user_id = $_SESSION['user_id'];
         try {
             $user = $this->repository->getUserDashboardData($user_id);
-            if (!$user) { destroy_session(); json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/views/auth/login.html'], 404); }
+            if (!$user) {
+                destroy_session();
+                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/views/auth/login.html'], 404);
+            }
             $_SESSION['user_status'] = $user['status'];
             $account = $this->repository->getActiveAccountByCustomerId($user['customer_id']);
             $recent_transactions = [];
@@ -335,7 +375,9 @@ class UserController {
                 $monthly_stats['income_total'] = (float)$this->repository->getMonthlyIncome($account['id']);
                 $monthly_stats['expense_total'] = (float)$this->repository->getMonthlyExpenses($account['id']);
             }
-            if (!isset($_SESSION['user_customer_id'])) $_SESSION['user_customer_id'] = $this->repository->getCustomerId($user_id);
+            if (!isset($_SESSION['user_customer_id'])) {
+                $_SESSION['user_customer_id'] = $this->repository->getCustomerId($user_id);
+            }
             $customer_id = $_SESSION['user_customer_id'];
             $notification_count = (int)$this->repository->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
@@ -345,7 +387,9 @@ class UserController {
             $past_rejections = [];
             foreach ($past_rejections_raw as $log) {
                 $reason = "Application was rejected";
-                if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) $reason = trim($matches[1]);
+                if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
+                    $reason = trim($matches[1]);
+                }
                 $past_rejections[] = ['reason' => $reason, 'rejected_at' => $log['created_at']];
             }
             json_response([
@@ -354,27 +398,38 @@ class UserController {
                 'account' => $account ? ['account_no' => $account['account_no'], 'account_type' => $account['account_type'], 'balance' => (float)$account['balance'], 'interest_rate' => (float)$account['interest_rate'], 'daily_limit' => (float)$account['daily_limit'], 'status' => $account['status'], 'opened_date' => $account['opened_date']] : null,
                 'past_rejections' => $past_rejections, 'recent_transactions' => $recent_transactions, 'monthly_stats' => $monthly_stats, 'notification_count' => $notification_count, 'greeting' => $greeting
             ]);
-        } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to load dashboard data'], 500); }
+        } catch (PDOException $e) {
+            json_response(['success' => false, 'message' => 'Failed to load dashboard data'], 500);
+        }
     }
 
-    public function notifications() {
-        if (!isset($_SESSION['user_customer_id'])) $_SESSION['user_customer_id'] = $this->repository->getCustomerId($_SESSION['user_id']);
+    public function notifications()
+    {
+        if (!isset($_SESSION['user_customer_id'])) {
+            $_SESSION['user_customer_id'] = $this->repository->getCustomerId($_SESSION['user_id']);
+        }
         $user_id = $_SESSION['user_customer_id'];
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
-                $page = max(1, intval($_GET['page'] ?? 1)); $per_page = min(50, max(1, intval($_GET['per_page'] ?? 20))); $offset = ($page - 1) * $per_page;
+                $page = max(1, intval($_GET['page'] ?? 1));
+                $per_page = min(50, max(1, intval($_GET['per_page'] ?? 20)));
+                $offset = ($page - 1) * $per_page;
                 $total = (int)$this->repository->getNotificationsTotal($user_id);
                 $unread_count = (int)$this->repository->getUnreadNotificationCount($user_id);
                 $notifications = $this->repository->getNotifications($user_id, $per_page, $offset);
                 json_response(['success' => true, 'notifications' => $notifications, 'unread_count' => $unread_count, 'total' => $total, 'pages' => max(1, ceil($total / $per_page)), 'current_page' => $page]);
-            } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to load notifications'], 500); }
+            } catch (PDOException $e) {
+                json_response(['success' => false, 'message' => 'Failed to load notifications'], 500);
+            }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = clean_input($_POST['action'] ?? '');
             try {
                 if ($action === 'mark_read') {
                     $notification_id = intval($_POST['notification_id'] ?? 0);
-                    if (!$notification_id) json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
+                    if (!$notification_id) {
+                        json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
+                    }
                     $this->repository->markNotificationRead($notification_id, $user_id);
                     json_response(['success' => true, 'message' => 'Notification marked as read']);
                 } elseif ($action === 'mark_all_read') {
@@ -382,147 +437,278 @@ class UserController {
                     json_response(['success' => true, 'message' => 'All notifications marked as read', 'updated' => $updated]);
                 } elseif ($action === 'delete') {
                     $notification_id = intval($_POST['notification_id'] ?? 0);
-                    if (!$notification_id) json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
+                    if (!$notification_id) {
+                        json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
+                    }
                     $this->repository->deleteNotification($notification_id, $user_id);
                     json_response(['success' => true, 'message' => 'Notification deleted']);
                 } elseif ($action === 'clear_all') {
                     $deleted = $this->repository->clearAllNotifications($user_id);
                     json_response(['success' => true, 'message' => 'All notifications cleared', 'deleted' => $deleted]);
-                } else { json_response(['success' => false, 'message' => 'Invalid action'], 422); }
-            } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to update notifications'], 500); }
+                } else {
+                    json_response(['success' => false, 'message' => 'Invalid action'], 422);
+                }
+            } catch (PDOException $e) {
+                json_response(['success' => false, 'message' => 'Failed to update notifications'], 500);
+            }
         }
         json_response(['success' => false, 'message' => 'Method not allowed'], 405);
     }
 
-    public function profile() {
+    public function profile()
+    {
         $user_id = $_SESSION['user_id'];
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
                 $user = $this->repository->getFullProfile($user_id);
-                if (!$user) json_response(['success' => false, 'message' => 'User not found'], 404);
+                if (!$user) {
+                    json_response(['success' => false, 'message' => 'User not found'], 404);
+                }
                 $account = $this->repository->getActiveAccountByCustomerId($user['customer_id']);
                 json_response(['success' => true, 'user' => $user, 'account' => $account]);
-            } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to load profile'], 500); }
+            } catch (PDOException $e) {
+                json_response(['success' => false, 'message' => 'Failed to load profile'], 500);
+            }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!validate_csrf_token($_POST['csrf_token'] ?? '')) json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-            $full_name = clean_input($_POST['full_name'] ?? ''); $phone = clean_input($_POST['phone'] ?? ''); $email = clean_input($_POST['email'] ?? '');
+            if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+                json_response(['success' => false, 'message' => 'Invalid security token'], 403);
+            }
+            $full_name = clean_input($_POST['full_name'] ?? '');
+            $phone = clean_input($_POST['phone'] ?? '');
+            $email = clean_input($_POST['email'] ?? '');
             $errors = [];
-            if (empty($full_name) || strlen($full_name) < 2 || strlen($full_name) > 100) $errors['full_name'] = 'Full name must be between 2 and 100 characters';
-            if (!empty($phone) && !validate_phone($phone)) $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
-            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = 'Please enter a valid email address';
-            if (!empty($email) && $email !== $_SESSION['user_email'] && $this->repository->checkEmailExists($email, $user_id)) $errors['email'] = 'This email is already in use by another account';
-            if (!empty($phone) && $this->repository->checkPhoneExists($phone, $user_id)) $errors['phone'] = 'This phone number is already in use by another account';
-            if (!empty($errors)) json_response(['success' => false, 'errors' => $errors], 422);
+            if (empty($full_name) || strlen($full_name) < 2 || strlen($full_name) > 100) {
+                $errors['full_name'] = 'Full name must be between 2 and 100 characters';
+            }
+            if (!empty($phone) && !validate_phone($phone)) {
+                $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
+            }
+            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors['email'] = 'Please enter a valid email address';
+            }
+            if (!empty($email) && $email !== $_SESSION['user_email'] && $this->repository->checkEmailExists($email, $user_id)) {
+                $errors['email'] = 'This email is already in use by another account';
+            }
+            if (!empty($phone) && $this->repository->checkPhoneExists($phone, $user_id)) {
+                $errors['phone'] = 'This phone number is already in use by another account';
+            }
+            if (!empty($errors)) {
+                json_response(['success' => false, 'errors' => $errors], 422);
+            }
             try {
                 $this->repository->updateProfile($user_id, $full_name, $phone, $email);
-                $_SESSION['user_name'] = $full_name; $_SESSION['user_email'] = $email; $_SESSION['user_phone'] = $phone;
+                $_SESSION['user_name'] = $full_name;
+                $_SESSION['user_email'] = $email;
+                $_SESSION['user_phone'] = $phone;
                 json_response(['success' => true, 'message' => 'Profile updated successfully']);
-            } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to update profile'], 500); }
+            } catch (PDOException $e) {
+                json_response(['success' => false, 'message' => 'Failed to update profile'], 500);
+            }
         }
         json_response(['success' => false, 'message' => 'Method not allowed'], 405);
     }
 
-    public function statement() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+    public function statement()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
         $user_id = $_SESSION['user_id'];
         try {
             $account = $this->repository->getActiveAccount($user_id);
-            if (!$account) json_response(['success' => false, 'message' => 'No active account found'], 404);
-            $from_date = clean_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days'))); $to_date = clean_input($_GET['to_date'] ?? date('Y-m-d'));
+            if (!$account) {
+                json_response(['success' => false, 'message' => 'No active account found'], 404);
+            }
+            $from_date = clean_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
+            $to_date = clean_input($_GET['to_date'] ?? date('Y-m-d'));
             $transactions = $this->repository->getStatementTransactions($account['id'], $from_date, $to_date);
             $opening_row = $this->repository->getOpeningBalance($account['id'], $from_date);
             $opening_balance = $opening_row ? (float)$opening_row['balance_after'] : 0;
             foreach ($transactions as &$txn) {
                 if (in_array($txn['type'], ['deposit', 'interest_credit']) || ($txn['type'] === 'transfer' && $txn['to_account_id'] == $account['id'])) {
-                    $txn['direction'] = 'credit'; $txn['debit'] = 0; $txn['credit'] = (float)$txn['amount'];
-                } else { $txn['direction'] = 'debit'; $txn['debit'] = (float)$txn['amount']; $txn['credit'] = 0; }
+                    $txn['direction'] = 'credit';
+                    $txn['debit'] = 0;
+                    $txn['credit'] = (float)$txn['amount'];
+                } else {
+                    $txn['direction'] = 'debit';
+                    $txn['debit'] = (float)$txn['amount'];
+                    $txn['credit'] = 0;
+                }
             }
             unset($txn);
-            $total_credits = array_sum(array_column($transactions, 'credit')); $total_debits = array_sum(array_column($transactions, 'debit')); $closing_balance = (float)$account['balance'];
+            $total_credits = array_sum(array_column($transactions, 'credit'));
+            $total_debits = array_sum(array_column($transactions, 'debit'));
+            $closing_balance = (float)$account['balance'];
             json_response(['success' => true, 'account' => ['account_no' => $account['account_no'], 'account_type' => $account['account_type'], 'holder_name' => $account['full_name']], 'statement' => ['from_date' => $from_date, 'to_date' => $to_date, 'opening_balance' => $opening_balance, 'closing_balance' => $closing_balance, 'total_credits' => $total_credits, 'total_debits' => $total_debits, 'transactions' => $transactions]]);
-        } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to generate statement'], 500); }
+        } catch (PDOException $e) {
+            json_response(['success' => false, 'message' => 'Failed to generate statement'], 500);
+        }
     }
 
-    public function transactions() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+    public function transactions()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
         $user_id = $_SESSION['user_id'];
         try {
             $account = $this->repository->fetchAccountSettings($user_id);
-            if (!$account) json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
+            if (!$account) {
+                json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
+            }
             $account_id = $account['id'];
-            $search = clean_input($_GET['search'] ?? ''); $type = clean_input($_GET['type'] ?? 'all'); $status = clean_input($_GET['status'] ?? 'all');
-            $from_date = clean_input($_GET['from_date'] ?? ''); $to_date = clean_input($_GET['to_date'] ?? '');
-            $page = max(1, intval($_GET['page'] ?? 1)); $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+            $search = clean_input($_GET['search'] ?? '');
+            $type = clean_input($_GET['type'] ?? 'all');
+            $status = clean_input($_GET['status'] ?? 'all');
+            $from_date = clean_input($_GET['from_date'] ?? '');
+            $to_date = clean_input($_GET['to_date'] ?? '');
+            $page = max(1, intval($_GET['page'] ?? 1));
+            $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
-            $where_clauses = ["(t.from_account_id = ? OR t.to_account_id = ?)"]; $params = [$account_id, $account_id];
-            if ($type !== 'all' && in_array($type, ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) { $where_clauses[] = "t.type = ?"; $params[] = $type; }
-            if ($status !== 'all' && in_array($status, ['completed', 'pending', 'failed', 'reversed'])) { $where_clauses[] = "t.status = ?"; $params[] = $status; }
-            if (!empty($from_date)) { $where_clauses[] = "DATE(t.created_at) >= ?"; $params[] = $from_date; }
-            if (!empty($to_date)) { $where_clauses[] = "DATE(t.created_at) <= ?"; $params[] = $to_date; }
-            if (!empty($search)) { $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR t.reference_note LIKE ?)"; $search_param = "%{$search}%"; $params[] = $search_param; $params[] = $search_param; $params[] = $search_param; }
+            $where_clauses = ["(t.from_account_id = ? OR t.to_account_id = ?)"];
+            $params = [$account_id, $account_id];
+            if ($type !== 'all' && in_array($type, ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
+                $where_clauses[] = "t.type = ?";
+                $params[] = $type;
+            }
+            if ($status !== 'all' && in_array($status, ['completed', 'pending', 'failed', 'reversed'])) {
+                $where_clauses[] = "t.status = ?";
+                $params[] = $status;
+            }
+            if (!empty($from_date)) {
+                $where_clauses[] = "DATE(t.created_at) >= ?";
+                $params[] = $from_date;
+            }
+            if (!empty($to_date)) {
+                $where_clauses[] = "DATE(t.created_at) <= ?";
+                $params[] = $to_date;
+            }
+            if (!empty($search)) {
+                $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR t.reference_note LIKE ?)";
+                $search_param = "%{$search}%";
+                $params[] = $search_param;
+                $params[] = $search_param;
+                $params[] = $search_param;
+            }
 
             $where_sql = implode(' AND ', $where_clauses);
             $total = (int)$this->repository->getTransactionsCount($where_sql, $params);
-            $pages = max(1, ceil($total / $per_page)); $offset = ($page - 1) * $per_page;
+            $pages = max(1, ceil($total / $per_page));
+            $offset = ($page - 1) * $per_page;
             $transactions = $this->repository->getTransactionsList($where_sql, $params, $per_page, $offset);
 
             foreach ($transactions as &$txn) {
-                if (in_array($txn['type'], ['deposit', 'interest_credit'])) { $txn['direction'] = 'credit'; }
-                elseif ($txn['type'] === 'withdrawal') { $txn['direction'] = 'debit'; }
-                elseif ($txn['type'] === 'transfer') {
+                if (in_array($txn['type'], ['deposit', 'interest_credit'])) {
+                    $txn['direction'] = 'credit';
+                } elseif ($txn['type'] === 'withdrawal') {
+                    $txn['direction'] = 'debit';
+                } elseif ($txn['type'] === 'transfer') {
                     $txn['direction'] = ($txn['to_account_id'] == $account_id) ? 'credit' : 'debit';
-                    if ($txn['to_account_id'] == $account_id && $txn['dest_balance_after'] !== null) $txn['balance_after'] = $txn['dest_balance_after'];
+                    if ($txn['to_account_id'] == $account_id && $txn['dest_balance_after'] !== null) {
+                        $txn['balance_after'] = $txn['dest_balance_after'];
+                    }
                 }
             }
             unset($txn);
             json_response(['success' => true, 'transactions' => $transactions, 'total' => $total, 'pages' => $pages, 'current_page' => $page, 'per_page' => $per_page]);
-        } catch (PDOException $e) { json_response(['success' => false, 'message' => 'Failed to load transactions'], 500); }
+        } catch (PDOException $e) {
+            json_response(['success' => false, 'message' => 'Failed to load transactions'], 500);
+        }
     }
 
-    public function transfer() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        if ($_SESSION['user_status'] !== 'active') json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
+    public function transfer()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
+        }
+        if ($_SESSION['user_status'] !== 'active') {
+            json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
+        }
 
         $user_id = $_SESSION['user_id'];
-        $to_account_no = clean_input($_POST['to_account_no'] ?? ''); $amount = floatval($_POST['amount'] ?? 0);
-        $description = clean_input($_POST['description'] ?? ''); $txn_pin = $_POST['txn_pin'] ?? '';
+        $to_account_no = clean_input($_POST['to_account_no'] ?? '');
+        $amount = floatval($_POST['amount'] ?? 0);
+        $description = clean_input($_POST['description'] ?? '');
+        $txn_pin = $_POST['txn_pin'] ?? '';
         $errors = [];
-        if (empty($to_account_no)) $errors['to_account_no'] = 'Recipient account number is required';
-        if ($amount <= 0) $errors['amount'] = 'Amount must be greater than zero';
-        elseif ($amount != round($amount, 2)) $errors['amount'] = 'Amount can have at most 2 decimal places';
-        if (strlen($description) > 100) $errors['description'] = 'Description must not exceed 100 characters';
-        if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
-        if (!empty($errors)) json_response(['success' => false, 'errors' => $errors], 422);
+        if (empty($to_account_no)) {
+            $errors['to_account_no'] = 'Recipient account number is required';
+        }
+        if ($amount <= 0) {
+            $errors['amount'] = 'Amount must be greater than zero';
+        } elseif ($amount != round($amount, 2)) {
+            $errors['amount'] = 'Amount can have at most 2 decimal places';
+        }
+        if (strlen($description) > 100) {
+            $errors['description'] = 'Description must not exceed 100 characters';
+        }
+        if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
+            $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
+        }
+        if (!empty($errors)) {
+            json_response(['success' => false, 'errors' => $errors], 422);
+        }
 
         $pdo = $this->repository->getDb();
-        if (!validate_pin($pdo, $user_id, $txn_pin)) json_response(['success' => false, 'message' => 'Invalid transaction PIN'], 401);
+        if (!validate_pin($pdo, $user_id, $txn_pin)) {
+            json_response(['success' => false, 'message' => 'Invalid transaction PIN'], 401);
+        }
 
         try {
             $pdo->beginTransaction();
             $account = $this->repository->getActiveAccount($user_id);
-            if (!$account) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Source account not found or inactive'], 404); }
+            if (!$account) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Source account not found or inactive'], 404);
+            }
             $source_id = $account['id'];
             $dest_id = $this->repository->getAccountIdByNumber($to_account_no);
-            if (!$dest_id) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404); }
-            if ($source_id === $dest_id) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Cannot transfer to your own account'], 422); }
+            if (!$dest_id) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404);
+            }
+            if ($source_id === $dest_id) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Cannot transfer to your own account'], 422);
+            }
 
-            $first_id = min($source_id, $dest_id); $second_id = max($source_id, $dest_id);
-            $first = $this->repository->getAccountForUpdate($first_id); $second = $this->repository->getAccountForUpdate($second_id);
-            $source = ($first['id'] == $source_id) ? $first : $second; $dest = ($first['id'] == $dest_id) ? $first : $second;
-            if (!$source || !$dest) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Account error during locking'], 500); }
+            $first_id = min($source_id, $dest_id);
+            $second_id = max($source_id, $dest_id);
+            $first = $this->repository->getAccountForUpdate($first_id);
+            $second = $this->repository->getAccountForUpdate($second_id);
+            $source = ($first['id'] == $source_id) ? $first : $second;
+            $dest = ($first['id'] == $dest_id) ? $first : $second;
+            if (!$source || !$dest) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Account error during locking'], 500);
+            }
             $dest['dest_user_id'] = $dest['customer_id'];
-            if ($source['balance'] < $amount) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Insufficient balance'], 422); }
+            if ($source['balance'] < $amount) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Insufficient balance'], 422);
+            }
             $min_transfer = get_setting($pdo, 'min_transfer_amount', 10);
-            if ($amount < $min_transfer) { $pdo->rollBack(); json_response(['success' => false, 'message' => 'Minimum transfer amount is ' . format_currency($min_transfer)], 422); }
+            if ($amount < $min_transfer) {
+                $pdo->rollBack();
+                json_response(['success' => false, 'message' => 'Minimum transfer amount is ' . format_currency($min_transfer)], 422);
+            }
 
             $today_total = (float)$this->repository->fetchTodayTransferTotal($source['id']);
             $daily_limit = $source['daily_limit'];
-            if (($today_total + $amount) > $daily_limit) { $pdo->rollBack(); $remaining = max(0, $daily_limit - $today_total); json_response(['success' => false, 'message' => "Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining)], 422); }
+            if (($today_total + $amount) > $daily_limit) {
+                $pdo->rollBack();
+                $remaining = max(0, $daily_limit - $today_total);
+                json_response(['success' => false, 'message' => "Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining)], 422);
+            }
 
-            $new_source_balance = $source['balance'] - $amount; $this->repository->updateAccountBalance($source['id'], -$amount);
-            $new_dest_balance = $dest['balance'] + $amount; $this->repository->updateAccountBalance($dest['id'], $amount);
+            $new_source_balance = $source['balance'] - $amount;
+            $this->repository->updateAccountBalance($source['id'], -$amount);
+            $new_dest_balance = $dest['balance'] + $amount;
+            $this->repository->updateAccountBalance($dest['id'], $amount);
 
             $txn_id = generate_transaction_id();
             $this->repository->insertTransaction($txn_id, $source['id'], $dest['id'], $amount, $new_source_balance, $new_dest_balance, $description);
@@ -537,17 +723,30 @@ class UserController {
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
             json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $txn_id, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/views/user/receipt.html?id=' . $txn_id]);
-        } catch (PDOException $e) { if (isset($pdo)) $pdo->rollBack(); json_response(['success' => false, 'message' => 'Transfer failed. Please try again.'], 500); }
+        } catch (PDOException $e) {
+            if (isset($pdo)) {
+                $pdo->rollBack();
+            } json_response(['success' => false, 'message' => 'Transfer failed. Please try again.'], 500);
+        }
     }
 
-    public function verifyPin() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+    public function verifyPin()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
         $input = json_decode(file_get_contents('php://input'), true);
-        if (!$input) $input = $_POST;
+        if (!$input) {
+            $input = $_POST;
+        }
         $pin = $input['pin'] ?? '';
-        if (empty($pin) || strlen($pin) !== 4 || !is_numeric($pin)) json_response(['success' => false, 'message' => 'Invalid PIN format'], 400);
+        if (empty($pin) || strlen($pin) !== 4 || !is_numeric($pin)) {
+            json_response(['success' => false, 'message' => 'Invalid PIN format'], 400);
+        }
         $pdo = $this->repository->getDb();
-        if (!validate_pin($pdo, $_SESSION['user_id'], $pin)) json_response(['success' => false, 'message' => 'Incorrect PIN'], 401);
+        if (!validate_pin($pdo, $_SESSION['user_id'], $pin)) {
+            json_response(['success' => false, 'message' => 'Incorrect PIN'], 401);
+        }
         json_response(['success' => true, 'message' => 'PIN verified successfully']);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finzo Banking System — Upload ID Document Handler
  * POST endpoint: handles identity document image uploads.
@@ -80,7 +81,6 @@ try {
         'path'     => $relative_path,
         'filename' => $filename
     ]);
-
 } catch (PDOException $e) {
     // Clean up file on DB failure
     unlink($destination);

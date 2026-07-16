@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\StaffRepository;
@@ -6,14 +7,17 @@ use Exception;
 use PDOException;
 use finfo;
 
-class StaffService {
+class StaffService
+{
     private StaffRepository $repository;
 
-    public function __construct(StaffRepository $repository) {
+    public function __construct(StaffRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function accountLookup(string $account_no) {
+    public function accountLookup(string $account_no)
+    {
         $result = $this->repository->findAccountByNo($account_no);
         if (!$result) {
             return ['found' => false];
@@ -35,7 +39,8 @@ class StaffService {
         ];
     }
 
-    public function changePassword(int $staff_id, string $current_password, string $new_password) {
+    public function changePassword(int $staff_id, string $current_password, string $new_password)
+    {
         $hash = $this->repository->findStaffPasswordHash($staff_id);
         if (!$hash) {
             throw new Exception("Staff account not found", 404);
@@ -53,7 +58,8 @@ class StaffService {
         return true;
     }
 
-    public function getDashboardData(int $staff_id) {
+    public function getDashboardData(int $staff_id)
+    {
         $deposits = $this->repository->getStaffShiftDeposits($staff_id);
         $withdrawals = $this->repository->getStaffShiftWithdrawals($staff_id);
         $total_today = $this->repository->getStaffTotalTransactionsToday($staff_id);
@@ -80,10 +86,11 @@ class StaffService {
         ];
     }
 
-    public function processDeposit(int $staff_id, string $account_no, float $amount, string $reference_note) {
+    public function processDeposit(int $staff_id, string $account_no, float $amount, string $reference_note)
+    {
         try {
             $this->repository->beginTransaction();
-            
+
             $account = $this->repository->findAccountForUpdate($account_no);
             if (!$account) {
                 throw new Exception("Account not found", 404);
@@ -110,13 +117,23 @@ class StaffService {
                 'processed_by_staff_id' => $staff_id
             ]);
 
-            send_notification($this->repository->getPDO(), $account['customer_id'], 'transaction',
+            send_notification(
+                $this->repository->getPDO(),
+                $account['customer_id'],
+                'transaction',
                 'Cash Deposit Received',
                 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            write_audit_log($this->repository->getPDO(), 'staff_deposit', $txn_id, 'transaction', $staff_id, 'staff',
-                "Deposit of " . format_currency($amount) . " to account {$account_no}");
+            write_audit_log(
+                $this->repository->getPDO(),
+                'staff_deposit',
+                $txn_id,
+                'transaction',
+                $staff_id,
+                'staff',
+                "Deposit of " . format_currency($amount) . " to account {$account_no}"
+            );
 
             $this->repository->commit();
 
@@ -133,7 +150,8 @@ class StaffService {
         }
     }
 
-    public function processWithdrawal(int $staff_id, string $account_no, float $amount, string $identity_notes) {
+    public function processWithdrawal(int $staff_id, string $account_no, float $amount, string $identity_notes)
+    {
         try {
             $this->repository->beginTransaction();
 
@@ -172,13 +190,23 @@ class StaffService {
                 'processed_by_staff_id' => $staff_id
             ]);
 
-            send_notification($this->repository->getPDO(), $account['customer_id'], 'transaction',
+            send_notification(
+                $this->repository->getPDO(),
+                $account['customer_id'],
+                'transaction',
                 'Cash Withdrawal Processed',
                 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            write_audit_log($this->repository->getPDO(), 'staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff',
-                "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}");
+            write_audit_log(
+                $this->repository->getPDO(),
+                'staff_withdrawal',
+                $txn_id,
+                'transaction',
+                $staff_id,
+                'staff',
+                "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}"
+            );
 
             $this->repository->commit();
 
@@ -195,7 +223,8 @@ class StaffService {
         }
     }
 
-    public function getHistory(int $staff_id, array $filters) {
+    public function getHistory(int $staff_id, array $filters)
+    {
         $where_clauses = ["t.processed_by_staff_id = ?"];
         $params = [$staff_id];
 
@@ -234,7 +263,8 @@ class StaffService {
         ];
     }
 
-    public function getReceipt(string $txn_id) {
+    public function getReceipt(string $txn_id)
+    {
         $transaction = $this->repository->getTransactionReceipt($txn_id);
         if (!$transaction) {
             throw new Exception("Transaction not found", 404);
@@ -242,7 +272,8 @@ class StaffService {
         return $transaction;
     }
 
-    public function getFullProfile(int $staff_id) {
+    public function getFullProfile(int $staff_id)
+    {
         $staff = $this->repository->getFullStaffProfile($staff_id);
         if (!$staff) {
             throw new Exception("Staff profile not found", 404);
@@ -275,7 +306,8 @@ class StaffService {
         ];
     }
 
-    public function updateProfile(int $staff_id, array $data, $file = null) {
+    public function updateProfile(int $staff_id, array $data, $file = null)
+    {
         $fields = [];
         $params = [];
 
@@ -302,7 +334,7 @@ class StaffService {
             }
 
             $new_photo_path = 'uploads/staff-photos/' . $filename;
-            
+
             $old_photo = $this->repository->findStaffById($staff_id)['profile_photo'] ?? null;
             if ($old_photo) {
                 // Determine root path
@@ -323,7 +355,7 @@ class StaffService {
 
         $this->repository->updateStaffProfile($staff_id, $fields, $params);
         write_audit_log($this->repository->getPDO(), 'staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile');
-        
+
         return $this->repository->getFullStaffProfile($staff_id);
     }
 }
