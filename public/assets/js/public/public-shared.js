@@ -250,7 +250,6 @@ $(document).ready(function() {
     let isScrollingProgrammatically = false;
 
     function initScrollspy() {
-        const sections = ['home', 'benefits', 'features'];
         const navLinks = $('.nav-link');
         const navbarHeight = $('nav').outerHeight() || 80;
 
@@ -264,15 +263,18 @@ $(document).ready(function() {
             scrollTimeout = setTimeout(() => {
                 const scrollPos = $(window).scrollTop() + navbarHeight + 150;
 
-                sections.forEach(id => {
-                    const section = $('#' + id);
+                navLinks.each(function() {
+                    const href = $(this).attr('href');
+                    if (!href || !href.startsWith('#') || href.length <= 1) return;
+                    
+                    const section = $(href);
                     if (section.length) {
                         const top = section.offset().top;
                         const bottom = top + section.outerHeight();
 
                         if (scrollPos >= top && scrollPos <= bottom) {
                             navLinks.removeClass('nav-link-active');
-                            $(`.nav-link[href="#${id}"]`).addClass('nav-link-active');
+                            $(this).addClass('nav-link-active');
                         }
                     }
                 });
