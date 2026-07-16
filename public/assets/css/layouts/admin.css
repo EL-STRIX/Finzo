@@ -1410,7 +1410,7 @@ html[data-theme="light"] #users-table tr {
 /* MODAL */
 .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); animation: fadeIn .2s ease; padding: 16px; }
 
-.modal-overlay.hidden { display: none !important; }
+.modal-overlay/* .hidden { display: none !important; } */
 
 .modal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; width: 100%; max-width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,.2); animation: slideUp .25s ease; transition: background 0.3s, border-color 0.3s; }
 
@@ -1512,7 +1512,7 @@ html[data-theme="light"] #users-table tr {
 
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease;}
 
-.modal-overlay.hidden{display:none!important;}
+/* .modal-overlay.hidden{display:none!important;} */
 
 .modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;width:90%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .25s ease;}
 
@@ -2227,7 +2227,7 @@ html[data-theme="light"] #users-table tr {
 
 .mono { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700; color: var(--text-secondary); letter-spacing: .04em; overflow-wrap: break-word; }
 
-.hidden { display: none !important; }
+/* .hidden { display: none !important; } */
 
 .spin { animation: spin 1s linear infinite; }
 

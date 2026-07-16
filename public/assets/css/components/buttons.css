@@ -1,5 +1,5 @@
 /* Buttons */
-.btn {
+.btn, .btn-primary, .btn-secondary, .btn-ghost, .btn-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
