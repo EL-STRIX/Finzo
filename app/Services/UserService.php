@@ -182,8 +182,8 @@ class UserService
 
     public function processKycUploads($files, $user_id, $existing_files)
     {
-        if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
-            mkdir(UPLOAD_ID_DOCUMENTS_PATH, 0755, true);
+        if (!is_dir(STORAGE_KYC_PATH)) {
+            mkdir(STORAGE_KYC_PATH, 0755, true);
         }
         $profile_upload_path = UPLOAD_PROFILES_PATH;
         if (!is_dir($profile_upload_path)) {
@@ -194,7 +194,6 @@ class UserService
             if (isset($file_arr) && $file_arr['error'] === UPLOAD_ERR_OK) {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mime = finfo_file($finfo, $file_arr['tmp_name']);
-                finfo_close($finfo);
                 return ($mime === 'image/jpeg') ? 'jpg' : 'png';
             }
             return '';
@@ -209,8 +208,8 @@ class UserService
         $back_filename  = $back_ext ? 'id_back_' . $user_id . '_' . time() . '.' . $back_ext : '';
 
         $profile_destination = $profile_filename ? $profile_upload_path . $profile_filename : '';
-        $front_destination = $front_filename ? UPLOAD_ID_DOCUMENTS_PATH . $front_filename : '';
-        $back_destination  = $back_filename ? UPLOAD_ID_DOCUMENTS_PATH . $back_filename : '';
+        $front_destination = $front_filename ? STORAGE_KYC_PATH . $front_filename : '';
+        $back_destination  = $back_filename ? STORAGE_KYC_PATH . $back_filename : '';
 
         if (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) {
             $uploaded = (defined('FINZO_TESTING') && FINZO_TESTING) ? copy($files['profile_picture']['tmp_name'], $profile_destination) : move_uploaded_file($files['profile_picture']['tmp_name'], $profile_destination);
@@ -236,11 +235,11 @@ class UserService
             : $existing_files['profile_picture'];
 
         $id_front_path = (isset($files['id_front']) && $files['id_front']['error'] === UPLOAD_ERR_OK)
-            ? 'uploads/id-documents/' . $front_filename
+            ? 'storage/kyc-documents/' . $front_filename
             : $existing_files['id_front_path'];
 
         $id_back_path = (isset($files['id_back']) && $files['id_back']['error'] === UPLOAD_ERR_OK)
-            ? 'uploads/id-documents/' . $back_filename
+            ? 'storage/kyc-documents/' . $back_filename
             : $existing_files['id_back_path'];
 
         return [
