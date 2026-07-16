@@ -242,6 +242,47 @@ class AdminOperationsController
         throw new ApiException('Method not allowed', 405);
     }
 
+    public function viewKycDocument(): void
+    {
+        $admin_id = $_SESSION['admin_id'] ?? null;
+        if (!$admin_id) {
+            http_response_code(401);
+            echo "Unauthorized";
+            exit;
+        }
+
+        $path = $_GET['path'] ?? '';
+        
+        // Basic security check: prevent directory traversal and ensure it's pointing to storage/kyc-documents
+        if (empty($path) || strpos($path, '..') !== false || !str_starts_with($path, 'storage/kyc-documents/')) {
+            http_response_code(403);
+            echo "Forbidden";
+            exit;
+        }
+
+        $absolute_path = dirname(__DIR__, 3) . '/' . $path;
+
+        if (!file_exists($absolute_path)) {
+            http_response_code(404);
+            echo "Document not found";
+            exit;
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $absolute_path);
+
+        header("Content-Type: " . $mime_type);
+        header("Content-Length: " . filesize($absolute_path));
+        
+        // Prevent caching of sensitive documents
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
+        readfile($absolute_path);
+        exit;
+    }
+
     public function suspendedUsers(): array
     {
         $filters = [
