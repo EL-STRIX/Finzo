@@ -567,8 +567,20 @@ class AdminOperationsService
 
         $account = $this->repository->getAccountPreferences($user['customer_id']);
 
-        $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
-        $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
+        $id_front_url = null;
+        if ($user['id_front_path']) {
+            $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
+                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_front_path'])
+                : APP_URL . '/' . $user['id_front_path'];
+        }
+
+        $id_back_url = null;
+        if ($user['id_back_path']) {
+            $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
+                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_back_path'])
+                : APP_URL . '/' . $user['id_back_path'];
+        }
+
         $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
         if (!$profile_pic_url) {
             $avatar_path = 'uploads/avatars/user_' . $user['id'] . '.jpg';

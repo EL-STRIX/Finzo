@@ -15,7 +15,7 @@ jobs:
     name: Lint & Static Analysis
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -29,7 +29,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       
     - name: Cache Composer Dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -51,7 +51,7 @@ jobs:
     name: Security Audit
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -73,7 +73,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     
     - name: Setup PHP (With Xdebug for Coverage)
       uses: shivammathur/setup-php@v2
@@ -93,7 +93,7 @@ jobs:
       run: vendor/bin/phpunit --coverage-clover coverage.xml
       
     - name: Upload Coverage Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: phpunit-coverage
         path: coverage.xml

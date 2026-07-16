@@ -16,7 +16,7 @@ jobs:
       url: https://finzo.example.com
       
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     
     - name: Install Dependencies (No Dev)
       run: composer install --no-dev --prefer-dist --no-progress --optimize-autoloader --ignore-platform-req=php

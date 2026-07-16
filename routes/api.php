@@ -46,6 +46,7 @@ $router->post('/Admin/interest.php', [AdminOperationsController::class, 'interes
 $router->get('/Admin/locked-accounts.php', [AdminOperationsController::class, 'lockedAccounts']);
 $router->get('/Admin/locked-account-detail.php', [AdminOperationsController::class, 'lockedAccountDetail']);
 $router->get('/Admin/pending-approvals.php', [AdminOperationsController::class, 'pendingApprovals']);
+$router->get('/Admin/view-kyc-document.php', [AdminOperationsController::class, 'viewKycDocument']);
 $router->post('/Admin/recover-user.php', [AdminOperationsController::class, 'recoverUser']);
 $router->get('/Admin/review-application.php', [AdminOperationsController::class, 'reviewApplication']);
 $router->post('/Admin/review-application.php', [AdminOperationsController::class, 'reviewApplication']);
