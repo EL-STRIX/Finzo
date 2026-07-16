@@ -92,7 +92,6 @@
 
 
     <link rel="stylesheet" href="assets/css/custom.css">
-    <link rel="stylesheet" href="assets/css/dark-mode.css">
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -165,13 +164,6 @@
                 opacity: 1 !important;
                 transform: none !important;
                 filter: none !important;
-            }
-            .animate-drift,
-            .animate-pulse-soft,
-            .animate-pulse,
-            .animate-bounce,
-            .animate-ping {
-                animation: none !important;
             }
         }
 
@@ -250,8 +242,8 @@
             <div class="container mx-auto px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 items-center relative z-10 py-8 sm:py-12 lg:py-0">
                 <div class="lg:col-span-6">
                     <div
-                        class="reveal-up inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-6 sm:mb-8 lg:mb-10 border border-primary/10 animate-pulse-soft">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        class="reveal-up inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary/5 text-primary mb-6 sm:mb-8 lg:mb-10 border border-primary/10">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
                         <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase font-label">SECURE · SIMPLE ·
                             FAST</span>
                     </div>
@@ -429,35 +421,35 @@
                     </div>
                     <!-- Feature 2: High Contrast Security -->
                     <div
-                        class="md:col-span-4 bg-primary-forced p-7 sm:p-10 lg:p-12 rounded-[1.5rem] sm:rounded-[2rem] text-white card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
+                        class="md:col-span-4 bg-surface-container-low p-7 sm:p-10 lg:p-12 rounded-[1.5rem] sm:rounded-[2rem] text-primary flex flex-col justify-between border border-outline-variant/10">
                         <div>
                             <span
-                                class="material-symbols-outlined text-tertiary-fixed-dim text-3xl sm:text-4xl mb-6 sm:mb-8 lg:mb-10 block">shield_lock</span>
+                                class="material-symbols-outlined text-primary text-3xl sm:text-4xl mb-6 sm:mb-8 lg:mb-10 block">shield_lock</span>
                             <h3 class="text-2xl sm:text-3xl font-black font-headline mb-4 sm:mb-6">Login <br />Protection.</h3>
-                            <p class="text-blue-100/60 mb-8 sm:mb-10 lg:mb-12 leading-relaxed text-sm sm:text-base">Hashed passwords, session management and
+                            <p class="text-on-surface-variant opacity-70 mb-8 sm:mb-10 lg:mb-12 leading-relaxed text-sm sm:text-base">Hashed passwords, session management and
                                 automatic lockout after 5 failed attempts — your account is always safe.</p>
                         </div>
-                        <div class="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl border border-white/10 no-card-style">
-                            <div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></div>
-                            <span class="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase opacity-80">PROTECTION
+                        <div class="flex items-center gap-3 px-4 py-3 bg-primary/5 rounded-xl border border-primary/10 no-card-style">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                            <span class="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase opacity-80 text-primary">PROTECTION
                                 ENABLED</span>
                         </div>
                     </div>
                     <!-- Feature 3: Interest, Every Month (Dark Theme) -->
                     <div
-                        class="md:col-span-4 bg-primary-forced p-7 sm:p-10 lg:p-12 rounded-[1.5rem] sm:rounded-[2rem] card-rim-light flex flex-col justify-between shadow-2xl shadow-primary/20">
+                        class="md:col-span-4 bg-surface-container-low p-7 sm:p-10 lg:p-12 rounded-[1.5rem] sm:rounded-[2rem] flex flex-col justify-between border border-outline-variant/10">
                         <div>
                             <span
-                                class="material-symbols-outlined text-tertiary-fixed-dim text-3xl sm:text-4xl mb-6 sm:mb-8 lg:mb-10 block">percent</span>
-                            <h3 class="text-2xl sm:text-3xl font-black font-headline text-white mb-4 sm:mb-6">Interest, <br />Every Month.
+                                class="material-symbols-outlined text-primary text-3xl sm:text-4xl mb-6 sm:mb-8 lg:mb-10 block">percent</span>
+                            <h3 class="text-2xl sm:text-3xl font-black font-headline text-primary mb-4 sm:mb-6">Interest, <br />Every Month.
                             </h3>
-                            <p class="text-white/60 mb-8 sm:mb-10 leading-relaxed text-sm sm:text-base">Your savings account earns simple interest
+                            <p class="text-on-surface-variant opacity-70 mb-8 sm:mb-10 leading-relaxed text-sm sm:text-base">Your savings account earns simple interest
                                 automatically — calculated and credited to your balance every 30 days.</p>
                         </div>
-                        <div class="pt-6 sm:pt-8 border-t border-white/10 flex justify-between items-center">
-                            <span class="text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-widest opacity-40">CREDITED
+                        <div class="pt-6 sm:pt-8 border-t border-outline-variant/10 flex justify-between items-center">
+                            <span class="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-widest opacity-60">CREDITED
                                 EVERY</span>
-                            <span class="text-xs text-tertiary-fixed-dim font-black uppercase tracking-widest">30
+                            <span class="text-xs text-primary font-black uppercase tracking-widest">30
                                 Days</span>
                         </div>
                     </div>
@@ -517,7 +509,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="px-2 sm:px-3 py-1 bg-primary/5 rounded-full flex items-center gap-1.5 sm:gap-2 animate-pulse shrink-0">
+                                        class="px-2 sm:px-3 py-1 bg-primary/5 rounded-full flex items-center gap-1.5 sm:gap-2 shrink-0">
                                         <span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
                                         <span
                                             class="text-[8px] sm:text-[9px] text-primary/40 font-black uppercase tracking-tighter">INSTANT</span>
@@ -540,7 +532,7 @@
                                         </div>
                                     </div>
                                     <div class="flex gap-1.5 items-center shrink-0">
-                                        <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+                                        <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
                                         <span
                                             class="text-[8px] sm:text-[9px] text-tertiary-fixed-dim font-black uppercase tracking-tighter">PDF
                                             READY</span>
@@ -573,9 +565,9 @@
             </div>
             <!-- Background decorative elements -->
             <div
-                class="absolute top-1/2 left-0 -translate-y-1/2 w-40 sm:w-64 h-40 sm:h-64 bg-primary/5 rounded-full blur-3xl animate-drift">
+                class="absolute top-1/2 left-0 -translate-y-1/2 w-40 sm:w-64 h-40 sm:h-64 bg-primary/5 rounded-full blur-3xl">
             </div>
-            <div class="absolute bottom-0 right-0 w-56 sm:w-96 h-56 sm:h-96 bg-tertiary-container/5 rounded-full blur-3xl animate-drift"
+            <div class="absolute bottom-0 right-0 w-56 sm:w-96 h-56 sm:h-96 bg-tertiary-container/5 rounded-full blur-3xl"
                 style="animation-delay: -5s;"></div>
         </section>
 
