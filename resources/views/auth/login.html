@@ -83,13 +83,13 @@
 
       <div class="mb-8 sm:mb-10 text-left w-full">
         <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Welcome Back</h2>
-        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Sign in to your account and manage your money.</p>
+        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Sign in securely to access your Finzo banking account.</p>
       </div>
 
-      <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="loginForm">
+      <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="loginForm">
         <!-- Field: Identity -->
         <div class="fin-input-container">
-          <label class="field-label">Email or Account Number</label>
+          <label class="field-label">Email Address or Account Number</label>
           <div class="relative">
             <span class="material-symbols-outlined input-icon">alternate_email</span>
             <input id="identity" type="text" placeholder="e.g. FNZ2026XXXX or sujay@email.com" class="fin-input has-icon-left"/>
@@ -99,7 +99,7 @@
         <!-- Field: Password -->
         <div class="fin-input-container" style="animation-delay: 0.1s;">
           <div class="flex justify-between items-center pr-1">
-            <label class="field-label">Secure Password</label>
+            <label class="field-label">Password</label>
           </div>
           <div class="relative group">
             <span class="material-symbols-outlined input-icon">lock</span>
@@ -116,10 +116,11 @@
         <!-- Action -->
         <div class="pt-3 sm:pt-4">
           <button type="submit" id="login-btn" class="btn-primary" style="animation-delay: 0.2s;">
-            <span>Sign In to Account</span>
+            <span>Sign In</span>
             <span class="material-symbols-outlined text-xl">login</span>
           </button>
         </div>
+      <div class="mt-4 text-center text-xs text-slate-500 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> Your connection is encrypted.</div>
       </form>
 
       <!-- Switching link -->

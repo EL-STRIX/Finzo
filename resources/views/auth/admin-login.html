@@ -66,10 +66,10 @@
 
         <div class="mb-8 sm:mb-10 text-left w-full">
           <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Restricted Access</h2>
-          <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Finzo administrative console.</p>
+          <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Authorized personnel only. Administrative access requires valid credentials.</p>
         </div>
 
-        <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="adminLoginForm">
+        <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="adminLoginForm">
           <!-- Field: Admin ID -->
           <div class="fin-input-container">
             <label class="field-label text-primary-600-600">Admin ID or Email</label>
@@ -92,7 +92,7 @@
             </div>
           </div>
 
-          <div id="error-box" class="error-msg">Invalid root credentials</div>
+          <div id="error-box" class="error-msg">Invalid Admin ID or password</div>
 
           <!-- Suspended Message (URL param) -->
           <div id="suspended-box" class="bg-red-50 text-red-600 border border-red-200 p-3 rounded-lg text-sm font-semibold mt-4 hidden">
@@ -123,7 +123,7 @@
           </div>
           <h2 class="text-2xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] dark:text-[var(--color-text-main)] mb-2" id="recovery-title">Account Locked</h2>
           <p class="text-[var(--color-text-muted)] dark:text-slate-400 font-medium text-xs leading-relaxed" id="recovery-subtitle">
-            System access restricted due to security protocols.
+            The account has been temporarily locked. This helps protect your information.
           </p>
         </div>
 
@@ -175,7 +175,7 @@
               </div>
             </div>
 
-            <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up" id="sqForm" class="space-y-4">
+            <form class="ds-card p-6 md:p-8 space-y-6 " id="sqForm" class="space-y-4">
               <div class="fin-input-container">
                 <label class="field-label">Your Secret Answer</label>
                 <div class="relative group">
@@ -208,7 +208,7 @@
               <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-700">Identity Verified. Please set a new password.</p>
             </div>
 
-            <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up" id="newPwForm" class="space-y-4">
+            <form class="ds-card p-6 md:p-8 space-y-6 " id="newPwForm" class="space-y-4">
               <div class="fin-input-container">
                 <label class="field-label">New Password</label>
                 <div class="relative group">
