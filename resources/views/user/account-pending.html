@@ -1,141 +1,158 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html class="light" lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Application Under Review | Finzo</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="/Finzo/public/assets/js/tailwind-config.js"></script>
-  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Finzo | Application Under Review</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+    <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+    <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
+<body class="bg-background font-body text-[var(--color-text-main)] antialiased">
 <script src="/Finzo/public/assets/js/user/user-shared.js?v=2"></script>
-<div class="page-wrap">
-  
-  <nav class="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-main)] py-4 px-6 flex items-center justify-between shadow-sm">
-    <a href="dashboard.html" class="flex items-center gap-3 no-underline">
-      <div class="w-10 h-10 rounded-xl bg-primary-base flex items-center justify-center shadow-md">
-        <span class="material-symbols-outlined text-white">account_balance</span>
-      </div>
-      <span class="font-display text-2xl font-extrabold text-[var(--color-text-main)] tracking-tight">Finzo</span>
-    </a>
-    <div class="flex items-center gap-3">
-      <button class="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] transition-colors" data-action="toggleTheme()">
-        <span class="material-symbols-outlined text-[22px]" data-theme-icon>dark_mode</span>
-      </button>
-      <a href="/Finzo/views/auth/login.html" class="btn btn-secondary !py-2 !px-4">Logout</a>
-    </div>
-  </nav>
-
-  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
-    <div class="w-full max-w-lg">
-
-      <!-- ICON -->
-      <div class="text-center mb-8 ds-animate-slide-up">
-        <div class="w-20 h-20 rounded-full bg-info-surface/50 border-2 border-info-base/20 flex items-center justify-center mx-auto mb-6 relative">
-          <div class="absolute inset-0 rounded-full border-4 border-info-base opacity-20 animate-ping"></div>
-          <span class="material-symbols-outlined text-[40px] text-info-base relative z-10">hourglass_top</span>
+<main class="min-h-screen flex items-stretch">
+    <!-- Left Column: Visual Branding -->
+    <section class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 xl:p-16 overflow-hidden" style="background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);">
+        <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-16 xl:mb-20">
+                <span class="text-2xl xl:text-3xl font-black tracking-tighter text-white font-headline cursor-pointer" data-href="/Finzo/public/index.html">Finzo</span>
+            </div>
+            <div class="max-w-md text-white">
+                <p class="font-headline text-4xl xl:text-5xl font-bold leading-tight mb-6">Review <br/>Pending.</p>
+                <p class="text-white/80 text-base xl:text-lg leading-relaxed">Your application is currently under review by our compliance team to ensure institutional security standards are met.</p>
+            </div>
         </div>
-        <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight mb-2">Application Under Review</h1>
-        <p class="text-[var(--color-text-muted)] text-sm leading-relaxed max-w-sm mx-auto">
-          Our team is reviewing your application.<br>You'll be notified within 24 hours.
-        </p>
-      </div>
-
-      <!-- TIMELINE CARD -->
-      <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
-        <div class="ds-card-header border-b border-[var(--color-border-main)]">
-          <h3 class="font-display text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Application Status</h3>
+        <div class="relative z-10 flex gap-4 text-white/40 text-xs font-headline tracking-widest uppercase">
+            <span>Identity Verification In Progress</span>
         </div>
-        <div class="ds-card-body p-6 sm:p-8">
-          
-          <div class="timeline flex flex-col">
-            <!-- Item 1 -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
-                </div>
-                <div class="w-0.5 flex-1 min-h-[2rem] bg-success-base my-1"></div>
-              </div>
-              <div class="pb-6 flex-1">
-                <div class="text-sm font-bold text-[var(--color-text-main)]">Registered</div>
-                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Account created successfully</div>
-                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5" id="reg-time">Today</div>
-              </div>
-            </div>
-            
-            <!-- Item 2 -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
-                </div>
-                <div class="w-0.5 flex-1 min-h-[2rem] bg-gradient-to-b from-success-base to-info-base my-1 tl-connector active"></div>
-              </div>
-              <div class="pb-6 flex-1">
-                <div class="text-sm font-bold text-[var(--color-text-main)]">Profile Submitted</div>
-                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">All documents uploaded successfully</div>
-                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5">Today</div>
-              </div>
-            </div>
-            
-            <!-- Item 3 -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div class="w-9 h-9 rounded-full bg-info-surface/40 border-2 border-info-base/30 flex items-center justify-center shrink-0 animate-pulse">
-                  <span class="material-symbols-outlined text-info-base text-lg">manage_search</span>
-                </div>
-                <div class="w-0.5 flex-1 min-h-[2rem] bg-[var(--color-border-main)] my-1"></div>
-              </div>
-              <div class="pb-6 flex-1">
-                <div class="text-sm font-bold text-info-base">Under Admin Review</div>
-                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Our team is verifying your details</div>
-                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5">In Progress</div>
-              </div>
-            </div>
-            
-            <!-- Item 4 -->
-            <div class="flex gap-4">
-              <div class="flex flex-col items-center">
-                <div class="w-9 h-9 rounded-full bg-[var(--color-surface-hover)] border-2 border-[var(--color-border-main)] flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-[var(--color-text-disabled)] text-lg">how_to_reg</span>
-                </div>
-              </div>
-              <div class="flex-1">
-                <div class="text-sm font-bold text-[var(--color-text-disabled)]">Account Activated</div>
-                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Waiting for approval</div>
-              </div>
-            </div>
-          </div>
-          
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <img alt="Modern Architecture" class="w-full h-full object-cover brightness-[0.35] contrast-[1.1]" src="/Finzo/public/assets/images/forget-password-page-image.png" loading="lazy">
+            <div class="absolute inset-0 bg-primary-600/30 mix-blend-multiply"></div>
         </div>
-      </div>
+    </section>
 
-      <!-- INFO CARD -->
-      <div class="ds-card p-5 mt-4 ds-animate-slide-up" style="animation-delay: 0.2s;">
-        <div class="flex gap-4 items-start">
-          <span class="material-symbols-outlined text-warning-base text-2xl shrink-0 mt-0.5">notifications</span>
-          <div>
-            <div class="text-sm font-bold text-[var(--color-text-main)] mb-1">What happens next?</div>
-            <div class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-              Our team will review your identity documents and account details. Once approved, you'll receive an email at <strong id="user-email-show" class="text-[var(--color-text-main)]">your registered email</strong> with your unique account number and full access to all banking features.
+    <!-- Right Column: Status Card -->
+    <section class="w-full lg:w-1/2 flex flex-col justify-center items-center px-5 py-10 sm:p-8 md:p-16 lg:p-20 xl:p-24 bg-background">
+        <div class="w-full max-w-md">
+
+            <!-- Mobile Branding -->
+            <div class="md:hidden flex items-center justify-center gap-2 mb-6">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
+                    <span class="material-symbols-outlined text-primary-600 text-lg">account_balance</span>
+                </div>
+                <span class="text-xl font-black tracking-tighter text-primary-600 font-headline">Finzo</span>
             </div>
-          </div>
+
+            <div class="mb-8 sm:mb-10 lg:mb-12 text-center">
+                <div class="w-20 h-20 rounded-full bg-info-surface/50 border-2 border-info-base/20 flex items-center justify-center mx-auto mb-6 relative">
+                    <span class="material-symbols-outlined text-[40px] text-info-base relative z-10">hourglass_top</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-headline font-bold text-[var(--color-text-main)] tracking-tight mb-2">Application Under Review</h2>
+                <p class="text-[var(--color-text-muted)] font-medium text-sm sm:text-base">Your application is currently under review.<br>We'll notify you once verification has been completed.</p>
+            </div>
+
+            <!-- TIMELINE CARD -->
+            <div class="ds-card mb-6">
+                <div class="ds-card-header border-b border-[var(--color-border-main)]">
+                    <h3 class="font-display text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Application Status</h3>
+                </div>
+                <div class="ds-card-body p-6 sm:p-8">
+                    
+                    <div class="timeline flex flex-col">
+                        <!-- Item 1 -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
+                                </div>
+                                <div class="w-0.5 flex-1 min-h-[2rem] bg-success-base my-1"></div>
+                            </div>
+                            <div class="pb-6 flex-1">
+                                <div class="text-sm font-bold text-[var(--color-text-main)]">Registered</div>
+                                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Account created successfully</div>
+                                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5" id="reg-time">Today</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 2 -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-success-base text-lg">check_circle</span>
+                                </div>
+                                <div class="w-0.5 flex-1 min-h-[2rem] bg-gradient-to-b from-success-base to-info-base my-1 tl-connector active"></div>
+                            </div>
+                            <div class="pb-6 flex-1">
+                                <div class="text-sm font-bold text-[var(--color-text-main)]">Profile Submitted</div>
+                                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">All documents uploaded successfully</div>
+                                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5">Today</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 3 -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-9 h-9 rounded-full bg-info-surface/40 border-2 border-info-base/30 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-info-base text-lg">manage_search</span>
+                                </div>
+                                <div class="w-0.5 flex-1 min-h-[2rem] bg-[var(--color-border-main)] my-1"></div>
+                            </div>
+                            <div class="pb-6 flex-1">
+                                <div class="text-sm font-bold text-info-base">Under Admin Review</div>
+                                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Our team is verifying your details</div>
+                                <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5">In Progress</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 4 -->
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-9 h-9 rounded-full bg-[var(--color-surface-hover)] border-2 border-[var(--color-border-main)] flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[var(--color-text-disabled)] text-lg">how_to_reg</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-[var(--color-text-disabled)]">Account Activated</div>
+                                <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Waiting for approval</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFO CARD -->
+            <div class="ds-card p-5">
+                <div class="flex gap-4 items-start">
+                    <span class="material-symbols-outlined text-warning-base text-2xl shrink-0 mt-0.5">notifications</span>
+                    <div>
+                        <div class="text-sm font-bold text-[var(--color-text-main)] mb-1">What happens next?</div>
+                        <div class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+                            Our team will review your identity documents and account details. Once approved, you'll receive an email at <strong id="user-email-show" class="text-[var(--color-text-main)]">your registered email</strong> with your unique account number and full access to all banking features.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center w-full flex flex-col items-center">
+                <a href="/Finzo/views/auth/login.html" class="flex items-center justify-center gap-2 text-sm font-bold text-[var(--color-text-muted)] hover:text-primary-600 transition-colors">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    Return to Login
+                </a>
+            </div>
+            <div class="mt-4 text-center text-xs font-bold text-[var(--color-text-muted)] tracking-wide">
+                Need help? <a href="mailto:support@finzobank.com" class="text-primary-600 hover:underline ml-1">Contact Support</a>
+            </div>
+
         </div>
-      </div>
+    </section>
+</main>
 
-      <div class="mt-8 text-center text-xs font-bold text-[var(--color-text-muted)] tracking-wide ds-animate-slide-up" style="animation-delay: 0.3s;">
-        Need help? <a href="mailto:support@finzobank.com" class="text-primary-base hover:underline ml-1">Contact Support</a>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script src="/Finzo/public/assets/js/core/api.js"></script>
+<script src="/Finzo/public/assets/js/core/api.js"></script>
 </body>
 </html>

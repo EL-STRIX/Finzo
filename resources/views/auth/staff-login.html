@@ -87,10 +87,10 @@
         <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Finzo staff panel.</p>
       </div>
 
-      <form class="ds-card p-6 md:p-8 space-y-6 fade-in-up space-y-4 sm:space-y-5 w-full fade-in-up" novalidate id="staffLoginForm">
+      <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="staffLoginForm">
         <!-- Field: Staff ID -->
         <div class="fin-input-container">
-          <label class="field-label text-primary-600-600">Staff ID or Email</label>
+          <label for="identity" class="field-label text-primary-600-600">Staff ID or Email</label>
           <div class="relative">
             <span class="material-symbols-outlined input-icon !text-primary-600-600">badge</span>
             <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input has-icon-left !border-primary-600-600/30 focus:!border-primary-600-600 focus:!shadow-none"/>
@@ -100,16 +100,16 @@
         <!-- Field: Password -->
         <div class="fin-input-container" style="animation-delay: 0.1s;">
           <div class="flex justify-between items-center pr-1">
-            <label class="field-label text-primary-600-600">Password</label>
+            <label for="password" class="field-label text-primary-600-600">Password</label>
           </div>
           <div class="relative group">
             <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
             <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-primary-600-600/30 focus:!border-primary-600-600 focus:!shadow-none"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password">visibility</span>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
           </div>
         </div>
 
-        <div id="error-box" class="error-msg">Invalid staff credentials</div>
+        <div id="error-box" class="error-msg">Invalid Staff ID or password</div>
 
         <!-- Action -->
         <div class="pt-3 sm:pt-4">

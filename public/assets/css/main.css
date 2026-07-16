@@ -20,3 +20,27 @@
 @import 'layouts/admin.css';
 @import 'layouts/user.css';
 @import 'layouts/user-panel.css';
+/* WCAG 2.2 AA Accessibility Enhancements */
+.fin-input:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--color-primary-base) !important;
+    outline-offset: 2px !important;
+}
+
+[role="button"]:focus-visible {
+    outline: 2px solid var(--color-primary-base) !important;
+    outline-offset: 2px !important;
+}
+
+/* WCAG 2.2 AA & iOS Zoom Prevention / Mobile Optimization */
+.fin-input, .form-control, select, textarea {
+    font-size: 16px !important; /* Prevents iOS auto-zoom on focus */
+}
+
+/* Ensure Minimum Touch Target (WCAG 2.2 AA) */
+.btn-primary, .btn-secondary, button {
+    min-height: 44px !important;
+}
