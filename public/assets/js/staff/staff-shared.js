@@ -89,7 +89,7 @@ async function fetchStaffSession() {
     try {
         const res = await fetch('/Finzo/api/staff/dashboard.php', { credentials: 'same-origin' });
         if (res.status === 401 || res.status === 403) {
-            window.location.href = '/Finzo/views/auth/staff-login.html';
+            window.location.href = '/Finzo/resources/views/auth/staff-login.html';
             return null;
         }
         const data = await res.json();
