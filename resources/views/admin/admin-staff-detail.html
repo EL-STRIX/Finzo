@@ -68,7 +68,7 @@
                 <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
                 <span data-theme-label>Dark Mode</span>
             </button>
-            <a href="/Finzo/views/auth/admin-login.html" class="admin-nav-item" style="color:#ff3b30;">
+            <a href="/Finzo/resources/views/auth/admin-login.html" class="admin-nav-item" style="color:#ff3b30;">
                 <span class="material-symbols-outlined">logout</span> Logout
             </a>
         </div>
@@ -418,7 +418,7 @@
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
                         <span class="material-symbols-outlined text-primary text-lg">history</span> Transaction History
                     </h4>
-                    <button data-action="window.open(&#039;/Finzo/api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
+                    <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
                         <span class="material-symbols-outlined text-lg">print</span>
                         Print Statement
                     </button>

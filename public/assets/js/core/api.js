@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════ */
 
 (function() {
-    // Dynamically resolve project base so it works in any subdirectory (e.g. /Finzo/)
+    // Dynamically resolve project base so it works in any subdirectory (e.g. ../../../../)
     const _scriptEl = document.currentScript || (() => {
         const scripts = document.getElementsByTagName('script');
         return scripts[scripts.length - 1];
