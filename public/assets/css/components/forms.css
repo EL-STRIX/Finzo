@@ -64,7 +64,10 @@
   padding: 0 var(--space-md);
 }
 .fin-input.has-icon-left {
-  padding-left: 2.75rem;
+  padding-left: 3rem;
+}
+.fin-input.has-icon-right {
+  padding-right: 3rem;
 }
 .fin-input:focus {
   border-color: var(--color-primary-base);
@@ -75,7 +78,7 @@
 }
 .input-icon {
   position: absolute;
-  left: 1rem;
+  left: 1.15rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-muted);
@@ -83,10 +86,12 @@
   pointer-events: none;
 }
 .field-label {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-main);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+  display: inline-block;
 }
 .error-msg {
   display: none;

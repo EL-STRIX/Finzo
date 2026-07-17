@@ -51,25 +51,25 @@
   <!-- RIGHT PANEL -->
   <section class="w-full lg:w-[48%] xl:w-[58%] flex flex-col items-center bg-white px-5 py-12 sm:p-12 md:p-16 relative overflow-y-auto lg:h-screen">
     
-    <div class="w-full max-w-[420px]" id="app-container">
+    <div class="w-full max-w-[440px]" id="app-container">
 
       <!-- ==============================================
            STATE 1: NORMAL LOGIN FORM 
            ============================================== -->
       <div id="state-1" class="app-state active">
         <!-- Role Switcher -->
-        <div class="flex bg-[var(--color-surface-subtle)] p-1 rounded-2xl border border-slate-100 mb-8 sm:mb-10 lg:mb-12">
-          <button data-href="login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Customer</button>
-          <button data-href="staff-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 hover:text-slate-600 rounded-xl transition-all">Staff</button>
+        <div class="flex bg-slate-50/80 p-1 rounded-xl mb-10 border border-slate-100/50">
+          <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Customer</button>
+          <button data-href="staff-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Staff</button>
           <button data-href="admin-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Admin</button>
         </div>
 
-        <div class="mb-8 sm:mb-10 text-left w-full">
+        <div class="mb-8 text-left w-full">
           <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Restricted Access</h2>
           <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Authorized personnel only. Administrative access requires valid credentials.</p>
         </div>
 
-        <form class="ds-card p-6 md:p-8 space-y-6  space-y-4 sm:space-y-5 w-full " novalidate id="adminLoginForm">
+        <form class="w-full space-y-5" novalidate id="adminLoginForm">
           <!-- Field: Admin ID -->
           <div class="fin-input-container">
             <label for="identity" class="field-label text-primary-600-600">Admin ID or Email</label>
@@ -87,12 +87,12 @@
             </div>
             <div class="relative group">
               <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
-              <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left !border-admin-accent/30 focus:!border-admin-accent focus:!shadow-none"/>
+              <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
               <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
             </div>
           </div>
 
-          <div id="error-box" class="error-msg">Invalid Admin ID or password</div>
+          <div id="error-box" class="error-msg mt-1">Invalid Admin ID or password</div>
 
           <!-- Suspended Message (URL param) -->
           <div id="suspended-box" class="bg-red-50 text-red-600 border border-red-200 p-3 rounded-lg text-sm font-semibold mt-4 hidden">
@@ -175,7 +175,7 @@
               </div>
             </div>
 
-            <form class="ds-card p-6 md:p-8 space-y-6 " id="sqForm" class="space-y-4">
+            <form class="w-full space-y-5" id="sqForm" >
               <div class="fin-input-container">
                 <label for="sq_answer" class="field-label">Your Secret Answer</label>
                 <div class="relative group">
@@ -183,7 +183,7 @@
                   <span class="material-symbols-outlined input-icon !left-4">verified_user</span>
                   <span class="material-symbols-outlined password-toggle !right-4" data-action="togglePw(&#039;sq_answer&#039;, this)">visibility</span>
                 </div>
-                <div id="sq-error-box" class="error-msg"></div>
+                <div id="sq-error-box" class="error-msg mt-1"></div>
               </div>
 
               <!-- Attempts Info -->
@@ -208,7 +208,7 @@
               <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-700">Identity Verified. Please set a new password.</p>
             </div>
 
-            <form class="ds-card p-6 md:p-8 space-y-6 " id="newPwForm" class="space-y-4">
+            <form class="w-full space-y-5" id="newPwForm" >
               <div class="fin-input-container">
                 <label for="new_password" class="field-label">New Password</label>
                 <div class="relative group">
@@ -238,7 +238,7 @@
                 </div>
               </div>
 
-              <div id="npw-error-box" class="error-msg"></div>
+              <div id="npw-error-box" class="error-msg mt-1"></div>
 
               <button type="submit" id="btn-update-pw" class="admin-btn !h-[50px] !text-[11px] !rounded-xl" disabled>
                 Update Password & Login
