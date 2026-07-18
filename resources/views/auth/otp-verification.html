@@ -12,74 +12,190 @@
     <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-background font-body text-[var(--color-text-main)] antialiased">
-<script src="/Finzo/public/assets/js/user/user-shared.js?v=2"></script>
-<main class="min-h-screen flex items-stretch">
-    <!-- Left Column: Visual Branding -->
-    <section class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 xl:p-16 overflow-hidden" style="background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);">
-        <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-16 xl:mb-20">
-                <span class="text-2xl xl:text-3xl font-black tracking-tighter text-white font-headline cursor-pointer" data-href="/Finzo/public/index.html">Finzo</span>
-            </div>
-            <div class="max-w-md text-white">
-                <p class="font-headline text-4xl xl:text-5xl font-bold leading-tight mb-6">Identity<br/>Verification.</p>
-                <p class="text-white/80 text-base xl:text-lg leading-relaxed">Please enter the 6-digit one-time password sent to your registered device.</p>
-            </div>
+<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
+<main class="auth-page-wrapper">
+  <div class="auth-split-grid">
+    
+    <!-- Left Information Panel -->
+    <div class="auth-left-panel">
+      <!-- Top: Branding -->
+      <div>
+        <div class="flex items-center gap-2 mb-8">
+          <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
+          </div>
+          <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
         </div>
-        <div class="relative z-10 flex gap-4 text-white/40 text-xs font-headline tracking-widest uppercase">
-            <span>Multi-Factor Authentication</span>
-        </div>
-        <div class="absolute inset-0 z-0 pointer-events-none">
-            <img alt="Modern Architecture" class="w-full h-full object-cover brightness-[0.35] contrast-[1.1]" src="/Finzo/public/assets/images/forget-password-page-image.png" loading="lazy">
-            <div class="absolute inset-0 bg-primary-600/30 mix-blend-multiply"></div>
-        </div>
-    </section>
+        
+        <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">
+          Identity Verification
+        </h2>
+        <p class="text-white/80 text-sm leading-relaxed mb-10 max-w-md">
+          Confirming your identity helps protect your account.
+        </p>
 
-    <!-- Right Column: Status Card -->
-    <section class="w-full lg:w-1/2 flex flex-col justify-center items-center px-5 py-10 sm:p-8 md:p-16 lg:p-20 xl:p-24 bg-background">
-        <div class="w-full max-w-md">
+        <!-- Security Features -->
+        <div class="space-y-2">
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">verified_user</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Secure Authentication</h4>
+              <p>Verification codes are encrypted during transmission.</p>
+            </div>
+          </div>
+          
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">refresh</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Need a New Code?</h4>
+              <p>Request another code if your current code expires.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom: Copyright -->
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <p class="text-[11px] text-white/50 font-medium tracking-wide uppercase">
+          &copy; 2026 Finzo Banking Group. All rights reserved.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Right Authentication Area -->
+    <div class="auth-right-area">
+      <!-- Language Selector -->
+      <div class="auth-lang-selector">
+        <span class="material-symbols-outlined text-[16px]">language</span>
+        <span>EN</span>
+        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+      </div>
+      
+      <!-- Auth Card -->
+      <div class="auth-card-wrapper w-full max-w-[440px]">
+        <!-- Brand Header (Mobile Only) -->
+        <div class="auth-brand-header lg:hidden">
+          <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
+          </div>
+        </div>
+        
+        <div class="mb-8 text-center lg:text-left">
+          <h1 class="auth-hero-title">Verify Your Identity</h1>
+          <p class="auth-subtitle text-[13px]">Enter the six-digit verification code sent to your registered email address or mobile number to continue securely.</p>
+        </div>
 
-            <!-- Mobile Branding -->
-            <div class="md:hidden flex items-center justify-center gap-2 mb-6">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
-                    <span class="material-symbols-outlined text-primary-600 text-lg">account_balance</span>
+        <form class="auth-form-body space-y-5" action="dashboard.html">
+            
+            <div class="flex justify-between items-center mb-1 px-1">
+                <label class="form-label !mb-0">Secure OTP Code</label>
+                <div class="text-xs font-semibold text-primary-600 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                    Time Remaining <span id="otp-timer">01:30</span>
                 </div>
-                <span class="text-xl font-black tracking-tighter text-primary-600 font-headline">Finzo</span>
             </div>
 
-            <div class="mb-8 sm:mb-10 lg:mb-12 text-center">
-                <div class="w-20 h-20 rounded-full bg-info-surface/50 border-info-base/20 text-info-base border-2 flex items-center justify-center mx-auto mb-6 relative">
-                    <span class="material-symbols-outlined text-[40px] relative z-10">lock_clock</span>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-headline font-bold text-[var(--color-text-main)] tracking-tight mb-2">Verify Identity</h2>
-                <p class="text-[var(--color-text-muted)] font-medium text-sm sm:text-base">Enter the security code to access your account.</p>
+            <div class="flex justify-between gap-2 sm:gap-3 mb-6" id="otp-container">
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required autocomplete="one-time-code" autofocus>
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required>
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required>
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required>
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required>
+                <input type="text" maxlength="1" class="w-full h-12 text-center text-xl font-bold rounded-[var(--radius-sm)] border border-[var(--color-border-main)] bg-[var(--color-surface-main)] focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-slate-800 transition-all outline-none" required>
+                <!-- Hidden input to store combined value for existing backend compatibility if needed -->
+                <input type="hidden" name="otp_code" id="otp-hidden-value">
             </div>
 
-            <form class="w-full space-y-5">                <div class="fin-input-container">
-                    <label class="field-label ml-1">Secure OTP Code</label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined input-icon">dialpad</span>
-                        <input class="fin-input has-icon-left text-center tracking-[0.5em] text-lg font-bold" placeholder="• • • • • •" type="text" maxlength="6" autocomplete="one-time-code" required/>
-                    </div>
-                </div>                <div class="pt-3 sm:pt-4 flex flex-col gap-3">
-                    <a href="dashboard.html" class="btn-primary flex justify-center items-center w-full">
-                        <span>Verify Securely</span>
-                        <span class="material-symbols-outlined text-xl ml-2">verified</span>
-                    </a>                    <a href="#" class="btn-secondary flex justify-center items-center w-full">
-                        <span>Resend Code</span>
-                    </a>                </div>
-            </form>
-
-            <div class="mt-8 text-center text-xs font-bold text-[var(--color-text-muted)] tracking-wide">
-                Need help? <a href="mailto:support@finzobank.com" class="text-primary-600 hover:underline ml-1">Contact Support</a>
+            <div class="pt-2 flex flex-col gap-3">
+                <button type="submit" class="btn btn-primary w-full">
+                    <span>Verify Securely</span>
+                    <span class="material-symbols-outlined text-xl">verified</span>
+                </button>
+                <button type="button" class="btn bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-primary-600 transition-all font-semibold w-full disabled:opacity-50 disabled:cursor-not-allowed">
+                    Resend Code
+                </button>
             </div>
+        </form>
 
+        <div class="auth-footer mt-6 border-t border-slate-100 pt-6">
+            <a href="login.html" class="flex items-center justify-center gap-1 font-semibold text-slate-500 hover:text-primary-800 transition-colors">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                Return to Login
+            </a>
         </div>
-    </section>
+      </div>
+
+      <!-- Global Footer -->
+      <div class="auth-global-footer">
+        <ul>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">enhanced_encryption</span> 256-bit Encryption</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified_user</span> Secure Verification</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">gpp_good</span> Privacy Protected</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">credit_card</span> PCI DSS Compliant</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/Finzo/public/assets/js/core/utils.js"></script>
 <script src="/Finzo/public/assets/js/core/api.js"></script>
+<script>
+    // OTP Box Logic (Auto-advance, paste, backspace)
+    document.addEventListener('DOMContentLoaded', function() {
+        const otpContainer = document.getElementById('otp-container');
+        if (!otpContainer) return;
+        
+        const inputs = otpContainer.querySelectorAll('input[type="text"]');
+        const hiddenInput = document.getElementById('otp-hidden-value');
+        
+        function updateHiddenValue() {
+            const val = Array.from(inputs).map(i => i.value).join('');
+            if(hiddenInput) hiddenInput.value = val;
+        }
+
+        inputs.forEach((input, index) => {
+            // Restrict to numbers only
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                updateHiddenValue();
+            });
+
+            // Handle Backspace
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // Handle Paste
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, inputs.length);
+                if (pastedData) {
+                    for (let i = 0; i < pastedData.length; i++) {
+                        if (inputs[index + i]) {
+                            inputs[index + i].value = pastedData[i];
+                        }
+                    }
+                    if (index + pastedData.length < inputs.length) {
+                        inputs[index + pastedData.length].focus();
+                    } else {
+                        inputs[inputs.length - 1].focus();
+                    }
+                    updateHiddenValue();
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
