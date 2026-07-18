@@ -1,41 +1,41 @@
 /* Variables (Light & Dark) */
 :root {
   /* 1. COLOR SYSTEM (Light Mode) */
-    --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: #0ea5e9;
-  --color-primary-600: #0284c7;
-  --color-primary-700: #0369a1;
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
-  --color-primary-base: #0284c7;
-  --color-primary-hover: #0369a1;
-  --color-primary-surface: #f0f9ff;
+  --color-primary-50: #f4f7f9;
+  --color-primary-100: #e1e5e9;
+  --color-primary-200: #d1d9e0;
+  --color-primary-300: #b0b8c1;
+  --color-primary-400: #6e7a87;
+  --color-primary-500: #4a5560;
+  --color-primary-600: #0A2540;
+  --color-primary-700: #061A2D;
+  --color-primary-800: #03101C;
+  --color-primary-900: #01080e;
+  --color-primary-base: #0A2540;
+  --color-primary-hover: #061A2D;
+  --color-primary-surface: #F4F7F9;
   
   --color-surface-main: #ffffff;
-  --color-surface-subtle: #f8fafc;
-  --color-surface-hover: #f1f5f9;
+  --color-surface-subtle: #F4F7F9;
+  --color-surface-hover: #E6E9EC;
   
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-text-disabled: #94a3b8;
+  --color-text-main: #111820;
+  --color-text-muted: #6E7A87;
+  --color-text-disabled: #A0AAB4;
   --color-text-inverse: #ffffff;
   
-  --color-border-subtle: #f1f5f9;
-  --color-border-main: #e2e8f0;
-  --color-border-focus: #bae6fd;
+  --color-border-subtle: #E1E5E9;
+  --color-border-main: #D1D9E0;
+  --color-border-focus: #0A2540;
   
-  --color-success-base: #10b981;
-  --color-success-surface: #d1fae5;
-  --color-warning-base: #f59e0b;
-  --color-warning-surface: #fef3c7;
-  --color-danger-base: #ef4444;
-  --color-danger-surface: #fee2e2;
-  --color-info-base: #3b82f6;
-  --color-info-surface: #dbeafe;
+  --color-success-base: #0E793C;
+  --color-success-surface: #E8F5E9;
+  --color-warning-base: #B97200;
+  --color-warning-surface: #FFF8E1;
+  --color-danger-base: #C62828;
+  --color-danger-surface: #FFEBEE;
+  --color-info-base: #185ABB;
+  --color-info-surface: #E3F2FD;
 
   /* 2. TYPOGRAPHY SYSTEM */
   --font-display: 'Plus Jakarta Sans', sans-serif;
@@ -55,11 +55,11 @@
   --space-3xl: 64px;
   
   /* 5. SHADOW SYSTEM */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-  --shadow-focus: 0 0 0 4px rgba(2, 132, 199, 0.15);
+  --shadow-sm: 0 1px 2px 0 rgba(10, 37, 64, 0.04);
+  --shadow-md: 0 4px 12px rgba(10, 37, 64, 0.05), 0 1px 3px rgba(10, 37, 64, 0.03);
+  --shadow-lg: 0 10px 20px rgba(10, 37, 64, 0.08), 0 4px 6px rgba(10, 37, 64, 0.04);
+  --shadow-xl: 0 20px 30px rgba(10, 37, 64, 0.1);
+  --shadow-focus: 0 0 0 3px rgba(10, 37, 64, 0.2);
   
   /* 6. BORDER RADIUS */
   --radius-sm: 4px;

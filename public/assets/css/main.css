@@ -20,6 +20,7 @@
 @import 'layouts/admin.css';
 @import 'layouts/user.css';
 @import 'layouts/user-panel.css';
+@import 'layouts/auth.css';
 /* WCAG 2.2 AA Accessibility Enhancements */
 .fin-input:focus-visible,
 .btn-primary:focus-visible,
