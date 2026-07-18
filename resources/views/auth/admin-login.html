@@ -16,246 +16,233 @@
   </head>
 <body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
 <div id="toast-container"></div>
-<main class="min-h-screen flex">
+<main class="auth-layout-container">
+  
+  <!-- Brand Header -->
+  <div class="auth-brand-header">
+    <div class="auth-brand-logo-container cursor-pointer bg-slate-100 text-slate-800" data-href="/Finzo/public/index.html">
+      <span class="material-symbols-outlined text-2xl">shield</span>
+    </div>
+    <h1 class="auth-hero-title">Finzo Admin Console</h1>
+    <p class="auth-subtitle">Restricted administrative access portal</p>
+  </div>
 
-  <!-- LEFT PANEL -->
-  <section class="hidden lg:flex lg:w-[48%] xl:w-[42%] relative flex-col justify-between p-16 overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <img src="/Finzo/public/assets/images/admin_bg.png" class="w-full h-full object-cover" alt="" loading="lazy"/>
-      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(5,10,25,0.92) 0%, rgba(30,20,80,0.75) 100%);"></div>
+  <!-- Auth Card -->
+  <div class="auth-card-wrapper" id="app-container" style="max-width: 480px;">
+
+    <!-- ==============================================
+         STATE 1: NORMAL LOGIN FORM 
+         ============================================== -->
+    <div id="state-1" class="app-state active">
+      <!-- Role Switcher -->
+      <div class="flex bg-slate-50/80 p-1 rounded-md mb-8 border border-slate-200">
+        <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Customer</button>
+        <button data-href="staff-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Staff</button>
+        <button data-href="admin-login.html" class="flex-1 text-center py-2 text-[11px] font-extrabold uppercase tracking-widest text-white bg-slate-800 rounded shadow-sm transition-all">Admin</button>
+      </div>
+
+      <div class="mb-6 text-center">
+        <h2 class="text-xl font-bold text-slate-800 tracking-tight mb-2">Authorized Personnel Only</h2>
+        <p class="text-sm font-medium text-slate-500">All administrative sessions are securely monitored.</p>
+      </div>
+
+      <form class="auth-form-body" novalidate id="adminLoginForm">
+        <!-- Field: Admin ID -->
+        <div class="fin-input-container !mb-0">
+          <label for="identity" class="form-label">Admin ID or Email</label>
+          <div class="relative mt-2">
+            <span class="material-symbols-outlined input-icon">admin_panel_settings</span>
+            <input id="identity" type="text" placeholder="e.g. ADM001 or alice@finzo.com" class="fin-input has-icon-left"/>
+          </div>
+        </div>
+
+        <!-- Field: Password -->
+        <div class="fin-input-container !mb-0 mt-4">
+          <div class="flex justify-between items-center pr-1 mb-2">
+            <label for="password" class="form-label !mb-0">Secure Password</label>
+            <a href="#" id="forgot-password-link" class="text-[12px] font-medium text-primary-600 hover:underline hidden">Forgot?</a>
+          </div>
+          <div class="relative group">
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
+          </div>
+        </div>
+
+        <div id="error-box" class="error-msg mt-1">Invalid Admin ID or password</div>
+
+        <!-- Suspended Message (URL param) -->
+        <div id="suspended-box" class="bg-danger-surface text-danger-text border border-danger-base/20 p-3 rounded-md text-xs font-semibold mt-4 hidden">
+          Your account has been suspended. Contact the system administrator.
+        </div>
+
+        <!-- Action -->
+        <div class="pt-3">
+          <button type="submit" id="login-btn" class="btn btn-primary w-full !bg-slate-800 !hover:bg-slate-900 !border-slate-800 !shadow-none">
+            <span>Unlock Admin Console</span>
+            <span class="material-symbols-outlined text-xl">login</span>
+          </button>
+        </div>
+        
+        <div class="mt-6 text-center">
+          <a href="login.html" class="text-[12px] font-semibold text-slate-500 hover:text-primary-800 transition-colors">Customer Portal? Login here →</a>
+        </div>
+      </form>
     </div>
 
-    <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" data-href="/Finzo/public/index.html">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
-          <span class="material-symbols-outlined text-white">account_balance</span>
+    <!-- ==============================================
+         RECOVERY DASHBOARD (Consolidated Locked States)
+         ============================================== -->
+    <div id="state-2" class="app-state hidden">
+      <!-- State 2 Content -->
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 shadow-sm">
+          <span class="material-symbols-outlined text-primary-600 text-3xl" id="recovery-icon">lock</span>
         </div>
-        <span class="text-2xl font-black tracking-tighter text-white font-headline">Finzo</span>
-      </div>
-      
-      <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary-600-600/10 border border-primary-600-600/25 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-primary-600-600"></div>
-          <span class="text-[10px] font-black tracking-widest text-primary-600-600 uppercase">● ADMIN CONSOLE</span>
-        </div>
-        <h1 class="text-[48px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
-          Full Control.<br/><span class="text-[#818cf8]">Total Oversight.</span>
-        </h1>
-        <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
-          Access the Finzo admin console to manage users, approve accounts, monitor all transactions and maintain system integrity.
+        <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-2" id="recovery-title">Account Locked</h2>
+        <p class="text-slate-500 font-medium text-xs leading-relaxed" id="recovery-subtitle">
+          The account has been temporarily locked. This helps protect your information.
         </p>
       </div>
-    </div>
-  </section>
 
-  <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] xl:w-[58%] flex flex-col items-center bg-white px-5 py-12 sm:p-12 md:p-16 relative overflow-y-auto lg:h-screen">
-    
-    <div class="w-full max-w-[440px]" id="app-container">
-
-      <!-- ==============================================
-           STATE 1: NORMAL LOGIN FORM 
-           ============================================== -->
-      <div id="state-1" class="app-state active">
-        <!-- Role Switcher -->
-        <div class="flex bg-slate-50/80 p-1 rounded-xl mb-10 border border-slate-100/50">
-          <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Customer</button>
-          <button data-href="staff-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Staff</button>
-          <button data-href="admin-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Admin</button>
+      <!-- SHARED TIMER (Always Visible) -->
+      <div id="auto-unlock-card" class="overflow-hidden border border-warning-base/20 bg-warning-surface mb-6 rounded-md">
+        <div class="p-5 text-center">
+          <div class="flex items-center justify-center gap-2 text-warning-text mb-2">
+            <span class="material-symbols-outlined text-[18px]">timer</span>
+            <span class="text-[9px] font-black uppercase tracking-widest">Automatic System Unlock</span>
+          </div>
+          <div id="countdown-display" class="text-4xl font-black text-slate-800 my-1">--:--</div>
+          <div id="countdown-footer" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+            Account restores automatically after 30 minutes
+          </div>
         </div>
-
-        <div class="mb-8 text-left w-full">
-          <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Restricted Access</h2>
-          <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Authorized personnel only. Administrative access requires valid credentials.</p>
-        </div>
-
-        <form class="w-full space-y-5" novalidate id="adminLoginForm">
-          <!-- Field: Admin ID -->
-          <div class="fin-input-container">
-            <label for="identity" class="field-label text-primary-600-600">Admin ID or Email</label>
-            <div class="relative">
-              <span class="material-symbols-outlined input-icon !text-primary-600-600">admin_panel_settings</span>
-              <input id="identity" type="text" placeholder="e.g. ADM001 or alice@finzo.com" class="fin-input has-icon-left !border-admin-accent/30 focus:!border-admin-accent focus:!shadow-none"/>
-            </div>
-          </div>
-
-          <!-- Field: Password -->
-          <div class="fin-input-container" style="animation-delay: 0.1s;">
-            <div class="flex justify-between items-center pr-1">
-              <label for="password" class="field-label text-primary-600-600">Secure Password</label>
-              <a href="#" id="forgot-password-link" class="text-[12px] font-bold text-primary-600-600 hover:underline tracking-[0.03em] hidden">Forgot?</a>
-            </div>
-            <div class="relative group">
-              <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
-              <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
-              <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
-            </div>
-          </div>
-
-          <div id="error-box" class="error-msg mt-1">Invalid Admin ID or password</div>
-
-          <!-- Suspended Message (URL param) -->
-          <div id="suspended-box" class="bg-red-50 text-red-600 border border-red-200 p-3 rounded-lg text-sm font-semibold mt-4 hidden">
-            Your account has been suspended. Contact the system administrator.
-          </div>
-
-          <!-- Action -->
-          <div class="pt-3 sm:pt-4">
-            <button type="submit" id="login-btn" class="admin-btn" style="transition-delay: 160ms;">
-              <span>Unlock Admin Console</span>
-              <span class="material-symbols-outlined text-xl">login</span>
-            </button>
-          </div>
-          <div class="mt-6 text-center">
-            <a href="login.html" class="text-[12px] font-bold text-slate-400 hover:text-primary-600 transition-colors">Customer Portal? Login here →</a>
-          </div>
-        </form>
       </div>
 
-      <!-- ==============================================
-           RECOVERY DASHBOARD (Consolidated Locked States)
-           ============================================== -->
-      <div id="state-2" class="app-state">
-        <!-- Dashboard Header -->
-        <div class="text-center mb-8">
-          <div class="w-16 h-16 bg-white dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-slate-200 shadow-sm">
-            <span class="material-symbols-outlined text-primary-600 text-3xl" id="recovery-icon">lock</span>
-          </div>
-          <h2 class="text-2xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] dark:text-[var(--color-text-main)] mb-2" id="recovery-title">Account Locked</h2>
-          <p class="text-[var(--color-text-muted)] dark:text-slate-400 font-medium text-xs leading-relaxed" id="recovery-subtitle">
-            The account has been temporarily locked. This helps protect your information.
-          </p>
-        </div>
-
-        <!-- SHARED TIMER (Always Visible) -->
-        <div id="auto-unlock-card" class="admin-card overflow-hidden border-amber-100 bg-amber-50/30 dark:bg-amber-500/5 dark:border-amber-500/20 mb-6">
-          <div class="p-5 text-center">
-            <div class="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 mb-2">
-              <span class="material-symbols-outlined text-[18px]">timer</span>
-              <span class="text-[9px] font-black uppercase tracking-widest">Automatic System Unlock</span>
-            </div>
-            <div id="countdown-display" class="text-4xl font-headline font-black text-primary-600-600 my-1">--:--</div>
-            <div id="countdown-footer" class="text-[10px] font-bold text-amber-700/60 dark:text-amber-400/60 uppercase tracking-tighter">
-              Account restores automatically after 30 minutes
+      <!-- RECOVERY STEPS CONTAINER -->
+      <div id="recovery-steps-container" class="space-y-4">
+        
+        <!-- STEP 1: Recovery Options -->
+        <div id="step-options" class="recovery-step active">
+          <div class="border border-info-base/20 bg-info-surface rounded-md p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group" data-action="startRecoveryStep('question')">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 border border-info-base/20 shadow-sm">
+                <span class="material-symbols-outlined text-info-base">security_update_good</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-[13px] font-bold text-slate-800 mb-1">Instant Recovery</h3>
+                <p class="text-[11px] text-slate-600 font-medium leading-relaxed">Answer your security question to reset your password and unlock now.</p>
+                <div id="sq-message" class="mt-3 p-2 bg-danger-surface border border-danger-base/20 rounded-lg text-[10px] font-bold text-danger-text hidden"></div>
+                <div class="mt-3 flex items-center gap-1 text-[10px] font-black text-info-base uppercase tracking-widest group-hover:gap-2 transition-all">
+                  Begin Verification <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- RECOVERY STEPS CONTAINER -->
-        <div id="recovery-steps-container" class="space-y-4">
-          
-          <!-- STEP 1: Recovery Options -->
-          <div id="step-options" class="recovery-step active">
-            <div class="option-card border-indigo-100 bg-indigo-50/50 dark:bg-indigo-50 shadow-sm hover:shadow-md transition-all cursor-pointer group" data-action="startRecoveryStep(&#039;question&#039;)">
-              <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 border border-indigo-100 shadow-sm">
-                  <span class="material-symbols-outlined text-primary-600-600">security_update_good</span>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-[13px] font-bold text-[var(--color-text-main)] mb-1">Instant Recovery</h3>
-                  <p class="text-[11px] text-[var(--color-text-muted)] font-medium leading-relaxed">Answer your security question to reset your password and unlock now.</p>
-                  <div id="sq-message" class="mt-3 p-2 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-lg text-[10px] font-bold text-rose-600 hidden"></div>
-                  <div class="mt-3 flex items-center gap-1 text-[10px] font-black text-indigo-600 uppercase tracking-widest group-hover:gap-2 transition-all">
-                    Begin Verification <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                  </div>
-                </div>
-              </div>
+        <!-- STEP 2: Answer Question -->
+        <div id="step-question" class="recovery-step hidden space-y-5">
+          <div class="bg-slate-50 border border-slate-200 rounded-md p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-slate-500 text-[16px]">quiz</span>
+              <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Your Security Question</span>
+            </div>
+            <div id="sq-question-text" class="text-sm font-bold text-slate-800 leading-relaxed italic">
+              "---"
             </div>
           </div>
 
-          <!-- STEP 2: Answer Question -->
-          <div id="step-question" class="recovery-step hidden space-y-5">
-            <div class="bg-indigo-50/30 dark:bg-indigo-50/30 border border-indigo-100 dark:border-indigo-100 rounded-2xl p-5">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="material-symbols-outlined text-indigo-400 text-[16px]">quiz</span>
-                <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Your Security Question</span>
+          <form class="auth-form-body" id="sqForm">
+            <div class="fin-input-container !mb-0">
+              <label for="sq_answer" class="form-label">Your Secret Answer</label>
+              <div class="relative group mt-2">
+                <span class="material-symbols-outlined input-icon">verified_user</span>
+                <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input has-icon-left has-icon-right" required />
+                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" data-action="togglePw('sq_answer', this)">visibility</span>
               </div>
-              <div id="sq-question-text" class="text-sm font-bold text-[var(--color-text-main)] dark:text-[var(--color-text-main)] leading-relaxed italic">
-                "---"
-              </div>
+              <div id="sq-error-box" class="error-msg mt-1"></div>
             </div>
 
-            <form class="w-full space-y-5" id="sqForm" >
-              <div class="fin-input-container">
-                <label for="sq_answer" class="field-label">Your Secret Answer</label>
-                <div class="relative group">
-                  <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input !pl-12 !h-[50px]" required />
-                  <span class="material-symbols-outlined input-icon !left-4">verified_user</span>
-                  <span class="material-symbols-outlined password-toggle !right-4" data-action="togglePw(&#039;sq_answer&#039;, this)">visibility</span>
-                </div>
-                <div id="sq-error-box" class="error-msg mt-1"></div>
-              </div>
+            <!-- Attempts Info -->
+            <div id="sq-attempts-warning" class="p-3 rounded-md bg-warning-surface border border-warning-base/20 text-[10px] font-bold text-warning-text flex items-center gap-2 hidden">
+              <span class="material-symbols-outlined text-[16px]">warning</span>
+              <span><span id="sq-attempts-count">0</span>/5 attempts used. Locking for 10 min on failure.</span>
+            </div>
 
-              <!-- Attempts Info -->
-              <div id="sq-attempts-warning" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10 text-[10px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2 hidden">
-                <span class="material-symbols-outlined text-[16px]">warning</span>
-                <span><span id="sq-attempts-count">0</span>/5 attempts used. Locking for 10 min on failure.</span>
-              </div>
+            <div class="flex gap-3 pt-3">
+              <button type="button" data-action="resetRecoveryDashboard()" class="flex-1 px-4 py-3 border border-slate-200 rounded-md text-[11px] font-bold text-slate-600 hover:bg-slate-50 transition-all">Cancel</button>
+              <button type="submit" id="btn-verify-answer" class="flex-[2] btn btn-primary !bg-slate-800 !hover:bg-slate-900 !border-slate-800 !shadow-none">Verify & Proceed</button>
+            </div>
+          </form>
+        </div>
 
-              <div class="flex gap-3">
-                <button type="button" data-action="resetRecoveryDashboard()" class="flex-1 px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-widest text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] dark:hover:bg-white/5 transition-all">Cancel</button>
-                <button type="submit" id="btn-verify-answer" class="flex-[2] admin-btn !h-[50px] !text-[11px] !rounded-xl">Verify & Proceed</button>
-              </div>
-            </form>
+        <!-- STEP 3: New Password -->
+        <div id="step-password" class="recovery-step hidden space-y-6">
+          <div class="p-4 rounded-md bg-success-surface border border-success-base/20 text-center">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+              <span class="material-symbols-outlined text-success-base text-[20px]">check_circle</span>
+            </div>
+            <p class="text-[11px] font-bold text-success-text">Identity Verified. Please set a new password.</p>
           </div>
 
-          <!-- STEP 3: New Password -->
-          <div id="step-password" class="recovery-step hidden space-y-6">
-            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-50 border border-emerald-100 dark:border-emerald-100 text-center">
-              <div class="w-10 h-10 bg-white dark:bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                <span class="material-symbols-outlined text-primary-600-600 text-[20px]">check_circle</span>
+          <form class="auth-form-body" id="newPwForm">
+            <div class="fin-input-container !mb-0">
+              <label for="new_password" class="form-label">New Password</label>
+              <div class="relative group mt-2">
+                <span class="material-symbols-outlined input-icon">lock_reset</span>
+                <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required />
+                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" data-action="togglePw('new_password', this)">visibility</span>
               </div>
-              <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-700">Identity Verified. Please set a new password.</p>
+              <div class="flex justify-between items-center mt-2 px-1">
+                <div class="text-[10px] font-semibold text-slate-500" id="strength-text">Security: 0%</div>
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest" id="strength-label">Insecure</div>
+              </div>
             </div>
 
-            <form class="w-full space-y-5" id="newPwForm" >
-              <div class="fin-input-container">
-                <label for="new_password" class="field-label">New Password</label>
-                <div class="relative group">
-                  <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
-                  <span class="material-symbols-outlined input-icon !left-4">lock_reset</span>
-                  <span class="material-symbols-outlined password-toggle !right-4" data-action="togglePw(&#039;new_password&#039;, this)">visibility</span>
-                </div>
-                <!-- Strength Meter -->
-                <div class="strength-meter">
-                  <div class="strength-segment" id="seg-1"></div>
-                  <div class="strength-segment" id="seg-2"></div>
-                  <div class="strength-segment" id="seg-3"></div>
-                  <div class="strength-segment" id="seg-4"></div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                  <div class="strength-text" id="strength-text">Security: 0%</div>
-                  <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest" id="strength-label">Insecure</div>
-                </div>
+            <div class="fin-input-container !mb-0 mt-4">
+              <label for="confirm_password" class="form-label">Confirm New Password</label>
+              <div class="relative group mt-2">
+                <span class="material-symbols-outlined input-icon">lock_open</span>
+                <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left" required />
+                <div id="match-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 hidden"><span class="material-symbols-outlined text-[18px]"></span></div>
               </div>
+            </div>
 
-              <div class="fin-input-container">
-                <label for="confirm_password" class="field-label">Confirm New Password</label>
-                <div class="relative group">
-                  <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input !pl-12 !h-[50px]" required />
-                  <span class="material-symbols-outlined input-icon !left-4">lock_open</span>
-                  <div id="match-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 hidden"><span class="material-symbols-outlined text-[18px]"></span></div>
-                </div>
-              </div>
+            <div id="npw-error-box" class="error-msg mt-1"></div>
 
-              <div id="npw-error-box" class="error-msg mt-1"></div>
-
-              <button type="submit" id="btn-update-pw" class="admin-btn !h-[50px] !text-[11px] !rounded-xl" disabled>
+            <div class="pt-3">
+              <button type="submit" id="btn-update-pw" class="btn btn-primary w-full !bg-slate-800 !hover:bg-slate-900 !border-slate-800 !shadow-none" disabled>
                 Update Password & Login
               </button>
-            </form>
-          </div>
-
+            </div>
+          </form>
         </div>
 
-        <div class="mt-10 text-center pt-6 border-t border-slate-100 dark:border-white/5">
-          <a href="admin-login.html" class="text-[11px] font-black text-slate-400 hover:text-primary-600 transition-all uppercase tracking-widest flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Return to Login
-          </a>
-        </div>
+      </div>
+
+      <div class="mt-10 text-center pt-6 border-t border-slate-100">
+        <a href="admin-login.html" class="text-[11px] font-black text-slate-400 hover:text-primary-600 transition-all uppercase tracking-widest flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span> Return to Login
+        </a>
       </div>
     </div>
-  </section>
+    
+    <div class="auth-trust-badge mt-8 border-t border-slate-100 pt-6">
+      <span class="material-symbols-outlined text-[14px]">admin_panel_settings</span>
+      <span>Enterprise Operations Portal</span>
+    </div>
+
+  </div>
+
+  <!-- Global Footer -->
+  <div class="auth-global-footer">
+    <ul>
+      <li><a href="#">Security Center</a></li>
+      <li><a href="#">Compliance Guidelines</a></li>
+      <li><a href="#">Internal Operations</a></li>
+    </ul>
+  </div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
