@@ -13,124 +13,86 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
   </head>
 <body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
-<main class="min-h-screen flex">
+<main class="auth-layout-container">
+  
+  <!-- Brand Header -->
+  <div class="auth-brand-header">
+    <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
+      <span class="material-symbols-outlined text-2xl">account_balance</span>
+    </div>
+    <h1 class="auth-hero-title">Sign in to Finzo</h1>
+    <p class="auth-subtitle">Secure Corporate & Personal Banking</p>
+  </div>
 
-  <!-- LEFT PANEL -->
-  <section class="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-16 overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <img alt="Banking interface" class="w-full h-full object-cover" src="/Finzo/public/assets/images/customer_bg.png" loading="lazy"/>
-      <div class="absolute inset-0 customer-gradient"></div>
+  <!-- Auth Card -->
+  <div class="auth-card-wrapper">
+    <!-- Role Switcher -->
+    <div class="flex bg-slate-50/80 p-1 rounded-md mb-8 border border-slate-200">
+      <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-semibold text-slate-800 bg-white rounded shadow-sm border border-slate-200 transition-all">Customer</button>
+      <button data-href="staff-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Staff</button>
+      <button data-href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Admin</button>
     </div>
 
-    <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" data-href="/Finzo/public/index.html">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
-          <span class="material-symbols-outlined text-white">account_balance</span>
+    <form class="auth-form-body" novalidate id="loginForm">
+      <!-- Field: Identity -->
+      <div class="fin-input-container !mb-0">
+        <label for="identity" class="form-label">Email Address or Account Number</label>
+        <div class="relative mt-2">
+          <span class="material-symbols-outlined input-icon">alternate_email</span>
+          <input id="identity" type="text" placeholder="e.g. FNZ2026XXXX or sujay@email.com" class="fin-input has-icon-left"/>
         </div>
-        <span class="text-2xl font-black tracking-tighter text-white font-headline">Finzo</span>
       </div>
-      
-      <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary-600-600/10 border border-primary-600-600/25 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-primary-600-600"></div>
-          <span class="text-[10px] font-black tracking-widest text-primary-600-600 uppercase">● PERSONAL BANKING</span>
-        </div>
-        <h1 class="text-[48px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
-          Your Money,<br/><span class="text-primary-600-600">Your Control.</span>
-        </h1>
-        <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
-          Deposit, transfer and track every rupee from your personal Finzo dashboard — simple, secure and always available.
-        </p>
 
-        <div class="space-y-4 mb-12">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">ACID Safe Fund Transfers</span>
+      <!-- Field: Password -->
+      <div class="fin-input-container !mb-0 mt-4">
+        <div class="flex justify-between items-center pr-1 mb-2">
+          <label for="password" class="form-label !mb-0">Password</label>
+        </div>
+        <div class="relative group">
+          <span class="material-symbols-outlined input-icon">lock</span>
+          <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
+          <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
+        </div>
+        <div class="flex justify-between items-center mt-3 px-1">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="remember" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-600 cursor-pointer">
+            <label for="remember" class="text-xs text-slate-600 cursor-pointer select-none font-medium">Remember me</label>
           </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">Encrypted Session Security</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">Real-Time Transaction Alerts</span>
-          </div>
+          <a href="forgot-password.html" class="text-[12px] font-medium text-primary-600 hover:underline">Forgot Password?</a>
         </div>
       </div>
+
+      <div id="error-box" class="error-msg mt-1">Invalid email or password</div>
+
+      <!-- Action -->
+      <div class="pt-2">
+        <button type="submit" id="login-btn" class="btn btn-primary w-full">
+          <span>Sign In</span>
+          <span class="material-symbols-outlined text-xl">login</span>
+        </button>
+      </div>
+    </form>
+
+    <div class="auth-trust-badge">
+      <span class="material-symbols-outlined text-[14px]">lock</span>
+      <span>Secure 256-bit Encrypted Connection</span>
     </div>
-
-    </section>
-
-  <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white px-5 py-8 sm:p-8 md:p-12 relative overflow-y-auto">
     
-    <div class="w-full max-w-[440px]">
-
-      <!-- Mobile Branding -->
-      <div class="mobile-brand-bar">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
-          <span class="material-symbols-outlined text-[#1a3c5e] text-lg">account_balance</span>
-        </div>
-        <span class="text-xl font-black tracking-tighter text-[#1a3c5e] font-headline">Finzo</span>
-      </div>
-      
-      <!-- Role Switcher -->
-      <div class="flex bg-slate-50/80 p-1 rounded-xl mb-10 border border-slate-100/50">
-        <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-semibold text-slate-800 bg-white rounded-lg shadow-sm border border-slate-200 transition-all">Customer</button>
-        <button data-href="staff-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Staff</button>
-        <button data-href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Admin</button>
-      </div>
-
-      <div class="mb-8 text-left w-full">
-        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Welcome Back</h2>
-        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Sign in securely to access your Finzo banking account.</p>
-      </div>
-
-      <form class="w-full space-y-5" novalidate id="loginForm">
-        <!-- Field: Identity -->
-        <div class="fin-input-container">
-          <label for="identity" class="field-label">Email Address or Account Number</label>
-          <div class="relative">
-            <span class="material-symbols-outlined input-icon">alternate_email</span>
-            <input id="identity" type="text" placeholder="e.g. FNZ2026XXXX or sujay@email.com" class="fin-input has-icon-left"/>
-          </div>
-        </div>
-
-        <!-- Field: Password -->
-        <div class="fin-input-container" style="animation-delay: 0.1s;">
-          <div class="flex justify-between items-center pr-1">
-            <label for="password" class="field-label">Password</label>
-          </div>
-          <div class="relative group">
-            <span class="material-symbols-outlined input-icon">lock</span>
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
-          </div>
-          <div class="flex justify-end items-center mt-3 px-1">
-            <a href="forgot-password.html" class="text-[12px] font-bold text-primary-600 hover:underline tracking-[0.03em]">Forgot Password?</a>
-          </div>
-        </div>
-
-        <div id="error-box" class="error-msg mt-1">Invalid email or password</div>
-
-        <!-- Action -->
-        <div class="pt-3 sm:pt-4">
-          <button type="submit" id="login-btn" class="btn btn-primary w-full" style="animation-delay: 0.2s;">
-            <span>Sign In</span>
-            <span class="material-symbols-outlined text-xl">login</span>
-          </button>
-        </div>
-      <div class="mt-4 text-center text-xs text-slate-500 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> Your connection is encrypted.</div>
-      </form>
-
-      <!-- Switching link -->
-      <div class="mt-6 sm:mt-8 text-center">
-        <span class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-muted)]">Don't have an account?</span>
-        <a href="register.html" class="text-[12px] sm:text-[13px] font-bold text-primary-600 hover:text-primary-600-600 transition-colors ml-1">Register Now</a>
-      </div>
-
+    <div class="auth-footer">
+      <span class="text-slate-500">Don't have an account?</span>
+      <a href="register.html" class="font-semibold text-primary-600 hover:text-primary-800 ml-1">Register Now</a>
     </div>
-  </section>
+  </div>
+
+  <!-- Global Footer -->
+  <div class="auth-global-footer">
+    <ul>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Security Center</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Contact Support</a></li>
+    </ul>
+  </div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
