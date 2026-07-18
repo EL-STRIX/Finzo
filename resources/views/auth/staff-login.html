@@ -14,118 +14,78 @@
   </head>
   </head>
 <body class="bg-white font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
-<main class="min-h-screen flex">
+<main class="auth-layout-container">
+  
+  <!-- Brand Header -->
+  <div class="auth-brand-header">
+    <div class="auth-brand-logo-container cursor-pointer bg-primary-50 text-primary-600" data-href="/Finzo/public/index.html">
+      <span class="material-symbols-outlined text-2xl">support_agent</span>
+    </div>
+    <h1 class="auth-hero-title">Staff Banking Portal</h1>
+    <p class="auth-subtitle">Internal banking operations and customer service</p>
+  </div>
 
-  <!-- LEFT PANEL -->
-  <section class="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-16 overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <img src="/Finzo/public/assets/images/staff_bg.png" class="w-full h-full object-cover" alt="" loading="lazy"/>
-      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(20,10,5,0.88) 0%, rgba(120,60,0,0.65) 100%);"></div>
+  <!-- Auth Card -->
+  <div class="auth-card-wrapper" style="max-width: 480px;">
+
+    <!-- Role Switcher -->
+    <div class="flex bg-slate-50/80 p-1 rounded-md mb-8 border border-slate-200">
+      <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Customer</button>
+      <button data-href="staff-login.html" class="flex-1 text-center py-2 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600 rounded shadow-sm transition-all">Staff</button>
+      <button data-href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Admin</button>
     </div>
 
-    <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-16 cursor-pointer" data-href="/Finzo/public/index.html">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20">
-          <span class="material-symbols-outlined text-white">account_balance</span>
+    <!-- Institutional Error Banner -->
+    <div id="error-box" class="error-msg text-center font-bold mb-4"></div>
+
+    <form class="auth-form-body" novalidate id="staffLoginForm">
+      <!-- Field: Staff ID -->
+      <div class="fin-input-container !mb-0">
+        <label for="identity" class="form-label">Staff ID or Email</label>
+        <div class="relative mt-2">
+          <span class="material-symbols-outlined input-icon">badge</span>
+          <input id="identity" type="text" placeholder="e.g. STF001 or name@finzobank.com" class="fin-input has-icon-left"/>
         </div>
-        <span class="text-2xl font-black tracking-tighter text-white font-headline">Finzo</span>
+      </div>
+
+      <!-- Field: Password -->
+      <div class="fin-input-container !mb-0 mt-4">
+        <label for="password" class="form-label">Employee Password</label>
+        <div class="relative group mt-2">
+          <span class="material-symbols-outlined input-icon">lock</span>
+          <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
+          <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="pt-5">
+        <button type="submit" id="login-btn" class="btn btn-primary w-full">
+          <span>Access Operations Portal</span>
+          <span class="material-symbols-outlined text-xl">login</span>
+        </button>
       </div>
       
-      <div class="max-w-md">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 bg-primary-600-600/10 border border-primary-600-600/25 backdrop-blur-md">
-          <div class="w-2 h-2 rounded-full bg-primary-600-600"></div>
-          <span class="text-[10px] font-black tracking-widest text-primary-600-600 uppercase">● BANK STAFF PORTAL</span>
-        </div>
-        <h1 class="text-[44px] font-headline font-extrabold text-white leading-[1.1] tracking-[-1px] mb-6">
-          Process Transactions<br/><span class="text-primary-600-600">With Confidence.</span>
-        </h1>
-        <p class="text-[15px] text-white/70 font-medium leading-[1.7] mb-10">
-          Login to process customer deposits and withdrawals. Every action is receipt-ready and audit logged for full accountability.
-        </p>
-
-        <div class="space-y-4 mb-12">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">Process Deposits & Withdrawals</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">Generate Printable Receipts</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-600-600 text-xl font-bold">check_circle</span>
-            <span class="text-white text-[13px] font-medium">All Actions Audit Logged</span>
-          </div>
-        </div>
+      <div class="mt-6 text-center">
+        <a href="login.html" class="text-[12px] font-semibold text-slate-500 hover:text-primary-800 transition-colors">Customer Portal? Login here →</a>
       </div>
+    </form>
+
+    <div class="auth-trust-badge mt-8 border-t border-slate-100 pt-6">
+      <span class="material-symbols-outlined text-[14px]">assured_workload</span>
+      <span>Authorized Employee Access Only</span>
     </div>
 
-    </section>
+  </div>
 
-  <!-- RIGHT PANEL -->
-  <section class="w-full lg:w-[48%] flex flex-col justify-center items-center bg-white px-5 py-8 sm:p-8 md:p-12 relative overflow-y-auto">
-    
-    <div class="w-full max-w-[440px]">
-
-      <!-- Mobile Branding -->
-      <div class="mobile-brand-bar">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600-600/10">
-          <span class="material-symbols-outlined text-primary-600-600 text-lg">account_balance</span>
-        </div>
-        <span class="text-xl font-black tracking-tighter text-primary-600-600 font-headline">Finzo</span>
-      </div>
-
-      <!-- Role Switcher -->
-      <div class="flex bg-slate-50/80 p-1 rounded-xl mb-10 border border-slate-100/50">
-        <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Customer</button>
-        <button data-href="staff-login.html" class="flex-1 text-center py-2.5 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600-600 rounded-xl shadow-md transition-all">Staff</button>
-        <button data-href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition-all">Admin</button>
-      </div>
-
-      <div class="mb-8 text-left w-full">
-        <h2 class="text-3xl sm:text-4xl font-headline font-extrabold tracking-tight text-[var(--color-text-main)] mb-2">Internal Access</h2>
-        <p class="text-[var(--color-text-muted)] font-medium leading-relaxed text-sm sm:text-base">Finzo staff panel.</p>
-      </div>
-
-      <form class="w-full space-y-5" novalidate id="staffLoginForm">
-        <!-- Field: Staff ID -->
-        <div class="fin-input-container">
-          <label for="identity" class="field-label text-primary-600-600">Staff ID or Email</label>
-          <div class="relative">
-            <span class="material-symbols-outlined input-icon !text-primary-600-600">badge</span>
-            <input id="identity" type="text" placeholder="e.g. STF001 or sujay@gmail.com" class="fin-input has-icon-left !border-primary-600-600/30 focus:!border-primary-600-600 focus:!shadow-none"/>
-          </div>
-        </div>
-
-        <!-- Field: Password -->
-        <div class="fin-input-container" style="animation-delay: 0.1s;">
-          <div class="flex justify-between items-center pr-1">
-            <label for="password" class="field-label text-primary-600-600">Password</label>
-          </div>
-          <div class="relative group">
-            <span class="material-symbols-outlined input-icon !text-primary-600-600">lock</span>
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
-          </div>
-        </div>
-
-        <div id="error-box" class="error-msg mt-1">Invalid Staff ID or password</div>
-
-        <!-- Action -->
-        <div class="pt-3 sm:pt-4">
-          <button type="submit" id="login-btn" class="btn-primary !bg-primary-600-600 hover:!bg-amber-600" style="animation-delay: 0.2s;">
-            <span>Staff Sign In</span>
-            <span class="material-symbols-outlined text-xl">login</span>
-          </button>
-        </div>
-      </form>
-
-      <!-- Customer switching link -->
-      <div class="mt-6 sm:mt-8 text-center">
-        <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-slate-400 hover:text-primary-600 transition-colors">Customer? Login here →</a>
-      </div>
-      
-  </section>
+  <!-- Global Footer -->
+  <div class="auth-global-footer">
+    <ul>
+      <li><a href="#">Employee Guidelines</a></li>
+      <li><a href="#">Report Security Incident</a></li>
+      <li><a href="#">IT Helpdesk</a></li>
+    </ul>
+  </div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
