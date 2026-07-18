@@ -23,8 +23,8 @@
     <div class="auth-brand-logo-container cursor-pointer bg-slate-100 text-slate-800" data-href="/Finzo/public/index.html">
       <span class="material-symbols-outlined text-2xl">shield</span>
     </div>
-    <h1 class="auth-hero-title">Finzo Admin Console</h1>
-    <p class="auth-subtitle">Restricted administrative access portal</p>
+    <h1 class="auth-hero-title">Enterprise Administration Console</h1>
+    <p class="auth-subtitle">Restricted access portal for authorized Finzo personnel.</p>
   </div>
 
   <!-- Auth Card -->
@@ -42,8 +42,8 @@
       </div>
 
       <div class="mb-6 text-center">
-        <h2 class="text-xl font-bold text-slate-800 tracking-tight mb-2">Authorized Personnel Only</h2>
-        <p class="text-sm font-medium text-slate-500">All administrative sessions are securely monitored.</p>
+        <h2 class="text-xl font-bold text-slate-800 tracking-tight mb-2">Restricted Systems Access</h2>
+        <p class="text-sm font-medium text-slate-500">All administrative activity is securely logged and continuously monitored.</p>
       </div>
 
       <form class="auth-form-body" novalidate id="adminLoginForm">
@@ -81,7 +81,7 @@
         <!-- Action -->
         <div class="pt-3">
           <button type="submit" id="login-btn" class="btn btn-primary w-full !bg-slate-800 !hover:bg-slate-900 !border-slate-800 !shadow-none">
-            <span>Unlock Admin Console</span>
+            <span>Authenticate Administrative Session</span>
             <span class="material-symbols-outlined text-xl">login</span>
           </button>
         </div>
@@ -132,11 +132,11 @@
                 <span class="material-symbols-outlined text-info-base">security_update_good</span>
               </div>
               <div class="flex-1">
-                <h3 class="text-[13px] font-bold text-slate-800 mb-1">Instant Recovery</h3>
-                <p class="text-[11px] text-slate-600 font-medium leading-relaxed">Answer your security question to reset your password and unlock now.</p>
+                <h3 class="text-[13px] font-bold text-slate-800 mb-1">Identity Verification</h3>
+                <p class="text-[11px] text-slate-600 font-medium leading-relaxed">Provide the correct response to your security question to verify identity and unlock your profile.</p>
                 <div id="sq-message" class="mt-3 p-2 bg-danger-surface border border-danger-base/20 rounded-lg text-[10px] font-bold text-danger-text hidden"></div>
                 <div class="mt-3 flex items-center gap-1 text-[10px] font-black text-info-base uppercase tracking-widest group-hover:gap-2 transition-all">
-                  Begin Verification <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  Initiate Verification <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </div>
               </div>
             </div>
@@ -157,7 +157,7 @@
 
           <form class="auth-form-body" id="sqForm">
             <div class="fin-input-container !mb-0">
-              <label for="sq_answer" class="form-label">Your Secret Answer</label>
+              <label for="sq_answer" class="form-label">Provide Authorized Response</label>
               <div class="relative group mt-2">
                 <span class="material-symbols-outlined input-icon">verified_user</span>
                 <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input has-icon-left has-icon-right" required aria-required="true" />

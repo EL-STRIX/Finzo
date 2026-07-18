@@ -29,8 +29,8 @@
     <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
       <span class="material-symbols-outlined text-2xl">account_balance</span>
     </div>
-    <h1 class="auth-hero-title">Open an Account</h1>
-    <p class="auth-subtitle">Establish your secure banking profile</p>
+    <h1 class="auth-hero-title">Establish Finzo Account</h1>
+    <p class="auth-subtitle">Begin your secure personal banking application.</p>
   </div>
 
   <!-- Auth Card -->
@@ -48,10 +48,10 @@
       <input name="csrf_token" type="hidden" value="static_placeholder_token" />
 
       <!-- Section: Personal Info -->
-      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2">Personal Information</div>
+      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2">Primary Account Holder</div>
       
       <div class="fin-input-container !mb-0 mt-2">
-          <label for="full-name" class="form-label">Full Name</label>
+          <label for="full-name" class="form-label">Legal Full Name (as per ID)</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">person</span>
               <input class="fin-input has-icon-left" id="full-name" placeholder="First Last" type="text" required aria-required="true" />
@@ -59,10 +59,10 @@
       </div>
       
       <!-- Section: Contact Info -->
-      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Contact Information</div>
+      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Secure Contact Details</div>
 
       <div class="fin-input-container !mb-0 mt-2">
-          <label for="email" class="form-label">Email Address</label>
+          <label for="email" class="form-label">Primary Email Address</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">mail</span>
               <input class="fin-input has-icon-left" id="email" placeholder="name@example.com" type="email" required aria-required="true" />
@@ -70,7 +70,7 @@
       </div>
 
       <div class="fin-input-container !mb-0 mt-4">
-          <label for="phone" class="form-label">Phone Number</label>
+          <label for="phone" class="form-label">Mobile Number</label>
           <div class="relative flex items-center border border-[var(--color-border-main)] bg-[var(--color-surface-main)] rounded-[var(--radius-sm)] focus-within:border-[var(--color-border-focus)] focus-within:ring-[3px] focus-within:ring-[var(--color-border-focus)]/20 transition-all h-[48px] overflow-hidden mt-2">
               <span class="material-symbols-outlined text-slate-400 ml-3 mr-2 text-[20px]">call</span>
               <span class="text-[14px] font-medium text-primary-600 mr-2">+91</span>
@@ -79,10 +79,10 @@
       </div>
 
       <!-- Section: Security -->
-      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Account Security</div>
+      <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Authentication Credentials</div>
 
       <div class="fin-input-container !mb-0 mt-2">
-          <label for="password" class="form-label">Password</label>
+          <label for="password" class="form-label">Create Secure Password</label>
           <div class="relative group mt-2">
               <span class="material-symbols-outlined input-icon">lock</span>
               <input class="fin-input has-icon-left has-icon-right" id="password" placeholder="Create a strong password" type="password" required aria-required="true" />
@@ -98,7 +98,7 @@
       </div>
       
       <div class="fin-input-container !mb-0 mt-3">
-          <label for="confirm-password" class="form-label">Confirm Password</label>
+          <label for="confirm-password" class="form-label">Verify Secure Password</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">lock</span>
               <input class="fin-input has-icon-left" id="confirm-password" placeholder="Repeat your password" type="password" required aria-required="true" />
@@ -118,7 +118,7 @@
       <!-- Action -->
       <div class="pt-3">
           <button class="btn btn-primary w-full" id="register-btn" type="submit">
-              <span>Open Account</span>
+              <span>Submit Application</span>
               <span class="material-symbols-outlined text-xl">arrow_forward</span>
           </button>
       </div>

@@ -20,8 +20,8 @@
     <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
       <span class="material-symbols-outlined text-2xl">account_balance</span>
     </div>
-    <h1 class="auth-hero-title">Sign in to Finzo</h1>
-    <p class="auth-subtitle">Secure Corporate & Personal Banking</p>
+    <h1 class="auth-hero-title">Access Personal Banking</h1>
+    <p class="auth-subtitle">Securely manage your personal and corporate finances.</p>
   </div>
 
   <!-- Auth Card -->
@@ -36,17 +36,17 @@
     <form class="auth-form-body" novalidate id="loginForm">
       <!-- Field: Identity -->
       <div class="fin-input-container !mb-0">
-        <label for="identity" class="form-label">Email Address or Account Number</label>
+        <label for="identity" class="form-label">Registered Email or Account Number</label>
         <div class="relative mt-2">
           <span class="material-symbols-outlined input-icon">alternate_email</span>
-          <input id="identity" type="text" placeholder="e.g. FNZ2026XXXX or sujay@email.com" class="fin-input has-icon-left" required aria-required="true"/>
+          <input id="identity" type="text" placeholder="Enter your Finzo account number or email" class="fin-input has-icon-left" required aria-required="true" />
         </div>
       </div>
 
       <!-- Field: Password -->
       <div class="fin-input-container !mb-0 mt-4">
         <div class="flex justify-between items-center pr-1 mb-2">
-          <label for="password" class="form-label !mb-0">Password</label>
+          <label for="password" class="form-label !mb-0">Secure Password</label>
         </div>
         <div class="relative group">
           <span class="material-symbols-outlined input-icon">lock</span>
@@ -64,12 +64,12 @@
         </div>
       </div>
 
-      <div id="error-box" class="error-msg mt-1">Invalid email or password</div>
+      <div id="error-box" class="error-msg mt-1">The credentials provided do not match our records. Please try again.</div>
 
       <!-- Action -->
       <div class="pt-2">
         <button type="submit" id="login-btn" class="btn btn-primary w-full">
-          <span>Sign In</span>
+          <span>Securely Access Account</span>
           <span class="material-symbols-outlined text-xl">login</span>
         </button>
       </div>
