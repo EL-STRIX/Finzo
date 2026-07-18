@@ -26,7 +26,7 @@
   </div>
 
   <!-- Auth Card -->
-  <div class="auth-card-wrapper" style="max-width: 480px;">
+  <div class="auth-card-wrapper">
 
     <!-- Role Switcher -->
     <div class="flex bg-slate-50/80 p-1 rounded-md mb-8 border border-slate-200">
@@ -44,7 +44,7 @@
         <label for="identity" class="form-label">Staff ID or Email</label>
         <div class="relative mt-2">
           <span class="material-symbols-outlined input-icon">badge</span>
-          <input id="identity" type="text" placeholder="e.g. STF001 or name@finzobank.com" class="fin-input has-icon-left"/>
+          <input id="identity" type="text" placeholder="e.g. STF001 or name@finzobank.com" class="fin-input has-icon-left" required aria-required="true" />
         </div>
       </div>
 
@@ -53,8 +53,10 @@
         <label for="password" class="form-label">Employee Password</label>
         <div class="relative group mt-2">
           <span class="material-symbols-outlined input-icon">lock</span>
-          <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
-          <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
+          <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required aria-required="true" />
+          <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
+            <span class="material-symbols-outlined text-[20px]">visibility</span>
+          </button>
         </div>
       </div>
 

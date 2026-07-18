@@ -11,7 +11,7 @@
 
 .auth-card-wrapper {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     background-color: var(--color-surface-main);
     border: 1px solid var(--color-border-main);
     border-radius: var(--radius-md);

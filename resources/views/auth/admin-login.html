@@ -28,7 +28,7 @@
   </div>
 
   <!-- Auth Card -->
-  <div class="auth-card-wrapper" id="app-container" style="max-width: 480px;">
+  <div class="auth-card-wrapper" id="app-container">
 
     <!-- ==============================================
          STATE 1: NORMAL LOGIN FORM 
@@ -52,7 +52,7 @@
           <label for="identity" class="form-label">Admin ID or Email</label>
           <div class="relative mt-2">
             <span class="material-symbols-outlined input-icon">admin_panel_settings</span>
-            <input id="identity" type="text" placeholder="e.g. ADM001 or alice@finzo.com" class="fin-input has-icon-left"/>
+            <input id="identity" type="text" placeholder="e.g. ADM001 or alice@finzo.com" class="fin-input has-icon-left" required aria-required="true" />
           </div>
         </div>
 
@@ -64,8 +64,10 @@
           </div>
           <div class="relative group">
             <span class="material-symbols-outlined input-icon">lock</span>
-            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right"/>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" id="toggle-password" role="button" tabindex="0" aria-label="Toggle password visibility">visibility</span>
+            <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required aria-required="true" />
+            <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
+              <span class="material-symbols-outlined text-[20px]">visibility</span>
+            </button>
           </div>
         </div>
 
@@ -158,8 +160,10 @@
               <label for="sq_answer" class="form-label">Your Secret Answer</label>
               <div class="relative group mt-2">
                 <span class="material-symbols-outlined input-icon">verified_user</span>
-                <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input has-icon-left has-icon-right" required />
-                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" data-action="togglePw('sq_answer', this)">visibility</span>
+                <input id="sq_answer" type="password" placeholder="Enter answer..." class="fin-input has-icon-left has-icon-right" required aria-required="true" />
+                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" data-action="togglePw('sq_answer', this)" aria-label="Toggle answer visibility">
+                  <span class="material-symbols-outlined text-[20px]">visibility</span>
+                </button>
               </div>
               <div id="sq-error-box" class="error-msg mt-1"></div>
             </div>
@@ -191,8 +195,10 @@
               <label for="new_password" class="form-label">New Password</label>
               <div class="relative group mt-2">
                 <span class="material-symbols-outlined input-icon">lock_reset</span>
-                <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required />
-                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary-600 transition-colors" data-action="togglePw('new_password', this)">visibility</span>
+                <input id="new_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required aria-required="true" />
+                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" data-action="togglePw('new_password', this)" aria-label="Toggle password visibility">
+                  <span class="material-symbols-outlined text-[20px]">visibility</span>
+                </button>
               </div>
               <div class="flex justify-between items-center mt-2 px-1">
                 <div class="text-[10px] font-semibold text-slate-500" id="strength-text">Security: 0%</div>
@@ -204,7 +210,7 @@
               <label for="confirm_password" class="form-label">Confirm New Password</label>
               <div class="relative group mt-2">
                 <span class="material-symbols-outlined input-icon">lock_open</span>
-                <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left" required />
+                <input id="confirm_password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left" required aria-required="true" />
                 <div id="match-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 hidden"><span class="material-symbols-outlined text-[18px]"></span></div>
               </div>
             </div>

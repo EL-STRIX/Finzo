@@ -54,7 +54,7 @@
           <label for="full-name" class="form-label">Full Name</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">person</span>
-              <input class="fin-input has-icon-left" id="full-name" placeholder="First Last" type="text" />
+              <input class="fin-input has-icon-left" id="full-name" placeholder="First Last" type="text" required aria-required="true" />
           </div>
       </div>
       
@@ -65,7 +65,7 @@
           <label for="email" class="form-label">Email Address</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">mail</span>
-              <input class="fin-input has-icon-left" id="email" placeholder="name@example.com" type="email" />
+              <input class="fin-input has-icon-left" id="email" placeholder="name@example.com" type="email" required aria-required="true" />
           </div>
       </div>
 
@@ -74,7 +74,7 @@
           <div class="relative flex items-center border border-[var(--color-border-main)] bg-[var(--color-surface-main)] rounded-[var(--radius-sm)] focus-within:border-[var(--color-border-focus)] focus-within:ring-[3px] focus-within:ring-[var(--color-border-focus)]/20 transition-all h-[48px] overflow-hidden mt-2">
               <span class="material-symbols-outlined text-slate-400 ml-3 mr-2 text-[20px]">call</span>
               <span class="text-[14px] font-medium text-primary-600 mr-2">+91</span>
-              <input class="w-full bg-transparent border-none focus:ring-0 text-[var(--color-text-main)] text-[14px] h-full px-2 outline-none font-body" id="phone" placeholder="00000 00000" type="tel" />
+              <input class="w-full bg-transparent border-none focus:ring-0 text-[var(--color-text-main)] text-[14px] h-full px-2 outline-none font-body" id="phone" placeholder="00000 00000" type="tel" required aria-required="true" />
           </div>
       </div>
 
@@ -85,8 +85,8 @@
           <label for="password" class="form-label">Password</label>
           <div class="relative group mt-2">
               <span class="material-symbols-outlined input-icon">lock</span>
-              <input class="fin-input has-icon-left has-icon-right" id="password" placeholder="Create a strong password" type="password" />
-              <button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors" id="toggle-password" type="button" tabindex="-1" aria-label="Toggle password visibility">
+              <input class="fin-input has-icon-left has-icon-right" id="password" placeholder="Create a strong password" type="password" required aria-required="true" />
+              <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
                   <span class="material-symbols-outlined text-[20px]">visibility</span>
               </button>
           </div>
@@ -101,13 +101,13 @@
           <label for="confirm-password" class="form-label">Confirm Password</label>
           <div class="relative mt-2">
               <span class="material-symbols-outlined input-icon">lock</span>
-              <input class="fin-input has-icon-left" id="confirm-password" placeholder="Repeat your password" type="password" />
+              <input class="fin-input has-icon-left" id="confirm-password" placeholder="Repeat your password" type="password" required aria-required="true" />
           </div>
       </div>
 
       <!-- Terms & Conditions -->
       <div class="flex items-start gap-2 mt-5 bg-slate-50 p-3 rounded border border-slate-100">
-          <input type="checkbox" id="terms" class="mt-0.5 w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-600 cursor-pointer">
+          <input type="checkbox" id="terms" class="mt-0.5 w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-600 cursor-pointer" required aria-required="true">
           <label for="terms" class="text-xs text-slate-600 cursor-pointer leading-tight">
             I agree to the <a href="#" class="font-semibold text-primary-600 hover:underline">Terms of Service</a>, <a href="#" class="font-semibold text-primary-600 hover:underline">Privacy Policy</a>, and electronic communications.
           </label>
