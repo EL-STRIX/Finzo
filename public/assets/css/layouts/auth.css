@@ -104,3 +104,149 @@
 .auth-global-footer a:hover {
     color: var(--color-text-main);
 }
+
+/* Finzo Split Layout System (Phase 1) */
+.auth-page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    background-color: var(--color-surface-subtle);
+    width: 100%;
+}
+
+.auth-split-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-height: 100vh;
+}
+
+@media (min-width: 1024px) {
+    .auth-split-grid {
+        grid-template-columns: 45% 55%;
+    }
+}
+
+.auth-left-panel {
+    display: none;
+    background-color: var(--color-primary-base);
+    color: var(--color-text-inverse);
+    padding: var(--space-3xl);
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+    .auth-left-panel {
+        display: flex;
+    }
+}
+
+.auth-right-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-2xl) var(--space-md);
+    position: relative;
+    background-color: var(--color-surface-subtle);
+}
+
+/* Shared Role Switcher */
+.auth-role-switcher {
+    display: flex;
+    background-color: rgba(248, 250, 252, 0.8);
+    padding: var(--space-4xs);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    border: 1px solid var(--color-border-subtle);
+    width: 100%;
+}
+
+.auth-role-btn {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.auth-role-btn:hover {
+    color: var(--color-text-main);
+}
+
+.auth-role-btn.active {
+    font-weight: 600;
+    color: var(--color-text-main);
+    background-color: var(--color-surface-main);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-main);
+}
+
+/* Shared Security Feature List */
+.auth-security-block {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-security-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-inverse);
+}
+
+.auth-security-content h4 {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--color-text-inverse);
+}
+
+.auth-security-content p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+}
+
+/* Shared Language Selector */
+.auth-lang-selector {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-main);
+    border: 1px solid var(--color-border-subtle);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-main);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.auth-lang-selector:hover {
+    border-color: var(--color-border-main);
+    box-shadow: var(--shadow-md);
+}
