@@ -11,89 +11,177 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
-  </head>
-  </head>
+</head>
 <body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
-<main class="auth-layout-container">
-  
-  <!-- Brand Header -->
-  <div class="auth-brand-header">
-    <div class="auth-brand-logo-container cursor-pointer bg-primary-50 text-primary-600" data-href="/Finzo/public/index.html">
-      <span class="material-symbols-outlined text-2xl">support_agent</span>
-    </div>
-    <h1 class="auth-hero-title">Employee Operations Portal</h1>
-    <p class="auth-subtitle">Secure access for Finzo branch operations and customer support.</p>
-  </div>
-
-  <!-- Auth Card -->
-  <div class="auth-card-wrapper">
-
-    <!-- Role Switcher -->
-    <div class="flex bg-slate-50/80 p-1 rounded-md mb-8 border border-slate-200">
-      <button data-href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Customer</button>
-      <button data-href="staff-login.html" class="flex-1 text-center py-2 text-[11px] font-extrabold uppercase tracking-widest text-white bg-primary-600 rounded shadow-sm transition-all">Staff</button>
-      <button data-href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-800 rounded transition-all">Admin</button>
-    </div>
-
-    <!-- Institutional Error Banner -->
-    <div id="error-box" class="error-msg text-center font-bold mb-4"></div>
-
-    <form class="auth-form-body" novalidate id="staffLoginForm">
-      <!-- Field: Staff ID -->
-      <div class="fin-input-container !mb-0">
-        <label for="identity" class="form-label">Employee ID or Network Email</label>
-        <div class="relative mt-2">
-          <span class="material-symbols-outlined input-icon">badge</span>
-          <input id="identity" type="text" placeholder="e.g. STF001 or name@finzobank.com" class="fin-input has-icon-left" required aria-required="true" />
+<main class="auth-page-wrapper">
+  <div class="auth-split-grid">
+    
+    <!-- Left Information Panel -->
+    <div class="auth-left-panel">
+      <!-- Top: Branding -->
+      <div>
+        <div class="flex items-center gap-2 mb-8">
+          <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
+            <span class="material-symbols-outlined text-2xl">support_agent</span>
+          </div>
+          <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
         </div>
-      </div>
+        
+        <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">
+          Welcome to Finzo Staff Portal
+        </h2>
+        <p class="text-white/80 text-sm leading-relaxed mb-10 max-w-md">
+          Secure access for banking professionals to serve customers and manage daily branch operations.
+        </p>
 
-      <!-- Field: Password -->
-      <div class="fin-input-container !mb-0 mt-4">
-        <label for="password" class="form-label">Network Password</label>
-        <div class="relative group mt-2">
-          <span class="material-symbols-outlined input-icon">lock</span>
-          <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required aria-required="true" />
-          <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
-            <span class="material-symbols-outlined text-[20px]">visibility</span>
-          </button>
+        <!-- Security Features -->
+        <div class="space-y-2">
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">group</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Customer Service Operations</h4>
+              <p>Serve customers efficiently and accurately.</p>
+            </div>
+          </div>
+          
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Secure Staff Access</h4>
+              <p>Restricted access for authorized employees.</p>
+            </div>
+          </div>
+          
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">account_tree</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Operational Excellence</h4>
+              <p>Tools designed for daily banking operations.</p>
+            </div>
+          </div>
+
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">verified_user</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Commitment to Security</h4>
+              <p>Protect customer information and maintain compliance.</p>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <!-- Action -->
-      <div class="pt-5">
-        <button type="submit" id="login-btn" class="btn btn-primary w-full">
-          <span>Authenticate Employee Session</span>
-          <span class="material-symbols-outlined text-xl">login</span>
-        </button>
       </div>
       
-      <div class="mt-6 text-center">
-        <a href="login.html" class="text-[12px] font-semibold text-slate-500 hover:text-primary-800 transition-colors">Customer Portal? Login here →</a>
+      <!-- Bottom: Copyright -->
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <p class="text-[11px] text-white/50 font-medium tracking-wide uppercase">
+          &copy; 2026 Finzo Banking Group. All rights reserved.
+        </p>
       </div>
-    </form>
-
-    <div class="auth-trust-badge mt-8 border-t border-slate-100 pt-6">
-      <span class="material-symbols-outlined text-[14px]">assured_workload</span>
-      <span>Authorized Employee Access Only</span>
     </div>
+    
+    <!-- Right Authentication Area -->
+    <div class="auth-right-area">
+      <!-- Language Selector -->
+      <div class="auth-lang-selector">
+        <span class="material-symbols-outlined text-[16px]">language</span>
+        <span>EN</span>
+        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+      </div>
+      
+      <!-- Auth Card -->
+      <div class="auth-card-wrapper w-full max-w-[440px]">
+        <!-- Brand Header (Mobile Only) -->
+        <div class="auth-brand-header lg:hidden">
+          <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
+            <span class="material-symbols-outlined text-2xl">support_agent</span>
+          </div>
+        </div>
+        
+        <div class="mb-6 text-center lg:text-left">
+          <h1 class="auth-hero-title">Employee Operations Portal</h1>
+          <p class="auth-subtitle">Secure access for Finzo branch operations and customer support.</p>
+        </div>
 
-  </div>
+        <!-- Role Switcher -->
+        <div class="auth-role-switcher">
+          <button data-href="login.html" class="auth-role-btn">Customer</button>
+          <button data-href="staff-login.html" class="auth-role-btn active">Staff</button>
+          <button data-href="admin-login.html" class="auth-role-btn">Admin</button>
+        </div>
 
-  <!-- Global Footer -->
-  <div class="auth-global-footer">
-    <ul>
-      <li><a href="#">Employee Guidelines</a></li>
-      <li><a href="#">Report Security Incident</a></li>
-      <li><a href="#">IT Helpdesk</a></li>
-    </ul>
+        <!-- Institutional Error Banner -->
+        <div id="error-box" class="error-msg text-center font-bold mb-4"></div>
+
+        <form class="auth-form-body" novalidate id="staffLoginForm">
+          <!-- Field: Staff ID -->
+          <div class="fin-input-container !mb-0">
+            <label for="identity" class="form-label">Employee ID or Network Email</label>
+            <div class="relative mt-2">
+              <span class="material-symbols-outlined input-icon">badge</span>
+              <input id="identity" type="text" placeholder="e.g. STF001 or name@finzobank.com" class="fin-input has-icon-left" required aria-required="true" />
+            </div>
+          </div>
+
+          <!-- Field: Password -->
+          <div class="fin-input-container !mb-0 mt-4">
+            <div class="flex justify-between items-center pr-1 mb-2">
+              <label for="password" class="form-label !mb-0">Network Password</label>
+            </div>
+            <div class="relative group">
+              <span class="material-symbols-outlined input-icon">lock</span>
+              <input id="password" type="password" placeholder="••••••••••••" class="fin-input has-icon-left has-icon-right" required aria-required="true" />
+              <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
+                <span class="material-symbols-outlined text-[20px]">visibility</span>
+              </button>
+            </div>
+            <div class="flex justify-between items-center mt-3 px-1">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="remember" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-600 cursor-pointer">
+                <label for="remember" class="text-xs text-slate-600 cursor-pointer select-none font-medium">Remember me</label>
+              </div>
+              <a href="#" class="text-[12px] font-medium text-primary-600 hover:underline">Forgot Password?</a>
+            </div>
+          </div>
+
+          <!-- Action -->
+          <div class="pt-2">
+            <button type="submit" id="login-btn" class="btn btn-primary w-full">
+              <span>Authenticate Employee Session</span>
+              <span class="material-symbols-outlined text-xl">login</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="auth-trust-badge">
+          <span class="material-symbols-outlined text-[14px]">assured_workload</span>
+          <span>This system is for authorized banking staff only.</span>
+        </div>
+      </div>
+
+      <!-- Global Footer -->
+      <div class="auth-global-footer">
+        <ul>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">enhanced_encryption</span> 256-bit Encryption</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified_user</span> Secure Login</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">gpp_good</span> Privacy Protected</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">credit_card</span> PCI DSS Compliant</span></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script src="/Finzo/public/assets/js/core/api.js"></script>
+<script src="/Finzo/public/assets/js/core/api.js"></script>
 </body>
 </html>
 
