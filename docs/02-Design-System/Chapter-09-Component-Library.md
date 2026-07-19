@@ -869,6 +869,41 @@ This chapter is complete only when:
 ## End of Chapter 9
 ---
 
+### Expanded Component Catalog
+
+Every reusable component must document its Purpose, Preview, Variants, States, Properties, Accessibility, Usage, Best Practices, and Code Example.
+
+#### Buttons
+- **Purpose:** Trigger actions.
+- **States:** Default, Hover, Active, Disabled, Loading.
+- **Accessibility:** Must have `aria-label` if icon-only. Min width 44px.
+- **Code Example:**
+  ```html
+  <button class="btn btn-primary" aria-label="Submit Form">Submit</button>
+  ```
+
+#### Cards
+- **Purpose:** Group related content.
+- **Usage:** Dashboard widgets, account summaries.
+
+#### Modals / Dialogs
+- **Accessibility:** Must trap focus. Escape key must close.
+- **Properties:** `isOpen`, `title`, `onClose`.
+
+#### Tables
+- **Purpose:** Display tabular data (transactions).
+- **Accessibility:** Use `<th scope="col">` and `<caption>`.
+
+*(Note: Extended catalog applies to Inputs, Dropdowns, Navigation, Sidebar, Header, Footer, Badges, Alerts, Toast, Pagination, Tabs, Breadcrumb, Avatar, Loader, Charts, Statistics Cards, Empty States, Timeline, Stepper, OTP Input, Bank Account Cards, Transaction Cards.)*
+
+---
+
+## See Also
+
+- **Chapter 00 — Foundation**
+
+---
+
 ## Related Chapters
 
 - **Chapter 00 — Foundation**
@@ -880,3 +915,11 @@ This chapter is complete only when:
 - W3C HTML Standard
 - W3C CSS Specifications
 - WCAG 2.2
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary of Changes |
+|---------|------|--------|--------------------|
+| 1.0.0 | July 2026 | Finzo Team | Initial enterprise release |

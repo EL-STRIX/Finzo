@@ -614,6 +614,12 @@ Only then may implementation proceed.
 ## End of Chapter 1
 ---
 
+## See Also
+
+- **Chapter 00 — Foundation**
+
+---
+
 ## Related Chapters
 
 - **Chapter 00 — Foundation**
@@ -625,3 +631,11 @@ Only then may implementation proceed.
 - W3C HTML Standard
 - W3C CSS Specifications
 - WCAG 2.2
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary of Changes |
+|---------|------|--------|--------------------|
+| 1.0.0 | July 2026 | Finzo Team | Initial enterprise release |

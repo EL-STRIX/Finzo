@@ -799,6 +799,33 @@ This chapter is complete only when:
 ## End of **Chapter 23 — Performance**
 ---
 
+### Performance Budgets
+
+Measurable performance budgets must be strictly enforced in CI/CD.
+
+- **First Contentful Paint (FCP):** < 1.8s
+- **Largest Contentful Paint (LCP):** < 2.5s
+- **Time to Interactive (TTI):** < 3.8s
+- **Cumulative Layout Shift (CLS):** < 0.1
+- **Interaction to Next Paint (INP):** < 200ms
+- **JavaScript Budget:** < 200KB (gzipped)
+- **CSS Budget:** < 50KB (gzipped)
+
+#### Optimization Checklist
+- [ ] Image Optimization (WebP, proper sizing)
+- [ ] Lazy Loading for below-fold images
+- [ ] Caching headers correctly configured
+- [ ] Brotli/Gzip Compression enabled
+- [ ] Bundle Splitting / Code Splitting
+
+---
+
+## See Also
+
+- **Chapter 00 — Foundation**
+
+---
+
 ## Related Chapters
 
 - **Chapter 00 — Foundation**
@@ -810,3 +837,11 @@ This chapter is complete only when:
 - W3C HTML Standard
 - W3C CSS Specifications
 - WCAG 2.2
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary of Changes |
+|---------|------|--------|--------------------|
+| 1.0.0 | July 2026 | Finzo Team | Initial enterprise release |

@@ -685,6 +685,29 @@ This chapter is complete only when:
 ## End of **Chapter 29 — QA Framework**
 ---
 
+### Testing Strategy
+
+The QA Framework requires a multi-layered testing approach:
+
+- **Unit Tests:** Business logic, helpers, formatting (PHPUnit, Jest).
+- **Integration Tests:** Database interactions, API endpoints.
+- **UI Tests:** Component rendering and interactions.
+- **Accessibility Tests:** Automated aXe scans.
+- **Performance Tests:** Lighthouse CI budgets.
+- **Security Tests:** Dependency scanning, SAST.
+- **Regression Tests:** Automated workflows for critical paths.
+- **Manual Testing:** Exploratory testing for UX feel.
+
+**Test Coverage Target:** Minimum 80% line coverage for critical financial logic.
+
+---
+
+## See Also
+
+- **Chapter 00 — Foundation**
+
+---
+
 ## Related Chapters
 
 - **Chapter 00 — Foundation**
@@ -696,3 +719,11 @@ This chapter is complete only when:
 - W3C HTML Standard
 - W3C CSS Specifications
 - WCAG 2.2
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary of Changes |
+|---------|------|--------|--------------------|
+| 1.0.0 | July 2026 | Finzo Team | Initial enterprise release |

@@ -17,6 +17,7 @@ This documentation is organized into structured sections that collectively defin
 ## 00 — Foundation
 
 - [Chapter 00 — Foundation](00-Foundation/Chapter-00-Foundation.md)
+- [Chapter 41 — Glossary](00-Foundation/Chapter-41-Glossary.md)
 
 ---
 
@@ -71,6 +72,9 @@ This documentation is organized into structured sections that collectively defin
 - [Chapter 27 — JavaScript Standards](05-Engineering/Chapter-27-JavaScript-Standards.md)
 - [Chapter 28 — Architecture & Folder Structure](05-Engineering/Chapter-28-Architecture-and-Folder-Structure.md)
 - [Chapter 29 — QA Framework](05-Engineering/Chapter-29-QA-Framework.md)
+- [Chapter 36 — Database Documentation](05-Engineering/Chapter-36-Database-Documentation.md)
+- [Chapter 37 — API Documentation](05-Engineering/Chapter-37-API-Documentation.md)
+- [Chapter 40 — Deployment Documentation](05-Engineering/Chapter-40-Deployment-Documentation.md)
 
 ---
 
@@ -89,6 +93,8 @@ This documentation is organized into structured sections that collectively defin
 ## 08 — Enterprise Transformation
 
 - [Chapter 32 — Page-by-Page Enterprise Transformation Specifications](07-Enterprise-Transformation/Chapter-32-Page-by-Page-Enterprise-Transformation-Specifications.md)
+- [Chapter 38 — Requirements Traceability Matrix](07-Enterprise-Transformation/Chapter-38-Requirements-Traceability-Matrix.md)
+- [Chapter 39 — Risk Register](07-Enterprise-Transformation/Chapter-39-Risk-Register.md)
 
 ---
 
@@ -105,12 +111,27 @@ This documentation is organized into structured sections that collectively defin
 
 ---
 
+## 11 — Architecture Decision Records (ADR)
+
+- [ADR-001 — Project Architecture](08-Architecture-Decision-Records/ADR-001-Project-Architecture.md)
+- [ADR-002 — Folder Structure](08-Architecture-Decision-Records/ADR-002-Folder-Structure.md)
+- [ADR-003 — Database Selection](08-Architecture-Decision-Records/ADR-003-Database-Selection.md)
+- [ADR-004 — Authentication](08-Architecture-Decision-Records/ADR-004-Authentication.md)
+- [ADR-005 — Technology Stack](08-Architecture-Decision-Records/ADR-005-Technology-Stack.md)
+- [ADR-006 — CSS Architecture](08-Architecture-Decision-Records/ADR-006-CSS-Architecture.md)
+- [ADR-007 — JavaScript Architecture](08-Architecture-Decision-Records/ADR-007-JavaScript-Architecture.md)
+- [ADR-008 — State Management](08-Architecture-Decision-Records/ADR-008-State-Management.md)
+- [ADR-009 — Security Model](08-Architecture-Decision-Records/ADR-009-Security-Model.md)
+- [ADR-010 — Deployment Strategy](08-Architecture-Decision-Records/ADR-010-Deployment-Strategy.md)
+
+---
+
 # Documentation Summary
 
 | Category | Count |
 |----------|------:|
-| Total Chapters | 36 |
-| Chapter Range | 00–35 |
+| Total Chapters | 42 |
+| Chapter Range | 00–41 |
 | Design System Chapters | 7 |
 | Platform Standards | 6 |
 | UX Standards | 8 |
@@ -120,6 +141,8 @@ This documentation is organized into structured sections that collectively defin
 | Transformation Specifications | 1 |
 | Content Standards | 1 |
 | Governance Chapters | 2 |
+| Reference | 1 |
+| Architecture Decision Records | 10 |
 
 ---
 
@@ -138,6 +161,8 @@ For the recommended reading order:
 9. Enterprise Transformation
 10. Content Standards
 11. Project Governance
+12. Architecture Decision Records
+13. Reference
 
 This order provides a complete understanding of the Finzo Enterprise Product Standards from strategic planning through implementation and long-term governance.
 

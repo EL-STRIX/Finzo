@@ -432,6 +432,12 @@ Before any redesign begins, the existing project must be completely understood.
 No implementation work may begin until the audit defined in Chapter 1 has been completed.
 ---
 
+## See Also
+
+- **Chapter 00 — Foundation**
+
+---
+
 ## Related Chapters
 
 - **Chapter 00 — Foundation**
@@ -443,3 +449,11 @@ No implementation work may begin until the audit defined in Chapter 1 has been c
 - W3C HTML Standard
 - W3C CSS Specifications
 - WCAG 2.2
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary of Changes |
+|---------|------|--------|--------------------|
+| 1.0.0 | July 2026 | Finzo Team | Initial enterprise release |

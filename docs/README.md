@@ -1,6 +1,6 @@
 # Finzo Enterprise Product Standards (FEPS)
 
-Version: 1.0.1
+Version: 2.0.0
 
 Status: Approved
 
@@ -49,6 +49,8 @@ The documentation is organized into the following sections:
 - Enterprise Transformation
 - Content Standards
 - Project Governance
+- Architecture Decision Records
+- Reference
 
 Each section contains one or more chapters covering a specific area of the system.
 
