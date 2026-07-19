@@ -1,237 +1,177 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>Finzo | Establish Account</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
 
-    <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
-    <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645",
+                        "surface": "#ffffff",
+                        "on-surface": "#1a1c1e"
+                    },
+                    fontFamily: {
+                        "body": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    </style>
 </head>
-
-<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
-<main class="auth-page-wrapper">
-  <div class="auth-split-grid">
-    
-    <!-- Left Information Panel -->
-    <div class="auth-left-panel">
-      <!-- Top: Branding -->
-      <div>
-        <div class="flex items-center gap-2 mb-8">
-          <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
-            <span class="material-symbols-outlined text-2xl">account_balance</span>
-          </div>
-          <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
-        </div>
-        
-        <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">
-          Secure Online Banking
-        </h2>
-        <p class="text-white/80 text-sm leading-relaxed mb-10 max-w-md">
-          Manage accounts anytime, experience protected digital banking, and enjoy fast & secure registration.
-        </p>
-
-        <!-- Security Features -->
-        <div class="space-y-2">
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg">lock</span>
+<body class="bg-gray-50 font-body text-on-surface">
+    <main class="min-h-screen flex w-full">
+        <!-- Left Side: Image -->
+        <div class="hidden lg:flex lg:w-[45%] relative bg-primary flex-col justify-between overflow-hidden">
+            <!-- Image -->
+            <img src="/Finzo/public/assets/images/register-page-image.png" alt="Banking Illustration" class="absolute inset-0 w-full h-full object-cover opacity-[0.85] mix-blend-overlay" />
+            <img src="/Finzo/public/assets/images/register-page-image.png" alt="Banking Illustration" class="absolute inset-0 w-full h-full object-cover opacity-50" />
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-primary/20"></div>
+            
+            <!-- Content on top of image -->
+            <div class="relative z-10 p-12 flex flex-col h-full justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-10 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
+                        <div class="w-10 h-10 bg-white/10 rounded-md flex items-center justify-center backdrop-blur-sm border border-white/20">
+                            <span class="material-symbols-outlined text-2xl text-white">account_balance</span>
+                        </div>
+                        <span class="text-xl font-bold text-white tracking-tight">Finzo</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-white mb-4 leading-tight">Secure Online Banking</h2>
+                    <p class="text-white/80 text-sm leading-relaxed max-w-md">Manage accounts anytime, experience protected digital banking, and enjoy fast & secure registration.</p>
+                </div>
+                
+                <div>
+                    <div class="space-y-4 mb-10">
+                        <div class="flex items-start gap-4 bg-white/5 p-5 rounded-xl backdrop-blur-md border border-white/10 shadow-lg">
+                            <span class="material-symbols-outlined text-white text-2xl mt-0.5">shield</span>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white mb-1">Bank-grade Security</h4>
+                                <p class="text-xs text-white/70 leading-relaxed">Your assets are protected by 256-bit AES encryption protocols and robust continuous monitoring.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-white/20 pt-6">
+                        <p class="text-[11px] text-white/60 font-medium tracking-widest uppercase">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
+                    </div>
+                </div>
             </div>
-            <div class="auth-security-content">
-              <h4>Encrypted Registration</h4>
-              <p>Your data is protected during transmission.</p>
-            </div>
-          </div>
-          
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg">verified_user</span>
-            </div>
-            <div class="auth-security-content">
-              <h4>Privacy Protection</h4>
-              <p>Strict confidentiality and data privacy standards.</p>
-            </div>
-          </div>
-          
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg">fingerprint</span>
-            </div>
-            <div class="auth-security-content">
-              <h4>Identity Verification</h4>
-              <p>Robust and secure identity verification process.</p>
-            </div>
-          </div>
-
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg">shield</span>
-            </div>
-            <div class="auth-security-content">
-              <h4>Secure Data Handling</h4>
-              <p>Complies with the highest industry standards.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Bottom: Copyright -->
-      <div class="mt-8 pt-6 border-t border-white/10">
-        <p class="text-[11px] text-white/50 font-medium tracking-wide uppercase">
-          &copy; 2026 Finzo Banking Group. All rights reserved.
-        </p>
-      </div>
-    </div>
-    
-    <!-- Right Authentication Area -->
-    <div class="auth-right-area">
-      <!-- Language Selector -->
-      <div class="auth-lang-selector">
-        <span class="material-symbols-outlined text-[16px]">language</span>
-        <span>EN</span>
-        <span class="material-symbols-outlined text-[16px]">expand_more</span>
-      </div>
-      
-      <!-- Auth Card -->
-      <div class="auth-card-wrapper w-full max-w-[480px]">
-        <!-- Brand Header (Mobile Only) -->
-        <div class="auth-brand-header lg:hidden">
-          <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
-            <span class="material-symbols-outlined text-2xl">account_balance</span>
-          </div>
-        </div>
-        
-        <div class="mb-6 text-center lg:text-left">
-          <h1 class="auth-hero-title">Create Your Finzo Account</h1>
-          <p class="auth-subtitle">Secure online banking registration.</p>
         </div>
 
-        <!-- Institutional Error Banner -->
-        <div id="auth-error-banner" class="hidden error-banner mb-6">
-          <div class="bg-danger-surface p-3 rounded-md flex items-center gap-3 border border-danger-base/20">
-              <span class="material-symbols-outlined text-danger-base text-xl shrink-0">warning</span>
-              <span class="text-xs font-bold text-danger-base uppercase tracking-wider">Registration incomplete.</span>
-          </div>
-        </div>
+        <!-- Right Side: Auth Container -->
+        <div class="w-full lg:w-[55%] flex flex-col justify-center items-center p-6 sm:p-12 relative bg-surface">
+            <!-- Language selector -->
+            <div class="absolute top-8 right-8 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                <span class="material-symbols-outlined text-[16px] text-gray-600">language</span>
+                <span class="text-xs font-semibold text-gray-700">EN</span>
+                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+            </div>
+            
+            <div class="w-full max-w-[400px]">
+                <!-- Mobile Logo -->
+                <div class="lg:hidden flex items-center justify-center w-12 h-12 bg-primary/5 border border-primary/10 rounded-xl text-primary mb-8 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
+                    <span class="material-symbols-outlined text-2xl">account_balance</span>
+                </div>
+                
+                <div class="mb-8 text-center lg:text-left">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Establish Account</h1>
+                    <p class="text-sm text-gray-500">Begin your secure application process.</p>
+                </div>
 
-        <form class="auth-form-body" action="#" id="register-form" method="POST" novalidate>
-          <input name="csrf_token" type="hidden" value="static_placeholder_token" />
-
-          <!-- Section: Personal Info -->
-          <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2">Personal Information</div>
-          
-          <div class="fin-input-container !mb-0 mt-2">
-              <label for="full-name" class="form-label">Legal Full Name (as per ID)</label>
-              <div class="relative mt-2">
-                  <span class="material-symbols-outlined input-icon">person</span>
-                  <input class="fin-input has-icon-left" id="full-name" placeholder="First Last" type="text" required aria-required="true" />
-              </div>
-          </div>
-          
-          <!-- Section: Contact Info -->
-          <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Contact Information</div>
-
-          <div class="fin-input-container !mb-0 mt-2">
-              <label for="email" class="form-label">Primary Email Address</label>
-              <div class="relative mt-2">
-                  <span class="material-symbols-outlined input-icon">mail</span>
-                  <input class="fin-input has-icon-left" id="email" placeholder="name@example.com" type="email" required aria-required="true" />
-              </div>
-          </div>
-
-          <div class="fin-input-container !mb-0 mt-4">
-              <label for="phone" class="form-label">Mobile Number</label>
-              <div class="relative flex items-center border border-[var(--color-border-main)] bg-[var(--color-surface-main)] rounded-[var(--radius-sm)] focus-within:border-[var(--color-border-focus)] focus-within:ring-[3px] focus-within:ring-[var(--color-border-focus)]/20 transition-all h-[48px] overflow-hidden mt-2">
-                  <span class="material-symbols-outlined text-slate-400 ml-3 mr-2 text-[20px]">call</span>
-                  <span class="text-[14px] font-medium text-primary-600 mr-2">+91</span>
-                  <input class="w-full bg-transparent border-none focus:ring-0 text-[var(--color-text-main)] text-[14px] h-full px-2 outline-none font-body" id="phone" placeholder="00000 00000" type="tel" required aria-required="true" />
-              </div>
-          </div>
-
-          <!-- Section: Security -->
-          <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Account Security</div>
-
-          <div class="fin-input-container !mb-0 mt-2">
-              <label for="password" class="form-label">Create Secure Password</label>
-              <div class="relative group mt-2">
-                  <span class="material-symbols-outlined input-icon">lock</span>
-                  <input class="fin-input has-icon-left has-icon-right" id="password" placeholder="Create a strong password" type="password" required aria-required="true" />
-                  <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none focus:text-primary-600" id="toggle-password" aria-label="Toggle password visibility">
-                      <span class="material-symbols-outlined text-[20px]">visibility</span>
-                  </button>
-              </div>
-              <!-- Strength Indicator -->
-              <div class="h-1 w-full bg-slate-100 rounded-full mt-2 overflow-hidden flex transition-all duration-300 opacity-0" id="password-strength-bar">
-                  <div class="h-full w-0 transition-all duration-300" id="strength-fill"></div>
-              </div>
-              <p id="password-strength-text" class="text-[10px] font-semibold mt-1 mb-2 uppercase tracking-wide text-slate-500 transition-all duration-300 opacity-0"></p>
-          </div>
-          
-          <div class="fin-input-container !mb-0 mt-3">
-              <label for="confirm-password" class="form-label">Verify Secure Password</label>
-              <div class="relative mt-2">
-                  <span class="material-symbols-outlined input-icon">lock</span>
-                  <input class="fin-input has-icon-left" id="confirm-password" placeholder="Repeat your password" type="password" required aria-required="true" />
-              </div>
-          </div>
-
-          <!-- Terms & Conditions -->
-          <div class="text-sm font-semibold text-slate-800 mb-1 border-b border-slate-100 pb-2 mt-4">Terms & Conditions</div>
-          <div class="flex items-start gap-2 mt-3 bg-slate-50 p-3 rounded border border-slate-100">
-              <input type="checkbox" id="terms" class="mt-0.5 w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-600 cursor-pointer" required aria-required="true">
-              <label for="terms" class="text-xs text-slate-600 cursor-pointer leading-tight">
-                I agree to the <a href="#" class="font-semibold text-primary-600 hover:underline">Terms of Service</a>, <a href="#" class="font-semibold text-primary-600 hover:underline">Privacy Policy</a>, and electronic communications.
-              </label>
-          </div>
-
-          <div id="error-box" class="error-msg text-center font-bold mt-2"></div>
-          
-          <!-- Action -->
-          <div class="pt-3">
-              <button class="btn btn-primary w-full" id="register-btn" type="submit">
-                  <span>Submit Application</span>
-                  <span class="material-symbols-outlined text-xl">arrow_forward</span>
-              </button>
-          </div>
+                
+        <form action="#" method="POST">
+            <div class="mb-6 border-b border-gray-100 pb-2">
+                <h3 class="text-[11px] font-bold text-gray-800 uppercase tracking-widest">Personal Information</h3>
+            </div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full Legal Name</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">person</span>
+                    <input type="text" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="As per official ID" required />
+                </div>
+            </div>
+            <div class="mb-6 border-b border-gray-100 pb-2 mt-6">
+                <h3 class="text-[11px] font-bold text-gray-800 uppercase tracking-widest">Contact Details</h3>
+            </div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">mail</span>
+                    <input type="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="name@example.com" required />
+                </div>
+            </div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                <div class="relative flex items-center bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+                    <span class="material-symbols-outlined text-gray-400 ml-3 mr-1 text-[20px]">call</span>
+                    <span class="text-sm font-medium text-primary bg-gray-50 px-2 py-2.5 border-r border-gray-200">+91</span>
+                    <input type="tel" class="w-full pl-3 pr-4 py-2.5 border-none bg-transparent text-sm focus:ring-0 outline-none" placeholder="00000 00000" required />
+                </div>
+            </div>
+            <div class="mb-6 border-b border-gray-100 pb-2 mt-6">
+                <h3 class="text-[11px] font-bold text-gray-800 uppercase tracking-widest">Security</h3>
+            </div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">lock</span>
+                    <input type="password" class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Minimum 8 characters" required />
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px] cursor-pointer hover:text-primary">visibility</span>
+                </div>
+            </div>
+            <div class="flex items-start gap-2 mb-6 bg-gray-50 p-3 rounded-md border border-gray-200">
+                <input type="checkbox" id="terms" class="mt-0.5 rounded border-gray-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer" required />
+                <label for="terms" class="text-xs text-gray-600 cursor-pointer leading-relaxed">
+                    I agree to the <a href="#" class="font-semibold text-primary hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-primary hover:underline">Privacy Policy</a>.
+                </label>
+            </div>
+            <button type="submit" class="w-full bg-primary hover:bg-[#001b33] text-white py-3 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                <span>Submit Application</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
         </form>
-
-        <div class="auth-trust-badge">
-          <span class="material-symbols-outlined text-[14px]">shield</span>
-          <span>Banking Grade Security Verification</span>
+        <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-6">
+            Already have an account? <a href="login.html" class="font-semibold text-primary hover:underline">Sign In</a>
         </div>
+        
 
-        <div class="auth-footer">
-            <span class="text-slate-500">Already have an account?</span>
-            <a href="login.html" class="font-semibold text-primary-600 hover:text-primary-800 ml-1">Sign In</a>
+                <!-- Global footer for trust -->
+                <div class="mt-12 pt-6 border-t border-gray-100 flex flex-wrap justify-center gap-6 text-gray-400 text-xs">
+                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">enhanced_encryption</span> 256-bit Encryption</span>
+                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">gpp_good</span> Privacy Protected</span>
+                </div>
+            </div>
         </div>
-      </div>
-
-            <!-- Global Footer -->
-      <div class="auth-global-footer">
-        <ul>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">enhanced_encryption</span> 256-bit Encryption</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified_user</span> Secure Digital Banking Access</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">gpp_good</span> Privacy Protected</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">credit_card</span> PCI DSS Compliant</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</main>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="/Finzo/public/assets/js/public/public-shared.js"></script>
-<script src="/Finzo/public/assets/js/core/utils.js"></script>
-<script src="/Finzo/public/assets/js/core/api.js"></script>
+    </main>
+    <script>
+        document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
+            if (icon.textContent === 'visibility') {
+                icon.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    if(input && input.type === 'password') {
+                        input.type = 'text';
+                        this.textContent = 'visibility_off';
+                        this.classList.add('text-primary');
+                    } else if (input) {
+                        input.type = 'password';
+                        this.textContent = 'visibility';
+                        this.classList.remove('text-primary');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
