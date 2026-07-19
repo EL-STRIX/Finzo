@@ -6,6 +6,28 @@ This project follows **Semantic Versioning (SemVer)** to track documentation imp
 
 ---
 
+# Version 1.0.1
+
+**Release Date:** July 2026
+
+## Overview
+
+This release focuses on the comprehensive professionalization and standardization of the entire FEPS documentation suite (Chapters 00-35). The update aligns the documentation with enterprise-grade formatting and structures found in industry-leading design systems (e.g., Microsoft Learn, IBM Carbon Design System). No underlying principles, standards, or content were removed or rewritten.
+
+### Changed
+- Standardized Heading Hierarchy across all chapters.
+- Standardized Chapter Headers to strictly follow: Title, Metadata, Purpose, Scope, Objectives.
+- Expanded cross-references to use full chapter titles.
+- Converted TABLE_OF_CONTENTS.md entries into clickable relative markdown links.
+- Improved internal consistency in terminology, capitalization, list formatting, and spacing.
+
+### Added
+- Enterprise Metadata injected into all 36 chapters (Version, Status, Category, Document Owner, Last Updated, Document ID).
+- Dedicated "Related Chapters" sections to interlink relevant documentation.
+- Standardized "References" sections appending relevant industry standards (WCAG, W3C, etc.).
+
+---
+
 # Version 1.0.0
 
 **Release Date:** Initial Release

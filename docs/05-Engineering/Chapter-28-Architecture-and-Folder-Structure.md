@@ -1,20 +1,18 @@
-# Chapter 28 — Enterprise Documentation, Knowledge Management & Project Governance Standards
+# Chapter 28 — Architecture & Folder Structure
 
----
+Version: 1.0.0
 
-# Chapter Purpose
+Status: Approved
 
-Documentation is the institutional knowledge of the Finzo Banking Management System.
+Category: Engineering
 
-A banking platform should never rely on individual developers to explain how the system works.
+Document Owner: Finzo Team
 
-Every architectural decision, business rule, workflow, deployment process, API, and operational procedure should be documented so the system remains maintainable throughout its lifecycle.
+Last Updated: July 2026
 
-The purpose of this chapter is to establish one unified enterprise documentation and governance standard.
+Document ID: FEPS-28
 
----
-
-# Scope
+## Scope
 
 This chapter applies to:
 
@@ -52,7 +50,21 @@ Future Enhancements
 
 ---
 
-# Enterprise Documentation Philosophy
+---
+
+## Chapter Purpose
+
+Documentation is the institutional knowledge of the Finzo Banking Management System.
+
+A banking platform should never rely on individual developers to explain how the system works.
+
+Every architectural decision, business rule, workflow, deployment process, API, and operational procedure should be documented so the system remains maintainable throughout its lifecycle.
+
+The purpose of this chapter is to establish one unified enterprise documentation and governance standard.
+
+---
+
+## Enterprise Documentation Philosophy
 
 Documentation should be:
 
@@ -76,7 +88,7 @@ Outdated documentation is considered a defect.
 
 ---
 
-# Primary Objectives
+## Primary Objectives
 
 Documentation should:
 
@@ -96,7 +108,7 @@ Reduce implementation errors.
 
 ---
 
-# Documentation Categories
+## Documentation Categories
 
 Documentation should be organized into logical categories.
 
@@ -130,7 +142,7 @@ Release Notes
 
 ---
 
-# Project Documentation
+## Project Documentation
 
 Maintain high-level documentation describing:
 
@@ -158,7 +170,7 @@ Contribution Guidelines
 
 ---
 
-# README Standards
+## README Standards
 
 The README should include:
 
@@ -190,7 +202,7 @@ The README should remain concise while linking to detailed documents.
 
 ---
 
-# Architecture Documentation
+## Architecture Documentation
 
 Document:
 
@@ -214,7 +226,7 @@ Major architectural changes should update documentation immediately.
 
 ---
 
-# Design System Documentation
+## Design System Documentation
 
 Document every reusable component.
 
@@ -238,7 +250,7 @@ Developers should never guess component usage.
 
 ---
 
-# API Documentation
+## API Documentation
 
 Document every endpoint.
 
@@ -266,7 +278,7 @@ Documentation should always match implementation.
 
 ---
 
-# Database Documentation
+## Database Documentation
 
 Document:
 
@@ -290,7 +302,7 @@ Future schema changes must update documentation.
 
 ---
 
-# Deployment Documentation
+## Deployment Documentation
 
 Document:
 
@@ -314,7 +326,7 @@ Deployment should be repeatable from documentation alone.
 
 ---
 
-# Developer Documentation
+## Developer Documentation
 
 Document:
 
@@ -338,7 +350,7 @@ Future contributors should become productive quickly.
 
 ---
 
-# User Documentation
+## User Documentation
 
 Provide guides for customers.
 
@@ -364,7 +376,7 @@ Documentation should use clear, non-technical language.
 
 ---
 
-# Staff Documentation
+## Staff Documentation
 
 Provide operational guides.
 
@@ -384,7 +396,7 @@ Documentation should reflect actual workflows.
 
 ---
 
-# Administrator Documentation
+## Administrator Documentation
 
 Document:
 
@@ -406,7 +418,7 @@ Administrative procedures should be standardized.
 
 ---
 
-# Security Documentation
+## Security Documentation
 
 Document:
 
@@ -428,7 +440,7 @@ Security documentation should remain confidential where appropriate.
 
 ---
 
-# Testing Documentation
+## Testing Documentation
 
 Document:
 
@@ -448,7 +460,7 @@ Testing documentation should support repeatable validation.
 
 ---
 
-# Change Documentation
+## Change Documentation
 
 Every significant change should include:
 
@@ -470,7 +482,7 @@ Changes should remain traceable.
 
 ---
 
-# Architecture Decision Records (ADR)
+## Architecture Decision Records (ADR)
 
 Maintain decision records for major technical choices.
 
@@ -494,7 +506,7 @@ This preserves long-term engineering reasoning.
 
 ---
 
-# Changelog Standards
+## Changelog Standards
 
 Maintain a structured changelog.
 
@@ -520,7 +532,7 @@ Every production release should appear in the changelog.
 
 ---
 
-# Governance Standards
+## Governance Standards
 
 Establish governance for:
 
@@ -540,7 +552,7 @@ Governance ensures long-term consistency.
 
 ---
 
-# Review Standards
+## Review Standards
 
 Documentation should be reviewed for:
 
@@ -558,7 +570,7 @@ Outdated information should be corrected promptly.
 
 ---
 
-# Version Control
+## Version Control
 
 Documentation should be version controlled alongside source code.
 
@@ -568,7 +580,7 @@ Documentation and implementation must never diverge.
 
 ---
 
-# Knowledge Management
+## Knowledge Management
 
 Institutional knowledge should never depend on one person.
 
@@ -590,7 +602,7 @@ Knowledge should remain accessible to future teams.
 
 ---
 
-# Visual Documentation
+## Visual Documentation
 
 Where beneficial, include:
 
@@ -610,7 +622,7 @@ Visual documentation should simplify understanding.
 
 ---
 
-# Governance for AI-Assisted Development
+## Governance for AI-Assisted Development
 
 When AI assists development:
 
@@ -626,7 +638,7 @@ AI-generated documentation must be treated like source code and reviewed before 
 
 ---
 
-# Documentation Transformation Requirements (Mandatory)
+## Documentation Transformation Requirements (Mandatory)
 
 Before modifying documentation:
 
@@ -682,7 +694,7 @@ Anything reducing enterprise documentation quality.
 
 ---
 
-# Documentation Review Checklist
+## Documentation Review Checklist
 
 Every document must answer "Yes".
 
@@ -710,7 +722,7 @@ If any answer is "No", the documentation requires revision.
 
 ---
 
-# Chapter Completion Criteria
+## Chapter Completion Criteria
 
 This chapter is complete only when:
 
@@ -734,4 +746,17 @@ This chapter is complete only when:
 
 ✓ Every Finzo document follows one enterprise documentation standard.
 
-# End of Chapter 28
+## End of **Chapter 28 — Architecture & Folder Structure**
+---
+
+## Related Chapters
+
+- **Chapter 00 — Foundation**
+
+---
+
+## References
+
+- W3C HTML Standard
+- W3C CSS Specifications
+- WCAG 2.2

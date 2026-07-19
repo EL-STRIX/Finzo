@@ -1,8 +1,20 @@
-# Chapter 4 — Enterprise Information Architecture & Navigation Standards
+# Chapter 04 — Information Architecture
+
+Version: 1.0.0
+
+Status: Approved
+
+Category: Design System
+
+Document Owner: Finzo Team
+
+Last Updated: July 2026
+
+Document ID: FEPS-04
 
 ---
 
-# Chapter Purpose
+## Chapter Purpose
 
 Information Architecture (IA) defines how information is organized, connected, presented, and accessed throughout the Finzo Banking Management System.
 
@@ -14,7 +26,7 @@ Every page within Finzo must follow these standards.
 
 ---
 
-# Information Architecture Philosophy
+## Information Architecture Philosophy
 
 The purpose of Information Architecture is not simply to organize pages.
 
@@ -28,17 +40,17 @@ Every section should feel like part of one connected system.
 
 ---
 
-# Core IA Principles
+## Core IA Principles
 
 Every page and workflow must satisfy the following principles.
 
-## Clarity
+### Clarity
 
 Users must immediately understand the purpose of the current page.
 
 ---
 
-## Discoverability
+### Discoverability
 
 Important banking functions should never be hidden.
 
@@ -46,7 +58,7 @@ Primary actions must always be easy to locate.
 
 ---
 
-## Predictability
+### Predictability
 
 Navigation patterns should remain consistent throughout the application.
 
@@ -54,7 +66,7 @@ Users should never need to relearn navigation.
 
 ---
 
-## Logical Hierarchy
+### Logical Hierarchy
 
 Information should be grouped according to user goals.
 
@@ -64,7 +76,7 @@ Unrelated content should never appear in the same section.
 
 ---
 
-## Progressive Disclosure
+### Progressive Disclosure
 
 Display essential information first.
 
@@ -72,17 +84,17 @@ Advanced functionality should appear only when needed.
 
 ---
 
-## Consistency
+### Consistency
 
 Navigation, layouts, labels, and workflows must remain consistent across every module.
 
 ---
 
-# Enterprise Application Structure
+## Enterprise Application Structure
 
 The Finzo Banking Management System should be divided into clearly defined modules.
 
-## Public Website
+### Public Website
 
 Purpose:
 
@@ -114,7 +126,7 @@ Terms of Service
 
 ---
 
-## Authentication Module
+### Authentication Module
 
 Purpose:
 
@@ -146,7 +158,7 @@ Session Expired
 
 ---
 
-## Customer Banking Module
+### Customer Banking Module
 
 Purpose:
 
@@ -176,7 +188,7 @@ Support
 
 ---
 
-## Staff Operations Module
+### Staff Operations Module
 
 Purpose:
 
@@ -192,7 +204,7 @@ Reports.
 
 ---
 
-## Administrator Module
+### Administrator Module
 
 Purpose:
 
@@ -224,7 +236,7 @@ Security Monitoring
 
 ---
 
-# Navigation Philosophy
+## Navigation Philosophy
 
 Navigation should never compete with content.
 
@@ -244,7 +256,7 @@ Accessible
 
 ---
 
-# Navigation Hierarchy
+## Navigation Hierarchy
 
 Navigation should follow this hierarchy.
 
@@ -270,7 +282,7 @@ Users should always understand which level they are currently viewing.
 
 ---
 
-# Primary Navigation Standards
+## Primary Navigation Standards
 
 Primary navigation should contain only major modules.
 
@@ -284,7 +296,7 @@ Avoid marketing language.
 
 ---
 
-# Sidebar Standards
+## Sidebar Standards
 
 Sidebars should organize operational functionality.
 
@@ -310,7 +322,7 @@ Administrative sidebars should group management functions logically.
 
 ---
 
-# Breadcrumb Standards
+## Breadcrumb Standards
 
 Breadcrumbs should appear on pages where users navigate through multiple levels.
 
@@ -336,7 +348,7 @@ Do not display breadcrumbs unnecessarily.
 
 ---
 
-# Page Hierarchy
+## Page Hierarchy
 
 Every page should follow the same hierarchy.
 
@@ -366,7 +378,7 @@ Critical information must always appear before supporting content.
 
 ---
 
-# Dashboard Hierarchy
+## Dashboard Hierarchy
 
 Every dashboard should prioritize:
 
@@ -396,7 +408,7 @@ Never prioritize decorative content over financial information.
 
 ---
 
-# Content Grouping
+## Content Grouping
 
 Related information should remain together.
 
@@ -414,7 +426,7 @@ Should never be mixed with unrelated financial information.
 
 ---
 
-# Search & Discovery
+## Search & Discovery
 
 Search should help users locate information quickly.
 
@@ -432,7 +444,7 @@ Helpful empty states
 
 ---
 
-# Quick Actions
+## Quick Actions
 
 Frequently used banking operations should always be easily accessible.
 
@@ -452,7 +464,7 @@ Quick Actions should remain visually consistent across dashboards.
 
 ---
 
-# Contextual Navigation
+## Contextual Navigation
 
 Pages should provide navigation relevant to the current task.
 
@@ -460,7 +472,7 @@ Avoid overwhelming users with unrelated options.
 
 ---
 
-# Internal Linking Standards
+## Internal Linking Standards
 
 Pages should link naturally to related functionality.
 
@@ -484,7 +496,7 @@ Avoid unnecessary navigation loops.
 
 ---
 
-# Information Density
+## Information Density
 
 Banking platforms display large amounts of information.
 
@@ -512,7 +524,7 @@ Unstructured layouts
 
 ---
 
-# Labels & Naming
+## Labels & Naming
 
 Use clear banking terminology.
 
@@ -546,7 +558,7 @@ Miscellaneous
 
 ---
 
-# Error Navigation
+## Error Navigation
 
 Users should never reach a dead end.
 
@@ -562,7 +574,7 @@ Support contact
 
 ---
 
-# Footer Navigation
+## Footer Navigation
 
 Public pages should include:
 
@@ -584,7 +596,7 @@ Administrative pages should avoid unnecessary marketing links.
 
 ---
 
-# Cross-Module Consistency
+## Cross-Module Consistency
 
 Navigation patterns should remain consistent across:
 
@@ -602,7 +614,7 @@ Users should never need to relearn navigation when changing modules.
 
 ---
 
-# Navigation Accessibility
+## Navigation Accessibility
 
 Navigation must support:
 
@@ -620,7 +632,7 @@ Accessible labels
 
 ---
 
-# Information Architecture Review Checklist
+## Information Architecture Review Checklist
 
 Every module must answer "Yes" to the following questions:
 
@@ -646,7 +658,7 @@ Every module must answer "Yes" to the following questions:
 
 ---
 
-# Chapter Completion Criteria
+## Chapter Completion Criteria
 
 This chapter is complete only when:
 
@@ -674,4 +686,17 @@ This chapter is complete only when:
 
 ✓ Every page follows the same enterprise information architecture.
 
-# End of Chapter 4
+## End of Chapter 4
+---
+
+## Related Chapters
+
+- **Chapter 00 — Foundation**
+
+---
+
+## References
+
+- W3C HTML Standard
+- W3C CSS Specifications
+- WCAG 2.2

@@ -1,8 +1,20 @@
-# Chapter 10 — Enterprise Navigation System & Application Shell
+# Chapter 10 — Navigation
+
+Version: 1.0.0
+
+Status: Approved
+
+Category: Design System
+
+Document Owner: Finzo Team
+
+Last Updated: July 2026
+
+Document ID: FEPS-10
 
 ---
 
-# Chapter Purpose
+## Chapter Purpose
 
 The Navigation System is the backbone of the Finzo Banking Management System.
 
@@ -18,7 +30,7 @@ Every page within Finzo must comply with these standards.
 
 ---
 
-# Enterprise Navigation Philosophy
+## Enterprise Navigation Philosophy
 
 Navigation exists to help users accomplish financial tasks.
 
@@ -40,7 +52,7 @@ Navigation should reduce uncertainty.
 
 ---
 
-# Navigation Objectives
+## Navigation Objectives
 
 The navigation system must:
 
@@ -64,7 +76,7 @@ Support future banking modules
 
 ---
 
-# Application Shell
+## Application Shell
 
 Every authenticated page should use one consistent application shell.
 
@@ -100,7 +112,7 @@ The shell must remain consistent across Customer, Staff, and Administrator modul
 
 ---
 
-# Public Website Navigation
+## Public Website Navigation
 
 Public pages should focus on trust-building.
 
@@ -128,7 +140,7 @@ Avoid overwhelming first-time visitors.
 
 ---
 
-# Authentication Navigation
+## Authentication Navigation
 
 Authentication pages should remove unnecessary distractions.
 
@@ -150,7 +162,7 @@ Do not display operational banking navigation.
 
 ---
 
-# Customer Navigation
+## Customer Navigation
 
 Customer navigation should prioritize daily banking activities.
 
@@ -182,7 +194,7 @@ Frequently used actions should require minimal navigation.
 
 ---
 
-# Staff Navigation
+## Staff Navigation
 
 Staff navigation should prioritize operational efficiency.
 
@@ -210,7 +222,7 @@ Administrative settings should not appear.
 
 ---
 
-# Administrator Navigation
+## Administrator Navigation
 
 Administrator navigation should prioritize management.
 
@@ -246,7 +258,7 @@ Navigation should reflect administrative responsibilities.
 
 ---
 
-# Primary Navigation Standards
+## Primary Navigation Standards
 
 Primary navigation should:
 
@@ -264,7 +276,7 @@ Never contain unnecessary items.
 
 ---
 
-# Sidebar Standards
+## Sidebar Standards
 
 Sidebars should organize functionality logically.
 
@@ -286,7 +298,7 @@ Do not mix unrelated features.
 
 ---
 
-# Collapsible Sidebar
+## Collapsible Sidebar
 
 Sidebars may collapse to improve workspace.
 
@@ -302,7 +314,7 @@ Never hide essential functionality.
 
 ---
 
-# Breadcrumb Standards
+## Breadcrumb Standards
 
 Breadcrumbs should appear on pages with hierarchical navigation.
 
@@ -328,7 +340,7 @@ Do not use breadcrumbs unnecessarily.
 
 ---
 
-# Page Header Standards
+## Page Header Standards
 
 Every operational page should contain:
 
@@ -354,7 +366,7 @@ Page headers should remain consistent throughout the application.
 
 ---
 
-# Quick Actions
+## Quick Actions
 
 Quick Actions provide direct access to frequently used banking tasks.
 
@@ -374,7 +386,7 @@ Quick Actions should remain visually consistent.
 
 ---
 
-# User Menu
+## User Menu
 
 Authenticated users should have one standardized user menu.
 
@@ -396,7 +408,7 @@ Avoid duplicate profile links throughout the interface.
 
 ---
 
-# Notification Center
+## Notification Center
 
 The notification center should display:
 
@@ -414,7 +426,7 @@ Allow users to mark notifications as read.
 
 ---
 
-# Search Integration
+## Search Integration
 
 Search should remain globally accessible where appropriate.
 
@@ -436,7 +448,7 @@ Search should never interrupt the current workflow.
 
 ---
 
-# Footer Standards
+## Footer Standards
 
 Public pages should contain:
 
@@ -458,7 +470,7 @@ Authenticated pages should contain only operational footer content if necessary.
 
 ---
 
-# Navigation Behavior
+## Navigation Behavior
 
 Navigation should:
 
@@ -474,7 +486,7 @@ Avoid unexpected page transitions.
 
 ---
 
-# Mobile Navigation
+## Mobile Navigation
 
 Mobile navigation should prioritize simplicity.
 
@@ -492,7 +504,7 @@ Never overload mobile navigation.
 
 ---
 
-# Navigation Accessibility
+## Navigation Accessibility
 
 Navigation must support:
 
@@ -512,7 +524,7 @@ No navigation item should become inaccessible.
 
 ---
 
-# Cross-Module Consistency
+## Cross-Module Consistency
 
 Navigation behavior must remain consistent across:
 
@@ -530,7 +542,7 @@ Users should never relearn navigation.
 
 ---
 
-# Security Considerations
+## Security Considerations
 
 Navigation should respect permissions.
 
@@ -542,7 +554,7 @@ Server-side authorization remains mandatory.
 
 ---
 
-# Navigation Performance
+## Navigation Performance
 
 Navigation should:
 
@@ -558,7 +570,7 @@ Transitions should never delay banking operations.
 
 ---
 
-# Navigation Anti-Patterns
+## Navigation Anti-Patterns
 
 Avoid:
 
@@ -584,7 +596,7 @@ Navigation should remain simple and predictable.
 
 ---
 
-# Navigation Review Checklist
+## Navigation Review Checklist
 
 Every module must answer "Yes" to the following questions:
 
@@ -612,7 +624,7 @@ If any answer is "No," the navigation system requires improvement.
 
 ---
 
-# Chapter Completion Criteria
+## Chapter Completion Criteria
 
 This chapter is complete only when:
 
@@ -638,4 +650,17 @@ This chapter is complete only when:
 
 ✓ Every page follows one unified enterprise navigation system.
 
-# End of Chapter 10
+## End of **Chapter 10 — Navigation**
+---
+
+## Related Chapters
+
+- **Chapter 00 — Foundation**
+
+---
+
+## References
+
+- W3C HTML Standard
+- W3C CSS Specifications
+- WCAG 2.2

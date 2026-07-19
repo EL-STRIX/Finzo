@@ -1,8 +1,20 @@
-# Chapter 6 — Enterprise Brand Identity & Color System
+# Chapter 06 — Color System
+
+Version: 1.0.0
+
+Status: Approved
+
+Category: Design System
+
+Document Owner: Finzo Team
+
+Last Updated: July 2026
+
+Document ID: FEPS-06
 
 ---
 
-# Chapter Purpose
+## Chapter Purpose
 
 The Brand Identity and Color System define how Finzo is visually recognized across the entire application.
 
@@ -16,7 +28,7 @@ No page or module may create its own color scheme.
 
 ---
 
-# Brand Identity Philosophy
+## Brand Identity Philosophy
 
 The Finzo brand should communicate:
 
@@ -46,7 +58,7 @@ Timeless rather than temporary.
 
 ---
 
-# Brand Personality
+## Brand Personality
 
 Finzo should be perceived as:
 
@@ -74,7 +86,7 @@ The interface should never appear playful, experimental, or entertainment-focuse
 
 ---
 
-# Enterprise Color Philosophy
+## Enterprise Color Philosophy
 
 Color is a communication tool.
 
@@ -96,7 +108,7 @@ Colors should never be used simply for decoration.
 
 ---
 
-# Primary Brand Color
+## Primary Brand Color
 
 The primary brand color represents trust and authority.
 
@@ -130,7 +142,7 @@ Avoid using the primary color excessively.
 
 ---
 
-# Secondary Brand Color
+## Secondary Brand Color
 
 The secondary color supports the primary brand color.
 
@@ -150,7 +162,7 @@ The secondary color must never compete with the primary brand color.
 
 ---
 
-# Accent Colors
+## Accent Colors
 
 Accent colors should draw attention only when necessary.
 
@@ -168,7 +180,7 @@ Accent colors should remain limited.
 
 ---
 
-# Neutral Color System
+## Neutral Color System
 
 The majority of the interface should rely on neutral colors.
 
@@ -194,7 +206,7 @@ Whitespace should remain the dominant visual element.
 
 ---
 
-# Surface Hierarchy
+## Surface Hierarchy
 
 Every interface should clearly distinguish between:
 
@@ -224,7 +236,7 @@ Users should immediately understand content grouping through subtle surface chan
 
 ---
 
-# Semantic Colors
+## Semantic Colors
 
 Semantic colors communicate system status.
 
@@ -232,7 +244,7 @@ Every semantic color must remain consistent throughout the application.
 
 ---
 
-## Success
+### Success
 
 Represents:
 
@@ -250,7 +262,7 @@ Success colors should communicate confidence without excessive brightness.
 
 ---
 
-## Warning
+### Warning
 
 Represents:
 
@@ -264,7 +276,7 @@ Warnings should attract attention without creating unnecessary concern.
 
 ---
 
-## Error
+### Error
 
 Represents:
 
@@ -280,7 +292,7 @@ Avoid alarming or overly aggressive styling.
 
 ---
 
-## Information
+### Information
 
 Represents:
 
@@ -294,7 +306,7 @@ Informational messages should remain calm and supportive.
 
 ---
 
-# Financial Status Colors
+## Financial Status Colors
 
 Banking-specific statuses should remain consistent.
 
@@ -322,7 +334,7 @@ Every financial status should use one standardized color system.
 
 ---
 
-# Text Color Hierarchy
+## Text Color Hierarchy
 
 Text should follow a predictable hierarchy.
 
@@ -348,7 +360,7 @@ Users should never struggle to identify important information.
 
 ---
 
-# Background Color Standards
+## Background Color Standards
 
 Backgrounds should remain subtle.
 
@@ -358,7 +370,7 @@ The interface should rely on spacing and hierarchy rather than background colors
 
 ---
 
-# Border Standards
+## Border Standards
 
 Borders should define structure rather than decoration.
 
@@ -376,7 +388,7 @@ Avoid heavy decorative borders.
 
 ---
 
-# Shadow Philosophy
+## Shadow Philosophy
 
 Shadows should communicate elevation.
 
@@ -398,7 +410,7 @@ Large drop shadows
 
 ---
 
-# Gradient Usage
+## Gradient Usage
 
 Gradients should remain extremely limited.
 
@@ -426,7 +438,7 @@ Operational banking pages
 
 ---
 
-# Dark Mode Policy
+## Dark Mode Policy
 
 The primary experience should be designed for high-quality light mode.
 
@@ -444,7 +456,7 @@ Until officially implemented, every page should prioritize a consistent enterpri
 
 ---
 
-# Accessibility & Color
+## Accessibility & Color
 
 Every color choice must satisfy WCAG 2.2 AA contrast requirements.
 
@@ -462,7 +474,7 @@ Patterns when appropriate
 
 ---
 
-# Charts & Data Visualization
+## Charts & Data Visualization
 
 Charts should prioritize clarity over visual impact.
 
@@ -476,7 +488,7 @@ Financial data must remain easy to interpret.
 
 ---
 
-# Brand Consistency Rules
+## Brand Consistency Rules
 
 Every module must use the same:
 
@@ -502,7 +514,7 @@ No module may introduce its own color language.
 
 ---
 
-# Prohibited Color Usage
+## Prohibited Color Usage
 
 The following should be avoided:
 
@@ -526,7 +538,7 @@ Color should reinforce trust—not attract unnecessary attention.
 
 ---
 
-# Color Review Checklist
+## Color Review Checklist
 
 Every page must answer "Yes" to the following questions:
 
@@ -552,7 +564,7 @@ Every page must answer "Yes" to the following questions:
 
 ---
 
-# Chapter Completion Criteria
+## Chapter Completion Criteria
 
 This chapter is complete only when:
 
@@ -578,4 +590,17 @@ This chapter is complete only when:
 
 ✓ Every future interface follows one unified enterprise banking identity.
 
-# End of Chapter 6
+## End of Chapter 6
+---
+
+## Related Chapters
+
+- **Chapter 00 — Foundation**
+
+---
+
+## References
+
+- W3C HTML Standard
+- W3C CSS Specifications
+- WCAG 2.2
