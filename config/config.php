@@ -50,7 +50,7 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 // =====================================================
 // SESSION CONFIGURATION
 // =====================================================
-define('SESSION_LIFETIME', 3600); // 1 hour
+define('SESSION_LIFETIME', 86400); // 24 hours
 
 if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
