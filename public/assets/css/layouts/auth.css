@@ -21,6 +21,32 @@
   }
 }
 
+@media (min-width: 1920px) {
+  .auth-split-grid {
+    grid-template-columns: 40% 60%;
+    max-width: 2560px;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile Landscape Layout Optimization */
+@media (max-height: 540px) and (orientation: landscape) {
+  .auth-right-area {
+    padding: 24px 16px !important;
+    justify-content: flex-start !important;
+    overflow-y: auto;
+  }
+  .auth-mobile-logo {
+    margin-bottom: 16px !important;
+  }
+  .auth-page-header {
+    margin-bottom: 16px !important;
+  }
+  .auth-role-switcher {
+    margin-bottom: 16px !important;
+  }
+}
+
 /* Left Hero Panel */
 .auth-left-panel {
   display: none;
@@ -266,6 +292,10 @@
   color: var(--color-text-main);
 }
 
+.auth-role-tab:focus-visible {
+  outline: 2px solid var(--color-primary-base);
+}
+
 .auth-role-tab.active {
   font-weight: 600;
   color: var(--color-primary-base);
@@ -391,6 +421,11 @@
   color: var(--color-primary-hover);
 }
 
+.auth-help-link:focus-visible {
+  outline: 2px solid var(--color-primary-base);
+  border-radius: var(--radius-sm);
+}
+
 /* Language Selector Component */
 .auth-lang-selector {
   position: absolute;
@@ -452,6 +487,11 @@
   color: var(--color-primary-base);
 }
 
+.auth-footer-link:focus-visible {
+  outline: 2px solid var(--color-primary-base);
+  border-radius: 2px;
+}
+
 /* Enterprise Toast Feedback Notification System */
 .fin-toast-container {
   position: fixed;
@@ -499,4 +539,12 @@
 
 .fin-toast-icon {
   font-size: 20px;
+}
+
+/* WCAG Reduced Motion Accessibility Support */
+@media (prefers-reduced-motion: reduce) {
+  .auth-card-container, .auth-role-tab, .auth-lang-selector, .fin-toast {
+    transition: none !important;
+    transform: none !important;
+  }
 }

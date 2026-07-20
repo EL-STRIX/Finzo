@@ -421,3 +421,11 @@
   border-color: var(--color-primary-base);
   box-shadow: var(--shadow-focus);
 }
+
+/* WCAG Reduced Motion Accessibility Support */
+@media (prefers-reduced-motion: reduce) {
+  .form-control, .fin-input, .fin-otp-input, .fin-checkbox-input, .fin-radio-input, .strength-bar-fill {
+    transition: none !important;
+    animation: none !important;
+  }
+}
