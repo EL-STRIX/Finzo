@@ -3,11 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="Finzo Enterprise Banking - Staff Portal Sign In" />
     <title>Finzo | Staff Portal</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
@@ -20,130 +22,151 @@
                         "on-surface": "#1a1c1e"
                     },
                     fontFamily: {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
                         "body": ["Inter", "sans-serif"]
                     }
                 }
             }
         }
     </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-    </style>
+    
+    <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/forms.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/buttons.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/cards.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/badges.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/layouts/auth.css" />
+
+    <script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>
 </head>
 <body class="bg-gray-50 font-body text-on-surface">
-    <main class="min-h-screen flex w-full">
-        <!-- Left Side: Image -->
-        <div class="hidden lg:flex lg:w-[45%] relative bg-primary flex-col justify-between overflow-hidden">
-            <!-- Image -->
-            <img src="/Finzo/public/assets/images/staff_bg.png" alt="Banking Illustration" class="absolute inset-0 w-full h-full object-cover opacity-[0.85] mix-blend-overlay" />
-            <img src="/Finzo/public/assets/images/staff_bg.png" alt="Banking Illustration" class="absolute inset-0 w-full h-full object-cover opacity-50" />
-            <!-- Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-primary/20"></div>
-            
-            <!-- Content on top of image -->
-            <div class="relative z-10 p-12 flex flex-col h-full justify-between">
-                <div>
-                    <div class="flex items-center gap-3 mb-10 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
-                        <div class="w-10 h-10 bg-white/10 rounded-md flex items-center justify-center backdrop-blur-sm border border-white/20">
-                            <span class="material-symbols-outlined text-2xl text-white">account_balance</span>
-                        </div>
-                        <span class="text-xl font-bold text-white tracking-tight">Finzo</span>
-                    </div>
-                    <h2 class="text-4xl font-bold text-white mb-4 leading-tight">Empowering Branch Operations</h2>
-                    <p class="text-white/80 text-sm leading-relaxed max-w-md">Provide exceptional service with quick access to customer profiles and daily operational tools.</p>
-                </div>
+    <main class="auth-page-wrapper">
+        <div class="auth-split-grid">
+            <!-- Left Side: Hero Illustration & Security Banner -->
+            <div class="auth-left-panel">
+                <img src="/Finzo/public/assets/images/staff_bg.png" alt="Staff Portal Illustration" class="auth-hero-img-bg" />
+                <img src="/Finzo/public/assets/images/staff_bg.png" alt="Staff Portal Illustration" class="auth-hero-img-secondary" />
+                <div class="auth-hero-overlay"></div>
                 
-                <div>
-                    <div class="space-y-4 mb-10">
-                        <div class="flex items-start gap-4 bg-white/5 p-5 rounded-xl backdrop-blur-md border border-white/10 shadow-lg">
-                            <span class="material-symbols-outlined text-white text-2xl mt-0.5">shield</span>
+                <div class="auth-hero-content">
+                    <div>
+                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                            <div class="auth-brand-icon-box">
+                                <span class="material-symbols-outlined text-2xl">account_balance</span>
+                            </div>
+                            <span class="auth-brand-name">Finzo</span>
+                        </a>
+                        <h2 class="auth-hero-headline">Empowering Branch Operations</h2>
+                        <p class="auth-hero-subtitle">Streamlined tools for customer service representatives, teller management, transaction approvals, and account servicing.</p>
+                    </div>
+                    
+                    <div>
+                        <div class="auth-hero-security-card">
+                            <span class="material-symbols-outlined auth-hero-security-icon">badge</span>
                             <div>
-                                <h4 class="text-sm font-semibold text-white mb-1">Bank-grade Security</h4>
-                                <p class="text-xs text-white/70 leading-relaxed">Your assets are protected by 256-bit AES encryption protocols and robust continuous monitoring.</p>
+                                <h4 class="auth-hero-security-title">Strict Role-Based Auditing</h4>
+                                <p class="auth-hero-security-desc">All staff interactions are logged and audited in real time to uphold compliance with global financial regulations.</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="border-t border-white/20 pt-6">
-                        <p class="text-[11px] text-white/60 font-medium tracking-widest uppercase">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
+                        <div class="auth-hero-footer">
+                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right Side: Auth Container -->
-        <div class="w-full lg:w-[55%] flex flex-col justify-center items-center p-6 sm:p-12 relative bg-surface">
-            <!-- Language selector -->
-            <div class="absolute top-8 right-8 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
-                <span class="material-symbols-outlined text-[16px] text-gray-600">language</span>
-                <span class="text-xs font-semibold text-gray-700">EN</span>
-                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
-            </div>
-            
-            <div class="w-full max-w-[400px]">
-                <!-- Mobile Logo -->
-                <div class="lg:hidden flex items-center justify-center w-12 h-12 bg-primary/5 border border-primary/10 rounded-xl text-primary mb-8 cursor-pointer" onclick="window.location.href='/Finzo/public/index.html'">
-                    <span class="material-symbols-outlined text-2xl">account_balance</span>
+            <!-- Right Side: Auth Component Container -->
+            <div class="auth-right-area">
+                <!-- Language Selector -->
+                <div class="auth-lang-selector" aria-label="Select Language">
+                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span>EN</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
-                <div class="mb-8 text-center lg:text-left">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Staff Portal</h1>
-                    <p class="text-sm text-gray-500">Branch operations and customer management.</p>
-                </div>
+                <div class="auth-card-container">
+                    <!-- Mobile Logo -->
+                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                        <span class="material-symbols-outlined text-2xl">account_balance</span>
+                    </a>
+                    
+                    <!-- Page Header Component -->
+                    <div class="auth-page-header">
+                        <h1 class="auth-page-title">Staff Portal</h1>
+                        <p class="auth-page-subtitle">Internal portal for authorized bank personnel.</p>
+                    </div>
 
-                
-        <div class="flex rounded-md bg-gray-50 border border-gray-200 p-1 mb-8">
-            <a href="login.html" class="flex-1 text-center py-2 text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors">Customer</a>
-            <a href="staff-login.html" class="flex-1 text-center py-2 text-xs font-semibold bg-white shadow-sm rounded text-primary border border-gray-200">Staff</a>
-            <a href="admin-login.html" class="flex-1 text-center py-2 text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
-        </div>
-        <form action="#" method="POST">
-            <div class="mb-5">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Staff ID</label>
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">badge</span>
-                    <input type="text" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Enter Staff ID" required />
-                </div>
-            </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">lock</span>
-                    <input type="password" class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Enter password" required />
-                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px] cursor-pointer hover:text-primary">visibility</span>
-                </div>
-            </div>
-            <button type="submit" class="w-full bg-primary hover:bg-[#001b33] text-white py-3 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2">
-                <span>Access Dashboard</span>
-                <span class="material-symbols-outlined text-[18px]">login</span>
-            </button>
-        </form>
-        
+                    <!-- Role Switcher Component -->
+                    <div class="auth-role-switcher" role="tablist" aria-label="Select Authentication Role">
+                        <a href="login.html" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
+                        <a href="staff-login.html" class="auth-role-tab active" role="tab" aria-selected="true">Staff</a>
+                        <a href="admin-login.html" class="auth-role-tab" role="tab" aria-selected="false">Admin</a>
+                    </div>
 
-                <!-- Global footer for trust -->
-                <div class="mt-12 pt-6 border-t border-gray-100 flex flex-wrap justify-center gap-6 text-gray-400 text-xs">
-                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">enhanced_encryption</span> 256-bit Encryption</span>
-                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">gpp_good</span> Privacy Protected</span>
+                    <!-- Staff Form Component -->
+                    <form action="#" method="POST" novalidate>
+                        <!-- Staff ID Input Component -->
+                        <div class="fin-input-container">
+                            <label for="staff-id" class="fin-label fin-label-required">Staff ID</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">badge</span>
+                                <input type="text" id="staff-id" name="staff_id" class="fin-input has-icon-left" placeholder="e.g. STF-84920" required autocomplete="username" />
+                            </div>
+                            <span class="fin-error-text" style="display:none;" role="alert">
+                                <span class="material-symbols-outlined">error</span> Staff ID is required.
+                            </span>
+                        </div>
+
+                        <!-- Password Input Component -->
+                        <div class="fin-input-container">
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="staff-password" class="fin-label fin-label-required">Password</label>
+                                <a href="forgot-password.html" class="btn-text">Reset Password</a>
+                            </div>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <input type="password" id="staff-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter password" required autocomplete="current-password" />
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                            <span class="fin-error-text" style="display:none;" role="alert">
+                                <span class="material-symbols-outlined">error</span> Password is required.
+                            </span>
+                        </div>
+
+                        <!-- Submit Button Component -->
+                        <button type="submit" class="btn btn-primary btn-full mt-2">
+                            <span>Access Dashboard</span>
+                            <span class="material-symbols-outlined text-[18px]">login</span>
+                        </button>
+                    </form>
+
+                    <!-- Security Notice Component -->
+                    <div class="auth-security-notice">
+                        <span class="material-symbols-outlined auth-security-notice-icon">lock</span>
+                        <div class="auth-security-notice-text">
+                            <strong>Internal Operations:</strong> Access restricted to authorized Finzo personnel. Unauthorized access attempts are monitored and reported.
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges Component -->
+                    <div class="trust-badge-group">
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> Encrypted Connection</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">verified_user</span> Dual-Factor MFA</span>
+                    </div>
+
+                    <!-- Global Footer Component -->
+                    <div class="auth-global-footer">
+                        <ul class="auth-footer-links">
+                            <li><a href="#" class="auth-footer-link">Internal Policy</a></li>
+                            <li><a href="#" class="auth-footer-link">IT Helpdesk</a></li>
+                            <li><a href="#" class="auth-footer-link">Compliance Office</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
-    <script>
-        document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
-            if (icon.textContent === 'visibility') {
-                icon.addEventListener('click', function() {
-                    const input = this.previousElementSibling;
-                    if(input && input.type === 'password') {
-                        input.type = 'text';
-                        this.textContent = 'visibility_off';
-                        this.classList.add('text-primary');
-                    } else if (input) {
-                        input.type = 'password';
-                        this.textContent = 'visibility';
-                        this.classList.remove('text-primary');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
