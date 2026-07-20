@@ -1,158 +1,248 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en">
-
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="Finzo Enterprise Banking - Establish Account Application" />
     <title>Finzo | Establish Account</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-    <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
-  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    </head>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002645",
+                        "surface": "#ffffff",
+                        "on-surface": "#1a1c1e"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/forms.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/buttons.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/cards.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/components/badges.css" />
+    <link rel="stylesheet" href="/Finzo/public/assets/css/layouts/auth.css" />
 
-<body class="bg-background font-body text-[var(--color-text-main)] antialiased">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        <div class="hidden md:flex md:w-1/2 p-8 sm:p-12 lg:p-16 flex-col justify-between relative overflow-hidden" style="background: linear-gradient(135deg, rgba(10,20,40,0.88) 0%, rgba(26,60,94,0.75) 100%);">
-            <div class="relative z-10">
-                <h1 class="font-headline text-3xl lg:text-4xl font-extrabold tracking-tighter text-white mb-4 cursor-pointer"
-                    data-href="/Finzo/public/index.html">Finzo</h1>
-                <div class="h-1 w-12 bg-accent"></div>
-            </div>
-            <div class="relative z-10 max-w-lg">
-                <p class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 sm:mb-6">Simple. Secure. Banking.</p>
-                <p class="text-white/80 text-base lg:text-lg mb-8 sm:mb-12">Register in seconds and complete
-                    your profile to unlock full
-                    banking features.</p>
-
-                <div class="space-y-4 sm:space-y-6">
-                    <div class="flex items-center gap-3 sm:gap-4 text-white/90">
-                        <span class="material-symbols-outlined text-accent">check_circle</span>
-                        <span class="text-sm font-medium">Encrypted Sessions + Hashed Passwords</span>
+    <script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>
+</head>
+<body class="bg-gray-50 font-body text-on-surface">
+    <main class="auth-page-wrapper">
+        <div class="auth-split-grid">
+            <!-- Left Side: Hero Illustration & Security Banner -->
+            <div class="auth-left-panel">
+                <img src="/Finzo/public/assets/images/register-page-image.png" alt="Registration Illustration" class="auth-hero-img-bg" />
+                <img src="/Finzo/public/assets/images/register-page-image.png" alt="Registration Illustration" class="auth-hero-img-secondary" />
+                <div class="auth-hero-overlay"></div>
+                
+                <div class="auth-hero-content">
+                    <div>
+                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                            <div class="auth-brand-icon-box">
+                                <span class="material-symbols-outlined text-2xl">account_balance</span>
+                            </div>
+                            <span class="auth-brand-name">Finzo</span>
+                        </a>
+                        <h2 class="auth-hero-headline">Secure Online Banking Application</h2>
+                        <p class="auth-hero-subtitle">Open your enterprise account in minutes. Enjoy intelligent asset management, zero maintenance fees, and instant global wire capabilities.</p>
+                    </div>
+                    
+                    <div>
+                        <div class="auth-hero-security-card">
+                            <span class="material-symbols-outlined auth-hero-security-icon">encrypted</span>
+                            <div>
+                                <h4 class="auth-hero-security-title">End-to-End Encryption</h4>
+                                <p class="auth-hero-security-desc">Your sensitive personal and financial data is transmitted through encrypted TLS channels compliant with international banking standards.</p>
+                            </div>
+                        </div>
+                        <div class="auth-hero-footer">
+                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="relative z-10 flex gap-3 sm:gap-4 text-white/40 text-[10px] sm:text-xs font-headline tracking-widest uppercase">
-                <span>01 RELIABLE </span>
-                <span>02 SECURE</span>
-                <span>03 TRANSPARENT</span>
-            </div>
-            <div class="absolute inset-0 pointer-events-none z-0">
-                <img alt="Modern Architecture" class="w-full h-full object-cover brightness-[0.4] contrast-[1.2]"
-                    src="/Finzo/public/assets/images/register-page-image.png" loading="lazy" />
-                <div class="absolute inset-0 bg-primary-600/40 mix-blend-multiply"></div>
-            </div>
-        </div>
-        <div class="flex-1 flex items-center justify-center px-5 py-8 sm:p-8 md:p-12 lg:p-24 bg-background">
-            <div class="w-full max-w-md">
 
-                <!-- Mobile Branding -->
-                <div class="md:hidden flex items-center justify-center gap-2 mb-6">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600/10">
-                        <span class="material-symbols-outlined text-primary-600 text-lg">account_balance</span>
+            <!-- Right Side: Auth Component Container -->
+            <div class="auth-right-area">
+                <!-- Language Selector -->
+                <div class="auth-lang-selector" aria-label="Select Language">
+                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span>EN</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                </div>
+                
+                <div class="auth-card-container">
+                    <!-- Mobile Logo -->
+                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                        <span class="material-symbols-outlined text-2xl">account_balance</span>
+                    </a>
+                    
+                    <!-- Page Header Component -->
+                    <div class="auth-page-header">
+                        <h1 class="auth-page-title">Establish Account</h1>
+                        <p class="auth-page-subtitle">Begin your secure enterprise application process.</p>
                     </div>
-                    <span class="text-xl font-black tracking-tighter text-primary-600 font-headline">Finzo</span>
-                </div>
 
-                <div class="mb-8 sm:mb-10 lg:mb-12">
-                    <h2 class="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-primary-600">Create Your Account</h2>
-                    <p class="text-[var(--color-text-muted)] font-medium text-sm mt-2">Create your secure online banking account to begin managing your finances.</p>
-                </div>
-
-                <!-- Institutional Error Banner -->
-                <div id="auth-error-banner" class="error-banner">
-                    <div class="glass-error p-3 sm:p-4 rounded-xl flex items-start sm:items-center gap-3">
-                        <span class="material-symbols-outlined text-error text-xl shrink-0 mt-0.5 sm:mt-0">warning</span>
-                        <span class="text-xs font-bold text-error uppercase tracking-wider">Registration incomplete.
-                            Please ensure all architectural fields are precisely configured.</span>
-                    </div>
-                </div>
-                <form class="w-full space-y-5" action="#"  id="register-form" method="POST" novalidate>
-                    <input name="csrf_token" type="hidden" value="static_placeholder_token" />
-
-                    <div class="space-y-3 sm:space-y-4">
-                        <div class="fin-input-container">
-                            <label for="full-name" class="field-label ml-1">Full Name</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined input-icon">person</span>
-                                <input class="fin-input has-icon-left" id="full-name" placeholder="Sujay Paul" type="text" />
-                            </div>
-                        </div>
-                        <div class="fin-input-container">
-                            <label for="email" class="field-label ml-1">Email Address</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined input-icon">mail</span>
-                                <input class="fin-input has-icon-left" id="email" placeholder="sujaypaul123@gmail.com" type="email" />
-                            </div>
-                        </div>
-                        <div class="fin-input-container">
-                            <label for="phone" class="field-label ml-1">Phone Number</label>
-                            <div class="relative flex items-center border-[1.5px] border-slate-200 bg-[var(--color-surface-subtle)] rounded-xl focus-within:border-primary-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all">
-                                <span class="material-symbols-outlined input-icon !static !transform-none ml-4 mr-2">call</span>
-                                <span class="text-sm font-bold text-primary-600 mr-1">+91</span>
-                                <input class="w-full bg-transparent border-none focus:ring-0 text-[var(--color-text-main)] text-[14px] font-medium h-[52px] sm:h-[56px] px-2 outline-none" id="phone" placeholder="00000-00000" type="tel" />
-                            </div>
-                        </div>
-
-                        <div class="fin-input-container">
-                            <label for="password" class="field-label ml-1">Password</label>
-                            <div class="relative group">
-                                <span class="material-symbols-outlined input-icon">lock</span>
-                                <input class="fin-input has-icon-left" id="password" placeholder="••••••••••••" type="password" />
-                                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors" id="toggle-password" type="button">
-                                    <span class="material-symbols-outlined text-xl">visibility</span>
-                                </button>
-                            </div>
-                            <!-- Strength Indicator -->
-                            <div class="h-1 w-full bg-slate-100 rounded-full mt-2 overflow-hidden flex transition-all duration-500 opacity-0" id="password-strength-bar">
-                                <div class="h-full w-0 transition-all duration-500" id="strength-fill"></div>
-                            </div>
-                            <p id="password-strength-text" class="text-[9px] font-bold mt-1 ml-1 mb-3 uppercase tracking-widest transition-all duration-300 opacity-0"></p>
+                    <!-- Registration Form Component -->
+                    <form action="#" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="" />
+                        
+                        <!-- Section 1: Personal Details -->
+                        <div class="mb-4 border-b border-gray-100 pb-2">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">1. Personal Information</h3>
                         </div>
                         
                         <div class="fin-input-container">
-                            <label for="confirm-password" class="field-label ml-1">Confirm Password</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined input-icon">lock</span>
-                                <input class="fin-input has-icon-left" id="confirm-password" placeholder="••••••••••••" type="password" />
+                            <label for="full-name" class="fin-label fin-label-required">Full Legal Name</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">person</span>
+                                <input type="text" id="full-name" name="full_name" class="fin-input has-icon-left" placeholder="As stated on government ID" required autocomplete="name" />
                             </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Full name is required.
+                            </span>
+                        </div>
+
+                        <!-- Section 2: Contact Details -->
+                        <div class="mb-4 border-b border-gray-100 pb-2 mt-6">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">2. Contact Details</h3>
+                        </div>
+
+                        <div class="fin-input-container">
+                            <label for="reg-email" class="fin-label fin-label-required">Email Address</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">mail</span>
+                                <input type="email" id="reg-email" name="email" class="fin-input has-icon-left" placeholder="name@example.com" required autocomplete="email" />
+                            </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Valid email address is required.
+                            </span>
+                        </div>
+
+                        <div class="fin-input-container">
+                            <label for="mobile-number" class="fin-label fin-label-required">Mobile Number</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">call</span>
+                                <input type="tel" id="mobile-number" name="phone" class="fin-input has-icon-left" placeholder="+91 98765 43210" required autocomplete="tel" />
+                            </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Mobile number is required.
+                            </span>
+                        </div>
+
+                        <!-- Section 3: Password & Security -->
+                        <div class="mb-4 border-b border-gray-100 pb-2 mt-6">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">3. Security Credentials</h3>
+                        </div>
+
+                        <div class="fin-input-container">
+                            <label for="create-password" class="fin-label fin-label-required">Create Password</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <input type="password" id="create-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Minimum 8 characters" required autocomplete="new-password" data-strength-meter="true" />
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Password Strength Component -->
+                            <div class="fin-password-strength">
+                                <div class="strength-bar-track">
+                                    <div class="strength-bar-fill"></div>
+                                </div>
+                                <div class="strength-info">
+                                    <span class="strength-label">Password Strength</span>
+                                    <span>Enterprise Standard</span>
+                                </div>
+                                <div class="requirement-checklist">
+                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined">cancel</span> 8+ Characters</span>
+                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined">cancel</span> Uppercase Letter</span>
+                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined">cancel</span> Number (0-9)</span>
+                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined">cancel</span> Symbol (!@#$)</span>
+                                </div>
+                            </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Password is required.
+                            </span>
+                        </div>
+
+                        <div class="fin-input-container">
+                            <label for="reg-confirm-password" class="fin-label fin-label-required">Confirm Password</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                <input type="password" id="reg-confirm-password" name="confirm_password" class="fin-input has-icon-left has-icon-right" placeholder="Confirm password" required autocomplete="new-password" />
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Passwords must match.
+                            </span>
+                        </div>
+
+                        <!-- Terms & Conditions Checkbox -->
+                        <div class="my-6">
+                            <label class="fin-checkbox-wrapper">
+                                <input type="checkbox" id="agree-terms" name="terms" class="fin-checkbox-input" required />
+                                <span class="fin-checkbox-label">
+                                    I agree to Finzo Banking's <a href="#" class="font-semibold text-primary hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-primary hover:underline">Privacy Policy</a>.
+                                </span>
+                            </label>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> You must accept the Terms and Privacy Policy.
+                            </span>
+                        </div>
+
+                        <!-- Submit Button Component -->
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <span>Submit Application</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </button>
+                    </form>
+
+                    <!-- Page Footer Link -->
+                    <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-6">
+                        Already have an account? <a href="login.html" class="font-semibold text-primary hover:underline">Sign In</a>
+                    </div>
+
+                    <!-- Security Notice Component -->
+                    <div class="auth-security-notice">
+                        <span class="material-symbols-outlined auth-security-notice-icon">verified</span>
+                        <div class="auth-security-notice-text">
+                            <strong>Identity Verification:</strong> We will verify your credentials using official records. Your information is never sold or shared with unauthorized third parties.
                         </div>
                     </div>
-                    
-                    <div id="error-box" class="error-msg text-center font-bold"></div>
-                    
-                    <div class="pt-3 sm:pt-4">
-                        <button class="btn btn-primary w-full" id="register-btn" type="submit">
-                            <span>Create Account</span>
-                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
-                        </button>
+
+                    <!-- Trust Badges Component -->
+                    <div class="trust-badge-group">
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
-                </form>
-<div class="mt-4 text-center text-xs text-slate-500 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[14px]">verified_user</span> We protect your personal information using industry-standard security practices.</div>
-                <div class="mt-6 sm:mt-8 text-center">
-                    <span class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-muted)]">Already have an account?</span>
-                    <a href="login.html" class="text-[12px] sm:text-[13px] font-bold text-primary-600 hover:text-accent transition-colors ml-1">Sign In</a>
+
+                    <!-- Global Footer Component -->
+                    <div class="auth-global-footer">
+                        <ul class="auth-footer-links">
+                            <li><a href="#" class="auth-footer-link">Privacy Policy</a></li>
+                            <li><a href="#" class="auth-footer-link">Terms of Service</a></li>
+                            <li><a href="#" class="auth-footer-link">Security Center</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/Finzo/public/assets/js/public/public-shared.js"></script>
-
-    
-<script src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script src="/Finzo/public/assets/js/core/api.js"></script>
+    </main>
 </body>
-
 </html>

@@ -5,35 +5,35 @@ tailwind.config = {
       colors: {
         // Core Brand Colors
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7', // Base Primary
-          700: '#0369a1', // Primary Hover
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#f4f7f9',
+          100: '#e1e5e9',
+          200: '#d1d9e0',
+          300: '#b0b8c1',
+          400: '#6e7a87',
+          500: '#4a5560',
+          600: '#0A2540', // Base Primary
+          700: '#061A2D', // Primary Hover
+          800: '#03101C',
+          900: '#01080e',
         },
         // Semantic Colors
-        success: { base: '#10b981', hover: '#059669', surface: '#d1fae5', text: '#065f46' },
-        warning: { base: '#f59e0b', hover: '#d97706', surface: '#fef3c7', text: '#92400e' },
-        danger: { base: '#ef4444', hover: '#dc2626', surface: '#fee2e2', text: '#991b1b' },
-        info: { base: '#3b82f6', hover: '#2563eb', surface: '#dbeafe', text: '#1e40af' },
+        success: { base: '#0E793C', hover: '#0B6331', surface: '#E8F5E9', text: '#084823' },
+        warning: { base: '#B97200', hover: '#975D00', surface: '#FFF8E1', text: '#754800' },
+        danger: { base: '#C62828', hover: '#A32121', surface: '#FFEBEE', text: '#7E1919' },
+        info: { base: '#185ABB', hover: '#134A99', surface: '#E3F2FD', text: '#0E3773' },
         // Surface & Backgrounds
         surface: {
           light: '#ffffff',
           dark: '#1e293b',
-          subtle: '#f8fafc',
-          hover: '#f1f5f9',
-          border: '#e2e8f0',
+          subtle: '#F4F7F9',
+          hover: '#E6E9EC',
+          border: '#D1D9E0',
         },
         // Typography
         text: {
-          main: '#0f172a',
-          muted: '#64748b',
-          disabled: '#94a3b8',
+          main: '#111820',
+          muted: '#6E7A87',
+          disabled: '#A0AAB4',
           inverse: '#ffffff'
         }
       },
@@ -55,12 +55,12 @@ tailwind.config = {
         '3xl': '64px',
       },
       boxShadow: {
-        'soft-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'soft-md': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-        'soft-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
-        'soft-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
-        'focus-ring': '0 0 0 4px rgba(2, 132, 199, 0.15)',
-        'dropdown': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+        'soft-sm': '0 1px 2px 0 rgba(10, 37, 64, 0.04)',
+        'soft-md': '0 4px 12px rgba(10, 37, 64, 0.05), 0 1px 3px rgba(10, 37, 64, 0.03)',
+        'soft-lg': '0 10px 20px rgba(10, 37, 64, 0.08), 0 4px 6px rgba(10, 37, 64, 0.04)',
+        'soft-xl': '0 20px 30px rgba(10, 37, 64, 0.1)',
+        'focus-ring': '0 0 0 3px rgba(10, 37, 64, 0.2)',
+        'dropdown': '0 10px 25px -5px rgba(10, 37, 64, 0.1), 0 8px 10px -6px rgba(10, 37, 64, 0.1)',
       },
       borderRadius: {
         'sm': '4px',
