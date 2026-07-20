@@ -2,7 +2,7 @@
  * Finzo Enterprise Authentication Component System JavaScript
  * Handles password visibility toggling, password strength meter,
  * 6-digit OTP auto-advance/paste, real-time error recovery, feedback toasts,
- * form validation, micro-interactions, and accessibility.
+ * form validation, micro-interactions, CSRF integration, and accessibility.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,7 +40,11 @@ function initCsrfToken() {
     const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
     if (csrfInputs.length === 0) return;
 
-    fetch('/Finzo/public/api/csrf-token')
+    const endpoint = window.location.pathname.includes('/Finzo/') 
+        ? '/Finzo/public/api/auth/get-csrf-token.php' 
+        : '/api/auth/get-csrf-token.php';
+
+    fetch(endpoint)
         .then(res => res.json())
         .then(data => {
             if (data && data.csrf_token) {
