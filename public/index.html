@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo — Enterprise-grade online banking platform offering secure, reliable, and modern financial services." />
+    <meta name="description"
+        content="Finzo — Enterprise-grade online banking platform offering secure, reliable, and modern financial services." />
     <title>Finzo | Enterprise Digital Banking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
@@ -41,27 +46,91 @@
     <meta http-equiv="Expires" content="0">
 
     <style>
-        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .mobile-menu-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
-            z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 90;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
         }
-        .mobile-menu-overlay.active { opacity: 1; pointer-events: all; }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
         .mobile-menu-drawer {
-            position: fixed; top: 0; right: 0; width: min(320px, 85vw); height: 100%;
-            background: #ffffff; z-index: 100; transform: translateX(100%);
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(320px, 85vw);
+            height: 100%;
+            background: #ffffff;
+            z-index: 100;
+            transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08); overflow-y: auto;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
         }
-        .mobile-menu-drawer.active { transform: translateX(0); }
-        .trust-banner { border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; background-color: #fafafa; }
-        .enterprise-card { border: 1px solid #e5e7eb; background: #ffffff; transition: box-shadow 0.2s ease, border-color 0.2s ease; }
-        .enterprise-card:hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #002645; transition: width 0.3s ease; }
-        .nav-link-active { color: #002645 !important; font-weight: 600; }
-        .nav-link-active::after { width: 100%; }
-        @media (max-width: 1023px) { .hero-image-wrapper { max-width: 500px; margin: 0 auto; } }
+
+        .mobile-menu-drawer.active {
+            transform: translateX(0);
+        }
+
+        .trust-banner {
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #fafafa;
+        }
+
+        .enterprise-card {
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .enterprise-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #002645;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-active {
+            color: #002645 !important;
+            font-weight: 600;
+        }
+
+        .nav-link-active::after {
+            width: 100%;
+        }
+
+        @media (max-width: 1023px) {
+            .hero-image-wrapper {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
     </style>
 </head>
 
@@ -69,25 +138,38 @@
     <!-- Top Navigation -->
     <header class="fixed top-0 w-full z-50 bg-white border-b border-gray-200">
         <nav class="flex justify-between items-center px-6 lg:px-12 h-20">
-        <div class="flex items-center gap-10">
-            <span class="text-2xl font-bold text-primary tracking-tight">Finzo</span>
-            <div class="hidden lg:flex items-center gap-8">
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#home">Home</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#services">Services</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#features">Features</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#security">Security</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#about">About</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#support">Support</a>
-                <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors" href="#contact">Contact</a>
+            <div class="flex items-center gap-10">
+                <span class="text-2xl font-bold text-primary tracking-tight">Finzo</span>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#home">Home</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#services">Services</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#features">Features</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#security">Security</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#about">About</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#support">Support</a>
+                    <a class="nav-link text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                        href="#contact">Contact</a>
+                </div>
             </div>
-        </div>
-        <div class="flex items-center gap-6">
-            <a href="/Finzo/resources/views/auth/login.html" class="hidden sm:inline-block text-sm font-medium text-gray-700 hover:text-primary transition-colors">Log In</a>
-            <a href="/Finzo/resources/views/auth/register.html" class="hidden sm:inline-block bg-primary text-white px-6 py-2.5 text-sm font-medium rounded hover:bg-primary/90 transition-colors">Open Account</a>
-            <button id="mobile-hamburger" class="lg:hidden flex items-center justify-center w-10 h-10 text-gray-700 hover:bg-gray-100 rounded" aria-label="Open menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-        </div>
+            <div class="flex items-center gap-6">
+                <a href="/Finzo/resources/views/auth/login.html"
+                    class="hidden sm:inline-block text-sm font-medium text-gray-700 hover:text-primary transition-colors">Log
+                    In</a>
+                <a href="/Finzo/resources/views/auth/register.html"
+                    class="hidden sm:inline-block bg-primary text-white px-6 py-2.5 text-sm font-medium rounded hover:bg-primary/90 transition-colors">Open
+                    Account</a>
+                <button id="mobile-hamburger"
+                    class="lg:hidden flex items-center justify-center w-10 h-10 text-gray-700 hover:bg-gray-100 rounded"
+                    aria-label="Open menu">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -110,8 +192,12 @@
             <a class="text-gray-700 font-medium text-base hover:text-primary" href="#contact">Contact</a>
         </nav>
         <div class="mt-auto p-6 border-t border-gray-200 flex flex-col gap-4">
-            <a href="/Finzo/resources/views/auth/login.html" class="w-full py-3 text-center text-sm font-medium text-primary border border-primary rounded hover:bg-gray-50">Log In</a>
-            <a href="/Finzo/resources/views/auth/register.html" class="w-full py-3 text-center bg-primary text-sm text-white font-medium rounded hover:bg-primary/90">Open Account</a>
+            <a href="/Finzo/resources/views/auth/login.html"
+                class="w-full py-3 text-center text-sm font-medium text-primary border border-primary rounded hover:bg-gray-50">Log
+                In</a>
+            <a href="/Finzo/resources/views/auth/register.html"
+                class="w-full py-3 text-center bg-primary text-sm text-white font-medium rounded hover:bg-primary/90">Open
+                Account</a>
         </div>
     </div>
 
@@ -120,24 +206,31 @@
         <section id="home" class="pt-4 pb-16 md:pt-6 md:pb-24 lg:pt-8 lg:pb-32 bg-white">
             <div class="container mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                 <div class="max-w-2xl">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-[1.1] tracking-tight mb-6">
+                    <h1
+                        class="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-[1.1] tracking-tight mb-6">
                         Secure digital banking for the modern economy.
                     </h1>
                     <p class="text-lg text-gray-600 leading-relaxed mb-10 max-w-xl">
-                        Experience reliable, real-time financial control. Our enterprise-grade platform provides seamless transactions, comprehensive account management, and uncompromising security.
+                        Experience reliable, real-time financial control. Our enterprise-grade platform provides
+                        seamless transactions, comprehensive account management, and uncompromising security.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/Finzo/resources/views/auth/register.html" class="bg-primary text-white px-8 py-3.5 text-base font-medium rounded text-center hover:bg-primary/90 transition-colors">
+                        <a href="/Finzo/resources/views/auth/register.html"
+                            class="bg-primary text-white px-8 py-3.5 text-base font-medium rounded text-center hover:bg-primary/90 transition-colors">
                             Open an Account
                         </a>
-                        <a href="#services" class="bg-white text-primary border border-gray-300 px-8 py-3.5 text-base font-medium rounded text-center hover:bg-gray-50 transition-colors">
+                        <a href="#services"
+                            class="bg-white text-primary border border-gray-300 px-8 py-3.5 text-base font-medium rounded text-center hover:bg-gray-50 transition-colors">
                             Explore Services
                         </a>
                     </div>
                 </div>
                 <div class="hero-image-wrapper w-full">
-                    <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-gray-50 aspect-[4/3] flex items-center justify-center">
-                        <img alt="Enterprise Banking Interface" class="w-full h-full object-cover opacity-90" src="assets/images/landing-dashboard.jpg" loading="eager" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-gray-400 font-medium\'>Banking Interface Preview</span>'" />
+                    <div
+                        class="border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-gray-50 aspect-[4/3] flex items-center justify-center">
+                        <img alt="Enterprise Banking Interface" class="w-full h-full object-cover opacity-90"
+                            src="assets/images/landing-dashboard.jpg" loading="eager"
+                            onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-gray-400 font-medium\'>Banking Interface Preview</span>'" />
                     </div>
                 </div>
             </div>
@@ -146,7 +239,8 @@
         <!-- Trust Indicators -->
         <section class="trust-banner py-6 sm:py-8">
             <div class="container mx-auto px-6 lg:px-12">
-                <div class="flex flex-wrap justify-center sm:justify-between items-center gap-6 text-sm font-medium text-gray-500">
+                <div
+                    class="flex flex-wrap justify-center sm:justify-between items-center gap-6 text-sm font-medium text-gray-500">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-[20px]">lock</span>
                         <span>256-bit Encryption</span>
@@ -176,38 +270,45 @@
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="mb-16 max-w-3xl">
                     <h2 class="text-3xl font-bold text-primary mb-4 tracking-tight">Comprehensive Banking Services</h2>
-                    <p class="text-gray-600 text-lg leading-relaxed">Everything you need to manage your finances securely in one unified digital platform.</p>
+                    <p class="text-gray-600 text-lg leading-relaxed">Everything you need to manage your finances
+                        securely in one unified digital platform.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">account_balance_wallet</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Current Accounts</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Everyday banking designed for efficiency. Manage deposits, track spending, and process daily transactions effortlessly.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Everyday banking designed for efficiency.
+                            Manage deposits, track spending, and process daily transactions effortlessly.</p>
                     </div>
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">savings</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Savings Accounts</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Secure your future with competitive interest rates. Automated monthly interest calculations credited directly to your balance.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Secure your future with competitive interest
+                            rates. Automated monthly interest calculations credited directly to your balance.</p>
                     </div>
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">sync_alt</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Instant Transfers</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Move funds globally with confidence. Our ACID-compliant transaction architecture ensures safe, immediate money transfers.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Move funds globally with confidence. Our
+                            ACID-compliant transaction architecture ensures safe, immediate money transfers.</p>
                     </div>
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">receipt_long</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Transaction History</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Maintain complete oversight with infinite transaction logs, detailed categorization, and immediate PDF statement generation.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Maintain complete oversight with infinite
+                            transaction logs, detailed categorization, and immediate PDF statement generation.</p>
                     </div>
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">credit_card</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Card Management</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Control your debit and credit limits, freeze or unfreeze cards instantly, and monitor real-time card authorization requests.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Control your debit and credit limits, freeze or
+                            unfreeze cards instantly, and monitor real-time card authorization requests.</p>
                     </div>
                     <div class="enterprise-card p-8 rounded-lg">
                         <span class="material-symbols-outlined text-primary text-3xl mb-5">groups</span>
                         <h3 class="text-xl font-semibold text-primary mb-3">Beneficiary Management</h3>
-                        <p class="text-gray-600 leading-relaxed text-sm">Save and verify recipient details for faster future transactions. Robust validation prevents routing errors.</p>
+                        <p class="text-gray-600 leading-relaxed text-sm">Save and verify recipient details for faster
+                            future transactions. Robust validation prevents routing errors.</p>
                     </div>
                 </div>
             </div>
@@ -218,27 +319,32 @@
             <div class="container mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div>
                     <h2 class="text-3xl font-bold text-primary mb-6 tracking-tight">Why Choose Finzo</h2>
-                    <p class="text-gray-600 text-lg leading-relaxed mb-8">We combine modern financial infrastructure with uncompromising security, offering an enterprise-level banking experience accessible to everyone.</p>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">We combine modern financial infrastructure
+                        with uncompromising security, offering an enterprise-level banking experience accessible to
+                        everyone.</p>
                     <ul class="space-y-4">
                         <li class="flex items-start gap-3">
                             <span class="material-symbols-outlined text-primary mt-0.5">check_circle</span>
                             <div>
                                 <strong class="text-primary block text-sm">Absolute Reliability</strong>
-                                <span class="text-gray-600 text-sm">Our core systems are engineered for maximum uptime and stability.</span>
+                                <span class="text-gray-600 text-sm">Our core systems are engineered for maximum uptime
+                                    and stability.</span>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
                             <span class="material-symbols-outlined text-primary mt-0.5">check_circle</span>
                             <div>
                                 <strong class="text-primary block text-sm">Scalable Architecture</strong>
-                                <span class="text-gray-600 text-sm">Built to handle high-volume transactions with zero latency.</span>
+                                <span class="text-gray-600 text-sm">Built to handle high-volume transactions with zero
+                                    latency.</span>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
                             <span class="material-symbols-outlined text-primary mt-0.5">check_circle</span>
                             <div>
                                 <strong class="text-primary block text-sm">Uncompromising Privacy</strong>
-                                <span class="text-gray-600 text-sm">Your financial data is strictly protected and never shared.</span>
+                                <span class="text-gray-600 text-sm">Your financial data is strictly protected and never
+                                    shared.</span>
                             </div>
                         </li>
                     </ul>
@@ -270,27 +376,31 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <h2 class="text-3xl font-bold mb-6 tracking-tight">Institutional-Grade Security</h2>
-                        <p class="text-gray-300 text-lg leading-relaxed mb-8">We employ strict cryptographic standards and continuous automated monitoring to protect your data and financial assets.</p>
+                        <p class="text-gray-300 text-lg leading-relaxed mb-8">We employ strict cryptographic standards
+                            and continuous automated monitoring to protect your data and financial assets.</p>
                         <div class="space-y-6">
                             <div class="flex items-start gap-4">
                                 <span class="material-symbols-outlined text-blue-300 mt-1">enhanced_encryption</span>
                                 <div>
                                     <h4 class="font-semibold text-white mb-1">End-to-End Encryption</h4>
-                                    <p class="text-gray-400 text-sm">All communications and stored credentials are fully encrypted using industry-standard protocols.</p>
+                                    <p class="text-gray-400 text-sm">All communications and stored credentials are fully
+                                        encrypted using industry-standard protocols.</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-4">
                                 <span class="material-symbols-outlined text-blue-300 mt-1">policy</span>
                                 <div>
                                     <h4 class="font-semibold text-white mb-1">Automated Fraud Defense</h4>
-                                    <p class="text-gray-400 text-sm">Intelligent rate-limiting, session management, and automated lockouts defend against unauthorized access.</p>
+                                    <p class="text-gray-400 text-sm">Intelligent rate-limiting, session management, and
+                                        automated lockouts defend against unauthorized access.</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-4">
                                 <span class="material-symbols-outlined text-blue-300 mt-1">gpp_good</span>
                                 <div>
                                     <h4 class="font-semibold text-white mb-1">Role-Based Access Control</h4>
-                                    <p class="text-gray-400 text-sm">Strict separation of privileges ensures data is only accessible to authorized personnel and the account owner.</p>
+                                    <p class="text-gray-400 text-sm">Strict separation of privileges ensures data is
+                                        only accessible to authorized personnel and the account owner.</p>
                                 </div>
                             </div>
                         </div>
@@ -298,10 +408,14 @@
                     <div class="bg-primary-container p-8 lg:p-12 rounded-lg border border-white/10">
                         <h3 class="text-xl font-semibold mb-6">Privacy Commitment</h3>
                         <p class="text-gray-300 text-sm leading-relaxed mb-6">
-                            Your financial privacy is our highest priority. We comply with global data protection regulations and adhere strictly to data minimization principles. We do not sell your transactional data to third-party marketers.
+                            Your financial privacy is our highest priority. We comply with global data protection
+                            regulations and adhere strictly to data minimization principles. We do not sell your
+                            transactional data to third-party marketers.
                         </p>
-                        <a href="javascript:void(0)" class="text-blue-300 text-sm font-medium hover:text-white transition-colors inline-flex items-center gap-2">
-                            Read our Security Policy <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        <a href="javascript:void(0)"
+                            class="text-blue-300 text-sm font-medium hover:text-white transition-colors inline-flex items-center gap-2">
+                            Read our Security Policy <span
+                                class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </a>
                     </div>
                 </div>
@@ -313,30 +427,34 @@
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="text-center max-w-3xl mx-auto mb-16">
                     <h2 class="text-3xl font-bold text-primary mb-4 tracking-tight">Modern Digital Banking</h2>
-                    <p class="text-gray-600 text-lg leading-relaxed">A refined interface designed for clarity. Execute transfers, analyze spending, and manage your wealth without friction.</p>
+                    <p class="text-gray-600 text-lg leading-relaxed">A refined interface designed for clarity. Execute
+                        transfers, analyze spending, and manage your wealth without friction.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="enterprise-card p-10 rounded-lg text-center flex flex-col items-center">
                         <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                             <span class="material-symbols-outlined text-primary text-2xl">monitoring</span>
                         </div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Real-Time Analytics</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Monitor your incoming deposits and outgoing expenses instantly as they happen.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">Monitor your incoming deposits and outgoing
+                            expenses instantly as they happen.</p>
                     </div>
                     <div class="enterprise-card p-10 rounded-lg text-center flex flex-col items-center">
                         <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                             <span class="material-symbols-outlined text-primary text-2xl">file_download</span>
                         </div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Official Statements</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Download official PDF bank statements with a single click for tax and auditing purposes.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">Download official PDF bank statements with a
+                            single click for tax and auditing purposes.</p>
                     </div>
                     <div class="enterprise-card p-10 rounded-lg text-center flex flex-col items-center">
                         <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                             <span class="material-symbols-outlined text-primary text-2xl">notifications_active</span>
                         </div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Account Alerts</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Configure precise notifications for large transactions, low balances, and security events.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">Configure precise notifications for large
+                            transactions, low balances, and security events.</p>
                     </div>
                 </div>
             </div>
@@ -349,21 +467,30 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                     <!-- Connector line (desktop) -->
                     <div class="hidden md:block absolute top-8 left-[16%] right-[16%] h-px bg-gray-300"></div>
-                    
+
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">1</div>
+                        <div
+                            class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">
+                            1</div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Create Profile</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Register your fundamental details and establish your secure login credentials.</p>
+                        <p class="text-gray-600 text-sm max-w-xs">Register your fundamental details and establish your
+                            secure login credentials.</p>
                     </div>
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">2</div>
+                        <div
+                            class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">
+                            2</div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Verify Identity</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Complete standard KYC verification by providing valid identification documents.</p>
+                        <p class="text-gray-600 text-sm max-w-xs">Complete standard KYC verification by providing valid
+                            identification documents.</p>
                     </div>
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">3</div>
+                        <div
+                            class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-sm ring-8 ring-gray-50">
+                            3</div>
                         <h3 class="text-lg font-semibold text-primary mb-3">Access Account</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Log in to the dashboard to begin depositing funds and managing your finances.</p>
+                        <p class="text-gray-600 text-sm max-w-xs">Log in to the dashboard to begin depositing funds and
+                            managing your finances.</p>
                     </div>
                 </div>
             </div>
@@ -376,33 +503,42 @@
                     <div class="enterprise-card p-6 rounded-lg">
                         <span class="material-symbols-outlined text-gray-500 mb-3">schedule</span>
                         <h4 class="font-semibold text-primary mb-2">Time Efficiency</h4>
-                        <p class="text-gray-600 text-sm">Process routine transactions online without visiting a physical branch.</p>
+                        <p class="text-gray-600 text-sm">Process routine transactions online without visiting a physical
+                            branch.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <span class="material-symbols-outlined text-gray-500 mb-3">public</span>
                         <h4 class="font-semibold text-primary mb-2">Global Access</h4>
-                        <p class="text-gray-600 text-sm">Manage your banking operations securely from anywhere in the world.</p>
+                        <p class="text-gray-600 text-sm">Manage your banking operations securely from anywhere in the
+                            world.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <span class="material-symbols-outlined text-gray-500 mb-3">insights</span>
                         <h4 class="font-semibold text-primary mb-2">Financial Transparency</h4>
-                        <p class="text-gray-600 text-sm">No hidden fees. View explicit breakdowns of all charges and interest yields.</p>
+                        <p class="text-gray-600 text-sm">No hidden fees. View explicit breakdowns of all charges and
+                            interest yields.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <span class="material-symbols-outlined text-gray-500 mb-3">headset_mic</span>
                         <h4 class="font-semibold text-primary mb-2">Dedicated Support</h4>
-                        <p class="text-gray-600 text-sm">Access professional banking assistance when resolving disputes or inquiries.</p>
+                        <p class="text-gray-600 text-sm">Access professional banking assistance when resolving disputes
+                            or inquiries.</p>
                     </div>
                 </div>
                 <div class="order-1 lg:order-2">
-                    <h2 class="text-3xl font-bold text-primary mb-6 tracking-tight">Designed for Control and Clarity</h2>
+                    <h2 class="text-3xl font-bold text-primary mb-6 tracking-tight">Designed for Control and Clarity
+                    </h2>
                     <p class="text-gray-600 text-lg leading-relaxed mb-6">
-                        Finzo removes the friction from modern banking. By replacing outdated legacy systems with a streamlined digital architecture, we provide our customers with unparalleled control over their capital.
+                        Finzo removes the friction from modern banking. By replacing outdated legacy systems with a
+                        streamlined digital architecture, we provide our customers with unparalleled control over their
+                        capital.
                     </p>
                     <p class="text-gray-600 text-lg leading-relaxed mb-8">
-                        Whether you are holding savings, executing high-volume transfers, or tracking monthly expenditures, our platform operates with absolute precision.
+                        Whether you are holding savings, executing high-volume transfers, or tracking monthly
+                        expenditures, our platform operates with absolute precision.
                     </p>
-                    <a href="/Finzo/resources/views/auth/register.html" class="text-primary font-semibold hover:text-primary/80 transition-colors inline-flex items-center gap-2">
+                    <a href="/Finzo/resources/views/auth/register.html"
+                        class="text-primary font-semibold hover:text-primary/80 transition-colors inline-flex items-center gap-2">
                         Open an account today <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                     </a>
                 </div>
@@ -412,27 +548,35 @@
         <!-- FAQ -->
         <section id="support" class="py-20 bg-gray-50 border-t border-gray-200">
             <div class="container mx-auto px-6 lg:px-12 max-w-4xl">
-                <h2 class="text-3xl font-bold text-primary mb-10 text-center tracking-tight">Frequently Asked Questions</h2>
+                <h2 class="text-3xl font-bold text-primary mb-10 text-center tracking-tight">Frequently Asked Questions
+                </h2>
                 <div class="space-y-4">
                     <div class="enterprise-card p-6 rounded-lg">
                         <h4 class="font-semibold text-primary mb-2">How do I open an account?</h4>
-                        <p class="text-gray-600 text-sm">Opening an account is seamless. Simply click "Open Account" in the navigation, provide your fundamental identity details, complete our rapid KYC verification, and access your dashboard immediately.</p>
+                        <p class="text-gray-600 text-sm">Opening an account is seamless. Simply click "Open Account" in
+                            the navigation, provide your fundamental identity details, complete our rapid KYC
+                            verification, and access your dashboard immediately.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <h4 class="font-semibold text-primary mb-2">Is my data secure with Finzo?</h4>
-                        <p class="text-gray-600 text-sm">Yes. We utilize AES-256 encryption for data at rest and TLS 1.3 for data in transit. All sensitive operations require secure session validation.</p>
+                        <p class="text-gray-600 text-sm">Yes. We utilize AES-256 encryption for data at rest and TLS 1.3
+                            for data in transit. All sensitive operations require secure session validation.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <h4 class="font-semibold text-primary mb-2">How quickly are transfers processed?</h4>
-                        <p class="text-gray-600 text-sm">Internal transfers between Finzo accounts are processed in real-time, executing immediately with absolute transactional consistency.</p>
+                        <p class="text-gray-600 text-sm">Internal transfers between Finzo accounts are processed in
+                            real-time, executing immediately with absolute transactional consistency.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <h4 class="font-semibold text-primary mb-2">How is interest calculated on savings accounts?</h4>
-                        <p class="text-gray-600 text-sm">Interest is calculated based on your average daily balance and automatically credited to your account at the end of every 30-day period.</p>
+                        <p class="text-gray-600 text-sm">Interest is calculated based on your average daily balance and
+                            automatically credited to your account at the end of every 30-day period.</p>
                     </div>
                     <div class="enterprise-card p-6 rounded-lg">
                         <h4 class="font-semibold text-primary mb-2">Can I access my account statements online?</h4>
-                        <p class="text-gray-600 text-sm">Absolutely. Full transaction histories are maintained indefinitely and can be exported as secure PDF documents from your dashboard at any time.</p>
+                        <p class="text-gray-600 text-sm">Absolutely. Full transaction histories are maintained
+                            indefinitely and can be exported as secure PDF documents from your dashboard at any time.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -442,19 +586,26 @@
         <section class="py-20 bg-white">
             <div class="container mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="order-2 lg:order-1 flex justify-center">
-                    <div class="w-full max-w-sm bg-gray-50 border border-gray-200 rounded-[2rem] p-4 shadow-sm aspect-[9/16] flex flex-col items-center justify-center relative overflow-hidden">
-                        <div class="absolute top-0 w-32 h-6 bg-white rounded-b-xl border-x border-b border-gray-200"></div>
+                    <div
+                        class="w-full max-w-sm bg-gray-50 border border-gray-200 rounded-[2rem] p-4 shadow-sm aspect-[9/16] flex flex-col items-center justify-center relative overflow-hidden">
+                        <div class="absolute top-0 w-32 h-6 bg-white rounded-b-xl border-x border-b border-gray-200">
+                        </div>
                         <span class="material-symbols-outlined text-gray-400 text-6xl mb-4">smartphone</span>
                         <span class="text-gray-500 font-medium">Finzo Mobile App</span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 mt-3 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100 uppercase tracking-wider">In Development</span>
+                        <span
+                            class="inline-flex items-center gap-1.5 px-3 py-1 mt-3 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100 uppercase tracking-wider">In
+                            Development</span>
                     </div>
                 </div>
                 <div class="order-1 lg:order-2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider mb-4 border border-gray-200">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider mb-4 border border-gray-200">
                         <span class="material-symbols-outlined text-[14px]">update</span> Upcoming Release
                     </div>
                     <h2 class="text-3xl font-bold text-primary mb-6 tracking-tight">The Future of Mobile Banking</h2>
-                    <p class="text-gray-600 text-lg leading-relaxed mb-8">We are actively engineering our next-generation native applications for iOS and Android. Soon, you will be able to manage your wealth securely from any device without compromise.</p>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">We are actively engineering our
+                        next-generation native applications for iOS and Android. Soon, you will be able to manage your
+                        wealth securely from any device without compromise.</p>
                     <ul class="space-y-4 mb-8">
                         <li class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
@@ -473,7 +624,8 @@
                             <span class="text-gray-700 text-sm">Fast Domestic Payments</span>
                         </li>
                     </ul>
-                    <div class="inline-flex items-center gap-3 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded text-sm font-medium text-gray-600">
+                    <div
+                        class="inline-flex items-center gap-3 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded text-sm font-medium text-gray-600">
                         <span class="material-symbols-outlined text-gray-400 text-[20px]">calendar_clock</span>
                         Scheduled for deployment in late 2026
                     </div>
@@ -489,7 +641,8 @@
                     Establish your secure Finzo profile today and take complete control of your financial operations.
                 </p>
                 <div class="flex justify-center">
-                    <a href="/Finzo/resources/views/auth/register.html" class="bg-primary text-white px-10 py-4 text-base font-semibold rounded hover:bg-primary/90 transition-colors shadow-sm">
+                    <a href="/Finzo/resources/views/auth/register.html"
+                        class="bg-primary text-white px-10 py-4 text-base font-semibold rounded hover:bg-primary/90 transition-colors shadow-sm">
                         Create Your Account
                     </a>
                 </div>
@@ -498,62 +651,266 @@
     </main>
 
     <!-- Enterprise Footer -->
-    <footer id="contact" class="bg-gray-50 border-t border-gray-200 py-12 md:py-16">
-        <div class="container mx-auto px-6 lg:px-12">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
-                <div class="lg:col-span-2">
-                    <span class="text-2xl font-bold text-primary block mb-4">Finzo</span>
-                    <p class="text-gray-500 text-sm leading-relaxed max-w-xs">
-                        A secure, enterprise-grade digital banking platform designed to provide reliable financial services to modern customers worldwide.
+    <footer id="contact" class="bg-[#00172D] pt-20 pb-10 relative overflow-hidden">
+        <!-- Background Gradient Glow -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none transform translate-x-1/3 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-800/10 rounded-full blur-[100px] pointer-events-none transform -translate-x-1/3 translate-y-1/2"></div>
+
+        <div class="container mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-10 lg:gap-12 mb-16">
+
+                <!-- Brand & Description -->
+                <div class="lg:col-span-2 flex flex-col items-start pr-4">
+                    <a href="#" class="inline-flex items-center gap-3 mb-6 group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] group-hover:scale-105 transition-all duration-300">
+                            <span class="material-symbols-outlined text-white text-[28px]">account_balance</span>
+                        </div>
+                        <span class="text-3xl font-bold text-white tracking-tight">Finzo</span>
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-xs mb-8">
+                        Delivering professional financial services with unwavering commitment to trust, uncompromising security, robust reliability, and complete data privacy.
                     </p>
+                    <div class="flex items-center gap-4">
+                        <a href="#" aria-label="X"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/20 hover:border-white/50 transition-all border border-white/10 group">
+                            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="LinkedIn"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0A66C2]/20 hover:border-[#0A66C2]/50 transition-all border border-white/10 group">
+                            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Facebook"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2]/20 hover:border-[#1877F2]/50 transition-all border border-white/10 group">
+                            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
+
+                <!-- Column 1 -->
                 <div>
-                    <h4 class="font-semibold text-primary mb-4 text-sm uppercase tracking-wider">Company</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#about" class="text-gray-500 hover:text-primary text-sm transition-colors">About Us</a></li>
-                        <li><a href="javascript:void(0)" class="text-gray-500 hover:text-primary text-sm transition-colors">Careers</a></li>
-                        <li><a href="#contact" class="text-gray-500 hover:text-primary text-sm transition-colors">Contact</a></li>
+                    <h4 class="font-bold text-white mb-6 text-sm uppercase tracking-widest relative inline-block">
+                        Company
+                        <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#about" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">About Us</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Careers</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contact" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Contact</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Press & Media</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Investor Relations</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
+                <!-- Column 2 -->
                 <div>
-                    <h4 class="font-semibold text-primary mb-4 text-sm uppercase tracking-wider">Banking</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#services" class="text-gray-500 hover:text-primary text-sm transition-colors">Accounts</a></li>
-                        <li><a href="#services" class="text-gray-500 hover:text-primary text-sm transition-colors">Transfers</a></li>
-                        <li><a href="#services" class="text-gray-500 hover:text-primary text-sm transition-colors">Services</a></li>
+                    <h4 class="font-bold text-white mb-6 text-sm uppercase tracking-widest relative inline-block">
+                        Banking
+                        <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#services" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Checking Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#services" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Savings Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#services" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Business Banking</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#services" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Cards & Lending</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#services" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Global Transfers</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
+                <!-- Column 3 -->
                 <div>
-                    <h4 class="font-semibold text-primary mb-4 text-sm uppercase tracking-wider">Support</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#support" class="text-gray-500 hover:text-primary text-sm transition-colors">Help Center</a></li>
-                        <li><a href="#support" class="text-gray-500 hover:text-primary text-sm transition-colors">FAQs</a></li>
-                        <li><a href="#contact" class="text-gray-500 hover:text-primary text-sm transition-colors">Customer Support</a></li>
+                    <h4 class="font-bold text-white mb-6 text-sm uppercase tracking-widest relative inline-block">
+                        Support
+                        <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#support" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Help Center</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contact" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Contact Support</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:support@finzo.com" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Email Support</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:+18005550199" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Phone Support</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#support" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">FAQs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Report Lost Card</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Branch Locator</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
+                <!-- Column 4 -->
                 <div>
-                    <h4 class="font-semibold text-primary mb-4 text-sm uppercase tracking-wider">Legal</h4>
-                    <ul class="space-y-3">
-                        <li><a href="/Finzo/resources/views/components/privacy-policy.php" class="text-gray-500 hover:text-primary text-sm transition-colors">Privacy Policy</a></li>
-                        <li><a href="/Finzo/resources/views/components/terms-of-service.php" class="text-gray-500 hover:text-primary text-sm transition-colors">Terms of Service</a></li>
-                        <li><a href="javascript:void(0)" class="text-gray-500 hover:text-primary text-sm transition-colors">Cookie Policy</a></li>
+                    <h4 class="font-bold text-white mb-6 text-sm uppercase tracking-widest relative inline-block">
+                        Legal
+                        <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="/Finzo/resources/views/components/privacy-policy.php" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Privacy Policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/Finzo/resources/views/components/terms-of-service.php" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Terms of Service</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Cookie Policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Accessibility</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Data Protection</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
+                <!-- Column 5 -->
                 <div>
-                    <h4 class="font-semibold text-primary mb-4 text-sm uppercase tracking-wider">Security</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#security" class="text-gray-500 hover:text-primary text-sm transition-colors">Security Center</a></li>
-                        <li><a href="#security" class="text-gray-500 hover:text-primary text-sm transition-colors">Fraud Awareness</a></li>
-                        <li><a href="#security" class="text-gray-500 hover:text-primary text-sm transition-colors">Responsible Disclosure</a></li>
+                    <h4 class="font-bold text-white mb-6 text-sm uppercase tracking-widest relative inline-block">
+                        Security
+                        <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#security" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Security Center</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#security" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Fraud Awareness</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">AML Framework</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="text-gray-400 hover:text-white text-sm transition-all flex items-center relative group">
+                                <span class="absolute left-0 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100"></span>
+                                <span class="transform group-hover:translate-x-4 transition-transform duration-300">Security Tips</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
             </div>
-            <div class="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-400 text-xs text-center md:text-left">
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-gray-400 text-sm text-center md:text-left flex-1">
                     &copy; 2026 Finzo Online Banking System. All rights reserved. Finzo is a registered trademark.
                 </p>
-                <div class="flex gap-4">
-                    <span class="text-gray-400 text-xs">Secure AES-256 Encryption</span>
+
+                <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2.5 rounded-full shadow-inner backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-blue-400 text-[18px]">enhanced_encryption</span>
+                    <span class="text-gray-300 text-xs font-semibold tracking-widest uppercase">Secure AES-256
+                        Encryption</span>
                 </div>
             </div>
         </div>
@@ -563,7 +920,7 @@
     <script src="assets/js/public/public-shared.js"></script>
     <script>
         // Minimal mobile menu controller
-        $(function() {
+        $(function () {
             const $overlay = $('#mobile-overlay');
             const $drawer = $('#mobile-drawer');
 
@@ -581,11 +938,12 @@
             $('#mobile-hamburger').on('click', openMobile);
             $('#mobile-close, .mobile-menu-overlay').on('click', closeMobile);
             $drawer.find('nav a').on('click', closeMobile);
-            
-            $(document).on('keydown', function(e) {
+
+            $(document).on('keydown', function (e) {
                 if (e.key === 'Escape') closeMobile();
             });
         });
     </script>
 </body>
+
 </html>
