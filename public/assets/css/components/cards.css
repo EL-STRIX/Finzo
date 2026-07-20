@@ -1,24 +1,61 @@
-/* Cards */
-.ds-card {
+/* Finzo Enterprise Card Component System */
+
+.ds-card, .auth-card {
   background-color: var(--color-surface-main);
   border: 1px solid var(--color-border-main);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+  width: 100%;
 }
 
-.ds-card-header {
+.ds-card:hover, .auth-card:hover {
+  border-color: #b0b8c1;
+  box-shadow: var(--shadow-lg);
+}
+
+.ds-card-header, .auth-card-header {
   padding: var(--space-md);
-  border-bottom: 1px solid var(--color-border-main);
+  border-bottom: 1px solid var(--color-border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.ds-card-title {
+
+.ds-card-title, .auth-card-title {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
+  color: var(--color-text-main);
   margin: 0;
 }
-.ds-card-body { padding: var(--space-md); }
-.ds-card-footer { padding: var(--space-md); border-top: 1px solid var(--color-border-main); }
+
+.ds-card-subtitle, .auth-card-subtitle {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.ds-card-body, .auth-card-body {
+  padding: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .ds-card-body, .auth-card-body {
+    padding: var(--space-lg);
+  }
+}
+
+.ds-card-footer, .auth-card-footer {
+  padding: var(--space-sm) var(--space-md);
+  background-color: #fafbfc;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+@media (min-width: 640px) {
+  .ds-card-footer, .auth-card-footer {
+    padding: var(--space-sm) var(--space-lg);
+  }
+}

@@ -1,101 +1,423 @@
-/* Forms */
-.form-group {
+/* Finzo Enterprise Form Component System */
+
+.form-group, .fin-input-container {
   display: flex;
   flex-direction: column;
   gap: var(--space-3xs);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+  position: relative;
+  width: 100%;
 }
 
-.form-label {
-  font-family: var(--font-display);
+.form-label, .field-label, .fin-label {
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-main);
-}
-
-.form-control {
-  width: 100%;
-  height: var(--space-2xl); /* 48px standard */
-  padding: 0 var(--space-xs);
-  background-color: var(--color-surface-main);
-  border: 1px solid var(--color-border-main);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-text-main);
-  transition: all var(--transition-fast);
-}
-
-.form-control:hover { border-color: #cbd5e1; }
-.form-control:focus {
-  border-color: var(--color-primary-base);
-  box-shadow: var(--shadow-focus);
-}
-.form-control::placeholder { color: var(--color-text-disabled); }
-
-/* Validation States */
-.form-control.is-invalid {
-  border-color: var(--color-danger-base);
-  background-color: var(--color-danger-surface);
-}
-.form-control.is-invalid:focus {
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
-}
-
-
-/* Finzo Enterprise Auth Form Inputs */
-.fin-input-container {
+  margin-bottom: 4px;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3xs);
-  margin-bottom: var(--space-xs);
-  position: relative;
+  align-items: center;
+  justify-content: space-between;
 }
-.fin-input {
+
+.fin-label-required::after {
+  content: " *";
+  color: var(--color-danger-base);
+}
+
+.form-control, .fin-input {
   width: 100%;
-  height: 48px;
+  height: 48px; /* 48px standard enterprise touch target */
+  padding: 0 var(--space-md);
   background-color: var(--color-surface-main);
   border: 1px solid var(--color-border-main);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 14px;
   color: var(--color-text-main);
-  transition: all var(--transition-fast);
-  padding: 0 var(--space-md);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
+
+.fin-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .fin-input.has-icon-left {
-  padding-left: 3rem;
+  padding-left: 2.75rem;
 }
+
 .fin-input.has-icon-right {
-  padding-right: 3rem;
+  padding-right: 2.75rem;
 }
-.fin-input:focus {
-  border-color: var(--color-primary-base);
-  box-shadow: var(--shadow-focus);
-}
-.fin-input::placeholder {
-  color: var(--color-text-disabled);
-}
-.input-icon {
+
+.input-icon-left {
   position: absolute;
-  left: 1.15rem;
+  left: 0.9rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-muted);
   font-size: 20px;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.field-label {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
+
+.input-icon-right, .password-toggle-btn {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--color-text-muted);
-  margin-bottom: 2px;
-  display: inline-block;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
 }
-.error-msg {
-  display: none;
+
+.password-toggle-btn:hover {
+  color: var(--color-primary-base);
+  background-color: rgba(10, 37, 64, 0.05);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-primary-base);
+}
+
+.form-control:hover, .fin-input:hover {
+  border-color: #a0aec0;
+}
+
+.form-control:focus, .fin-input:focus {
+  border-color: var(--color-primary-base);
+  box-shadow: var(--shadow-focus);
+  background-color: #ffffff;
+}
+
+.form-control::placeholder, .fin-input::placeholder {
+  color: var(--color-text-disabled);
+}
+
+/* Disabled and Readonly States */
+.form-control:disabled, .fin-input:disabled,
+.form-control[readonly], .fin-input[readonly] {
+  background-color: #f8fafc;
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Validation States */
+.form-control.is-invalid, .fin-input.is-invalid {
+  border-color: var(--color-danger-base) !important;
+  background-color: #fef2f2;
+}
+
+.form-control.is-invalid:focus, .fin-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.25) !important;
+}
+
+.form-control.is-valid, .fin-input.is-valid {
+  border-color: var(--color-success-base) !important;
+  background-color: #f0fdf4;
+}
+
+.form-control.is-valid:focus, .fin-input.is-valid:focus {
+  box-shadow: 0 0 0 3px rgba(14, 121, 60, 0.25) !important;
+}
+
+.error-msg, .fin-error-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
+  font-weight: 500;
   color: var(--color-danger-base);
   margin-top: 4px;
+}
+
+.help-msg, .fin-help-text {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Password Strength Meter Component */
+.fin-password-strength {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.strength-bar-track {
+  width: 100%;
+  height: 4px;
+  background-color: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-full);
+  transition: width 300ms ease, background-color 300ms ease;
+}
+
+.strength-bar-fill.weak { width: 25%; background-color: var(--color-danger-base); }
+.strength-bar-fill.fair { width: 50%; background-color: var(--color-warning-base); }
+.strength-bar-fill.strong { width: 75%; background-color: #2563eb; }
+.strength-bar-fill.enterprise { width: 100%; background-color: var(--color-success-base); }
+
+.strength-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.strength-label {
+  color: var(--color-text-muted);
+}
+.strength-label.weak { color: var(--color-danger-base); }
+.strength-label.fair { color: var(--color-warning-base); }
+.strength-label.strong { color: #2563eb; }
+.strength-label.enterprise { color: var(--color-success-base); }
+
+.requirement-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 12px;
+  margin-top: 6px;
+}
+
+.req-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-text-disabled);
+  transition: color var(--transition-fast);
+}
+
+.req-item.met {
+  color: var(--color-success-base);
+  font-weight: 500;
+}
+
+.req-item .material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* OTP Component */
+.fin-otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.fin-otp-grid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .fin-otp-grid {
+    gap: 12px;
+  }
+}
+
+.fin-otp-input {
+  width: 44px;
+  height: 56px;
+  text-center: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  background-color: var(--color-surface-main);
+  border: 1.5px solid var(--color-border-main);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+@media (min-width: 480px) {
+  .fin-otp-input {
+    width: 52px;
+    height: 60px;
+    font-size: 24px;
+  }
+}
+
+.fin-otp-input:hover {
+  border-color: #a0aec0;
+}
+
+.fin-otp-input:focus {
+  border-color: var(--color-primary-base);
+  box-shadow: var(--shadow-focus);
+  transform: translateY(-1px);
+}
+
+.fin-otp-input.is-filled {
+  border-color: var(--color-primary-base);
+  background-color: var(--color-primary-surface);
+}
+
+.fin-otp-input.is-invalid {
+  border-color: var(--color-danger-base);
+  background-color: #fef2f2;
+}
+
+/* Enterprise Checkbox Component */
+.fin-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.fin-checkbox-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border-main);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-main);
+  outline: none;
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  display: grid;
+  place-content: center;
+}
+
+.fin-checkbox-input::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--color-surface-main);
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.fin-checkbox-input:checked {
+  background-color: var(--color-primary-base);
+  border-color: var(--color-primary-base);
+}
+
+.fin-checkbox-input:checked::before {
+  transform: scale(1);
+}
+
+.fin-checkbox-input:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.fin-checkbox-label {
+  font-size: 13px;
+  color: var(--color-text-main);
+  line-height: 1.45;
+}
+
+/* Enterprise Radio Component */
+.fin-radio-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fin-radio-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border-main);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-main);
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  display: grid;
+  place-content: center;
+}
+
+.fin-radio-input::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  background-color: var(--color-primary-base);
+}
+
+.fin-radio-input:checked {
+  border-color: var(--color-primary-base);
+}
+
+.fin-radio-input:checked::before {
+  transform: scale(1);
+}
+
+.fin-radio-input:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+/* Enterprise Select / Dropdown Component */
+.fin-select {
+  width: 100%;
+  height: 48px;
+  padding: 0 2.5rem 0 var(--space-md);
+  background-color: var(--color-surface-main);
+  border: 1px solid var(--color-border-main);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-main);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236E7A87'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.fin-select:hover {
+  border-color: #a0aec0;
+}
+
+.fin-select:focus {
+  border-color: var(--color-primary-base);
+  box-shadow: var(--shadow-focus);
 }
