@@ -105,15 +105,17 @@
 
                     <!-- Login Form Component -->
                     <form action="#" method="POST" novalidate>
-                        <!-- Customer ID Input Component -->
+                        <input type="hidden" name="csrf_token" value="" />
+                        
+                        <!-- Customer ID / Identity Input Component -->
                         <div class="fin-input-container">
-                            <label for="customer-id" class="fin-label fin-label-required">Customer ID</label>
+                            <label for="customer-id" class="fin-label fin-label-required">Customer ID or Email</label>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">person</span>
-                                <input type="text" id="customer-id" name="customer_id" class="fin-input has-icon-left" placeholder="Enter your Customer ID" required autocomplete="username" />
+                                <input type="text" id="customer-id" name="identity" class="fin-input has-icon-left" placeholder="Enter Customer ID or email" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" style="display:none;" role="alert">
-                                <span class="material-symbols-outlined">error</span> Customer ID is required.
+                                <span class="material-symbols-outlined">error</span> Customer ID or email is required.
                             </span>
                         </div>
 
@@ -139,7 +141,7 @@
                         <div class="mb-6">
                             <label class="fin-checkbox-wrapper">
                                 <input type="checkbox" id="remember-me" name="remember" class="fin-checkbox-input" />
-                                <span class="fin-checkbox-label">Remember my Customer ID on this device</span>
+                                <span class="fin-checkbox-label">Remember my ID on this device</span>
                             </label>
                         </div>
 

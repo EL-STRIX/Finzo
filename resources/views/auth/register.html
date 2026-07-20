@@ -98,6 +98,8 @@
 
                     <!-- Registration Form Component -->
                     <form action="#" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="" />
+                        
                         <!-- Section 1: Personal Details -->
                         <div class="mb-4 border-b border-gray-100 pb-2">
                             <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">1. Personal Information</h3>
@@ -174,6 +176,20 @@
                             </div>
                             <span class="fin-error-text" style="display:none;" role="alert">
                                 <span class="material-symbols-outlined">error</span> Password is required.
+                            </span>
+                        </div>
+
+                        <div class="fin-input-container">
+                            <label for="reg-confirm-password" class="fin-label fin-label-required">Confirm Password</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                <input type="password" id="reg-confirm-password" name="confirm_password" class="fin-input has-icon-left has-icon-right" placeholder="Confirm password" required autocomplete="new-password" />
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                            </div>
+                            <span class="fin-error-text" style="display:none;" role="alert">
+                                <span class="material-symbols-outlined">error</span> Passwords must match.
                             </span>
                         </div>
 

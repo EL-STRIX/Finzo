@@ -6,6 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     initPageAnimations();
+    initCsrfToken();
     initPasswordToggle();
     initPasswordStrengthMeter();
     initOTPComponent();
@@ -29,6 +30,27 @@ function initPageAnimations() {
             cardContainer.style.transform = 'translateY(0)';
         });
     }
+}
+
+/**
+ * Fetch and inject CSRF token dynamically for API form submissions
+ */
+function initCsrfToken() {
+    const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
+    if (csrfInputs.length === 0) return;
+
+    fetch('/Finzo/public/api/csrf-token')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.csrf_token) {
+                csrfInputs.forEach(input => {
+                    input.value = data.csrf_token;
+                });
+            }
+        })
+        .catch(() => {
+            // Silence CSRF token fetch errors if offline or in static preview
+        });
 }
 
 /**

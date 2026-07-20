@@ -105,15 +105,17 @@
 
                     <!-- Staff Form Component -->
                     <form action="#" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="" />
+                        
                         <!-- Staff ID Input Component -->
                         <div class="fin-input-container">
-                            <label for="staff-id" class="fin-label fin-label-required">Staff ID</label>
+                            <label for="staff-id" class="fin-label fin-label-required">Staff ID or Email</label>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">badge</span>
-                                <input type="text" id="staff-id" name="staff_id" class="fin-input has-icon-left" placeholder="e.g. STF-84920" required autocomplete="username" />
+                                <input type="text" id="staff-id" name="identity" class="fin-input has-icon-left" placeholder="e.g. STF-84920 or email" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" style="display:none;" role="alert">
-                                <span class="material-symbols-outlined">error</span> Staff ID is required.
+                                <span class="material-symbols-outlined">error</span> Staff ID or email is required.
                             </span>
                         </div>
 

@@ -113,15 +113,17 @@
 
                     <!-- Admin Form Component -->
                     <form action="#" method="POST" novalidate>
-                        <!-- Administrator ID Input Component -->
+                        <input type="hidden" name="csrf_token" value="" />
+                        
+                        <!-- Administrator Email Input Component -->
                         <div class="fin-input-container">
-                            <label for="admin-id" class="fin-label fin-label-required">Administrator ID</label>
+                            <label for="admin-id" class="fin-label fin-label-required">Administrator Email</label>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">shield_person</span>
-                                <input type="text" id="admin-id" name="admin_id" class="fin-input has-icon-left" placeholder="e.g. ADM-00109" required autocomplete="username" />
+                                <input type="email" id="admin-id" name="email" class="fin-input has-icon-left" placeholder="admin@finzo.com" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" style="display:none;" role="alert">
-                                <span class="material-symbols-outlined">error</span> Administrator ID is required.
+                                <span class="material-symbols-outlined">error</span> Administrator email is required.
                             </span>
                         </div>
 
