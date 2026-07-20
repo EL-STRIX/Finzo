@@ -213,7 +213,7 @@
 /* Header Component */
 .auth-page-header {
   margin-bottom: 32px;
-  text-center: center;
+  text-align: center;
 }
 
 @media (min-width: 1024px) {
@@ -450,4 +450,53 @@
 
 .auth-footer-link:hover {
   color: var(--color-primary-base);
+}
+
+/* Enterprise Toast Feedback Notification System */
+.fin-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.fin-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-base);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 250ms ease, transform 250ms ease;
+  pointer-events: auto;
+}
+
+.fin-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fin-toast-success {
+  background-color: #064e3b;
+  border-color: #059669;
+}
+
+.fin-toast-info {
+  background-color: var(--color-primary-base);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.fin-toast-icon {
+  font-size: 20px;
 }

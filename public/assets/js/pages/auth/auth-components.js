@@ -1,7 +1,8 @@
 /**
  * Finzo Enterprise Authentication Component System JavaScript
  * Handles password visibility toggling, password strength meter,
- * 6-digit OTP auto-advance/paste, form validation, micro-interactions, and accessibility.
+ * 6-digit OTP auto-advance/paste, real-time error recovery, feedback toasts,
+ * form validation, micro-interactions, and accessibility.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -170,6 +171,9 @@ function initOTPComponent() {
     const inputs = otpContainer.querySelectorAll('.fin-otp-input');
     
     inputs.forEach((input, idx) => {
+        input.setAttribute('inputmode', 'numeric');
+        input.setAttribute('pattern', '[0-9]*');
+
         // Auto-advance on input
         input.addEventListener('input', (e) => {
             const val = e.target.value;
@@ -213,24 +217,36 @@ function initOTPComponent() {
         });
     });
     
-    // Countdown Resend Timer
+    // Countdown Resend Timer & Resend Click Handler
     const resendBtn = document.querySelector('[data-action="resend-otp"]');
     if (resendBtn) {
-        let timeLeft = 45;
-        resendBtn.disabled = true;
-        
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                resendBtn.disabled = false;
-                resendBtn.innerHTML = 'Resend Code Now';
-            } else {
-                const secs = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
-                resendBtn.innerHTML = `Resend Code in 00:${secs}`;
-            }
-        }, 1000);
+        startResendCountdown(resendBtn, 45);
+
+        resendBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (resendBtn.disabled) return;
+            
+            showNotificationToast('A new 6-digit security code has been sent to your device.', 'success');
+            startResendCountdown(resendBtn, 45);
+        });
     }
+}
+
+function startResendCountdown(btn, seconds) {
+    let timeLeft = seconds;
+    btn.disabled = true;
+    
+    const timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            btn.disabled = false;
+            btn.innerHTML = 'Resend Code Now';
+        } else {
+            const secs = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+            btn.innerHTML = `Resend Code in 00:${secs}`;
+        }
+    }, 1000);
 }
 
 /**
@@ -253,7 +269,7 @@ function initInputInteractions() {
 }
 
 /**
- * 5. Form Validation & Button Loading States
+ * 5. Form Validation & Password Matching Error Recovery
  */
 function initFormValidation() {
     const forms = document.querySelectorAll('form');
@@ -277,6 +293,23 @@ function initFormValidation() {
                     if (errorText) errorText.style.display = 'none';
                 }
             });
+
+            // Password confirmation matching validation
+            const newPassInput = form.querySelector('input[name="new_password"], input[name="password"]');
+            const confirmPassInput = form.querySelector('input[name="confirm_password"]');
+            
+            if (newPassInput && confirmPassInput && confirmPassInput.value) {
+                const errorText = confirmPassInput.closest('.fin-input-container')?.querySelector('.fin-error-text');
+                if (newPassInput.value !== confirmPassInput.value) {
+                    isValid = false;
+                    confirmPassInput.classList.add('is-invalid');
+                    confirmPassInput.setAttribute('aria-invalid', 'true');
+                    if (errorText) {
+                        errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Passwords do not match.';
+                        errorText.style.display = 'flex';
+                    }
+                }
+            }
             
             if (!isValid) {
                 e.preventDefault();
@@ -313,4 +346,36 @@ function initRoleTabs() {
             }
         });
     });
+}
+
+/**
+ * 7. Enterprise Toast Notification Feedback System
+ */
+function showNotificationToast(message, type = 'info') {
+    let toastContainer = document.querySelector('.fin-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'fin-toast-container';
+        toastContainer.setAttribute('role', 'status');
+        toastContainer.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `fin-toast fin-toast-${type}`;
+    toast.innerHTML = `
+        <span class="material-symbols-outlined fin-toast-icon">${type === 'success' ? 'check_circle' : 'info'}</span>
+        <span class="fin-toast-msg">${message}</span>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add('is-visible');
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('is-visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
 }
