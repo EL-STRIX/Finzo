@@ -138,13 +138,17 @@
 }
 
 .error-msg, .fin-error-text {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 4px;
   font-size: 12px;
   font-weight: 500;
   color: var(--color-danger-base);
   margin-top: 4px;
+}
+
+.error-msg.is-visible, .fin-error-text.is-visible {
+  display: flex;
 }
 
 .help-msg, .fin-help-text {

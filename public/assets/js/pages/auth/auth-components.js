@@ -280,7 +280,10 @@ function initInputInteractions() {
                 input.classList.remove('is-invalid');
                 input.removeAttribute('aria-invalid');
                 const errorText = input.closest('.fin-input-container')?.querySelector('.fin-error-text');
-                if (errorText) errorText.style.display = 'none';
+                if (errorText) {
+                    errorText.classList.remove('is-visible');
+                    errorText.style.display = '';
+                }
             }
         });
     });
@@ -304,11 +307,16 @@ function initFormValidation() {
                     isValid = false;
                     input.classList.add('is-invalid');
                     input.setAttribute('aria-invalid', 'true');
-                    if (errorText) errorText.style.display = 'flex';
+                    if (errorText) {
+                        errorText.classList.add('is-visible');
+                    }
                 } else {
                     input.classList.remove('is-invalid');
                     input.removeAttribute('aria-invalid');
-                    if (errorText) errorText.style.display = 'none';
+                    if (errorText) {
+                        errorText.classList.remove('is-visible');
+                        errorText.style.display = '';
+                    }
                 }
             });
 
@@ -324,7 +332,7 @@ function initFormValidation() {
                     confirmPassInput.setAttribute('aria-invalid', 'true');
                     if (errorText) {
                         errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Passwords do not match.';
-                        errorText.style.display = 'flex';
+                        errorText.classList.add('is-visible');
                     }
                 }
             }
