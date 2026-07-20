@@ -1,16 +1,35 @@
 /**
  * Finzo Enterprise Authentication Component System JavaScript
  * Handles password visibility toggling, password strength meter,
- * 6-digit OTP auto-advance/paste, form validation, and button loading states.
+ * 6-digit OTP auto-advance/paste, form validation, micro-interactions, and accessibility.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initPageAnimations();
     initPasswordToggle();
     initPasswordStrengthMeter();
     initOTPComponent();
     initFormValidation();
     initRoleTabs();
+    initInputInteractions();
 });
+
+/**
+ * 0. Page Entrance Animation & Smooth Reveal
+ */
+function initPageAnimations() {
+    const cardContainer = document.querySelector('.auth-card-container');
+    if (cardContainer) {
+        cardContainer.style.opacity = '0';
+        cardContainer.style.transform = 'translateY(8px)';
+        cardContainer.style.transition = 'opacity 350ms cubic-bezier(0.16, 1, 0.3, 1), transform 350ms cubic-bezier(0.16, 1, 0.3, 1)';
+        
+        requestAnimationFrame(() => {
+            cardContainer.style.opacity = '1';
+            cardContainer.style.transform = 'translateY(0)';
+        });
+    }
+}
 
 /**
  * 1. Password Visibility Toggle Component
@@ -193,7 +212,26 @@ function initOTPComponent() {
 }
 
 /**
- * 4. Form Validation & Button Loading States
+ * 4. Input Real-Time Micro-Interactions
+ */
+function initInputInteractions() {
+    const inputs = document.querySelectorAll('.fin-input, .form-control');
+    
+    inputs.forEach(input => {
+        // Clear invalid state on typing
+        input.addEventListener('input', () => {
+            if (input.classList.contains('is-invalid')) {
+                input.classList.remove('is-invalid');
+                input.removeAttribute('aria-invalid');
+                const errorText = input.closest('.fin-input-container')?.querySelector('.fin-error-text');
+                if (errorText) errorText.style.display = 'none';
+            }
+        });
+    });
+}
+
+/**
+ * 5. Form Validation & Button Loading States
  */
 function initFormValidation() {
     const forms = document.querySelectorAll('form');
@@ -229,6 +267,7 @@ function initFormValidation() {
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
                 submitBtn.classList.add('is-loading');
+                submitBtn.setAttribute('aria-busy', 'true');
                 submitBtn.disabled = true;
             }
         });
@@ -236,7 +275,7 @@ function initFormValidation() {
 }
 
 /**
- * 5. Role Switcher Keyboard Controls
+ * 6. Role Switcher Keyboard Controls
  */
 function initRoleTabs() {
     const roleTabs = document.querySelectorAll('.auth-role-tab');
