@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFormValidation();
     initRoleTabs();
     initInputInteractions();
+    initResendEmailAction();
 });
 
 /**
@@ -251,6 +252,19 @@ function startResendCountdown(btn, seconds) {
             btn.innerHTML = `Resend Code in 00:${secs}`;
         }
     }, 1000);
+}
+
+/**
+ * Resend Email Verification Handler
+ */
+function initResendEmailAction() {
+    const btn = document.querySelector('[data-action="resend-email-verification"]');
+    if (!btn) return;
+
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showNotificationToast('A new verification email has been dispatched to your inbox.', 'success');
+    });
 }
 
 /**
