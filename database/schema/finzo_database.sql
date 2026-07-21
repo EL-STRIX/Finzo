@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS branches (
     cert_path VARCHAR(500) NULL,
     type ENUM('system', 'custom') NOT NULL DEFAULT 'system',
     status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
   email                   VARCHAR(255) NOT NULL UNIQUE,
   phone                   VARCHAR(15) NULL,
   password_hash           VARCHAR(255) NOT NULL,
-  two_fa_enabled          TINYINT(1) DEFAULT 0,
+  two_fa_enabled TINYINT(1) DEFAULT 0,
   two_fa_secret           VARCHAR(255) NULL,
   admin_role              ENUM('super_admin','admin','moderator') NOT NULL DEFAULT 'admin',
   access_level            ENUM('full','restricted') NOT NULL DEFAULT 'restricted',
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS admin_users (
   failed_attempts         TINYINT DEFAULT 0,
   locked_until            TIMESTAMP NULL,
   created_by              VARCHAR(20) NULL,
-  created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
   -- From update_admin_lock_schema.sql
   account_locked          TINYINT(1) DEFAULT 0,
@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_ip VARCHAR(45) NULL DEFAULT NULL,
 
     -- Timestamps
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     -- Indexes
     INDEX idx_status (status),
@@ -168,8 +168,8 @@ CREATE TABLE IF NOT EXISTS staff (
   password_hash         VARCHAR(255) NOT NULL,
   status                ENUM('active','suspended') NOT NULL DEFAULT 'active',
   created_by            VARCHAR(20) NULL,
-  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   last_login_at         TIMESTAMP NULL,
   last_login_ip         VARCHAR(45) NULL,
 
@@ -199,8 +199,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     daily_limit DECIMAL(15, 2) NOT NULL DEFAULT 10000.00,
     status ENUM('pending', 'active', 'suspended', 'rejected', 'closed') NOT NULL DEFAULT 'pending',
     opened_date DATE NULL DEFAULT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY fk_accounts_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
     INDEX idx_account_no (account_no),
     INDEX idx_user_id (user_id),
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     reference_note VARCHAR(255) NULL DEFAULT NULL,
     status ENUM('pending', 'completed', 'failed', 'reversed') NOT NULL DEFAULT 'pending',
     processed_by_staff_id INT UNSIGNED NULL DEFAULT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_txn_from_account (from_account_id) REFERENCES accounts(id) ON DELETE SET NULL,
     FOREIGN KEY fk_txn_to_account (to_account_id) REFERENCES accounts(id) ON DELETE SET NULL,
     FOREIGN KEY fk_txn_staff (processed_by_staff_id) REFERENCES staff(id) ON DELETE SET NULL,
@@ -245,7 +245,7 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
     nickname VARCHAR(100) NOT NULL,
     account_no VARCHAR(20) NOT NULL,
     bank_name VARCHAR(150) NULL DEFAULT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_beneficiary_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
     UNIQUE KEY uniq_user_account (user_id, account_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     is_read TINYINT(1) NOT NULL DEFAULT 0,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_notification_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
     INDEX idx_user_unread (user_id, is_read),
     INDEX idx_created_at (created_at)
@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
     actor_role ENUM('admin', 'staff', 'user', 'system') NOT NULL,
     details TEXT NULL DEFAULT NULL,
     ip_address VARCHAR(45) NULL DEFAULT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_action_type (action_type),
     INDEX idx_actor_id (actor_id),
     INDEX idx_entity_type (entity_type),
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS interest_rates (
     apply_from_type ENUM('Immediately', 'Next Month', 'Custom Date') NOT NULL,
     apply_from_date DATE NULL DEFAULT NULL,
     changed_by_admin_id VARCHAR(20) NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_interest_admin (changed_by_admin_id) REFERENCES admin_users(admin_id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS password_resets (
     user_id VARCHAR(20) NOT NULL,
     token VARCHAR(100) NOT NULL UNIQUE,
     expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_reset_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
     INDEX idx_token (token),
     INDEX idx_expires_at (expires_at)
@@ -323,8 +323,8 @@ CREATE TABLE IF NOT EXISTS system_settings (
   label         VARCHAR(255) NOT NULL,
   description   TEXT NULL,
   updated_by    VARCHAR(20) NULL,
-  updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (updated_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
   INDEX idx_setting_key (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -358,8 +358,8 @@ CREATE TABLE IF NOT EXISTS kyc_applications (
   rejection_reason  TEXT NULL,
   admin_notes       TEXT NULL,
   submitted_at      TIMESTAMP NULL,
-  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
   FOREIGN KEY (reviewed_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
   INDEX idx_user_id (user_id),
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS admin_lock_log (
   triggered_by    VARCHAR(20) NULL,
   ip_address      VARCHAR(45) NULL,
   details         TEXT NULL,
-  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (admin_id) REFERENCES admin_users(admin_id) ON DELETE CASCADE,
   FOREIGN KEY (triggered_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
   INDEX idx_admin_id (admin_id),
@@ -397,8 +397,8 @@ CREATE TABLE IF NOT EXISTS staff_shifts (
     clock_out       TIMESTAMP NULL DEFAULT NULL,
     status          ENUM('active', 'completed', 'absent') NOT NULL DEFAULT 'active',
     notes           VARCHAR(255) NULL DEFAULT NULL,
-    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE CASCADE,
     INDEX idx_staff_id (staff_id),
     INDEX idx_shift_date (shift_date),
