@@ -28,7 +28,7 @@ class UserController
             json_response(['found' => false, 'message' => 'Account number is required'], 422);
         }
         try {
-            $result = $this->repository->fetchAccountLookup($account_no);
+            $result = $this->service->fetchAccountLookup($account_no);
             if (!$result || $result['status'] !== 'active') {
                 json_response(['success' => false, 'message' => 'Finzo account not found']);
             }
@@ -49,12 +49,12 @@ class UserController
     {
         $user_id = $_SESSION['user_id'];
         try {
-            $account = $this->repository->fetchAccountSettings($user_id);
+            $account = $this->service->fetchAccountSettings($user_id);
             if (!$account) {
                 json_response(['success' => false, 'message' => 'No active account found'], 404);
             }
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                $used_today = $this->repository->fetchUsedToday($account['id']);
+                $used_today = $this->service->fetchUsedToday($account['id']);
                 json_response([
                     'success' => true,
                     'daily_limit' => (float)$account['daily_limit'],
@@ -65,7 +65,7 @@ class UserController
                 if (!is_numeric($daily_limit) || $daily_limit < 1000 || $daily_limit > 100000) {
                     json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000']);
                 }
-                $this->repository->updateDailyLimit($account['id'], $daily_limit);
+                $this->service->updateDailyLimit($account['id'], $daily_limit);
                 json_response(['success' => true, 'message' => 'Daily limit updated']);
             } else {
                 json_response(['success' => false, 'message' => 'Method not allowed'], 405);
@@ -83,15 +83,15 @@ class UserController
         }
         $user_id = $_SESSION['user_id'];
         try {
-            $account = $this->repository->fetchAccountDetails($user_id);
+            $account = $this->service->fetchAccountDetails($user_id);
             if (!$account) {
                 json_response(['success' => true, 'account' => null, 'message' => 'No account found']);
             }
             $mini_statement = [];
             if ($account['status'] === 'active') {
-                $mini_statement = $this->repository->fetchMiniStatement($account['id']);
+                $mini_statement = $this->service->fetchMiniStatement($account['id']);
             }
-            $today_transfer_total = (float)$this->repository->fetchTodayTransferTotal($account['id']);
+            $today_transfer_total = (float)$this->service->fetchTodayTransferTotal($account['id']);
             json_response([
                 'success' => true,
                 'account' => [
@@ -120,12 +120,12 @@ class UserController
     public function beneficiary()
     {
         $user_id = $_SESSION['user_id'];
-        $customer_id = $this->repository->getCustomerId($user_id);
+        $customer_id = $this->service->getCustomerId($user_id);
         $user_id = $customer_id ?: $user_id;
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
-                $beneficiaries = $this->repository->fetchBeneficiaries($user_id);
+                $beneficiaries = $this->service->fetchBeneficiaries($user_id);
                 json_response(['success' => true, 'beneficiaries' => $beneficiaries, 'total' => count($beneficiaries)]);
             } catch (PDOException $e) {
                 error_log("Beneficiaries fetch error: " . $e->getMessage());
@@ -140,7 +140,7 @@ class UserController
                     json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
                 }
                 try {
-                    $deleted = $this->repository->deleteBeneficiary($beneficiary_id, $user_id);
+                    $deleted = $this->service->deleteBeneficiary($beneficiary_id, $user_id);
                     if ($deleted === 0) {
                         json_response(['success' => false, 'message' => 'Beneficiary not found'], 404);
                     }
@@ -163,16 +163,16 @@ class UserController
                 json_response(['success' => false, 'errors' => $errors], 422);
             }
             try {
-                $max_beneficiaries = get_setting($this->repository->getDb(), 'max_beneficiaries', 10);
-                $count = $this->repository->countBeneficiaries($user_id);
+                $max_beneficiaries = get_setting($this->service->getDb(), 'max_beneficiaries', 10);
+                $count = $this->service->countBeneficiaries($user_id);
                 if ($count >= $max_beneficiaries) {
                     json_response(['success' => false, 'message' => 'Maximum limit of ' . $max_beneficiaries . ' beneficiaries reached'], 403);
                 }
-                $existing = $this->repository->getBeneficiaryByAccount($user_id, $account_no);
+                $existing = $this->service->getBeneficiaryByAccount($user_id, $account_no);
                 if ($existing) {
                     json_response(['success' => false, 'message' => 'This beneficiary already exists'], 409);
                 }
-                $new_id = $this->repository->addBeneficiary($user_id, $nickname, $account_no, $bank_name);
+                $new_id = $this->service->addBeneficiary($user_id, $nickname, $account_no, $bank_name);
                 json_response([
                     'success' => true,
                     'message' => 'Beneficiary added successfully',
@@ -189,7 +189,7 @@ class UserController
                 json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
             }
             try {
-                $deleted = $this->repository->deleteBeneficiary($beneficiary_id, $user_id);
+                $deleted = $this->service->deleteBeneficiary($beneficiary_id, $user_id);
                 if ($deleted === 0) {
                     json_response(['success' => false, 'message' => 'Beneficiary not found'], 404);
                 }
@@ -236,13 +236,13 @@ class UserController
         }
 
         try {
-            $user = $this->repository->getUserPasswordHash($user_id);
+            $user = $this->service->getUserPasswordHash($user_id);
             if (!$user || !password_verify($current_password, $user['password_hash'])) {
                 json_response(['success' => false, 'errors' => ['current_password' => 'Current password is incorrect']], 401);
             }
             $new_hash = password_hash($new_password, PASSWORD_BCRYPT);
-            $this->repository->updatePassword($user_id, $new_hash);
-            send_notification($this->repository->getDb(), $user['customer_id'], 'security', 'Password Changed', 'Your account password was changed successfully. If you did not make this change, please contact support immediately.');
+            $this->service->updatePassword($user_id, $new_hash);
+            send_notification($this->service->getDb(), $user['customer_id'], 'security', 'Password Changed', 'Your account password was changed successfully. If you did not make this change, please contact support immediately.');
             json_response(['success' => true, 'message' => 'Password changed successfully']);
         } catch (PDOException $e) {
             json_response(['success' => false, 'message' => 'Failed to change password'], 500);
@@ -259,7 +259,7 @@ class UserController
         }
 
         $user_id = $_SESSION['user_id'];
-        $customer_id_str = $this->repository->getCustomerId($user_id);
+        $customer_id_str = $this->service->getCustomerId($user_id);
 
         $data = [
             'dob' => clean_input($_POST['dob'] ?? ''), 'gender' => clean_input($_POST['gender'] ?? ''),
@@ -273,7 +273,7 @@ class UserController
             'initial_deposit' => floatval($_POST['initial_deposit'] ?? 0), 'txn_pin' => $_POST['txn_pin'] ?? '',
         ];
 
-        $existing_user = $this->repository->getUserFiles($user_id);
+        $existing_user = $this->service->getUserFiles($user_id);
         $data['has_profile_pic'] = !empty($existing_user['profile_picture']);
         $data['has_id_front'] = !empty($existing_user['id_front_path']);
         $data['has_id_back'] = !empty($existing_user['id_back_path']);
@@ -290,24 +290,24 @@ class UserController
         }
 
         try {
-            $pdo = $this->repository->getDb();
+            $pdo = $this->service->getDb();
             $pdo->beginTransaction();
             $stmt = $pdo->prepare("UPDATE users SET profile_picture = ?, dob = ?, gender = ?, father_name = ?, mother_name = ?, marital_status = ?, nationality = ?, occupation = ?, annual_income = ?, source_of_income = ?, street = ?, city = ?, state = ?, pincode = ?, id_type = ?, id_number = ?, id_front_path = ?, id_back_path = ?, status = 'under_review', kyc_submitted_at = NOW(), rejection_reason = NULL, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$paths['profile_pic_path'], $data['dob'], $data['gender'], $data['father_name'], $data['mother_name'], $data['marital_status'], $data['nationality'], $data['occupation'], $data['annual_income'], $data['source_of_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $user_id]);
 
             $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
-            $existing_account = $this->repository->getExistingAccountByCustomerId($customer_id_str);
+            $existing_account = $this->service->getExistingAccountByCustomerId($customer_id_str);
 
             if ($existing_account) {
-                $this->repository->updateAccountResubmission($data['account_type'], $data['initial_deposit'], $txn_pin_hash, $customer_id_str);
+                $this->service->updateAccountResubmission($data['account_type'], $data['initial_deposit'], $txn_pin_hash, $customer_id_str);
             } else {
-                $this->repository->insertPendingAccount($customer_id_str, 'PENDING_' . $user_id, $data['account_type'], $data['initial_deposit'], $txn_pin_hash);
+                $this->service->insertPendingAccount($customer_id_str, 'PENDING_' . $user_id, $data['account_type'], $data['initial_deposit'], $txn_pin_hash);
             }
 
             $year = date('Y');
-            $next_num = $this->repository->getNextKycApplicationNo($year) + 1;
+            $next_num = $this->service->getNextKycApplicationNo($year) + 1;
             $application_no = 'KYC' . $year . str_pad($next_num, 7, '0', STR_PAD_LEFT);
-            $existing_app = $this->repository->getKycApplication($customer_id_str);
+            $existing_app = $this->service->getKycApplication($customer_id_str);
 
             if ($existing_app) {
                 $new_count = $existing_app['submission_count'] + 1;
@@ -348,20 +348,20 @@ class UserController
 
         $user_id = $_SESSION['user_id'];
         try {
-            $user = $this->repository->getUserDashboardData($user_id);
+            $user = $this->service->getUserDashboardData($user_id);
             if (!$user) {
                 destroy_session();
                 json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/views/auth/login.html'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
-            $account = $this->repository->getActiveAccountByCustomerId($user['customer_id']);
+            $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
             $recent_transactions = [];
             if ($account && $account['status'] === 'active') {
-                $recent_transactions = $this->repository->getRecentTransactions($account['id']);
+                $recent_transactions = $this->service->getRecentTransactions($account['id']);
                 foreach ($recent_transactions as &$txn) {
                     if ($txn['type'] === 'transfer') {
                         $txn['direction'] = 'debit';
-                        $txn_data = $this->repository->getTransactionToAccountId($txn['txn_id']);
+                        $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
                         $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
                     } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
                         $txn['direction'] = 'credit';
@@ -373,18 +373,18 @@ class UserController
             }
             $monthly_stats = ['income_total' => 0, 'expense_total' => 0, 'month_label' => date('F Y')];
             if ($account && $account['status'] === 'active') {
-                $monthly_stats['income_total'] = (float)$this->repository->getMonthlyIncome($account['id']);
-                $monthly_stats['expense_total'] = (float)$this->repository->getMonthlyExpenses($account['id']);
+                $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
+                $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
             }
             if (!isset($_SESSION['user_customer_id'])) {
-                $_SESSION['user_customer_id'] = $this->repository->getCustomerId($user_id);
+                $_SESSION['user_customer_id'] = $this->service->getCustomerId($user_id);
             }
             $customer_id = $_SESSION['user_customer_id'];
-            $notification_count = (int)$this->repository->getUnreadNotificationCount($customer_id);
+            $notification_count = (int)$this->service->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
             $avatar_url = !empty($user['profile_picture']) ? '../../../' . $user['profile_picture'] : null;
 
-            $past_rejections_raw = $this->repository->getPastRejections($user['customer_id']);
+            $past_rejections_raw = $this->service->getPastRejections($user['customer_id']);
             $past_rejections = [];
             foreach ($past_rejections_raw as $log) {
                 $reason = "Application was rejected";
@@ -407,7 +407,7 @@ class UserController
     public function notifications()
     {
         if (!isset($_SESSION['user_customer_id'])) {
-            $_SESSION['user_customer_id'] = $this->repository->getCustomerId($_SESSION['user_id']);
+            $_SESSION['user_customer_id'] = $this->service->getCustomerId($_SESSION['user_id']);
         }
         $user_id = $_SESSION['user_customer_id'];
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -415,9 +415,9 @@ class UserController
                 $page = max(1, intval($_GET['page'] ?? 1));
                 $per_page = min(50, max(1, intval($_GET['per_page'] ?? 20)));
                 $offset = ($page - 1) * $per_page;
-                $total = (int)$this->repository->getNotificationsTotal($user_id);
-                $unread_count = (int)$this->repository->getUnreadNotificationCount($user_id);
-                $notifications = $this->repository->getNotifications($user_id, $per_page, $offset);
+                $total = (int)$this->service->getNotificationsTotal($user_id);
+                $unread_count = (int)$this->service->getUnreadNotificationCount($user_id);
+                $notifications = $this->service->getNotifications($user_id, $per_page, $offset);
                 json_response(['success' => true, 'notifications' => $notifications, 'unread_count' => $unread_count, 'total' => $total, 'pages' => max(1, ceil($total / $per_page)), 'current_page' => $page]);
             } catch (PDOException $e) {
                 json_response(['success' => false, 'message' => 'Failed to load notifications'], 500);
@@ -431,20 +431,20 @@ class UserController
                     if (!$notification_id) {
                         json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
                     }
-                    $this->repository->markNotificationRead($notification_id, $user_id);
+                    $this->service->markNotificationRead($notification_id, $user_id);
                     json_response(['success' => true, 'message' => 'Notification marked as read']);
                 } elseif ($action === 'mark_all_read') {
-                    $updated = $this->repository->markAllNotificationsRead($user_id);
+                    $updated = $this->service->markAllNotificationsRead($user_id);
                     json_response(['success' => true, 'message' => 'All notifications marked as read', 'updated' => $updated]);
                 } elseif ($action === 'delete') {
                     $notification_id = intval($_POST['notification_id'] ?? 0);
                     if (!$notification_id) {
                         json_response(['success' => false, 'message' => 'Notification ID is required'], 422);
                     }
-                    $this->repository->deleteNotification($notification_id, $user_id);
+                    $this->service->deleteNotification($notification_id, $user_id);
                     json_response(['success' => true, 'message' => 'Notification deleted']);
                 } elseif ($action === 'clear_all') {
-                    $deleted = $this->repository->clearAllNotifications($user_id);
+                    $deleted = $this->service->clearAllNotifications($user_id);
                     json_response(['success' => true, 'message' => 'All notifications cleared', 'deleted' => $deleted]);
                 } else {
                     json_response(['success' => false, 'message' => 'Invalid action'], 422);
@@ -461,11 +461,11 @@ class UserController
         $user_id = $_SESSION['user_id'];
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
-                $user = $this->repository->getFullProfile($user_id);
+                $user = $this->service->getFullProfile($user_id);
                 if (!$user) {
                     json_response(['success' => false, 'message' => 'User not found'], 404);
                 }
-                $account = $this->repository->getActiveAccountByCustomerId($user['customer_id']);
+                $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
                 json_response(['success' => true, 'user' => $user, 'account' => $account]);
             } catch (PDOException $e) {
                 json_response(['success' => false, 'message' => 'Failed to load profile'], 500);
@@ -488,17 +488,17 @@ class UserController
             if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'Please enter a valid email address';
             }
-            if (!empty($email) && $email !== $_SESSION['user_email'] && $this->repository->checkEmailExists($email, $user_id)) {
+            if (!empty($email) && $email !== $_SESSION['user_email'] && $this->service->checkEmailExists($email, $user_id)) {
                 $errors['email'] = 'This email is already in use by another account';
             }
-            if (!empty($phone) && $this->repository->checkPhoneExists($phone, $user_id)) {
+            if (!empty($phone) && $this->service->checkPhoneExists($phone, $user_id)) {
                 $errors['phone'] = 'This phone number is already in use by another account';
             }
             if (!empty($errors)) {
                 json_response(['success' => false, 'errors' => $errors], 422);
             }
             try {
-                $this->repository->updateProfile($user_id, $full_name, $phone, $email);
+                $this->service->updateProfile($user_id, $full_name, $phone, $email);
                 $_SESSION['user_name'] = $full_name;
                 $_SESSION['user_email'] = $email;
                 $_SESSION['user_phone'] = $phone;
@@ -517,14 +517,14 @@ class UserController
         }
         $user_id = $_SESSION['user_id'];
         try {
-            $account = $this->repository->getActiveAccount($user_id);
+            $account = $this->service->getActiveAccount($user_id);
             if (!$account) {
                 json_response(['success' => false, 'message' => 'No active account found'], 404);
             }
             $from_date = clean_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
             $to_date = clean_input($_GET['to_date'] ?? date('Y-m-d'));
-            $transactions = $this->repository->getStatementTransactions($account['id'], $from_date, $to_date);
-            $opening_row = $this->repository->getOpeningBalance($account['id'], $from_date);
+            $transactions = $this->service->getStatementTransactions($account['id'], $from_date, $to_date);
+            $opening_row = $this->service->getOpeningBalance($account['id'], $from_date);
             $opening_balance = $opening_row ? (float)$opening_row['balance_after'] : 0;
             foreach ($transactions as &$txn) {
                 if (in_array($txn['type'], ['deposit', 'interest_credit']) || ($txn['type'] === 'transfer' && $txn['to_account_id'] == $account['id'])) {
@@ -554,7 +554,7 @@ class UserController
         }
         $user_id = $_SESSION['user_id'];
         try {
-            $account = $this->repository->fetchAccountSettings($user_id);
+            $account = $this->service->fetchAccountSettings($user_id);
             if (!$account) {
                 json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
             }
@@ -594,10 +594,10 @@ class UserController
             }
 
             $where_sql = implode(' AND ', $where_clauses);
-            $total = (int)$this->repository->getTransactionsCount($where_sql, $params);
+            $total = (int)$this->service->getTransactionsCount($where_sql, $params);
             $pages = max(1, ceil($total / $per_page));
             $offset = ($page - 1) * $per_page;
-            $transactions = $this->repository->getTransactionsList($where_sql, $params, $per_page, $offset);
+            $transactions = $this->service->getTransactionsList($where_sql, $params, $per_page, $offset);
 
             foreach ($transactions as &$txn) {
                 if (in_array($txn['type'], ['deposit', 'interest_credit'])) {
@@ -654,20 +654,20 @@ class UserController
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
-        $pdo = $this->repository->getDb();
+        $pdo = $this->service->getDb();
         if (!validate_pin($pdo, $user_id, $txn_pin)) {
             json_response(['success' => false, 'message' => 'Invalid transaction PIN'], 401);
         }
 
         try {
             $pdo->beginTransaction();
-            $account = $this->repository->getActiveAccount($user_id);
+            $account = $this->service->getActiveAccount($user_id);
             if (!$account) {
                 $pdo->rollBack();
                 json_response(['success' => false, 'message' => 'Source account not found or inactive'], 404);
             }
             $source_id = $account['id'];
-            $dest_id = $this->repository->getAccountIdByNumber($to_account_no);
+            $dest_id = $this->service->getAccountIdByNumber($to_account_no);
             if (!$dest_id) {
                 $pdo->rollBack();
                 json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404);
@@ -679,8 +679,8 @@ class UserController
 
             $first_id = min($source_id, $dest_id);
             $second_id = max($source_id, $dest_id);
-            $first = $this->repository->getAccountForUpdate($first_id);
-            $second = $this->repository->getAccountForUpdate($second_id);
+            $first = $this->service->getAccountForUpdate($first_id);
+            $second = $this->service->getAccountForUpdate($second_id);
             $source = ($first['id'] == $source_id) ? $first : $second;
             $dest = ($first['id'] == $dest_id) ? $first : $second;
             if (!$source || !$dest) {
@@ -698,7 +698,7 @@ class UserController
                 json_response(['success' => false, 'message' => 'Minimum transfer amount is ' . format_currency($min_transfer)], 422);
             }
 
-            $today_total = (float)$this->repository->fetchTodayTransferTotal($source['id']);
+            $today_total = (float)$this->service->fetchTodayTransferTotal($source['id']);
             $daily_limit = $source['daily_limit'];
             if (($today_total + $amount) > $daily_limit) {
                 $pdo->rollBack();
@@ -707,12 +707,12 @@ class UserController
             }
 
             $new_source_balance = $source['balance'] - $amount;
-            $this->repository->updateAccountBalance($source['id'], -$amount);
+            $this->service->updateAccountBalance($source['id'], -$amount);
             $new_dest_balance = $dest['balance'] + $amount;
-            $this->repository->updateAccountBalance($dest['id'], $amount);
+            $this->service->updateAccountBalance($dest['id'], $amount);
 
             $txn_id = generate_transaction_id();
-            $this->repository->insertTransaction($txn_id, $source['id'], $dest['id'], $amount, $new_source_balance, $new_dest_balance, $description);
+            $this->service->insertTransaction($txn_id, $source['id'], $dest['id'], $amount, $new_source_balance, $new_dest_balance, $description);
 
             $safe_dest_name = html_encode($dest['full_name']);
             $safe_source_name = html_encode($source['full_name']);
@@ -744,7 +744,7 @@ class UserController
         if (empty($pin) || strlen($pin) !== 4 || !is_numeric($pin)) {
             json_response(['success' => false, 'message' => 'Invalid PIN format'], 400);
         }
-        $pdo = $this->repository->getDb();
+        $pdo = $this->service->getDb();
         if (!validate_pin($pdo, $_SESSION['user_id'], $pin)) {
             json_response(['success' => false, 'message' => 'Incorrect PIN'], 401);
         }

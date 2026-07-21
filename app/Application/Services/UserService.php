@@ -250,4 +250,249 @@ class UserService
             'back_destination' => $back_destination
         ];
     }
+
+    public function fetchAccountLookup(...$args)
+    {
+        return $this->repository->fetchAccountLookup(...$args);
+    }
+
+    public function fetchAccountSettings(...$args)
+    {
+        return $this->repository->fetchAccountSettings(...$args);
+    }
+
+    public function fetchUsedToday(...$args)
+    {
+        return $this->repository->fetchUsedToday(...$args);
+    }
+
+    public function updateDailyLimit(...$args)
+    {
+        return $this->repository->updateDailyLimit(...$args);
+    }
+
+    public function fetchAccountDetails(...$args)
+    {
+        return $this->repository->fetchAccountDetails(...$args);
+    }
+
+    public function fetchMiniStatement(...$args)
+    {
+        return $this->repository->fetchMiniStatement(...$args);
+    }
+
+    public function fetchTodayTransferTotal(...$args)
+    {
+        return $this->repository->fetchTodayTransferTotal(...$args);
+    }
+
+    public function getCustomerId(...$args)
+    {
+        return $this->repository->getCustomerId(...$args);
+    }
+
+    public function fetchBeneficiaries(...$args)
+    {
+        return $this->repository->fetchBeneficiaries(...$args);
+    }
+
+    public function deleteBeneficiary(...$args)
+    {
+        return $this->repository->deleteBeneficiary(...$args);
+    }
+
+    public function getDb(...$args)
+    {
+        return $this->repository->getDb(...$args);
+    }
+
+    public function countBeneficiaries(...$args)
+    {
+        return $this->repository->countBeneficiaries(...$args);
+    }
+
+    public function getBeneficiaryByAccount(...$args)
+    {
+        return $this->repository->getBeneficiaryByAccount(...$args);
+    }
+
+    public function addBeneficiary(...$args)
+    {
+        return $this->repository->addBeneficiary(...$args);
+    }
+
+    public function getUserPasswordHash(...$args)
+    {
+        return $this->repository->getUserPasswordHash(...$args);
+    }
+
+    public function updatePassword(...$args)
+    {
+        return $this->repository->updatePassword(...$args);
+    }
+
+    public function getUserFiles(...$args)
+    {
+        return $this->repository->getUserFiles(...$args);
+    }
+
+    public function getExistingAccountByCustomerId(...$args)
+    {
+        return $this->repository->getExistingAccountByCustomerId(...$args);
+    }
+
+    public function updateAccountResubmission(...$args)
+    {
+        return $this->repository->updateAccountResubmission(...$args);
+    }
+
+    public function insertPendingAccount(...$args)
+    {
+        return $this->repository->insertPendingAccount(...$args);
+    }
+
+    public function getNextKycApplicationNo(...$args)
+    {
+        return $this->repository->getNextKycApplicationNo(...$args);
+    }
+
+    public function getKycApplication(...$args)
+    {
+        return $this->repository->getKycApplication(...$args);
+    }
+
+    public function getUserDashboardData(...$args)
+    {
+        return $this->repository->getUserDashboardData(...$args);
+    }
+
+    public function getActiveAccountByCustomerId(...$args)
+    {
+        return $this->repository->getActiveAccountByCustomerId(...$args);
+    }
+
+    public function getRecentTransactions(...$args)
+    {
+        return $this->repository->getRecentTransactions(...$args);
+    }
+
+    public function getTransactionToAccountId(...$args)
+    {
+        return $this->repository->getTransactionToAccountId(...$args);
+    }
+
+    public function getMonthlyIncome(...$args)
+    {
+        return $this->repository->getMonthlyIncome(...$args);
+    }
+
+    public function getMonthlyExpenses(...$args)
+    {
+        return $this->repository->getMonthlyExpenses(...$args);
+    }
+
+    public function getUnreadNotificationCount(...$args)
+    {
+        return $this->repository->getUnreadNotificationCount(...$args);
+    }
+
+    public function getPastRejections(...$args)
+    {
+        return $this->repository->getPastRejections(...$args);
+    }
+
+    public function getNotificationsTotal(...$args)
+    {
+        return $this->repository->getNotificationsTotal(...$args);
+    }
+
+    public function getNotifications(...$args)
+    {
+        return $this->repository->getNotifications(...$args);
+    }
+
+    public function markNotificationRead(...$args)
+    {
+        return $this->repository->markNotificationRead(...$args);
+    }
+
+    public function markAllNotificationsRead(...$args)
+    {
+        return $this->repository->markAllNotificationsRead(...$args);
+    }
+
+    public function deleteNotification(...$args)
+    {
+        return $this->repository->deleteNotification(...$args);
+    }
+
+    public function clearAllNotifications(...$args)
+    {
+        return $this->repository->clearAllNotifications(...$args);
+    }
+
+    public function getFullProfile(...$args)
+    {
+        return $this->repository->getFullProfile(...$args);
+    }
+
+    public function checkEmailExists(...$args)
+    {
+        return $this->repository->checkEmailExists(...$args);
+    }
+
+    public function checkPhoneExists(...$args)
+    {
+        return $this->repository->checkPhoneExists(...$args);
+    }
+
+    public function updateProfile(...$args)
+    {
+        return $this->repository->updateProfile(...$args);
+    }
+
+    public function getActiveAccount(...$args)
+    {
+        return $this->repository->getActiveAccount(...$args);
+    }
+
+    public function getStatementTransactions(...$args)
+    {
+        return $this->repository->getStatementTransactions(...$args);
+    }
+
+    public function getOpeningBalance(...$args)
+    {
+        return $this->repository->getOpeningBalance(...$args);
+    }
+
+    public function getTransactionsCount(...$args)
+    {
+        return $this->repository->getTransactionsCount(...$args);
+    }
+
+    public function getTransactionsList(...$args)
+    {
+        return $this->repository->getTransactionsList(...$args);
+    }
+
+    public function getAccountIdByNumber(...$args)
+    {
+        return $this->repository->getAccountIdByNumber(...$args);
+    }
+
+    public function getAccountForUpdate(...$args)
+    {
+        return $this->repository->getAccountForUpdate(...$args);
+    }
+
+    public function updateAccountBalance(...$args)
+    {
+        return $this->repository->updateAccountBalance(...$args);
+    }
+
+    public function insertTransaction(...$args)
+    {
+        return $this->repository->insertTransaction(...$args);
+    }
 }
