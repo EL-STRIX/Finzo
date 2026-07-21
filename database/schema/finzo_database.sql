@@ -242,7 +242,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY fk_txn_from_account (from_account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_txn_to_account (to_account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_txn_staff (processed_by_staff_id) REFERENCES staff(id) ON DELETE SET NULL,
-    FOREIGN KEY fk_txn_journal (journal_entry_id) REFERENCES journal_entries(id) ON DELETE RESTRICT,
     INDEX idx_txn_id (txn_id),
     INDEX idx_from_account (from_account_id),
     INDEX idx_to_account (to_account_id),
@@ -518,8 +517,8 @@ CREATE TABLE IF NOT EXISTS journal_lines (
 -- =====================================================
 DELIMITER //
 
-CREATE TRIGGER after_transaction_insert
-AFTER INSERT ON transactions
+CREATE TRIGGER trg_process_financial_transaction
+BEFORE INSERT ON transactions
 FOR EACH ROW
 BEGIN
     DECLARE v_period_id INT UNSIGNED;
@@ -593,6 +592,10 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Audit log records are immutable and cannot be updated.';
 END//
 
+DELIMITER ;
+
+DELIMITER //
+
 CREATE TRIGGER prevent_audit_delete
 BEFORE DELETE ON audit_log
 FOR EACH ROW
@@ -614,6 +617,10 @@ RETURNS INT DETERMINISTIC
 BEGIN
     RETURN TIMESTAMPDIFF(MONTH, p_opened_date, CURDATE());
 END//
+
+DELIMITER ;
+
+DELIMITER //
 
 CREATE FUNCTION IF NOT EXISTS fn_format_currency(p_amount DECIMAL(15,2)) 
 RETURNS VARCHAR(50) DETERMINISTIC
@@ -645,21 +652,19 @@ JOIN users u ON a.user_id = u.customer_id;
 
 CREATE OR REPLACE VIEW vw_branch_summary AS
 SELECT 
-    b.id, b.branch_code, b.branch_name,
+    b.id, b.branch_code, b.name as branch_name,
     COUNT(DISTINCT s.id) as total_staff,
-    COUNT(DISTINCT a.id) as total_accounts,
-    COALESCE(SUM(a.balance), 0) as total_deposits
+    0 as total_accounts,
+    0 as total_deposits
 FROM branches b
 LEFT JOIN staff s ON b.id = s.branch_id AND s.is_deleted = 0
-LEFT JOIN accounts a ON b.id = a.branch_id AND a.status = 'active'
-GROUP BY b.id, b.branch_code, b.branch_name;
+GROUP BY b.id, b.branch_code, b.name;
 
 -- 3. SCHEDULED EVENTS (AUTOMATION)
-DELIMITER //
-
 -- Enable event scheduler if not enabled (Requires SUPER privileges in real server, safe to declare here)
-SET GLOBAL event_scheduler = ON//
+SET GLOBAL event_scheduler = ON;
 
+DELIMITER //
 CREATE EVENT IF NOT EXISTS evt_cleanup_expired_tokens
 ON SCHEDULE EVERY 1 DAY
 STARTS CURRENT_TIMESTAMP
@@ -668,7 +673,9 @@ BEGIN
     -- Delete password reset tokens that are older than 24 hours to keep the table clean
     DELETE FROM password_resets WHERE expires_at < NOW();
 END//
+DELIMITER ;
 
+DELIMITER //
 CREATE EVENT IF NOT EXISTS evt_cleanup_expired_sessions
 ON SCHEDULE EVERY 1 HOUR
 STARTS CURRENT_TIMESTAMP
@@ -682,5 +689,7 @@ BEGIN
 END//
 
 DELIMITER ;
+
+ALTER TABLE transactions ADD CONSTRAINT fk_txn_journal FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE RESTRICT;
 
 -- =====================================================

@@ -20,10 +20,15 @@ class CreateInitialSchema
             $parts = explode('DELIMITER ;', $statements[$i]);
             $triggerBlock = trim($parts[0]);
             if (!empty($triggerBlock)) {
+                // PDO doesn't understand // as a terminator, it only understands standard SQL statements or single complete blocks
+                $triggerBlock = str_replace('//', '', $triggerBlock);
                 $db->exec($triggerBlock);
             }
             if (isset($parts[1])) {
-                $db->exec($parts[1]);
+                $rem = trim($parts[1]);
+                if (!empty($rem)) {
+                    $db->exec($rem);
+                }
             }
         }
     }
