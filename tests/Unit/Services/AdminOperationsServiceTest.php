@@ -28,8 +28,8 @@ class AdminOperationsServiceTest extends TestCase {
         $adminId = AdminFactory::createAdmin(['admin_id' => 'ADM999', 'full_name' => 'Audit Admin']);
         
         // Insert dummy audit log
-        $this->db->exec("INSERT INTO audit_log (action_type, entity_id, entity_type, actor_id, actor_role, details, ip_address, created_at)
-                         VALUES ('test_action', '1', 'system', 'ADM999', 'admin', 'Test details', '127.0.0.1', NOW())");
+        $this->db->exec("INSERT INTO audit_log (event_id, action_type, entity_id, entity_type, actor_id, actor_role, details, ip_address, created_at)
+                         VALUES ('evt_" . uniqid() . "', 'test_action', '1', 'system', 'ADM999', 'admin', 'Test details', '127.0.0.1', NOW())");
         
         $filters = [
             'action_type' => 'all',
