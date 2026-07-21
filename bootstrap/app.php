@@ -62,6 +62,15 @@ if (getenv('APP_ENV') !== 'testing') {
             $statusCode = $e->getStatusCode();
         }
 
+        $message = $debug ? $e->getMessage() : 'A server error occurred. Please try again later.';
+        
+        // Expose Database Business Validation Errors (Phase 10)
+        if ($e instanceof \PDOException && isset($e->errorInfo[0]) && $e->errorInfo[0] === '45000') {
+            // Error format is often: SQLSTATE[45000]: ... : 1644 Duplicate transaction detected...
+            $message = preg_replace('/SQLSTATE\[45000\].*?: \d+ /', '', $e->getMessage());
+            $statusCode = 422; // Unprocessable Entity
+        }
+
         if (!headers_sent()) {
             http_response_code($statusCode);
             header('Content-Type: application/json; charset=utf-8');
@@ -69,7 +78,7 @@ if (getenv('APP_ENV') !== 'testing') {
 
         $response = [
             'success' => false,
-            'message' => $debug ? $e->getMessage() : 'A server error occurred. Please try again later.'
+            'message' => $message
         ];
 
         if (method_exists($e, 'getPayload') && !empty($e->getPayload())) {
