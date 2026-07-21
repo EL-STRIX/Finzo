@@ -2,7 +2,7 @@
 
 use App\Core\Exceptions\ApiException;
 
-if (session_status() === PHP_SESSION_NONE) {
+if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {

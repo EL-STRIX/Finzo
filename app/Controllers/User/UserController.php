@@ -322,17 +322,18 @@ class UserController
             send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
             send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/views/user/dashboard.html']);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             if (isset($pdo)) {
                 $pdo->rollBack();
             }
-            if (file_exists($paths['front_destination'])) {
+            if (isset($paths['front_destination']) && file_exists($paths['front_destination'])) {
                 unlink($paths['front_destination']);
             }
-            if (file_exists($paths['back_destination'])) {
+            if (isset($paths['back_destination']) && file_exists($paths['back_destination'])) {
                 unlink($paths['back_destination']);
             }
-            json_response(['success' => false, 'message' => 'Failed to submit profile. Please try again.'], 500);
+            error_log("KYC DB Error: " . $e->getMessage());
+            json_response(['success' => false, 'message' => 'DB Error: ' . $e->getMessage()], 500);
         }
     }
 

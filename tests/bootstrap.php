@@ -69,13 +69,18 @@ try {
         }
         $provisionPdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
-        // Import base schema (strip USE finzo_db)
-        $schemaSql = file_get_contents(FINZO_ROOT . '/database/schema/finzo_database.sql');
-        $schemaSql = preg_replace('/\bUSE\s+`?finzo_db`?\s*;/i', '', $schemaSql);
-        $provisionPdo->exec($schemaSql);
+        // Use Migrator to deploy the schema correctly
+        require_once FINZO_ROOT . '/database/Migrator.php';
+        $migrator = new \Database\Migrator(
+            $provisionPdo,
+            FINZO_ROOT . '/database/migrations',
+            FINZO_ROOT . '/database/seeds'
+        );
+        $migrator->reset();
+        $migrator->migrate();
 
         // Mark schema as complete
-        $provisionPdo->exec("CREATE TABLE _test_schema_version (version INT NOT NULL DEFAULT 1)");
+        $provisionPdo->exec("CREATE TABLE IF NOT EXISTS _test_schema_version (version INT NOT NULL DEFAULT 1)");
         echo "[Test Bootstrap] Test DB schema fully imported.\n";
     }
 

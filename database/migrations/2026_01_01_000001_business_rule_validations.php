@@ -15,7 +15,7 @@ class BusinessRuleValidations
                 DECLARE v_user_status VARCHAR(20);
                 SELECT status INTO v_user_status FROM users WHERE customer_id = NEW.user_id;
                 
-                IF v_user_status != 'active' THEN
+                IF v_user_status != 'active' AND NEW.status != 'pending' THEN
                     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot create account: Customer KYC is not active.';
                 END IF;
                 

@@ -4,11 +4,7 @@
 -- Version 2.0
 -- =====================================================
 
-CREATE DATABASE IF NOT EXISTS finzo_db
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE finzo_db;
+-- Database creation is now handled dynamically by environment variables
 
 -- =====================================================
 -- TABLE 1: branches

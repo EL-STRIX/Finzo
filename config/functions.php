@@ -46,7 +46,7 @@ function html_encode($data)
  */
 function generate_csrf_token()
 {
-    if (session_status() === PHP_SESSION_NONE) {
+    if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     $token = bin2hex(random_bytes(32));
@@ -62,7 +62,7 @@ function generate_csrf_token()
  */
 function validate_csrf_token($token)
 {
-    if (session_status() === PHP_SESSION_NONE) {
+    if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     if (empty($token) || empty($_SESSION['csrf_token'])) {
