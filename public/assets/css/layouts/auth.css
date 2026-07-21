@@ -537,6 +537,16 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+.fin-toast-error {
+  background-color: #7f1d1d;
+  border-color: #dc2626;
+}
+
+.fin-toast-warning {
+  background-color: #78350f;
+  border-color: #d97706;
+}
+
 .fin-toast-icon {
   font-size: 20px;
 }

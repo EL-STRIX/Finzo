@@ -464,7 +464,16 @@ function validate_password_strength($password)
     if (strlen($password) < 8) {
         return ['valid' => false, 'message' => 'Password must be at least 8 characters long'];
     }
-    return ['valid' => true, 'message' => 'Password meets requirements'];
+    if (!preg_match('/[A-Z]/', $password)) {
+        return ['valid' => false, 'message' => 'Password must contain at least one uppercase letter'];
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+        return ['valid' => false, 'message' => 'Password must contain at least one number'];
+    }
+    if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+        return ['valid' => false, 'message' => 'Password must contain at least one special character (!@#$ etc..)'];
+    }
+    return ['valid' => true, 'message' => 'Password meets all requirements'];
 }
 
 /**

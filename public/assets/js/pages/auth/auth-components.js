@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initRoleTabs();
     initInputInteractions();
     initResendEmailAction();
+    initRememberMe();
+    initResetPasswordTokenFromUrl();
+    initAuthFormSubmission();
 });
 
 /**
@@ -41,21 +44,24 @@ function initCsrfToken() {
     const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
     if (csrfInputs.length === 0) return;
 
-    const endpoint = window.location.pathname.includes('/Finzo/') 
-        ? '/Finzo/public/api/auth/get-csrf-token.php' 
-        : '/api/auth/get-csrf-token.php';
+    const endpoint = '/Finzo/public/api/auth/get-csrf-token.php';
 
     fetch(endpoint)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.csrf_token) {
-                csrfInputs.forEach(input => {
-                    input.value = data.csrf_token;
-                });
+        .then(res => res.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                if (data && data.csrf_token) {
+                    csrfInputs.forEach(input => {
+                        input.value = data.csrf_token;
+                    });
+                }
+            } catch (_) {
+                console.warn('[Finzo] CSRF endpoint returned non-JSON. Check public/api/.htaccess and XAMPP.');
             }
         })
         .catch(() => {
-            // Silence CSRF token fetch errors if offline or in static preview
+            console.warn('[Finzo] CSRF endpoint unreachable. Ensure XAMPP Apache is running.');
         });
 }
 
@@ -389,8 +395,14 @@ function showNotificationToast(message, type = 'info') {
 
     const toast = document.createElement('div');
     toast.className = `fin-toast fin-toast-${type}`;
+    const iconMap = {
+        success: 'check_circle',
+        error:   'error',
+        warning: 'warning',
+        info:    'info'
+    };
     toast.innerHTML = `
-        <span class="material-symbols-outlined fin-toast-icon">${type === 'success' ? 'check_circle' : 'info'}</span>
+        <span class="material-symbols-outlined fin-toast-icon">${iconMap[type] || 'info'}</span>
         <span class="fin-toast-msg">${message}</span>
     `;
 
@@ -404,4 +416,167 @@ function showNotificationToast(message, type = 'info') {
         toast.classList.remove('is-visible');
         setTimeout(() => toast.remove(), 300);
     }, 4000);
+}
+
+/**
+ * 8. Remember Me — persist identity field using localStorage
+ */
+function initRememberMe() {
+    const rememberCheckbox = document.getElementById('remember-me');
+    const identityInput = document.getElementById('customer-id');
+    if (!rememberCheckbox || !identityInput) return;
+
+    // Restore saved identity
+    const saved = localStorage.getItem('finzo_remembered_identity');
+    if (saved) {
+        identityInput.value = saved;
+        rememberCheckbox.checked = true;
+    }
+
+    const form = rememberCheckbox.closest('form');
+    if (form) {
+        form.addEventListener('submit', () => {
+            if (rememberCheckbox.checked && identityInput.value.trim()) {
+                localStorage.setItem('finzo_remembered_identity', identityInput.value.trim());
+            } else {
+                localStorage.removeItem('finzo_remembered_identity');
+            }
+        }, { capture: true });
+    }
+}
+
+/**
+ * 9. Auto-populate reset token from URL query param
+ */
+function initResetPasswordTokenFromUrl() {
+    const tokenInput = document.querySelector('input[name="token"]');
+    if (!tokenInput) return;
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+        tokenInput.value = token;
+    }
+}
+
+/**
+ * 10. AJAX Form Submission Handler for all auth forms
+ */
+function initAuthFormSubmission() {
+    const formMap = [
+        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login.php' },
+        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login.php' },
+        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login.php' },
+        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register.php' },
+        { selector: 'form[data-action="forgot-password"]',  endpoint: '/Finzo/public/api/auth/forgot-password.php' },
+        { selector: 'form[data-action="reset-password"]',   endpoint: '/Finzo/public/api/auth/reset-password.php' },
+    ];
+
+    formMap.forEach(({ selector, endpoint }) => {
+        const form = document.querySelector(selector);
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous server errors
+            clearServerErrors(form);
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.classList.add('is-loading');
+                submitBtn.disabled = true;
+                submitBtn.setAttribute('aria-busy', 'true');
+            }
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                // Read as text first to handle non-JSON responses (Apache 404 HTML, PHP errors)
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (_) {
+                    // Server returned a non-JSON body — likely a routing/config issue
+                    showNotificationToast(
+                        `Server error (HTTP ${response.status}). Check server configuration.`,
+                        'error'
+                    );
+                    return;
+                }
+
+                if (data.success) {
+                    if (data.redirect) {
+                        showNotificationToast(data.message || 'Success!', 'success');
+                        setTimeout(() => { window.location.href = data.redirect; }, 600);
+                    } else {
+                        showNotificationToast(data.message || 'Done!', 'success');
+                    }
+                } else {
+                    // Show field-level errors if present
+                    if (data.errors) {
+                        displayFieldErrors(form, data.errors);
+                    } else {
+                        showNotificationToast(data.message || 'An error occurred.', 'error');
+                    }
+
+                    // Handle locked account redirect
+                    if (data.locked && data.redirect) {
+                        setTimeout(() => { window.location.href = data.redirect; }, 1500);
+                    }
+                }
+            } catch (err) {
+                showNotificationToast('Connection failed. Please check XAMPP is running.', 'error');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.classList.remove('is-loading');
+                    submitBtn.disabled = false;
+                    submitBtn.removeAttribute('aria-busy');
+                }
+                // Refresh CSRF token after each submission
+                initCsrfToken();
+            }
+        });
+    });
+}
+
+/**
+ * Display field-level server validation errors on the form
+ */
+function displayFieldErrors(form, errors) {
+    Object.entries(errors).forEach(([field, message]) => {
+        const input = form.querySelector(`[name="${field}"]`);
+        if (!input) return;
+        input.classList.add('is-invalid');
+        input.setAttribute('aria-invalid', 'true');
+        const container = input.closest('.fin-input-container');
+        if (container) {
+            let errorEl = container.querySelector('.fin-error-text');
+            if (!errorEl) {
+                errorEl = document.createElement('span');
+                errorEl.className = 'fin-error-text';
+                container.appendChild(errorEl);
+            }
+            errorEl.innerHTML = `<span class="material-symbols-outlined">error</span> ${message}`;
+            errorEl.classList.add('is-visible');
+        }
+    });
+}
+
+/**
+ * Clear all server-side error states from a form
+ */
+function clearServerErrors(form) {
+    form.querySelectorAll('.is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
+        el.removeAttribute('aria-invalid');
+    });
+    form.querySelectorAll('.fin-error-text.is-visible').forEach(el => {
+        el.classList.remove('is-visible');
+    });
 }

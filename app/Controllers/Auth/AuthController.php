@@ -32,8 +32,13 @@ class AuthController
         $user = $result['user'];
         $account = $result['account'];
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '', 3), '/\\');
-        $redirect = $base . '/views/user/dashboard.html';
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+
+        if ($user['status'] === 'pending') {
+            $redirect = $base . '/views/user/complete-profile.html';
+        } else {
+            $redirect = $base . '/views/user/dashboard.html';
+        }
 
         return [
             'success'  => true,
@@ -163,10 +168,12 @@ class AuthController
 
         $this->service->resetPassword($token, $new_password);
 
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+
         return [
             'success'  => true,
             'message'  => 'Password has been reset successfully. You can now log in with your new password.',
-            'redirect' => '/views/auth/login.html'
+            'redirect' => $base . '/views/auth/login.html'
         ];
     }
 
@@ -222,35 +229,42 @@ class AuthController
         $this->service->registerUser($full_name, $email, $phone, $password);
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
-        $redirect = $base . '/views/auth/login.html';
 
-        // Router sends 200 for arrays, but register was sending 201.
-        // Let's call json_response directly for 201, or update router.
-        // For simplicity, we just return the array and let Router send 200. It's an API, 200 is acceptable for registration if not strictly RESTful.
-        // Actually I can just call json_response here since Router doesn't mind if we exit early.
-        json_response([
+        return [
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
-            'redirect' => $redirect
-        ], 201);
+            'redirect' => $base . '/views/auth/login.html'
+        ];
     }
 
-    public function logout()
+    public function logout(): array
     {
         $role = $_SESSION['role'] ?? '';
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
         destroy_session();
 
         switch ($role) {
             case 'staff':
-                $redirect = '/views/auth/staff-login.html';
+                $redirect = $base . '/views/auth/staff-login.html';
                 break;
             case 'admin':
-                $redirect = '/views/auth/admin-login.html';
+                $redirect = $base . '/views/auth/admin-login.html';
                 break;
             case 'customer':
             default:
-                $redirect = '/views/auth/login.html';
+                $redirect = $base . '/views/auth/login.html';
                 break;
+        }
+
+        // If called via browser navigation (GET, no XHR header), redirect directly
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+        if (!$isAjax && $_SERVER['REQUEST_METHOD'] === 'GET') {
+            if (!headers_sent()) {
+                header('Location: ' . $redirect, true, 302);
+            }
+            exit;
         }
 
         return [
