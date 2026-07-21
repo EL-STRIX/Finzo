@@ -16,6 +16,7 @@ $router->post('/auth/login.php', [AuthController::class, 'login']);
 $router->post('/auth/admin-login.php', [AuthController::class, 'adminLogin']);
 $router->post('/auth/staff-login.php', [AuthController::class, 'staffLogin']);
 $router->post('/auth/logout.php', [AuthController::class, 'logout']);
+$router->get('/auth/logout.php', [AuthController::class, 'logout']);
 $router->post('/auth/register.php', [AuthController::class, 'register']);
 $router->post('/auth/forgot-password.php', [AuthController::class, 'forgotPassword']);
 $router->post('/auth/reset-password.php', [AuthController::class, 'resetPassword']);

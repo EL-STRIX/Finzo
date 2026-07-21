@@ -237,22 +237,34 @@ class AuthController
         ];
     }
 
-    public function logout()
+    public function logout(): array
     {
         $role = $_SESSION['role'] ?? '';
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
         destroy_session();
 
         switch ($role) {
             case 'staff':
-                $redirect = '/views/auth/staff-login.html';
+                $redirect = $base . '/views/auth/staff-login.html';
                 break;
             case 'admin':
-                $redirect = '/views/auth/admin-login.html';
+                $redirect = $base . '/views/auth/admin-login.html';
                 break;
             case 'customer':
             default:
-                $redirect = '/views/auth/login.html';
+                $redirect = $base . '/views/auth/login.html';
                 break;
+        }
+
+        // If called via browser navigation (GET, no XHR header), redirect directly
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+        if (!$isAjax && $_SERVER['REQUEST_METHOD'] === 'GET') {
+            if (!headers_sent()) {
+                header('Location: ' . $redirect, true, 302);
+            }
+            exit;
         }
 
         return [

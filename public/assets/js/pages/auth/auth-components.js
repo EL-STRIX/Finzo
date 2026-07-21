@@ -390,8 +390,14 @@ function showNotificationToast(message, type = 'info') {
 
     const toast = document.createElement('div');
     toast.className = `fin-toast fin-toast-${type}`;
+    const iconMap = {
+        success: 'check_circle',
+        error:   'error',
+        warning: 'warning',
+        info:    'info'
+    };
     toast.innerHTML = `
-        <span class="material-symbols-outlined fin-toast-icon">${type === 'success' ? 'check_circle' : 'info'}</span>
+        <span class="material-symbols-outlined fin-toast-icon">${iconMap[type] || 'info'}</span>
         <span class="fin-toast-msg">${message}</span>
     `;
 

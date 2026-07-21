@@ -716,7 +716,7 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await fetch('../../../../api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
+      await fetch('/Finzo/public/api/auth/logout.php', { method: 'POST', credentials: 'same-origin' });
       // Clear local cache
       Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
