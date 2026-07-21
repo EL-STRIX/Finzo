@@ -15,6 +15,7 @@ USE finzo_db;
 -- =====================================================
 CREATE TABLE IF NOT EXISTS branches (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     name VARCHAR(200) NOT NULL,
     branch_code VARCHAR(20) NOT NULL UNIQUE,
     state VARCHAR(100) NOT NULL,
@@ -79,6 +80,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     customer_id VARCHAR(20) UNIQUE,
     full_name VARCHAR(150) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -190,6 +192,7 @@ ALTER TABLE branches
 -- =====================================================
 CREATE TABLE IF NOT EXISTS accounts (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     user_id VARCHAR(20) NOT NULL UNIQUE,
     account_no VARCHAR(20) NOT NULL UNIQUE,
     account_type ENUM('savings', 'current') NOT NULL,
@@ -199,6 +202,9 @@ CREATE TABLE IF NOT EXISTS accounts (
     daily_limit DECIMAL(15, 2) NOT NULL DEFAULT 10000.00,
     status ENUM('pending', 'active', 'suspended', 'rejected', 'closed') NOT NULL DEFAULT 'pending',
     opened_date DATE NULL DEFAULT NULL,
+    closed_at TIMESTAMP NULL DEFAULT NULL,
+    frozen_at TIMESTAMP NULL DEFAULT NULL,
+    closure_reason VARCHAR(255) NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY fk_accounts_user (user_id) REFERENCES users(customer_id) ON DELETE RESTRICT,
@@ -212,6 +218,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS transactions (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     txn_id VARCHAR(50) NOT NULL UNIQUE,
     from_account_id INT UNSIGNED NULL DEFAULT NULL,
     to_account_id INT UNSIGNED NULL DEFAULT NULL,
@@ -241,6 +248,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS beneficiaries (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     user_id VARCHAR(20) NOT NULL,
     nickname VARCHAR(100) NOT NULL,
     account_no VARCHAR(20) NOT NULL,
@@ -255,6 +263,7 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS notifications (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     user_id VARCHAR(20) NOT NULL,
     type ENUM('transaction', 'security', 'system') NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -271,6 +280,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS audit_log (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     action_type VARCHAR(100) NOT NULL,
     entity_id VARCHAR(100) NULL DEFAULT NULL,
     entity_type VARCHAR(50) NULL DEFAULT NULL,
@@ -290,6 +300,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS interest_rates (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     rate DECIMAL(5, 2) NOT NULL CHECK (rate >= 0),
     apply_from_type ENUM('Immediately', 'Next Month', 'Custom Date') NOT NULL,
     apply_from_date DATE NULL DEFAULT NULL,
@@ -303,6 +314,7 @@ CREATE TABLE IF NOT EXISTS interest_rates (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS password_resets (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
     user_id VARCHAR(20) NOT NULL,
     token VARCHAR(100) NOT NULL UNIQUE,
     expires_at TIMESTAMP NOT NULL,
@@ -319,7 +331,8 @@ CREATE TABLE IF NOT EXISTS system_settings (
   id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   setting_key   VARCHAR(100) NOT NULL UNIQUE,
   setting_value TEXT NOT NULL,
-  setting_type  ENUM('string','number','boolean','json') NOT NULL DEFAULT 'string',
+  setting_type ENUM('string','number','boolean','json') NOT NULL DEFAULT 'string',
+  setting_category ENUM('banking','security','application','operational') NOT NULL DEFAULT 'application',
   label         VARCHAR(255) NOT NULL,
   description   TEXT NULL,
   updated_by    VARCHAR(20) NULL,
