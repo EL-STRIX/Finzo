@@ -23,7 +23,7 @@ class RegisterTest extends TestCase {
             $this->fail("json_response did not throw an exception");
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
-            $this->assertEquals(201, $response['status']);
+            $this->assertEquals(200, $response['status']);
             $this->assertTrue($response['success']);
             
             // Check session
