@@ -1,4 +1,24 @@
-/* Resets */
+/* Enterprise Responsive Baseline */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure all images and media scale responsively without overflowing */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 *:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus) !important;
