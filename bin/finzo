@@ -1,0 +1,56 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Finzo CLI - Migration and Seeder Tool
+ */
+
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../database/Migrator.php';
+
+use Database\Migrator;
+
+$dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage() . "\n");
+}
+
+$migrator = new Migrator($pdo, __DIR__ . '/../database/migrations', __DIR__ . '/../database/seeds');
+
+$command = $argv[1] ?? 'help';
+
+switch ($command) {
+    case 'migrate':
+        $migrator->migrate();
+        break;
+    
+    case 'rollback':
+        $migrator->rollback();
+        break;
+    
+    case 'reset':
+        $migrator->reset();
+        break;
+        
+    case 'seed':
+        $type = $argv[2] ?? 'system';
+        $migrator->seed($type);
+        break;
+
+    case 'help':
+    default:
+        echo "Finzo Database Management CLI\n\n";
+        echo "Usage:\n";
+        echo "  php bin/finzo migrate         Run pending migrations\n";
+        echo "  php bin/finzo rollback        Rollback the last migration batch\n";
+        echo "  php bin/finzo reset           Rollback all migrations\n";
+        echo "  php bin/finzo seed [type]     Run database seeders (system, dev, testing, demo)\n";
+        break;
+}
