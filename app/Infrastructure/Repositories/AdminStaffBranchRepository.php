@@ -13,17 +13,17 @@ class AdminStaffBranchRepository extends BaseRepository
 
     public function findStaffByEmail(string $email)
     {
-        return $this->fetchOne("SELECT id FROM staff WHERE personal_email = ?", [$email]);
+        return $this->fetchOne("SELECT id FROM staff WHERE personal_email = ?", [$email], \App\Domain\Models\Staff::class);
     }
 
     public function findBranchById(int $id)
     {
-        return $this->fetchOne("SELECT id, name, type FROM branches WHERE id = ?", [$id]);
+        return $this->fetchOne("SELECT id, name, type FROM branches WHERE id = ?", [$id], \App\Domain\Models\Staff::class);
     }
 
     public function findAdminById(int $id)
     {
-        return $this->fetchOne("SELECT id, admin_id, password_hash, full_name, email, account_locked, auto_unlock_at, status FROM admin_users WHERE id = ?", [$id]);
+        return $this->fetchOne("SELECT id, admin_id, password_hash, full_name, email, account_locked, auto_unlock_at, status FROM admin_users WHERE id = ?", [$id], \App\Domain\Models\Staff::class);
     }
 
     public function countBranchByCode(string $codePattern)
@@ -42,7 +42,7 @@ class AdminStaffBranchRepository extends BaseRepository
 
     public function findActiveStaffById(int $id)
     {
-        return $this->fetchOne("SELECT id FROM staff WHERE id = ? AND status = 'active'", [$id]);
+        return $this->fetchOne("SELECT id FROM staff WHERE id = ? AND status = 'active'", [$id], \App\Domain\Models\Staff::class);
     }
 
     public function insertBranch(array $data)
@@ -92,7 +92,7 @@ class AdminStaffBranchRepository extends BaseRepository
             FROM staff s
             LEFT JOIN branches b ON b.id = s.branch_id
             WHERE s.id = ?
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffPerformance(int $staff_id)
@@ -103,12 +103,12 @@ class AdminStaffBranchRepository extends BaseRepository
                    COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals
             FROM transactions
             WHERE processed_by_staff_id = ? AND status = 'completed'
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function findStaffRecord(int $staff_id)
     {
-        return $this->fetchOne("SELECT id, staff_id, full_name, personal_email as email, status, profile_photo FROM staff WHERE id = ?", [$staff_id]);
+        return $this->fetchOne("SELECT id, staff_id, full_name, personal_email as email, status, profile_photo FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function updateStaffPassword(int $staff_id, string $hash)

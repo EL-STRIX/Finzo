@@ -8,17 +8,17 @@ class AdminManagementRepository extends BaseRepository
 {
     public function getAdminByEmail(string $email)
     {
-        return $this->fetchOne("SELECT id FROM admin_users WHERE email = ?", [$email]);
+        return $this->fetchOne("SELECT id FROM admin_users WHERE email = ?", [$email], \App\Domain\Models\Admin::class);
     }
 
     public function getAdminById(int $id)
     {
-        return $this->fetchOne("SELECT * FROM admin_users WHERE id = ?", [$id]);
+        return $this->fetchOne("SELECT * FROM admin_users WHERE id = ?", [$id], \App\Domain\Models\Admin::class);
     }
 
     public function getAdminByAdminId(string $adminId)
     {
-        return $this->fetchOne("SELECT * FROM admin_users WHERE admin_id = ?", [$adminId]);
+        return $this->fetchOne("SELECT * FROM admin_users WHERE admin_id = ?", [$adminId], \App\Domain\Models\Admin::class);
     }
 
     public function getMaxAdminIdNumber(): int
@@ -76,7 +76,7 @@ class AdminManagementRepository extends BaseRepository
                 (SELECT full_name FROM admin_users WHERE admin_id = a.created_by) AS created_by_name
             FROM admin_users a
             WHERE a.id = ? AND a.admin_role != 'super_admin'
-        ", [$id]);
+        ", [$id], \App\Domain\Models\Admin::class);
     }
 
     public function getAdminActivity(string $adminId, int $limit = 50)
@@ -112,7 +112,7 @@ class AdminManagementRepository extends BaseRepository
             FROM admin_users a
             WHERE a.admin_role != 'super_admin'
             ORDER BY a.created_at DESC
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
     public function getLockedAdmins()
@@ -123,7 +123,7 @@ class AdminManagementRepository extends BaseRepository
             FROM admin_users
             WHERE account_locked = 1
             ORDER BY locked_at DESC
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
     public function updateAdminProfileField(int $id, string $field, $value)
@@ -152,7 +152,7 @@ class AdminManagementRepository extends BaseRepository
                    security_question, security_question_set, created_at
             FROM admin_users 
             WHERE id = ?
-        ", [$id]);
+        ", [$id], \App\Domain\Models\Admin::class);
     }
 
     public function updateTwoFa(int $id, int $enabled)

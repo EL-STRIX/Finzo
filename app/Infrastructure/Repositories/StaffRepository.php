@@ -13,7 +13,7 @@ class StaffRepository extends BaseRepository
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
-        ", [$account_no]);
+        ", [$account_no], \App\Domain\Models\Staff::class);
     }
 
     public function getUsedDailyLimit(string $account_no)
@@ -31,12 +31,12 @@ class StaffRepository extends BaseRepository
 
     public function findStaffById(int $staff_id)
     {
-        return $this->fetchOne("SELECT * FROM staff WHERE id = ?", [$staff_id]);
+        return $this->fetchOne("SELECT * FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function findStaffPasswordHash(int $staff_id)
     {
-        $row = $this->fetchOne("SELECT password_hash FROM staff WHERE id = ?", [$staff_id]);
+        $row = $this->fetchOne("SELECT password_hash FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
         return $row ? $row['password_hash'] : null;
     }
 
@@ -52,7 +52,7 @@ class StaffRepository extends BaseRepository
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = 'deposit'
                 AND status = 'completed' AND DATE(created_at) = CURDATE()
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffShiftWithdrawals(int $staff_id)
@@ -62,7 +62,7 @@ class StaffRepository extends BaseRepository
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = 'withdrawal'
                 AND status = 'completed' AND DATE(created_at) = CURDATE()
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffTotalTransactionsToday(int $staff_id)
@@ -98,7 +98,7 @@ class StaffRepository extends BaseRepository
             WHERE t.processed_by_staff_id = ?
             ORDER BY t.created_at DESC
             LIMIT 10
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffInfoWithBranch(int $staff_id)
@@ -108,7 +108,7 @@ class StaffRepository extends BaseRepository
             FROM staff s
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE s.id = ?
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function beginTransaction(): bool
@@ -134,7 +134,7 @@ class StaffRepository extends BaseRepository
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
             FOR UPDATE
-        ", [$account_no]);
+        ", [$account_no], \App\Domain\Models\Staff::class);
     }
 
     public function creditAccount(int $account_id, float $amount)
@@ -243,7 +243,7 @@ class StaffRepository extends BaseRepository
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE t.txn_id = ?
-        ", [$txn_id]);
+        ", [$txn_id], \App\Domain\Models\Staff::class);
     }
 
     public function getFullStaffProfile(int $staff_id)
@@ -264,7 +264,7 @@ class StaffRepository extends BaseRepository
             FROM staff s
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE s.id = ?
-        ", [$staff_id]);
+        ", [$staff_id], \App\Domain\Models\Staff::class);
     }
 
     public function updateStaffProfile(int $staff_id, array $fields, array $params)

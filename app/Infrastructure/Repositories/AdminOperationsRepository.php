@@ -15,8 +15,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT al.id, al.action_type, al.entity_id, al.entity_type,
                    al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
@@ -35,14 +34,12 @@ class AdminOperationsRepository extends BaseRepository
         ", $params);
     }
 
-    public function getAuditLogActionTypes(): array
-    {
+    public function getAuditLogActionTypes() {
         $stmt = $this->db->query("SELECT DISTINCT action_type FROM audit_log ORDER BY action_type");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getAuditLogStats(string $whereSql, array $params): array
-    {
+    public function getAuditLogStats(string $whereSql, array $params) {
         return $this->fetchOne("
             SELECT 
                 SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
@@ -63,19 +60,17 @@ class AdminOperationsRepository extends BaseRepository
         return $stmt->fetchColumn();
     }
 
-    public function getDashboardRecentUsers(): array
-    {
+    public function getDashboardRecentUsers() {
         return $this->fetchAll("
             SELECT id, full_name, email, status, created_at, profile_picture
             FROM users
             WHERE is_deleted = 0
             ORDER BY created_at DESC
             LIMIT 10
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
-    public function getMonthlyChartDataRow(string $monthDate): array
-    {
+    public function getMonthlyChartDataRow(string $monthDate) {
         return $this->fetchOne("
             SELECT
                 COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as deposits,
@@ -85,12 +80,11 @@ class AdminOperationsRepository extends BaseRepository
             FROM transactions
             WHERE status = 'completed'
                 AND DATE_FORMAT(created_at, '%Y-%m') = ?
-        ", [$monthDate]);
+        ", [$monthDate], \App\Domain\Models\Admin::class);
     }
 
-    public function getAdminById(int $adminId): ?array
-    {
-        return $this->fetchOne("SELECT full_name, email, profile_photo, admin_role, admin_id FROM admin_users WHERE id = ?", [$adminId]) ?: null;
+    public function getAdminById(int $adminId) {
+        return $this->fetchOne("SELECT full_name, email, profile_photo, admin_role, admin_id FROM admin_users WHERE id = ?", [$adminId], \App\Domain\Models\Admin::class) ?: null;
     }
 
     // ---------------------------------------------------------
@@ -106,8 +100,7 @@ class AdminOperationsRepository extends BaseRepository
         ", $params)['count'] ?? 0;
     }
 
-    public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
                    a.account_no, a.account_type, a.balance
@@ -122,8 +115,7 @@ class AdminOperationsRepository extends BaseRepository
     // ---------------------------------------------------------
     // Interest Rate Methods
     // ---------------------------------------------------------
-    public function getCurrentInterestRate(): ?array
-    {
+    public function getCurrentInterestRate() {
         return $this->fetchOne("
             SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
@@ -131,11 +123,10 @@ class AdminOperationsRepository extends BaseRepository
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 1
-        ") ?: null;
+        ", \App\Domain\Models\Admin::class) ?: null;
     }
 
-    public function getInterestHistory(): array
-    {
+    public function getInterestHistory() {
         return $this->fetchAll("
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
                    au.full_name as changed_by_name
@@ -143,7 +134,7 @@ class AdminOperationsRepository extends BaseRepository
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 10
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
     public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void
@@ -159,9 +150,8 @@ class AdminOperationsRepository extends BaseRepository
         $this->execute("UPDATE accounts SET interest_rate = ?, updated_at = NOW() WHERE status = 'active' AND account_type = 'savings'", [$rate]);
     }
 
-    public function getActiveSavingsAccounts(): array
-    {
-        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0");
+    public function getActiveSavingsAccounts() {
+        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", \App\Domain\Models\Admin::class);
     }
 
     public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
@@ -185,8 +175,7 @@ class AdminOperationsRepository extends BaseRepository
         ", [$userId, $type, $title, $message]);
     }
 
-    public function getExportUsers(string $whereSql, array $params): array
-    {
+    public function getExportUsers(string $whereSql, array $params) {
         return $this->fetchAll("
             SELECT
                 u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at
@@ -204,8 +193,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT u.id, u.full_name, u.email, u.phone, u.status, u.profile_picture,
                    u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
@@ -219,8 +207,7 @@ class AdminOperationsRepository extends BaseRepository
         ", $params);
     }
 
-    public function getLockedAccountDetail(int $userId): ?array
-    {
+    public function getLockedAccountDetail(int $userId) {
         return $this->fetchOne("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.profile_picture, u.failed_attempts, u.locked_until,
@@ -229,11 +216,10 @@ class AdminOperationsRepository extends BaseRepository
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             WHERE u.id = ?
-        ", [$userId]) ?: null;
+        ", [$userId], \App\Domain\Models\Admin::class) ?: null;
     }
 
-    public function getUserAuditLogs(string $customerId): array
-    {
+    public function getUserAuditLogs(string $customerId) {
         return $this->fetchAll("
             SELECT action_type, entity_type, entity_id, ip_address, created_at, details
             FROM audit_log
@@ -241,7 +227,7 @@ class AdminOperationsRepository extends BaseRepository
                OR (actor_id = ? AND actor_role = 'User')
             ORDER BY created_at DESC
             LIMIT 20
-        ", [$customerId, $customerId]);
+        ", [$customerId, $customerId], \App\Domain\Models\Admin::class);
     }
 
     // ---------------------------------------------------------
@@ -252,8 +238,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.kyc_submitted_at, u.created_at, u.profile_picture,
@@ -275,8 +260,7 @@ class AdminOperationsRepository extends BaseRepository
         ", $params);
     }
 
-    public function getPendingApprovalsStats(): array
-    {
+    public function getPendingApprovalsStats() {
         return $this->fetchOne("
             SELECT
                 SUM(CASE WHEN status = 'pending'      THEN 1 ELSE 0 END) as pending_review,
@@ -285,15 +269,14 @@ class AdminOperationsRepository extends BaseRepository
                 SUM(CASE WHEN status = 'rejected' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
                 SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
             FROM users WHERE is_deleted = 0
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
     // ---------------------------------------------------------
     // Recover User Methods
     // ---------------------------------------------------------
-    public function getUserForRecovery(int $userId): ?array
-    {
-        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId]) ?: null;
+    public function getUserForRecovery(int $userId) {
+        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId], \App\Domain\Models\Admin::class) ?: null;
     }
 
     public function recoverUser(int $userId, string $customerId): void
@@ -305,35 +288,32 @@ class AdminOperationsRepository extends BaseRepository
     // ---------------------------------------------------------
     // Review Application Methods
     // ---------------------------------------------------------
-    public function getApplicationUser(int $userId): ?array
-    {
+    public function getApplicationUser(int $userId) {
         return $this->fetchOne("
             SELECT id, customer_id, full_name, email, phone, status, profile_picture, dob, gender, father_name, mother_name, marital_status, nationality,
                    occupation, annual_income, source_of_income, street, city, state, pincode, country,
                    id_type, id_number, id_front_path, id_back_path,
                    kyc_submitted_at, rejection_reason, created_at
             FROM users WHERE id = ? AND is_deleted = 0
-        ", [$userId]) ?: null;
+        ", [$userId], \App\Domain\Models\Admin::class) ?: null;
     }
 
-    public function getAccountPreferences(string $customerId): ?array
-    {
-        return $this->fetchOne("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?", [$customerId]) ?: null;
+    public function getAccountPreferences(string $customerId) {
+        return $this->fetchOne("SELECT account_type, balance as initial_deposit, status FROM accounts WHERE user_id = ?", [$customerId], \App\Domain\Models\Admin::class) ?: null;
     }
 
-    public function getApplicationAuditLogs(string $customerId): array
-    {
+    public function getApplicationAuditLogs(string $customerId) {
         return $this->fetchAll("
             SELECT details, created_at 
             FROM audit_log 
             WHERE action_type = 'kyc_rejected' AND entity_id = ? 
             ORDER BY id ASC
-        ", [$customerId]);
+        ", [$customerId], \App\Domain\Models\Admin::class);
     }
 
     public function getAccountIdByCustomerId(string $customerId): ?int
     {
-        return (int)($this->fetchOne("SELECT id FROM accounts WHERE user_id = ?", [$customerId])['id'] ?? 0) ?: null;
+        return (int)($this->fetchOne("SELECT id FROM accounts WHERE user_id = ?", [$customerId], \App\Domain\Models\Admin::class)['id'] ?? 0) ?: null;
     }
 
     public function approveApplication(int $userId, string $customerId, string $accountNo, string $adminDisplayId): void
@@ -396,8 +376,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
     }
 
-    public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         $sql = "
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
                    a.account_no, a.account_type, a.balance,
@@ -431,8 +410,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne("SELECT COUNT(*) as count " . $baseSql, $params)['count'] ?? 0;
     }
 
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset): array
-    {
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset) {
         $sql = "
             SELECT
                 t.id, t.txn_id, t.type, t.amount, t.balance_after, t.description,
@@ -451,8 +429,7 @@ class AdminOperationsRepository extends BaseRepository
         return $this->fetchAll($sql, $params);
     }
 
-    public function getTransactionsSummary(string $baseSql, array $params): array
-    {
+    public function getTransactionsSummary(string $baseSql, array $params) {
         $sql = "
             SELECT
                 COUNT(*) as total_count,
@@ -465,8 +442,7 @@ class AdminOperationsRepository extends BaseRepository
         return $this->fetchOne($sql, $params);
     }
 
-    public function exportTransactions(string $baseSql, array $params): array
-    {
+    public function exportTransactions(string $baseSql, array $params) {
         $sql = "
             SELECT
                 t.txn_id as 'Transaction ID',
@@ -494,8 +470,7 @@ class AdminOperationsRepository extends BaseRepository
         return (int)$this->fetchOne("SELECT COUNT(u.id) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset): array
-    {
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset) {
         $sql = "
             SELECT
                 u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
@@ -507,8 +482,7 @@ class AdminOperationsRepository extends BaseRepository
         return $this->fetchAll($sql, $params);
     }
 
-    public function getUsersStats(): array
-    {
+    public function getUsersStats() {
         return $this->fetchOne("
             SELECT
                 SUM(CASE WHEN is_deleted = 0 THEN 1 ELSE 0 END) as total_users,
@@ -517,20 +491,19 @@ class AdminOperationsRepository extends BaseRepository
                 SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
                 SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as soft_deleted
             FROM users
-        ");
+        ", \App\Domain\Models\Admin::class);
     }
 
     // ---------------------------------------------------------
     // Suspended User Detail Methods
     // ---------------------------------------------------------
-    public function getSuspendedUser(int $userId): ?array
-    {
+    public function getSuspendedUser(int $userId) {
         return $this->fetchOne("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
                    occupation, annual_income, street, city, state, pincode, country,
                    id_type, id_number, kyc_submitted_at, created_at, updated_at
             FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
-        ", [$userId]);
+        ", [$userId], \App\Domain\Models\Admin::class);
     }
 
     public function getSuspendedUserAccount(string $customerId)
