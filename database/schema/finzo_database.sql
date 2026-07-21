@@ -290,18 +290,30 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE TABLE IF NOT EXISTS audit_log (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    event_id VARCHAR(100) UNIQUE NOT NULL,
+    correlation_id VARCHAR(100) NULL DEFAULT NULL,
+    request_id VARCHAR(100) NULL DEFAULT NULL,
+    module VARCHAR(100) NOT NULL DEFAULT 'system',
     action_type VARCHAR(100) NOT NULL,
     entity_id VARCHAR(100) NULL DEFAULT NULL,
     entity_type VARCHAR(50) NULL DEFAULT NULL,
     actor_id VARCHAR(100) NOT NULL,
     actor_role ENUM('admin', 'staff', 'user', 'system') NOT NULL,
-    details TEXT NULL DEFAULT NULL,
+    branch_id VARCHAR(50) NULL DEFAULT NULL,
+    session_id VARCHAR(255) NULL DEFAULT NULL,
+    device_info TEXT NULL DEFAULT NULL,
     ip_address VARCHAR(45) NULL DEFAULT NULL,
+    status ENUM('success', 'failure', 'pending', 'warning') NOT NULL DEFAULT 'success',
+    previous_values JSON NULL DEFAULT NULL,
+    new_values JSON NULL DEFAULT NULL,
+    details TEXT NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_action_type (action_type),
     INDEX idx_actor_id (actor_id),
     INDEX idx_entity_type (entity_type),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_correlation (correlation_id),
+    INDEX idx_entity (entity_type, entity_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -550,8 +562,42 @@ BEGIN
     INSERT INTO journal_lines (journal_entry_id, account_id, debit_amount, credit_amount, narration, sequence_number)
     VALUES (v_journal_id, v_coa_credit, 0, NEW.amount, 'Auto Credit', 2);
     
-    -- In a real DB we would UPDATE transactions SET journal_entry_id = v_journal_id WHERE id = NEW.id
-    -- But since this is AFTER INSERT, we cannot update the same row directly without a BEFORE INSERT or autonomous transaction in MySQL.
+    SET NEW.journal_entry_id = v_journal_id;
+
+    -- Phase 7: Financial Audit Logging
+    INSERT INTO audit_log (
+        event_id, module, action_type, entity_id, entity_type, actor_id, actor_role, details
+    ) VALUES (
+        CONCAT('EVT-TXN-', REPLACE(NEW.txn_id, 'TXN', '')),
+        'core_banking',
+        CONCAT('transaction_', NEW.type),
+        NEW.txn_id,
+        'transaction',
+        COALESCE(NEW.from_account_id, NEW.to_account_id, 'SYSTEM'),
+        'system',
+        CONCAT('Processed ', NEW.type, ' of amount ', NEW.amount)
+    );
+END//
+
+DELIMITER ;
+
+-- =====================================================
+-- AUDIT LOG IMMUTABILITY TRIGGERS
+-- =====================================================
+DELIMITER //
+
+CREATE TRIGGER prevent_audit_update
+BEFORE UPDATE ON audit_log
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Audit log records are immutable and cannot be updated.';
+END//
+
+CREATE TRIGGER prevent_audit_delete
+BEFORE DELETE ON audit_log
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Audit log records are immutable and cannot be deleted.';
 END//
 
 DELIMITER ;
