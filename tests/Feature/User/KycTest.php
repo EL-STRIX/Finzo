@@ -56,7 +56,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_successfully() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_validation_errors() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -151,7 +151,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_fails_invalid_csrf() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);

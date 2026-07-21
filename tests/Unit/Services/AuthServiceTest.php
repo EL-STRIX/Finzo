@@ -3,8 +3,8 @@ namespace Tests\Unit\Services;
 
 use Tests\TestCase;
 use Tests\Factories\UserFactory;
-use App\Services\AuthService;
-use App\Repositories\AuthRepository;
+use App\Application\Services\AuthService;
+use App\Infrastructure\Repositories\AuthRepository;
 
 class AuthServiceTest extends TestCase {
     

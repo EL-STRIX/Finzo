@@ -4,7 +4,7 @@ namespace Tests\Feature\User;
 use Tests\TestCase;
 use Tests\Factories\UserFactory;
 use Tests\Helpers\RequestHelper;
-use App\Core\Database;
+use App\Shared\Core\Database;
 use PDO;
 
 class TransferTest extends TestCase {

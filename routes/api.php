@@ -1,11 +1,11 @@
 <?php
 
-use App\Core\Router;
-use App\Controllers\Admin\AdminManagementController;
-use App\Controllers\Admin\AdminOperationsController;
-use App\Controllers\Admin\AdminStaffController;
-use App\Controllers\Admin\AdminBranchController;
-use App\Controllers\Auth\AuthController;
+use App\Shared\Core\Router;
+use App\Presentation\Controllers\Admin\AdminManagementController;
+use App\Presentation\Controllers\Admin\AdminOperationsController;
+use App\Presentation\Controllers\Admin\AdminStaffController;
+use App\Presentation\Controllers\Admin\AdminBranchController;
+use App\Presentation\Controllers\Auth\AuthController;
 
 $router = new Router();
 

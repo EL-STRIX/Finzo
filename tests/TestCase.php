@@ -2,7 +2,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use App\Core\Database;
+use App\Shared\Core\Database;
 use PDO;
 
 abstract class TestCase extends BaseTestCase {

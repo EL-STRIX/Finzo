@@ -88,7 +88,7 @@ function json_response($data, $status = 200)
         if (is_array($data)) {
             $data['status'] = $status;
         }
-        throw new \App\Core\Exceptions\TestResponseException(json_encode($data));
+        throw new \App\Shared\Core\Exceptions\TestResponseException(json_encode($data));
     }
 
     if (!headers_sent()) {
@@ -572,7 +572,7 @@ function check_admin_permission($pdo, $admin_id, $action)
     $role = $stmt->fetchColumn();
 
     if (!$role) {
-        throw new \App\Core\Exceptions\ApiException('Admin account not found', 403);
+        throw new \App\Shared\Core\Exceptions\ApiException('Admin account not found', 403);
     }
 
     // Super Admin — zero restrictions, can do everything
@@ -594,7 +594,7 @@ function check_admin_permission($pdo, $admin_id, $action)
     ];
 
     if ($role === 'admin' && in_array($action, $admin_blocked)) {
-        throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
+        throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 
     // Moderator role — can ONLY do these actions
@@ -607,7 +607,7 @@ function check_admin_permission($pdo, $admin_id, $action)
     ];
 
     if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
-        throw new \App\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
+        throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 
     return true;
