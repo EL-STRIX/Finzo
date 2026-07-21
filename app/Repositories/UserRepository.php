@@ -239,27 +239,22 @@ class UserRepository extends BaseRepository
     public function getRecentTransactions(int $account_id)
     {
         $stmt = $this->db->prepare("
-            SELECT
-                t.txn_id,
-                t.type,
-                t.amount,
-                t.description,
-                t.status,
-                t.created_at,
-                CASE
-                    WHEN t.type = 'transfer' AND t.from_account_id = ? THEN
-                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id)
-                    WHEN t.type = 'transfer' AND t.to_account_id = ? THEN
-                        (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id)
-                    ELSE NULL
-                END as counterparty
+            (SELECT
+                t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
+                CASE WHEN t.type = 'transfer' THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id) ELSE '' END as counterparty_name
             FROM transactions t
-            WHERE (t.from_account_id = ? OR t.to_account_id = ?)
-                AND t.status = 'completed'
-            ORDER BY t.created_at DESC
-            LIMIT 5
+            WHERE t.from_account_id = ?
+            ORDER BY t.created_at DESC LIMIT 5)
+            UNION ALL
+            (SELECT
+                t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
+                CASE WHEN t.type = 'transfer' THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id) ELSE '' END as counterparty_name
+            FROM transactions t
+            WHERE t.to_account_id = ?
+            ORDER BY t.created_at DESC LIMIT 5)
+            ORDER BY created_at DESC LIMIT 5
         ");
-        $stmt->execute([$account_id, $account_id, $account_id, $account_id]);
+        $stmt->execute([$account_id, $account_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
