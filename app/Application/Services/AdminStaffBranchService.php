@@ -136,10 +136,68 @@ class AdminStaffBranchService
         return $branch_code;
     }
 
-    public function generateStaffId()
+    public function generateStaffId(): string
     {
-        $max_id = $this->repo->getMaxStaffId();
-        return 'STF' . str_pad($max_id + 1, 3, '0', STR_PAD_LEFT);
+        $last_id = $this->repo->getLastStaffId();
+        if (!$last_id) {
+            return 'EMP1000';
+        }
+        $num = intval(substr($last_id, 3)) + 1;
+        return 'EMP' . str_pad((string)$num, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function createStaff(array $data, array $files, int $admin_id): array
+    {
+        $pdo = $this->repo->getPDO();
+        check_admin_permission($pdo, $admin_id, 'add_staff');
+
+        $data['department'] = 'Teller Operations';
+        if (empty($data['date_of_joining'])) {
+            $data['date_of_joining'] = date('Y-m-d');
+        }
+
+        $errors = $this->validateStaffData($data);
+
+        $id_front_path = $this->handleStaffUpload($files['id_front'] ?? null, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', true);
+        $id_back_path = $this->handleStaffUpload($files['id_back'] ?? null, 'staff_doc_back_', 'staff-documents', $errors, 'id_back', true);
+        $profile_photo_path = $this->handleStaffUpload($files['profile_photo'] ?? null, 'staff_photo_', 'staff-photos', $errors, 'profile_photo');
+
+        if (!empty($errors)) {
+            throw new \App\Domain\Exceptions\ValidationException(json_encode($errors));
+        }
+
+        try {
+            $this->repo->beginTransaction();
+            $data['staff_id'] = $this->generateStaffId();
+            $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
+
+            $admin = $this->repo->findAdminById($admin_id);
+            $data['created_by'] = $admin['admin_id'] ?? null;
+            $data['profile_photo'] = $profile_photo_path;
+            $data['front_image'] = $id_front_path;
+            $data['back_image'] = $id_back_path;
+
+            $this->repo->insertStaff($data);
+            $this->repo->commit();
+
+            write_audit_log($pdo, 'staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'));
+
+            return ['staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']];
+        } catch (\Exception $e) {
+            if ($this->repo->inTransaction()) {
+                $this->repo->rollBack();
+            }
+            if ($profile_photo_path) {
+                @unlink(FINZO_ROOT . '/' . $profile_photo_path);
+            }
+            if ($id_front_path) {
+                @unlink(FINZO_ROOT . '/' . $id_front_path);
+            }
+            if ($id_back_path) {
+                @unlink(FINZO_ROOT . '/' . $id_back_path);
+            }
+            throw $e;
+        }
     }
 
     public function verifyAdminPassword(int $admin_id, string $password)
@@ -160,5 +218,15 @@ class AdminStaffBranchService
             $pass .= $chars[rand(0, strlen($chars) - 1)];
         }
         return str_shuffle($pass);
+    }
+
+    public function getStaffDetail(...$args)
+    {
+        return $this->repo->getStaffDetail(...$args);
+    }
+
+    public function getStaffPerformance(...$args)
+    {
+        return $this->repo->getStaffPerformance(...$args);
     }
 }

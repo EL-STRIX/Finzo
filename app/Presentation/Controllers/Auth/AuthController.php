@@ -57,59 +57,35 @@ class AuthController
 
     public function adminLogin(): array
     {
-        $csrf_token = $_POST['csrf_token'] ?? '';
-        if (empty($csrf_token)) {
-            throw new ApiException('Security token missing. Please refresh the page.', 403);
-        }
-        if (!validate_csrf_token($csrf_token)) {
-            throw new ApiException('Invalid or expired security session. Please try again.', 403);
-        }
-
         $email    = clean_input($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $csrf_token = $_POST['csrf_token'] ?? '';
 
-        if (empty($email) || empty($password)) {
-            throw new ApiException('Email and password are required', 422);
-        }
+        \App\Presentation\Validators\AuthValidator::validateLogin($email, $password, $csrf_token);
 
         $this->service->loginAdmin($email, $password);
-
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
-        $redirect = $base . '/views/admin/admin-dashboard.html';
 
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => $redirect
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/views/admin/admin-dashboard.html'
         ];
     }
 
     public function staffLogin(): array
     {
-        $csrf_token = $_POST['csrf_token'] ?? '';
-        if (empty($csrf_token)) {
-            throw new ApiException('Security token missing. Please refresh the page.', 403);
-        }
-        if (!validate_csrf_token($csrf_token)) {
-            throw new ApiException('Invalid or expired security session. Please try again.', 403);
-        }
-
         $identity = clean_input($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
+        $csrf_token = $_POST['csrf_token'] ?? '';
 
-        if (empty($identity) || empty($password)) {
-            throw new ApiException('Email/Staff ID and password are required', 422);
-        }
+        \App\Presentation\Validators\AuthValidator::validateLogin($identity, $password, $csrf_token);
 
         $this->service->loginStaff($identity, $password);
-
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\');
-        $redirect = $base . '/views/staff/staff-dashboard.html';
 
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => $redirect
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/views/staff/staff-dashboard.html'
         ];
     }
 

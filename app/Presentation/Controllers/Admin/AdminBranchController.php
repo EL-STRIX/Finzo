@@ -38,8 +38,7 @@ class AdminBranchController
         }
 
         try {
-            $repo = $this->service->getRepo();
-            $pdo = $repo->getPDO();
+            $pdo = $this->service->getPDO();
 
             $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
             $stmt->execute([$admin_id]);

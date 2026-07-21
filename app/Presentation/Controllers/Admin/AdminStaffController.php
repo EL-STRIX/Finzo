@@ -29,9 +29,6 @@ class AdminStaffController
     {
         $this->checkCsrf();
         $admin_id = $_SESSION['admin_id'];
-        $repo = $this->service->getRepo();
-        $pdo = $repo->getPDO();
-        check_admin_permission($pdo, $admin_id, 'add_staff');
 
         $data = [
             'full_name' => clean_input($_POST['full_name'] ?? ''),
@@ -52,51 +49,15 @@ class AdminStaffController
             'id_number' => clean_input($_POST['id_number'] ?? ''),
             'password' => $_POST['password'] ?? ''
         ];
-        $data['department'] = 'Teller Operations';
-        if (empty($data['date_of_joining'])) {
-            $data['date_of_joining'] = date('Y-m-d');
-        }
-
-        $errors = $this->service->validateStaffData($data);
-
-        $id_front_path = $this->service->handleStaffUpload($_FILES['id_front'] ?? null, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', true);
-        $id_back_path = $this->service->handleStaffUpload($_FILES['id_back'] ?? null, 'staff_doc_back_', 'staff-documents', $errors, 'id_back', true);
-        $profile_photo_path = $this->service->handleStaffUpload($_FILES['profile_photo'] ?? null, 'staff_photo_', 'staff-photos', $errors, 'profile_photo');
-
-        if (!empty($errors)) {
-            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
-        }
 
         try {
-            $repo->beginTransaction();
-            $data['staff_id'] = $this->service->generateStaffId();
-            $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
-
-            $admin = $repo->findAdminById($admin_id);
-            $data['created_by'] = $admin['admin_id'] ?? null;
-            $data['profile_photo'] = $profile_photo_path;
-            $data['front_image'] = $id_front_path;
-            $data['back_image'] = $id_back_path;
-
-            $repo->insertStaff($data);
-            $repo->commit();
-
-            write_audit_log($pdo, 'staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'));
-
-            json_response(['success' => true, 'message' => 'Staff member added successfully', 'staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']], 201);
+            $result = $this->service->createStaff($data, $_FILES, $admin_id);
+            json_response(['success' => true, 'message' => 'Staff member added successfully', 'staff_id' => $result['staff_id'], 'staff_name' => $result['staff_name']], 201);
+        } catch (\App\Domain\Exceptions\ValidationException $e) {
+            json_response(['success' => false, 'message' => 'Validation failed', 'errors' => json_decode($e->getMessage(), true)], 422);
+        } catch (ApiException $e) {
+            throw $e;
         } catch (Exception $e) {
-            if ($repo->inTransaction()) {
-                $repo->rollBack();
-            }
-            if ($profile_photo_path) {
-                @unlink(FINZO_ROOT . '/' . $profile_photo_path);
-            }
-            if ($id_front_path) {
-                @unlink(FINZO_ROOT . '/' . $id_front_path);
-            }
-            if ($id_back_path) {
-                @unlink(FINZO_ROOT . '/' . $id_back_path);
-            }
             throw new ApiException('An error occurred while creating staff account: ' . $e->getMessage(), 500);
         }
     }
@@ -108,8 +69,7 @@ class AdminStaffController
             throw new ApiException('Staff ID is required', 422);
         }
 
-        $repo = $this->service->getRepo();
-        $staff = $repo->getStaffDetail($staff_id);
+        $staff = $this->service->getStaffDetail($staff_id);
         if (!$staff) {
             throw new ApiException('Staff member not found', 404);
         }
@@ -125,7 +85,7 @@ class AdminStaffController
             $staff['back_image_url'] = $base_url . $staff['back_image'];
         }
 
-        $performance = $repo->getStaffPerformance($staff_id);
+        $performance = $this->service->getStaffPerformance($staff_id);
         return ['success' => true, 'staff' => $staff, 'performance' => $performance];
     }
 
