@@ -68,6 +68,42 @@ switch ($command) {
         $bcdr->validateIntegrity();
         break;
 
+    case 'monitor':
+        echo "Finzo Enterprise Database Monitor\n";
+        echo "---------------------------------\n";
+        
+        // Uptime
+        $stmt = $pdo->query("SHOW GLOBAL STATUS LIKE 'Uptime'");
+        $uptime = $stmt->fetch(PDO::FETCH_ASSOC)['Value'];
+        echo "Uptime: " . gmdate("H:i:s", (int)$uptime) . "\n";
+        
+        // Connections
+        $stmt = $pdo->query("SHOW GLOBAL STATUS LIKE 'Threads_connected'");
+        $threads = $stmt->fetch(PDO::FETCH_ASSOC)['Value'];
+        echo "Active Connections: {$threads}\n";
+        
+        // Storage
+        try {
+            $stmt = $pdo->query("SELECT SUM(size_mb) as total_size FROM vw_monitoring_storage");
+            $size = $stmt->fetchColumn();
+            echo "Total Storage Size: {$size} MB\n";
+        } catch (Exception $e) {
+            echo "Total Storage Size: (Observability views not migrated yet)\n";
+        }
+        
+        // Ledger Health
+        try {
+            $stmt = $pdo->query("SELECT COUNT(*) FROM vw_monitoring_ledger_health");
+            $unbalanced = $stmt->fetchColumn();
+            if ($unbalanced > 0) {
+                echo "\n[WARNING] {$unbalanced} Unbalanced Journals Detected!\n";
+            } else {
+                echo "\n[OK] Ledger is perfectly balanced.\n";
+            }
+        } catch (Exception $e) {}
+        
+        break;
+
     case 'help':
     default:
         echo "Finzo Database Management CLI (Enterprise BCDR Edition)\n\n";
