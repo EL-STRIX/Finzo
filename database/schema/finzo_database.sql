@@ -603,6 +603,87 @@ END//
 DELIMITER ;
 
 -- =====================================================
+-- PHASE 8: DATABASE AUTOMATION & REUSABLE COMPONENTS
+-- =====================================================
+
+-- 1. SQL FUNCTION LIBRARY
+DELIMITER //
+
+CREATE FUNCTION IF NOT EXISTS fn_calculate_account_age(p_opened_date DATE) 
+RETURNS INT DETERMINISTIC
+BEGIN
+    RETURN TIMESTAMPDIFF(MONTH, p_opened_date, CURDATE());
+END//
+
+CREATE FUNCTION IF NOT EXISTS fn_format_currency(p_amount DECIMAL(15,2)) 
+RETURNS VARCHAR(50) DETERMINISTIC
+BEGIN
+    RETURN CONCAT('₹ ', FORMAT(p_amount, 2));
+END//
+
+DELIMITER ;
+
+-- 2. DATABASE VIEWS
+CREATE OR REPLACE VIEW vw_customer_summary AS
+SELECT 
+    u.id, u.customer_id, u.full_name, u.email, u.status,
+    COUNT(a.id) as total_accounts,
+    COALESCE(SUM(a.balance), 0) as total_balance,
+    MAX(u.last_login_at) as last_activity
+FROM users u
+LEFT JOIN accounts a ON u.customer_id = a.user_id
+WHERE u.is_deleted = 0
+GROUP BY u.id, u.customer_id, u.full_name, u.email, u.status;
+
+CREATE OR REPLACE VIEW vw_account_summary AS
+SELECT 
+    a.id, a.account_no, a.account_type, a.balance, a.status,
+    u.full_name as customer_name,
+    fn_calculate_account_age(a.opened_date) as account_age_months
+FROM accounts a
+JOIN users u ON a.user_id = u.customer_id;
+
+CREATE OR REPLACE VIEW vw_branch_summary AS
+SELECT 
+    b.id, b.branch_code, b.branch_name,
+    COUNT(DISTINCT s.id) as total_staff,
+    COUNT(DISTINCT a.id) as total_accounts,
+    COALESCE(SUM(a.balance), 0) as total_deposits
+FROM branches b
+LEFT JOIN staff s ON b.id = s.branch_id AND s.is_deleted = 0
+LEFT JOIN accounts a ON b.id = a.branch_id AND a.status = 'active'
+GROUP BY b.id, b.branch_code, b.branch_name;
+
+-- 3. SCHEDULED EVENTS (AUTOMATION)
+DELIMITER //
+
+-- Enable event scheduler if not enabled (Requires SUPER privileges in real server, safe to declare here)
+SET GLOBAL event_scheduler = ON//
+
+CREATE EVENT IF NOT EXISTS evt_cleanup_expired_tokens
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    -- Delete password reset tokens that are older than 24 hours to keep the table clean
+    DELETE FROM password_resets WHERE expires_at < NOW();
+END//
+
+CREATE EVENT IF NOT EXISTS evt_cleanup_expired_sessions
+ON SCHEDULE EVERY 1 HOUR
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    -- Optional automation hook for session table cleanup if implemented
+    -- We can also unlock accounts whose lockout duration has passed
+    UPDATE users SET failed_attempts = 0, locked_until = NULL WHERE locked_until IS NOT NULL AND locked_until < NOW();
+    UPDATE staff SET failed_attempts = 0, locked_until = NULL WHERE locked_until IS NOT NULL AND locked_until < NOW();
+    UPDATE admin_users SET failed_attempts = 0, locked_until = NULL WHERE locked_until IS NOT NULL AND locked_until < NOW();
+END//
+
+DELIMITER ;
+
+-- =====================================================
 -- SEED DATA
 -- =====================================================
 
