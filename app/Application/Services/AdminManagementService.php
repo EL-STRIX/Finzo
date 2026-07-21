@@ -2,22 +2,27 @@
 
 namespace App\Application\Services;
 
+use App\Shared\Security\SecurityService;
+
 use App\Infrastructure\Repositories\AdminManagementRepository;
 use App\Shared\Core\Exceptions\ApiException;
 use PDO;
 
 class AdminManagementService
 {
+    protected SecurityService $security;
+
     private AdminManagementRepository $repository;
 
-    public function __construct(AdminManagementRepository $repository)
+    public function __construct(AdminManagementRepository $repository, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->repository = $repository;
     }
 
     public function validateCsrf(string $token): void
     {
-        if (!validate_csrf_token($token)) {
+        if (!$this->security->validateCsrfToken($token)) {
             throw new ApiException('Invalid or expired session token', 403);
         }
     }
@@ -37,15 +42,15 @@ class AdminManagementService
 
     public function addAdmin(array $data, ?array $file): array
     {
-        $full_name = clean_input($data['full_name'] ?? '');
-        $date_of_birth = clean_input($data['date_of_birth'] ?? '');
-        $gender = clean_input($data['gender'] ?? '');
-        $email = clean_input($data['email'] ?? '');
-        $phone = clean_input($data['phone'] ?? '');
+        $full_name = $this->security->cleanInput($data['full_name'] ?? '');
+        $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
+        $gender = $this->security->cleanInput($data['gender'] ?? '');
+        $email = $this->security->cleanInput($data['email'] ?? '');
+        $phone = $this->security->cleanInput($data['phone'] ?? '');
         $password = $data['password'] ?? '';
         $confirm_password = $data['confirm_password'] ?? '';
-        $admin_role = clean_input($data['admin_role'] ?? '');
-        $security_question = clean_input($data['security_question'] ?? '');
+        $admin_role = $this->security->cleanInput($data['admin_role'] ?? '');
+        $security_question = $this->security->cleanInput($data['security_question'] ?? '');
         $security_answer = $data['security_answer'] ?? '';
 
         if (strlen($full_name) < 2 || strlen($full_name) > 100) {
@@ -135,14 +140,8 @@ class AdminManagementService
 
         $this->repository->createAdmin($insertData);
 
-        write_audit_log(
-            \App\Shared\Core\Database::getInstance(),
-            'admin_created',
-            $next_admin_id,
-            'admin',
-            $_SESSION['admin_id'],
-            'admin',
-            "New admin created: {$full_name} | Role: {$admin_role}"
+        $this->security->writeAuditLog(
+            \App\Shared\Core\Database::getInstance(), 'admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$full_name} | Role: {$admin_role}"
         );
 
         return [
@@ -177,7 +176,7 @@ class AdminManagementService
             case 'toggle_status':
                 $new_status = ($target['status'] === 'active') ? 'suspended' : 'active';
                 $this->repository->updateStatus($target_numeric_id, $new_status);
-                write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}");
+                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}");
 
                 return [
                     'success' => true,
@@ -186,7 +185,7 @@ class AdminManagementService
                 ];
 
             case 'delete':
-                write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}");
+                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}");
                 $this->repository->deleteAdmin($target_numeric_id);
                 return ['success' => true, 'message' => "Admin account has been permanently removed from the system."];
 
@@ -196,7 +195,7 @@ class AdminManagementService
                 $hash = password_hash($generated_password, PASSWORD_DEFAULT);
 
                 $this->repository->resetPassword($target_numeric_id, $hash);
-                write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}");
+                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}");
 
                 return [
                     'success' => true,
@@ -320,7 +319,7 @@ class AdminManagementService
         $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
         $this->repository->updateAdminPassword($admin_id, $new_hash);
 
-        write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed');
+        $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed');
 
         return ['success' => true, 'message' => 'Password changed successfully'];
     }
@@ -384,9 +383,9 @@ class AdminManagementService
 
     public function updateProfile(int $admin_id, array $data): array
     {
-        $full_name = clean_input($data['full_name'] ?? $data['name'] ?? '');
-        $email     = clean_input($data['email'] ?? '');
-        $phone     = clean_input($data['phone'] ?? '');
+        $full_name = $this->security->cleanInput($data['full_name'] ?? $data['name'] ?? '');
+        $email     = $this->security->cleanInput($data['email'] ?? '');
+        $phone     = $this->security->cleanInput($data['phone'] ?? '');
         $password  = $data['password'] ?? '';
 
         if (empty($full_name)) {
@@ -439,16 +438,16 @@ class AdminManagementService
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($admin_id, $new_hash);
-            write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully');
+            $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully');
 
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
 
-        $full_name = clean_input($data['full_name'] ?? '');
-        $phone = clean_input($data['phone'] ?? '');
-        $date_of_birth = clean_input($data['date_of_birth'] ?? '');
-        $gender = clean_input($data['gender'] ?? '');
-        $security_question = isset($data['security_question']) ? clean_input($data['security_question']) : null;
+        $full_name = $this->security->cleanInput($data['full_name'] ?? '');
+        $phone = $this->security->cleanInput($data['phone'] ?? '');
+        $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
+        $gender = $this->security->cleanInput($data['gender'] ?? '');
+        $security_question = isset($data['security_question']) ? $this->security->cleanInput($data['security_question']) : null;
         $security_answer = $data['security_answer'] ?? '';
 
         if (strlen($full_name) < 2 || strlen($full_name) > 100) {
@@ -475,7 +474,7 @@ class AdminManagementService
         }
 
         $this->repository->updateProfileFields($admin_id, $fields, $params);
-        write_audit_log(\App\Shared\Core\Database::getInstance(), 'admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated');
+        $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated');
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }

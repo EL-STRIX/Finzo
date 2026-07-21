@@ -30,7 +30,7 @@ if (!isset($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_O
 }
 
 $file = $_FILES['document'];
-$side = clean_input($_POST['side'] ?? 'front'); // 'front' or 'back'
+$side = $this->security->cleanInput($_POST['side'] ?? 'front'); // 'front' or 'back'
 
 // Validate file type
 $finfo = finfo_open(FILEINFO_MIME_TYPE);

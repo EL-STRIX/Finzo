@@ -18,7 +18,7 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staf
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-$txn_id = clean_input($_GET['id'] ?? $_GET['txn_id'] ?? '');
+$txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
 if (empty($txn_id)) {
     die('Transaction ID is required');
 }

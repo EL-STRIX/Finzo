@@ -2,14 +2,19 @@
 
 namespace App\Application\Services;
 
+use App\Shared\Security\SecurityService;
+
 use App\Infrastructure\Repositories\AdminOperationsRepository;
 
 class AdminOperationsService
 {
+    protected SecurityService $security;
+
     protected AdminOperationsRepository $repository;
 
-    public function __construct(AdminOperationsRepository $repository)
+    public function __construct(AdminOperationsRepository $repository, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->repository = $repository;
     }
 
@@ -307,14 +312,8 @@ class AdminOperationsService
         // Global function from config/functions.php
         global $pdo;
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log(
-                $pdo,
-                'interest_rate_updated',
-                null,
-                'system',
-                $adminId,
-                'admin',
-                "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
+            $this->security->writeAuditLog(
+                $pdo, 'interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
             );
         }
 
@@ -544,14 +543,8 @@ class AdminOperationsService
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log(
-                $pdo,
-                'user_recovered',
-                $userId,
-                'user',
-                $adminId,
-                'admin',
-                "Recovered deleted user: {$user['full_name']}"
+            $this->security->writeAuditLog(
+                $pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}"
             );
         }
 
@@ -739,7 +732,7 @@ class AdminOperationsService
                         send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$account_no}.");
                     }
                     if (function_exists('write_audit_log')) {
-                        write_audit_log($pdo, 'kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}");
+                        $this->security->writeAuditLog($pdo, 'kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}");
                     }
 
                     return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $account_no];
@@ -759,14 +752,14 @@ class AdminOperationsService
                         send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
                     }
                     if (function_exists('write_audit_log')) {
-                        write_audit_log($pdo, 'kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}");
+                        $this->security->writeAuditLog($pdo, 'kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}");
                     }
 
                     return ['success' => true, 'message' => 'Application rejected'];
 
                 case 'save_notes':
                     if (function_exists('write_audit_log')) {
-                        write_audit_log($pdo, 'admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}");
+                        $this->security->writeAuditLog($pdo, 'admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}");
                     }
                     $this->repository->saveAdminNotes($customer_id, $notes);
                     return ['success' => true, 'message' => 'Notes saved successfully'];
@@ -1081,14 +1074,8 @@ class AdminOperationsService
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            write_audit_log(
-                $pdo,
-                'account_unlocked',
-                $userId,
-                'user',
-                $adminId,
-                'admin',
-                "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}"
+            $this->security->writeAuditLog(
+                $pdo, 'account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}"
             );
         }
 
@@ -1130,7 +1117,7 @@ class AdminOperationsService
         switch ($action) {
             case 'suspend':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'suspend_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'suspend_user');
                 }
                 if ($user['status'] === 'suspended') {
                     return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
@@ -1148,13 +1135,13 @@ class AdminOperationsService
                     );
                 }
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}");
+                    $this->security->writeAuditLog($pdo, 'user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}");
                 }
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
             case 'reinstate':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'reinstate_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'reinstate_user');
                 }
                 if ($user['status'] === 'active') {
                     return ['success' => true, 'message' => 'User is already active'];
@@ -1169,13 +1156,13 @@ class AdminOperationsService
                     send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated");
+                    $this->security->writeAuditLog($pdo, 'user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated");
                 }
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
             case 'delete':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 if ($user['is_deleted']) {
                     return ['success' => true, 'message' => 'User is already deleted'];
@@ -1184,13 +1171,13 @@ class AdminOperationsService
                 $this->repository->softDeleteUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}");
+                    $this->security->writeAuditLog($pdo, 'user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}");
                 }
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
             case 'recover':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 if (!$user['is_deleted']) {
                     return ['success' => false, 'message' => 'User is not deleted', 'code' => 409];
@@ -1221,27 +1208,27 @@ class AdminOperationsService
                 }
 
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''));
+                    $this->security->writeAuditLog($pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''));
                 }
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
             case 'hard_delete':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.");
+                    $this->security->writeAuditLog($pdo, 'user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.");
                 }
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
             case 'delete_account_only':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    check_admin_permission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    write_audit_log($pdo, 'account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.");
+                    $this->security->writeAuditLog($pdo, 'account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.");
                 }
                 return ['success' => true, 'message' => 'Account permanently deleted'];
         }

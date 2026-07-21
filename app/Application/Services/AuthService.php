@@ -2,16 +2,21 @@
 
 namespace App\Application\Services;
 
+use App\Shared\Security\SecurityService;
+
 use App\Infrastructure\Repositories\AuthRepository;
 use App\Shared\Core\Exceptions\ApiException;
 use PDOException;
 
 class AuthService
 {
+    protected SecurityService $security;
+
     private AuthRepository $repository;
 
-    public function __construct(AuthRepository $repository)
+    public function __construct(AuthRepository $repository, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->repository = $repository;
     }
 
@@ -47,14 +52,8 @@ class AuthService
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
 
-                write_audit_log(
-                    $pdo,
-                    'account_locked',
-                    $user['id'],
-                    'user',
-                    $user['id'],
-                    'user',
-                    "Account locked after {$new_attempts} failed login attempts"
+                $this->security->writeAuditLog(
+                    $pdo, 'account_locked', $user['id'], 'user', $user['id'], 'user', "Account locked after {$new_attempts} failed login attempts"
                 );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
@@ -87,7 +86,7 @@ class AuthService
         $_SESSION['last_activity']    = time();
 
         $pdo = $this->repository->getDb();
-        write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}");
+        $this->security->writeAuditLog($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}");
 
         return [
             'user'    => $user,
@@ -135,7 +134,7 @@ class AuthService
                 $this->repository->logAdminLock($admin['admin_id'], $ip, $admin['id']);
 
                 $pdo = $this->repository->getDb();
-                write_audit_log($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
+                $this->security->writeAuditLog($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
 
                 throw new ApiException('Account locked.', 401, [
                     'locked' => true,
@@ -167,7 +166,7 @@ class AuthService
         $_SESSION['last_activity'] = time();
 
         $pdo = $this->repository->getDb();
-        write_audit_log($pdo, 'admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}");
+        $this->security->writeAuditLog($pdo, 'admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}");
 
         return $admin;
     }
@@ -200,14 +199,8 @@ class AuthService
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockStaff($staff['id'], $new_attempts, $lock_until);
 
-                write_audit_log(
-                    $pdo,
-                    'account_locked',
-                    $staff['staff_id'],
-                    'staff',
-                    $staff['staff_id'],
-                    'staff',
-                    "Staff account locked after {$new_attempts} failed login attempts"
+                $this->security->writeAuditLog(
+                    $pdo, 'account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff account locked after {$new_attempts} failed login attempts"
                 );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
@@ -235,7 +228,7 @@ class AuthService
         $_SESSION['last_activity'] = time();
 
         $pdo = $this->repository->getDb();
-        write_audit_log($pdo, 'staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}");
+        $this->security->writeAuditLog($pdo, 'staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}");
 
         return $staff;
     }

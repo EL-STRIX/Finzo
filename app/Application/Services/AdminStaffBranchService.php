@@ -2,16 +2,21 @@
 
 namespace App\Application\Services;
 
+use App\Shared\Security\SecurityService;
+
 use App\Infrastructure\Repositories\AdminStaffBranchRepository;
 use Exception;
 use DateTime;
 
 class AdminStaffBranchService
 {
+    protected SecurityService $security;
+
     protected AdminStaffBranchRepository $repo;
 
-    public function __construct(AdminStaffBranchRepository $repo)
+    public function __construct(AdminStaffBranchRepository $repo, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->repo = $repo;
     }
 
@@ -149,7 +154,7 @@ class AdminStaffBranchService
     public function createStaff(array $data, array $files, int $admin_id): array
     {
         $pdo = $this->repo->getPDO();
-        check_admin_permission($pdo, $admin_id, 'add_staff');
+        $this->security->checkAdminPermission($pdo, $admin_id, 'add_staff');
 
         $data['department'] = 'Teller Operations';
         if (empty($data['date_of_joining'])) {
@@ -180,7 +185,7 @@ class AdminStaffBranchService
             $this->repo->insertStaff($data);
             $this->repo->commit();
 
-            write_audit_log($pdo, 'staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'));
+            $this->security->writeAuditLog($pdo, 'staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'));
 
             return ['staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']];
         } catch (\Exception $e) {

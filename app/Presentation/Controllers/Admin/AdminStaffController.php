@@ -2,6 +2,8 @@
 
 namespace App\Presentation\Controllers\Admin;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\AdminStaffBranchService;
 use App\Shared\Core\Exceptions\ApiException;
 use PDOException;
@@ -9,10 +11,13 @@ use Exception;
 
 class AdminStaffController
 {
+    protected SecurityService $security;
+
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service)
+    public function __construct(AdminStaffBranchService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
@@ -20,7 +25,7 @@ class AdminStaffController
     {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
-        if (!validate_csrf_token($csrf)) {
+        if (!$this->security->validateCsrfToken($csrf)) {
             throw new ApiException('Invalid CSRF token', 403);
         }
     }
@@ -31,22 +36,22 @@ class AdminStaffController
         $admin_id = $_SESSION['admin_id'];
 
         $data = [
-            'full_name' => clean_input($_POST['full_name'] ?? ''),
-            'date_of_birth' => clean_input($_POST['date_of_birth'] ?? ''),
-            'gender' => clean_input($_POST['gender'] ?? ''),
-            'personal_email' => clean_input($_POST['personal_email'] ?? ''),
-            'phone' => clean_input($_POST['phone'] ?? ''),
-            'emergency_contact_name' => clean_input($_POST['emergency_contact_name'] ?? ''),
-            'emergency_contact_phone' => clean_input($_POST['emergency_contact_phone'] ?? ''),
-            'designation' => clean_input($_POST['designation'] ?? 'Teller'),
+            'full_name' => $this->security->cleanInput($_POST['full_name'] ?? ''),
+            'date_of_birth' => $this->security->cleanInput($_POST['date_of_birth'] ?? ''),
+            'gender' => $this->security->cleanInput($_POST['gender'] ?? ''),
+            'personal_email' => $this->security->cleanInput($_POST['personal_email'] ?? ''),
+            'phone' => $this->security->cleanInput($_POST['phone'] ?? ''),
+            'emergency_contact_name' => $this->security->cleanInput($_POST['emergency_contact_name'] ?? ''),
+            'emergency_contact_phone' => $this->security->cleanInput($_POST['emergency_contact_phone'] ?? ''),
+            'designation' => $this->security->cleanInput($_POST['designation'] ?? 'Teller'),
             'branch_id' => ($_POST['branch_id'] ?? '' !== '' && $_POST['branch_id'] ?? '' !== 'null') ? intval($_POST['branch_id'] ?? '') : null,
-            'date_of_joining' => clean_input($_POST['date_of_joining'] ?? date('Y-m-d')),
-            'street' => clean_input($_POST['street'] ?? ''),
-            'city' => clean_input($_POST['city'] ?? ''),
-            'state' => clean_input($_POST['state'] ?? ''),
-            'pincode' => clean_input($_POST['pincode'] ?? ''),
-            'id_type' => clean_input($_POST['id_type'] ?? ''),
-            'id_number' => clean_input($_POST['id_number'] ?? ''),
+            'date_of_joining' => $this->security->cleanInput($_POST['date_of_joining'] ?? date('Y-m-d')),
+            'street' => $this->security->cleanInput($_POST['street'] ?? ''),
+            'city' => $this->security->cleanInput($_POST['city'] ?? ''),
+            'state' => $this->security->cleanInput($_POST['state'] ?? ''),
+            'pincode' => $this->security->cleanInput($_POST['pincode'] ?? ''),
+            'id_type' => $this->security->cleanInput($_POST['id_type'] ?? ''),
+            'id_number' => $this->security->cleanInput($_POST['id_number'] ?? ''),
             'password' => $_POST['password'] ?? ''
         ];
 
@@ -107,7 +112,7 @@ class AdminStaffController
         $this->checkCsrf();
 
         $pdo = $this->service->getRepo()->getPDO();
-        check_admin_permission($pdo, $admin_id, 'reset_staff_password');
+        $this->security->checkAdminPermission($pdo, $admin_id, 'reset_staff_password');
 
         $staff_id = intval($input['staff_id'] ?? $_POST['staff_id'] ?? 0);
         $new_password = $input['new_password'] ?? $_POST['new_password'] ?? '';
@@ -131,15 +136,15 @@ class AdminStaffController
         $stmt = $pdo->prepare("UPDATE staff SET password_hash = ? WHERE id = ?");
         $stmt->execute([$password_hash, $staff_id]);
 
-        write_audit_log($pdo, 'staff_password_reset', $staff_id, 'staff', $admin_id, 'admin', "Password reset for staff: " . $staff['full_name'] . " (" . $staff['staff_id'] . ")");
+        $this->security->writeAuditLog($pdo, 'staff_password_reset', $staff_id, 'staff', $admin_id, 'admin', "Password reset for staff: " . $staff['full_name'] . " (" . $staff['staff_id'] . ")");
         return ['success' => true, 'message' => 'Password updated successfully'];
     }
 
     public function staffAction(): array
     {
         $staff_id = intval($_POST['staff_id'] ?? 0);
-        $action   = clean_input($_POST['action'] ?? '');
-        $reason   = clean_input($_POST['reason'] ?? '');
+        $action   = $this->security->cleanInput($_POST['action'] ?? '');
+        $reason   = $this->security->cleanInput($_POST['reason'] ?? '');
 
         if (!$staff_id || empty($action)) {
             throw new ApiException('Staff ID and action are required', 422);
@@ -156,7 +161,7 @@ class AdminStaffController
 
         $pdo = $this->service->getRepo()->getPDO();
         if (in_array($action, ['suspend', 'reinstate', 'delete'])) {
-            check_admin_permission($pdo, $admin_id, 'suspend_staff');
+            $this->security->checkAdminPermission($pdo, $admin_id, 'suspend_staff');
         }
 
         $admin_stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
@@ -180,7 +185,7 @@ class AdminStaffController
             $suspended_by = $_SESSION['admin_name'] ?? 'Admin';
             $stmt = $pdo->prepare("UPDATE staff SET status = 'suspended', suspension_reason = ?, suspended_by = ?, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$reason, $suspended_by, $staff_id]);
-            write_audit_log($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $admin_id, 'admin', "Suspended staff: {$staff['full_name']}. Reason: {$reason}");
+            $this->security->writeAuditLog($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $admin_id, 'admin', "Suspended staff: {$staff['full_name']}. Reason: {$reason}");
             return ['success' => true, 'message' => 'Staff member suspended successfully'];
         } elseif ($action === 'reinstate') {
             if ($staff['status'] !== 'suspended') {
@@ -188,20 +193,20 @@ class AdminStaffController
             }
             $stmt = $pdo->prepare("UPDATE staff SET status = 'active', suspension_reason = NULL, suspended_by = NULL, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$staff_id]);
-            write_audit_log($pdo, 'staff_reinstated', $staff['staff_id'], 'staff', $admin_id, 'admin', "Reinstated staff: {$staff['full_name']}");
+            $this->security->writeAuditLog($pdo, 'staff_reinstated', $staff['staff_id'], 'staff', $admin_id, 'admin', "Reinstated staff: {$staff['full_name']}");
             return ['success' => true, 'message' => 'Staff member reinstated successfully'];
         } elseif ($action === 'reset_password') {
             $temp_pass = $this->service->generateStrongPassword(12);
             $password_hash = password_hash($temp_pass, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$password_hash, $staff_id]);
-            write_audit_log($pdo, 'staff_password_reset', $staff['staff_id'], 'staff', $admin_id, 'admin', "Reset password for staff: {$staff['full_name']} ({$staff['email']})");
+            $this->security->writeAuditLog($pdo, 'staff_password_reset', $staff['staff_id'], 'staff', $admin_id, 'admin', "Reset password for staff: {$staff['full_name']} ({$staff['email']})");
             return ['success' => true, 'message' => 'Temporary password generated successfully', 'temp_password' => $temp_pass];
         } elseif ($action === 'delete') {
             $pdo->beginTransaction();
             $stmt = $pdo->prepare("DELETE FROM staff WHERE id = ?");
             $stmt->execute([$staff_id]);
-            write_audit_log($pdo, 'staff_deleted', $staff['staff_id'], 'staff', $admin_id, 'admin', "Permanently deleted staff: {$staff['full_name']} ({$staff['email']})");
+            $this->security->writeAuditLog($pdo, 'staff_deleted', $staff['staff_id'], 'staff', $admin_id, 'admin', "Permanently deleted staff: {$staff['full_name']} ({$staff['email']})");
             $pdo->commit();
             return ['success' => true, 'message' => 'Staff member deleted permanently'];
         }
@@ -363,9 +368,9 @@ class AdminStaffController
     public function getStaffList(): array
     {
         $pdo = $this->service->getRepo()->getPDO();
-        $search    = clean_input($_GET['search'] ?? '');
-        $status    = clean_input($_GET['status'] ?? 'all');
-        $filter    = clean_input($_GET['filter'] ?? '');
+        $search    = $this->security->cleanInput($_GET['search'] ?? '');
+        $status    = $this->security->cleanInput($_GET['status'] ?? 'all');
+        $filter    = $this->security->cleanInput($_GET['filter'] ?? '');
         $branch_id = intval($_GET['branch_id'] ?? 0);
         $page      = max(1, intval($_GET['page'] ?? 1));
         $per_page  = 20;
@@ -483,10 +488,10 @@ class AdminStaffController
     public function getSuspendedStaff(): array
     {
         $pdo = $this->service->getRepo()->getPDO();
-        $search     = clean_input($_GET['search'] ?? '');
-        $reason     = clean_input($_GET['reason'] ?? '');
-        $start_date = clean_input($_GET['start_date'] ?? '');
-        $end_date   = clean_input($_GET['end_date'] ?? '');
+        $search     = $this->security->cleanInput($_GET['search'] ?? '');
+        $reason     = $this->security->cleanInput($_GET['reason'] ?? '');
+        $start_date = $this->security->cleanInput($_GET['start_date'] ?? '');
+        $end_date   = $this->security->cleanInput($_GET['end_date'] ?? '');
         $page       = max(1, intval($_GET['page'] ?? 1));
         $per_page   = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 

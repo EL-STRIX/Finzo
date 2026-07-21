@@ -2,24 +2,29 @@
 
 namespace App\Presentation\Controllers\Auth;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\AuthService;
 use App\Shared\Core\Exceptions\ApiException;
 
 class AuthController
 {
+    protected SecurityService $security;
+
     private AuthService $service;
 
-    public function __construct(AuthService $service)
+    public function __construct(AuthService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
     public function login(): array
     {
-        $identity = clean_input($_POST['identity'] ?? '');
+        $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
 
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid or missing CSRF token', 403);
         }
 
@@ -57,7 +62,7 @@ class AuthController
 
     public function adminLogin(): array
     {
-        $email    = clean_input($_POST['email'] ?? '');
+        $email    = $this->security->cleanInput($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $csrf_token = $_POST['csrf_token'] ?? '';
 
@@ -74,7 +79,7 @@ class AuthController
 
     public function staffLogin(): array
     {
-        $identity = clean_input($_POST['identity'] ?? '');
+        $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
         $csrf_token = $_POST['csrf_token'] ?? '';
 
@@ -91,11 +96,11 @@ class AuthController
 
     public function forgotPassword(): array
     {
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
-        $email = clean_input($_POST['email'] ?? '');
+        $email = $this->security->cleanInput($_POST['email'] ?? '');
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new ApiException('Please enter a valid email address', 422);
@@ -111,11 +116,11 @@ class AuthController
 
     public function resetPassword(): array
     {
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
-        $token            = clean_input($_POST['token'] ?? '');
+        $token            = $this->security->cleanInput($_POST['token'] ?? '');
         $new_password     = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -155,13 +160,13 @@ class AuthController
 
     public function register()
     {
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
-        $full_name        = clean_input($_POST['full_name'] ?? '');
+        $full_name        = $this->security->cleanInput($_POST['full_name'] ?? '');
         $email            = trim($_POST['email'] ?? '');
-        $phone            = clean_input($_POST['phone'] ?? '');
+        $phone            = $this->security->cleanInput($_POST['phone'] ?? '');
         $password         = $_POST['password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 

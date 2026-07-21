@@ -2,6 +2,8 @@
 
 namespace App\Presentation\Controllers\Admin;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\AdminStaffBranchService;
 use App\Shared\Core\Exceptions\ApiException;
 use PDOException;
@@ -9,10 +11,13 @@ use Exception;
 
 class AdminBranchController
 {
+    protected SecurityService $security;
+
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service)
+    public function __construct(AdminStaffBranchService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
@@ -20,7 +25,7 @@ class AdminBranchController
     {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
-        if (!validate_csrf_token($csrf)) {
+        if (!$this->security->validateCsrfToken($csrf)) {
             throw new ApiException('Invalid CSRF token', 403);
         }
     }
@@ -80,7 +85,7 @@ class AdminBranchController
             $stmt = $pdo->prepare("DELETE FROM branches WHERE id = ?");
             $stmt->execute([$branch_id]);
 
-            write_audit_log($pdo, 'branch_deleted', $branch['name'], 'branch', $admin_id, 'admin', "Deleted branch: {$branch['name']}");
+            $this->security->writeAuditLog($pdo, 'branch_deleted', $branch['name'], 'branch', $admin_id, 'admin', "Deleted branch: {$branch['name']}");
 
             $pdo->commit();
             return ['success' => true, 'message' => 'Branch deleted successfully'];
@@ -95,9 +100,9 @@ class AdminBranchController
     public function getBranches(): array
     {
         $pdo = $this->service->getRepo()->getPDO();
-        $search = clean_input($_GET['search'] ?? '');
-        $type   = clean_input($_GET['type'] ?? 'all');
-        $status = clean_input($_GET['status'] ?? 'all');
+        $search = $this->security->cleanInput($_GET['search'] ?? '');
+        $type   = $this->security->cleanInput($_GET['type'] ?? 'all');
+        $status = $this->security->cleanInput($_GET['status'] ?? 'all');
 
         $where_clauses = ["1=1"];
         $params = [];

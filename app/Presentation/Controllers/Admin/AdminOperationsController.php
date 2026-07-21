@@ -2,27 +2,32 @@
 
 namespace App\Presentation\Controllers\Admin;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\AdminOperationsService;
 use App\Shared\Core\Exceptions\ApiException;
 use PDOException;
 
 class AdminOperationsController
 {
+    protected SecurityService $security;
+
     protected AdminOperationsService $service;
 
-    public function __construct(AdminOperationsService $service)
+    public function __construct(AdminOperationsService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
     public function auditLog(): array
     {
         $filters = [
-            'search'      => clean_input($_GET['search'] ?? ''),
-            'action_type' => clean_input($_GET['action_type'] ?? 'all'),
-            'actor_role'  => clean_input($_GET['actor_role'] ?? 'all'),
-            'from_date'   => clean_input($_GET['from_date'] ?? ''),
-            'to_date'     => clean_input($_GET['to_date'] ?? '')
+            'search'      => $this->security->cleanInput($_GET['search'] ?? ''),
+            'action_type' => $this->security->cleanInput($_GET['action_type'] ?? 'all'),
+            'actor_role'  => $this->security->cleanInput($_GET['actor_role'] ?? 'all'),
+            'from_date'   => $this->security->cleanInput($_GET['from_date'] ?? ''),
+            'to_date'     => $this->security->cleanInput($_GET['to_date'] ?? '')
         ];
 
         $page     = max(1, intval($_GET['page'] ?? 1));
@@ -61,10 +66,10 @@ class AdminOperationsController
     public function deletedUsers(): array
     {
         $filters = [
-            'search'       => clean_input($_GET['search'] ?? ''),
-            'date_from'    => clean_input($_GET['date_from'] ?? ''),
-            'date_to'      => clean_input($_GET['date_to'] ?? ''),
-            'account_type' => clean_input($_GET['account_type'] ?? '')
+            'search'       => $this->security->cleanInput($_GET['search'] ?? ''),
+            'date_from'    => $this->security->cleanInput($_GET['date_from'] ?? ''),
+            'date_to'      => $this->security->cleanInput($_GET['date_to'] ?? ''),
+            'account_type' => $this->security->cleanInput($_GET['account_type'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -77,8 +82,8 @@ class AdminOperationsController
     public function exportUsers()
     {
         $filters = [
-            'search' => clean_input($_GET['search'] ?? ''),
-            'status' => clean_input($_GET['status'] ?? 'all')
+            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
         ];
 
         $users = $this->service->exportUsers($filters);
@@ -125,11 +130,11 @@ class AdminOperationsController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             global $pdo;
-            check_admin_permission($pdo, $admin_id, 'change_interest_rate');
+            $this->security->checkAdminPermission($pdo, $admin_id, 'change_interest_rate');
 
             $new_rate       = floatval($_POST['new_rate'] ?? 0);
-            $apply_from     = clean_input($_POST['apply_from'] ?? 'Immediately');
-            $custom_date    = clean_input($_POST['custom_date'] ?? '');
+            $apply_from     = $this->security->cleanInput($_POST['apply_from'] ?? 'Immediately');
+            $custom_date    = $this->security->cleanInput($_POST['custom_date'] ?? '');
 
             $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $admin_id);
             if (!$result['success']) {
@@ -148,9 +153,9 @@ class AdminOperationsController
     public function lockedAccounts(): array
     {
         $filters = [
-            'tab'    => clean_input($_GET['tab'] ?? 'locked'),
-            'search' => clean_input($_GET['search'] ?? ''),
-            'status' => clean_input($_GET['status'] ?? '')
+            'tab'    => $this->security->cleanInput($_GET['tab'] ?? 'locked'),
+            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status' => $this->security->cleanInput($_GET['status'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -177,8 +182,8 @@ class AdminOperationsController
     public function pendingApprovals(): array
     {
         $filters = [
-            'status' => clean_input($_GET['status'] ?? 'all'),
-            'search' => clean_input($_GET['search'] ?? '')
+            'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'search' => $this->security->cleanInput($_GET['search'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 10)));
@@ -224,9 +229,9 @@ class AdminOperationsController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = intval($_POST['user_id'] ?? 0);
-            $action  = clean_input($_POST['action'] ?? '');
-            $reason  = clean_input($_POST['reason'] ?? '');
-            $notes   = clean_input($_POST['notes'] ?? '');
+            $action  = $this->security->cleanInput($_POST['action'] ?? '');
+            $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
+            $notes   = $this->security->cleanInput($_POST['notes'] ?? '');
 
             if (!$user_id || empty($action)) {
                 throw new ApiException('User ID and action are required', 422);
@@ -286,10 +291,10 @@ class AdminOperationsController
     public function suspendedUsers(): array
     {
         $filters = [
-            'search'     => clean_input($_GET['search'] ?? ''),
-            'reason'     => clean_input($_GET['reason'] ?? ''),
-            'start_date' => clean_input($_GET['start_date'] ?? ''),
-            'end_date'   => clean_input($_GET['end_date'] ?? '')
+            'search'     => $this->security->cleanInput($_GET['search'] ?? ''),
+            'reason'     => $this->security->cleanInput($_GET['reason'] ?? ''),
+            'start_date' => $this->security->cleanInput($_GET['start_date'] ?? ''),
+            'end_date'   => $this->security->cleanInput($_GET['end_date'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -302,15 +307,15 @@ class AdminOperationsController
     public function transactions()
     {
         $filters = [
-            'search'    => clean_input($_GET['search'] ?? ''),
-            'type'      => clean_input($_GET['type'] ?? 'all'),
-            'status'    => clean_input($_GET['status'] ?? 'all'),
-            'from_date' => clean_input($_GET['from_date'] ?? ''),
-            'to_date'   => clean_input($_GET['to_date'] ?? '')
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'type'      => $this->security->cleanInput($_GET['type'] ?? 'all'),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
+            'to_date'   => $this->security->cleanInput($_GET['to_date'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
-        $export   = clean_input($_GET['export'] ?? '');
+        $export   = $this->security->cleanInput($_GET['export'] ?? '');
 
         if ($export === 'csv') {
             $rows = $this->service->getTransactions($filters, $page, $per_page, true);
@@ -340,8 +345,8 @@ class AdminOperationsController
     public function users(): array
     {
         $filters = [
-            'search' => clean_input($_GET['search'] ?? ''),
-            'status' => clean_input($_GET['status'] ?? 'all')
+            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -383,10 +388,10 @@ class AdminOperationsController
     public function userAction(): array
     {
         $user_id = intval($_POST['user_id'] ?? 0);
-        $action  = clean_input($_POST['action'] ?? '');
-        $reason  = clean_input($_POST['reason'] ?? '');
+        $action  = $this->security->cleanInput($_POST['action'] ?? '');
+        $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
         $password = $_POST['password'] ?? '';
-        $balance_option = clean_input($_POST['balance_option'] ?? 'full');
+        $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
         $admin_id = $_SESSION['admin_id'];
 
         if (!$user_id || empty($action)) {

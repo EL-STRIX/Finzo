@@ -2,15 +2,20 @@
 
 namespace App\Presentation\Controllers\Staff;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\StaffService;
 use Exception;
 
 class StaffController
 {
+    protected SecurityService $security;
+
     private StaffService $service;
 
-    public function __construct(StaffService $service)
+    public function __construct(StaffService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
@@ -20,7 +25,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $account_no = clean_input($_GET['account_no'] ?? '');
+        $account_no = $this->security->cleanInput($_GET['account_no'] ?? '');
         if (empty($account_no)) {
             json_response(['success' => false, 'found' => false, 'message' => 'Account number is required'], 422);
         }
@@ -48,7 +53,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
@@ -131,14 +136,14 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
         $staff_id = $_SESSION['staff_id'];
-        $account_no     = clean_input($_POST['account_no'] ?? '');
+        $account_no     = $this->security->cleanInput($_POST['account_no'] ?? '');
         $amount         = floatval($_POST['amount'] ?? 0);
-        $reference_note = clean_input($_POST['reference_note'] ?? '');
+        $reference_note = $this->security->cleanInput($_POST['reference_note'] ?? '');
 
         $errors = [];
         if (empty($account_no)) {
@@ -183,11 +188,11 @@ class StaffController
         $staff_id = $_SESSION['staff_id'];
 
         $filters = [
-            'type'      => clean_input($_GET['type'] ?? 'all'),
-            'status'    => clean_input($_GET['status'] ?? 'all'),
-            'search'    => clean_input($_GET['search'] ?? ''),
-            'from_date' => clean_input($_GET['from_date'] ?? ''),
-            'to_date'   => clean_input($_GET['to_date'] ?? ''),
+            'type'      => $this->security->cleanInput($_GET['type'] ?? 'all'),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
+            'to_date'   => $this->security->cleanInput($_GET['to_date'] ?? ''),
             'page'      => max(1, intval($_GET['page'] ?? 1)),
             'per_page'  => intval($_GET['per_page'] ?? 20)
         ];
@@ -218,7 +223,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $txn_id = clean_input($_GET['id'] ?? $_GET['txn_id'] ?? '');
+        $txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
         if (empty($txn_id)) {
             json_response(['success' => false, 'message' => 'Transaction ID is required'], 422);
         }
@@ -291,13 +296,13 @@ class StaffController
         }
 
         if ($method === 'POST') {
-            if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+            if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
                 json_response(['success' => false, 'message' => 'Invalid security token'], 403);
             }
 
-            $phone                   = clean_input($_POST['phone'] ?? '');
-            $emergency_contact_name  = clean_input($_POST['emergency_contact_name'] ?? '');
-            $emergency_contact_phone = clean_input($_POST['emergency_contact_phone'] ?? '');
+            $phone                   = $this->security->cleanInput($_POST['phone'] ?? '');
+            $emergency_contact_name  = $this->security->cleanInput($_POST['emergency_contact_name'] ?? '');
+            $emergency_contact_phone = $this->security->cleanInput($_POST['emergency_contact_phone'] ?? '');
 
             $errors = [];
             if ($phone !== '' && !validate_phone($phone)) {
@@ -354,14 +359,14 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
         $staff_id = $_SESSION['staff_id'];
-        $account_no     = clean_input($_POST['account_no'] ?? '');
+        $account_no     = $this->security->cleanInput($_POST['account_no'] ?? '');
         $amount         = floatval($_POST['amount'] ?? 0);
-        $identity_notes = clean_input($_POST['identity_notes'] ?? '');
+        $identity_notes = $this->security->cleanInput($_POST['identity_notes'] ?? '');
 
         $errors = [];
         if (empty($account_no)) {

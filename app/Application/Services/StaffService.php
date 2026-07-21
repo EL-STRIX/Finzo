@@ -2,6 +2,8 @@
 
 namespace App\Application\Services;
 
+use App\Shared\Security\SecurityService;
+
 use App\Infrastructure\Repositories\StaffRepository;
 use Exception;
 use PDOException;
@@ -9,10 +11,13 @@ use finfo;
 
 class StaffService
 {
+    protected SecurityService $security;
+
     private StaffRepository $repository;
 
-    public function __construct(StaffRepository $repository)
+    public function __construct(StaffRepository $repository, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->repository = $repository;
     }
 
@@ -54,7 +59,7 @@ class StaffService
         $this->repository->updateStaffPassword($staff_id, $new_hash);
 
         // write_audit_log requires pdo
-        write_audit_log($this->repository->getPDO(), 'staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password');
+        $this->security->writeAuditLog($this->repository->getPDO(), 'staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password');
         return true;
     }
 
@@ -125,14 +130,8 @@ class StaffService
                 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            write_audit_log(
-                $this->repository->getPDO(),
-                'staff_deposit',
-                $txn_id,
-                'transaction',
-                $staff_id,
-                'staff',
-                "Deposit of " . format_currency($amount) . " to account {$account_no}"
+            $this->security->writeAuditLog(
+                $this->repository->getPDO(), 'staff_deposit', $txn_id, 'transaction', $staff_id, 'staff', "Deposit of " . format_currency($amount) . " to account {$account_no}"
             );
 
             $this->repository->commit();
@@ -198,14 +197,8 @@ class StaffService
                 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            write_audit_log(
-                $this->repository->getPDO(),
-                'staff_withdrawal',
-                $txn_id,
-                'transaction',
-                $staff_id,
-                'staff',
-                "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}"
+            $this->security->writeAuditLog(
+                $this->repository->getPDO(), 'staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}"
             );
 
             $this->repository->commit();
@@ -354,7 +347,7 @@ class StaffService
         }
 
         $this->repository->updateStaffProfile($staff_id, $fields, $params);
-        write_audit_log($this->repository->getPDO(), 'staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile');
+        $this->security->writeAuditLog($this->repository->getPDO(), 'staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile');
 
         return $this->repository->getFullStaffProfile($staff_id);
     }

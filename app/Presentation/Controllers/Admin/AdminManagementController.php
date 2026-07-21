@@ -2,16 +2,21 @@
 
 namespace App\Presentation\Controllers\Admin;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\AdminManagementService;
 use App\Shared\Core\Exceptions\ApiException;
 use Exception;
 
 class AdminManagementController
 {
+    protected SecurityService $security;
+
     private AdminManagementService $service;
 
-    public function __construct(AdminManagementService $service)
+    public function __construct(AdminManagementService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
@@ -38,7 +43,7 @@ class AdminManagementController
         $this->service->validateCsrf($_POST['csrf_token'] ?? '');
         $this->service->requireSuperAdmin();
 
-        $action = clean_input($_POST['action'] ?? '');
+        $action = $this->security->cleanInput($_POST['action'] ?? '');
         $target_id = isset($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0;
 
         $result = $this->service->handleAdminAction($action, $target_id);
@@ -86,7 +91,7 @@ class AdminManagementController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = clean_input($_POST['action'] ?? 'update_profile');
+            $action = $this->security->cleanInput($_POST['action'] ?? 'update_profile');
 
             if ($action === 'change_password') {
                 $result = $this->service->changePassword($admin_id, $_POST);

@@ -2,6 +2,8 @@
 
 namespace App\Presentation\Controllers\User;
 
+use App\Shared\Security\SecurityService;
+
 use App\Application\Services\UserService;
 use App\Infrastructure\Repositories\UserRepository;
 use PDOException;
@@ -9,11 +11,14 @@ use Exception;
 
 class UserController
 {
+    protected SecurityService $security;
+
     protected UserService $service;
     protected UserRepository $repository;
 
-    public function __construct(UserService $service)
+    public function __construct(UserService $service, ?SecurityService $security = null)
     {
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
         $this->repository = $service->getRepository();
     }
@@ -23,7 +28,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $account_no = clean_input($_GET['account_no'] ?? '');
+        $account_no = $this->security->cleanInput($_GET['account_no'] ?? '');
         if (empty($account_no)) {
             json_response(['found' => false, 'message' => 'Account number is required'], 422);
         }
@@ -61,7 +66,7 @@ class UserController
                     'used_today' => (float)$used_today
                 ]);
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $daily_limit = clean_input($_POST['daily_limit'] ?? '');
+                $daily_limit = $this->security->cleanInput($_POST['daily_limit'] ?? '');
                 if (!is_numeric($daily_limit) || $daily_limit < 1000 || $daily_limit > 100000) {
                     json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000']);
                 }
@@ -133,7 +138,7 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = clean_input($_POST['action'] ?? 'add');
+            $action = $this->security->cleanInput($_POST['action'] ?? 'add');
             if ($action === 'delete') {
                 $beneficiary_id = intval($_POST['beneficiary_id'] ?? 0);
                 if (!$beneficiary_id) {
@@ -149,9 +154,9 @@ class UserController
                     json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
                 }
             }
-            $nickname   = clean_input($_POST['nickname'] ?? '');
-            $account_no = clean_input($_POST['account_no'] ?? '');
-            $bank_name  = clean_input($_POST['bank_name'] ?? 'Finzo');
+            $nickname   = $this->security->cleanInput($_POST['nickname'] ?? '');
+            $account_no = $this->security->cleanInput($_POST['account_no'] ?? '');
+            $bank_name  = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
             $errors = [];
             if (empty($nickname) || strlen($nickname) < 2 || strlen($nickname) > 100) {
                 $errors['nickname'] = 'Nickname must be between 2 and 100 characters';
@@ -206,7 +211,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
         $user_id = $_SESSION['user_id'];
@@ -254,7 +259,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
@@ -262,14 +267,14 @@ class UserController
         $customer_id_str = $this->service->getCustomerId($user_id);
 
         $data = [
-            'dob' => clean_input($_POST['dob'] ?? ''), 'gender' => clean_input($_POST['gender'] ?? ''),
-            'father_name' => clean_input($_POST['father_name'] ?? ''), 'mother_name' => clean_input($_POST['mother_name'] ?? ''),
-            'marital_status' => clean_input($_POST['marital_status'] ?? ''), 'nationality' => clean_input($_POST['nationality'] ?? ''),
-            'occupation' => clean_input($_POST['occupation'] ?? ''), 'annual_income' => clean_input($_POST['annual_income'] ?? ''),
-            'source_of_income' => clean_input($_POST['source_of_income'] ?? ''), 'street' => clean_input($_POST['street'] ?? ''),
-            'city' => clean_input($_POST['city'] ?? ''), 'state' => clean_input($_POST['state'] ?? ''),
-            'pincode' => clean_input($_POST['pincode'] ?? ''), 'id_type' => clean_input($_POST['id_type'] ?? ''),
-            'id_number' => clean_input($_POST['id_number'] ?? ''), 'account_type' => clean_input($_POST['account_type'] ?? ''),
+            'dob' => $this->security->cleanInput($_POST['dob'] ?? ''), 'gender' => $this->security->cleanInput($_POST['gender'] ?? ''),
+            'father_name' => $this->security->cleanInput($_POST['father_name'] ?? ''), 'mother_name' => $this->security->cleanInput($_POST['mother_name'] ?? ''),
+            'marital_status' => $this->security->cleanInput($_POST['marital_status'] ?? ''), 'nationality' => $this->security->cleanInput($_POST['nationality'] ?? ''),
+            'occupation' => $this->security->cleanInput($_POST['occupation'] ?? ''), 'annual_income' => $this->security->cleanInput($_POST['annual_income'] ?? ''),
+            'source_of_income' => $this->security->cleanInput($_POST['source_of_income'] ?? ''), 'street' => $this->security->cleanInput($_POST['street'] ?? ''),
+            'city' => $this->security->cleanInput($_POST['city'] ?? ''), 'state' => $this->security->cleanInput($_POST['state'] ?? ''),
+            'pincode' => $this->security->cleanInput($_POST['pincode'] ?? ''), 'id_type' => $this->security->cleanInput($_POST['id_type'] ?? ''),
+            'id_number' => $this->security->cleanInput($_POST['id_number'] ?? ''), 'account_type' => $this->security->cleanInput($_POST['account_type'] ?? ''),
             'initial_deposit' => floatval($_POST['initial_deposit'] ?? 0), 'txn_pin' => $_POST['txn_pin'] ?? '',
         ];
 
@@ -424,7 +429,7 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = clean_input($_POST['action'] ?? '');
+            $action = $this->security->cleanInput($_POST['action'] ?? '');
             try {
                 if ($action === 'mark_read') {
                     $notification_id = intval($_POST['notification_id'] ?? 0);
@@ -472,12 +477,12 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+            if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
                 json_response(['success' => false, 'message' => 'Invalid security token'], 403);
             }
-            $full_name = clean_input($_POST['full_name'] ?? '');
-            $phone = clean_input($_POST['phone'] ?? '');
-            $email = clean_input($_POST['email'] ?? '');
+            $full_name = $this->security->cleanInput($_POST['full_name'] ?? '');
+            $phone = $this->security->cleanInput($_POST['phone'] ?? '');
+            $email = $this->security->cleanInput($_POST['email'] ?? '');
             $errors = [];
             if (empty($full_name) || strlen($full_name) < 2 || strlen($full_name) > 100) {
                 $errors['full_name'] = 'Full name must be between 2 and 100 characters';
@@ -521,8 +526,8 @@ class UserController
             if (!$account) {
                 json_response(['success' => false, 'message' => 'No active account found'], 404);
             }
-            $from_date = clean_input($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
-            $to_date = clean_input($_GET['to_date'] ?? date('Y-m-d'));
+            $from_date = $this->security->cleanInput($_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days')));
+            $to_date = $this->security->cleanInput($_GET['to_date'] ?? date('Y-m-d'));
             $transactions = $this->service->getStatementTransactions($account['id'], $from_date, $to_date);
             $opening_row = $this->service->getOpeningBalance($account['id'], $from_date);
             $opening_balance = $opening_row ? (float)$opening_row['balance_after'] : 0;
@@ -559,11 +564,11 @@ class UserController
                 json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
             }
             $account_id = $account['id'];
-            $search = clean_input($_GET['search'] ?? '');
-            $type = clean_input($_GET['type'] ?? 'all');
-            $status = clean_input($_GET['status'] ?? 'all');
-            $from_date = clean_input($_GET['from_date'] ?? '');
-            $to_date = clean_input($_GET['to_date'] ?? '');
+            $search = $this->security->cleanInput($_GET['search'] ?? '');
+            $type = $this->security->cleanInput($_GET['type'] ?? 'all');
+            $status = $this->security->cleanInput($_GET['status'] ?? 'all');
+            $from_date = $this->security->cleanInput($_GET['from_date'] ?? '');
+            $to_date = $this->security->cleanInput($_GET['to_date'] ?? '');
             $page = max(1, intval($_GET['page'] ?? 1));
             $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
 
@@ -623,7 +628,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
         if ($_SESSION['user_status'] !== 'active') {
@@ -631,9 +636,9 @@ class UserController
         }
 
         $user_id = $_SESSION['user_id'];
-        $to_account_no = clean_input($_POST['to_account_no'] ?? '');
+        $to_account_no = $this->security->cleanInput($_POST['to_account_no'] ?? '');
         $amount = floatval($_POST['amount'] ?? 0);
-        $description = clean_input($_POST['description'] ?? '');
+        $description = $this->security->cleanInput($_POST['description'] ?? '');
         $txn_pin = $_POST['txn_pin'] ?? '';
         $errors = [];
         if (empty($to_account_no)) {
@@ -719,7 +724,7 @@ class UserController
 
             send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$txn_id}");
             send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$txn_id}");
-            write_audit_log($pdo, 'fund_transfer', $txn_id, 'transaction', $user_id, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
+            $this->security->writeAuditLog($pdo, 'fund_transfer', $txn_id, 'transaction', $user_id, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
 
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
