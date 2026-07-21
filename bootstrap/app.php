@@ -63,7 +63,7 @@ if (getenv('APP_ENV') !== 'testing') {
         }
 
         $message = $debug ? $e->getMessage() : 'A server error occurred. Please try again later.';
-        
+
         // Expose Database Business Validation Errors (Phase 10)
         if ($e instanceof \PDOException && isset($e->errorInfo[0]) && $e->errorInfo[0] === '45000') {
             // Error format is often: SQLSTATE[45000]: ... : 1644 Duplicate transaction detected...

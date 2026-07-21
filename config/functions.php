@@ -279,14 +279,20 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
     $correlation_id = $_SERVER['HTTP_X_CORRELATION_ID'] ?? null;
     $session_id_val = session_id() ?: null;
     $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-    
+
     // Determine module dynamically based on action_type if possible, default 'system'
     $module = 'system';
-    if (strpos($action_type, 'kyc') !== false) $module = 'kyc';
-    elseif (strpos($action_type, 'admin') !== false) $module = 'administration';
-    elseif (strpos($action_type, 'staff') !== false) $module = 'staff_operations';
-    elseif (strpos($action_type, 'user') !== false) $module = 'customer_operations';
-    elseif (strpos($action_type, 'transaction') !== false) $module = 'core_banking';
+    if (strpos($action_type, 'kyc') !== false) {
+        $module = 'kyc';
+    } elseif (strpos($action_type, 'admin') !== false) {
+        $module = 'administration';
+    } elseif (strpos($action_type, 'staff') !== false) {
+        $module = 'staff_operations';
+    } elseif (strpos($action_type, 'user') !== false) {
+        $module = 'customer_operations';
+    } elseif (strpos($action_type, 'transaction') !== false) {
+        $module = 'core_banking';
+    }
 
     $stmt = $pdo->prepare("
         INSERT INTO audit_log (
