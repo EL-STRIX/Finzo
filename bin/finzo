@@ -7,7 +7,10 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../database/Migrator.php';
 
+require_once __DIR__ . '/../database/BcdrManager.php';
+
 use Database\Migrator;
+use Database\BcdrManager;
 
 $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 $options = [
@@ -23,11 +26,15 @@ try {
 }
 
 $migrator = new Migrator($pdo, __DIR__ . '/../database/migrations', __DIR__ . '/../database/seeds');
+$bcdr = new BcdrManager($pdo);
 
 $command = $argv[1] ?? 'help';
 
 switch ($command) {
     case 'migrate':
+        // Phase 11: Migration Safety - Automatic backup before schema changes
+        echo "Creating pre-migration safety backup...\n";
+        $bcdr->backup('schema');
         $migrator->migrate();
         break;
     
@@ -44,13 +51,34 @@ switch ($command) {
         $migrator->seed($type);
         break;
 
+    case 'backup':
+        $type = $argv[2] ?? 'full';
+        $bcdr->backup($type);
+        break;
+
+    case 'restore':
+        $file = $argv[2] ?? null;
+        if (!$file) {
+            die("Usage: php bin/finzo restore <backup_file>\n");
+        }
+        $bcdr->restore($file);
+        break;
+
+    case 'validate':
+        $bcdr->validateIntegrity();
+        break;
+
     case 'help':
     default:
-        echo "Finzo Database Management CLI\n\n";
-        echo "Usage:\n";
-        echo "  php bin/finzo migrate         Run pending migrations\n";
+        echo "Finzo Database Management CLI (Enterprise BCDR Edition)\n\n";
+        echo "Deployment & Versioning:\n";
+        echo "  php bin/finzo migrate         Run pending migrations (auto-backs up schema)\n";
         echo "  php bin/finzo rollback        Rollback the last migration batch\n";
         echo "  php bin/finzo reset           Rollback all migrations\n";
-        echo "  php bin/finzo seed [type]     Run database seeders (system, dev, testing, demo)\n";
+        echo "  php bin/finzo seed [type]     Run database seeders (system, dev, testing, demo)\n\n";
+        echo "Disaster Recovery (BCDR):\n";
+        echo "  php bin/finzo backup [type]   Create an encrypted database backup (full, schema, data)\n";
+        echo "  php bin/finzo restore [file]  Restore from an encrypted backup archive\n";
+        echo "  php bin/finzo validate        Perform full database integrity verification\n";
         break;
 }
