@@ -230,10 +230,12 @@ CREATE TABLE IF NOT EXISTS transactions (
     reference_note VARCHAR(255) NULL DEFAULT NULL,
     status ENUM('pending', 'completed', 'failed', 'reversed') NOT NULL DEFAULT 'pending',
     processed_by_staff_id INT UNSIGNED NULL DEFAULT NULL,
+    journal_entry_id INT UNSIGNED NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_txn_from_account (from_account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_txn_to_account (to_account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_txn_staff (processed_by_staff_id) REFERENCES staff(id) ON DELETE SET NULL,
+    FOREIGN KEY fk_txn_journal (journal_entry_id) REFERENCES journal_entries(id) ON DELETE RESTRICT,
     INDEX idx_txn_id (txn_id),
     INDEX idx_from_account (from_account_id),
     INDEX idx_to_account (to_account_id),
@@ -417,6 +419,134 @@ CREATE TABLE IF NOT EXISTS staff_shifts (
     INDEX idx_shift_date (shift_date),
     UNIQUE KEY uniq_staff_date (staff_id, shift_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 16: chart_of_accounts
+-- =====================================================
+CREATE TABLE IF NOT EXISTS chart_of_accounts (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    account_code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    category ENUM('asset', 'liability', 'equity', 'income', 'expense', 'contra', 'suspense') NOT NULL,
+    parent_id INT UNSIGNED NULL DEFAULT NULL,
+    normal_balance ENUM('debit', 'credit') NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    description TEXT NULL DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_id) REFERENCES chart_of_accounts(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 17: accounting_periods
+-- =====================================================
+CREATE TABLE IF NOT EXISTS accounting_periods (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    period_name VARCHAR(100) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status ENUM('open', 'closed', 'locked') NOT NULL DEFAULT 'open',
+    closed_at TIMESTAMP NULL DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 18: journal_entries
+-- =====================================================
+CREATE TABLE IF NOT EXISTS journal_entries (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    journal_number VARCHAR(100) NOT NULL UNIQUE,
+    reference VARCHAR(100) NULL DEFAULT NULL,
+    posting_date DATE NOT NULL,
+    value_date DATE NOT NULL,
+    description TEXT NOT NULL,
+    source_module VARCHAR(100) NOT NULL,
+    status ENUM('draft', 'posted', 'reversed', 'cancelled') NOT NULL DEFAULT 'posted',
+    created_by_staff_id INT UNSIGNED NULL DEFAULT NULL,
+    approved_by_staff_id INT UNSIGNED NULL DEFAULT NULL,
+    period_id INT UNSIGNED NULL DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by_staff_id) REFERENCES staff(id) ON DELETE RESTRICT,
+    FOREIGN KEY (approved_by_staff_id) REFERENCES staff(id) ON DELETE RESTRICT,
+    FOREIGN KEY (period_id) REFERENCES accounting_periods(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 19: journal_lines
+-- =====================================================
+CREATE TABLE IF NOT EXISTS journal_lines (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    journal_entry_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    debit_amount DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (debit_amount >= 0),
+    credit_amount DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (credit_amount >= 0),
+    narration VARCHAR(255) NULL DEFAULT NULL,
+    sequence_number INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES chart_of_accounts(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- FINANCIAL POSTING ENGINE (DB TRIGGERS)
+-- =====================================================
+DELIMITER //
+
+CREATE TRIGGER after_transaction_insert
+AFTER INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    DECLARE v_period_id INT UNSIGNED;
+    DECLARE v_journal_id INT UNSIGNED;
+    DECLARE v_coa_debit INT UNSIGNED;
+    DECLARE v_coa_credit INT UNSIGNED;
+    DECLARE v_journal_num VARCHAR(100);
+    
+    -- Get open period
+    SELECT id INTO v_period_id FROM accounting_periods WHERE status = 'open' LIMIT 1;
+    IF v_period_id IS NULL THEN
+        INSERT INTO accounting_periods (period_name, start_date, end_date, status) VALUES ('Current Period', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR), 'open');
+        SET v_period_id = LAST_INSERT_ID();
+    END IF;
+
+    -- Ensure COA exists for mapping
+    SELECT id INTO v_coa_debit FROM chart_of_accounts WHERE category = 'asset' LIMIT 1;
+    IF v_coa_debit IS NULL THEN
+        INSERT INTO chart_of_accounts (account_code, name, category, normal_balance) VALUES (CONCAT('1000-', FLOOR(RAND()*1000)), 'General Asset', 'asset', 'debit');
+        SET v_coa_debit = LAST_INSERT_ID();
+    END IF;
+    
+    SELECT id INTO v_coa_credit FROM chart_of_accounts WHERE category = 'liability' LIMIT 1;
+    IF v_coa_credit IS NULL THEN
+        INSERT INTO chart_of_accounts (account_code, name, category, normal_balance) VALUES (CONCAT('2000-', FLOOR(RAND()*1000)), 'General Liability', 'liability', 'credit');
+        SET v_coa_credit = LAST_INSERT_ID();
+    END IF;
+
+    SET v_journal_num = CONCAT('JNL-', REPLACE(NEW.txn_id, 'TXN', ''));
+
+    INSERT INTO journal_entries (journal_number, reference, posting_date, value_date, description, source_module, status, period_id)
+    VALUES (v_journal_num, NEW.txn_id, CURDATE(), CURDATE(), COALESCE(NEW.description, 'System Posting'), 'Core Banking', 'posted', v_period_id);
+    
+    SET v_journal_id = LAST_INSERT_ID();
+
+    -- Double Entry Accounting
+    INSERT INTO journal_lines (journal_entry_id, account_id, debit_amount, credit_amount, narration, sequence_number)
+    VALUES (v_journal_id, v_coa_debit, NEW.amount, 0, 'Auto Debit', 1);
+
+    INSERT INTO journal_lines (journal_entry_id, account_id, debit_amount, credit_amount, narration, sequence_number)
+    VALUES (v_journal_id, v_coa_credit, 0, NEW.amount, 'Auto Credit', 2);
+    
+    -- In a real DB we would UPDATE transactions SET journal_entry_id = v_journal_id WHERE id = NEW.id
+    -- But since this is AFTER INSERT, we cannot update the same row directly without a BEFORE INSERT or autonomous transaction in MySQL.
+END//
+
+DELIMITER ;
 
 -- =====================================================
 -- SEED DATA
