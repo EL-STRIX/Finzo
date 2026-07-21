@@ -28,6 +28,14 @@ class AuthService
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
+        if ($user['status'] === 'rejected') {
+            throw new ApiException('Your application has been rejected. Please contact support for assistance.', 403);
+        }
+
+        if ($user['status'] === 'suspended') {
+            throw new ApiException('Your account has been suspended. Please contact support.', 403);
+        }
+
         if (!password_verify($password, $user['password_hash'])) {
             $new_attempts = $user['failed_attempts'] + 1;
 
@@ -59,10 +67,6 @@ class AuthService
             }
         }
 
-        if ($user['status'] === 'suspended') {
-            throw new ApiException('Your account has been suspended. Please contact support.', 403);
-        }
-
         $ip = get_client_ip();
         $this->repository->updateSuccessfulLogin($user['id'], $ip);
 
@@ -71,22 +75,22 @@ class AuthService
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id(true);
         }
-        $_SESSION['user_id']        = (int)$user['id'];
+        $_SESSION['user_id']          = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
-        $_SESSION['user_name']      = $user['full_name'];
-        $_SESSION['user_email']     = $user['email'];
-        $_SESSION['user_phone']     = $user['phone'] ?? '';
-        $_SESSION['user_status']    = $user['status'];
-        $_SESSION['user_account_no'] = $account ? $account['account_no'] : null;
-        $_SESSION['user_balance']   = $account ? $account['balance'] : null;
-        $_SESSION['role']           = 'customer';
-        $_SESSION['last_activity']  = time();
+        $_SESSION['user_name']        = $user['full_name'];
+        $_SESSION['user_email']       = $user['email'];
+        $_SESSION['user_phone']       = $user['phone'] ?? '';
+        $_SESSION['user_status']      = $user['status'];
+        $_SESSION['user_account_no']  = $account ? $account['account_no'] : null;
+        $_SESSION['user_balance']     = $account ? $account['balance'] : null;
+        $_SESSION['role']             = 'customer';
+        $_SESSION['last_activity']    = time();
 
         $pdo = $this->repository->getDb();
         write_audit_log($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}");
 
         return [
-            'user' => $user,
+            'user'    => $user,
             'account' => $account
         ];
     }
@@ -181,6 +185,10 @@ class AuthService
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
+        if ($staff['status'] === 'suspended') {
+            throw new ApiException('Your account has been suspended. Please contact the administrator.', 403);
+        }
+
         if (!password_verify($password, $staff['password_hash'])) {
             $new_attempts = $staff['failed_attempts'] + 1;
 
@@ -210,10 +218,6 @@ class AuthService
                 $remaining = $max_attempts - $new_attempts;
                 throw new ApiException("Invalid email/ID or password. {$remaining} attempt(s) remaining.", 401);
             }
-        }
-
-        if ($staff['status'] === 'suspended') {
-            throw new ApiException('Your account has been suspended. Please contact the administrator.', 403);
         }
 
         $ip = get_client_ip();

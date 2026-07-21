@@ -48,7 +48,7 @@ class AuthRepository extends BaseRepository
     public function lockUser(int $id, int $attempts, string $lock_until): bool
     {
         return $this->execute(
-            "UPDATE users SET failed_attempts = ?, locked_until = ?, temp_pass_status = 'pending' WHERE id = ?",
+            "UPDATE users SET failed_attempts = ?, locked_until = ? WHERE id = ?",
             [$attempts, $lock_until, $id]
         );
     }
@@ -61,7 +61,7 @@ class AuthRepository extends BaseRepository
     public function updateSuccessfulLogin(int $id, string $ip): bool
     {
         return $this->execute("
-            UPDATE users SET failed_attempts = 0, locked_until = NULL, temp_pass_status = 'none', last_login_at = NOW(), last_login_ip = ?
+            UPDATE users SET failed_attempts = 0, locked_until = NULL, last_login_at = NOW(), last_login_ip = ?
             WHERE id = ?
         ", [$ip, $id]);
     }
