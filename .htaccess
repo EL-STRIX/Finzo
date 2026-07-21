@@ -11,6 +11,7 @@
     
     # Bridge legacy frontend API calls to the new Front Controller
     RewriteRule ^public/assets/api/(.*)$ public/api/index.php [L,QSA]
+    RewriteRule ^public/api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^app/Controllers/(.*)$ public/api/index.php [L,QSA]
     

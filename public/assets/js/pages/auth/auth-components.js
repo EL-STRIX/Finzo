@@ -47,16 +47,21 @@ function initCsrfToken() {
     const endpoint = '/Finzo/public/api/auth/get-csrf-token.php';
 
     fetch(endpoint)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.csrf_token) {
-                csrfInputs.forEach(input => {
-                    input.value = data.csrf_token;
-                });
+        .then(res => res.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                if (data && data.csrf_token) {
+                    csrfInputs.forEach(input => {
+                        input.value = data.csrf_token;
+                    });
+                }
+            } catch (_) {
+                console.warn('[Finzo] CSRF endpoint returned non-JSON. Check public/api/.htaccess and XAMPP.');
             }
         })
         .catch(() => {
-            // Silence CSRF token fetch errors if offline or in static preview
+            console.warn('[Finzo] CSRF endpoint unreachable. Ensure XAMPP Apache is running.');
         });
 }
 
@@ -491,7 +496,19 @@ function initAuthFormSubmission() {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 });
 
-                const data = await response.json();
+                // Read as text first to handle non-JSON responses (Apache 404 HTML, PHP errors)
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (_) {
+                    // Server returned a non-JSON body — likely a routing/config issue
+                    showNotificationToast(
+                        `Server error (HTTP ${response.status}). Check server configuration.`,
+                        'error'
+                    );
+                    return;
+                }
 
                 if (data.success) {
                     if (data.redirect) {
@@ -514,7 +531,7 @@ function initAuthFormSubmission() {
                     }
                 }
             } catch (err) {
-                showNotificationToast('Network error. Please check your connection and try again.', 'error');
+                showNotificationToast('Connection failed. Please check XAMPP is running.', 'error');
             } finally {
                 if (submitBtn) {
                     submitBtn.classList.remove('is-loading');
