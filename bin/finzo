@@ -35,7 +35,12 @@ switch ($command) {
         // Phase 11: Migration Safety - Automatic backup before schema changes
         echo "Creating pre-migration safety backup...\n";
         $bcdr->backup('schema');
-        $migrator->migrate();
+        try {
+            $migrator->migrate();
+        } catch (Exception $e) {
+            echo "Migration Failed: " . $e->getMessage() . "\n";
+            exit(1);
+        }
         break;
     
     case 'rollback':
