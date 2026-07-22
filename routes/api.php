@@ -208,33 +208,12 @@ $router->get('/api/documents/statement', [PdfController::class, 'statement']);
 // ==========================================
 // V1 API ROUTES (PHASE 16.2)
 // ==========================================
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/login', [AuthController::class, 'login']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/admin-login', [AuthController::class, 'adminLogin']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/staff-login', [AuthController::class, 'staffLogin']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/logout', [AuthController::class, 'logout']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/register', [AuthController::class, 'register']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/forgot-password', [AuthController::class, 'forgotPassword']);
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
 $router->post('/api/v1/auth/reset-password', [AuthController::class, 'resetPassword']);
 $router->get('/api/v1/auth/csrf-token', [AuthController::class, 'getCsrfToken']);
 $router->get('/api/v1/admins', [AdminManagementController::class, 'getAdmins'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
@@ -297,6 +276,7 @@ $router->post('/api/v1/uploads/id-document', [UploadController::class, 'uploadId
 $router->get('/api/v1/documents/receipt', [PdfController::class, 'receipt']);
 $router->get('/api/v1/documents/staff-statement', [PdfController::class, 'staffStatement']);
 $router->get('/api/v1/documents/statement', [PdfController::class, 'statement']);
+
 
 use App\Presentation\Api\V1\Docs\SwaggerController;
 $router->get('/api/docs', [SwaggerController::class, 'index']);
