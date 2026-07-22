@@ -18,6 +18,22 @@ class Router
         $this->addRoute('POST', $path, $handler, $middleware);
     }
 
+    
+    public function put(string $path, callable|array $handler, array $middleware = []): void
+    {
+        $this->addRoute('PUT', $path, $handler, $middleware);
+    }
+
+    public function patch(string $path, callable|array $handler, array $middleware = []): void
+    {
+        $this->addRoute('PATCH', $path, $handler, $middleware);
+    }
+
+    public function delete(string $path, callable|array $handler, array $middleware = []): void
+    {
+        $this->addRoute('DELETE', $path, $handler, $middleware);
+    }
+
     private function addRoute(string $method, string $path, callable|array $handler, array $middleware): void
     {
         // Convert path to regex, e.g., /admin/profile/{id} -> /admin/profile/(?<id>[a-zA-Z0-9_-]+)
@@ -26,6 +42,7 @@ class Router
 
         $this->routes[] = [
             'method' => $method,
+            'path' => $path,
             'pattern' => $pattern,
             'handler' => $handler,
             'middleware' => $middleware,
@@ -140,5 +157,10 @@ class Router
         }
 
         return $reflection->newInstanceArgs($dependencies);
+    }
+
+    public function getRoutes(): array
+    {
+        return $this->routes;
     }
 }
