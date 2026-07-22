@@ -25,11 +25,11 @@ if (file_exists($tcpdf_autoload)) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$userId = $_SESSION['user_id'];
 
 // Parse params
-$from_date = $_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days'));
-$to_date   = $_GET['to_date'] ?? date('Y-m-d');
+$fromDate = $_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days'));
+$toDate   = $_GET['to_date'] ?? date('Y-m-d');
 
 try {
     // Get account info
@@ -38,7 +38,7 @@ try {
         FROM accounts a JOIN users u ON a.user_id = u.customer_id
         WHERE u.id = ? AND a.status = 'active' LIMIT 1
     ");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$userId]);
     $account = $stmt->fetch();
 
     if (!$account) {
@@ -47,7 +47,7 @@ try {
 
     // Get account ID
     $stmt = $pdo->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ? AND a.status = 'active' LIMIT 1");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$userId]);
     $account_id = $stmt->fetchColumn();
 
     // Get transactions
@@ -60,7 +60,7 @@ try {
             AND DATE(t.created_at) BETWEEN ? AND ?
         ORDER BY t.created_at ASC
     ");
-    $stmt->execute([$account_id, $account_id, $from_date, $to_date]);
+    $stmt->execute([$account_id, $account_id, $fromDate, $toDate]);
     $transactions = $stmt->fetchAll();
 
     // Create PDF
@@ -91,7 +91,7 @@ try {
     $pdf->SetTextColor(0, 0, 0);
     $pdf->Cell(0, 8, 'Account Statement', 0, 1, 'C');
     $pdf->SetFont('helvetica', '', 10);
-    $pdf->Cell(0, 5, "Period: {$from_date} to {$to_date}", 0, 1, 'C');
+    $pdf->Cell(0, 5, "Period: {$fromDate} to {$toDate}", 0, 1, 'C');
     $pdf->Ln(5);
 
     // Account details

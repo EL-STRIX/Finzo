@@ -58,22 +58,22 @@ class AdminStaffBranchRepository extends BaseRepository
         return $this->db->lastInsertId();
     }
 
-    public function updateStaffBranch(int $staff_id, int $branch_id)
+    public function updateStaffBranch(int $staffId, int $branchId)
     {
         $stmt = $this->db->prepare("UPDATE staff SET branch_id = ?, updated_at = NOW() WHERE id = ?");
-        return $stmt->execute([$branch_id, $staff_id]);
+        return $stmt->execute([$branchId, $staffId]);
     }
 
-    public function unassignStaffFromBranch(int $branch_id)
+    public function unassignStaffFromBranch(int $branchId)
     {
         $stmt = $this->db->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
-        return $stmt->execute([$branch_id]);
+        return $stmt->execute([$branchId]);
     }
 
-    public function deleteBranch(int $branch_id)
+    public function deleteBranch(int $branchId)
     {
         $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
-        return $stmt->execute([$branch_id]);
+        return $stmt->execute([$branchId]);
     }
 
     public function getMaxStaffId()
@@ -82,7 +82,7 @@ class AdminStaffBranchRepository extends BaseRepository
         return $stmt->fetchColumn() ?: 0;
     }
 
-    public function getStaffDetail(int $staff_id)
+    public function getStaffDetail(int $staffId)
     {
         return $this->fetchOne("
             SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone,
@@ -92,10 +92,10 @@ class AdminStaffBranchRepository extends BaseRepository
             FROM staff s
             LEFT JOIN branches b ON b.id = s.branch_id
             WHERE s.id = ?
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function getStaffPerformance(int $staff_id)
+    public function getStaffPerformance(int $staffId)
     {
         return $this->fetchOne("
             SELECT COUNT(*) as total_transactions,
@@ -103,36 +103,36 @@ class AdminStaffBranchRepository extends BaseRepository
                    COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals
             FROM transactions
             WHERE processed_by_staff_id = ? AND status = 'completed'
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function findStaffRecord(int $staff_id)
+    public function findStaffRecord(int $staffId)
     {
-        return $this->fetchOne("SELECT id, staff_id, full_name, personal_email as email, status, profile_photo FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
+        return $this->fetchOne("SELECT id, staff_id, full_name, personal_email as email, status, profile_photo FROM staff WHERE id = ?", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function updateStaffPassword(int $staff_id, string $hash)
+    public function updateStaffPassword(int $staffId, string $hash)
     {
         $stmt = $this->db->prepare("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?");
-        return $stmt->execute([$hash, $staff_id]);
+        return $stmt->execute([$hash, $staffId]);
     }
 
-    public function suspendStaff(int $staff_id, string $reason, string $suspended_by)
+    public function suspendStaff(int $staffId, string $reason, string $suspended_by)
     {
         $stmt = $this->db->prepare("UPDATE staff SET status = 'suspended', suspension_reason = ?, suspended_by = ?, updated_at = NOW() WHERE id = ?");
-        return $stmt->execute([$reason, $suspended_by, $staff_id]);
+        return $stmt->execute([$reason, $suspended_by, $staffId]);
     }
 
-    public function reinstateStaff(int $staff_id)
+    public function reinstateStaff(int $staffId)
     {
         $stmt = $this->db->prepare("UPDATE staff SET status = 'active', suspension_reason = NULL, suspended_by = NULL, updated_at = NOW() WHERE id = ?");
-        return $stmt->execute([$staff_id]);
+        return $stmt->execute([$staffId]);
     }
 
-    public function deleteStaff(int $staff_id)
+    public function deleteStaff(int $staffId)
     {
         $stmt = $this->db->prepare("DELETE FROM staff WHERE id = ?");
-        return $stmt->execute([$staff_id]);
+        return $stmt->execute([$staffId]);
     }
 
     public function insertStaff(array $data)
@@ -158,9 +158,9 @@ class AdminStaffBranchRepository extends BaseRepository
         return $this->db->lastInsertId();
     }
 
-    public function updateStaffPhoto(int $staff_id, string $path)
+    public function updateStaffPhoto(int $staffId, string $path)
     {
         $stmt = $this->db->prepare("UPDATE staff SET profile_photo = ? WHERE id = ?");
-        return $stmt->execute([$path, $staff_id]);
+        return $stmt->execute([$path, $staffId]);
     }
 }

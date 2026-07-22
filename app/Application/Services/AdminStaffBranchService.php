@@ -151,10 +151,10 @@ class AdminStaffBranchService
         return 'EMP' . str_pad((string)$num, 4, '0', STR_PAD_LEFT);
     }
 
-    public function createStaff(array $data, array $files, int $admin_id): array
+    public function createStaff(array $data, array $files, int $adminId): array
     {
         $pdo = $this->repo->getPDO();
-        $this->security->checkAdminPermission($pdo, $admin_id, 'add_staff');
+        $this->security->checkAdminPermission($pdo, $adminId, 'add_staff');
 
         $data['department'] = 'Teller Operations';
         if (empty($data['date_of_joining'])) {
@@ -176,7 +176,7 @@ class AdminStaffBranchService
             $data['staff_id'] = $this->generateStaffId();
             $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
 
-            $admin = $this->repo->findAdminById($admin_id);
+            $admin = $this->repo->findAdminById($adminId);
             $data['created_by'] = $admin['admin_id'] ?? null;
             $data['profile_photo'] = $profile_photo_path;
             $data['front_image'] = $id_front_path;
@@ -186,7 +186,7 @@ class AdminStaffBranchService
             $this->repo->commit();
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'))
+    new \App\Application\Events\GenericAuditAction('staff_created', $data['staff_id'], 'staff', $adminId, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'))
 );
 
             return ['staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']];
@@ -207,9 +207,9 @@ class AdminStaffBranchService
         }
     }
 
-    public function verifyAdminPassword(int $admin_id, string $password)
+    public function verifyAdminPassword(int $adminId, string $password)
     {
-        $admin = $this->repo->findAdminById($admin_id);
+        $admin = $this->repo->findAdminById($adminId);
         return ($admin && password_verify($password, $admin['password_hash']));
     }
 

@@ -18,7 +18,7 @@ if (!\App\Shared\Core\Validation\Validator::isSet($_FILES['certificate']) || $_F
 }
 
 $file = $_FILES['certificate'];
-$branch_id = intval($_POST['branch_id'] ?? 0);
+$branchId = intval($_POST['branch_id'] ?? 0);
 
 // Validate file size
 if ($file['size'] > MAX_UPLOAD_SIZE) {
@@ -48,7 +48,7 @@ $ext_map = [
     'application/pdf' => 'pdf'
 ];
 $ext = $ext_map[$mime] ?? 'bin';
-$filename = 'branch_cert_' . ($branch_id ?: 'new') . '_' . time() . '.' . $ext;
+$filename = 'branch_cert_' . ($branchId ?: 'new') . '_' . time() . '.' . $ext;
 $destination = UPLOAD_BRANCH_CERTS_PATH . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $destination)) {
@@ -58,10 +58,10 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) {
 $relative_path = 'uploads/branch-certs/' . $filename;
 
 // Update branch record if branch_id provided
-if ($branch_id > 0) {
+if ($branchId > 0) {
     try {
         $stmt = $pdo->prepare("UPDATE branches SET cert_path = ?, updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$relative_path, $branch_id]);
+        $stmt->execute([$relative_path, $branchId]);
     } catch (PDOException $e) {
         \App\Shared\Core\Logging\Logger::getInstance()->error('Branch cert upload DB error: ', ['context' => $e->getMessage()]);
     }

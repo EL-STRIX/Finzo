@@ -21,14 +21,14 @@ class StaffService
         $this->repository = $repository;
     }
 
-    public function accountLookup(string $account_no)
+    public function accountLookup(string $accountNumber)
     {
-        $result = $this->repository->findAccountByNo($account_no);
+        $result = $this->repository->findAccountByNo($accountNumber);
         if (!$result) {
             return ['found' => false];
         }
 
-        $used_today = $this->repository->getUsedDailyLimit($account_no);
+        $used_today = $this->repository->getUsedDailyLimit($accountNumber);
         $limit_left = max(0, $result['daily_limit'] - $used_today);
 
         return [
@@ -44,34 +44,34 @@ class StaffService
         ];
     }
 
-    public function changePassword(int $staff_id, string $current_password, string $new_password)
+    public function changePassword(int $staffId, string $currentPassword, string $newPassword)
     {
-        $hash = $this->repository->findStaffPasswordHash($staff_id);
+        $hash = $this->repository->findStaffPasswordHash($staffId);
         if (!$hash) {
             throw new Exception("Staff account not found", 404);
         }
 
-        if (!password_verify($current_password, $hash)) {
+        if (!password_verify($currentPassword, $hash)) {
             throw new Exception("Current password is incorrect", 401);
         }
 
-        $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
-        $this->repository->updateStaffPassword($staff_id, $new_hash);
+        $new_hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->repository->updateStaffPassword($staffId, $new_hash);
 
         // write_audit_log requires pdo
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password')
+    new \App\Application\Events\GenericAuditAction('staff_password_change', $staffId, 'staff', $staffId, 'staff', 'Staff changed their password')
 );
         return true;
     }
 
-    public function getDashboardData(int $staff_id)
+    public function getDashboardData(int $staffId)
     {
-        $deposits = $this->repository->getStaffShiftDeposits($staff_id);
-        $withdrawals = $this->repository->getStaffShiftWithdrawals($staff_id);
-        $total_today = $this->repository->getStaffTotalTransactionsToday($staff_id);
-        $recent_activity = $this->repository->getStaffRecentActivity($staff_id);
-        $staff_info = $this->repository->getStaffInfoWithBranch($staff_id);
+        $deposits = $this->repository->getStaffShiftDeposits($staffId);
+        $withdrawals = $this->repository->getStaffShiftWithdrawals($staffId);
+        $total_today = $this->repository->getStaffTotalTransactionsToday($staffId);
+        $recent_activity = $this->repository->getStaffRecentActivity($staffId);
+        $staff_info = $this->repository->getStaffInfoWithBranch($staffId);
 
         return [
             'staff' => [
@@ -93,12 +93,12 @@ class StaffService
         ];
     }
 
-    public function processDeposit(int $staff_id, string $account_no, float $amount, string $reference_note)
+    public function processDeposit(int $staffId, string $accountNumber, float $amount, string $reference_note)
     {
         try {
             $this->repository->beginTransaction();
 
-            $account = $this->repository->findAccountForUpdate($account_no);
+            $account = $this->repository->findAccountForUpdate($accountNumber);
             if (!$account) {
                 throw new Exception("Account not found", 404);
             }
@@ -109,10 +109,10 @@ class StaffService
             $new_balance = (float)$account['balance'] + $amount;
             $this->repository->creditAccount($account['id'], $amount);
 
-            $txn_id = generate_transaction_id();
+            $transactionId = generate_transaction_id();
 
             $this->repository->recordTransaction([
-                'txn_id' => $txn_id,
+                'txn_id' => $transactionId,
                 'from_account_id' => null,
                 'to_account_id' => $account['id'],
                 'type' => 'deposit',
@@ -121,7 +121,7 @@ class StaffService
                 'description' => 'Cash Deposit',
                 'reference_note' => $reference_note,
                 'status' => 'completed',
-                'processed_by_staff_id' => $staff_id
+                'processed_by_staff_id' => $staffId
             ]);
 
             send_notification(
@@ -129,19 +129,19 @@ class StaffService
                 $account['customer_id'],
                 'transaction',
                 'Cash Deposit Received',
-                'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
+                'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
             );
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_deposit', $txn_id, 'transaction', $staff_id, 'staff', "Deposit of " . format_currency($amount) . " to account {$account_no}")
+    new \App\Application\Events\GenericAuditAction('staff_deposit', $transactionId, 'transaction', $staffId, 'staff', "Deposit of " . format_currency($amount) . " to account {$accountNumber}")
 );
 
             $this->repository->commit();
 
             return [
-                'transaction_id' => $txn_id,
+                'transaction_id' => $transactionId,
                 'customer_name'  => $account['full_name'],
-                'account_no'     => $account_no,
+                'account_no'     => $accountNumber,
                 'amount'         => $amount,
                 'new_balance'    => $new_balance,
             ];
@@ -151,12 +151,12 @@ class StaffService
         }
     }
 
-    public function processWithdrawal(int $staff_id, string $account_no, float $amount, string $identity_notes)
+    public function processWithdrawal(int $staffId, string $accountNumber, float $amount, string $identity_notes)
     {
         try {
             $this->repository->beginTransaction();
 
-            $account = $this->repository->findAccountForUpdate($account_no);
+            $account = $this->repository->findAccountForUpdate($accountNumber);
             if (!$account) {
                 throw new Exception("Account not found", 404);
             }
@@ -176,10 +176,10 @@ class StaffService
             $new_balance = (float)$account['balance'] - $amount;
             $this->repository->debitAccount($account['id'], $amount);
 
-            $txn_id = generate_transaction_id();
+            $transactionId = generate_transaction_id();
 
             $this->repository->recordTransaction([
-                'txn_id' => $txn_id,
+                'txn_id' => $transactionId,
                 'from_account_id' => $account['id'],
                 'to_account_id' => null,
                 'type' => 'withdrawal',
@@ -188,7 +188,7 @@ class StaffService
                 'description' => 'Cash Withdrawal',
                 'reference_note' => $identity_notes,
                 'status' => 'completed',
-                'processed_by_staff_id' => $staff_id
+                'processed_by_staff_id' => $staffId
             ]);
 
             send_notification(
@@ -196,19 +196,19 @@ class StaffService
                 $account['customer_id'],
                 'transaction',
                 'Cash Withdrawal Processed',
-                'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
+                'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
             );
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}")
+    new \App\Application\Events\GenericAuditAction('staff_withdrawal', $transactionId, 'transaction', $staffId, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$accountNumber}. Identity notes: {$identity_notes}")
 );
 
             $this->repository->commit();
 
             return [
-                'transaction_id' => $txn_id,
+                'transaction_id' => $transactionId,
                 'customer_name'  => $account['full_name'],
-                'account_no'     => $account_no,
+                'account_no'     => $accountNumber,
                 'amount'         => $amount,
                 'new_balance'    => $new_balance,
             ];
@@ -218,10 +218,10 @@ class StaffService
         }
     }
 
-    public function getHistory(int $staff_id, array $filters)
+    public function getHistory(int $staffId, array $filters)
     {
         $where_clauses = ["t.processed_by_staff_id = ?"];
-        $params = [$staff_id];
+        $params = [$staffId];
 
         if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal'])) {
             $where_clauses[] = "t.type = ?";
@@ -245,11 +245,11 @@ class StaffService
             $params = array_merge($params, [$search_param, $search_param, $search_param, $search_param]);
         }
 
-        $total = $this->repository->countTransactionsByStaff($staff_id, $where_clauses, $params);
+        $total = $this->repository->countTransactionsByStaff($staffId, $where_clauses, $params);
         $pages = max(1, ceil($total / $filters['per_page']));
         $offset = ($filters['page'] - 1) * $filters['per_page'];
 
-        $transactions = $this->repository->getTransactionsByStaff($staff_id, $where_clauses, $params, $filters['per_page'], $offset);
+        $transactions = $this->repository->getTransactionsByStaff($staffId, $where_clauses, $params, $filters['per_page'], $offset);
 
         return [
             'transactions' => $transactions,
@@ -258,18 +258,18 @@ class StaffService
         ];
     }
 
-    public function getReceipt(string $txn_id)
+    public function getReceipt(string $transactionId)
     {
-        $transaction = $this->repository->getTransactionReceipt($txn_id);
+        $transaction = $this->repository->getTransactionReceipt($transactionId);
         if (!$transaction) {
             throw new Exception("Transaction not found", 404);
         }
         return $transaction;
     }
 
-    public function getFullProfile(int $staff_id)
+    public function getFullProfile(int $staffId)
     {
-        $staff = $this->repository->getFullStaffProfile($staff_id);
+        $staff = $this->repository->getFullStaffProfile($staffId);
         if (!$staff) {
             throw new Exception("Staff profile not found", 404);
         }
@@ -301,7 +301,7 @@ class StaffService
         ];
     }
 
-    public function updateProfile(int $staff_id, array $data, $file = null)
+    public function updateProfile(int $staffId, array $data, $file = null)
     {
         $fields = [];
         $params = [];
@@ -330,7 +330,7 @@ class StaffService
 
             $new_photo_path = 'uploads/staff-photos/' . $filename;
 
-            $old_photo = $this->repository->findStaffById($staff_id)['profile_photo'] ?? null;
+            $old_photo = $this->repository->findStaffById($staffId)['profile_photo'] ?? null;
             if ($old_photo) {
                 // Determine root path
                 $root_dir = dirname(__DIR__, 2);
@@ -348,11 +348,11 @@ class StaffService
             throw new Exception("No fields provided to update", 422);
         }
 
-        $this->repository->updateStaffProfile($staff_id, $fields, $params);
+        $this->repository->updateStaffProfile($staffId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile')
+    new \App\Application\Events\GenericAuditAction('staff_profile_update', $staffId, 'staff', $staffId, 'staff', 'Staff updated their profile')
 );
 
-        return $this->repository->getFullStaffProfile($staff_id);
+        return $this->repository->getFullStaffProfile($staffId);
     }
 }

@@ -25,13 +25,13 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $account_no = $this->security->cleanInput($_GET['account_no'] ?? '');
-        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
+        $accountNumber = $this->security->cleanInput($_GET['account_no'] ?? '');
+        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
             json_response(['success' => false, 'found' => false, 'message' => 'Account number is required'], 422);
         }
 
         try {
-            $data = $this->service->accountLookup($account_no);
+            $data = $this->service->accountLookup($accountNumber);
             if (!$data['found']) {
                 json_response(['success' => true, 'found' => false]);
             }
@@ -57,19 +57,19 @@ class StaffController
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
-        $staff_id = $_SESSION['staff_id'];
-        $current_password  = $_POST['current_password'] ?? '';
-        $new_password      = $_POST['new_password'] ?? '';
-        $confirm_password  = $_POST['confirm_password'] ?? '';
+        $staffId = $_SESSION['staff_id'];
+        $currentPassword  = $_POST['current_password'] ?? '';
+        $newPassword      = $_POST['new_password'] ?? '';
+        $confirmPassword  = $_POST['confirm_password'] ?? '';
 
         $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($current_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($currentPassword)) {
             $errors['current_password'] = 'Current password is required';
         }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
             $errors['new_password'] = 'New password is required';
         }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($confirm_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($confirmPassword)) {
             $errors['confirm_password'] = 'Please confirm your new password';
         }
 
@@ -77,17 +77,17 @@ class StaffController
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
-        $strength = validate_password_strength($new_password);
+        $strength = validate_password_strength($newPassword);
         if (!$strength['valid']) {
             json_response(['success' => false, 'errors' => ['new_password' => $strength['message']]], 422);
         }
 
-        if ($new_password !== $confirm_password) {
+        if ($newPassword !== $confirmPassword) {
             json_response(['success' => false, 'errors' => ['confirm_password' => 'Passwords do not match']], 422);
         }
 
         try {
-            $this->service->changePassword($staff_id, $current_password, $new_password);
+            $this->service->changePassword($staffId, $currentPassword, $newPassword);
             json_response([
                 'success' => true,
                 'message' => 'Password changed successfully'
@@ -111,10 +111,10 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $staff_id = $_SESSION['staff_id'];
+        $staffId = $_SESSION['staff_id'];
 
         try {
-            $data = $this->service->getDashboardData($staff_id);
+            $data = $this->service->getDashboardData($staffId);
 
             json_response([
                 'success' => true,
@@ -140,13 +140,13 @@ class StaffController
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
-        $staff_id = $_SESSION['staff_id'];
-        $account_no     = $this->security->cleanInput($_POST['account_no'] ?? '');
+        $staffId = $_SESSION['staff_id'];
+        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
         $amount         = floatval($_POST['amount'] ?? 0);
         $reference_note = $this->security->cleanInput($_POST['reference_note'] ?? '');
 
         $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
             $errors['account_no'] = 'Account number is required';
         }
         if ($amount < 100) {
@@ -158,7 +158,7 @@ class StaffController
         }
 
         try {
-            $data = $this->service->processDeposit($staff_id, $account_no, $amount, $reference_note);
+            $data = $this->service->processDeposit($staffId, $accountNumber, $amount, $reference_note);
             json_response([
                 'success'        => true,
                 'message'        => 'Deposit processed successfully',
@@ -185,7 +185,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $staff_id = $_SESSION['staff_id'];
+        $staffId = $_SESSION['staff_id'];
 
         $filters = [
             'type'      => $this->security->cleanInput($_GET['type'] ?? 'all'),
@@ -202,7 +202,7 @@ class StaffController
         }
 
         try {
-            $data = $this->service->getHistory($staff_id, $filters);
+            $data = $this->service->getHistory($staffId, $filters);
             json_response([
                 'success'      => true,
                 'transactions' => $data['transactions'],
@@ -223,22 +223,22 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
-        if (\App\Shared\Core\Validation\Validator::isEmpty($txn_id)) {
+        $transactionId = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
+        if (\App\Shared\Core\Validation\Validator::isEmpty($transactionId)) {
             json_response(['success' => false, 'message' => 'Transaction ID is required'], 422);
         }
 
         try {
-            $transaction = $this->service->getReceipt($txn_id);
+            $transaction = $this->service->getReceipt($transactionId);
 
             $customer_name = '';
-            $account_no    = '';
+            $accountNumber    = '';
             if ($transaction['type'] === 'deposit') {
                 $customer_name = $transaction['to_name'];
-                $account_no    = $transaction['to_account_no'];
+                $accountNumber    = $transaction['to_account_no'];
             } elseif ($transaction['type'] === 'withdrawal') {
                 $customer_name = $transaction['from_name'];
-                $account_no    = $transaction['from_account_no'];
+                $accountNumber    = $transaction['from_account_no'];
             }
 
             json_response([
@@ -253,7 +253,7 @@ class StaffController
                     'status'         => $transaction['status'],
                     'date'           => $transaction['created_at'],
                     'customer_name'  => $customer_name,
-                    'account_no'     => $account_no,
+                    'account_no'     => $accountNumber,
                     'from_account'   => $transaction['from_account_no'],
                     'from_name'      => $transaction['from_name'],
                     'to_account'     => $transaction['to_account_no'],
@@ -274,12 +274,12 @@ class StaffController
 
     public function profile()
     {
-        $staff_id = $_SESSION['staff_id'];
+        $staffId = $_SESSION['staff_id'];
         $method   = $_SERVER['REQUEST_METHOD'];
 
         if ($method === 'GET') {
             try {
-                $data = $this->service->getFullProfile($staff_id);
+                $data = $this->service->getFullProfile($staffId);
                 json_response([
                     'success'   => true,
                     'staff'     => $data['staff'],
@@ -330,7 +330,7 @@ class StaffController
             }
 
             try {
-                $updated = $this->service->updateProfile($staff_id, [
+                $updated = $this->service->updateProfile($staffId, [
                     'phone' => $phone,
                     'emergency_contact_name' => $emergency_contact_name,
                     'emergency_contact_phone' => $emergency_contact_phone
@@ -363,13 +363,13 @@ class StaffController
             json_response(['success' => false, 'message' => 'Invalid security token'], 403);
         }
 
-        $staff_id = $_SESSION['staff_id'];
-        $account_no     = $this->security->cleanInput($_POST['account_no'] ?? '');
+        $staffId = $_SESSION['staff_id'];
+        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
         $amount         = floatval($_POST['amount'] ?? 0);
         $identity_notes = $this->security->cleanInput($_POST['identity_notes'] ?? '');
 
         $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
             $errors['account_no'] = 'Account number is required';
         }
         if ($amount <= 0) {
@@ -381,7 +381,7 @@ class StaffController
         }
 
         try {
-            $data = $this->service->processWithdrawal($staff_id, $account_no, $amount, $identity_notes);
+            $data = $this->service->processWithdrawal($staffId, $accountNumber, $amount, $identity_notes);
             json_response([
                 'success'        => true,
                 'message'        => 'Withdrawal processed successfully',

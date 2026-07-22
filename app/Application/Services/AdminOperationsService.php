@@ -287,10 +287,10 @@ class AdminOperationsService
 
                 if ($interest_amount >= 0.01) {
                     $new_balance = $balance + $interest_amount;
-                    $txn_id = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
+                    $transactionId = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 
                     $this->repository->addTransaction(
-                        $txn_id,
+                        $transactionId,
                         null,
                         $acc['id'],
                         'interest_credit',
@@ -702,17 +702,17 @@ class AdminOperationsService
             switch ($action) {
                 case 'approve':
                     $pdo->beginTransaction();
-                    $account_no = generate_account_number($pdo);
-                    $this->repository->approveApplication($userId, $customer_id, $account_no, $admin_display_id);
+                    $accountNumber = generate_account_number($pdo);
+                    $this->repository->approveApplication($userId, $customer_id, $accountNumber, $admin_display_id);
 
                     $accountPref = $this->repository->getAccountPreferences($customer_id);
                     $initial_balance = (float)($accountPref['initial_deposit'] ?? 0);
 
                     if ($initial_balance > 0) {
                         $acct_id = $this->repository->getAccountIdByCustomerId($customer_id);
-                        $txn_id = generate_transaction_id();
+                        $transactionId = generate_transaction_id();
                         $this->repository->addTransaction(
-                            $txn_id,
+                            $transactionId,
                             null,
                             $acct_id,
                             'deposit',
@@ -726,18 +726,18 @@ class AdminOperationsService
                     $pdo->commit();
 
                     if (function_exists('send_approved_email')) {
-                        send_approved_email($user['email'], $user['full_name'], $account_no);
+                        send_approved_email($user['email'], $user['full_name'], $accountNumber);
                     }
                     if (function_exists('send_notification')) {
-                        send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$account_no}.");
+                        send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
                     }
                     if (function_exists('write_audit_log')) {
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}")
+    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
 );
                     }
 
-                    return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $account_no];
+                    return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $accountNumber];
 
                 case 'reject':
                     if (empty($reason)) {
@@ -1201,8 +1201,8 @@ class AdminOperationsService
                     $account = $this->repository->getUserForActionByCustomer($user['customer_id']);
                     if ($account && $account['balance'] > 500) {
                         $deduction_amount = $account['balance'] - 500;
-                        $txn_id = 'TXN' . strtoupper(uniqid());
-                        $this->repository->addSystemChargeTransaction($txn_id, $account['id'], $deduction_amount);
+                        $transactionId = 'TXN' . strtoupper(uniqid());
+                        $this->repository->addSystemChargeTransaction($transactionId, $account['id'], $deduction_amount);
                         if (function_exists('send_notification') && isset($pdo)) {
                             send_notification($pdo, $userId, 'system', 'Account Restored – Balance Adjusted', 'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
                         }

@@ -268,7 +268,7 @@ class AuthService
         }
     }
 
-    public function resetPassword(string $token, string $new_password): bool
+    public function resetPassword(string $token, string $newPassword): bool
     {
         $reset = $this->repository->findPasswordReset($token);
 
@@ -284,7 +284,7 @@ class AuthService
         try {
             $this->repository->beginTransaction();
 
-            $password_hash = password_hash($new_password, PASSWORD_BCRYPT);
+            $password_hash = password_hash($newPassword, PASSWORD_BCRYPT);
 
             $this->repository->resetUserPassword($reset['user_id'], $password_hash);
             $this->repository->deletePasswordResets($reset['user_id']);
@@ -300,7 +300,7 @@ class AuthService
         }
     }
 
-    public function registerUser(string $full_name, string $email, string $phone, string $password): bool
+    public function registerUser(string $fullName, string $email, string $phone, string $password): bool
     {
         if ($this->repository->findUserByEmailAny($email)) {
             throw new ApiException('Validation failed', 409, ['errors' => ['email' => 'This email is already registered']]);
@@ -317,13 +317,13 @@ class AuthService
 
             $customer_id = $this->repository->getNextCustomerId();
 
-            $user_id = $this->repository->createUser($customer_id, $full_name, $email, $phone, $password_hash);
+            $userId = $this->repository->createUser($customer_id, $fullName, $email, $phone, $password_hash);
 
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_regenerate_id(true);
             }
-            $_SESSION['user_id']     = (int)$user_id;
-            $_SESSION['user_name']   = $full_name;
+            $_SESSION['user_id']     = (int)$userId;
+            $_SESSION['user_name']   = $fullName;
             $_SESSION['user_email']  = $email;
             $_SESSION['user_phone']  = $phone;
             $_SESSION['user_status'] = 'pending';

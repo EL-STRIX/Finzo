@@ -73,12 +73,12 @@ class AuthRepository extends BaseRepository
         return 'FNZ-USR-' . str_pad((string)($max_seq + 1), 3, '0', STR_PAD_LEFT);
     }
 
-    public function createUser(string $customer_id, string $full_name, string $email, string $phone, string $password_hash): string
+    public function createUser(string $customer_id, string $fullName, string $email, string $phone, string $password_hash): string
     {
         $this->execute("
             INSERT INTO users (customer_id, full_name, email, phone, password_hash, status, created_at)
             VALUES (?, ?, ?, ?, ?, 'pending', NOW())
-        ", [$customer_id, $full_name, $email, $phone, $password_hash]);
+        ", [$customer_id, $fullName, $email, $phone, $password_hash]);
         return $this->db->lastInsertId();
     }
 
@@ -129,7 +129,7 @@ class AuthRepository extends BaseRepository
         return $row ? $row['auto_unlock_at'] : null;
     }
 
-    public function logAdminLock(string $admin_id, string $ip, int $id): bool
+    public function logAdminLock(string $adminId, string $ip, int $id): bool
     {
         return $this->execute("
             INSERT INTO admin_lock_log (admin_id, event_type, ip_address, details) 

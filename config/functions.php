@@ -199,24 +199,24 @@ function generate_transaction_id()
 /**
  * Write an entry to the audit_log table.
  * @param PDO $pdo Database connection
- * @param string $action_type Type of action (e.g., 'user_login', 'kyc_approved')
- * @param int|string|null $entity_id ID of the entity acted upon
- * @param string|null $entity_type Type of entity (e.g., 'user', 'staff', 'transaction')
- * @param int $actor_id ID of the actor performing the action
- * @param string $actor_role Role of the actor ('admin', 'staff', 'system')
+ * @param string $actionType Type of action (e.g., 'user_login', 'kyc_approved')
+ * @param int|string|null $entityId ID of the entity acted upon
+ * @param string|null $entityType Type of entity (e.g., 'user', 'staff', 'transaction')
+ * @param int $actorId ID of the actor performing the action
+ * @param string $actorRole Role of the actor ('admin', 'staff', 'system')
  * @param string|null $details Additional details about the action
  */
-function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id, $actor_role, $details = null)
+function write_audit_log($pdo, $actionType, $entityId, $entityType, $actorId, $actorRole, $details = null)
 {
     $ip = get_client_ip();
 
     // 1. Resolve actor_id to its alphanumeric string format (like STF001) and specific role
-    $resolved_actor_id = $actor_id;
-    $resolved_actor_role = $actor_role;
+    $resolved_actor_id = $actorId;
+    $resolved_actor_role = $actorRole;
 
-    if ($actor_role === 'admin') {
+    if ($actorRole === 'admin') {
         $stmt = $pdo->prepare("SELECT admin_id, admin_role FROM admin_users WHERE id = ? OR admin_id = ?");
-        $stmt->execute([$actor_id, $actor_id]);
+        $stmt->execute([$actorId, $actorId]);
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($admin) {
             $resolved_actor_id = $admin['admin_id'];
@@ -228,20 +228,20 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
                 $resolved_actor_role = 'Admin';
             }
         }
-    } elseif ($actor_role === 'staff') {
+    } elseif ($actorRole === 'staff') {
         $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
-        $stmt->execute([$actor_id, $actor_id]);
-        $staff_id = $stmt->fetchColumn();
-        if ($staff_id) {
-            $resolved_actor_id = $staff_id;
+        $stmt->execute([$actorId, $actorId]);
+        $staffId = $stmt->fetchColumn();
+        if ($staffId) {
+            $resolved_actor_id = $staffId;
         }
         $resolved_actor_role = 'Staff';
-    } elseif ($actor_role === 'system') {
+    } elseif ($actorRole === 'system') {
         $resolved_actor_id = 'SYSTEM';
         $resolved_actor_role = 'System';
-    } elseif ($actor_role === 'user') {
+    } elseif ($actorRole === 'user') {
         $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
-        $stmt->execute([$actor_id, $actor_id]);
+        $stmt->execute([$actorId, $actorId]);
         $customer_id = $stmt->fetchColumn();
         if ($customer_id) {
             $resolved_actor_id = $customer_id;
@@ -250,24 +250,24 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
     }
 
     // 2. Resolve entity_id to its alphanumeric string format if applicable
-    $resolved_entity_id = $entity_id;
-    if ($entity_type === 'admin' && !empty($entity_id)) {
+    $resolved_entity_id = $entityId;
+    if ($entityType === 'admin' && !empty($entityId)) {
         $stmt = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ? OR admin_id = ?");
-        $stmt->execute([$entity_id, $entity_id]);
-        $admin_id = $stmt->fetchColumn();
-        if ($admin_id) {
-            $resolved_entity_id = $admin_id;
+        $stmt->execute([$entityId, $entityId]);
+        $adminId = $stmt->fetchColumn();
+        if ($adminId) {
+            $resolved_entity_id = $adminId;
         }
-    } elseif ($entity_type === 'staff' && !empty($entity_id)) {
+    } elseif ($entityType === 'staff' && !empty($entityId)) {
         $stmt = $pdo->prepare("SELECT staff_id FROM staff WHERE id = ? OR staff_id = ?");
-        $stmt->execute([$entity_id, $entity_id]);
-        $staff_id = $stmt->fetchColumn();
-        if ($staff_id) {
-            $resolved_entity_id = $staff_id;
+        $stmt->execute([$entityId, $entityId]);
+        $staffId = $stmt->fetchColumn();
+        if ($staffId) {
+            $resolved_entity_id = $staffId;
         }
-    } elseif ($entity_type === 'user' && !empty($entity_id)) {
+    } elseif ($entityType === 'user' && !empty($entityId)) {
         $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ? OR customer_id = ?");
-        $stmt->execute([$entity_id, $entity_id]);
+        $stmt->execute([$entityId, $entityId]);
         $customer_id = $stmt->fetchColumn();
         if ($customer_id) {
             $resolved_entity_id = $customer_id;
@@ -282,15 +282,15 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
 
     // Determine module dynamically based on action_type if possible, default 'system'
     $module = 'system';
-    if (strpos($action_type, 'kyc') !== false) {
+    if (strpos($actionType, 'kyc') !== false) {
         $module = 'kyc';
-    } elseif (strpos($action_type, 'admin') !== false) {
+    } elseif (strpos($actionType, 'admin') !== false) {
         $module = 'administration';
-    } elseif (strpos($action_type, 'staff') !== false) {
+    } elseif (strpos($actionType, 'staff') !== false) {
         $module = 'staff_operations';
-    } elseif (strpos($action_type, 'user') !== false) {
+    } elseif (strpos($actionType, 'user') !== false) {
         $module = 'customer_operations';
-    } elseif (strpos($action_type, 'transaction') !== false) {
+    } elseif (strpos($actionType, 'transaction') !== false) {
         $module = 'core_banking';
     }
 
@@ -306,9 +306,9 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
         $correlation_id,
         $request_id,
         $module,
-        $action_type,
+        $actionType,
         $resolved_entity_id,
-        $entity_type,
+        $entityType,
         $resolved_actor_id,
         strtolower($resolved_actor_role), // ensure enum match
         $session_id_val,
@@ -325,15 +325,15 @@ function write_audit_log($pdo, $action_type, $entity_id, $entity_type, $actor_id
 /**
  * Create an in-app notification for a user.
  * @param PDO $pdo Database connection
- * @param int $user_id Target user ID
+ * @param int $userId Target user ID
  * @param string $type Notification type ('transaction', 'security', 'system')
  * @param string $title Notification title
  * @param string $message Notification message body
  */
-function send_notification($pdo, $user_id, $type, $title, $message)
+function send_notification($pdo, $userId, $type, $title, $message)
 {
     $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$userId]);
     $customer_id = $stmt->fetchColumn();
 
     if ($customer_id) {
@@ -387,20 +387,20 @@ function format_currency($amount)
 /**
  * Verify a 4-digit transaction PIN against the hashed PIN in accounts table.
  * @param PDO $pdo Database connection
- * @param int $user_id User ID
+ * @param int $userId User ID
  * @param string $pin The 4-digit PIN to verify
  * @return bool True if PIN is correct
  */
-function validate_pin($pdo, $user_id, $pin)
+function validate_pin($pdo, $userId, $pin)
 {
     // Resolve to customer_id if numeric
-    if (is_numeric($user_id)) {
+    if (is_numeric($userId)) {
         $r = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
-        $r->execute([$user_id]);
-        $user_id = $r->fetchColumn() ?: $user_id;
+        $r->execute([$userId]);
+        $userId = $r->fetchColumn() ?: $userId;
     }
     $stmt = $pdo->prepare("SELECT txn_pin_hash FROM accounts WHERE user_id = ? AND status = 'active'");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$userId]);
     $hash = $stmt->fetchColumn();
 
     if (!$hash) {
@@ -561,14 +561,14 @@ function get_greeting()
 /**
  * Check if the admin has permission to perform a specific action.
  * @param PDO $pdo Database connection
- * @param int $admin_id The ID of the admin
+ * @param int $adminId The ID of the admin
  * @param string $action The action they are attempting to perform
  * @return bool True if allowed, otherwise responds with 403 JSON and exits.
  */
-function check_admin_permission($pdo, $admin_id, $action)
+function check_admin_permission($pdo, $adminId, $action)
 {
     $stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
-    $stmt->execute([$admin_id]);
+    $stmt->execute([$adminId]);
     $role = $stmt->fetchColumn();
 
     if (!$role) {
@@ -657,16 +657,16 @@ function get_setting($pdo, $key, $default = null)
  * @param PDO $pdo Database connection
  * @param string $key Unique setting key
  * @param mixed $value New value for the setting
- * @param int $admin_id ID of the admin updating the setting
+ * @param int $adminId ID of the admin updating the setting
  * @return bool True on success, false on failure
  */
-function update_setting($pdo, $key, $value, $admin_id)
+function update_setting($pdo, $key, $value, $adminId)
 {
     // Resolve to alphanumeric admin_id if numeric
-    if (is_numeric($admin_id)) {
+    if (is_numeric($adminId)) {
         $r = $pdo->prepare("SELECT admin_id FROM admin_users WHERE id = ?");
-        $r->execute([$admin_id]);
-        $admin_id = $r->fetchColumn() ?: $admin_id;
+        $r->execute([$adminId]);
+        $adminId = $r->fetchColumn() ?: $adminId;
     }
     try {
         $stmt = $pdo->prepare("
@@ -674,7 +674,7 @@ function update_setting($pdo, $key, $value, $admin_id)
             SET setting_value = ?, updated_by = ?, updated_at = NOW() 
             WHERE setting_key = ? LIMIT 1
         ");
-        return $stmt->execute([$value, $admin_id, $key]);
+        return $stmt->execute([$value, $adminId, $key]);
     } catch (PDOException $e) {
         return false;
     }

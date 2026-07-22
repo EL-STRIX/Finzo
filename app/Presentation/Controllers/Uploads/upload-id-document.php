@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$user_id = $_SESSION['user_id'];
+$userId = $_SESSION['user_id'];
 
 // Check for file
 if (!\App\Shared\Core\Validation\Validator::isSet($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_OK) {
@@ -58,7 +58,7 @@ if (!is_dir(UPLOAD_ID_DOCUMENTS_PATH)) {
 
 // Generate unique filename securely based on real MIME type
 $ext = ($mime === 'image/jpeg') ? 'jpg' : 'png';
-$filename = "id_{$side}_{$user_id}_" . time() . '.' . $ext;
+$filename = "id_{$side}_{$userId}_" . time() . '.' . $ext;
 $destination = UPLOAD_ID_DOCUMENTS_PATH . $filename;
 
 // Move uploaded file
@@ -73,7 +73,7 @@ $relative_path = 'uploads/id-documents/' . $filename;
 try {
     $column = ($side === 'front') ? 'id_front_path' : 'id_back_path';
     $stmt = $pdo->prepare("UPDATE users SET {$column} = ?, updated_at = NOW() WHERE id = ?");
-    $stmt->execute([$relative_path, $user_id]);
+    $stmt->execute([$relative_path, $userId]);
 
     json_response([
         'success'  => true,

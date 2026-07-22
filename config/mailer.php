@@ -116,21 +116,21 @@ function load_email_template($template_name, $variables = [])
  * @param PDO $pdo Database connection (unused here but kept for consistency)
  * @param string $email Customer email
  * @param string $name Customer full name
- * @param string $account_no Assigned account number
+ * @param string $accountNumber Assigned account number
  * @return array Result from send_email
  */
-function send_welcome_email($pdo, $email, $name, $account_no)
+function send_welcome_email($pdo, $email, $name, $accountNumber)
 {
     $html = load_email_template('welcome-email', [
         'name' => $name,
-        'account_no' => $account_no,
+        'account_no' => $accountNumber,
         'app_url' => APP_URL
     ]);
 
     if (empty($html)) {
         $html = "<h2>Welcome to Finzo, {$name}!</h2>"
               . "<p>Your account has been approved.</p>"
-              . "<p>Your Account Number: <strong>{$account_no}</strong></p>"
+              . "<p>Your Account Number: <strong>{$accountNumber}</strong></p>"
               . "<p>You can now login and start banking at <a href='" . APP_URL . "'>" . APP_URL . "</a></p>";
     }
 
@@ -165,21 +165,21 @@ function send_under_review_email($email, $name)
  *
  * @param string $email Customer email
  * @param string $name Customer full name
- * @param string $account_no Assigned account number
+ * @param string $accountNumber Assigned account number
  * @return array Result from send_email
  */
-function send_approved_email($email, $name, $account_no)
+function send_approved_email($email, $name, $accountNumber)
 {
     $html = load_email_template('approved-email', [
         'name' => $name,
-        'account_no' => $account_no,
+        'account_no' => $accountNumber,
         'app_url' => APP_URL
     ]);
 
     if (empty($html)) {
         $html = "<h2>Congratulations, {$name}!</h2>"
               . "<p>Your KYC verification has been approved.</p>"
-              . "<p>Your Account Number: <strong>{$account_no}</strong></p>"
+              . "<p>Your Account Number: <strong>{$accountNumber}</strong></p>"
               . "<p>Login now to start banking: <a href='" . APP_URL . "'>" . APP_URL . "</a></p>";
     }
 

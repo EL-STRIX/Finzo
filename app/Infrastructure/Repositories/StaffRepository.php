@@ -6,17 +6,17 @@ use PDO;
 
 class StaffRepository extends BaseRepository
 {
-    public function findAccountByNo(string $account_no)
+    public function findAccountByNo(string $accountNumber)
     {
         return $this->fetchOne("
             SELECT u.full_name, a.account_no, a.account_type, a.status, a.balance, a.daily_limit
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
-        ", [$account_no], \App\Domain\Models\Staff::class);
+        ", [$accountNumber], \App\Domain\Models\Staff::class);
     }
 
-    public function getUsedDailyLimit(string $account_no)
+    public function getUsedDailyLimit(string $accountNumber)
     {
         $stmt = $this->db->prepare("
             SELECT COALESCE(SUM(amount), 0) FROM transactions 
@@ -25,47 +25,47 @@ class StaffRepository extends BaseRepository
             AND status != 'failed'
             AND description != 'Account Restore Charge'
         ");
-        $stmt->execute([$account_no]);
+        $stmt->execute([$accountNumber]);
         return (float)$stmt->fetchColumn();
     }
 
-    public function findStaffById(int $staff_id)
+    public function findStaffById(int $staffId)
     {
-        return $this->fetchOne("SELECT * FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
+        return $this->fetchOne("SELECT * FROM staff WHERE id = ?", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function findStaffPasswordHash(int $staff_id)
+    public function findStaffPasswordHash(int $staffId)
     {
-        $row = $this->fetchOne("SELECT password_hash FROM staff WHERE id = ?", [$staff_id], \App\Domain\Models\Staff::class);
+        $row = $this->fetchOne("SELECT password_hash FROM staff WHERE id = ?", [$staffId], \App\Domain\Models\Staff::class);
         return $row ? $row['password_hash'] : null;
     }
 
-    public function updateStaffPassword(int $staff_id, string $new_hash): bool
+    public function updateStaffPassword(int $staffId, string $new_hash): bool
     {
-        return $this->execute("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?", [$new_hash, $staff_id]);
+        return $this->execute("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?", [$new_hash, $staffId]);
     }
 
-    public function getStaffShiftDeposits(int $staff_id)
+    public function getStaffShiftDeposits(int $staffId)
     {
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = 'deposit'
                 AND status = 'completed' AND DATE(created_at) = CURDATE()
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function getStaffShiftWithdrawals(int $staff_id)
+    public function getStaffShiftWithdrawals(int $staffId)
     {
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = 'withdrawal'
                 AND status = 'completed' AND DATE(created_at) = CURDATE()
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function getStaffTotalTransactionsToday(int $staff_id)
+    public function getStaffTotalTransactionsToday(int $staffId)
     {
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as count
@@ -73,11 +73,11 @@ class StaffRepository extends BaseRepository
             WHERE processed_by_staff_id = ? AND status = 'completed'
                 AND DATE(created_at) = CURDATE()
         ");
-        $stmt->execute([$staff_id]);
+        $stmt->execute([$staffId]);
         return (int)$stmt->fetchColumn();
     }
 
-    public function getStaffRecentActivity(int $staff_id)
+    public function getStaffRecentActivity(int $staffId)
     {
         return $this->fetchAll("
             SELECT
@@ -98,17 +98,17 @@ class StaffRepository extends BaseRepository
             WHERE t.processed_by_staff_id = ?
             ORDER BY t.created_at DESC
             LIMIT 10
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function getStaffInfoWithBranch(int $staff_id)
+    public function getStaffInfoWithBranch(int $staffId)
     {
         return $this->fetchOne("
             SELECT s.staff_id, s.full_name, s.designation, s.profile_photo, b.name as branch_name
             FROM staff s
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE s.id = ?
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
     public function beginTransaction(): bool
@@ -126,7 +126,7 @@ class StaffRepository extends BaseRepository
         return $this->db->rollBack();
     }
 
-    public function findAccountForUpdate(string $account_no)
+    public function findAccountForUpdate(string $accountNumber)
     {
         return $this->fetchOne("
             SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
@@ -134,7 +134,7 @@ class StaffRepository extends BaseRepository
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
             FOR UPDATE
-        ", [$account_no], \App\Domain\Models\Staff::class);
+        ", [$accountNumber], \App\Domain\Models\Staff::class);
     }
 
     public function creditAccount(int $account_id, float $amount)
@@ -172,7 +172,7 @@ class StaffRepository extends BaseRepository
         return $this->db;
     }
 
-    public function countTransactionsByStaff(int $staff_id, array $where_clauses, array $params)
+    public function countTransactionsByStaff(int $staffId, array $where_clauses, array $params)
     {
         $where_sql = implode(' AND ', $where_clauses);
         $count_sql = "
@@ -187,7 +187,7 @@ class StaffRepository extends BaseRepository
         return (int)$stmt->fetchColumn();
     }
 
-    public function getTransactionsByStaff(int $staff_id, array $where_clauses, array $params, int $per_page, int $offset)
+    public function getTransactionsByStaff(int $staffId, array $where_clauses, array $params, int $per_page, int $offset)
     {
         $where_sql = implode(' AND ', $where_clauses);
         $sql = "
@@ -215,7 +215,7 @@ class StaffRepository extends BaseRepository
         return $stmt->fetchAll();
     }
 
-    public function getTransactionReceipt(string $txn_id)
+    public function getTransactionReceipt(string $transactionId)
     {
         return $this->fetchOne("
             SELECT
@@ -243,10 +243,10 @@ class StaffRepository extends BaseRepository
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE t.txn_id = ?
-        ", [$txn_id], \App\Domain\Models\Staff::class);
+        ", [$transactionId], \App\Domain\Models\Staff::class);
     }
 
-    public function getFullStaffProfile(int $staff_id)
+    public function getFullStaffProfile(int $staffId)
     {
         return $this->fetchOne("
             SELECT
@@ -264,13 +264,13 @@ class StaffRepository extends BaseRepository
             FROM staff s
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE s.id = ?
-        ", [$staff_id], \App\Domain\Models\Staff::class);
+        ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
-    public function updateStaffProfile(int $staff_id, array $fields, array $params)
+    public function updateStaffProfile(int $staffId, array $fields, array $params)
     {
         $fields[] = 'updated_at = NOW()';
-        $params[] = $staff_id;
+        $params[] = $staffId;
         $sql = "UPDATE staff SET " . implode(', ', $fields) . " WHERE id = ?";
         return $this->execute($sql, $params);
     }

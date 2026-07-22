@@ -16,20 +16,20 @@ if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['role']) || !in_arra
     die('Authentication required');
 }
 
-$staff_id = max(1, intval($_GET['staff_id'] ?? 0));
+$staffId = max(1, intval($_GET['staff_id'] ?? 0));
 
-if (\App\Shared\Core\Validation\Validator::isEmpty($staff_id)) {
+if (\App\Shared\Core\Validation\Validator::isEmpty($staffId)) {
     die('Staff ID is required');
 }
 
-if ($_SESSION['role'] === 'staff' && $_SESSION['user_id'] != $staff_id) {
+if ($_SESSION['role'] === 'staff' && $_SESSION['user_id'] != $staffId) {
     die('Access denied');
 }
 
 try {
     // Get staff details
     $stmt = $pdo->prepare("SELECT staff_id as staff_code, full_name, personal_email as email, phone, created_at FROM staff WHERE id = ?");
-    $stmt->execute([$staff_id]);
+    $stmt->execute([$staffId]);
     $staff = $stmt->fetch();
 
     if (!$staff) {
@@ -52,7 +52,7 @@ try {
         ORDER BY t.created_at DESC
         LIMIT 200
     ");
-    $txn_stmt->execute([$staff_id]);
+    $txn_stmt->execute([$staffId]);
     $transactions = $txn_stmt->fetchAll();
 } catch (PDOException $e) {
     \App\Shared\Core\Logging\Logger::getInstance()->error('Statement error: ', ['context' => $e->getMessage()]);

@@ -84,22 +84,22 @@ class AdminManagementController
 
     public function profile(): array
     {
-        $admin_id = $_SESSION['admin_id'];
+        $adminId = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            return $this->service->getProfileData($admin_id);
+            return $this->service->getProfileData($adminId);
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $this->security->cleanInput($_POST['action'] ?? 'update_profile');
 
             if ($action === 'change_password') {
-                $result = $this->service->changePassword($admin_id, $_POST);
+                $result = $this->service->changePassword($adminId, $_POST);
             } elseif ($action === 'upload_avatar') {
                 $file = $_FILES['avatar'] ?? null;
-                $result = $this->service->uploadAvatar($admin_id, $file, true);
+                $result = $this->service->uploadAvatar($adminId, $file, true);
             } else {
-                $result = $this->service->updateProfile($admin_id, $_POST);
+                $result = $this->service->updateProfile($adminId, $_POST);
             }
 
             unset($result['code']);

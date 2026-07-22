@@ -172,15 +172,15 @@ class UserService
             $errors['initial_deposit'] = 'Initial deposit must be at least ' . CURRENCY_SYMBOL . $min_deposit;
         }
 
-        $txn_pin = $data['txn_pin'];
-        if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
+        $transactionPin = $data['txn_pin'];
+        if (empty($transactionPin) || !preg_match('/^\d{4}$/', $transactionPin)) {
             $errors['txn_pin'] = 'Transaction PIN must be exactly 4 digits';
         }
 
         return $errors;
     }
 
-    public function processKycUploads($files, $user_id, $existing_files)
+    public function processKycUploads($files, $userId, $existing_files)
     {
         if (!is_dir(STORAGE_KYC_PATH)) {
             mkdir(STORAGE_KYC_PATH, 0755, true);
@@ -203,9 +203,9 @@ class UserService
         $front_ext   = $get_ext($files['id_front'] ?? null);
         $back_ext    = $get_ext($files['id_back'] ?? null);
 
-        $profile_filename = $profile_ext ? 'profile_' . $user_id . '_' . time() . '.' . $profile_ext : '';
-        $front_filename = $front_ext ? 'id_front_' . $user_id . '_' . time() . '.' . $front_ext : '';
-        $back_filename  = $back_ext ? 'id_back_' . $user_id . '_' . time() . '.' . $back_ext : '';
+        $profile_filename = $profile_ext ? 'profile_' . $userId . '_' . time() . '.' . $profile_ext : '';
+        $front_filename = $front_ext ? 'id_front_' . $userId . '_' . time() . '.' . $front_ext : '';
+        $back_filename  = $back_ext ? 'id_back_' . $userId . '_' . time() . '.' . $back_ext : '';
 
         $profile_destination = $profile_filename ? $profile_upload_path . $profile_filename : '';
         $front_destination = $front_filename ? STORAGE_KYC_PATH . $front_filename : '';

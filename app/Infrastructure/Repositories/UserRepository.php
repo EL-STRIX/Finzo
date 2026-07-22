@@ -11,7 +11,7 @@ class UserRepository extends BaseRepository
         return $this->db;
     }
 
-    public function fetchAccountLookup(string $account_no)
+    public function fetchAccountLookup(string $accountNumber)
     {
         $stmt = $this->db->prepare("
             SELECT u.full_name, a.account_type, a.status
@@ -19,14 +19,14 @@ class UserRepository extends BaseRepository
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
         ");
-        $stmt->execute([$account_no]);
+        $stmt->execute([$accountNumber]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function fetchAccountSettings(int $user_id)
+    public function fetchAccountSettings(int $userId)
     {
         $stmt = $this->db->prepare("SELECT a.id, a.daily_limit FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ? AND a.status = 'active' LIMIT 1");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -50,7 +50,7 @@ class UserRepository extends BaseRepository
         return $stmt->execute([$daily_limit, $account_id]);
     }
 
-    public function fetchAccountDetails(int $user_id)
+    public function fetchAccountDetails(int $userId)
     {
         $stmt = $this->db->prepare("
             SELECT
@@ -63,7 +63,7 @@ class UserRepository extends BaseRepository
             ORDER BY a.status = 'active' DESC
             LIMIT 1
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -93,14 +93,14 @@ class UserRepository extends BaseRepository
         return $stmt->fetchColumn();
     }
 
-    public function getCustomerId(int $user_id)
+    public function getCustomerId(int $userId)
     {
         $stmt = $this->db->prepare("SELECT customer_id FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetchColumn();
     }
 
-    public function fetchBeneficiaries($user_id)
+    public function fetchBeneficiaries($userId)
     {
         $stmt = $this->db->prepare("
             SELECT id, nickname, account_no, bank_name, created_at
@@ -108,59 +108,59 @@ class UserRepository extends BaseRepository
             WHERE user_id = ?
             ORDER BY created_at DESC
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function deleteBeneficiary($beneficiary_id, $user_id)
+    public function deleteBeneficiary($beneficiary_id, $userId)
     {
         $stmt = $this->db->prepare("DELETE FROM beneficiaries WHERE id = ? AND user_id = ?");
-        $stmt->execute([$beneficiary_id, $user_id]);
+        $stmt->execute([$beneficiary_id, $userId]);
         return $stmt->rowCount();
     }
 
-    public function countBeneficiaries($user_id)
+    public function countBeneficiaries($userId)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM beneficiaries WHERE user_id = ?");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetchColumn();
     }
 
-    public function getBeneficiaryByAccount($user_id, $account_no)
+    public function getBeneficiaryByAccount($userId, $accountNumber)
     {
         $stmt = $this->db->prepare("SELECT id FROM beneficiaries WHERE user_id = ? AND account_no = ?");
-        $stmt->execute([$user_id, $account_no]);
+        $stmt->execute([$userId, $accountNumber]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addBeneficiary($user_id, $nickname, $account_no, $bank_name)
+    public function addBeneficiary($userId, $nickname, $accountNumber, $bank_name)
     {
         $stmt = $this->db->prepare("
             INSERT INTO beneficiaries (user_id, nickname, account_no, bank_name, created_at)
             VALUES (?, ?, ?, ?, NOW())
         ");
-        $stmt->execute([$user_id, $nickname, $account_no, $bank_name]);
+        $stmt->execute([$userId, $nickname, $accountNumber, $bank_name]);
         return $this->db->lastInsertId();
     }
 
-    public function getUserPasswordHash(int $user_id)
+    public function getUserPasswordHash(int $userId)
     {
         $stmt = $this->db->prepare("SELECT customer_id, password_hash FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updatePassword(int $user_id, string $new_hash)
+    public function updatePassword(int $userId, string $new_hash)
     {
         $stmt = $this->db->prepare("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?");
-        return $stmt->execute([$new_hash, $user_id]);
+        return $stmt->execute([$new_hash, $userId]);
     }
 
     // -- Complete Profile --
-    public function getUserFiles(int $user_id)
+    public function getUserFiles(int $userId)
     {
         $stmt = $this->db->prepare("SELECT profile_picture, id_front_path, id_back_path FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -212,14 +212,14 @@ class UserRepository extends BaseRepository
     }
 
     // -- Dashboard --
-    public function getUserDashboardData(int $user_id)
+    public function getUserDashboardData(int $userId)
     {
         $stmt = $this->db->prepare("
             SELECT id, customer_id, full_name, email, phone, status, rejection_reason, profile_picture, created_at, updated_at
             FROM users
             WHERE id = ? AND is_deleted = 0
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -258,10 +258,10 @@ class UserRepository extends BaseRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getTransactionToAccountId(string $txn_id)
+    public function getTransactionToAccountId(string $transactionId)
     {
         $stmt = $this->db->prepare("SELECT to_account_id FROM transactions WHERE txn_id = ?");
-        $stmt->execute([$txn_id]);
+        $stmt->execute([$transactionId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -361,7 +361,7 @@ class UserRepository extends BaseRepository
     }
 
     // -- Profile --
-    public function getFullProfile(int $user_id)
+    public function getFullProfile(int $userId)
     {
         $stmt = $this->db->prepare("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
@@ -371,7 +371,7 @@ class UserRepository extends BaseRepository
             FROM users
             WHERE id = ? AND is_deleted = 0
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -389,17 +389,17 @@ class UserRepository extends BaseRepository
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateProfile(int $user_id, string $full_name, string $phone, string $email)
+    public function updateProfile(int $userId, string $fullName, string $phone, string $email)
     {
         $stmt = $this->db->prepare("
             UPDATE users SET full_name = ?, phone = ?, email = ?, updated_at = NOW()
             WHERE id = ?
         ");
-        return $stmt->execute([$full_name, $phone, $email, $user_id]);
+        return $stmt->execute([$fullName, $phone, $email, $userId]);
     }
 
     // -- Statement --
-    public function getActiveAccount(int $user_id)
+    public function getActiveAccount(int $userId)
     {
         $stmt = $this->db->prepare("
             SELECT a.id, a.account_no, a.account_type, a.balance, a.opened_date, u.full_name, a.daily_limit
@@ -408,11 +408,11 @@ class UserRepository extends BaseRepository
             WHERE u.id = ? AND a.status = 'active'
             LIMIT 1
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getStatementTransactions(int $account_id, string $from_date, string $to_date)
+    public function getStatementTransactions(int $account_id, string $fromDate, string $toDate)
     {
         $stmt = $this->db->prepare("
             SELECT
@@ -440,11 +440,11 @@ class UserRepository extends BaseRepository
                 AND DATE(t.created_at) BETWEEN ? AND ?
             ORDER BY t.created_at ASC
         ");
-        $stmt->execute([$account_id, $account_id, $from_date, $to_date]);
+        $stmt->execute([$account_id, $account_id, $fromDate, $toDate]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getOpeningBalance(int $account_id, string $from_date)
+    public function getOpeningBalance(int $account_id, string $fromDate)
     {
         $stmt = $this->db->prepare("
             SELECT balance_after
@@ -455,7 +455,7 @@ class UserRepository extends BaseRepository
             ORDER BY created_at DESC
             LIMIT 1
         ");
-        $stmt->execute([$account_id, $account_id, $from_date]);
+        $stmt->execute([$account_id, $account_id, $fromDate]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -515,14 +515,14 @@ class UserRepository extends BaseRepository
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAccountIdByNumber(string $account_no)
+    public function getAccountIdByNumber(string $accountNumber)
     {
         $stmt = $this->db->prepare("
             SELECT a.id
             FROM accounts a
             WHERE a.account_no = ? AND a.status = 'active'
         ");
-        $stmt->execute([$account_no]);
+        $stmt->execute([$accountNumber]);
         return $stmt->fetchColumn();
     }
 
@@ -532,7 +532,7 @@ class UserRepository extends BaseRepository
         return $stmt->execute([$amount_change, $account_id]);
     }
 
-    public function insertTransaction(string $txn_id, int $from_id, int $to_id, float $amount, float $balance_after, float $dest_balance_after, string $description)
+    public function insertTransaction(string $transactionId, int $from_id, int $to_id, float $amount, float $balance_after, float $dest_balance_after, string $description)
     {
         $stmt = $this->db->prepare("
             INSERT INTO transactions
@@ -540,7 +540,7 @@ class UserRepository extends BaseRepository
             VALUES (?, ?, ?, 'transfer', ?, ?, ?, ?, 'completed', NOW())
         ");
         return $stmt->execute([
-            $txn_id, $from_id, $to_id, $amount, $balance_after, $dest_balance_after, $description
+            $transactionId, $from_id, $to_id, $amount, $balance_after, $dest_balance_after, $description
         ]);
     }
 }

@@ -16,20 +16,20 @@ if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['role']) || !in_arra
     die('Authentication required');
 }
 
-$user_id = max(1, intval($_GET['user_id'] ?? 0));
+$userId = max(1, intval($_GET['user_id'] ?? 0));
 
-if (\App\Shared\Core\Validation\Validator::isEmpty($user_id)) {
+if (\App\Shared\Core\Validation\Validator::isEmpty($userId)) {
     die('User ID is required');
 }
 
-if ($_SESSION['role'] === 'customer' && $_SESSION['user_id'] != $user_id) {
+if ($_SESSION['role'] === 'customer' && $_SESSION['user_id'] != $userId) {
     die('Access denied');
 }
 
 try {
     // Get user details
     $stmt = $pdo->prepare("SELECT customer_id, full_name, email, phone, created_at FROM users WHERE id = ?");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$userId]);
     $user = $stmt->fetch();
 
     if (!$user) {

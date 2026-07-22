@@ -42,18 +42,18 @@ class AdminManagementService
 
     public function addAdmin(array $data, ?array $file): array
     {
-        $full_name = $this->security->cleanInput($data['full_name'] ?? '');
+        $fullName = $this->security->cleanInput($data['full_name'] ?? '');
         $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
         $gender = $this->security->cleanInput($data['gender'] ?? '');
         $email = $this->security->cleanInput($data['email'] ?? '');
         $phone = $this->security->cleanInput($data['phone'] ?? '');
         $password = $data['password'] ?? '';
-        $confirm_password = $data['confirm_password'] ?? '';
+        $confirmPassword = $data['confirm_password'] ?? '';
         $admin_role = $this->security->cleanInput($data['admin_role'] ?? '');
         $security_question = $this->security->cleanInput($data['security_question'] ?? '');
         $security_answer = $data['security_answer'] ?? '';
 
-        if (strlen($full_name) < 2 || strlen($full_name) > 100) {
+        if (strlen($fullName) < 2 || strlen($fullName) > 100) {
             throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
         }
         if (empty($date_of_birth) || strtotime($date_of_birth) > strtotime('-18 years')) {
@@ -73,7 +73,7 @@ class AdminManagementService
             throw new ApiException('An admin with this email already exists', 409, ['field' => 'email']);
         }
 
-        if ($password !== $confirm_password) {
+        if ($password !== $confirmPassword) {
             throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_password']);
         }
 
@@ -124,7 +124,7 @@ class AdminManagementService
 
         $insertData = [
             'admin_id' => $next_admin_id,
-            'full_name' => $full_name,
+            'full_name' => $fullName,
             'date_of_birth' => $date_of_birth,
             'gender' => $gender,
             'profile_photo' => $photo_path,
@@ -141,14 +141,14 @@ class AdminManagementService
         $this->repository->createAdmin($insertData);
 
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$full_name} | Role: {$admin_role}")
+    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$fullName} | Role: {$admin_role}")
 );
 
         return [
             'success' => true,
             'message' => 'Admin added successfully',
             'admin_id' => $next_admin_id,
-            'admin_name' => $full_name,
+            'admin_name' => $fullName,
             'code' => 201
         ];
     }
@@ -238,9 +238,9 @@ class AdminManagementService
         ];
     }
 
-    public function getAdminProfileForUser(int $admin_id): array
+    public function getAdminProfileForUser(int $adminId): array
     {
-        $profile = $this->repository->getAdminProfile($admin_id);
+        $profile = $this->repository->getAdminProfile($adminId);
         if (!$profile) {
             throw new ApiException('Profile not found', 404);
         }
@@ -275,9 +275,9 @@ class AdminManagementService
         ];
     }
 
-    public function getProfileData(int $admin_id): array
+    public function getProfileData(int $adminId): array
     {
-        $admin = $this->repository->getAdminById($admin_id);
+        $admin = $this->repository->getAdminById($adminId);
         if (!$admin) {
             throw new ApiException('Admin not found', 404);
         }
@@ -300,7 +300,7 @@ class AdminManagementService
         ];
     }
 
-    public function changePassword(int $admin_id, array $data): array
+    public function changePassword(int $adminId, array $data): array
     {
         $current = $data['current_password'] ?? '';
         $new_pwd = $data['new_password'] ?? '';
@@ -317,22 +317,22 @@ class AdminManagementService
             throw new ApiException($strength['message'], 422);
         }
 
-        $admin = $this->repository->getAdminById($admin_id);
+        $admin = $this->repository->getAdminById($adminId);
         if (!password_verify($current, $admin['password_hash'])) {
             throw new ApiException('Current password is incorrect', 401);
         }
 
         $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
-        $this->repository->updateAdminPassword($admin_id, $new_hash);
+        $this->repository->updateAdminPassword($adminId, $new_hash);
 
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed')
+    new \App\Application\Events\GenericAuditAction('admin_password_changed', $adminId, 'admin', $adminId, 'admin', 'Admin password changed')
 );
 
         return ['success' => true, 'message' => 'Password changed successfully'];
     }
 
-    public function uploadAvatar(int $admin_id, ?array $file, bool $isProfileEndpoint = false): array
+    public function uploadAvatar(int $adminId, ?array $file, bool $isProfileEndpoint = false): array
     {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new ApiException($isProfileEndpoint ? 'No file uploaded or upload error' : 'No valid file uploaded', 422);
@@ -356,7 +356,7 @@ class AdminManagementService
             }
         }
 
-        $filename = 'admin_' . $admin_id . '_' . time() . '.' . $ext;
+        $filename = 'admin_' . $adminId . '_' . time() . '.' . $ext;
 
         // upload-admin-photo uses admin-photos, profile uses avatars
         $dir = $isProfileEndpoint ? '/uploads/avatars/' : '/uploads/admin-photos/';
@@ -368,7 +368,7 @@ class AdminManagementService
         $target_path = $upload_dir . $filename;
 
         if (move_uploaded_file($file['tmp_name'], $target_path)) {
-            $admin = $this->repository->getAdminById($admin_id);
+            $admin = $this->repository->getAdminById($adminId);
             $old_avatar = $admin['profile_photo'];
 
             if ($old_avatar && file_exists(dirname(__DIR__, 2) . '/' . ltrim($old_avatar, '/'))) {
@@ -376,7 +376,7 @@ class AdminManagementService
             }
 
             $relative_path = ($isProfileEndpoint ? 'uploads/avatars/' : '/uploads/admin-photos/') . $filename;
-            $this->repository->updateAdminProfileField($admin_id, 'profile_photo', $relative_path);
+            $this->repository->updateAdminProfileField($adminId, 'profile_photo', $relative_path);
 
             $_SESSION['admin_profile_photo'] = $relative_path;
 
@@ -389,40 +389,40 @@ class AdminManagementService
         throw new ApiException('Failed to move uploaded file', 500);
     }
 
-    public function updateProfile(int $admin_id, array $data): array
+    public function updateProfile(int $adminId, array $data): array
     {
-        $full_name = $this->security->cleanInput($data['full_name'] ?? $data['name'] ?? '');
+        $fullName = $this->security->cleanInput($data['full_name'] ?? $data['name'] ?? '');
         $email     = $this->security->cleanInput($data['email'] ?? '');
         $phone     = $this->security->cleanInput($data['phone'] ?? '');
         $password  = $data['password'] ?? '';
 
-        if (empty($full_name)) {
+        if (empty($fullName)) {
             throw new ApiException('Full name is required', 422);
         }
         if (empty($password)) {
             throw new ApiException('Admin password is required for verification', 422);
         }
 
-        $admin = $this->repository->getAdminById($admin_id);
+        $admin = $this->repository->getAdminById($adminId);
         if (!$admin || !password_verify($password, $admin['password_hash'])) {
             throw new ApiException('Verification failed: Incorrect password', 401);
         }
 
-        $this->repository->updateProfileFields($admin_id, ["full_name = ?", "email = ?", "phone = ?", "updated_at = NOW()"], [$full_name, $email, $phone]);
+        $this->repository->updateProfileFields($adminId, ["full_name = ?", "email = ?", "phone = ?", "updated_at = NOW()"], [$fullName, $email, $phone]);
 
-        $_SESSION['admin_name']  = $full_name;
+        $_SESSION['admin_name']  = $fullName;
         $_SESSION['admin_email'] = $email;
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }
 
-    public function updateTwoFaSettings(int $admin_id, int $enabled): array
+    public function updateTwoFaSettings(int $adminId, int $enabled): array
     {
-        $this->repository->updateTwoFa($admin_id, $enabled);
+        $this->repository->updateTwoFa($adminId, $enabled);
         return ['success' => true, 'message' => '2FA settings updated'];
     }
 
-    public function updateAdminProfile(int $admin_id, array $data): array
+    public function updateAdminProfile(int $adminId, array $data): array
     {
         if (!empty($data['new_password'])) {
             $current_pwd = $data['current_password'] ?? '';
@@ -433,7 +433,7 @@ class AdminManagementService
                 throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_new_password']);
             }
 
-            $admin = $this->repository->getAdminById($admin_id);
+            $admin = $this->repository->getAdminById($adminId);
             if (!password_verify($current_pwd, $admin['password_hash'])) {
                 throw new ApiException('Incorrect current password', 422, ['field' => 'current_password']);
             }
@@ -445,22 +445,22 @@ class AdminManagementService
             }
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
-            $this->repository->updateAdminPassword($admin_id, $new_hash);
+            $this->repository->updateAdminPassword($adminId, $new_hash);
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully')
+    new \App\Application\Events\GenericAuditAction('admin_password_updated', $adminId, 'admin', $adminId, 'admin', 'Password updated successfully')
 );
 
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
 
-        $full_name = $this->security->cleanInput($data['full_name'] ?? '');
+        $fullName = $this->security->cleanInput($data['full_name'] ?? '');
         $phone = $this->security->cleanInput($data['phone'] ?? '');
         $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
         $gender = $this->security->cleanInput($data['gender'] ?? '');
         $security_question = isset($data['security_question']) ? $this->security->cleanInput($data['security_question']) : null;
         $security_answer = $data['security_answer'] ?? '';
 
-        if (strlen($full_name) < 2 || strlen($full_name) > 100) {
+        if (strlen($fullName) < 2 || strlen($fullName) > 100) {
             throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
         }
         if (!empty($date_of_birth) && strtotime($date_of_birth) > strtotime('-18 years')) {
@@ -471,7 +471,7 @@ class AdminManagementService
         }
 
         $fields = ["full_name = ?", "phone = ?", "date_of_birth = ?", "gender = ?"];
-        $params = [$full_name, $phone, $date_of_birth, $gender];
+        $params = [$fullName, $phone, $date_of_birth, $gender];
 
         if ($security_question !== null && $security_question !== '') {
             $fields[] = "security_question = ?";
@@ -483,9 +483,9 @@ class AdminManagementService
             $params[] = password_hash(strtolower(trim($security_answer)), PASSWORD_BCRYPT);
         }
 
-        $this->repository->updateProfileFields($admin_id, $fields, $params);
+        $this->repository->updateProfileFields($adminId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated')
+    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, 'admin', $adminId, 'admin', 'Profile information updated')
 );
 
         return ['success' => true, 'message' => 'Profile updated successfully'];

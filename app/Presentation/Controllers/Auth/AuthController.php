@@ -64,9 +64,9 @@ class AuthController
     {
         $email    = $this->security->cleanInput($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $csrf_token = $_POST['csrf_token'] ?? '';
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        \App\Presentation\Validators\AuthValidator::validateLogin($email, $password, $csrf_token);
+        \App\Presentation\Validators\AuthValidator::validateLogin($email, $password, $csrfToken);
 
         $this->service->loginAdmin($email, $password);
 
@@ -81,9 +81,9 @@ class AuthController
     {
         $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
-        $csrf_token = $_POST['csrf_token'] ?? '';
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        \App\Presentation\Validators\AuthValidator::validateLogin($identity, $password, $csrf_token);
+        \App\Presentation\Validators\AuthValidator::validateLogin($identity, $password, $csrfToken);
 
         $this->service->loginStaff($identity, $password);
 
@@ -121,8 +121,8 @@ class AuthController
         }
 
         $token            = $this->security->cleanInput($_POST['token'] ?? '');
-        $new_password     = $_POST['new_password'] ?? '';
-        $confirm_password = $_POST['confirm_password'] ?? '';
+        $newPassword     = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
 
         $errors = [];
 
@@ -130,16 +130,16 @@ class AuthController
             throw new ApiException('Reset token is required', 422);
         }
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
             $errors['new_password'] = 'New password is required';
         } else {
-            $strength = validate_password_strength($new_password);
+            $strength = validate_password_strength($newPassword);
             if (!$strength['valid']) {
                 $errors['new_password'] = $strength['message'];
             }
         }
 
-        if ($new_password !== $confirm_password) {
+        if ($newPassword !== $confirmPassword) {
             $errors['confirm_password'] = 'Passwords do not match';
         }
 
@@ -147,7 +147,7 @@ class AuthController
             throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
-        $this->service->resetPassword($token, $new_password);
+        $this->service->resetPassword($token, $newPassword);
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 
@@ -164,17 +164,17 @@ class AuthController
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
         }
 
-        $full_name        = $this->security->cleanInput($_POST['full_name'] ?? '');
+        $fullName        = $this->security->cleanInput($_POST['full_name'] ?? '');
         $email            = trim($_POST['email'] ?? '');
         $phone            = $this->security->cleanInput($_POST['phone'] ?? '');
         $password         = $_POST['password'] ?? '';
-        $confirm_password = $_POST['confirm_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
 
         $errors = [];
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($full_name)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($fullName)) {
             $errors['full_name'] = 'Full name is required';
-        } elseif (\App\Shared\Core\Validation\Validator::length($full_name) < 2 || \App\Shared\Core\Validation\Validator::length($full_name) > 100) {
+        } elseif (\App\Shared\Core\Validation\Validator::length($fullName) < 2 || \App\Shared\Core\Validation\Validator::length($fullName) > 100) {
             $errors['full_name'] = 'Full name must be between 2 and 100 characters';
         }
 
@@ -199,7 +199,7 @@ class AuthController
             }
         }
 
-        if ($password !== $confirm_password) {
+        if ($password !== $confirmPassword) {
             $errors['confirm_password'] = 'Passwords do not match';
         }
 
@@ -207,7 +207,7 @@ class AuthController
             throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
-        $this->service->registerUser($full_name, $email, $phone, $password);
+        $this->service->registerUser($fullName, $email, $phone, $password);
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 

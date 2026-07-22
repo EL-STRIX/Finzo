@@ -18,8 +18,8 @@ if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['role']) || !in_arra
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-$txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
-if (\App\Shared\Core\Validation\Validator::isEmpty($txn_id)) {
+$transactionId = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
+if (\App\Shared\Core\Validation\Validator::isEmpty($transactionId)) {
     die('Transaction ID is required');
 }
 
@@ -45,7 +45,7 @@ try {
         LEFT JOIN branches b ON s.branch_id = b.id
         WHERE t.txn_id = ?
     ");
-    $stmt->execute([$txn_id]);
+    $stmt->execute([$transactionId]);
     $txn = $stmt->fetch();
 
     if (!$txn) {
@@ -59,7 +59,7 @@ try {
         $user_accounts = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         $stmt = $pdo->prepare("SELECT from_account_id, to_account_id FROM transactions WHERE txn_id = ?");
-        $stmt->execute([$txn_id]);
+        $stmt->execute([$transactionId]);
         $txn_accts = $stmt->fetch();
 
         if (

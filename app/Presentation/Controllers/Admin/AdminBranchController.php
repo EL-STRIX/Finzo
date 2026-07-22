@@ -33,12 +33,12 @@ class AdminBranchController
     public function deleteBranch(): array
     {
         $this->checkCsrf();
-        $admin_id = $_SESSION['admin_id'];
-        $branch_id = intval($_POST['branch_id'] ?? 0);
+        $adminId = $_SESSION['admin_id'];
+        $branchId = intval($_POST['branch_id'] ?? 0);
         $admin_password = $_POST['admin_password'] ?? '';
         $confirm_name = $_POST['confirm_name'] ?? '';
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($branch_id) || \App\Shared\Core\Validation\Validator::isEmpty($admin_password) || \App\Shared\Core\Validation\Validator::isEmpty($confirm_name)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($branchId) || \App\Shared\Core\Validation\Validator::isEmpty($admin_password) || \App\Shared\Core\Validation\Validator::isEmpty($confirm_name)) {
             throw new ApiException('Missing required fields', 422);
         }
 
@@ -46,7 +46,7 @@ class AdminBranchController
             $pdo = $this->service->getPDO();
 
             $stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
-            $stmt->execute([$admin_id]);
+            $stmt->execute([$adminId]);
             $admin = $stmt->fetch();
 
             if (!$admin || !password_verify($admin_password, $admin['password_hash'])) {
@@ -54,7 +54,7 @@ class AdminBranchController
             }
 
             $stmt = $pdo->prepare("SELECT id, name, type FROM branches WHERE id = ?");
-            $stmt->execute([$branch_id]);
+            $stmt->execute([$branchId]);
             $branch = $stmt->fetch();
 
             if (!$branch) {
@@ -80,12 +80,12 @@ class AdminBranchController
             }
 
             $stmt = $pdo->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
-            $stmt->execute([$branch_id]);
+            $stmt->execute([$branchId]);
 
             $stmt = $pdo->prepare("DELETE FROM branches WHERE id = ?");
-            $stmt->execute([$branch_id]);
+            $stmt->execute([$branchId]);
 
-            $this->security->writeAuditLog($pdo, 'branch_deleted', $branch['name'], 'branch', $admin_id, 'admin', "Deleted branch: {$branch['name']}");
+            $this->security->writeAuditLog($pdo, 'branch_deleted', $branch['name'], 'branch', $adminId, 'admin', "Deleted branch: {$branch['name']}");
 
             $pdo->commit();
             return ['success' => true, 'message' => 'Branch deleted successfully'];

@@ -40,8 +40,8 @@ class AdminOperationsController
 
     public function dashboard(): array
     {
-        $admin_id = $_SESSION['admin_id'];
-        $data = $this->service->getDashboardData($admin_id);
+        $adminId = $_SESSION['admin_id'];
+        $data = $this->service->getDashboardData($adminId);
 
         if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -51,7 +51,7 @@ class AdminOperationsController
             'success' => true,
             'csrf_token' => $_SESSION['csrf_token'],
             'admin' => [
-                'id' => $admin_id,
+                'id' => $adminId,
                 'full_name' => $data['admin']['full_name'],
                 'email' => $data['admin']['email'],
                 'profile_photo' => $data['admin']['profile_photo'],
@@ -120,7 +120,7 @@ class AdminOperationsController
 
     public function interest(): array
     {
-        $admin_id = $_SESSION['admin_id'];
+        $adminId = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data = $this->service->getInterestData();
@@ -130,13 +130,13 @@ class AdminOperationsController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             global $pdo;
-            $this->security->checkAdminPermission($pdo, $admin_id, 'change_interest_rate');
+            $this->security->checkAdminPermission($pdo, $adminId, 'change_interest_rate');
 
             $new_rate       = floatval($_POST['new_rate'] ?? 0);
             $apply_from     = $this->security->cleanInput($_POST['apply_from'] ?? 'Immediately');
             $custom_date    = $this->security->cleanInput($_POST['custom_date'] ?? '');
 
-            $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $admin_id);
+            $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $adminId);
             if (!$result['success']) {
                 if (\App\Shared\Core\Validation\Validator::isSet($result['errors'])) {
                     throw new ApiException('Validation failed', 422, ['errors' => $result['errors']]);
@@ -167,12 +167,12 @@ class AdminOperationsController
 
     public function lockedAccountDetail(): array
     {
-        $user_id = intval($_GET['id'] ?? 0);
-        if (!$user_id) {
+        $userId = intval($_GET['id'] ?? 0);
+        if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $result = $this->service->getLockedAccountDetail($user_id);
+        $result = $this->service->getLockedAccountDetail($userId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
         }
@@ -197,13 +197,13 @@ class AdminOperationsController
 
     public function recoverUser(): array
     {
-        $user_id = intval($_POST['user_id'] ?? 0);
-        if (!$user_id) {
+        $userId = intval($_POST['user_id'] ?? 0);
+        if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $admin_id = $_SESSION['admin_id'];
-        $result = $this->service->recoverUser($user_id, $admin_id);
+        $adminId = $_SESSION['admin_id'];
+        $result = $this->service->recoverUser($userId, $adminId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
         }
@@ -212,15 +212,15 @@ class AdminOperationsController
 
     public function reviewApplication(): array
     {
-        $admin_id = $_SESSION['admin_id'];
+        $adminId = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $user_id = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
-            if (!$user_id) {
+            $userId = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
+            if (!$userId) {
                 throw new ApiException('User ID is required', 422);
             }
 
-            $result = $this->service->getApplicationDetails($user_id);
+            $result = $this->service->getApplicationDetails($userId);
             if (!$result['success']) {
                 throw new ApiException($result['message'], $result['code'] ?? 500);
             }
@@ -228,16 +228,16 @@ class AdminOperationsController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user_id = intval($_POST['user_id'] ?? 0);
+            $userId = intval($_POST['user_id'] ?? 0);
             $action  = $this->security->cleanInput($_POST['action'] ?? '');
             $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
             $notes   = $this->security->cleanInput($_POST['notes'] ?? '');
 
-            if (!$user_id || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
+            if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
                 throw new ApiException('User ID and action are required', 422);
             }
 
-            $result = $this->service->processApplication($user_id, $action, $reason, $notes, $admin_id);
+            $result = $this->service->processApplication($userId, $action, $reason, $notes, $adminId);
             if (!$result['success']) {
                 throw new ApiException($result['message'], $result['code'] ?? 500);
             }
@@ -249,8 +249,8 @@ class AdminOperationsController
 
     public function viewKycDocument(): void
     {
-        $admin_id = $_SESSION['admin_id'] ?? null;
-        if (!$admin_id) {
+        $adminId = $_SESSION['admin_id'] ?? null;
+        if (!$adminId) {
             http_response_code(401);
             echo "Unauthorized";
             exit;
@@ -358,12 +358,12 @@ class AdminOperationsController
 
     public function suspendedUserDetail(): array
     {
-        $user_id = intval($_GET['id'] ?? 0);
-        if (!$user_id) {
+        $userId = intval($_GET['id'] ?? 0);
+        if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $data = $this->service->getSuspendedUserDetail($user_id);
+        $data = $this->service->getSuspendedUserDetail($userId);
         if (!$data['success']) {
             throw new ApiException($data['message'], 404);
         }
@@ -372,13 +372,13 @@ class AdminOperationsController
 
     public function unlockAccount(): array
     {
-        $user_id  = intval($_POST['user_id'] ?? 0);
-        $admin_id = $_SESSION['admin_id'];
-        if (!$user_id) {
+        $userId  = intval($_POST['user_id'] ?? 0);
+        $adminId = $_SESSION['admin_id'];
+        if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $data = $this->service->unlockAccount($user_id, $admin_id);
+        $data = $this->service->unlockAccount($userId, $adminId);
         if (!$data['success']) {
             throw new ApiException($data['message'], $data['code'] ?? 500);
         }
@@ -387,18 +387,18 @@ class AdminOperationsController
 
     public function userAction(): array
     {
-        $user_id = intval($_POST['user_id'] ?? 0);
+        $userId = intval($_POST['user_id'] ?? 0);
         $action  = $this->security->cleanInput($_POST['action'] ?? '');
         $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
         $password = $_POST['password'] ?? '';
         $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
-        $admin_id = $_SESSION['admin_id'];
+        $adminId = $_SESSION['admin_id'];
 
-        if (!$user_id || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
+        if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
         }
 
-        $data = $this->service->processUserAction($user_id, $action, $reason, $password, $balance_option, $admin_id);
+        $data = $this->service->processUserAction($userId, $action, $reason, $password, $balance_option, $adminId);
         if (!$data['success']) {
             throw new ApiException($data['message'], $data['code'] ?? 400);
         }
@@ -407,12 +407,12 @@ class AdminOperationsController
 
     public function userDetail(): array
     {
-        $user_id = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
-        if (!$user_id) {
+        $userId = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
+        if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $data = $this->service->getUserDetail($user_id);
+        $data = $this->service->getUserDetail($userId);
         if (!$data['success']) {
             throw new ApiException($data['message'], 404);
         }
