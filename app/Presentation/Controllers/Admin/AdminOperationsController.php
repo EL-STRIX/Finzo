@@ -20,7 +20,7 @@ class AdminOperationsController
         $this->service = $service;
     }
 
-    public function auditLog(): array
+    public function auditLog(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'search'      => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -38,7 +38,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function dashboard(): array
+    public function dashboard(?string $id = null, ?string $extra = null): array
     {
         $adminId = $_SESSION['admin_id'];
         $data = $this->service->getDashboardData($adminId);
@@ -63,7 +63,7 @@ class AdminOperationsController
         ];
     }
 
-    public function deletedUsers(): array
+    public function deletedUsers(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'search'       => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -118,7 +118,7 @@ class AdminOperationsController
         exit();
     }
 
-    public function interest(): array
+    public function interest(?string $id = null, ?string $extra = null): array
     {
         $adminId = $_SESSION['admin_id'];
 
@@ -149,7 +149,7 @@ class AdminOperationsController
         throw new ApiException('Method not allowed', 405);
     }
 
-    public function lockedAccounts(): array
+    public function lockedAccounts(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'tab'    => $this->security->cleanInput($_GET['tab'] ?? 'locked'),
@@ -164,9 +164,9 @@ class AdminOperationsController
         return $data;
     }
 
-    public function lockedAccountDetail(): array
+    public function lockedAccountDetail(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_GET['id'] ?? 0);
+        $userId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
@@ -178,7 +178,7 @@ class AdminOperationsController
         return $result;
     }
 
-    public function pendingApprovals(): array
+    public function pendingApprovals(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
@@ -194,7 +194,7 @@ class AdminOperationsController
         ];
     }
 
-    public function recoverUser(): array
+    public function recoverUser(?string $id = null, ?string $extra = null): array
     {
         $userId = intval($_POST['user_id'] ?? 0);
         if (!$userId) {
@@ -209,12 +209,12 @@ class AdminOperationsController
         return $result;
     }
 
-    public function reviewApplication(): array
+    public function reviewApplication(?string $id = null, ?string $extra = null): array
     {
         $adminId = $_SESSION['admin_id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $userId = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
+            $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
             if (!$userId) {
                 throw new ApiException('User ID is required', 422);
             }
@@ -246,7 +246,7 @@ class AdminOperationsController
         throw new ApiException('Method not allowed', 405);
     }
 
-    public function viewKycDocument(): void
+    public function viewKycDocument(?string $id = null, ?string $extra = null): void
     {
         $adminId = $_SESSION['admin_id'] ?? null;
         if (!$adminId) {
@@ -287,7 +287,7 @@ class AdminOperationsController
         exit;
     }
 
-    public function suspendedUsers(): array
+    public function suspendedUsers(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'search'     => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -341,7 +341,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function users(): array
+    public function users(?string $id = null, ?string $extra = null): array
     {
         $filters = [
             'search' => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -355,9 +355,9 @@ class AdminOperationsController
         return $data;
     }
 
-    public function suspendedUserDetail(): array
+    public function suspendedUserDetail(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_GET['id'] ?? 0);
+        $userId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
@@ -369,7 +369,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function unlockAccount(): array
+    public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
         $userId  = intval($_POST['user_id'] ?? 0);
         $adminId = $_SESSION['admin_id'];
@@ -384,7 +384,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function userAction(): array
+    public function userAction(?string $id = null, ?string $extra = null): array
     {
         $userId = intval($_POST['user_id'] ?? 0);
         $action  = $this->security->cleanInput($_POST['action'] ?? '');
@@ -404,9 +404,9 @@ class AdminOperationsController
         return $data;
     }
 
-    public function userDetail(): array
+    public function userDetail(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_GET['user_id'] ?? $_GET['id'] ?? 0);
+        $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }

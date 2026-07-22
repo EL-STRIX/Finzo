@@ -25,7 +25,7 @@ class AdminBranchController
         }
     }
 
-    public function deleteBranch(): array
+    public function deleteBranch(?string $id = null, ?string $extra = null): array
     {
         $this->checkCsrf();
         $adminId = $_SESSION['admin_id'];
@@ -41,7 +41,7 @@ class AdminBranchController
         return $this->service->deleteBranch($branchId, $adminId, $admin_password, $confirm_name, $closure_doc);
     }
 
-    public function getBranches(): array
+    public function getBranches(?string $id = null, ?string $extra = null): array
     {
         $search = $this->security->cleanInput($_GET['search'] ?? '');
         $type   = $this->security->cleanInput($_GET['type'] ?? 'all');

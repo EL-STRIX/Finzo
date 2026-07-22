@@ -67,9 +67,9 @@ class AdminStaffController
         }
     }
 
-    public function getStaffDetail(): array
+    public function getStaffDetail(?string $id = null, ?string $extra = null): array
     {
-        $staffId = intval($_GET['staff_id'] ?? $_GET['id'] ?? 0);
+        $staffId = intval($_GET['staff_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$staffId) {
             throw new ApiException('Staff ID is required', 422);
         }
@@ -94,18 +94,18 @@ class AdminStaffController
         return ['success' => true, 'staff' => $staff, 'performance' => $performance];
     }
 
-    public function generateStaffPassword(): array
+    public function generateStaffPassword(?string $id = null, ?string $extra = null): array
     {
         $this->checkCsrf();
         return ['success' => true, 'password' => $this->service->generateStrongPassword(12)];
     }
 
-    public function getNextStaffId(): array
+    public function getNextStaffId(?string $id = null, ?string $extra = null): array
     {
         return ['success' => true, 'next_id' => $this->service->generateStaffId()];
     }
 
-    public function resetStaffPassword(): array
+    public function resetStaffPassword(?string $id = null, ?string $extra = null): array
     {
         $adminId = $_SESSION['admin_id'];
         $input = json_decode(file_get_contents('php://input'), true);
@@ -114,7 +114,7 @@ class AdminStaffController
         $pdo = $this->service->getRepo()->getPDO();
         $this->security->checkAdminPermission($pdo, $adminId, 'reset_staff_password');
 
-        $staffId = intval($input['staff_id'] ?? $_POST['staff_id'] ?? 0);
+        $staffId = intval($input['staff_id'] ?? ($id ?? $_POST['staff_id'] ?? null) ?? 0);
         $newPassword = $input['new_password'] ?? $_POST['new_password'] ?? '';
 
         if (!$staffId) {
@@ -140,9 +140,9 @@ class AdminStaffController
         return ['success' => true, 'message' => 'Password updated successfully'];
     }
 
-    public function staffAction(): array
+    public function staffAction(?string $id = null, ?string $extra = null): array
     {
-        $staffId = intval($_POST['staff_id'] ?? 0);
+        $staffId = intval(($id ?? $_POST['staff_id'] ?? null) ?? 0);
         $action   = $this->security->cleanInput($_POST['action'] ?? '');
         $reason   = $this->security->cleanInput($_POST['reason'] ?? '');
 
@@ -214,9 +214,9 @@ class AdminStaffController
         return ['success' => false];
     }
 
-    public function uploadStaffPhoto(): array
+    public function uploadStaffPhoto(?string $id = null, ?string $extra = null): array
     {
-        $staffId = intval($_POST['staff_id'] ?? 0);
+        $staffId = intval(($id ?? $_POST['staff_id'] ?? null) ?? 0);
         if (!$staffId) {
             throw new ApiException('Staff ID is required', 422);
         }
@@ -264,9 +264,9 @@ class AdminStaffController
         return ['success' => true, 'message' => 'Photo updated successfully', 'photo_url' => APP_URL . '/' . $new_photo_path];
     }
 
-    public function staffDetail(): array
+    public function staffDetail(?string $id = null, ?string $extra = null): array
     {
-        $staffId = intval($_GET['staff_id'] ?? $_GET['id'] ?? 0);
+        $staffId = intval($_GET['staff_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$staffId) {
             throw new ApiException('Staff ID is required', 422);
         }
@@ -318,7 +318,7 @@ class AdminStaffController
         ];
     }
 
-    public function getStaffList(): array
+    public function getStaffList(?string $id = null, ?string $extra = null): array
     {
         $pdo = $this->service->getRepo()->getPDO();
         $search    = $this->security->cleanInput($_GET['search'] ?? '');
@@ -378,9 +378,9 @@ class AdminStaffController
         ];
     }
 
-    public function suspendedStaffDetail(): array
+    public function suspendedStaffDetail(?string $id = null, ?string $extra = null): array
     {
-        $staffId = intval($_GET['id'] ?? 0);
+        $staffId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$staffId) {
             throw new ApiException('Staff ID is required', 422);
         }
@@ -423,7 +423,7 @@ class AdminStaffController
         return ['status' => 'success', 'data' => ['staff' => $staff, 'history' => $history]];
     }
 
-    public function getSuspendedStaff(): array
+    public function getSuspendedStaff(?string $id = null, ?string $extra = null): array
     {
         $pdo = $this->service->getRepo()->getPDO();
         $search     = $this->security->cleanInput($_GET['search'] ?? '');

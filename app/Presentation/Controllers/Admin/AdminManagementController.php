@@ -20,7 +20,7 @@ class AdminManagementController
         $this->service = $service;
     }
 
-    public function addAdmin(): array
+    public function addAdmin(?string $id = null, ?string $extra = null): array
     {
         $this->service->validateCsrf($_POST['csrf_token'] ?? '');
         $this->service->requireSuperAdmin();
@@ -38,34 +38,34 @@ class AdminManagementController
         return $result;
     }
 
-    public function adminAction(): array
+    public function adminAction(?string $id = null, ?string $extra = null): array
     {
         $this->service->validateCsrf($_POST['csrf_token'] ?? '');
         $this->service->requireSuperAdmin();
 
         $action = $this->security->cleanInput($_POST['action'] ?? '');
-        $target_id = \App\Shared\Core\Validation\Validator::isSet($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0;
+        $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_POST['admin_id'] ?? null)) ? (int)($id ?? $_POST['admin_id'] ?? null) : 0;
 
         $result = $this->service->handleAdminAction($action, $target_id);
         unset($result['code']);
         return $result;
     }
 
-    public function getAdminDetail(): array
+    public function getAdminDetail(?string $id = null, ?string $extra = null): array
     {
         $this->service->requireSuperAdmin();
 
-        $target_id = \App\Shared\Core\Validation\Validator::isSet($_GET['id']) ? (int)$_GET['id'] : 0;
+        $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_GET['id'] ?? null)) ? (int)($id ?? $_GET['id'] ?? null) : 0;
         return $this->service->getAdminDetail($target_id);
     }
 
-    public function getAdmins(): array
+    public function getAdmins(?string $id = null, ?string $extra = null): array
     {
         $this->service->requireSuperAdmin();
         return $this->service->getAdmins();
     }
 
-    public function getLockedAdmins(): array
+    public function getLockedAdmins(?string $id = null, ?string $extra = null): array
     {
         if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
             throw new ApiException('Unauthorized. Super Admin access required.', 403);
@@ -73,7 +73,7 @@ class AdminManagementController
         return $this->service->getLockedAdmins();
     }
 
-    public function getNextAdminId(): array
+    public function getNextAdminId(?string $id = null, ?string $extra = null): array
     {
         if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
             throw new ApiException('Forbidden', 403);
@@ -82,7 +82,7 @@ class AdminManagementController
         return ['success' => true, 'next_id' => $next_id];
     }
 
-    public function profile(): array
+    public function profile(?string $id = null, ?string $extra = null): array
     {
         $adminId = $_SESSION['admin_id'];
 
@@ -109,7 +109,7 @@ class AdminManagementController
         throw new ApiException('Method not allowed', 405);
     }
 
-    public function updateAdminProfile(): array
+    public function updateAdminProfile(?string $id = null, ?string $extra = null): array
     {
         $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
         if ($is_json) {
@@ -133,7 +133,7 @@ class AdminManagementController
         return $result;
     }
 
-    public function uploadAdminPhoto(): array
+    public function uploadAdminPhoto(?string $id = null, ?string $extra = null): array
     {
         $file = $_FILES['profile_photo'] ?? null;
         $result = $this->service->uploadAvatar($_SESSION['admin_id'], $file, false);
@@ -141,7 +141,7 @@ class AdminManagementController
         return $result;
     }
 
-    public function getAdminProfile(): array
+    public function getAdminProfile(?string $id = null, ?string $extra = null): array
     {
         return $this->service->getAdminProfileForUser($_SESSION['admin_id']);
     }

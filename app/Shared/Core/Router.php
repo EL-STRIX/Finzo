@@ -85,7 +85,7 @@ class Router
                     // Controllers should ideally just return arrays now, and the router handles json_response
                     // But if controllers still call json_response directly, that's fine for now during transition.
                     if (is_array($response)) {
-                        json_response($response, 200);
+                        json_response($response, $response['code'] ?? (isset($response['success']) && $response['success'] === false ? 400 : 200));
                     }
                 } catch (ApiException $e) {
                     $payload = ['success' => false, 'message' => $e->getMessage()];

@@ -19,7 +19,7 @@ class AuthController
         $this->service = $service;
     }
 
-    public function login(): array
+    public function login(?string $id = null, ?string $extra = null): array
     {
         $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -60,7 +60,7 @@ class AuthController
         ];
     }
 
-    public function adminLogin(): array
+    public function adminLogin(?string $id = null, ?string $extra = null): array
     {
         $email    = $this->security->cleanInput($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -77,7 +77,7 @@ class AuthController
         ];
     }
 
-    public function staffLogin(): array
+    public function staffLogin(?string $id = null, ?string $extra = null): array
     {
         $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -94,7 +94,7 @@ class AuthController
         ];
     }
 
-    public function forgotPassword(): array
+    public function forgotPassword(?string $id = null, ?string $extra = null): array
     {
         if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
@@ -114,7 +114,7 @@ class AuthController
         ];
     }
 
-    public function resetPassword(): array
+    public function resetPassword(?string $id = null, ?string $extra = null): array
     {
         if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
             throw new ApiException('Invalid security token. Please refresh and try again.', 403);
@@ -218,7 +218,7 @@ class AuthController
         ];
     }
 
-    public function logout(): array
+    public function logout(?string $id = null, ?string $extra = null): array
     {
         $role = $_SESSION['role'] ?? '';
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
@@ -255,7 +255,7 @@ class AuthController
         ];
     }
 
-    public function getCsrfToken(): array
+    public function getCsrfToken(?string $id = null, ?string $extra = null): array
     {
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Cache-Control: post-check=0, pre-check=0', false);
