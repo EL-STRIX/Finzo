@@ -1,6 +1,6 @@
 ---
 title: "Module Overview"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Enterprise Architecture Board"
 category: "System Boundaries"
@@ -33,6 +33,16 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Module Overview is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Finzo utilizes a decoupled monolithic approach. The core application runs on a shared-nothing PHP-FPM execution model, guaranteeing stateless processing at the system level. State is exclusively pushed to Redis or MySQL. We adhere strictly to the 12-Factor App methodology.
 
+
+### Architectural Flow
+```mermaid
+graph TD;
+    A[Edge Router] -->|TLS 1.3| B[API Gateway];
+    B --> C[Finzo Core];
+    C --> D[(Primary Database)];
+    C --> E[(Redis Cache)];
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +59,18 @@ The exact programmatic implementation of Module Overview requires strict adheren
 Finzo utilizes a decoupled monolithic approach. The core application runs on a shared-nothing PHP-FPM execution model, guaranteeing stateless processing at the system level. State is exclusively pushed to Redis or MySQL. We adhere strictly to the 12-Factor App methodology.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Module Overview.
 
+
+### Code Reference
+```yaml
+# docker-compose.yml configuration
+services:
+  finzo-core:
+    image: finzo/core:latest
+    restart: always
+    ports:
+      - "8000:80"
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Module Overview directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +79,9 @@ In Core Banking, the system boundary must isolate the 'Ledger' module from the '
 
 ## Best Practices
 - Enforce strict decoupling between subsystems.
+
+> [!TIP]
+> Always decouple physical infrastructure boundaries from logical business domains to prevent tight coupling.
 - Abstract all external SaaS integrations behind adapter interfaces.
 
 ## Anti-Patterns
@@ -73,8 +98,14 @@ In Core Banking, the system boundary must isolate the 'Ledger' module from the '
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| TOGAF | ADM Phase B | Business Architecture bounds definition |
+| SOC2 | CC1.2 | Board of Directors oversight boundaries |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Enterprise Architecture Board | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Enterprise Architecture Board | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

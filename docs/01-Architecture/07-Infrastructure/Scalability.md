@@ -1,6 +1,6 @@
 ---
 title: "Scalability"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Cloud Operations"
 category: "Cloud Topology"
@@ -33,6 +33,17 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Scalability is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Finzo is built on immutable infrastructure. Nginx acts as the reverse proxy, forwarding FastCGI to PHP-FPM. AWS ALBs handle TLS 1.2+ termination. Environment variables are injected at runtime via AWS Secrets Manager. No state exists on the local disk.
 
+
+### Architectural Flow
+```mermaid
+graph TD;
+    A[User] --> B[AWS Route53];
+    B --> C[AWS WAF];
+    C --> D[ALB TLS 1.3];
+    D --> E[EKS Node 1];
+    D --> F[EKS Node 2];
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +60,18 @@ The exact programmatic implementation of Scalability requires strict adherence t
 Finzo is built on immutable infrastructure. Nginx acts as the reverse proxy, forwarding FastCGI to PHP-FPM. AWS ALBs handle TLS 1.2+ termination. Environment variables are injected at runtime via AWS Secrets Manager. No state exists on the local disk.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Scalability.
 
+
+### Code Reference
+```hcl
+# Terraform snippet for ALB
+resource "aws_lb" "finzo_alb" {
+  name               = "finzo-production"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+}
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Scalability directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +80,9 @@ The production cluster spans 3 Availability Zones. If AZ-A experiences a blackou
 
 ## Best Practices
 - Terminate TLS at the edge load balancer to offload CPU from application nodes.
+
+> [!TIP]
+> Treat all infrastructure as immutable code. If a server is compromised, destroy the container—never SSH into production to patch.
 - Treat servers as cattle, not pets; destroy and recreate rather than patch.
 
 ## Anti-Patterns
@@ -73,8 +99,14 @@ The production cluster spans 3 Availability Zones. If AZ-A experiences a blackou
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| SOC2 | CC7.1 | Infrastructure monitoring and vulnerability detection |
+| ISO 27001 | A.13.1.3 | Segregation in networks |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Cloud Operations | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Cloud Operations | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

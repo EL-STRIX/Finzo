@@ -1,6 +1,6 @@
 ---
 title: "Page Hierarchy"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Frontend Architecture"
 category: "User Interface"
@@ -33,6 +33,18 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Page Hierarchy is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
 
+
+### Architectural Flow
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant CDN
+    participant Gateway
+    Browser->>CDN: Request Assets (JS/CSS)
+    CDN-->>Browser: Return cached (SRI validated)
+    Browser->>Gateway: API Fetch (JWT)
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +61,15 @@ The exact programmatic implementation of Page Hierarchy requires strict adherenc
 Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Page Hierarchy.
 
+
+### Code Reference
+```html
+<!-- Subresource Integrity (SRI) Enforced -->
+<script src="https://cdn.example.com/app.js"
+        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
+        crossorigin="anonymous"></script>
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Page Hierarchy directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +78,9 @@ Financial dashboards require precise localization (i18n) and accessibility (WCAG
 
 ## Best Practices
 - Utilize Subresource Integrity (SRI) for external scripts.
+
+> [!CAUTION]
+> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
 - Implement skeleton loaders for asynchronous data fetching.
 
 ## Anti-Patterns
@@ -73,8 +97,14 @@ Financial dashboards require precise localization (i18n) and accessibility (WCAG
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
+| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Frontend Architecture | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

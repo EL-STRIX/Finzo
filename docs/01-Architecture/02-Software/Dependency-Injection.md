@@ -1,6 +1,6 @@
 ---
 title: "Dependency Injection"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Principal Engineering"
 category: "Software Patterns"
@@ -33,6 +33,17 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Dependency Injection is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 The codebase strictly enforces Dependency Injection (DI) via constructor injection. No global state or static God-classes are permitted. Repositories manage database state; Services orchestrate business logic; Controllers handle strictly HTTP parsing. This ensures perfect testability.
 
+
+### Architectural Flow
+```mermaid
+classDiagram
+    class Controller
+    class Service
+    class Repository
+    Controller --> Service : delegates
+    Service --> Repository : persists
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +60,16 @@ The exact programmatic implementation of Dependency Injection requires strict ad
 The codebase strictly enforces Dependency Injection (DI) via constructor injection. No global state or static God-classes are permitted. Repositories manage database state; Services orchestrate business logic; Controllers handle strictly HTTP parsing. This ensures perfect testability.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Dependency Injection.
 
+
+### Code Reference
+```php
+final class TransferFundsService implements TransferFundsInterface {
+    public function __construct(
+        private readonly AccountRepository $repository
+    ) {}
+}
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Dependency Injection directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +78,9 @@ A `TransferFundsService` does not know if the request came from a Mobile API or 
 
 ## Best Practices
 - Rely on abstract Interfaces, not concrete classes.
+
+> [!IMPORTANT]
+> Global state (e.g., Singletons) is mathematically banned in the Finzo Service layer to guarantee strict test isolation.
 - Single Responsibility Principle (SRP) must be evident in every class.
 
 ## Anti-Patterns
@@ -73,8 +97,14 @@ A `TransferFundsService` does not know if the request came from a Mobile API or 
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| ISO/IEC 25010 | Maintainability | Strict DI enforces high testability |
+| PCI-DSS | Req 6.5 | Prevention of common coding vulnerabilities |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Principal Engineering | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Principal Engineering | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

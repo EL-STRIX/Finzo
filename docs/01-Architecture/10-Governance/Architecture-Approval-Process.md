@@ -1,6 +1,6 @@
 ---
 title: "Architecture Approval Process"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Change Advisory Board"
 category: "Enterprise Governance"
@@ -33,6 +33,16 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Architecture Approval Process is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Every fundamental shift in architecture requires a formal ADR document detailing the Context, Decision, and Consequences. Quality Gates (SonarQube, PHPStan) are hard-enforced. A Principal Engineer must approve PRs that modify structural boundaries.
 
+
+### Architectural Flow
+```mermaid
+graph LR;
+    A[Feature Request] --> B[Draft ADR];
+    B --> C{CAB Review};
+    C -->|Approved| D[Implementation];
+    C -->|Rejected| E[Archived];
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +59,15 @@ The exact programmatic implementation of Architecture Approval Process requires 
 Every fundamental shift in architecture requires a formal ADR document detailing the Context, Decision, and Consequences. Quality Gates (SonarQube, PHPStan) are hard-enforced. A Principal Engineer must approve PRs that modify structural boundaries.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Architecture Approval Process.
 
+
+### Code Reference
+```markdown
+# ADR-001: Adopt JWT for API Auth
+**Status:** Accepted
+**Context:** Sessions don't scale globally.
+**Decision:** We will use HS256 JWTs.
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Architecture Approval Process directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +76,9 @@ Regulatory compliance (PCI-DSS) demands that every architectural modification al
 
 ## Best Practices
 - Record *why* a decision was made, not just *what* the decision is.
+
+> [!TIP]
+> Document the *why*, not just the *what*. Future engineers need to know the historical context that led to a specific architectural constraint.
 - Enforce strict Semantic Versioning for all internal package updates.
 
 ## Anti-Patterns
@@ -73,8 +95,14 @@ Regulatory compliance (PCI-DSS) demands that every architectural modification al
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| ISO/IEC 42010 | Architecture | Systems and software engineering architecture description |
+| TOGAF | Phase H | Architecture Change Management |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Change Advisory Board | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Change Advisory Board | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

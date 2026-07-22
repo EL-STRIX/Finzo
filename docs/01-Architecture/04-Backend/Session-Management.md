@@ -1,6 +1,6 @@
 ---
 title: "Session Management"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Backend Engineering"
 category: "Core Application"
@@ -33,6 +33,19 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Session Management is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 All incoming payloads are strictly verified via FormRequests before hitting the Controller. The Controller parses the payload into a strictly typed DTO and passes it to the Service layer. Data mutations utilize `PDO::ATTR_EMULATE_PREPARES = false` to eliminate SQL injection at the driver level.
 
+
+### Architectural Flow
+```mermaid
+sequenceDiagram
+    participant Route
+    participant FormRequest
+    participant Controller
+    participant DTO
+    Route->>FormRequest: Validate Payload
+    FormRequest->>Controller: Validated Array
+    Controller->>DTO: Hydrate Object
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +62,15 @@ The exact programmatic implementation of Session Management requires strict adhe
 All incoming payloads are strictly verified via FormRequests before hitting the Controller. The Controller parses the payload into a strictly typed DTO and passes it to the Service layer. Data mutations utilize `PDO::ATTR_EMULATE_PREPARES = false` to eliminate SQL injection at the driver level.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Session Management.
 
+
+### Code Reference
+```php
+// Strict PDO Emulation disabled for maximum security
+$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+$stmt = $pdo->prepare('SELECT * FROM accounts WHERE id = :id');
+$stmt->execute(['id' => $dto->accountId]);
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Session Management directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +79,9 @@ When transferring funds, the `TransactionDTO` strictly enforces integer constrai
 
 ## Best Practices
 - Controllers must be completely thin, delegating everything to Services.
+
+> [!TIP]
+> FormRequests must reject unexpected parameters instantly. Never use `$request->all()` in a production controller.
 - Always utilize explicit type-hinting (`int`, `string`, `bool`) in function signatures.
 
 ## Anti-Patterns
@@ -73,8 +98,14 @@ When transferring funds, the `TransactionDTO` strictly enforces integer constrai
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| OWASP | A03:2021 | Injection Prevention via PDO |
+| PCI-DSS | Req 6.5.1 | Mitigation of SQL Injection |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Backend Engineering | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Backend Engineering | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

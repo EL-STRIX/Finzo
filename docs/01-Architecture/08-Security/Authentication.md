@@ -1,6 +1,6 @@
 ---
 title: "Authentication"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "InfoSec Team"
 category: "Cybersecurity"
@@ -33,6 +33,16 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Authentication is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Passwords are computationally secured via `PASSWORD_ARGON2ID`. Memory scrubbing is explicitly invoked via `sodium_memzero()` after processing sensitive secrets in RAM. Timing attacks are neutralized utilizing `hash_equals()` for all cryptographic comparisons.
 
+
+### Architectural Flow
+```mermaid
+stateDiagram-v2
+    [*] --> Anonymous
+    Anonymous --> Authenticated : Valid Argon2id Hash
+    Authenticated --> SessionFixationDestroyed : session_regenerate_id(true)
+    SessionFixationDestroyed --> [*]
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +59,16 @@ The exact programmatic implementation of Authentication requires strict adherenc
 Passwords are computationally secured via `PASSWORD_ARGON2ID`. Memory scrubbing is explicitly invoked via `sodium_memzero()` after processing sensitive secrets in RAM. Timing attacks are neutralized utilizing `hash_equals()` for all cryptographic comparisons.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Authentication.
 
+
+### Code Reference
+```php
+// Constant-Time String Comparison & Memory Scrubbing
+if (hash_equals($knownSignature, $userSignature)) {
+    // Execute sensitive logic
+}
+sodium_memzero($plaintextSecret);
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Authentication directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +77,9 @@ To prevent IDOR (Insecure Direct Object Reference) on account statements, the Re
 
 ## Best Practices
 - Fail securely. If an authentication provider is offline, deny access.
+
+> [!CAUTION]
+> Never use `==` or `===` when comparing HMAC signatures or cryptographic hashes. Timing attacks will leak the secret.
 - Use `Content-Security-Policy` to absolutely neutralize DOM-based XSS vectors.
 
 ## Anti-Patterns
@@ -73,8 +96,14 @@ To prevent IDOR (Insecure Direct Object Reference) on account statements, the Re
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| PCI-DSS | Req 8.2.1 | Strong Cryptography for Authentication |
+| OWASP | A02:2021 | Cryptographic Failures |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | InfoSec Team | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | InfoSec Team | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

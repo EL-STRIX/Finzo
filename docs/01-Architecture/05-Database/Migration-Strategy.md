@@ -1,6 +1,6 @@
 ---
 title: "Migration Strategy"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Data Engineering"
 category: "Persistence"
@@ -33,6 +33,16 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Migration Strategy is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Finzo heavily relies on a multi-AZ MySQL setup. The `BcdrManager.php` script executes native `mysqldump` commands, encrypts the payload utilizing AES-256 (via ZipArchive::EM_AES_256), and ships the snapshot to immutable storage. We use strict pessimistic locking (`SELECT ... FOR UPDATE`) on ledgers.
 
+
+### Architectural Flow
+```mermaid
+graph LR;
+    A[Finzo Core] -->|Write| B[(Primary DB)];
+    B -->|Async Replication| C[(Read Replica A)];
+    B -->|Async Replication| D[(Read Replica B)];
+    A -->|Read| C;
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +59,16 @@ The exact programmatic implementation of Migration Strategy requires strict adhe
 Finzo heavily relies on a multi-AZ MySQL setup. The `BcdrManager.php` script executes native `mysqldump` commands, encrypts the payload utilizing AES-256 (via ZipArchive::EM_AES_256), and ships the snapshot to immutable storage. We use strict pessimistic locking (`SELECT ... FOR UPDATE`) on ledgers.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Migration Strategy.
 
+
+### Code Reference
+```php
+// BcdrManager.php - AES-256 Encrypted Backups
+$zip = new ZipArchive();
+$zip->open($zipFile, ZipArchive::CREATE);
+$zip->addFile($filePath, $filename);
+$zip->setEncryptionName($filename, ZipArchive::EM_AES_256, DB_PASS);
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Migration Strategy directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +77,9 @@ A bank transfer must decrement Account A and increment Account B in a single ato
 
 ## Best Practices
 - Enforce strict Foreign Key constraints across the entire schema.
+
+> [!WARNING]
+> Never execute `UPDATE` or `DELETE` on financial ledger tables. All mutations must be strictly append-only `INSERT`s.
 - Utilize integer auto-increment IDs for performance, but expose UUIDs to the public API.
 
 ## Anti-Patterns
@@ -73,8 +96,14 @@ A bank transfer must decrement Account A and increment Account B in a single ato
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| SOC2 | A1.2 | System Resilience and Data Recovery |
+| PCI-DSS | Req 3.4 | Render PAN unreadable anywhere it is stored |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Data Engineering | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Data Engineering | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

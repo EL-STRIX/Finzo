@@ -1,6 +1,6 @@
 ---
 title: "Database"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Architecture Board"
 category: "Visual Mapping"
@@ -33,6 +33,13 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Database is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Visual representations use Mermaid.js to ensure they are version-controllable alongside the code. They map Trust Boundaries, Data Flows, and Sequence lifetimes.
 
+
+### Architectural Flow
+```mermaid
+graph TD;
+    A[Architecture Board] --> B[Diagram Approvals];
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +56,12 @@ The exact programmatic implementation of Database requires strict adherence to P
 Visual representations use Mermaid.js to ensure they are version-controllable alongside the code. They map Trust Boundaries, Data Flows, and Sequence lifetimes.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Database.
 
+
+### Code Reference
+```mermaid
+// Native support within GitHub Markdown
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Database directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +70,9 @@ An explicitly mapped Sequence Diagram is required to prove to external auditors 
 
 ## Best Practices
 - Keep diagrams focused on a single system layer (don't mix macro and micro).
+
+> [!TIP]
+> Store all Mermaid source code directly in the Markdown files so they are perfectly version-controlled alongside the application code.
 - Always declare trust boundaries explicitly.
 
 ## Anti-Patterns
@@ -72,8 +88,14 @@ An explicitly mapped Sequence Diagram is required to prove to external auditors 
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| TOGAF | ADM | Architectural Artifacts |
+| C4 Model | Core | System Context Diagrams |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Architecture Board | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Architecture Board | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

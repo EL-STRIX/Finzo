@@ -1,6 +1,6 @@
 ---
 title: "SSL TLS"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "Release Engineering"
 category: "CI/CD Pipelines"
@@ -33,6 +33,19 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, SSL TLS is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 Finzo enforces Blue/Green deployment strategies. A new deployment generates an immutable Docker image, tagged with the Git SHA. Database schema migrations (`artisan migrate`) run strictly *before* pod traffic shifts. OpCache preloading eliminates cold-start latency.
 
+
+### Architectural Flow
+```mermaid
+sequenceDiagram
+    participant GitHub
+    participant CI
+    participant Registry
+    participant K8s
+    GitHub->>CI: Push to main
+    CI->>Registry: Build & Push Docker Image
+    Registry->>K8s: Trigger Rolling Update
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +62,18 @@ The exact programmatic implementation of SSL TLS requires strict adherence to PH
 Finzo enforces Blue/Green deployment strategies. A new deployment generates an immutable Docker image, tagged with the Git SHA. Database schema migrations (`artisan migrate`) run strictly *before* pod traffic shifts. OpCache preloading eliminates cold-start latency.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with SSL TLS.
 
+
+### Code Reference
+```yaml
+# .github/workflows/deploy.yml
+jobs:
+  sast-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --level 9 src
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of SSL TLS directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +82,9 @@ During a live core-banking hours deployment, old pods finish their active HTTP t
 
 ## Best Practices
 - Artifacts must be built exactly once and promoted through Staging to Production.
+
+> [!IMPORTANT]
+> A deployment must never drop database columns. Database migrations must be fully backwards-compatible to ensure zero-downtime Blue/Green deployments.
 - Rollbacks should be achieved by reverting the container image tag instantly.
 
 ## Anti-Patterns
@@ -73,8 +101,14 @@ During a live core-banking hours deployment, old pods finish their active HTTP t
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| SOC2 | CC8.1 | Change Authorization and CI/CD pipelines |
+| ISO 27001 | A.14.2.2 | System change control procedures |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | Release Engineering | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | Release Engineering | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

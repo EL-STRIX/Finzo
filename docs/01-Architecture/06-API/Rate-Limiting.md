@@ -1,6 +1,6 @@
 ---
 title: "Rate Limiting"
-version: "2.0.0"
+version: "3.0.0"
 status: "Active"
 owner: "API Integrations"
 category: "Interfaces"
@@ -33,6 +33,19 @@ The scope of this document dictates the absolute technical boundaries, code-leve
 In an enterprise environment, Rate Limiting is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
 The `/api/v1/` namespace utilizes short-lived JWTs signed with `HS256`. All endpoints enforce Token Bucket Rate Limiting (60 RPM). State-mutating requests (POST/PUT) require an `X-Idempotency-Key` to prevent double-charging on network retry.
 
+
+### Architectural Flow
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Redis
+    participant Backend
+    Client->>Redis: X-Idempotency-Key: abc-123
+    Redis-->>Client: Key Missing (Allow)
+    Client->>Backend: Execute Transfer
+    Backend-->>Redis: Lock Key (24h)
+```
+
 > [!NOTE]
 > All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
 
@@ -49,6 +62,18 @@ The exact programmatic implementation of Rate Limiting requires strict adherence
 The `/api/v1/` namespace utilizes short-lived JWTs signed with `HS256`. All endpoints enforce Token Bucket Rate Limiting (60 RPM). State-mutating requests (POST/PUT) require an `X-Idempotency-Key` to prevent double-charging on network retry.
 For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Rate Limiting.
 
+
+### Code Reference
+```json
+// RFC 7807 Error Standard
+{
+  "type": "https://api.finzo.com/errors/rate-limit",
+  "title": "Too Many Requests",
+  "status": 429,
+  "detail": "Account exceeded 60 RPM limit."
+}
+```
+
 > [!WARNING]
 > Failure to strictly validate the input constraints of Rate Limiting directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
@@ -57,6 +82,9 @@ If a mobile client loses signal exactly when initiating a payment and retries 5 
 
 ## Best Practices
 - Adhere to RFC 7807 for standardized error responses.
+
+> [!IMPORTANT]
+> Every state-mutating API endpoint (POST/PUT/DELETE) must mandate an `X-Idempotency-Key` to prevent double-charging.
 - Enforce explicit API versioning in the URL (`/api/v1/`).
 
 ## Anti-Patterns
@@ -73,8 +101,14 @@ If a mobile client loses signal exactly when initiating a payment and retries 5 
 - **BCDR**: Business Continuity and Disaster Recovery.
 - **SRP**: Single Responsibility Principle.
 
+## Traceability Matrix
+| Standard | Control | Description |
+|---|---|---|
+| RFC 7807 | Problem Details | Standardized JSON HTTP error definitions |
+| OWASP | A04:2021 | Insecure Design (Missing Rate Limits) |
+
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 2.0.0 | 2026-07-22 | API Integrations | Complete Implementation-based Enterprise Rewrite (Phase 2) |
+| 3.0.0 | 2026-07-22 | API Integrations | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
