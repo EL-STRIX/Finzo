@@ -238,7 +238,7 @@ class AdminStaffController
         if (!in_array($file['type'], $allowed_types)) {
             throw new ApiException('Only JPG and PNG images are allowed', 422);
         }
-        if ($file['size'] > 5242880) {
+        if ($file['size'] > MAX_UPLOAD_SIZE) {
             throw new ApiException('File size exceeds 5MB limit', 422);
         }
 
@@ -251,7 +251,7 @@ class AdminStaffController
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'staff_photo_' . $staff_id . '_' . time() . '.' . $ext;
-        $target_dir = dirname(__DIR__, 3) . '/uploads/staff-photos/';
+        $target_dir = UPLOAD_STAFF_PHOTOS_PATH;
 
         if (!move_uploaded_file($file['tmp_name'], $target_dir . $filename)) {
             throw new ApiException('Failed to save uploaded file', 500);

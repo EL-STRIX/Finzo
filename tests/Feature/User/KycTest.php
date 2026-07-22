@@ -19,11 +19,11 @@ class KycTest extends TestCase {
         if (file_exists($this->dummyPng)) unlink($this->dummyPng);
         
         // Remove dummy uploads created by the test
-        $files = glob(dirname(__DIR__, 3) . '/public/uploads/profiles/*');
+        $files = glob(UPLOAD_PROFILES_PATH . '*');
         foreach($files as $file){
             if(is_file($file)) unlink($file);
         }
-        $files = glob(dirname(__DIR__, 3) . '/public/uploads/id-documents/*');
+        $files = glob(UPLOAD_ID_DOCUMENTS_PATH . '*');
         foreach($files as $file){
             if(is_file($file)) unlink($file);
         }

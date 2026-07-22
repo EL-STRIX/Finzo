@@ -46,7 +46,7 @@ class AuthService
 
             $pdo = $this->repository->getDb();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
-            $lockout_duration = get_setting($pdo, 'customer_lockout_duration', 1800);
+            $lockout_duration = get_setting($pdo, 'customer_lockout_duration', LOCKOUT_DURATION);
 
             if ($new_attempts >= $max_attempts) {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
@@ -193,7 +193,7 @@ class AuthService
 
             $pdo = $this->repository->getDb();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
-            $lockout_duration = get_setting($pdo, 'staff_lockout_duration', 1800);
+            $lockout_duration = get_setting($pdo, 'staff_lockout_duration', LOCKOUT_DURATION);
 
             if ($new_attempts >= $max_attempts) {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
