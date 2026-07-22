@@ -1,49 +1,22 @@
----
-title: "Architecture Documentation - README"
-version: "1.0.0"
-status: "Active"
-owner: "Architecture Team"
-category: "Index"
-last_updated: "2026-07-22"
----
+# Finzo Enterprise Architecture Documentation
 
-# Finzo Architecture Documentation
+Welcome to the Finzo Enterprise Architecture Documentation Hub. This repository contains the complete, mathematically verifiable system architecture mapping the Finzo Banking Management System.
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Folder Structure](#folder-structure)
-3. [Navigation & Reading Order](#navigation--reading-order)
-4. [Documentation Standards](#documentation-standards)
-5. [Contribution Guidelines](#contribution-guidelines)
-6. [Change Log](#change-log)
+## Architecture Navigation
 
-## Purpose
-This directory houses the Enterprise Architecture definitions for the Finzo Banking Management System. It provides structural visibility for engineers, architects, and compliance auditors.
+| Phase | Subsystem | Description |
+|---|---|---|
+| 01 | [System Architecture](01-System/README.md) | High-level system modules, scaling limits, and boundaries. |
+| 02 | [Software Architecture](02-Software/README.md) | Core application layer patterns, DDD, and SOLID principles. |
+| 03 | [Frontend Architecture](03-Frontend/README.md) | UI/UX patterns, state management, and asset pipelines. |
+| 04 | [Backend Architecture](04-Backend/README.md) | MVC workflow, Middleware chains, and Service layer injections. |
+| 05 | [Database Architecture](05-Database/README.md) | Relational design, ACID constraints, and replication topologies. |
+| 06 | [API Architecture](06-API/README.md) | REST integration standards, OAuth2 flows, and Rate Limiting. |
+| 07 | [Infrastructure Architecture](07-Infrastructure/README.md) | AWS/GCP topology, Serverless components, and Network partitions. |
+| 08 | [Security Architecture](08-Security/README.md) | Zero-Trust perimeters, Encryption (At-Rest/Transit), and IAM. |
+| 09 | [Deployment Architecture](09-Deployment/README.md) | CI/CD sequences, Blue/Green cutovers, and Rollback logic. |
+| 10 | [Governance](10-Governance/README.md) | Architectural Decision Records (ADRs) and Compliance mandates. |
+| 11 | [Diagrams](11-Diagrams/README.md) | High-fidelity Mermaid sequence, state, and component diagrams. |
 
-## Folder Structure
-- `01-System/` - Top level ecosystem designs
-- `02-Frontend/` - UI and SPA mechanics
-- `03-Backend/` - PHP / API Engine
-- `04-Database/` - Schema, Indexes, and Persistence
-- `05-API/` - REST specifications
-- `06-Infrastructure/` - Cloud, Servers, Network
-- `07-Security/` - Auth, Cryptography, Boundaries
-- `08-Deployment/` - CI/CD Pipelines
-- `diagrams/` - Source `.mmd` Mermaid files
-
-## Navigation & Reading Order
-1. [Overview.md](Overview.md)
-2. [System-Architecture.md](System-Architecture.md)
-3. [Software-Architecture.md](Software-Architecture.md)
-4. Drill down into specific domains (Backend, Frontend, DB).
-
-## Documentation Standards
-See [Documentation-Standards.md](Documentation-Standards.md) for naming conventions, markdown styling, and required structures.
-
-## Contribution Guidelines
-Any structural changes to the architecture MUST be reflected in these documents before PR merge. Update the `Change Log` of the modified document.
-
-## Change Log
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 1.0.0 | 2026-07-22 | Architecture Team | Foundation established |
+## Standards
+This documentation strictly enforces TOGAF and ISO/IEC 42010 compliance. All files are rendered in GitHub-Flavored Markdown.
