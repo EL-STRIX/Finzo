@@ -87,18 +87,8 @@ class Router
                     if (is_array($response)) {
                         json_response($response, $response['code'] ?? (isset($response['success']) && $response['success'] === false ? 400 : 200));
                     }
-                } catch (ApiException $e) {
-                    $payload = ['success' => false, 'message' => $e->getMessage()];
-                    $customPayload = $e->getPayload();
-                    if (!empty($customPayload)) {
-                        $payload = array_merge($payload, $customPayload);
-                    }
-                    json_response($payload, $e->getStatusCode());
-                } catch (\App\Shared\Core\Exceptions\TestResponseException $e) {
-                    throw $e;
-                } catch (\Exception $e) {
-                    \App\Shared\Core\Logging\Logger::getInstance()->error('Unhandled Error: ', ['context' => $e->getMessage()]);
-                    json_response(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+                } catch (\Throwable $e) {
+                    \App\Shared\Core\Exceptions\ExceptionHandler::handle($e);
                 }
 
                 return;

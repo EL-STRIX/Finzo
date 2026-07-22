@@ -34,6 +34,19 @@ class Validator
         return preg_match($pattern, $subject);
     }
 
+        public static function sanitize(array $data): array
+    {
+        $clean = [];
+        foreach ($data as $key => $value) {
+            if (is_string($value)) {
+                $clean[$key] = htmlspecialchars(strip_tags(trim($value)), ENT_QUOTES, 'UTF-8');
+            } else {
+                $clean[$key] = $value;
+            }
+        }
+        return $clean;
+    }
+
     public static function validate(array $data, array $rules): array
     {
         $errors = [];
@@ -77,7 +90,7 @@ class Validator
         }
 
         if (!self::isEmpty($errors)) {
-            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
+            throw new \App\Shared\Core\Exceptions\ValidationException('Validation failed', ['errors' => $errors]);
         }
 
         return $validated;
