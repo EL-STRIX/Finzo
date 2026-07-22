@@ -69,6 +69,22 @@ class ResponseBuilder
             }
         }
 
-        return $response;
+        return self::scrub($response);
+    }
+
+    private static function scrub($data)
+    {
+        if (is_array($data)) {
+            $sensitive = ['password', 'password_hash', 'token', 'reset_token', 'temp_password_expiry'];
+            foreach ($sensitive as $key) {
+                if (array_key_exists($key, $data)) {
+                    unset($data[$key]);
+                }
+            }
+            foreach ($data as $k => $v) {
+                $data[$k] = self::scrub($v);
+            }
+        }
+        return $data;
     }
 }

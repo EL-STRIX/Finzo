@@ -34,6 +34,10 @@ class Router
 
     public function dispatch(string $method, string $uri): void
     {
+        // Run Global Security Middleware
+        $security = new \App\Presentation\Middleware\SecurityMiddleware();
+        $security->handle();
+
         // Strip query string and base path
         $uri = parse_url($uri, PHP_URL_PATH);
 
