@@ -63,7 +63,7 @@ if ($branch_id > 0) {
         $stmt = $pdo->prepare("UPDATE branches SET cert_path = ?, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$relative_path, $branch_id]);
     } catch (PDOException $e) {
-        error_log("Branch cert upload DB error: " . $e->getMessage());
+        \App\Shared\Core\Logging\Logger::getInstance()->error('Branch cert upload DB error: ', ['context' => $e->getMessage()]);
     }
 }
 

@@ -70,7 +70,7 @@ try {
     $txn_stmt->execute($params);
     $transactions = $txn_stmt->fetchAll();
 } catch (PDOException $e) {
-    error_log("Statement error: " . $e->getMessage());
+    \App\Shared\Core\Logging\Logger::getInstance()->error('Statement error: ', ['context' => $e->getMessage()]);
     die('Failed to load statement data.');
 }
 ?>

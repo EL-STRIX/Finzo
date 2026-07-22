@@ -84,6 +84,6 @@ try {
 } catch (PDOException $e) {
     // Clean up file on DB failure
     unlink($destination);
-    error_log("ID document upload DB error: " . $e->getMessage());
+    \App\Shared\Core\Logging\Logger::getInstance()->error('ID document upload DB error: ', ['context' => $e->getMessage()]);
     json_response(['success' => false, 'message' => 'Failed to save document reference'], 500);
 }

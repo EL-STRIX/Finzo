@@ -45,7 +45,7 @@ class UserController
                 ]
             ]);
         } catch (PDOException $e) {
-            error_log("Account lookup error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Account lookup error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Lookup failed'], 500);
         }
     }
@@ -76,7 +76,7 @@ class UserController
                 json_response(['success' => false, 'message' => 'Method not allowed'], 405);
             }
         } catch (PDOException $e) {
-            error_log("Account settings API error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Account settings API error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Database error'], 500);
         }
     }
@@ -117,7 +117,7 @@ class UserController
                 'remaining_limit'      => max(0, (float)$account['daily_limit'] - $today_transfer_total)
             ]);
         } catch (PDOException $e) {
-            error_log("Accounts API error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Accounts API error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load account details'], 500);
         }
     }
@@ -133,7 +133,7 @@ class UserController
                 $beneficiaries = $this->service->fetchBeneficiaries($user_id);
                 json_response(['success' => true, 'beneficiaries' => $beneficiaries, 'total' => count($beneficiaries)]);
             } catch (PDOException $e) {
-                error_log("Beneficiaries fetch error: " . $e->getMessage());
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Beneficiaries fetch error: ', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to load beneficiaries'], 500);
             }
         }
@@ -337,7 +337,7 @@ class UserController
             if (\App\Shared\Core\Validation\Validator::isSet($paths['back_destination']) && file_exists($paths['back_destination'])) {
                 unlink($paths['back_destination']);
             }
-            error_log("KYC DB Error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('KYC DB Error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'DB Error: ' . $e->getMessage()], 500);
         }
     }

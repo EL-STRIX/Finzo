@@ -263,7 +263,7 @@ class AuthService
 
             return true;
         } catch (PDOException $e) {
-            error_log("Forgot password error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Forgot password error: ', ['context' => $e->getMessage()]);
             throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
@@ -295,7 +295,7 @@ class AuthService
             return true;
         } catch (PDOException $e) {
             $this->repository->rollBack();
-            error_log("Reset password error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Reset password error: ', ['context' => $e->getMessage()]);
             throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
@@ -341,7 +341,7 @@ class AuthService
             return true;
         } catch (PDOException $e) {
             $this->repository->rollBack();
-            error_log("Registration error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Registration error: ', ['context' => $e->getMessage()]);
             throw new ApiException('Registration failed. Please try again.', 500);
         }
     }

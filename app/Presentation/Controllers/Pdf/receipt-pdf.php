@@ -70,7 +70,7 @@ try {
         }
     }
 } catch (PDOException $e) {
-    error_log("Receipt error: " . $e->getMessage());
+    \App\Shared\Core\Logging\Logger::getInstance()->error('Receipt error: ', ['context' => $e->getMessage()]);
     die('Failed to load transaction data.');
 }
 

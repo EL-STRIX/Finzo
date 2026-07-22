@@ -39,7 +39,7 @@ class QueueManager
                 if ($job->getAttempts() >= $maxAttempts) {
                     $this->failJob($job, $e);
                     // Do not bubble up to crash the main thread if it's a background queue
-                    error_log("Job failed permanently: " . get_class($job) . " - " . $e->getMessage());
+                    \App\Shared\Core\Logging\Logger::getInstance()->error('Job failed permanently: ', ['context' => get_class($job) . " - " . $e->getMessage()]);
                     return;
                 }
                 

@@ -169,9 +169,9 @@ try {
     // Output PDF
     $pdf->Output('Finzo_Statement_' . $account['account_no'] . '_' . date('Ymd') . '.pdf', 'D');
 } catch (PDOException $e) {
-    error_log("Statement PDF error: " . $e->getMessage());
+    \App\Shared\Core\Logging\Logger::getInstance()->error('Statement PDF error: ', ['context' => $e->getMessage()]);
     json_response(['success' => false, 'message' => 'Failed to generate statement PDF'], 500);
 } catch (Exception $e) {
-    error_log("TCPDF error: " . $e->getMessage());
+    \App\Shared\Core\Logging\Logger::getInstance()->error('TCPDF error: ', ['context' => $e->getMessage()]);
     json_response(['success' => false, 'message' => 'PDF generation error: ' . $e->getMessage()], 500);
 }

@@ -42,7 +42,7 @@ class StaffController
                 'account' => $data['account']
             ]);
         } catch (Exception $e) {
-            error_log("Account lookup error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Account lookup error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'found' => false, 'message' => 'Lookup failed'], 500);
         }
     }
@@ -100,7 +100,7 @@ class StaffController
             if ($code === 404) {
                 json_response(['success' => false, 'message' => $e->getMessage()], 404);
             }
-            error_log("Staff change password error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff change password error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to change password. Please try again.'], 500);
         }
     }
@@ -125,7 +125,7 @@ class StaffController
                 'csrf_token' => $_SESSION['csrf_token'] ?? ''
             ]);
         } catch (Exception $e) {
-            error_log("Staff dashboard error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff dashboard error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load dashboard data'], 500);
         }
     }
@@ -174,7 +174,7 @@ class StaffController
             if ($code === 404 || $code === 403) {
                 json_response(['success' => false, 'message' => $e->getMessage()], $code);
             }
-            error_log("Staff deposit error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff deposit error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to process deposit. Please try again.'], 500);
         }
     }
@@ -212,7 +212,7 @@ class StaffController
                 'per_page'     => $filters['per_page']
             ]);
         } catch (Exception $e) {
-            error_log("Staff history error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff history error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load transaction history'], 500);
         }
     }
@@ -267,7 +267,7 @@ class StaffController
             if ($e->getCode() === 404) {
                 json_response(['success' => false, 'message' => $e->getMessage()], 404);
             }
-            error_log("Staff receipt error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff receipt error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load transaction receipt'], 500);
         }
     }
@@ -290,7 +290,7 @@ class StaffController
                 if ($e->getCode() === 404) {
                     json_response(['success' => false, 'message' => $e->getMessage()], 404);
                 }
-                error_log("Staff profile fetch error: " . $e->getMessage());
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Staff profile fetch error: ', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to load profile data'], 500);
             }
         }
@@ -345,7 +345,7 @@ class StaffController
                 if ($e->getCode() === 422) {
                     json_response(['success' => false, 'message' => $e->getMessage()], 422);
                 }
-                error_log("Staff profile update error: " . $e->getMessage());
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Staff profile update error: ', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to update profile'], 500);
             }
         }
@@ -397,7 +397,7 @@ class StaffController
             if (in_array($code, [403, 404, 422])) {
                 json_response(['success' => false, 'message' => $e->getMessage()], $code);
             }
-            error_log("Staff withdrawal error: " . $e->getMessage());
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff withdrawal error: ', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to process withdrawal. Please try again.'], 500);
         }
     }
