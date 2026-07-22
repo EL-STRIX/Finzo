@@ -2,12 +2,20 @@
 
 namespace App\Application\Jobs;
 
-use App\Shared\Core\Queue\Job;
+use App\Shared\Core\Queue\JobInterface;
 
-class ExportCsvJob extends Job
+class ExportCsvJob implements JobInterface
 {
+    private array $data;
+
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
+    }
+
     public function handle(): void
     {
-        // Background execution logic for ExportCsvJob
+        // Implement ExportCsvJob logic
+        error_log('Handling ' . self::class . ' with data: ' . json_encode($this->data));
     }
 }

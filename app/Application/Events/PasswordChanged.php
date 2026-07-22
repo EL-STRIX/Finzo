@@ -4,5 +4,15 @@ namespace App\Application\Events;
 
 class PasswordChanged extends AuditLogEvent
 {
-    // PasswordChanged domain event
+    private array $payload;
+
+    public function __construct(array $payload)
+    {
+        $this->payload = $payload;
+    }
+
+    public function getPayload(): array
+    {
+        return $this->payload;
+    }
 }

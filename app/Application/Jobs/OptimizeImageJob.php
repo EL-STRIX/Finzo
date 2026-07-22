@@ -2,12 +2,20 @@
 
 namespace App\Application\Jobs;
 
-use App\Shared\Core\Queue\Job;
+use App\Shared\Core\Queue\JobInterface;
 
-class OptimizeImageJob extends Job
+class OptimizeImageJob implements JobInterface
 {
+    private array $data;
+
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
+    }
+
     public function handle(): void
     {
-        // Background execution logic for OptimizeImageJob
+        // Implement OptimizeImageJob logic
+        error_log('Handling ' . self::class . ' with data: ' . json_encode($this->data));
     }
 }
