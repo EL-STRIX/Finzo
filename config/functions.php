@@ -84,11 +84,10 @@ function validate_csrf_token($token)
  */
 function json_response($data, $status = 200)
 {
+    $formatted = \App\Shared\Core\Http\ResponseBuilder::format($data, $status);
+
     if (defined('FINZO_TESTING') && FINZO_TESTING) {
-        if (is_array($data)) {
-            $data['status'] = $status;
-        }
-        throw new \App\Shared\Core\Exceptions\TestResponseException(json_encode($data));
+        throw new \App\Shared\Core\Exceptions\TestResponseException(json_encode($formatted));
     }
 
     if (!headers_sent()) {
@@ -96,7 +95,7 @@ function json_response($data, $status = 200)
         header('Content-Type: application/json; charset=utf-8');
         header('X-Content-Type-Options: nosniff');
     }
-    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    echo json_encode($formatted, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
