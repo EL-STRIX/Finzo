@@ -38,3 +38,14 @@ Database interactions that modify multiple tables (e.g., executing a monetary tr
 
 ## Migration Strategy
 The `phinx` package manages schema versioning via timestamped migration files residing in `db/migrations`. Manual structural alterations are heavily prohibited.
+## Navigation
+- **Parent Document**: [Overview.md](Overview.md)
+- **Child Documents**: See sub-folders.
+- **Previous Document**: N/A
+- **Next Document**: N/A
+- **Related Documents**: [Documentation Standards](Documentation-Standards.md)
+
+## Change Log
+| Version | Date | Author | Description |
+|---|---|---|---|
+| 1.0.0 | 2026-07-22 | Architecture Team | Initial Phase 1 Setup |

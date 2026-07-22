@@ -40,3 +40,14 @@ The frontend negotiates entirely over JSON. All fetch requests intercept global 
 ## Security
 - DOM manipulation explicitly utilizes `textContent` over `innerHTML` to prevent DOM-based XSS.
 - Sensitive state (like transaction PINs) is never stored in `localStorage`.
+## Navigation
+- **Parent Document**: [Overview.md](Overview.md)
+- **Child Documents**: See sub-folders.
+- **Previous Document**: N/A
+- **Next Document**: N/A
+- **Related Documents**: [Documentation Standards](Documentation-Standards.md)
+
+## Change Log
+| Version | Date | Author | Description |
+|---|---|---|---|
+| 1.0.0 | 2026-07-22 | Architecture Team | Initial Phase 1 Setup |

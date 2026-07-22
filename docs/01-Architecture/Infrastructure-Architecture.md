@@ -32,3 +32,14 @@ User-uploaded KYC documents and Branch Certifications are vaulted securely outsi
 ## Monitoring
 - APM tracing is supported natively via telemetry headers (`X-Runtime`, `X-Memory`) injected by the `ResponseBuilder`.
 - Uncaught exceptions are piped to server `error_log` alongside exact request URIs for SIEM ingestion.
+## Navigation
+- **Parent Document**: [Overview.md](Overview.md)
+- **Child Documents**: See sub-folders.
+- **Previous Document**: N/A
+- **Next Document**: N/A
+- **Related Documents**: [Documentation Standards](Documentation-Standards.md)
+
+## Change Log
+| Version | Date | Author | Description |
+|---|---|---|---|
+| 1.0.0 | 2026-07-22 | Architecture Team | Initial Phase 1 Setup |

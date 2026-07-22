@@ -54,3 +54,14 @@ Every API execution, whether successful or thrown as an Exception, ultimately pa
 ## Best Practices
 - **No Global State**: Refrain from relying on raw `$_GET` or `$_POST`.
 - **Strict Typing**: Enforce `declare(strict_types=1);` in all new architecture components.
+## Navigation
+- **Parent Document**: [Overview.md](Overview.md)
+- **Child Documents**: See sub-folders.
+- **Previous Document**: N/A
+- **Next Document**: N/A
+- **Related Documents**: [Documentation Standards](Documentation-Standards.md)
+
+## Change Log
+| Version | Date | Author | Description |
+|---|---|---|---|
+| 1.0.0 | 2026-07-22 | Architecture Team | Initial Phase 1 Setup |
