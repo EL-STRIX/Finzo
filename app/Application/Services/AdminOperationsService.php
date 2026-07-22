@@ -90,19 +90,26 @@ class AdminOperationsService
             'pending_users'      => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
             'suspended_users'    => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'suspended' AND is_deleted = 0"),
             'total_staff'        => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM staff"),
-            'total_branches'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM branches"),
-            'transactions_today' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
-            'transactions_month' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-            'deposits_today'     => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'withdrawals_today'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'transfers_today'    => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'pending_approvals'  => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
-            'locked_accounts'    => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
-            'total_balance'      => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
-            'total_accounts'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
-            'interest_credited'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
-            'soft_deleted_users' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
+            'total_branches'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM branches")
         ];
+
+        $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
+            return [
+                'transactions_today' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
+                'transactions_month' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
+                'deposits_today'     => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+                'withdrawals_today'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+                'transfers_today'    => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+                'pending_approvals'  => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
+                'locked_accounts'    => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
+                'total_balance'      => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
+                'total_accounts'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
+                'interest_credited'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
+                'soft_deleted_users' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
+            ];
+        }, 300); // 5 minutes cache
+
+        $stats = array_merge($stats, $stats_cache);
 
         $recent_users = $this->repository->getDashboardRecentUsers();
         foreach ($recent_users as &$u) {
@@ -117,20 +124,23 @@ class AdminOperationsService
         }
         unset($u);
 
-        $monthly_chart_data = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $month_date = date('Y-m', strtotime("-{$i} months"));
-            $month_label = date('M Y', strtotime("-{$i} months"));
-            $month_data = $this->repository->getMonthlyChartDataRow($month_date);
+        $monthly_chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_chart', function() {
+            $data = [];
+            for ($i = 5; $i >= 0; $i--) {
+                $month_date = date('Y-m', strtotime("-{$i} months"));
+                $month_label = date('M Y', strtotime("-{$i} months"));
+                $month_data = $this->repository->getMonthlyChartDataRow($month_date);
 
-            $monthly_chart_data[] = [
-                'month'       => $month_label,
-                'deposits'    => (float)$month_data['deposits'],
-                'withdrawals' => (float)$month_data['withdrawals'],
-                'transfers'   => (float)$month_data['transfers'],
-                'count'       => (int)$month_data['count']
-            ];
-        }
+                $data[] = [
+                    'month'       => $month_label,
+                    'deposits'    => (float)$month_data['deposits'],
+                    'withdrawals' => (float)$month_data['withdrawals'],
+                    'transfers'   => (float)$month_data['transfers'],
+                    'count'       => (int)$month_data['count']
+                ];
+            }
+            return $data;
+        }, 3600); // 1 hour cache
 
         $admin_data = $this->repository->getAdminById($adminId);
 
@@ -212,10 +222,13 @@ class AdminOperationsService
             $stats['interest_delta'] = ($delta > 0 ? '+' : '') . round($delta, 1) . '%';
         }
 
-        $chart_data = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $chart_data[] = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$i} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$i} MONTH)");
-        }
+        $chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_interest_chart', function() {
+            $data = [];
+            for ($i = 11; $i >= 0; $i--) {
+                $data[] = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$i} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$i} MONTH)");
+            }
+            return $data;
+        }, 86400); // 24 hours cache
 
         $history_rows = $this->repository->getInterestHistory();
         $history = [];
