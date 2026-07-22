@@ -26,7 +26,7 @@ class StaffController
         }
 
         $account_no = $this->security->cleanInput($_GET['account_no'] ?? '');
-        if (empty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
             json_response(['success' => false, 'found' => false, 'message' => 'Account number is required'], 422);
         }
 
@@ -63,17 +63,17 @@ class StaffController
         $confirm_password  = $_POST['confirm_password'] ?? '';
 
         $errors = [];
-        if (empty($current_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($current_password)) {
             $errors['current_password'] = 'Current password is required';
         }
-        if (empty($new_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
             $errors['new_password'] = 'New password is required';
         }
-        if (empty($confirm_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($confirm_password)) {
             $errors['confirm_password'] = 'Please confirm your new password';
         }
 
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
@@ -146,14 +146,14 @@ class StaffController
         $reference_note = $this->security->cleanInput($_POST['reference_note'] ?? '');
 
         $errors = [];
-        if (empty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
             $errors['account_no'] = 'Account number is required';
         }
         if ($amount < 100) {
             $errors['amount'] = 'Minimum deposit amount is ₹100';
         }
 
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
@@ -224,7 +224,7 @@ class StaffController
         }
 
         $txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
-        if (empty($txn_id)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($txn_id)) {
             json_response(['success' => false, 'message' => 'Transaction ID is required'], 422);
         }
 
@@ -313,7 +313,7 @@ class StaffController
             }
 
             $file = null;
-            if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES['profile_photo'];
                 $finfo = new \finfo(FILEINFO_MIME_TYPE);
                 $mimeType = $finfo->file($file['tmp_name']);
@@ -325,7 +325,7 @@ class StaffController
                 }
             }
 
-            if (!empty($errors)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
                 json_response(['success' => false, 'errors' => $errors], 422);
             }
 
@@ -369,14 +369,14 @@ class StaffController
         $identity_notes = $this->security->cleanInput($_POST['identity_notes'] ?? '');
 
         $errors = [];
-        if (empty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
             $errors['account_no'] = 'Account number is required';
         }
         if ($amount <= 0) {
             $errors['amount'] = 'Amount must be greater than zero';
         }
 
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 

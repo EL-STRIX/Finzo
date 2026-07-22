@@ -120,7 +120,7 @@ class AdminStaffController
         if (!$staff_id) {
             throw new ApiException('Staff ID is required', 422);
         }
-        if (strlen($new_password) < 8) {
+        if (\App\Shared\Core\Validation\Validator::length($new_password) < 8) {
             throw new ApiException('Password must be at least 8 characters', 422);
         }
 
@@ -146,7 +146,7 @@ class AdminStaffController
         $action   = $this->security->cleanInput($_POST['action'] ?? '');
         $reason   = $this->security->cleanInput($_POST['reason'] ?? '');
 
-        if (!$staff_id || empty($action)) {
+        if (!$staff_id || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('Staff ID and action are required', 422);
         }
         if (!in_array($action, ['suspend', 'reinstate', 'reset_password', 'delete'])) {
@@ -155,7 +155,7 @@ class AdminStaffController
 
         $admin_id = $_SESSION['admin_id'];
         $password = $_POST['password'] ?? '';
-        if (empty($password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($password)) {
             throw new ApiException('Admin password is required for this action', 422);
         }
 
@@ -229,7 +229,7 @@ class AdminStaffController
         if (!$staff) {
             throw new ApiException('Staff member not found', 404);
         }
-        if (empty($_FILES['photo']['name']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($_FILES['photo']['name']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             throw new ApiException('Photo file is required', 422);
         }
 
@@ -348,7 +348,7 @@ class AdminStaffController
         $shifts = $stmt->fetchAll();
 
         $documents = [];
-        if (!empty($staff['id_type'])) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($staff['id_type'])) {
             $documents[] = ['id_type' => $staff['id_type'], 'id_number' => $staff['id_number'], 'front_image' => $staff['front_image'], 'back_image' => $staff['back_image']];
         }
 
@@ -384,7 +384,7 @@ class AdminStaffController
         if ($filter === 'unassigned') {
             $where_clauses[] = "s.branch_id IS NULL";
         }
-        if (!empty($search)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($search)) {
             $where_clauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ?)";
             $s = "%{$search}%";
             $params[] = $s;
@@ -422,7 +422,7 @@ class AdminStaffController
                 $s['profile_photo_url'] = $base_url . $s['profile_photo'];
             }
             $name_parts = explode(' ', $s['full_name']);
-            $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
+            $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (\App\Shared\Core\Validation\Validator::isSet($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
         }
 
         return [
@@ -452,7 +452,7 @@ class AdminStaffController
         }
 
         $name_parts = explode(' ', $staff['full_name']);
-        $staff['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
+        $staff['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (\App\Shared\Core\Validation\Validator::isSet($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
         $staff['suspended_at'] = date('d M Y, H:i', strtotime($staff['suspended_at']));
         $staff['onboarding_date'] = date('d M Y', strtotime($staff['onboarding_date']));
         $staff['duration'] = 'Indefinite';
@@ -498,22 +498,22 @@ class AdminStaffController
         $where_clauses = ["s.status = 'suspended'"];
         $params = [];
 
-        if (!empty($search)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($search)) {
             $where_clauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ?)";
             $s = "%{$search}%";
             $params[] = $s;
             $params[] = $s;
             $params[] = $s;
         }
-        if (!empty($reason)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($reason)) {
             $where_clauses[] = "s.suspension_reason = ?";
             $params[] = $reason;
         }
-        if (!empty($start_date)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($start_date)) {
             $where_clauses[] = "s.updated_at >= ?";
             $params[] = $start_date . ' 00:00:00';
         }
-        if (!empty($end_date)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($end_date)) {
             $where_clauses[] = "s.updated_at <= ?";
             $params[] = $end_date . ' 23:59:59';
         }
@@ -536,7 +536,7 @@ class AdminStaffController
 
         foreach ($staff_list as &$s) {
             $name_parts = explode(' ', $s['full_name']);
-            $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (isset($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
+            $s['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (\App\Shared\Core\Validation\Validator::isSet($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
             $s['suspended_at'] = date('d M Y, H:i', strtotime($s['updated_at']));
             $s['suspension_reason'] = $s['suspension_reason'] ?: 'Administrative Review';
             $s['suspended_by'] = $s['suspended_by'] ?: 'Admin';

@@ -43,7 +43,7 @@ class AdminOperationsController
         $admin_id = $_SESSION['admin_id'];
         $data = $this->service->getDashboardData($admin_id);
 
-        if (empty($_SESSION['csrf_token'])) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
@@ -96,7 +96,7 @@ class AdminOperationsController
 
         foreach ($users as $row) {
             $safe_name = $row['full_name'];
-            if (preg_match('/^[=\-+@\t\r]/', $safe_name)) {
+            if (\App\Shared\Core\Validation\Validator::pregMatch('/^[=\-+@\t\r]/', $safe_name)) {
                 $safe_name = "'" . $safe_name;
             }
 
@@ -138,7 +138,7 @@ class AdminOperationsController
 
             $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $admin_id);
             if (!$result['success']) {
-                if (isset($result['errors'])) {
+                if (\App\Shared\Core\Validation\Validator::isSet($result['errors'])) {
                     throw new ApiException('Validation failed', 422, ['errors' => $result['errors']]);
                 }
                 throw new ApiException($result['message'], $result['code'] ?? 500);
@@ -233,7 +233,7 @@ class AdminOperationsController
             $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
             $notes   = $this->security->cleanInput($_POST['notes'] ?? '');
 
-            if (!$user_id || empty($action)) {
+            if (!$user_id || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
                 throw new ApiException('User ID and action are required', 422);
             }
 
@@ -259,7 +259,7 @@ class AdminOperationsController
         $path = $_GET['path'] ?? '';
 
         // Basic security check: prevent directory traversal and ensure it's pointing to storage/kyc-documents
-        if (empty($path) || strpos($path, '..') !== false || !str_starts_with($path, 'storage/kyc-documents/')) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($path) || strpos($path, '..') !== false || !str_starts_with($path, 'storage/kyc-documents/')) {
             http_response_code(403);
             echo "Forbidden";
             exit;
@@ -324,7 +324,7 @@ class AdminOperationsController
             header('Content-Disposition: attachment; filename="finzo_transactions_' . date('Y-m-d') . '.csv"');
 
             $output = fopen('php://output', 'w');
-            if (!empty($rows)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($rows)) {
                 fputcsv($output, array_keys($rows[0]));
                 foreach ($rows as $row) {
                     fputcsv($output, $row);
@@ -394,7 +394,7 @@ class AdminOperationsController
         $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
         $admin_id = $_SESSION['admin_id'];
 
-        if (!$user_id || empty($action)) {
+        if (!$user_id || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
         }
 

@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $user_id = $_SESSION['user_id'];
 
 // Check for file
-if (!isset($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_OK) {
+if (!\App\Shared\Core\Validation\Validator::isSet($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_OK) {
     $error_messages = [
         UPLOAD_ERR_INI_SIZE   => 'File exceeds server upload limit',
         UPLOAD_ERR_FORM_SIZE  => 'File exceeds form upload limit',

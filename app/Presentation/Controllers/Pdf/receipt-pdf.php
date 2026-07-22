@@ -14,12 +14,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
+if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
 $txn_id = $this->security->cleanInput($_GET['id'] ?? $_GET['txn_id'] ?? '');
-if (empty($txn_id)) {
+if (\App\Shared\Core\Validation\Validator::isEmpty($txn_id)) {
     die('Transaction ID is required');
 }
 

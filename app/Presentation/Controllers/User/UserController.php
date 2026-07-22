@@ -29,7 +29,7 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
         $account_no = $this->security->cleanInput($_GET['account_no'] ?? '');
-        if (empty($account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
             json_response(['found' => false, 'message' => 'Account number is required'], 422);
         }
         try {
@@ -158,13 +158,13 @@ class UserController
             $account_no = $this->security->cleanInput($_POST['account_no'] ?? '');
             $bank_name  = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
             $errors = [];
-            if (empty($nickname) || strlen($nickname) < 2 || strlen($nickname) > 100) {
+            if (\App\Shared\Core\Validation\Validator::isEmpty($nickname) || \App\Shared\Core\Validation\Validator::length($nickname) < 2 || \App\Shared\Core\Validation\Validator::length($nickname) > 100) {
                 $errors['nickname'] = 'Nickname must be between 2 and 100 characters';
             }
-            if (empty($account_no)) {
+            if (\App\Shared\Core\Validation\Validator::isEmpty($account_no)) {
                 $errors['account_no'] = 'Account number is required';
             }
-            if (!empty($errors)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
                 json_response(['success' => false, 'errors' => $errors], 422);
             }
             try {
@@ -219,10 +219,10 @@ class UserController
         $new_password     = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
         $errors = [];
-        if (empty($current_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($current_password)) {
             $errors['current_password'] = 'Current password is required';
         }
-        if (empty($new_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
             $errors['new_password'] = 'New password is required';
         } else {
             $strength = validate_password_strength($new_password);
@@ -233,10 +233,10 @@ class UserController
         if ($new_password !== $confirm_password) {
             $errors['confirm_password'] = 'Passwords do not match';
         }
-        if ($current_password === $new_password && !empty($new_password)) {
+        if ($current_password === $new_password && !\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
             $errors['new_password'] = 'New password must be different from current password';
         }
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
@@ -279,12 +279,12 @@ class UserController
         ];
 
         $existing_user = $this->service->getUserFiles($user_id);
-        $data['has_profile_pic'] = !empty($existing_user['profile_picture']);
-        $data['has_id_front'] = !empty($existing_user['id_front_path']);
-        $data['has_id_back'] = !empty($existing_user['id_back_path']);
+        $data['has_profile_pic'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['profile_picture']);
+        $data['has_id_front'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['id_front_path']);
+        $data['has_id_back'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['id_back_path']);
 
         $errors = $this->service->validateKyc($data, $_FILES);
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
@@ -328,13 +328,13 @@ class UserController
             send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/views/user/dashboard.html']);
         } catch (\PDOException $e) {
-            if (isset($pdo)) {
+            if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
                 $pdo->rollBack();
             }
-            if (isset($paths['front_destination']) && file_exists($paths['front_destination'])) {
+            if (\App\Shared\Core\Validation\Validator::isSet($paths['front_destination']) && file_exists($paths['front_destination'])) {
                 unlink($paths['front_destination']);
             }
-            if (isset($paths['back_destination']) && file_exists($paths['back_destination'])) {
+            if (\App\Shared\Core\Validation\Validator::isSet($paths['back_destination']) && file_exists($paths['back_destination'])) {
                 unlink($paths['back_destination']);
             }
             error_log("KYC DB Error: " . $e->getMessage());
@@ -381,19 +381,19 @@ class UserController
                 $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
                 $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
             }
-            if (!isset($_SESSION['user_customer_id'])) {
+            if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['user_customer_id'])) {
                 $_SESSION['user_customer_id'] = $this->service->getCustomerId($user_id);
             }
             $customer_id = $_SESSION['user_customer_id'];
             $notification_count = (int)$this->service->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
-            $avatar_url = !empty($user['profile_picture']) ? '../../../' . $user['profile_picture'] : null;
+            $avatar_url = !\App\Shared\Core\Validation\Validator::isEmpty($user['profile_picture']) ? '../../../' . $user['profile_picture'] : null;
 
             $past_rejections_raw = $this->service->getPastRejections($user['customer_id']);
             $past_rejections = [];
             foreach ($past_rejections_raw as $log) {
                 $reason = "Application was rejected";
-                if (preg_match('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
+                if (\App\Shared\Core\Validation\Validator::pregMatch('/Reason:\s*(.+)$/i', $log['details'], $matches)) {
                     $reason = trim($matches[1]);
                 }
                 $past_rejections[] = ['reason' => $reason, 'rejected_at' => $log['created_at']];
@@ -411,7 +411,7 @@ class UserController
 
     public function notifications()
     {
-        if (!isset($_SESSION['user_customer_id'])) {
+        if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['user_customer_id'])) {
             $_SESSION['user_customer_id'] = $this->service->getCustomerId($_SESSION['user_id']);
         }
         $user_id = $_SESSION['user_customer_id'];
@@ -484,22 +484,22 @@ class UserController
             $phone = $this->security->cleanInput($_POST['phone'] ?? '');
             $email = $this->security->cleanInput($_POST['email'] ?? '');
             $errors = [];
-            if (empty($full_name) || strlen($full_name) < 2 || strlen($full_name) > 100) {
+            if (\App\Shared\Core\Validation\Validator::isEmpty($full_name) || \App\Shared\Core\Validation\Validator::length($full_name) < 2 || \App\Shared\Core\Validation\Validator::length($full_name) > 100) {
                 $errors['full_name'] = 'Full name must be between 2 and 100 characters';
             }
-            if (!empty($phone) && !validate_phone($phone)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($phone) && !validate_phone($phone)) {
                 $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
             }
-            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($email) && !\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'Please enter a valid email address';
             }
-            if (!empty($email) && $email !== $_SESSION['user_email'] && $this->service->checkEmailExists($email, $user_id)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($email) && $email !== $_SESSION['user_email'] && $this->service->checkEmailExists($email, $user_id)) {
                 $errors['email'] = 'This email is already in use by another account';
             }
-            if (!empty($phone) && $this->service->checkPhoneExists($phone, $user_id)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($phone) && $this->service->checkPhoneExists($phone, $user_id)) {
                 $errors['phone'] = 'This phone number is already in use by another account';
             }
-            if (!empty($errors)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
                 json_response(['success' => false, 'errors' => $errors], 422);
             }
             try {
@@ -582,15 +582,15 @@ class UserController
                 $where_clauses[] = "t.status = ?";
                 $params[] = $status;
             }
-            if (!empty($from_date)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($from_date)) {
                 $where_clauses[] = "DATE(t.created_at) >= ?";
                 $params[] = $from_date;
             }
-            if (!empty($to_date)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($to_date)) {
                 $where_clauses[] = "DATE(t.created_at) <= ?";
                 $params[] = $to_date;
             }
-            if (!empty($search)) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($search)) {
                 $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR t.reference_note LIKE ?)";
                 $search_param = "%{$search}%";
                 $params[] = $search_param;
@@ -641,7 +641,7 @@ class UserController
         $description = $this->security->cleanInput($_POST['description'] ?? '');
         $txn_pin = $_POST['txn_pin'] ?? '';
         $errors = [];
-        if (empty($to_account_no)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($to_account_no)) {
             $errors['to_account_no'] = 'Recipient account number is required';
         }
         if ($amount <= 0) {
@@ -649,13 +649,13 @@ class UserController
         } elseif ($amount != round($amount, 2)) {
             $errors['amount'] = 'Amount can have at most 2 decimal places';
         }
-        if (strlen($description) > 100) {
+        if (\App\Shared\Core\Validation\Validator::length($description) > 100) {
             $errors['description'] = 'Description must not exceed 100 characters';
         }
-        if (empty($txn_pin) || !preg_match('/^\d{4}$/', $txn_pin)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($txn_pin) || !\App\Shared\Core\Validation\Validator::pregMatch('/^\d{4}$/', $txn_pin)) {
             $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
         }
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             json_response(['success' => false, 'errors' => $errors], 422);
         }
 
@@ -730,7 +730,7 @@ class UserController
             $_SESSION['user_balance'] = $new_source_balance;
             json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $txn_id, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/views/user/receipt.html?id=' . $txn_id]);
         } catch (PDOException $e) {
-            if (isset($pdo)) {
+            if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
                 $pdo->rollBack();
             } json_response(['success' => false, 'message' => 'Transfer failed. Please try again.'], 500);
         }
@@ -746,7 +746,7 @@ class UserController
             $input = $_POST;
         }
         $pin = $input['pin'] ?? '';
-        if (empty($pin) || strlen($pin) !== 4 || !is_numeric($pin)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($pin) || \App\Shared\Core\Validation\Validator::length($pin) !== 4 || !is_numeric($pin)) {
             json_response(['success' => false, 'message' => 'Invalid PIN format'], 400);
         }
         $pdo = $this->service->getDb();

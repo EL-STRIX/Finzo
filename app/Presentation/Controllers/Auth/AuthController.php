@@ -28,7 +28,7 @@ class AuthController
             throw new ApiException('Invalid or missing CSRF token', 403);
         }
 
-        if (empty($identity) || empty($password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($identity) || \App\Shared\Core\Validation\Validator::isEmpty($password)) {
             throw new ApiException('Email/Account Number and password are required', 422);
         }
 
@@ -102,7 +102,7 @@ class AuthController
 
         $email = $this->security->cleanInput($_POST['email'] ?? '');
 
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($email) || !\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
             throw new ApiException('Please enter a valid email address', 422);
         }
 
@@ -126,11 +126,11 @@ class AuthController
 
         $errors = [];
 
-        if (empty($token)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($token)) {
             throw new ApiException('Reset token is required', 422);
         }
 
-        if (empty($new_password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($new_password)) {
             $errors['new_password'] = 'New password is required';
         } else {
             $strength = validate_password_strength($new_password);
@@ -143,7 +143,7 @@ class AuthController
             $errors['confirm_password'] = 'Passwords do not match';
         }
 
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
@@ -172,25 +172,25 @@ class AuthController
 
         $errors = [];
 
-        if (empty($full_name)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($full_name)) {
             $errors['full_name'] = 'Full name is required';
-        } elseif (strlen($full_name) < 2 || strlen($full_name) > 100) {
+        } elseif (\App\Shared\Core\Validation\Validator::length($full_name) < 2 || \App\Shared\Core\Validation\Validator::length($full_name) > 100) {
             $errors['full_name'] = 'Full name must be between 2 and 100 characters';
         }
 
-        if (empty($email)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($email)) {
             $errors['email'] = 'Email address is required';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Please enter a valid email address';
         }
 
-        if (empty($phone)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($phone)) {
             $errors['phone'] = 'Phone number is required';
         } elseif (!validate_phone($phone)) {
             $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
         }
 
-        if (empty($password)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($password)) {
             $errors['password'] = 'Password is required';
         } else {
             $strength = validate_password_strength($password);
@@ -203,7 +203,7 @@ class AuthController
             $errors['confirm_password'] = 'Passwords do not match';
         }
 
-        if (!empty($errors)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
             throw new ApiException('Validation failed', 422, ['errors' => $errors]);
         }
 
@@ -238,7 +238,7 @@ class AuthController
         }
 
         // If called via browser navigation (GET, no XHR header), redirect directly
-        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+        $isAjax = !\App\Shared\Core\Validation\Validator::isEmpty($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
         if (!$isAjax && $_SERVER['REQUEST_METHOD'] === 'GET') {

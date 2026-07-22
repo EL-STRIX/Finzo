@@ -25,7 +25,7 @@ class AdminManagementController
         $this->service->validateCsrf($_POST['csrf_token'] ?? '');
         $this->service->requireSuperAdmin();
 
-        $file = (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
+        $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
         $result = $this->service->addAdmin($_POST, $file);
 
         $code = $result['code'] ?? 200;
@@ -44,7 +44,7 @@ class AdminManagementController
         $this->service->requireSuperAdmin();
 
         $action = $this->security->cleanInput($_POST['action'] ?? '');
-        $target_id = isset($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0;
+        $target_id = \App\Shared\Core\Validation\Validator::isSet($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0;
 
         $result = $this->service->handleAdminAction($action, $target_id);
         unset($result['code']);
@@ -55,7 +55,7 @@ class AdminManagementController
     {
         $this->service->requireSuperAdmin();
 
-        $target_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $target_id = \App\Shared\Core\Validation\Validator::isSet($_GET['id']) ? (int)$_GET['id'] : 0;
         return $this->service->getAdminDetail($target_id);
     }
 
@@ -111,7 +111,7 @@ class AdminManagementController
 
     public function updateAdminProfile(): array
     {
-        $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
         if ($is_json) {
             $json_input = json_decode(file_get_contents('php://input'), true);
             if ($json_input !== null) {
@@ -119,7 +119,7 @@ class AdminManagementController
             }
         }
 
-        if (isset($_POST['two_fa_enabled']) && count($_POST) <= 2) {
+        if (\App\Shared\Core\Validation\Validator::isSet($_POST['two_fa_enabled']) && count($_POST) <= 2) {
             $enable = intval($_POST['two_fa_enabled']);
             $result = $this->service->updateTwoFaSettings($_SESSION['admin_id'], $enable);
             unset($result['code']);

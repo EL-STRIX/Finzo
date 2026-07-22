@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Check for file
-if (!isset($_FILES['certificate']) || $_FILES['certificate']['error'] !== UPLOAD_ERR_OK) {
+if (!\App\Shared\Core\Validation\Validator::isSet($_FILES['certificate']) || $_FILES['certificate']['error'] !== UPLOAD_ERR_OK) {
     json_response(['success' => false, 'message' => 'No certificate file uploaded'], 400);
 }
 

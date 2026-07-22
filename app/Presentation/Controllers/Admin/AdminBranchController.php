@@ -38,7 +38,7 @@ class AdminBranchController
         $admin_password = $_POST['admin_password'] ?? '';
         $confirm_name = $_POST['confirm_name'] ?? '';
 
-        if (empty($branch_id) || empty($admin_password) || empty($confirm_name)) {
+        if (\App\Shared\Core\Validation\Validator::isEmpty($branch_id) || \App\Shared\Core\Validation\Validator::isEmpty($admin_password) || \App\Shared\Core\Validation\Validator::isEmpty($confirm_name)) {
             throw new ApiException('Missing required fields', 422);
         }
 
@@ -69,7 +69,7 @@ class AdminBranchController
 
             $pdo->beginTransaction();
 
-            if (isset($_FILES['closure_document']) && $_FILES['closure_document']['error'] === UPLOAD_ERR_OK) {
+            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['closure_document']) && $_FILES['closure_document']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['closure_document']['name'], PATHINFO_EXTENSION);
                 $filename = 'closure_doc_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
                 $dest_dir = UPLOAD_BRANCH_CERTS_PATH;
@@ -90,7 +90,7 @@ class AdminBranchController
             $pdo->commit();
             return ['success' => true, 'message' => 'Branch deleted successfully'];
         } catch (PDOException $e) {
-            if (isset($pdo) && $pdo->inTransaction()) {
+            if (\App\Shared\Core\Validation\Validator::isSet($pdo) && $pdo->inTransaction()) {
                 $pdo->rollBack();
             }
             throw new ApiException('Database error occurred', 500);
@@ -115,7 +115,7 @@ class AdminBranchController
             $where_clauses[] = "b.status = ?";
             $params[] = $status;
         }
-        if (!empty($search)) {
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($search)) {
             $where_clauses[] = "(b.name LIKE ? OR b.branch_code LIKE ? OR b.state LIKE ?)";
             $s = "%{$search}%";
             $params[] = $s;
@@ -142,9 +142,9 @@ class AdminBranchController
         $stats = $stmt_stats->fetch();
 
         foreach ($branches as &$b) {
-            if (!empty($b['manager_name'])) {
+            if (!\App\Shared\Core\Validation\Validator::isEmpty($b['manager_name'])) {
                 $parts = explode(' ', $b['manager_name']);
-                $b['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+                $b['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (\App\Shared\Core\Validation\Validator::isSet($parts[1]) ? substr($parts[1], 0, 1) : ''));
             } else {
                 $b['manager_initials'] = '??';
             }

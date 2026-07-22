@@ -12,13 +12,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
+if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['role']) || !in_array($_SESSION['role'], ['customer', 'staff', 'admin'])) {
     die('Authentication required');
 }
 
 $user_id = max(1, intval($_GET['user_id'] ?? 0));
 
-if (empty($user_id)) {
+if (\App\Shared\Core\Validation\Validator::isEmpty($user_id)) {
     die('User ID is required');
 }
 
@@ -43,7 +43,7 @@ try {
 
     $account_ids = array_column($accounts, 'id');
 
-    if (empty($account_ids)) {
+    if (\App\Shared\Core\Validation\Validator::isEmpty($account_ids)) {
         die('No accounts found for user');
     }
 
@@ -135,7 +135,7 @@ try {
         <div>
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Transaction History</h4>
             
-            <?php if (empty($transactions)) : ?>
+            <?php if (\App\Shared\Core\Validation\Validator::isEmpty($transactions)) : ?>
                 <div class="text-center py-10 text-slate-400 text-sm font-semibold bg-slate-50 rounded-xl">No transactions found.</div>
             <?php else : ?>
                 <table class="w-full text-left border-collapse">
