@@ -140,9 +140,9 @@ class AdminManagementService
 
         $this->repository->createAdmin($insertData);
 
-        $this->security->writeAuditLog(
-            \App\Shared\Core\Database::getInstance(), 'admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$full_name} | Role: {$admin_role}"
-        );
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$full_name} | Role: {$admin_role}")
+);
 
         return [
             'success' => true,
@@ -176,7 +176,9 @@ class AdminManagementService
             case 'toggle_status':
                 $new_status = ($target['status'] === 'active') ? 'suspended' : 'active';
                 $this->repository->updateStatus($target_numeric_id, $new_status);
-                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}");
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}")
+);
 
                 return [
                     'success' => true,
@@ -185,7 +187,9 @@ class AdminManagementService
                 ];
 
             case 'delete':
-                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}");
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}")
+);
                 $this->repository->deleteAdmin($target_numeric_id);
                 return ['success' => true, 'message' => "Admin account has been permanently removed from the system."];
 
@@ -195,7 +199,9 @@ class AdminManagementService
                 $hash = password_hash($generated_password, PASSWORD_DEFAULT);
 
                 $this->repository->resetPassword($target_numeric_id, $hash);
-                $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}");
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}")
+);
 
                 return [
                     'success' => true,
@@ -319,7 +325,9 @@ class AdminManagementService
         $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
         $this->repository->updateAdminPassword($admin_id, $new_hash);
 
-        $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed');
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_password_changed', $admin_id, 'admin', $admin_id, 'admin', 'Admin password changed')
+);
 
         return ['success' => true, 'message' => 'Password changed successfully'];
     }
@@ -438,7 +446,9 @@ class AdminManagementService
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($admin_id, $new_hash);
-            $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully');
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_password_updated', $admin_id, 'admin', $admin_id, 'admin', 'Password updated successfully')
+);
 
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
@@ -474,7 +484,9 @@ class AdminManagementService
         }
 
         $this->repository->updateProfileFields($admin_id, $fields, $params);
-        $this->security->writeAuditLog(\App\Shared\Core\Database::getInstance(), 'admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated');
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $admin_id, 'admin', $admin_id, 'admin', 'Profile information updated')
+);
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }

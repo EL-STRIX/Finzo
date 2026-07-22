@@ -59,7 +59,9 @@ class StaffService
         $this->repository->updateStaffPassword($staff_id, $new_hash);
 
         // write_audit_log requires pdo
-        $this->security->writeAuditLog($this->repository->getPDO(), 'staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password');
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_password_change', $staff_id, 'staff', $staff_id, 'staff', 'Staff changed their password')
+);
         return true;
     }
 
@@ -130,9 +132,9 @@ class StaffService
                 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            $this->security->writeAuditLog(
-                $this->repository->getPDO(), 'staff_deposit', $txn_id, 'transaction', $staff_id, 'staff', "Deposit of " . format_currency($amount) . " to account {$account_no}"
-            );
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_deposit', $txn_id, 'transaction', $staff_id, 'staff', "Deposit of " . format_currency($amount) . " to account {$account_no}")
+);
 
             $this->repository->commit();
 
@@ -197,9 +199,9 @@ class StaffService
                 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account_no . '. Transaction ID: ' . $txn_id
             );
 
-            $this->security->writeAuditLog(
-                $this->repository->getPDO(), 'staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}"
-            );
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_withdrawal', $txn_id, 'transaction', $staff_id, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$account_no}. Identity notes: {$identity_notes}")
+);
 
             $this->repository->commit();
 
@@ -347,7 +349,9 @@ class StaffService
         }
 
         $this->repository->updateStaffProfile($staff_id, $fields, $params);
-        $this->security->writeAuditLog($this->repository->getPDO(), 'staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile');
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_profile_update', $staff_id, 'staff', $staff_id, 'staff', 'Staff updated their profile')
+);
 
         return $this->repository->getFullStaffProfile($staff_id);
     }

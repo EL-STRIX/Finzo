@@ -185,7 +185,9 @@ class AdminStaffBranchService
             $this->repo->insertStaff($data);
             $this->repo->commit();
 
-            $this->security->writeAuditLog($pdo, 'staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'));
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_created', $data['staff_id'], 'staff', $admin_id, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'))
+);
 
             return ['staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']];
         } catch (\Exception $e) {

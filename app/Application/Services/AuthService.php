@@ -52,9 +52,9 @@ class AuthService
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
 
-                $this->security->writeAuditLog(
-                    $pdo, 'account_locked', $user['id'], 'user', $user['id'], 'user', "Account locked after {$new_attempts} failed login attempts"
-                );
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('account_locked', $user['id'], 'user', $user['id'], 'user', "Account locked after {$new_attempts} failed login attempts")
+);
 
                 $lockout_minutes = ceil($lockout_duration / 60);
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
@@ -86,7 +86,9 @@ class AuthService
         $_SESSION['last_activity']    = time();
 
         $pdo = $this->repository->getDb();
-        $this->security->writeAuditLog($pdo, 'user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}");
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}")
+);
 
         return [
             'user'    => $user,
@@ -134,7 +136,9 @@ class AuthService
                 $this->repository->logAdminLock($admin['admin_id'], $ip, $admin['id']);
 
                 $pdo = $this->repository->getDb();
-                $this->security->writeAuditLog($pdo, 'admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords');
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords')
+);
 
                 throw new ApiException('Account locked.', 401, [
                     'locked' => true,
@@ -166,7 +170,9 @@ class AuthService
         $_SESSION['last_activity'] = time();
 
         $pdo = $this->repository->getDb();
-        $this->security->writeAuditLog($pdo, 'admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}");
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}")
+);
 
         return $admin;
     }
@@ -199,9 +205,9 @@ class AuthService
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockStaff($staff['id'], $new_attempts, $lock_until);
 
-                $this->security->writeAuditLog(
-                    $pdo, 'account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff account locked after {$new_attempts} failed login attempts"
-                );
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff account locked after {$new_attempts} failed login attempts")
+);
 
                 $lockout_minutes = ceil($lockout_duration / 60);
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
@@ -228,7 +234,9 @@ class AuthService
         $_SESSION['last_activity'] = time();
 
         $pdo = $this->repository->getDb();
-        $this->security->writeAuditLog($pdo, 'staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}");
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}")
+);
 
         return $staff;
     }

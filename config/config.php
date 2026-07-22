@@ -117,3 +117,4 @@ define('CURRENCY_CODE', 'INR');
 // STAFF ID PREFIX
 // =====================================================
 define('STAFF_ID_PREFIX', 'STF');
+require_once __DIR__ . '/events.php';

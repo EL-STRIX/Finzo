@@ -312,9 +312,9 @@ class AdminOperationsService
         // Global function from config/functions.php
         global $pdo;
         if (function_exists('write_audit_log') && isset($pdo)) {
-            $this->security->writeAuditLog(
-                $pdo, 'interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
-            );
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
+);
         }
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
@@ -543,9 +543,9 @@ class AdminOperationsService
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            $this->security->writeAuditLog(
-                $pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}"
-            );
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}")
+);
         }
 
         return ['success' => true, 'message' => 'User recovered successfully'];
@@ -732,7 +732,9 @@ class AdminOperationsService
                         send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$account_no}.");
                     }
                     if (function_exists('write_audit_log')) {
-                        $this->security->writeAuditLog($pdo, 'kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}");
+                        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$account_no}")
+);
                     }
 
                     return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $account_no];
@@ -752,14 +754,18 @@ class AdminOperationsService
                         send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
                     }
                     if (function_exists('write_audit_log')) {
-                        $this->security->writeAuditLog($pdo, 'kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}");
+                        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
+);
                     }
 
                     return ['success' => true, 'message' => 'Application rejected'];
 
                 case 'save_notes':
                     if (function_exists('write_audit_log')) {
-                        $this->security->writeAuditLog($pdo, 'admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}");
+                        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}")
+);
                     }
                     $this->repository->saveAdminNotes($customer_id, $notes);
                     return ['success' => true, 'message' => 'Notes saved successfully'];
@@ -1074,9 +1080,9 @@ class AdminOperationsService
         }
 
         if (function_exists('write_audit_log') && isset($pdo)) {
-            $this->security->writeAuditLog(
-                $pdo, 'account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}"
-            );
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+);
         }
 
         if (!isset($_SESSION['temp_passwords'])) {
@@ -1135,7 +1141,9 @@ class AdminOperationsService
                     );
                 }
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}");
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}")
+);
                 }
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
@@ -1156,7 +1164,9 @@ class AdminOperationsService
                     send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated");
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated")
+);
                 }
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
@@ -1171,7 +1181,9 @@ class AdminOperationsService
                 $this->repository->softDeleteUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}");
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}")
+);
                 }
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
@@ -1208,7 +1220,9 @@ class AdminOperationsService
                 }
 
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''));
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
+);
                 }
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
@@ -1218,7 +1232,9 @@ class AdminOperationsService
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.");
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.")
+);
                 }
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
@@ -1228,7 +1244,9 @@ class AdminOperationsService
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 if (function_exists('write_audit_log') && isset($pdo)) {
-                    $this->security->writeAuditLog($pdo, 'account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.");
+                    \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.")
+);
                 }
                 return ['success' => true, 'message' => 'Account permanently deleted'];
         }
