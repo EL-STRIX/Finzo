@@ -69,6 +69,13 @@ class ResponseBuilder
             }
         }
 
+                // Enterprise API Performance Telemetry
+        if (!headers_sent()) {
+            $runtime = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 2);
+            $memory = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
+            header("X-Runtime: {$runtime}ms");
+            header("X-Memory: {$memory}MB");
+        }
         return self::scrub($response);
     }
 
