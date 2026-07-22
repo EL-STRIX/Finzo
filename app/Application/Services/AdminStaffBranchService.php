@@ -236,4 +236,60 @@ class AdminStaffBranchService
     {
         return $this->repo->getStaffPerformance(...$args);
     }
+    public function deleteBranch(int $branchId, int $adminId, string $admin_password, string $confirm_name, ?array $closure_doc): array
+    {
+        $hash = $this->repo->getAdminPasswordHash($adminId);
+        if (!$hash || !password_verify($admin_password, $hash)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid admin password', 401);
+        }
+
+        $branch = $this->repo->findBranchById($branchId);
+        if (!$branch) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Branch not found', 404);
+        }
+        if ($branch->type === 'system') { // It uses \App\Domain\Models\Staff or stdClass
+            throw new \App\Shared\Core\Exceptions\ApiException('System branches cannot be deleted', 403);
+        }
+        $branchName = is_array($branch) ? $branch['name'] : $branch->name;
+        if (strtolower(trim($branchName)) !== strtolower(trim($confirm_name))) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Branch name confirmation does not match', 400);
+        }
+
+        if ($closure_doc && $closure_doc['error'] === UPLOAD_ERR_OK) {
+            $ext = pathinfo($closure_doc['name'], PATHINFO_EXTENSION);
+            $filename = 'closure_doc_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+            $dest_dir = FINZO_ROOT . '/uploads/branch-certs/';
+            if (!is_dir($dest_dir)) mkdir($dest_dir, 0755, true);
+            move_uploaded_file($closure_doc['tmp_name'], $dest_dir . $filename);
+        }
+
+        $this->repo->deleteBranchAndUnassignStaff($branchId);
+
+        $security = new \App\Shared\Security\SecurityService();
+        $security->writeAuditLog('branch_deleted', $branchName, 'branch', (string)$adminId, 'admin', "Deleted branch: {$branchName}");
+
+        return ['success' => true, 'message' => 'Branch deleted successfully'];
+    }
+
+    public function getBranchesList(string $search, string $type, string $status): array
+    {
+        $data = $this->repo->getBranchesWithStats($search, $type, $status);
+        $branches = $data['branches'];
+        $stats = $data['stats'];
+
+        foreach ($branches as &$b) {
+            if (!empty($b['manager_name'])) {
+                $parts = explode(' ', $b['manager_name']);
+                $b['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+            } else {
+                $b['manager_initials'] = '??';
+            }
+        }
+
+        return [
+            'success' => true,
+            'branches' => $branches,
+            'stats' => ['total' => (int)$stats['total'], 'active' => (int)$stats['active'], 'total_staff' => (int)$stats['total_staff']]
+        ];
+    }
 }

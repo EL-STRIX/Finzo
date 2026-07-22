@@ -698,4 +698,58 @@ class AdminOperationsRepository extends BaseRepository
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getDashboardStats(): array
+    {
+        return [
+            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
+            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'active' AND is_deleted = 0"),
+            'pending_users'      => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
+            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'suspended' AND is_deleted = 0"),
+            'total_staff'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM staff"),
+            'total_branches'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM branches")
+        ];
+    }
+
+    public function getCachedDashboardStats(): array
+    {
+        return [
+            'transactions_today' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
+            'transactions_month' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
+            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
+            'pending_approvals'  => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
+            'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
+            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
+            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
+            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
+            'soft_deleted_users' => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
+        ];
+    }
+
+    public function getTotalInterestCredited(): float
+    {
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+    }
+
+    public function getEarningAccountsCount(): int
+    {
+        return (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'");
+    }
+
+    public function getThisMonthInterest(): float
+    {
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+    }
+
+    public function getLastMonthInterest(): float
+    {
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+    }
+
+    public function getHistoricalMonthInterest(int $monthsAgo): float
+    {
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
+    }
 }

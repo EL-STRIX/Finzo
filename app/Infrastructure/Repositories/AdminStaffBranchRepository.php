@@ -163,4 +163,69 @@ class AdminStaffBranchRepository extends BaseRepository
         $stmt = $this->db->prepare("UPDATE staff SET profile_photo = ? WHERE id = ?");
         return $stmt->execute([$path, $staffId]);
     }
+    public function getAdminPasswordHash(int $adminId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+        $stmt->execute([$adminId]);
+        $res = $stmt->fetch();
+        return $res ? $res['password_hash'] : null;
+    }
+
+    public function deleteBranchAndUnassignStaff(int $branchId): void
+    {
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
+            $stmt->execute([$branchId]);
+
+            $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
+            $stmt->execute([$branchId]);
+            $this->db->commit();
+        } catch (\PDOException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getBranchesWithStats(string $search, string $type, string $status): array
+    {
+        $where_clauses = ["1=1"];
+        $params = [];
+
+        if ($type !== 'all' && in_array($type, ['system', 'custom'])) {
+            $where_clauses[] = "b.type = ?";
+            $params[] = $type;
+        }
+        if ($status !== 'all' && in_array($status, ['active', 'inactive'])) {
+            $where_clauses[] = "b.status = ?";
+            $params[] = $status;
+        }
+        if (!empty($search)) {
+            $where_clauses[] = "(b.name LIKE ? OR b.branch_code LIKE ? OR b.state LIKE ?)";
+            $s = "%$search%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+        $stmt = $this->db->prepare("
+            SELECT b.id, b.name, b.branch_code, b.state, b.city, b.address, b.description, b.type, b.status, b.cert_path, b.created_at,
+                s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
+                (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id) as staff_count,
+                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id) as txn_count
+            FROM branches b LEFT JOIN staff s ON b.manager_id = s.id WHERE {$where_sql} ORDER BY b.created_at DESC
+        ");
+        $stmt->execute($params);
+        $branches = $stmt->fetchAll();
+
+        $stmt_stats = $this->db->query("
+            SELECT COUNT(*) as total, COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+                (SELECT COUNT(*) FROM staff WHERE branch_id IS NOT NULL) as total_staff
+            FROM branches
+        ");
+        $stats = $stmt_stats->fetch();
+
+        return ['branches' => $branches, 'stats' => $stats];
+    }
 }

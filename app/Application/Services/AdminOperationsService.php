@@ -84,29 +84,10 @@ class AdminOperationsService
 
     public function getDashboardData(int $adminId): array
     {
-        $stats = [
-            'total_users'        => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
-            'active_users'       => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'active' AND is_deleted = 0"),
-            'pending_users'      => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
-            'suspended_users'    => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'suspended' AND is_deleted = 0"),
-            'total_staff'        => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM staff"),
-            'total_branches'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM branches")
-        ];
+        $stats = $this->repository->getDashboardStats();
 
         $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
-            return [
-                'transactions_today' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
-                'transactions_month' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-                'deposits_today'     => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-                'withdrawals_today'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-                'transfers_today'    => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-                'pending_approvals'  => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
-                'locked_accounts'    => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
-                'total_balance'      => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
-                'total_accounts'     => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
-                'interest_credited'  => (float)$this->repository->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
-                'soft_deleted_users' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
-            ];
+            return $this->repository->getCachedDashboardStats();
         }, 300); // 5 minutes cache
 
         $stats = array_merge($stats, $stats_cache);
@@ -207,15 +188,15 @@ class AdminOperationsService
         $current_rate = $current_rate_row ? (float)$current_rate_row['rate'] : 4.25;
         $last_change_date = $current_rate_row ? date('d M Y', strtotime($current_rate_row['created_at'])) : '-';
 
-        $total_interest = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+        $total_interest = $this->repository->getTotalInterestCredited();
         $stats = [
             'total_interest_credited' => '₹' . number_format($total_interest, 2),
-            'earning_accounts' => (int)$this->repository->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'"),
+            'earning_accounts' => $this->repository->getEarningAccountsCount(),
             'interest_delta' => '+0%'
         ];
 
-        $this_month = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
-        $last_month = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $this_month = $this->repository->getThisMonthInterest();
+        $last_month = $this->repository->getLastMonthInterest();
 
         if ($last_month > 0) {
             $delta = (($this_month - $last_month) / $last_month) * 100;
@@ -225,7 +206,7 @@ class AdminOperationsService
         $chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_interest_chart', function() {
             $data = [];
             for ($i = 11; $i >= 0; $i--) {
-                $data[] = (float)$this->repository->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$i} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$i} MONTH)");
+                $data[] = $this->repository->getHistoricalMonthInterest($i);
             }
             return $data;
         }, 86400); // 24 hours cache
@@ -323,10 +304,9 @@ class AdminOperationsService
         }
 
         // Global function from config/functions.php
-        global $pdo;
-        if (function_exists('write_audit_log') && isset($pdo)) {
+        
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
+    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
 );
         }
 
@@ -544,7 +524,6 @@ class AdminOperationsService
 
         $this->repository->recoverUser($userId, $user['customer_id']);
 
-        global $pdo;
         if (function_exists('send_notification') && isset($pdo)) {
             send_notification(
                 $pdo,
@@ -555,9 +534,9 @@ class AdminOperationsService
             );
         }
 
-        if (function_exists('write_audit_log') && isset($pdo)) {
+        
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']")
 );
         }
 
@@ -679,7 +658,6 @@ class AdminOperationsService
             ];
         }
 
-        global $pdo;
         require_once FINZO_ROOT . '/config/functions.php';
         $expected_acc = generate_account_number($pdo);
 
@@ -707,7 +685,6 @@ class AdminOperationsService
         $admin_display_id = $adminData['admin_id'] ?? $adminId;
         $customer_id = $user['customer_id'];
 
-        global $pdo;
         require_once FINZO_ROOT . '/config/functions.php';
         require_once FINZO_ROOT . '/config/mailer.php';
 
@@ -744,9 +721,9 @@ class AdminOperationsService
                     if (function_exists('send_notification')) {
                         send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
                     }
-                    if (function_exists('write_audit_log')) {
+                    
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
+    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']. Account: {$accountNumber}")
 );
                     }
 
@@ -766,18 +743,18 @@ class AdminOperationsService
                     if (function_exists('send_notification')) {
                         send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
                     }
-                    if (function_exists('write_audit_log')) {
+                    
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']. Reason: {$reason}")
 );
                     }
 
                     return ['success' => true, 'message' => 'Application rejected'];
 
                 case 'save_notes':
-                    if (function_exists('write_audit_log')) {
+                    
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}")
+    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes")
 );
                     }
                     $this->repository->saveAdminNotes($customer_id, $notes);
@@ -1081,7 +1058,6 @@ class AdminOperationsService
         $password_hash = password_hash($temp_pass, PASSWORD_BCRYPT);
         $this->repository->unlockUserAccount($password_hash, $userId);
 
-        global $pdo;
         if (function_exists('send_notification') && isset($pdo)) {
             send_notification(
                 $pdo,
@@ -1092,9 +1068,9 @@ class AdminOperationsService
             );
         }
 
-        if (function_exists('write_audit_log') && isset($pdo)) {
+        
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name'] ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
 );
         }
 
@@ -1132,7 +1108,6 @@ class AdminOperationsService
             }
         }
 
-        global $pdo;
         switch ($action) {
             case 'suspend':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
@@ -1153,9 +1128,9 @@ class AdminOperationsService
                         'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.'
                     );
                 }
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] suspended. Reason: {$reason}")
 );
                 }
                 return ['success' => true, 'message' => 'User suspended successfully'];
@@ -1176,9 +1151,9 @@ class AdminOperationsService
                 if (function_exists('send_notification') && isset($pdo)) {
                     send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated")
+    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] reinstated")
 );
                 }
                 return ['success' => true, 'message' => 'User reinstated successfully'];
@@ -1193,9 +1168,9 @@ class AdminOperationsService
 
                 $this->repository->softDeleteUserAccount($userId, $user['customer_id']);
 
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] soft-deleted. Reason: {$reason}")
 );
                 }
                 return ['success' => true, 'message' => 'User deleted successfully'];
@@ -1232,9 +1207,9 @@ class AdminOperationsService
                     }
                 }
 
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
                 }
                 return ['success' => true, 'message' => 'User recovered successfully'];
@@ -1244,9 +1219,9 @@ class AdminOperationsService
                     $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] permanently deleted.")
 );
                 }
                 return ['success' => true, 'message' => 'User permanently deleted'];
@@ -1256,9 +1231,9 @@ class AdminOperationsService
                     $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);
-                if (function_exists('write_audit_log') && isset($pdo)) {
+                
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name'] permanently deleted.")
 );
                 }
                 return ['success' => true, 'message' => 'Account permanently deleted'];

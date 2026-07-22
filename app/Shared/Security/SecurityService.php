@@ -16,13 +16,13 @@ class SecurityService
         return \validate_csrf_token($token);
     }
 
-    public function checkAdminPermission(PDO $pdo, int $adminId, string $permission): void
+    public function checkAdminPermission(int $adminId, string $permission): void
     {
-        \check_admin_permission($pdo, $adminId, $permission);
+        \check_admin_permission(\App\Shared\Core\Database::getInstance(), $adminId, $permission);
     }
 
-    public function writeAuditLog(PDO $pdo, string $actionType, string $targetId, string $targetType, string $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
+    public function writeAuditLog(string $actionType, string $targetId, string $targetType, string $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
     {
-        \write_audit_log($pdo, $actionType, $targetId, $targetType, $actorId, $actorRole, $details);
+        \write_audit_log(\App\Shared\Core\Database::getInstance(), $actionType, $targetId, $targetType, $actorId, $actorRole, $details);
     }
 }

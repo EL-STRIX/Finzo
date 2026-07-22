@@ -297,7 +297,7 @@ class UserController
         try {
             $pdo = $this->service->getDb();
             $pdo->beginTransaction();
-            $stmt = $pdo->prepare("UPDATE users SET profile_picture = ?, dob = ?, gender = ?, father_name = ?, mother_name = ?, marital_status = ?, nationality = ?, occupation = ?, annual_income = ?, source_of_income = ?, street = ?, city = ?, state = ?, pincode = ?, id_type = ?, id_number = ?, id_front_path = ?, id_back_path = ?, status = 'under_review', kyc_submitted_at = NOW(), rejection_reason = NULL, updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_ef776789'));
             $stmt->execute([$paths['profile_pic_path'], $data['dob'], $data['gender'], $data['father_name'], $data['mother_name'], $data['marital_status'], $data['nationality'], $data['occupation'], $data['annual_income'], $data['source_of_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $userId]);
 
             $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
@@ -316,10 +316,10 @@ class UserController
 
             if ($existing_app) {
                 $new_count = $existing_app['submission_count'] + 1;
-                $stmt = $pdo->prepare("UPDATE kyc_applications SET status = 'submitted', submission_count = ?, dob = ?, gender = ?, father_name = ?, occupation = ?, annual_income = ?, street = ?, city = ?, state = ?, pincode = ?, id_type = ?, id_number = ?, id_front_path = ?, id_back_path = ?, account_type = ?, initial_deposit = ?, submitted_at = NOW(), rejection_reason = NULL, reviewed_by = NULL, reviewed_at = NULL WHERE user_id = ?");
+                $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_371058c0'));
                 $stmt->execute([$new_count, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit'], $customer_id_str]);
             } else {
-                $stmt = $pdo->prepare("INSERT INTO kyc_applications (user_id, application_no, status, submission_count, dob, gender, father_name, occupation, annual_income, street, city, state, pincode, id_type, id_number, id_front_path, id_back_path, account_type, initial_deposit, submitted_at, created_at, updated_at) VALUES (?, ?, 'submitted', 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())");
+                $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e07f7e3c'));
                 $stmt->execute([$customer_id_str, $application_no, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit']]);
             }
             $pdo->commit();

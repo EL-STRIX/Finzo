@@ -13,8 +13,6 @@ class Database
 
     private function __construct()
     {
-        global $pdo;
-
         if ($pdo instanceof PDO) {
             // Use the globally configured connection (set by config/db.php)
             $this->pdo = $pdo;
@@ -35,8 +33,7 @@ class Database
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
             // Also set the global so legacy code works
-            $pdo = $this->pdo;
-        } catch (PDOException $e) {
+            } catch (PDOException $e) {
             throw new RuntimeException('Database connection failed: ' . $e->getMessage());
         }
     }

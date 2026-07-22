@@ -124,7 +124,7 @@ class AdminStaffController
             throw new ApiException('Password must be at least 8 characters', 422);
         }
 
-        $stmt = $pdo->prepare("SELECT id, full_name, staff_id FROM staff WHERE id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_4623d5b9'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
 
@@ -133,7 +133,7 @@ class AdminStaffController
         }
 
         $password_hash = password_hash($newPassword, PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("UPDATE staff SET password_hash = ? WHERE id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_a4dee608'));
         $stmt->execute([$password_hash, $staffId]);
 
         $this->security->writeAuditLog($pdo, 'staff_password_reset', $staffId, 'staff', $adminId, 'admin', "Password reset for staff: " . $staff['full_name'] . " (" . $staff['staff_id'] . ")");
@@ -164,14 +164,14 @@ class AdminStaffController
             $this->security->checkAdminPermission($pdo, $adminId, 'suspend_staff');
         }
 
-        $admin_stmt = $pdo->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
+        $admin_stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_271aedbc'));
         $admin_stmt->execute([$adminId]);
         $admin = $admin_stmt->fetch();
         if (!$admin || !password_verify($password, $admin['password_hash'])) {
             throw new ApiException('Invalid administrative password. Access denied.', 403);
         }
 
-        $stmt = $pdo->prepare("SELECT id, staff_id, full_name, personal_email as email, status FROM staff WHERE id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_109dc119'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
         if (!$staff) {
@@ -183,7 +183,7 @@ class AdminStaffController
                 throw new ApiException('Staff is already suspended', 409);
             }
             $suspended_by = $_SESSION['admin_name'] ?? 'Admin';
-            $stmt = $pdo->prepare("UPDATE staff SET status = 'suspended', suspension_reason = ?, suspended_by = ?, updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_6013aa56'));
             $stmt->execute([$reason, $suspended_by, $staffId]);
             $this->security->writeAuditLog($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $adminId, 'admin', "Suspended staff: {$staff['full_name']}. Reason: {$reason}");
             return ['success' => true, 'message' => 'Staff member suspended successfully'];
@@ -191,20 +191,20 @@ class AdminStaffController
             if ($staff['status'] !== 'suspended') {
                 throw new ApiException('Staff is not suspended', 409);
             }
-            $stmt = $pdo->prepare("UPDATE staff SET status = 'active', suspension_reason = NULL, suspended_by = NULL, updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_953d62ef'));
             $stmt->execute([$staffId]);
             $this->security->writeAuditLog($pdo, 'staff_reinstated', $staff['staff_id'], 'staff', $adminId, 'admin', "Reinstated staff: {$staff['full_name']}");
             return ['success' => true, 'message' => 'Staff member reinstated successfully'];
         } elseif ($action === 'reset_password') {
             $temp_pass = $this->service->generateStrongPassword(12);
             $password_hash = password_hash($temp_pass, PASSWORD_BCRYPT);
-            $stmt = $pdo->prepare("UPDATE staff SET password_hash = ?, updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_0bfb3963'));
             $stmt->execute([$password_hash, $staffId]);
             $this->security->writeAuditLog($pdo, 'staff_password_reset', $staff['staff_id'], 'staff', $adminId, 'admin', "Reset password for staff: {$staff['full_name']} ({$staff['email']})");
             return ['success' => true, 'message' => 'Temporary password generated successfully', 'temp_password' => $temp_pass];
         } elseif ($action === 'delete') {
             $pdo->beginTransaction();
-            $stmt = $pdo->prepare("DELETE FROM staff WHERE id = ?");
+            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_42144d21'));
             $stmt->execute([$staffId]);
             $this->security->writeAuditLog($pdo, 'staff_deleted', $staff['staff_id'], 'staff', $adminId, 'admin', "Permanently deleted staff: {$staff['full_name']} ({$staff['email']})");
             $pdo->commit();
@@ -222,7 +222,7 @@ class AdminStaffController
         }
 
         $pdo = $this->service->getRepo()->getPDO();
-        $stmt = $pdo->prepare("SELECT id, profile_photo FROM staff WHERE id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_960c6e0a'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
 
@@ -258,7 +258,7 @@ class AdminStaffController
         }
 
         $new_photo_path = 'uploads/staff-photos/' . $filename;
-        $stmt = $pdo->prepare("UPDATE staff SET profile_photo = ? WHERE id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_28c17e7e'));
         $stmt->execute([$new_photo_path, $staffId]);
 
         return ['success' => true, 'message' => 'Photo updated successfully', 'photo_url' => APP_URL . '/' . $new_photo_path];
@@ -273,77 +273,30 @@ class AdminStaffController
 
         $pdo = $this->service->getRepo()->getPDO();
 
-        $stmt = $pdo->prepare("
-            SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, 
-                    s.designation, s.department, s.status,
-                    s.gender, s.date_of_birth, s.emergency_contact_name, s.emergency_contact_phone,
-                    s.date_of_joining, s.created_by,
-                    s.last_login_at, s.last_login_ip, s.created_at, s.profile_photo,
-                    s.street, s.city, s.state, s.pincode, s.country,
-                    s.id_type, s.id_number, s.front_image, s.back_image,
-                    s.failed_attempts, s.locked_until, s.suspension_reason, s.suspended_by,
-                    b.name as branch_name, b.branch_code, b.state as branch_state,
-                    COALESCE(creator_admin.full_name, creator_staff.full_name, s.created_by, 'System') as created_by_name,
-                    COALESCE(suspender_admin.full_name, s.suspended_by) as suspended_by_name
-            FROM staff s
-            LEFT JOIN branches b ON s.branch_id = b.id
-            LEFT JOIN admin_users creator_admin ON s.created_by = creator_admin.admin_id
-            LEFT JOIN staff creator_staff ON s.created_by = creator_staff.staff_id
-            LEFT JOIN admin_users suspender_admin ON s.suspended_by = suspender_admin.admin_id
-            WHERE s.id = ?
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e828e2ca'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
         if (!$staff) {
             throw new ApiException('Staff member not found', 404);
         }
 
-        $stmt = $pdo->prepare("
-            SELECT COUNT(*) as total_transactions,
-                COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as total_deposits,
-                COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals,
-                COUNT(CASE WHEN type = 'deposit' THEN 1 END) as deposit_count,
-                COUNT(CASE WHEN type = 'withdrawal' THEN 1 END) as withdrawal_count
-            FROM transactions WHERE processed_by_staff_id = ? AND status = 'completed'
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_897e4bad'));
         $stmt->execute([$staffId]);
         $performance = $stmt->fetch();
 
-        $stmt = $pdo->prepare("
-            SELECT COUNT(*) as total_transactions,
-                COALESCE(SUM(CASE WHEN type = 'deposit' THEN amount ELSE 0 END), 0) as total_deposits,
-                COALESCE(SUM(CASE WHEN type = 'withdrawal' THEN amount ELSE 0 END), 0) as total_withdrawals,
-                COUNT(CASE WHEN type = 'deposit' THEN 1 END) as deposit_count,
-                COUNT(CASE WHEN type = 'withdrawal' THEN 1 END) as withdrawal_count
-            FROM transactions WHERE processed_by_staff_id = ? AND status = 'completed' AND DATE(created_at) = CURDATE()
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_478c127d'));
         $stmt->execute([$staffId]);
         $today_performance = $stmt->fetch();
 
-        $stmt = $pdo->prepare("SELECT COUNT(DISTINCT DATE(created_at)) FROM transactions WHERE processed_by_staff_id = ?");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_d9c30801'));
         $stmt->execute([$staffId]);
         $total_shifts = (int)$stmt->fetchColumn();
 
-        $stmt = $pdo->prepare("
-            SELECT t.txn_id, t.type, t.amount, t.status, t.created_at,
-                COALESCE(a.account_no, 'N/A') as account_no, COALESCE(u.full_name, 'N/A') as customer_name
-            FROM transactions t
-            LEFT JOIN accounts a ON COALESCE(t.to_account_id, t.from_account_id) = a.id
-            LEFT JOIN users u ON a.user_id = u.customer_id
-            WHERE t.processed_by_staff_id = ? ORDER BY t.created_at DESC LIMIT 20
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_969d95c9'));
         $stmt->execute([$staffId]);
         $transactions = $stmt->fetchAll();
 
-        $stmt = $pdo->prepare("
-            SELECT DATE(created_at) as shift_date, MIN(created_at) as login_time, MAX(created_at) as logout_time
-            FROM (
-                SELECT created_at FROM transactions WHERE processed_by_staff_id = :id
-                UNION ALL
-                SELECT created_at FROM audit_log WHERE actor_id = :actor_id AND actor_role = 'Staff'
-            ) as activities
-            GROUP BY shift_date ORDER BY shift_date DESC LIMIT 5
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_79365276'));
         $stmt->execute(['id' => $staffId, 'actor_id' => $staff['staff_id']]);
         $shifts = $stmt->fetchAll();
 
@@ -354,7 +307,7 @@ class AdminStaffController
 
         $address = ['street' => $staff['street'], 'city' => $staff['city'], 'state' => $staff['state'], 'pincode' => $staff['pincode'], 'country' => $staff['country']];
 
-        $stmt = $pdo->prepare("SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at FROM audit_log WHERE actor_id = ? AND actor_role IN ('Staff', 'staff') ORDER BY created_at DESC LIMIT 20");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_31441bc5'));
         $stmt->execute([$staff['staff_id']]);
         $activities = $stmt->fetchAll();
 
@@ -394,27 +347,21 @@ class AdminStaffController
         }
 
         $where_sql = implode(' AND ', $where_clauses);
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM staff s WHERE {$where_sql}");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_9f511115'));
         $stmt->execute($params);
         $total = (int)$stmt->fetchColumn();
 
         $pages  = max(1, ceil($total / $per_page));
         $offset = ($page - 1) * $per_page;
 
-        $stmt = $pdo->prepare("
-            SELECT s.id, s.staff_id, s.full_name, s.personal_email, s.phone, s.designation, s.department,
-                s.status, s.profile_photo, s.date_of_joining, s.last_login_at, b.name as branch_name,
-                (SELECT COUNT(*) FROM transactions WHERE processed_by_staff_id = s.id) as txn_count,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_amount
-            FROM staff s LEFT JOIN branches b ON b.id = s.branch_id WHERE {$where_sql} ORDER BY s.created_at DESC LIMIT {$per_page} OFFSET {$offset}
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_9199e7d3'));
         $stmt->execute($params);
         $staff_list = $stmt->fetchAll();
 
-        $total_staff = $pdo->query("SELECT COUNT(*) FROM staff")->fetchColumn();
-        $active_staff = $pdo->query("SELECT COUNT(*) FROM staff WHERE status = 'active'")->fetchColumn();
-        $suspended_staff = $pdo->query("SELECT COUNT(*) FROM staff WHERE status = 'suspended'")->fetchColumn();
-        $txns_today = $pdo->query("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+        $total_staff = $pdo->query(\App\Infrastructure\Repositories\QueryStore::get('q_94aa2694'))->fetchColumn();
+        $active_staff = $pdo->query(\App\Infrastructure\Repositories\QueryStore::get('q_6ad2c8a1'))->fetchColumn();
+        $suspended_staff = $pdo->query(\App\Infrastructure\Repositories\QueryStore::get('q_9dda4608'))->fetchColumn();
+        $txns_today = $pdo->query(\App\Infrastructure\Repositories\QueryStore::get('q_db6f4d23'))->fetchColumn();
 
         $base_url = APP_URL . '/';
         foreach ($staff_list as &$s) {
@@ -439,11 +386,7 @@ class AdminStaffController
         }
 
         $pdo = $this->service->getRepo()->getPDO();
-        $stmt = $pdo->prepare("
-            SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, s.designation as role, s.status,
-                    s.suspension_reason, s.suspended_by, s.updated_at as suspended_at, s.created_at as onboarding_date, s.profile_photo, b.name as branch_name
-            FROM staff s LEFT JOIN branches b ON s.branch_id = b.id WHERE s.id = ? AND s.status = 'suspended'
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_0b1bf48e'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
 
@@ -457,12 +400,7 @@ class AdminStaffController
         $staff['onboarding_date'] = date('d M Y', strtotime($staff['onboarding_date']));
         $staff['duration'] = 'Indefinite';
 
-        $stmt = $pdo->prepare("
-            SELECT COUNT(*) as total_count, COALESCE(SUM(amount), 0) as total_volume,
-                COUNT(CASE WHEN type = 'deposit' THEN 1 END) as deposit_count,
-                COUNT(CASE WHEN type = 'withdrawal' THEN 1 END) as withdrawal_count
-            FROM transactions WHERE processed_by_staff_id = ? AND status = 'completed'
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_6ba2bbee'));
         $stmt->execute([$staffId]);
         $stats = $stmt->fetch();
 
@@ -471,7 +409,7 @@ class AdminStaffController
         $staff['withdrawal_count'] = $stats['withdrawal_count'];
         $staff['avg_daily_volume'] = '₹' . number_format($stats['total_volume'] / 30, 2);
 
-        $stmt = $pdo->prepare("SELECT type, amount, status, created_at as timestamp FROM transactions WHERE processed_by_staff_id = ? ORDER BY created_at DESC LIMIT 10");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_2ad69a5c'));
         $stmt->execute([$staffId]);
         $history = $stmt->fetchAll();
 
@@ -519,18 +457,14 @@ class AdminStaffController
         }
 
         $where_sql = implode(' AND ', $where_clauses);
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM staff s WHERE {$where_sql}");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_9f511115'));
         $stmt->execute($params);
         $total = (int)$stmt->fetchColumn();
 
         $pages  = max(1, ceil($total / $per_page));
         $offset = ($page - 1) * $per_page;
 
-        $stmt = $pdo->prepare("
-            SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone, s.designation as role, s.status,
-                    s.suspension_reason, s.suspended_by, s.updated_at, s.profile_photo, b.name as branch_name
-            FROM staff s LEFT JOIN branches b ON s.branch_id = b.id WHERE {$where_sql} ORDER BY s.updated_at DESC LIMIT {$per_page} OFFSET {$offset}
-        ");
+        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_011f9128'));
         $stmt->execute($params);
         $staff_list = $stmt->fetchAll();
 

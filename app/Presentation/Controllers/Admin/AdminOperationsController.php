@@ -129,8 +129,7 @@ class AdminOperationsController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            global $pdo;
-            $this->security->checkAdminPermission($pdo, $adminId, 'change_interest_rate');
+            $this->security->checkAdminPermission($adminId, 'change_interest_rate');
 
             $new_rate       = floatval($_POST['new_rate'] ?? 0);
             $apply_from     = $this->security->cleanInput($_POST['apply_from'] ?? 'Immediately');
