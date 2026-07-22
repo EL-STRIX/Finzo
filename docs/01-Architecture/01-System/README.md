@@ -1,6 +1,6 @@
 ---
 title: "README"
-version: "3.0.0"
+version: "4.0.0"
 status: "Active"
 owner: "Enterprise Architecture Board"
 category: "System Boundaries"
@@ -108,4 +108,5 @@ In Core Banking, the system boundary must isolate the 'Ledger' module from the '
 
 | Version | Date | Author | Description |
 |---|---|---|---|
+| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
 | 3.0.0 | 2026-07-22 | Enterprise Architecture Board | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

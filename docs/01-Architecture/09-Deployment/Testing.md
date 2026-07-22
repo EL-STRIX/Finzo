@@ -1,6 +1,6 @@
 ---
 title: "Testing"
-version: "3.0.0"
+version: "4.0.0"
 status: "Active"
 owner: "Release Engineering"
 category: "CI/CD Pipelines"
@@ -43,7 +43,7 @@ sequenceDiagram
     participant K8s
     GitHub->>CI: Push to main
     CI->>Registry: Build & Push Docker Image
-    Registry->>K8s: Trigger Rolling Update
+    CI->>Server: Deploy via SSH (ops/deploy.sh)
 ```
 
 > [!NOTE]
@@ -111,4 +111,5 @@ During a live core-banking hours deployment, old pods finish their active HTTP t
 
 | Version | Date | Author | Description |
 |---|---|---|---|
+| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
 | 3.0.0 | 2026-07-22 | Release Engineering | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

@@ -1,6 +1,6 @@
 ---
 title: "CI CD"
-version: "3.0.0"
+version: "4.0.0"
 status: "Active"
 owner: "Cloud Operations"
 category: "Cloud Topology"
@@ -24,7 +24,7 @@ last_updated: "2026-07-22"
 12. [Change Log](#change-log)
 
 ## Purpose
-Dictates the multi-AZ Kubernetes topology, Horizontal Pod Autoscaling (HPA), and Nginx edge routing. This specific document (`CI-CD`) codifies the structural implementation of CI CD within the Finzo ecosystem.
+Dictates the multi-AZ Kubernetes topology, Process-Level Autoscaling (PHP-FPM pm.dynamic), and Nginx edge routing. This specific document (`CI-CD`) codifies the structural implementation of CI CD within the Finzo ecosystem.
 
 ## Scope
 The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying CI CD.
@@ -40,8 +40,8 @@ graph TD;
     A[User] --> B[AWS Route53];
     B --> C[AWS WAF];
     C --> D[ALB TLS 1.3];
-    D --> E[EKS Node 1];
-    D --> F[EKS Node 2];
+    D --> E[PHP-FPM Worker 1];
+    D --> F[PHP-FPM Worker 2];
 ```
 
 > [!NOTE]
@@ -76,7 +76,7 @@ resource "aws_lb" "finzo_alb" {
 > Failure to strictly validate the input constraints of CI CD directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
 
 ## Banking-Specific Examples
-The production cluster spans 3 Availability Zones. If AZ-A experiences a blackout, the Application Load Balancer seamlessly routes traffic to AZ-B and AZ-C with zero user impact.
+Finzo is designed for deployment on XAMPP/Apache (development) and Apache/Nginx (production) environments. If AZ-A experiences a blackout, the Application Load Balancer seamlessly routes traffic to AZ-B and AZ-C with zero user impact.
 
 ## Best Practices
 - Terminate TLS at the edge load balancer to offload CPU from application nodes.
@@ -109,4 +109,5 @@ The production cluster spans 3 Availability Zones. If AZ-A experiences a blackou
 
 | Version | Date | Author | Description |
 |---|---|---|---|
+| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
 | 3.0.0 | 2026-07-22 | Cloud Operations | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

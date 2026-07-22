@@ -1,114 +1,215 @@
 ---
-title: "README"
-version: "3.0.0"
+title: "API Architecture"
+version: "4.0.0"
 status: "Active"
 owner: "API Integrations"
 category: "Interfaces"
 last_updated: "2026-07-22"
 ---
 
-# README
+# API Architecture
 
 ## Table of Contents
 1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
+2. [Routing](#routing)
+3. [Endpoint Catalogue](#endpoint-catalogue)
+4. [Request Lifecycle](#request-lifecycle)
+5. [Response Format](#response-format)
+6. [Error Handling](#error-handling)
+7. [Rate Limiting](#rate-limiting)
+8. [Authentication](#authentication)
+9. [Best Practices](#best-practices)
+10. [Anti-Patterns](#anti-patterns)
+11. [Traceability Matrix](#traceability-matrix)
 12. [Change Log](#change-log)
 
 ## Purpose
-Standardizes RESTful principles, OAuth2 stateless authentication, and rate-limiting thresholds. This specific document (`README`) codifies the structural implementation of README within the Finzo ecosystem.
+Documents the complete API surface of Finzo. All routes are defined in `routes/api.php` and handled by the custom `Router` class. Every endpoint is guarded by `SecurityMiddleware` globally and by role-specific Middleware per route.
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying README.
+## Routing
 
-## Detailed Explanation
-In an enterprise environment, README is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-The `/api/v1/` namespace utilizes short-lived JWTs signed with `HS256`. All endpoints enforce Token Bucket Rate Limiting (60 RPM). State-mutating requests (POST/PUT) require an `X-Idempotency-Key` to prevent double-charging on network retry.
+Routes are registered in `routes/api.php` via a fluent Router interface:
 
+```php
+$router->post('/auth/login.php', [AuthController::class, 'login']);
+$router->get('/Admin/users.php', [AdminOperationsController::class, 'users'],
+    [AdminAuthMiddleware::class]);
+```
 
-### Architectural Flow
+The Router normalizes base paths from XAMPP-style URIs:
+- `/Finzo/public/api` → stripped to `/resource`
+- `/Finzo/api` → stripped to `/resource`
+
+Unmatched routes fall back to the **Strangler Fig pattern**: if a file exists in `app/Presentation/Controllers_backup{uri}`, it is `require`d to maintain backward compatibility during the incremental refactor.
+
+## Endpoint Catalogue
+
+### Authentication Routes (Public)
+| Method | Path | Handler | Notes |
+|---|---|---|---|
+| POST | `/auth/login.php` | `AuthController::login` | Customer login |
+| POST | `/auth/admin-login.php` | `AuthController::adminLogin` | Admin login |
+| POST | `/auth/staff-login.php` | `AuthController::staffLogin` | Staff login |
+| POST | `/auth/logout.php` | `AuthController::logout` | Destroy session |
+| POST | `/auth/register.php` | `AuthController::register` | Customer registration |
+| POST | `/auth/forgot-password.php` | `AuthController::forgotPassword` | Initiate password reset |
+| POST | `/auth/reset-password.php` | `AuthController::resetPassword` | Complete password reset |
+| GET | `/auth/get-csrf-token.php` | `AuthController::getCsrfToken` | Fetch CSRF token |
+
+### Admin Routes (AdminAuthMiddleware required)
+| Method | Path | Handler |
+|---|---|---|
+| POST | `/Admin/add-admin.php` | `AdminManagementController::addAdmin` |
+| GET | `/Admin/get-admins.php` | `AdminManagementController::getAdmins` |
+| GET | `/Admin/dashboard.php` | `AdminOperationsController::dashboard` |
+| GET | `/Admin/audit-log.php` | `AdminOperationsController::auditLog` |
+| GET | `/Admin/users.php` | `AdminOperationsController::users` |
+| POST | `/Admin/user-action.php` | `AdminOperationsController::userAction` |
+| GET | `/Admin/transactions.php` | `AdminOperationsController::transactions` |
+| POST | `/Admin/review-application.php` | `AdminOperationsController::reviewApplication` |
+| GET | `/Admin/pending-approvals.php` | `AdminOperationsController::pendingApprovals` |
+| POST | `/Admin/add-staff.php` | `AdminStaffController::addStaff` |
+| POST | `/Admin/staff-action.php` | `AdminStaffController::staffAction` |
+| GET | `/Admin/get-branches.php` | `AdminBranchController::getBranches` |
+
+### Middleware Protection Matrix
+```mermaid
+graph LR;
+    A[Any Request] --> B[SecurityMiddleware - Always];
+    B --> C{Route type};
+    C -->|/auth/*| D[No role MW + strict rate limit 5/5min];
+    C -->|/Admin/*| E[AdminAuthMiddleware];
+    C -->|/Staff/*| F[StaffAuthMiddleware];
+    C -->|/User/*| G[UserAuthMiddleware];
+    C -->|Unmatched| H[Strangler Fig fallback];
+```
+
+## Request Lifecycle
+
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Redis
-    participant Backend
-    Client->>Redis: X-Idempotency-Key: abc-123
-    Redis-->>Client: Key Missing (Allow)
-    Client->>Backend: Execute Transfer
-    Backend-->>Redis: Lock Key (24h)
+    participant Router
+    participant SecurityMiddleware
+    participant FormRequest
+    participant Controller
+    participant ResponseBuilder
+
+    Client->>Router: POST /auth/login.php {email, password}
+    Router->>SecurityMiddleware: handle() — headers + rate limit
+    Router->>Controller: login(params)
+    Controller->>FormRequest: validate(request data)
+    FormRequest-->>Controller: ValidationException on failure
+    Controller->>ResponseBuilder: format(['success'=>true, 'data'=>...])
+    ResponseBuilder-->>Client: {"success":true,"status":200,"data":{...}}
 ```
 
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
+## Response Format
 
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of README away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
+All responses follow a standardized envelope produced by `ResponseBuilder::format()`:
 
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If README encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat README processes as ephemeral cattle.
-
-## Implementation Details
-The exact programmatic implementation of README requires strict adherence to PHP 8.x standards.
-The `/api/v1/` namespace utilizes short-lived JWTs signed with `HS256`. All endpoints enforce Token Bucket Rate Limiting (60 RPM). State-mutating requests (POST/PUT) require an `X-Idempotency-Key` to prevent double-charging on network retry.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with README.
-
-
-### Code Reference
+**Success (2xx)**:
 ```json
-// RFC 7807 Error Standard
 {
-  "type": "https://api.finzo.com/errors/rate-limit",
-  "title": "Too Many Requests",
-  "status": 429,
-  "detail": "Account exceeded 60 RPM limit."
+  "success": true,
+  "status": 200,
+  "message": "Request successful.",
+  "timestamp": "2026-07-22T18:00:00+05:30",
+  "request_id": "a3f9b2c1d4e5",
+  "data": {}
 }
 ```
 
-> [!WARNING]
-> Failure to strictly validate the input constraints of README directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
+**Error (4xx/5xx)**:
+```json
+{
+  "success": false,
+  "status": 422,
+  "message": "Validation failed.",
+  "errors": {
+    "email": ["The email field is required."]
+  }
+}
+```
 
-## Banking-Specific Examples
-If a mobile client loses signal exactly when initiating a payment and retries 5 seconds later, the API Idempotency cache catches the duplicate request and returns the original success response.
+Response headers automatically include:
+- `X-Runtime: {ms}` — request execution time
+- `X-Memory: {MB}` — peak memory usage
+
+> [!NOTE]
+> Sensitive fields (`password`, `token`, `reset_token`, `password_hash`) are **automatically scrubbed** from all response payloads by `ResponseBuilder::scrub()`.
+
+## Error Handling
+
+The `ExceptionHandler` maps exception classes to HTTP status codes:
+
+| Exception | Status | Payload |
+|---|---|---|
+| `ValidationException` | 422 | `{message, errors:[]}` |
+| `AuthenticationException` | 401 | `{message}` |
+| `AuthorizationException` | 403 | `{message}` |
+| `ResourceNotFoundException` | 404 | `{message}` |
+| `ConflictException` | 409 | `{message}` |
+| `BusinessRuleException` | 400 | `{message}` |
+| Any `\Throwable` | 500 | `{"message":"Internal Server Error"}` (details logged only) |
+
+## Rate Limiting
+
+Implemented via `RateLimiter::check()` using file-based atomic locking (`flock()` on `storage/framework/cache/rate_limits.json`):
+
+| Scope | Limit | Window |
+|---|---|---|
+| Global (all IPs) | 60 requests | 1 minute |
+| Auth endpoints (`/auth/*`) | 5 requests | 5 minutes |
+
+```php
+// SecurityMiddleware.php
+RateLimiter::check("global_api_{$ip}", 60, 1);
+if (strpos($uri, '/auth/') !== false) {
+    RateLimiter::check("auth_api_{$ip}", 5, 5);
+}
+```
+
+Exceeding the limit throws `ApiException('Too Many Requests', 429)`.
+
+## Authentication
+
+All protected routes require an active PHP session. No JWTs are used. The session state is validated by `Auth::requireAuth()` inside the relevant Middleware class:
+
+```php
+// Auth::requireAuth() — idle timeout enforcement
+if (time() - $_SESSION['last_activity'] > 1800) {
+    Auth::logout();
+    throw new AuthenticationException('Session expired.');
+}
+```
 
 ## Best Practices
-- Adhere to RFC 7807 for standardized error responses.
+- Always return an array from controllers — never `echo` or `print` inside a controller.
+- Use domain-specific validators (`KYCValidator`, `TransactionValidator`) rather than ad-hoc `$_POST` checks.
+- Register all new routes in `routes/api.php` — never create standalone PHP files as endpoints.
 
 > [!IMPORTANT]
-> Every state-mutating API endpoint (POST/PUT/DELETE) must mandate an `X-Idempotency-Key` to prevent double-charging.
-- Enforce explicit API versioning in the URL (`/api/v1/`).
+> The `OPTIONS` preflight request is handled explicitly in `SecurityMiddleware`. All CORS headers are set there. Never set CORS headers inside individual controllers.
 
 ## Anti-Patterns
-- Using GET requests to mutate state.
-- Leaking internal database IDs or stack traces in a 500 error response.
-
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
-
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
+- Calling `header()` or `http_response_code()` inside a Controller (bypasses `ResponseBuilder`).
+- Using `$_GET['id']` directly without validation (SQL injection / type coercion risk).
+- Creating standalone `.php` endpoint files (violates the Front Controller pattern).
+- Trusting `$_SERVER['REMOTE_ADDR']` for security decisions without validating proxy headers.
 
 ## Traceability Matrix
+
 | Standard | Control | Description |
 |---|---|---|
-| RFC 7807 | Problem Details | Standardized JSON HTTP error definitions |
-| OWASP | A04:2021 | Insecure Design (Missing Rate Limits) |
+| OWASP | A04:2021 | Insecure Design (missing rate limits) |
+| OWASP | A09:2021 | Security Logging and Monitoring |
+| PCI-DSS | Req 6.5.1 | SQL Injection via parameterized queries |
+| RFC 7807 | Problem Details | Standardized HTTP error response format |
 
 ## Change Log
 
 | Version | Date | Author | Description |
 |---|---|---|---|
-| 3.0.0 | 2026-07-22 | API Integrations | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
+| 4.0.0 | 2026-07-22 | API Integrations | Phase 4: Full accuracy rewrite from routes/api.php and Router.php |
+| 3.0.0 | 2026-07-22 | API Integrations | Phase 3 Enhancement |
