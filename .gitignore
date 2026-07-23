@@ -1,12 +1,23 @@
+# ==============================================================================
+# FINZO ENTERPRISE GITIGNORE
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
 # IDEs and Editors
+# ------------------------------------------------------------------------------
 .idea/
 .vscode/
 *.swp
 *.swo
 *.sublime-workspace
 *.sublime-project
+.buildpath
+.project
+.settings/
 
-# OS generated files
+# ------------------------------------------------------------------------------
+# OS Generated Files
+# ------------------------------------------------------------------------------
 .DS_Store
 .DS_Store?
 ._*
@@ -16,7 +27,9 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# Logs and Temporary Files
+# ------------------------------------------------------------------------------
+# Logs & Temporary Files
+# ------------------------------------------------------------------------------
 *.log
 error_log
 php_errors.log
@@ -24,22 +37,33 @@ tmp/
 temp/
 storage/
 
-# User uploaded files
+# ------------------------------------------------------------------------------
+# User Uploads
+# ------------------------------------------------------------------------------
 /uploads/*
 !/uploads/.gitkeep
 !/uploads/index.html
-!/uploads/avatars/
 /uploads/avatars/*
 !/uploads/avatars/.gitkeep
 !/uploads/avatars/index.html
 
-# Environment variables and local configs
+# ------------------------------------------------------------------------------
+# Environment Variables & Local Configs
+# ------------------------------------------------------------------------------
 .env
+.env.backup
+.env.production
+.env.staging
 .env.local
 .env.*.local
 config/local.php
+*.key
+*.pem
+*.p12
 
-# Package managers (if used in future)
+# ------------------------------------------------------------------------------
+# Package Managers & Build Artifacts
+# ------------------------------------------------------------------------------
 vendor/
 composer.phar
 node_modules/
@@ -48,7 +72,14 @@ yarn-error.log
 package-lock.json
 yarn.lock
 phpunit.phar
+build/
 
-# PHPUnit cache files
+# ------------------------------------------------------------------------------
+# Testing & Coverage Artifacts
+# ------------------------------------------------------------------------------
 .phpunit.cache/
 phpunit.result.cache
+coverage.xml
+coverage/
+clover.xml
+.php_cs.cache
