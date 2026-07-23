@@ -7,7 +7,7 @@ class SecurityMiddleware
 {
     public function handle(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE && getenv('APP_ENV') !== 'testing') {
             session_set_cookie_params([
                 'secure' => true,
                 'httponly' => true,

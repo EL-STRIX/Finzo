@@ -71,9 +71,11 @@ class ResponseBuilder
 
                 // Enterprise API Performance Telemetry
         if (!headers_sent()) {
-            $runtime = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 2);
+            if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
+                $response['meta']['duration_ms'] = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, 2);
+            }
             $memory = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
-            header("X-Runtime: {$runtime}ms");
+            header("X-Runtime: " . ($response['meta']['duration_ms'] ?? 0) . "ms");
             header("X-Memory: {$memory}MB");
         }
         return self::scrub($response);

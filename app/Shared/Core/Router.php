@@ -108,6 +108,8 @@ class Router
                     if (is_array($response)) {
                         json_response($response, $response['code'] ?? (isset($response['success']) && $response['success'] === false ? 400 : 200));
                     }
+                } catch (\App\Shared\Core\Exceptions\TestResponseException $e) {
+                    throw $e;
                 } catch (\Throwable $e) {
                     \App\Shared\Core\Exceptions\ExceptionHandler::handle($e);
                 }

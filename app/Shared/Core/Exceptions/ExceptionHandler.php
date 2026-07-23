@@ -33,7 +33,7 @@ class ExceptionHandler
             $payload = array_merge(['message' => $e->getMessage()], $e->getPayload());
         } else {
             // Log unexpected exception
-            error_log($e->getMessage());
+            error_log((string)$e);
         }
 
         $formatted = ResponseBuilder::format($payload, $status);
@@ -43,6 +43,9 @@ class ExceptionHandler
             header('Content-Type: application/json; charset=utf-8');
         }
         echo json_encode($formatted, JSON_UNESCAPED_UNICODE);
-        exit;
+        
+        if (getenv('APP_ENV') !== 'testing') {
+            exit;
+        }
     }
 }
