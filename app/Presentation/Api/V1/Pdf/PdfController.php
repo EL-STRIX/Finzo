@@ -19,7 +19,7 @@ class PdfController
         $role = $_SESSION['role'] ?? null;
         $userId = $_SESSION['user_id'] ?? null;
 
-        $txnId = $_GET['id'] ?? $_GET['txn_id' '';
+        $txnId = $_GET['id'] ?? $_GET['txn_id'] ?? '';
         if (Validator::isEmpty($txnId)) die('Transaction ID is required');
 
         $txn = $this->service->getReceiptData($txnId, $role, $userId);
