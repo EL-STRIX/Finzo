@@ -22,9 +22,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    ignore:
-      # Ignore specific packages if they are tied to legacy systems
-      # - dependency-name: "some/legacy-package"
 
   # ---------------------------------------------------------------------------
   # GitHub Actions Workflows
