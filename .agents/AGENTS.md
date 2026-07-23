@@ -1,31 +1,77 @@
-# Agent Behavioral Rules
+# Agent Operational Manual
 
-These rules define the industry-standard development practices for the Finzo project. You must strictly adhere to these guidelines when writing or modifying code.
+## 1. Project Overview
+Finzo is an enterprise banking and financial platform. The technology stack consists of PHP 8.4 (Backend/API), MySQL 8.0, and vanilla JavaScript with Tailwind CSS (Frontend). The project architecture is heavily based on the Clean Architecture pattern, prioritizing isolated business logic, high security, enterprise-grade reliability, and strict adherence to modern PHP standards.
 
-## 1. Architecture & Code Quality
-- **Thin Controllers & Fat Services:** Controllers should only handle HTTP request/response routing and input validation. All business logic must reside in Service classes. Database interactions must be handled by Repository classes.
-- **Centralized Routing:** Do NOT create standalone procedural PHP files (e.g., `login.php`) to act as endpoints. All traffic should be routed through a centralized Front Controller (`index.php`) using a standard routing pattern.
-- **Dependency Injection:** Avoid `global` variables. Inject dependencies (like Database connections) via class constructors.
-- **Strict Typing:** Use explicit type hints for all function parameters and return types in PHP.
-- **Standards:** Follow PSR-12 coding standards for PHP. Keep methods short and focused on a single responsibility (SOLID principles). 
-- **Anti-Pattern Warning:** Do NOT use Traits simply as a hack to split large files; break the class into smaller, logical sub-controllers instead.
+## 2. Agent Responsibilities
+AI agents modifying this project must:
+- Follow existing architecture strictly.
+- Reuse existing code and components instead of reinventing them.
+- Minimize unnecessary changes to keep pull requests focused.
+- Maintain code quality and testing standards.
+- Respect project conventions across all domains.
 
-## 2. Frontend & Design System
-- **Strict Design System Compliance:** Always use the Finzo Enterprise Design System classes (`.ds-card`, `.ds-btn`, etc.). 
-- **No Inline Styles:** Do not use `style="..."` attributes in HTML. Rely on Tailwind CSS utility classes if a specific token does not exist in the design system.
+## 3. Core Development Rules
+Agents must adhere to the following engineering principles:
+- **Clean Architecture:** Keep infrastructure, routing, business logic, and presentation strictly decoupled.
+- **SOLID:** Ensure single-responsibility and dependency inversion.
+- **DRY (Don't Repeat Yourself):** Abstract common logic; do not duplicate code.
+- **KISS (Keep It Simple, Stupid):** Keep implementations straightforward and maintainable.
+- **PSR-12:** Follow PSR-12 coding standards strictly.
+- **Consistent Code Style:** Maintain consistent variable naming, docblocks, and indentation throughout the codebase.
 
-## 3. Security Best Practices
-- **SQL Injection Prevention:** Never interpolate variables directly into SQL queries. Always use PDO prepared statements with parameterized queries.
-- **Input Validation & Sanitization:** Never trust user input. Validate and sanitize all incoming request data before processing.
-- **CSRF & XSS Protection:** Ensure all state-changing endpoints validate CSRF tokens. Always escape output when rendering data in HTML views.
+## 4. Project Structure Rules
+When working inside the repository:
+- Respect the existing folder structure (`app/`, `tests/`, `public/`, `docs/`).
+- Do not create unnecessary files or folders.
+- Follow existing naming conventions for classes, files, and variables.
+- Keep modules logically organized by their bounded contexts.
+- Do not duplicate functionality across different modules.
 
-## 4. Testing & Reliability
-- **Testing:** Ensure that new business logic, service methods, and controller endpoints are accompanied by appropriate PHPUnit tests using the isolated `finzo_test_db`.
-- **Error Handling:** Catch exceptions gracefully. Do not expose raw error messages or stack traces to the end user. Return generic, user-friendly error messages.
+## 5. Implementation Rules
+Strict implementation behaviors to enforce:
+- **Thin Controllers:** Controllers must only handle routing, request validation, and JSON formatting.
+- **Fat Services:** All business logic MUST reside in `Service` classes.
+- **Repository Pattern:** Database interactions (`$this->db`) MUST exclusively reside in `Repository` classes.
+- **Reuse:** Always reuse existing utilities (e.g., `ResponseBuilder`, `ExceptionHandler`, `Validator`) instead of creating ad-hoc solutions.
+- **Precedence:** Follow existing patterns before attempting to introduce new architectural concepts.
+- **Modularity:** Keep code highly modular, testable, and maintainable.
 
-## 5. Version Control and Commits
-- **Frequent, Atomic Commits:** Make frequent, atomic commits in the middle of your work, scaled to the number of logical changes.
+## 6. Modification Boundaries
+The AI **must not** modify the following without explicit instructions from the user:
+- Database schema and migration scripts
+- Public APIs and routing endpoints
+- Authentication flows
+- Existing established features
+- Project folder structure
+- Configuration and CI/CD files
 
-## 6. Documentation
-- **PHPDoc Blocks:** Add clear PHPDoc comments to classes and complex methods explaining their purpose, parameters, and return types.
-- **Preserve Existing Comments:** Maintain the integrity of existing documentation. Do not remove unrelated comments or docstrings.
+## 7. Security Rules
+Agents must enforce these practical security rules:
+- **Validate inputs:** Never trust user input. Use the central `Validator` service.
+- **Escape outputs:** Always sanitize and escape data rendered in views to prevent XSS.
+- **Parameterized queries:** Always use PDO prepared statements to prevent SQL injection.
+- **Protect authentication:** Enforce strict session checks and CSRF validation on state-changing endpoints.
+- **Respect authorization:** Enforce role-based access controls using `SecurityService`.
+- **Never expose secrets:** Never log, print, or expose API keys, database credentials, or passwords.
+- **Security architecture:** Follow the existing enterprise security middleware architecture.
+
+## 8. Testing & Verification
+The AI is required to verify every change before concluding:
+- **Test modified functionality:** Ensure logic changes are covered by tests.
+- **Ensure no syntax errors:** Run static analysis or linter checks.
+- **Regression testing:** Ensure existing functionality still works by running the PHPUnit suite (`vendor/bin/phpunit`).
+- **Verify responsive UI:** Ensure layout integrity when frontend HTML/CSS changes.
+- **Verify database integrity:** Ensure transactions and foreign keys are respected when backend logic changes.
+
+## 9. Documentation Policy
+- Do **not** duplicate documentation.
+- Update relevant architecture documentation inside the `docs/` folder whenever significant implementation changes require it.
+- Keep `AGENTS.md` purely as an operational and behavioral guide, not a feature reference.
+
+## 10. Completion Policy
+The AI must never falsely report completion. Before marking work complete:
+- Verify requested work is actually fully implemented.
+- Verify no obvious errors, warnings, or broken tests remain.
+- Clearly disclose any incomplete work, edge cases, or follow-up tasks required.
+- Never claim "fully completed" without manual verification and testing.
