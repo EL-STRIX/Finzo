@@ -14,17 +14,11 @@ updates:
       - "dependencies"
       - "php"
     open-pull-requests-limit: 10
-    # Group minor and patch updates together to reduce PR noise
+    # Group all composer updates together to reduce PR noise
     groups:
-      composer-minor-patch:
+      composer-updates:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
-    ignore:
-      # Ignore specific packages if they are tied to legacy systems
-      # - dependency-name: "some/legacy-package"
 
   # ---------------------------------------------------------------------------
   # GitHub Actions Workflows
