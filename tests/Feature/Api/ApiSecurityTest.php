@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 class ApiSecurityTest extends TestCase
 {
     /** @test */
-    public function it_applies_security_headers_to_api_responses()
+    public function test_it_applies_security_headers_to_api_responses()
     {
         // Mocking Request/Response lifecycle for SecurityMiddleware
         $middleware = new \App\Presentation\Middleware\SecurityMiddleware();
@@ -17,21 +17,24 @@ class ApiSecurityTest extends TestCase
     }
 
     /** @test */
-    public function it_enforces_auth_rate_limiting()
+    public function test_it_enforces_auth_rate_limiting()
     {
         $ip = '127.0.0.1';
         $key = "auth_api_{$ip}";
         
-        \App\Shared\Core\Cache\FileCache::forget($key); // Ensure clean state
+        $file = FINZO_ROOT . '/storage/framework/cache/rate_limits.json';
+        if (file_exists($file)) {
+            @unlink($file);
+        }
         
         for ($i = 0; $i < 5; $i++) {
-            \App\Shared\Core\Security\RateLimiter::check($key, 5, 5);
+            \App\Shared\Security\RateLimiter::check($key, 5, 5);
         }
 
         $this->expectException(\App\Shared\Core\Exceptions\ApiException::class);
         $this->expectExceptionCode(429);
         
         // The 6th request should fail
-        \App\Shared\Core\Security\RateLimiter::check($key, 5, 5);
+        \App\Shared\Security\RateLimiter::check($key, 5, 5);
     }
 }

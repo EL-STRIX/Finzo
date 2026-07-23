@@ -14,10 +14,10 @@ class CsrfTest extends TestCase {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(200, $response['status']);
             $this->assertTrue($response['success']);
-            $this->assertNotEmpty($response['csrf_token']);
+            $this->assertNotEmpty($response['data']['csrf_token']);
             
             // Check session
-            $this->assertEquals($response['csrf_token'], $_SESSION['csrf_token']);
+            $this->assertEquals($response['data']['csrf_token'], $_SESSION['csrf_token']);
         }
     }
     

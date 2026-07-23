@@ -33,7 +33,12 @@ class RequestHelper {
             throw $e;
         }
         
-        return ob_get_clean();
+        $output = ob_get_clean();
+        if (!empty($output)) {
+            throw new \Exception($output);
+        }
+        
+        return $output;
     }
 
     public static function post(string $controllerPath, array $postData, array $sessionData = []) {

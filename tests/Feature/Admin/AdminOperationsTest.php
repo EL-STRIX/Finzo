@@ -39,9 +39,12 @@ class AdminOperationsTest extends TestCase {
             RequestHelper::getJson('/Admin/audit-log.php', ['per_page' => 10], $this->sessionData);
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
+            if (!isset($response['success'])) {
+                var_dump($e->getMessage());
+            }
             $this->assertTrue($response['success']);
-            $this->assertArrayHasKey('entries', $response);
-            $this->assertArrayHasKey('total', $response);
+            $this->assertArrayHasKey('entries', $response['data']);
+            $this->assertArrayHasKey('total', $response['data']);
             throw $e;
         }
     }
@@ -60,7 +63,7 @@ class AdminOperationsTest extends TestCase {
             $this->assertTrue($response['success']);
             
             $found = false;
-            foreach ($response['accounts'] as $acc) {
+            foreach ($response['data']['accounts'] as $acc) {
                 if ($acc['email'] === 'locked@test.com') {
                     $found = true;
                     break;

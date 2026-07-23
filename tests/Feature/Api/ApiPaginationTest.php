@@ -7,7 +7,7 @@ use App\Shared\Core\Database\ApiQueryBuilder;
 class ApiPaginationTest extends TestCase
 {
     /** @test */
-    public function it_calculates_pagination_metadata_correctly()
+    public function test_it_calculates_pagination_metadata_correctly()
     {
         $totalCount = 105;
         $paginationResult = [
@@ -26,7 +26,7 @@ class ApiPaginationTest extends TestCase
     }
 
     /** @test */
-    public function it_prevents_sql_injection_on_sort_fields()
+    public function test_it_prevents_sql_injection_on_sort_fields()
     {
         $_GET = [
             'sort' => 'id; DROP TABLE users;',

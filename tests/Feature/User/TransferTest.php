@@ -57,7 +57,7 @@ class TransferTest extends TestCase {
             
             $this->assertEquals(200, $response['status']);
             $this->assertTrue($response['success']);
-            $this->assertEquals(8500.00, $response['new_balance']);
+            $this->assertEquals(8500.00, $response['data']['new_balance']);
             
             // Verify database state
             $stmt = $this->db->prepare("SELECT balance FROM accounts WHERE account_no = ?");
