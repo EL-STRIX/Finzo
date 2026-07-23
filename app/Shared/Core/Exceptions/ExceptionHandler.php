@@ -1,0 +1,51 @@
+<?php
+namespace App\Shared\Core\Exceptions;
+
+use App\Shared\Core\Http\ResponseBuilder;
+
+class ExceptionHandler
+{
+    public static function handle(\Throwable $e): void
+    {
+        $status = 500;
+        $payload = ['message' => 'Internal Server Error'];
+
+        if ($e instanceof ValidationException) {
+            $status = 422;
+            $payload = ['message' => $e->getMessage(), 'errors' => $e->getPayload()['errors'] ?? []];
+        } elseif ($e instanceof AuthenticationException) {
+            $status = 401;
+            $payload = ['message' => $e->getMessage()];
+        } elseif ($e instanceof AuthorizationException) {
+            $status = 403;
+            $payload = ['message' => $e->getMessage()];
+        } elseif ($e instanceof ResourceNotFoundException) {
+            $status = 404;
+            $payload = ['message' => $e->getMessage()];
+        } elseif ($e instanceof ConflictException) {
+            $status = 409;
+            $payload = ['message' => $e->getMessage()];
+        } elseif ($e instanceof BusinessRuleException) {
+            $status = 400;
+            $payload = ['message' => $e->getMessage()];
+        } elseif ($e instanceof ApiException) {
+            $status = $e->getStatusCode();
+            $payload = array_merge(['message' => $e->getMessage()], $e->getPayload());
+        } else {
+            // Log unexpected exception
+            error_log((string)$e);
+        }
+
+        $formatted = ResponseBuilder::format($payload, $status);
+
+        if (!headers_sent()) {
+            http_response_code($status);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+        echo json_encode($formatted, JSON_UNESCAPED_UNICODE);
+        
+        if (getenv('APP_ENV') !== 'testing') {
+            exit;
+        }
+    }
+}

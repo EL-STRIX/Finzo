@@ -19,11 +19,11 @@ class KycTest extends TestCase {
         if (file_exists($this->dummyPng)) unlink($this->dummyPng);
         
         // Remove dummy uploads created by the test
-        $files = glob(dirname(__DIR__, 3) . '/public/uploads/profiles/*');
+        $files = glob(UPLOAD_PROFILES_PATH . '*');
         foreach($files as $file){
             if(is_file($file)) unlink($file);
         }
-        $files = glob(dirname(__DIR__, 3) . '/public/uploads/id-documents/*');
+        $files = glob(UPLOAD_ID_DOCUMENTS_PATH . '*');
         foreach($files as $file){
             if(is_file($file)) unlink($file);
         }
@@ -56,7 +56,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_successfully() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_validation_errors() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -151,7 +151,7 @@ class KycTest extends TestCase {
 
     public function test_complete_profile_fails_invalid_csrf() {
         $customerId = UserFactory::createCustomer();
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Shared\Core\Database::getInstance();
         $stmt = $db->prepare("SELECT * FROM users WHERE customer_id = ?");
         $stmt->execute([$customerId]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);

@@ -23,7 +23,7 @@ class RequestHelper {
         try {
             $router = require dirname(__DIR__, 2) . '/routes/api.php';
             $router->dispatch($method, $_SERVER['REQUEST_URI']);
-        } catch (\App\Core\Exceptions\ApiException $e) {
+        } catch (\App\Shared\Core\Exceptions\ApiException $e) {
             $payload = ['success' => false, 'message' => $e->getMessage()];
             if (!empty($e->getPayload())) $payload = array_merge($payload, $e->getPayload());
             // Since we are testing, we can format it like json_response does when testing
@@ -33,7 +33,12 @@ class RequestHelper {
             throw $e;
         }
         
-        return ob_get_clean();
+        $output = ob_get_clean();
+        if (!empty($output)) {
+            throw new \Exception($output);
+        }
+        
+        return $output;
     }
 
     public static function post(string $controllerPath, array $postData, array $sessionData = []) {

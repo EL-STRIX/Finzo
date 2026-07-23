@@ -11,13 +11,13 @@
 
 // ── 1. Set all env vars FIRST (before anything reads them) ──────────────────
 putenv('APP_ENV=testing');
-putenv('DB_HOST=127.0.0.1');
-putenv('DB_NAME=finzo_test_db');
+if (!getenv('DB_HOST')) putenv('DB_HOST=127.0.0.1');
+if (!getenv('DB_NAME')) putenv('DB_NAME=finzo_test_db');
 
 // Mock SCRIPT_NAME to prevent warnings in routing logic
 $_SERVER['SCRIPT_NAME'] = '/index.php';
-putenv('DB_USER=root');
-putenv('DB_PASS=');
+if (!getenv('DB_USER')) putenv('DB_USER=root');
+if (getenv('DB_PASS') === false) putenv('DB_PASS=');
 putenv('APP_DEBUG=false');
 
 define('FINZO_ROOT', dirname(__DIR__));
@@ -50,7 +50,10 @@ class TestPDO extends PDO {
 }
 
 try {
-    $provisionPdo = new TestPDO('mysql:host=127.0.0.1;port=3306;charset=utf8mb4', 'root', '', [
+    $dbHost = getenv('DB_HOST') ?: '127.0.0.1';
+    $dbUser = getenv('DB_USER') ?: 'root';
+    $dbPass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+    $provisionPdo = new TestPDO("mysql:host={$dbHost};port=3306;charset=utf8mb4", $dbUser, $dbPass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
     $provisionPdo->exec("CREATE DATABASE IF NOT EXISTS finzo_test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");

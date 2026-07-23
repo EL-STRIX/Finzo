@@ -23,7 +23,7 @@ if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
     // PHPMailer not found — define a fallback that logs errors
     function send_email($to_email, $to_name, $subject, $html_body)
     {
-        error_log("PHPMailer not installed. Email to {$to_email} with subject '{$subject}' was not sent.");
+        \App\Shared\Core\Logging\Logger::getInstance()->error("PHPMailer not installed. Email to {$to_email} with subject '{$subject}' was not sent.");
         return ['success' => false, 'message' => 'Email service not configured. PHPMailer library not found.'];
     }
     return;
@@ -78,7 +78,7 @@ if (!function_exists('send_email')) {
 
             return ['success' => true, 'message' => 'Email sent successfully'];
         } catch (Exception $e) {
-            error_log("Finzo Mailer Error: " . $mail->ErrorInfo);
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Finzo Mailer Error: ', ['context' => $mail->ErrorInfo]);
             return ['success' => false, 'message' => 'Email could not be sent. Error: ' . $mail->ErrorInfo];
         }
     }
@@ -96,7 +96,7 @@ function load_email_template($template_name, $variables = [])
     $template_path = dirname(__DIR__) . '/resources/views/emails/' . $template_name . '.php';
 
     if (!file_exists($template_path)) {
-        error_log("Email template not found: {$template_path}");
+        \App\Shared\Core\Logging\Logger::getInstance()->error("Email template not found: {$template_path}");
         return '';
     }
 
@@ -116,21 +116,21 @@ function load_email_template($template_name, $variables = [])
  * @param PDO $pdo Database connection (unused here but kept for consistency)
  * @param string $email Customer email
  * @param string $name Customer full name
- * @param string $account_no Assigned account number
+ * @param string $accountNumber Assigned account number
  * @return array Result from send_email
  */
-function send_welcome_email($pdo, $email, $name, $account_no)
+function send_welcome_email($pdo, $email, $name, $accountNumber)
 {
     $html = load_email_template('welcome-email', [
         'name' => $name,
-        'account_no' => $account_no,
+        'account_no' => $accountNumber,
         'app_url' => APP_URL
     ]);
 
     if (empty($html)) {
         $html = "<h2>Welcome to Finzo, {$name}!</h2>"
               . "<p>Your account has been approved.</p>"
-              . "<p>Your Account Number: <strong>{$account_no}</strong></p>"
+              . "<p>Your Account Number: <strong>{$accountNumber}</strong></p>"
               . "<p>You can now login and start banking at <a href='" . APP_URL . "'>" . APP_URL . "</a></p>";
     }
 
@@ -165,21 +165,21 @@ function send_under_review_email($email, $name)
  *
  * @param string $email Customer email
  * @param string $name Customer full name
- * @param string $account_no Assigned account number
+ * @param string $accountNumber Assigned account number
  * @return array Result from send_email
  */
-function send_approved_email($email, $name, $account_no)
+function send_approved_email($email, $name, $accountNumber)
 {
     $html = load_email_template('approved-email', [
         'name' => $name,
-        'account_no' => $account_no,
+        'account_no' => $accountNumber,
         'app_url' => APP_URL
     ]);
 
     if (empty($html)) {
         $html = "<h2>Congratulations, {$name}!</h2>"
               . "<p>Your KYC verification has been approved.</p>"
-              . "<p>Your Account Number: <strong>{$account_no}</strong></p>"
+              . "<p>Your Account Number: <strong>{$accountNumber}</strong></p>"
               . "<p>Login now to start banking: <a href='" . APP_URL . "'>" . APP_URL . "</a></p>";
     }
 

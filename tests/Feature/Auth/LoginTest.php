@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 use Tests\TestCase;
 use Tests\Helpers\RequestHelper;
 use Tests\Factories\UserFactory;
-use App\Core\Database;
+use App\Shared\Core\Database;
 
 class LoginTest extends TestCase {
     

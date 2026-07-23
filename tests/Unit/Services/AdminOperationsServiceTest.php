@@ -2,8 +2,8 @@
 namespace Tests\Unit\Services;
 
 use Tests\TestCase;
-use App\Services\AdminOperationsService;
-use App\Repositories\AdminOperationsRepository;
+use App\Application\Services\AdminOperationsService;
+use App\Infrastructure\Repositories\AdminOperationsRepository;
 use Tests\Factories\UserFactory;
 use Tests\Factories\AdminFactory;
 

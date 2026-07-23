@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Factories;
 
-use App\Core\Database;
+use App\Shared\Core\Database;
 use PDO;
 
 class AdminFactory {

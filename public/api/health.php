@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../config/db.php';
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-    $db = \App\Core\Database::getInstance();
+    $db = \App\Shared\Core\Database::getInstance();
     
     $status = [
         'status' => 'healthy',

@@ -2,8 +2,8 @@
 namespace Tests\Unit\Services;
 
 use Tests\TestCase;
-use App\Services\UserService;
-use App\Repositories\UserRepository;
+use App\Application\Services\UserService;
+use App\Infrastructure\Repositories\UserRepository;
 
 class UserServiceKycTest extends TestCase {
     protected UserService $service;
