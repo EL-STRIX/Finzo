@@ -13,7 +13,8 @@ class Database
 
     private function __construct()
     {
-        if ($pdo instanceof PDO) {
+        global $pdo;
+        if (isset($pdo) && $pdo instanceof PDO) {
             // Use the globally configured connection (set by config/db.php)
             $this->pdo = $pdo;
             return;
