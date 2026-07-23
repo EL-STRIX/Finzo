@@ -39,8 +39,6 @@ jobs:
         sed -i 's/APP_ENV=development/APP_ENV=testing/g' .env
         sed -i 's/DB_NAME=finzo_db/DB_NAME=finzo_test_db/g' .env
 
-    - name: Run Database Migrations
-      run: php vendor/bin/phinx migrate -e testing
 
     - name: Execute Enterprise API Test Suite
       run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
