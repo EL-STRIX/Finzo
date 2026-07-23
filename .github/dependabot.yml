@@ -1,21 +1,46 @@
 version: 2
 updates:
-  # Scan Composer dependencies weekly
+  # ---------------------------------------------------------------------------
+  # PHP / Composer Dependencies
+  # ---------------------------------------------------------------------------
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
     labels:
       - "dependencies"
       - "php"
     open-pull-requests-limit: 10
+    # Group minor and patch updates together to reduce PR noise
+    groups:
+      composer-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # Ignore specific packages if they are tied to legacy systems
+      # - dependency-name: "some/legacy-package"
 
-  # Scan GitHub Actions daily
+  # ---------------------------------------------------------------------------
+  # GitHub Actions Workflows
+  # ---------------------------------------------------------------------------
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "UTC"
     labels:
       - "dependencies"
       - "github-actions"
     open-pull-requests-limit: 5
+    groups:
+      actions-updates:
+        patterns:
+          - "*"

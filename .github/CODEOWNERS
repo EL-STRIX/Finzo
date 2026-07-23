@@ -1,15 +1,36 @@
-# Global owners
-*       @finzo-devops @finzo-backend
+# -----------------------------------------------------------------------------
+# FINZO ENTERPRISE CODEOWNERS
+# -----------------------------------------------------------------------------
+# This file defines the owners for specific areas of the repository.
+# Approvals from the listed teams/individuals are required for modifications.
 
-# Frontend
-/public/assets/css/   @finzo-frontend
-/resources/views/     @finzo-frontend
+# --- Global Default ---
+# Catch-all for files not explicitly matched below
+*                       @finzo/architecture-board @finzo/core-maintainers
 
-# Backend Core
-/app/                 @finzo-backend
-/config/              @finzo-backend
-/database/            @finzo-backend
+# --- Application Core ---
+/app/                   @finzo/backend-engineering
+/config/                @finzo/backend-engineering @finzo/security-team
+/database/              @finzo/database-administrators
+/public/index.php       @finzo/backend-engineering
 
-# DevOps & CI/CD
-/.github/             @finzo-devops
-/ops/                 @finzo-devops
+# --- Frontend & UI ---
+/public/                @finzo/frontend-engineering
+/resources/             @finzo/frontend-engineering
+
+# --- Security & Auth ---
+/app/Shared/Security/   @finzo/security-team
+/app/Presentation/Middleware/SecurityMiddleware.php @finzo/security-team
+
+# --- Testing & Quality Assurance ---
+/tests/                 @finzo/qa-engineering
+phpunit.xml             @finzo/qa-engineering
+
+# --- Infrastructure & DevOps ---
+/.github/               @finzo/devops-engineering
+/ops/                   @finzo/devops-engineering
+docker-compose.yml      @finzo/devops-engineering
+
+# --- Documentation ---
+/docs/                  @finzo/technical-writers @finzo/architecture-board
+README.md               @finzo/technical-writers
