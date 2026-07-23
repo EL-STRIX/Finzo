@@ -5,13 +5,13 @@ namespace App\Application\Events;
 abstract class AuditLogEvent
 {
     protected string $actionType;
-    protected int $entityId;
+    protected string|int|null $entityId;
     protected string $entityType;
-    protected int $actorId;
+    protected string|int|null $actorId;
     protected string $actorRole;
     protected string $details;
 
-    public function __construct(string $actionType, int $entityId, string $entityType, int $actorId, string $actorRole, string $details)
+    public function __construct(string $actionType, string|int|null $entityId, string $entityType, string|int|null $actorId, string $actorRole, string $details)
     {
         $this->actionType = $actionType;
         $this->entityId = $entityId;

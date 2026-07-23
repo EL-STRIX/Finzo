@@ -306,9 +306,9 @@ class AdminOperationsService
         // Global function from config/functions.php
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
+    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
 );
-        }
+        
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }
@@ -536,15 +536,16 @@ class AdminOperationsService
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}")
 );
-        }
+        
 
         return ['success' => true, 'message' => 'User recovered successfully'];
     }
 
     public function getApplicationDetails(int $userId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $user = $this->repository->getApplicationUser($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'Application not found', 'code' => 404];
@@ -676,6 +677,7 @@ class AdminOperationsService
 
     public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $user = $this->repository->getApplicationUser($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'User not found', 'code' => 404];
@@ -723,9 +725,9 @@ class AdminOperationsService
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']. Account: {$accountNumber}")
+    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
 );
-                    }
+                    
 
                     return ['success' => true, 'message' => 'Application approved successfully', 'account_no' => $accountNumber];
 
@@ -745,18 +747,18 @@ class AdminOperationsService
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
 );
-                    }
+                    
 
                     return ['success' => true, 'message' => 'Application rejected'];
 
                 case 'save_notes':
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes")
+    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}")
 );
-                    }
+                    
                     $this->repository->saveAdminNotes($customer_id, $notes);
                     return ['success' => true, 'message' => 'Notes saved successfully'];
 
@@ -1070,9 +1072,9 @@ class AdminOperationsService
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name'] ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
 );
-        }
+        
 
         if (!isset($_SESSION['temp_passwords'])) {
             $_SESSION['temp_passwords'] = [];
@@ -1130,9 +1132,9 @@ class AdminOperationsService
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] suspended. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}")
 );
-                }
+                
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
             case 'reinstate':
@@ -1153,9 +1155,9 @@ class AdminOperationsService
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] reinstated")
+    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated")
 );
-                }
+                
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
             case 'delete':
@@ -1170,9 +1172,9 @@ class AdminOperationsService
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] soft-deleted. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}")
 );
-                }
+                
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
             case 'recover':
@@ -1209,9 +1211,9 @@ class AdminOperationsService
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
-                }
+                
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
             case 'hard_delete':
@@ -1221,9 +1223,9 @@ class AdminOperationsService
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name'] permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.")
 );
-                }
+                
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
             case 'delete_account_only':
@@ -1233,9 +1235,9 @@ class AdminOperationsService
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name'] permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.")
 );
-                }
+                
                 return ['success' => true, 'message' => 'Account permanently deleted'];
         }
         return ['success' => false, 'message' => 'Action failed', 'code' => 500];

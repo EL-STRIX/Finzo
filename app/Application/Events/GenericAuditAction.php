@@ -4,15 +4,8 @@ namespace App\Application\Events;
 
 class GenericAuditAction extends AuditLogEvent
 {
-    private array $payload;
-
-    public function __construct(array $payload)
+    public function __construct(string $actionType, string|int|null $entityId, string $entityType, string|int|null $actorId, string $actorRole, string $details)
     {
-        $this->payload = $payload;
-    }
-
-    public function getPayload(): array
-    {
-        return $this->payload;
+        parent::__construct($actionType, $entityId, $entityType, $actorId, $actorRole, $details);
     }
 }

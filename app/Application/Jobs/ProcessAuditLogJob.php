@@ -21,11 +21,10 @@ class ProcessAuditLogJob extends Job
         $pdo = Database::getInstance();
         
         $security->writeAuditLog(
-            $pdo,
             $this->data['action_type'],
-            $this->data['entity_id'],
+            $this->data['entity_id'] ?? '',
             $this->data['entity_type'],
-            $this->data['actor_id'],
+            $this->data['actor_id'] ?? '',
             $this->data['actor_role'],
             $this->data['details'] ?? ''
         );
