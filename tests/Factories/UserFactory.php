@@ -66,4 +66,55 @@ class UserFactory {
         
         return $accountNo;
     }
+    
+    public static function createAdmin(array $overrides = []): string {
+        $db = Database::getInstance();
+        $adminId = $overrides['admin_id'] ?? 'ADM' . rand(100, 999);
+        $email = $overrides['email'] ?? strtolower($adminId) . '@example.com';
+        $password = password_hash($overrides['password'] ?? 'Password123!', PASSWORD_BCRYPT);
+        
+        $sql = "INSERT INTO admin_users (admin_id, full_name, email, password_hash, status, admin_role) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $db->prepare($sql)->execute([
+            $adminId,
+            $overrides['full_name'] ?? 'Test Admin',
+            $email,
+            $password,
+            $overrides['status'] ?? 'active',
+            $overrides['admin_role'] ?? 'super_admin',
+        ]);
+        
+        return $adminId;
+    }
+    
+    public static function createStaff(array $overrides = []): string {
+        $db = Database::getInstance();
+        
+        // Ensure at least one branch exists
+        $branchId = $db->query("SELECT id FROM branches LIMIT 1")->fetchColumn();
+        if (!$branchId) {
+            $db->prepare("INSERT INTO branches (name, branch_code, state) VALUES (?, ?, ?)")
+               ->execute(['Main Branch', 'FINZ0000001', 'Default State']);
+            $branchId = $db->lastInsertId();
+        }
+        
+        $staffId = $overrides['staff_id'] ?? 'EMP' . rand(100, 999);
+        $email = $overrides['email'] ?? strtolower($staffId) . '@example.com';
+        $password = password_hash($overrides['password'] ?? 'Password123!', PASSWORD_BCRYPT);
+        
+        $sql = "INSERT INTO staff (staff_id, branch_id, full_name, personal_email, phone, password_hash, status, designation) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $db->prepare($sql)->execute([
+            $staffId,
+            $branchId,
+            $overrides['full_name'] ?? 'Test Staff',
+            $email,
+            $overrides['phone'] ?? '8' . rand(100000000, 999999999),
+            $password,
+            $overrides['status'] ?? 'active',
+            $overrides['designation'] ?? 'Teller',
+        ]);
+        
+        return $staffId;
+    }
 }

@@ -35,7 +35,7 @@ class UserController
         try {
             $result = $this->service->fetchAccountLookup($accountNumber);
             if (!$result || $result['status'] !== 'active') {
-                json_response(['success' => false, 'message' => 'Finzo account not found']);
+                json_response(['success' => false, 'message' => 'Finzo account not found'], 404);
             }
             json_response([
                 'success' => true,
@@ -68,7 +68,7 @@ class UserController
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $daily_limit = $this->security->cleanInput($_POST['daily_limit'] ?? '');
                 if (!is_numeric($daily_limit) || $daily_limit < 1000 || $daily_limit > 100000) {
-                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000']);
+                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000'], 422);
                 }
                 $this->service->updateDailyLimit($account['id'], $daily_limit);
                 json_response(['success' => true, 'message' => 'Daily limit updated']);
@@ -324,6 +324,7 @@ class UserController
             }
             $pdo->commit();
             $_SESSION['user_status'] = 'under_review';
+            require_once FINZO_ROOT . '/config/mailer.php';
             send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
             send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/views/user/dashboard.html']);
