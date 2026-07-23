@@ -35,6 +35,11 @@ class SecurityMiddleware
             exit;
         }
 
+        // Skip rate limiting in test environment
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            return;
+        }
+
         // Global API Rate Limiting (60 requests per minute per IP)
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         RateLimiter::check("global_api_{$ip}", 60, 1);

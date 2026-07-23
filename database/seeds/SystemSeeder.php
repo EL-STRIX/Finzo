@@ -5,9 +5,9 @@ class SystemSeeder
     public function run(PDO $db): void
     {
         $db->exec("
-            INSERT IGNORE INTO system_settings (setting_key, setting_value, category, description) VALUES 
-            ('maintenance_mode', 'false', 'general', 'Enable or disable maintenance mode'),
-            ('default_currency', 'INR', 'general', 'System default currency'),
+            INSERT IGNORE INTO system_settings (setting_key, setting_value, setting_category, description) VALUES 
+            ('maintenance_mode', 'false', 'application', 'Enable or disable maintenance mode'),
+            ('default_currency', 'INR', 'application', 'System default currency'),
             ('max_failed_login_attempts', '5', 'security', 'Number of failed logins before lockout'),
             ('customer_lockout_duration', '1800', 'security', 'Lockout duration in seconds'),
             ('min_initial_deposit', '500', 'banking', 'Minimum deposit for new accounts'),
@@ -15,8 +15,8 @@ class SystemSeeder
         ");
 
         $db->exec("
-            INSERT IGNORE INTO branches (branch_code, branch_name, branch_address, ifsc_code, status) VALUES 
-            ('BR001', 'Head Office', 'Mumbai', 'FNZ0000001', 'active');
+            INSERT IGNORE INTO branches (branch_code, name, state, type, status) VALUES 
+            ('BR001', 'Head Office', 'Maharashtra', 'system', 'active');
         ");
         
         $db->exec("
