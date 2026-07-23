@@ -21,8 +21,8 @@ class SecurityService
         \check_admin_permission(\App\Shared\Core\Database::getInstance(), $adminId, $permission);
     }
 
-    public function writeAuditLog(string $actionType, string $targetId, string $targetType, string $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
+    public function writeAuditLog(string $actionType, string|int|null $targetId, string $targetType, string|int|null $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
     {
-        \write_audit_log(\App\Shared\Core\Database::getInstance(), $actionType, $targetId, $targetType, $actorId, $actorRole, $details);
+        \write_audit_log(\App\Shared\Core\Database::getInstance(), $actionType, $targetId ?? '', $targetType, $actorId ?? '', $actorRole, $details);
     }
 }

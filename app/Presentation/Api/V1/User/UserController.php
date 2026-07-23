@@ -724,7 +724,7 @@ class UserController
 
             send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
             send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
-            $this->security->writeAuditLog($pdo, 'fund_transfer', $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
+            $this->security->writeAuditLog('fund_transfer', $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
 
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
