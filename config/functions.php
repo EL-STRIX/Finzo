@@ -497,6 +497,9 @@ function validate_password_strength($password)
     if (!preg_match('/[A-Z]/', $password)) {
         return ['valid' => false, 'message' => 'Password must contain at least one uppercase letter'];
     }
+    if (!preg_match('/[a-z]/', $password)) {
+        return ['valid' => false, 'message' => 'Password must contain at least one lowercase letter'];
+    }
     if (!preg_match('/[0-9]/', $password)) {
         return ['valid' => false, 'message' => 'Password must contain at least one number'];
     }

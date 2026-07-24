@@ -23,14 +23,9 @@ class AuthController
     {
         $identity = $this->security->cleanInput($_POST['identity'] ?? '');
         $password = $_POST['password'] ?? '';
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            throw new ApiException('Invalid or missing CSRF token', 403);
-        }
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($identity) || \App\Shared\Core\Validation\Validator::isEmpty($password)) {
-            throw new ApiException('Email/Account Number and password are required', 422);
-        }
+        \App\Presentation\Validators\AuthValidator::validateCustomerLogin($identity, $password, $csrfToken, $this->security);
 
         $result = $this->service->loginUser($identity, $password);
 
@@ -96,15 +91,10 @@ class AuthController
 
     public function forgotPassword(?string $id = null, ?string $extra = null): array
     {
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
-
         $email = $this->security->cleanInput($_POST['email'] ?? '');
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($email) || !\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
-            throw new ApiException('Please enter a valid email address', 422);
-        }
+        \App\Presentation\Validators\AuthValidator::validateForgotPassword($email, $csrfToken, $this->security);
 
         $this->service->forgotPassword($email);
 
@@ -116,36 +106,12 @@ class AuthController
 
     public function resetPassword(?string $id = null, ?string $extra = null): array
     {
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
-
         $token            = $this->security->cleanInput($_POST['token'] ?? '');
         $newPassword     = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        $errors = [];
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($token)) {
-            throw new ApiException('Reset token is required', 422);
-        }
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
-            $errors['new_password'] = 'New password is required';
-        } else {
-            $strength = validate_password_strength($newPassword);
-            if (!$strength['valid']) {
-                $errors['new_password'] = $strength['message'];
-            }
-        }
-
-        if ($newPassword !== $confirmPassword) {
-            $errors['confirm_password'] = 'Passwords do not match';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
-        }
+        \App\Presentation\Validators\AuthValidator::validateResetPassword($token, $newPassword, $confirmPassword, $csrfToken, $this->security);
 
         $this->service->resetPassword($token, $newPassword);
 
@@ -160,52 +126,14 @@ class AuthController
 
     public function register()
     {
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
-
         $fullName        = $this->security->cleanInput($_POST['full_name'] ?? '');
         $email            = trim($_POST['email'] ?? '');
         $phone            = $this->security->cleanInput($_POST['phone'] ?? '');
         $password         = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        $errors = [];
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($fullName)) {
-            $errors['full_name'] = 'Full name is required';
-        } elseif (\App\Shared\Core\Validation\Validator::length($fullName) < 2 || \App\Shared\Core\Validation\Validator::length($fullName) > 100) {
-            $errors['full_name'] = 'Full name must be between 2 and 100 characters';
-        }
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($email)) {
-            $errors['email'] = 'Email address is required';
-        } elseif (!\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address';
-        }
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($phone)) {
-            $errors['phone'] = 'Phone number is required';
-        } elseif (!validate_phone($phone)) {
-            $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
-        }
-
-        if (\App\Shared\Core\Validation\Validator::isEmpty($password)) {
-            $errors['password'] = 'Password is required';
-        } else {
-            $strength = validate_password_strength($password);
-            if (!$strength['valid']) {
-                $errors['password'] = $strength['message'];
-            }
-        }
-
-        if ($password !== $confirmPassword) {
-            $errors['confirm_password'] = 'Passwords do not match';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            throw new ApiException('Validation failed', 422, ['errors' => $errors]);
-        }
+        \App\Presentation\Validators\AuthValidator::validateRegistration($fullName, $email, $phone, $password, $confirmPassword, $csrfToken, $this->security);
 
         $this->service->registerUser($fullName, $email, $phone, $password);
 
