@@ -35,10 +35,9 @@ jobs:
 
     - name: Prepare Test Environment
       run: |
-        cp .env.example .env
-        sed -i 's/APP_ENV=development/APP_ENV=testing/g' .env
-        sed -i 's/DB_NAME=finzo_db/DB_NAME=finzo_test_db/g' .env
-
+        if [ ! -f .env.testing ]; then cp .env.example .env.testing; fi
+        sed -i 's/DB_PASS=.*/DB_PASS=root/g' .env.testing
+        sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/g' .env.testing
 
     - name: Execute Enterprise API Test Suite
       env:
