@@ -7,9 +7,10 @@ class RequestHelper {
      * This supports both modernized mapped routes and legacy procedural controllers
      * (via the Router's Strangler Fig fallback).
      */
-    private static function dispatchRoute(string $method, string $controllerPath, array $postData = [], array $getData = [], array $sessionData = []) {
+    private static function dispatchRoute(string $method, string $controllerPath, array $postData = [], array $getData = [], array $sessionData = [], array $fileData = []) {
         $_POST = $postData;
         $_GET = $getData;
+        $_FILES = $fileData;
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['HTTP_ACCEPT'] = 'application/json';
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
@@ -41,12 +42,12 @@ class RequestHelper {
         return $output;
     }
 
-    public static function post(string $controllerPath, array $postData, array $sessionData = []) {
-        return self::dispatchRoute('POST', $controllerPath, $postData, [], $sessionData);
+    public static function post(string $controllerPath, array $postData, array $sessionData = [], array $fileData = []) {
+        return self::dispatchRoute('POST', $controllerPath, $postData, [], $sessionData, $fileData);
     }
 
-    public static function postJson(string $controllerPath, array $postData, array $sessionData = []) {
-        $output = self::post($controllerPath, $postData, $sessionData);
+    public static function postJson(string $controllerPath, array $postData, array $sessionData = [], array $fileData = []) {
+        $output = self::post($controllerPath, $postData, $sessionData, $fileData);
         if (empty($output)) return [];
         $decoded = json_decode($output, true);
         if (json_last_error() !== JSON_ERROR_NONE) {

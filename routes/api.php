@@ -6,6 +6,7 @@ use App\Presentation\Api\V1\Admin\AdminOperationsController;
 use App\Presentation\Api\V1\Admin\AdminStaffController;
 use App\Presentation\Api\V1\Admin\AdminBranchController;
 use App\Presentation\Api\V1\Auth\AuthController;
+use App\Presentation\Api\V1\Uploads\UploadController;
 
 $router = new Router();
 
