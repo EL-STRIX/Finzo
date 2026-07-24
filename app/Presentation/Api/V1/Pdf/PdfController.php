@@ -15,7 +15,7 @@ class PdfController
 
     public function receipt()
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
         $userId = $_SESSION['user_id'] ?? null;
 
@@ -33,7 +33,7 @@ class PdfController
 
     public function staffStatement()
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
         $userId = $_SESSION['user_id'] ?? null;
 
@@ -54,7 +54,7 @@ class PdfController
 
     public function statement()
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
         $userId = $_SESSION['user_id'] ?? null;
 

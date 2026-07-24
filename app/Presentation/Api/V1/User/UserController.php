@@ -248,7 +248,10 @@ class UserController
             $new_hash = password_hash($newPassword, PASSWORD_BCRYPT);
             $this->service->updatePassword($userId, $new_hash);
             send_notification($this->service->getDb(), $user['customer_id'], 'security', 'Password Changed', 'Your account password was changed successfully. If you did not make this change, please contact support immediately.');
-            json_response(['success' => true, 'message' => 'Password changed successfully']);
+
+            \App\Shared\Security\SessionManager::destroy();
+
+            json_response(['success' => true, 'message' => 'Password updated successfully. Please log in again.']);
         } catch (PDOException $e) {
             json_response(['success' => false, 'message' => 'Failed to change password'], 500);
         }

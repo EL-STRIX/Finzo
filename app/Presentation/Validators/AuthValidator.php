@@ -9,12 +9,6 @@ class AuthValidator
 {
     public static function validateLogin(string $identity, string $password, string $csrfToken): void
     {
-        if (empty($csrfToken)) {
-            throw new ApiException('Security token missing. Please refresh the page.', 403);
-        }
-        if (!validate_csrf_token($csrfToken)) {
-            throw new ApiException('Invalid or expired security session. Please try again.', 403);
-        }
         if (empty($identity) || empty($password)) {
             throw new ApiException('Identity and password are required', 422);
         }
@@ -22,9 +16,6 @@ class AuthValidator
 
     public static function validateCustomerLogin(string $identity, string $password, string $csrfToken, \App\Shared\Security\SecurityService $security): void
     {
-        if (!$security->validateCsrfToken($csrfToken)) {
-            throw new ApiException('Invalid or missing CSRF token', 403);
-        }
         if (Validator::isEmpty($identity) || Validator::isEmpty($password)) {
             throw new ApiException('Email/Account Number and password are required', 422);
         }
@@ -32,9 +23,6 @@ class AuthValidator
 
     public static function validateForgotPassword(string $email, string $csrfToken, \App\Shared\Security\SecurityService $security): void
     {
-        if (!$security->validateCsrfToken($csrfToken)) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
 
         if (Validator::isEmpty($email) || !Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
             throw new ApiException('Please enter a valid email address', 422);
@@ -43,9 +31,6 @@ class AuthValidator
 
     public static function validateResetPassword(string $token, string $newPassword, string $confirmPassword, string $csrfToken, \App\Shared\Security\SecurityService $security): void
     {
-        if (!$security->validateCsrfToken($csrfToken)) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
 
         $errors = [];
 
@@ -73,9 +58,6 @@ class AuthValidator
 
     public static function validateRegistration(string $fullName, string $email, string $phone, string $password, string $confirmPassword, string $csrfToken, \App\Shared\Security\SecurityService $security): void
     {
-        if (!$security->validateCsrfToken($csrfToken)) {
-            throw new ApiException('Invalid security token. Please refresh and try again.', 403);
-        }
 
         $errors = [];
 

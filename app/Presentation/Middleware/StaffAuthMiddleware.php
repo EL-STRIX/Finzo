@@ -9,7 +9,7 @@ class StaffAuthMiddleware
     public function handle()
     {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            \App\Shared\Security\SessionManager::start();
         }
 
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'staff') {

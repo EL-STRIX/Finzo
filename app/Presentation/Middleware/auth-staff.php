@@ -3,7 +3,7 @@
 use App\Shared\Core\Exceptions\ApiException;
 
 if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-    session_start();
+    \App\Shared\Security\SessionManager::start();
 }
 if (!isset($_SESSION['staff_id']) || $_SESSION['role'] !== 'staff') {
     $e = new ApiException("Unauthorized access", 401);

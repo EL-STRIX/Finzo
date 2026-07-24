@@ -61,7 +61,7 @@ abstract class TestCase extends BaseTestCase {
      */
     protected function actingAs(array $user, string $role = 'customer'): self {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            \App\Shared\Security\SessionManager::start();
         }
         $_SESSION['user_id'] = $user['id'] ?? 1;
         $_SESSION['role'] = $role;

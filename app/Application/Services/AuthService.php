@@ -72,7 +72,7 @@ class AuthService
         $account = $this->repository->fetchActiveAccount($user['customer_id']);
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+            \App\Shared\Security\SessionManager::regenerate(true);
         }
         $_SESSION['user_id']          = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
@@ -158,7 +158,7 @@ class AuthService
         $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+            \App\Shared\Security\SessionManager::regenerate(true);
         }
         $_SESSION['admin_id']      = (int)$admin['id'];
         $_SESSION['admin_name']    = $admin['full_name'];
@@ -223,7 +223,7 @@ class AuthService
         $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+            \App\Shared\Security\SessionManager::regenerate(true);
         }
         $_SESSION['staff_id']      = (int)$staff['id'];
         $_SESSION['staff_display_id'] = $staff['staff_id'];
@@ -320,7 +320,7 @@ class AuthService
             $userId = $this->repository->createUser($customer_id, $fullName, $email, $phone, $password_hash);
 
             if (session_status() === PHP_SESSION_ACTIVE) {
-                session_regenerate_id(true);
+                \App\Shared\Security\SessionManager::regenerate(true);
             }
             $_SESSION['user_id']     = (int)$userId;
             $_SESSION['user_name']   = $fullName;

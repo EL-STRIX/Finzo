@@ -11,7 +11,7 @@ class AuthValidatorTest extends TestCase {
         parent::setUp();
         // Set a fake CSRF token in session
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
+            \App\Shared\Security\SessionManager::start();
         }
         $_SESSION['csrf_token'] = 'valid-token';
         $_SESSION['csrf_token_time'] = time();
@@ -23,18 +23,7 @@ class AuthValidatorTest extends TestCase {
         AuthValidator::validateLogin('user@example.com', 'password', 'valid-token');
     }
     
-    public function testValidateLoginThrowsExceptionOnMissingCsrf() {
-        $this->expectException(ApiException::class);
-        $this->expectExceptionMessage('Security token missing');
-        AuthValidator::validateLogin('user@example.com', 'password', '');
-    }
-    
-    public function testValidateLoginThrowsExceptionOnInvalidCsrf() {
-        $this->expectException(ApiException::class);
-        $this->expectExceptionMessage('Invalid or expired security session');
-        AuthValidator::validateLogin('user@example.com', 'password', 'invalid-token');
-    }
-    
+
     public function testValidateLoginThrowsExceptionOnMissingIdentity() {
         $this->expectException(ApiException::class);
         $this->expectExceptionMessage('Identity and password are required');

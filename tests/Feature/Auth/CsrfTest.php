@@ -7,6 +7,18 @@ use Tests\Factories\UserFactory;
 
 class CsrfTest extends TestCase {
     
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $_SERVER['HTTP_X_ENFORCE_CSRF'] = 'true';
+    }
+
+    protected function tearDown(): void
+    {
+        unset($_SERVER['HTTP_X_ENFORCE_CSRF']);
+        parent::tearDown();
+    }
+
     public function testGetCsrfToken() {
         try {
             RequestHelper::getJson('Auth/get-csrf-token.php', []);

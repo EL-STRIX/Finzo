@@ -47,7 +47,7 @@ function html_encode($data)
 function generate_csrf_token()
 {
     if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-        session_start();
+        \App\Shared\Security\SessionManager::start();
     }
     $token = bin2hex(random_bytes(32));
     $_SESSION['csrf_token'] = $token;
@@ -63,7 +63,7 @@ function generate_csrf_token()
 function validate_csrf_token($token)
 {
     if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-        session_start();
+        \App\Shared\Security\SessionManager::start();
     }
     if (empty($token) || empty($_SESSION['csrf_token'])) {
         return false;
@@ -441,22 +441,7 @@ function refresh_session_activity()
  */
 function destroy_session()
 {
-    $_SESSION = [];
-    if (ini_get('session.use_cookies')) {
-        $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
-        );
-    }
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        session_destroy();
-    }
+    \App\Shared\Security\SessionManager::destroy();
 }
 
 // =====================================================

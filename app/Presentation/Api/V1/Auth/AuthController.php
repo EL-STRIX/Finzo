@@ -150,7 +150,7 @@ class AuthController
     {
         $role = $_SESSION['role'] ?? '';
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
-        destroy_session();
+        \App\Shared\Security\SessionManager::destroy();
 
         switch ($role) {
             case 'staff':
