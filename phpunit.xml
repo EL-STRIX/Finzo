@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.0/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
          cacheDirectory=".phpunit.cache"
-         failOnWarning="false"
+         failOnWarning="true"
          failOnDeprecation="false">
+    
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
@@ -13,16 +14,19 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
     </testsuites>
+    
     <source>
         <include>
             <directory suffix=".php">app</directory>
-            <directory suffix=".php">config</directory>
         </include>
+        <exclude>
+            <directory>app/Presentation/Views</directory>
+        </exclude>
     </source>
-    <php>
-        <env name="APP_ENV" value="testing" force="true"/>
-        <env name="DB_NAME" value="finzo_test_db" force="true"/>
-        <env name="APP_DEBUG" value="true" force="true"/>
-    </php>
+
+
 </phpunit>

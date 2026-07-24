@@ -159,10 +159,10 @@ class AuthRepository extends BaseRepository
     public function findStaffByIdentity(string $identity): array|false
     {
         return $this->fetchOne("
-            SELECT id, staff_id, full_name, email, phone, password_hash, status, role, 
+            SELECT id, staff_id, full_name, personal_email as email, phone, password_hash, status, designation as role,
                    failed_attempts, locked_until, temp_pass_status
             FROM staff
-            WHERE (email = ? OR staff_id = ?) AND is_deleted = 0
+            WHERE (personal_email = ? OR staff_id = ?) AND is_deleted = 0
         ", [$identity, $identity]);
     }
 

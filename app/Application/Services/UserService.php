@@ -121,7 +121,6 @@ class UserService
             }
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $profile['tmp_name']);
-            finfo_close($finfo);
             if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['profile_picture'] = 'Profile photo must be JPG or PNG format';
             }
@@ -138,7 +137,6 @@ class UserService
             }
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $front['tmp_name']);
-            finfo_close($finfo);
             if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['id_front'] = 'Front image must be JPG or PNG format';
             }
@@ -155,7 +153,6 @@ class UserService
             }
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $back['tmp_name']);
-            finfo_close($finfo);
             if (!in_array($mime, ALLOWED_IMAGE_TYPES)) {
                 $errors['id_back'] = 'Back image must be JPG or PNG format';
             }

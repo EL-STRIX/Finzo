@@ -75,9 +75,9 @@ class AdminOperationsService
             'per_page'     => $perPage,
             'action_types' => $action_types,
             'stats'        => [
-                'admin'  => (int)$stats['admin_count'],
-                'staff'  => (int)$stats['staff_count'],
-                'user'   => (int)$stats['user_count']
+                'admin'  => (int)($stats['admin_count'] ?? 0),
+                'staff'  => (int)($stats['staff_count'] ?? 0),
+                'user'   => (int)($stats['user_count'] ?? 0)
             ]
         ];
     }
@@ -434,7 +434,7 @@ class AdminOperationsService
         $logs = [];
         if ($user['customer_id']) {
             $raw_logs = $this->repository->getUserAuditLogs($user['customer_id']);
-            foreach ($raw_logs as $log) {
+            foreach ($raw_logs ?: [] as $log) {
                 $outcome = 'Allow';
                 $action = strtolower($log['action_type'] ?? '');
                 if (strpos($action, 'lock') !== false || strpos($action, 'fail') !== false || strpos($action, 'block') !== false) {

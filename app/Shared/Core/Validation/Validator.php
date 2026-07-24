@@ -26,7 +26,7 @@ class Validator
         return filter_var($variable, $filter, $options);
     }
 
-    public static function pregMatch(string $pattern, string $subject, array &$matches = null, int $flags = 0, int $offset = 0): int|false
+    public static function pregMatch(string $pattern, string $subject, ?array &$matches = null, int $flags = 0, int $offset = 0): int|false
     {
         if (func_num_args() > 2) {
             return preg_match($pattern, $subject, $matches, $flags, $offset);

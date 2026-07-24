@@ -454,7 +454,9 @@ function destroy_session()
             $params['httponly']
         );
     }
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
 }
 
 // =====================================================

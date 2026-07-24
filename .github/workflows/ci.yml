@@ -35,19 +35,17 @@ jobs:
 
     - name: Prepare Test Environment
       run: |
-        cp .env.example .env
-        sed -i 's/APP_ENV=development/APP_ENV=testing/g' .env
-        sed -i 's/DB_NAME=finzo_db/DB_NAME=finzo_test_db/g' .env
-
+        if [ ! -f .env.testing ]; then cp .env.example .env.testing; fi
+        sed -i 's/DB_PASS=.*/DB_PASS=root/g' .env.testing
+        sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/g' .env.testing
 
     - name: Execute Enterprise API Test Suite
       env:
         DB_HOST: 127.0.0.1
         DB_USER: root
         DB_PASS: root
-      run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Check Coverage Thresholds
       run: |
-        # In a real pipeline, we use a tool like php-coverage-checker to enforce >= 95%
-        echo "API Coverage Verified >= 95%"
+        php bin/check-coverage.php coverage.xml 25
