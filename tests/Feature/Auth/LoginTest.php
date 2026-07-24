@@ -7,6 +7,18 @@ use Tests\Factories\UserFactory;
 use App\Shared\Core\Database;
 
 class LoginTest extends TestCase {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $_SERVER['HTTP_X_ENFORCE_CSRF'] = 'true';
+    }
+
+    protected function tearDown(): void
+    {
+        unset($_SERVER['HTTP_X_ENFORCE_CSRF']);
+        parent::tearDown();
+    }
     
     public function testLoginSuccessWithEmail() {
         // Create user
