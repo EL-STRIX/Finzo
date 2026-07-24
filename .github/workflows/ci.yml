@@ -49,5 +49,4 @@ jobs:
 
     - name: Check Coverage Thresholds
       run: |
-        # In a real pipeline, we use a tool like php-coverage-checker to enforce >= 95%
-        echo "API Coverage Verified >= 95%"
+        php bin/check-coverage.php coverage.xml 95
