@@ -27,7 +27,7 @@ class BugfixesTest extends TestCase {
             'emergency_contact_name' => 'Jane Doe',
             'emergency_contact_phone' => '8888888888',
             'staff_id' => 'STF_REG_' . time(),
-            'designation' => 'Tester',
+            'designation' => 'Teller',
             'department' => 'QA',
             'branch_id' => 1,
             'date_of_joining' => '2023-01-01',
