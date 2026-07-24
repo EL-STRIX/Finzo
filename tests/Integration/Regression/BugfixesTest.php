@@ -28,7 +28,7 @@ class BugfixesTest extends TestCase {
             'emergency_contact_phone' => '8888888888',
             'staff_id' => 'STF_REG_' . time(),
             'designation' => 'Teller',
-            'department' => 'QA',
+            'department' => 'Teller Operations',
             'branch_id' => 1,
             'date_of_joining' => '2023-01-01',
             'password_hash' => 'hash123',
