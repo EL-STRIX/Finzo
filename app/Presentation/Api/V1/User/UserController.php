@@ -211,9 +211,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
         $userId = $_SESSION['user_id'];
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword     = $_POST['new_password'] ?? '';
@@ -262,9 +260,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
 
         $userId = $_SESSION['user_id'];
         $customer_id_str = $this->service->getCustomerId($userId);
@@ -481,9 +477,7 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-                json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-            }
+
             $fullName = $this->security->cleanInput($_POST['full_name'] ?? '');
             $phone = $this->security->cleanInput($_POST['phone'] ?? '');
             $email = $this->security->cleanInput($_POST['email'] ?? '');
@@ -632,9 +626,7 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
         if ($_SESSION['user_status'] !== 'active') {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }

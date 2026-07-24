@@ -22,7 +22,7 @@ class AdminManagementController
 
     public function addAdmin(?string $id = null, ?string $extra = null): array
     {
-        $this->service->validateCsrf($_POST['csrf_token'] ?? '');
+
         \App\Shared\Security\Gate::authorize('manage_admins');
 
         $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
@@ -40,7 +40,7 @@ class AdminManagementController
 
     public function adminAction(?string $id = null, ?string $extra = null): array
     {
-        $this->service->validateCsrf($_POST['csrf_token'] ?? '');
+
         \App\Shared\Security\Gate::authorize('manage_admins');
 
         $action = $this->security->cleanInput($_POST['action'] ?? '');
@@ -122,7 +122,7 @@ class AdminManagementController
             return $result;
         }
 
-        $this->service->validateCsrf($_POST['csrf_token'] ?? '');
+
 
         $result = $this->service->updateAdminProfile($_SESSION['admin_id'], $_POST);
         unset($result['code']);

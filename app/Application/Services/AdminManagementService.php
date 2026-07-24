@@ -20,12 +20,7 @@ class AdminManagementService
         $this->repository = $repository;
     }
 
-    public function validateCsrf(string $token): void
-    {
-        if (!$this->security->validateCsrfToken($token)) {
-            throw new ApiException('Invalid or expired session token', 403);
-        }
-    }
+
 
     public function requireSuperAdmin(): void
     {
