@@ -45,7 +45,7 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_USER: root
         DB_PASS: root
-      run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Check Coverage Thresholds
       run: |
