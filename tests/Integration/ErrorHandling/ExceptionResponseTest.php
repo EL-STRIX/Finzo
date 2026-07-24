@@ -13,9 +13,12 @@ use App\Shared\Core\Exceptions\ApiException;
 class ExceptionResponseTest extends TestCase {
 
     private function captureExceptionResponse(\Throwable $e): array {
+        $oldErrorLog = ini_get('error_log');
+        ini_set('error_log', PHP_OS_FAMILY === 'Windows' ? 'nul' : '/dev/null');
         ob_start();
         ExceptionHandler::handle($e);
         $output = ob_get_clean();
+        ini_set('error_log', $oldErrorLog);
         return json_decode($output, true) ?? [];
     }
 
