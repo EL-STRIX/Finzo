@@ -17,7 +17,7 @@ abstract class BaseRepository
     /**
      * Helper for fetching a single row
      */
-    protected function fetchOne(string $sql, array $params = [], string $modelClass = null)
+    protected function fetchOne(string $sql, array $params = [], ?string $modelClass = null)
     {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -31,7 +31,7 @@ abstract class BaseRepository
     /**
      * Helper for fetching all rows
      */
-    protected function fetchAll(string $sql, array $params = [], string $modelClass = null)
+    protected function fetchAll(string $sql, array $params = [], ?string $modelClass = null)
     {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

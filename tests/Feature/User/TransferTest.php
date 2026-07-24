@@ -13,6 +13,7 @@ class TransferTest extends TestCase {
     private string $destCustomerId;
     private string $sourceAccountNo;
     private string $destAccountNo;
+    private int $sourceUserId;
     
     protected function setUp(): void {
         parent::setUp();

@@ -20,7 +20,6 @@ class UploadService
         $allowed_types = ['image/jpeg', 'image/png', 'application/pdf'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
 
         if (!in_array($mime, $allowed_types)) return ['success' => false, 'message' => 'Only JPG, PNG, and PDF files are allowed', 'status' => 422];
 

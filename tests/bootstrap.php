@@ -87,12 +87,13 @@ try {
             FINZO_ROOT . '/database/migrations',
             FINZO_ROOT . '/database/seeds'
         );
+        ob_start();
         $migrator->reset();
         $migrator->migrate();
+        ob_end_clean();
 
         // Mark schema as complete
         $provisionPdo->exec("CREATE TABLE IF NOT EXISTS _test_schema_version (version INT NOT NULL DEFAULT 1)");
-        echo "[Test Bootstrap] Test database schema fully imported.\n";
     }
 
     // Assign to global $pdo so Database::getInstance() finds it

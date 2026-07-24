@@ -32,8 +32,7 @@ class AdminOperationsServiceTest extends TestCase {
             'search'      => ''
         ];
         
-        $this->repoMock->expects($this->any())
-            ->method('getAdminById')
+        $this->repoMock->method('getAdminById')
             ->willReturn(['full_name' => 'Admin Name']);
             
         $this->repoMock->expects($this->once())
@@ -135,8 +134,7 @@ class AdminOperationsServiceTest extends TestCase {
             ->with('CUST123')
             ->willReturn(['account_type' => 'savings', 'initial_deposit' => 1000]);
             
-        $this->repoMock->expects($this->any())
-            ->method('getAccountIdByCustomerId')
+        $this->repoMock->method('getAccountIdByCustomerId')
             ->willReturn(5);
             
         $this->repoMock->expects($this->once())
