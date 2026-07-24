@@ -71,14 +71,14 @@ class KycTest extends TestCase {
         $postData = $this->getValidData();
         $postData['csrf_token'] = 'test-csrf-token';
 
-        $_FILES = [
+        $files = [
             'profile_picture' => ['error' => UPLOAD_ERR_OK, 'size' => 1024, 'tmp_name' => $this->dummyPng, 'name' => 'profile.png'],
             'id_front' => ['error' => UPLOAD_ERR_OK, 'size' => 1024, 'tmp_name' => $this->dummyPng, 'name' => 'front.png'],
             'id_back' => ['error' => UPLOAD_ERR_OK, 'size' => 1024, 'tmp_name' => $this->dummyPng, 'name' => 'back.png'],
         ];
 
         try {
-            RequestHelper::postJson('/User/complete-profile.php', $postData, $session);
+            RequestHelper::postJson('/User/complete-profile.php', $postData, $session, $files);
             $this->fail("Expected Exception was not thrown");
         } catch (\Exception $e) {
             $response = json_decode($e->getMessage(), true);
