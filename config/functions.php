@@ -571,46 +571,9 @@ function get_greeting()
  */
 function check_admin_permission($pdo, $adminId, $action)
 {
-    $stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
-    $stmt->execute([$adminId]);
-    $role = $stmt->fetchColumn();
-
-    if (!$role) {
-        throw new \App\Shared\Core\Exceptions\ApiException('Admin account not found', 403);
-    }
-
-    // Super Admin — zero restrictions, can do everything
-    if ($role === 'super_admin') {
-        return true;
-    }
-
-    // Admin role — blocked from these actions only
-    $admin_blocked = [
-        'suspend_user',
-        'reinstate_user',
-        'soft_delete_user',
-        'change_interest_rate',
-        'add_branch',
-        'manage_admins',
-        'suspend_staff',
-        'delete_staff'
-        // 'add_staff' removed — admin role is allowed to create staff members
-    ];
-
-    if ($role === 'admin' && in_array($action, $admin_blocked)) {
-        throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
-    }
-
-    // Moderator role — can ONLY do these actions
-    $moderator_allowed = [
-        'view_dashboard',
-        'view_users',
-        'review_kyc_application',
-        'approve_kyc_application',
-        'reject_kyc_application'
-    ];
-
-    if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
+    $rbac = \App\Shared\Security\RbacService::getInstance($pdo);
+    
+    if (!$rbac->can('admin', $adminId, $action)) {
         throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 

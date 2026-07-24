@@ -1113,7 +1113,7 @@ class AdminOperationsService
         switch ($action) {
             case 'suspend':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'suspend_user');
+                    $this->security->checkAdminPermission($adminId, 'suspend_user');
                 }
                 if ($user['status'] === 'suspended') {
                     return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
@@ -1139,7 +1139,7 @@ class AdminOperationsService
 
             case 'reinstate':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'reinstate_user');
+                    $this->security->checkAdminPermission($adminId, 'reinstate_user');
                 }
                 if ($user['status'] === 'active') {
                     return ['success' => true, 'message' => 'User is already active'];
@@ -1162,7 +1162,7 @@ class AdminOperationsService
 
             case 'delete':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if ($user['is_deleted']) {
                     return ['success' => true, 'message' => 'User is already deleted'];
@@ -1179,7 +1179,7 @@ class AdminOperationsService
 
             case 'recover':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if (!$user['is_deleted']) {
                     return ['success' => false, 'message' => 'User is not deleted', 'code' => 409];
@@ -1218,7 +1218,7 @@ class AdminOperationsService
 
             case 'hard_delete':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 
@@ -1230,7 +1230,7 @@ class AdminOperationsService
 
             case 'delete_account_only':
                 if (function_exists('check_admin_permission') && isset($pdo)) {
-                    $this->security->checkAdminPermission($pdo, $adminId, 'soft_delete_user');
+                    $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 

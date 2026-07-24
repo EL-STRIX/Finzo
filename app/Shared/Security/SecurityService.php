@@ -16,9 +16,17 @@ class SecurityService
         return \validate_csrf_token($token);
     }
 
+    public function checkPermission(string $modelType, int $modelId, string $permission): void
+    {
+        $rbac = \App\Shared\Security\RbacService::getInstance();
+        if (!$rbac->can($modelType, $modelId, $permission)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
+        }
+    }
+
     public function checkAdminPermission(int $adminId, string $permission): void
     {
-        \check_admin_permission(\App\Shared\Core\Database::getInstance(), $adminId, $permission);
+        $this->checkPermission('admin', $adminId, $permission);
     }
 
     public function writeAuditLog(string $actionType, string|int|null $targetId, string $targetType, string|int|null $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
