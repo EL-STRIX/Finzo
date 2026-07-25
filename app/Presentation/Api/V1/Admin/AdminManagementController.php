@@ -23,7 +23,7 @@ class AdminManagementController
     public function addAdmin(?string $id = null, ?string $extra = null): array
     {
 
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
 
         $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
         $result = $this->service->addAdmin($_POST, $file);
@@ -41,7 +41,7 @@ class AdminManagementController
     public function adminAction(?string $id = null, ?string $extra = null): array
     {
 
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
 
         $action = $this->security->cleanInput($_POST['action'] ?? '');
         $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_POST['admin_id'] ?? null)) ? (int)($id ?? $_POST['admin_id'] ?? null) : 0;
@@ -53,7 +53,7 @@ class AdminManagementController
 
     public function getAdminDetail(?string $id = null, ?string $extra = null): array
     {
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
 
         $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_GET['id'] ?? null)) ? (int)($id ?? $_GET['id'] ?? null) : 0;
         return $this->service->getAdminDetail($target_id);
@@ -61,19 +61,19 @@ class AdminManagementController
 
     public function getAdmins(?string $id = null, ?string $extra = null): array
     {
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
         return $this->service->getAdmins();
     }
 
     public function getLockedAdmins(?string $id = null, ?string $extra = null): array
     {
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
         return $this->service->getLockedAdmins();
     }
 
     public function getNextAdminId(?string $id = null, ?string $extra = null): array
     {
-        \App\Shared\Security\Gate::authorize('manage_admins');
+        $this->security->enforcePermission('manage_admins');
         $next_id = $this->service->getNextAdminId();
         return ['success' => true, 'next_id' => $next_id];
     }
