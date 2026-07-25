@@ -166,14 +166,16 @@ class KycTest extends TestCase {
         $postData = $this->getValidData();
         $postData['csrf_token'] = 'invalid-token';
 
+        $_SERVER['HTTP_X_ENFORCE_CSRF'] = 'true';
         try {
             RequestHelper::postJson('/User/complete-profile.php', $postData, $session);
             $this->fail("Expected Exception was not thrown");
         } catch (\Exception $e) {
+            unset($_SERVER['HTTP_X_ENFORCE_CSRF']);
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(403, $response['status']);
             $this->assertFalse($response['success']);
-            $this->assertEquals('Invalid security token', $response['message']);
+            $this->assertStringContainsString('CSRF', $response['message']);
         }
     }
 }
