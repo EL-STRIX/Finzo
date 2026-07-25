@@ -11,14 +11,14 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script defer src="https://cdn.tailwindcss.com?plugins=forms"></script>
   
-  <script src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script src="/Finzo/public/assets/js/core/api.js"></script>
+  <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
   <meta name="csrf-token" content="">
-  <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <script defer src="/Finzo/public/assets/js/tailwind-config.js"></script>
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
-      <script src="/Finzo/public/assets/js/core/ui-components.js"></script>
+      <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 
 <body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
@@ -196,7 +196,7 @@
               <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
                 <span class="material-symbols-outlined text-3xl text-slate-300 group-hover:text-primary transition-colors">person</span>
                 <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1 group-hover:text-primary transition-colors">Upload Photo</span>
-                <img id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
               </div>
               <div class="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
                 <span class="material-symbols-outlined text-sm">edit</span>
@@ -325,7 +325,7 @@
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="front-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload front image</p>
                       <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                      <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
                     </div>
                   </div>
                   <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')" required>
@@ -339,7 +339,7 @@
                       <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
                       <p id="back-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload back image</p>
                       <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                      <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
                     </div>
                   </div>
                   <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')" required>
@@ -498,9 +498,9 @@
       </form>
     </div>
   </div>
-  <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
-  <script src="/Finzo/public/assets/js/admin/staff.js?v=20260527_1"></script>
-    <script src="/Finzo/public/assets/js/core/component-loader.js"></script>
+  <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
+  <script defer src="/Finzo/public/assets/js/admin/staff.js?v=20260527_1"></script>
+    <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 </body>
 
 </html>
