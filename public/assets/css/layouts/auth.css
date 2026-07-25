@@ -1,5 +1,10 @@
 /* Finzo Enterprise Authentication Component & Layout Foundation */
 
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 @keyframes smoothAuthFadeIn {
   0% {
     opacity: 0;
