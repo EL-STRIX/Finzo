@@ -1,65 +1,48 @@
 ---
-title: "{$cleanName} API Documentation"
+title: "Authentication API Documentation"
 version: "1.0.0"
 category: "API Reference"
-module: "{$cleanName}"
+module: "Authentication"
 owner: "Backend Engineering"
-last_updated: "2026-07-22"
+last_updated: "2026-07-25"
 ---
 
-# {$cleanName} API
+# Authentication API
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Authentication Requirements](#authentication-requirements)
+2. [Security & Authentication Requirements](#security--authentication-requirements)
 3. [API Endpoints](#api-endpoints)
-   - [POST /auth/login.php](#endpoint-0)
-   - [POST /auth/admin-login.php](#endpoint-1)
-   - [POST /auth/staff-login.php](#endpoint-2)
-   - [POST /auth/logout.php](#endpoint-3)
-   - [GET /auth/logout.php](#endpoint-4)
-   - [POST /auth/register.php](#endpoint-5)
-   - [POST /auth/forgot-password.php](#endpoint-6)
-   - [POST /auth/reset-password.php](#endpoint-7)
-   - [GET /auth/get-csrf-token.php](#endpoint-8)
-   - [POST /api/auth/login](#endpoint-9)
-   - [POST /api/auth/admin-login](#endpoint-10)
-   - [POST /api/auth/staff-login](#endpoint-11)
-   - [POST /api/auth/logout](#endpoint-12)
-   - [POST /api/auth/register](#endpoint-13)
-   - [POST /api/auth/forgot-password](#endpoint-14)
-   - [POST /api/auth/reset-password](#endpoint-15)
-   - [GET /api/auth/csrf-token](#endpoint-16)
-   - [POST /api/v1/auth/login](#endpoint-17)
-   - [POST /api/v1/auth/admin-login](#endpoint-18)
-   - [POST /api/v1/auth/staff-login](#endpoint-19)
-   - [POST /api/v1/auth/logout](#endpoint-20)
-   - [POST /api/v1/auth/register](#endpoint-21)
-   - [POST /api/v1/auth/forgot-password](#endpoint-22)
-   - [POST /api/v1/auth/reset-password](#endpoint-23)
-   - [GET /api/v1/auth/csrf-token](#endpoint-24)
-
+   - [POST /api/v1/auth/login](#post-apiv1authlogin)
+   - [POST /api/v1/auth/admin-login](#post-apiv1authadmin-login)
+   - [POST /api/v1/auth/staff-login](#post-apiv1authstaff-login)
+   - [POST /api/v1/auth/logout](#post-apiv1authlogout)
+   - [POST /api/v1/auth/register](#post-apiv1authregister)
+   - [GET /api/v1/auth/csrf-token](#get-apiv1authcsrf-token)
+4. [Error Codes](#error-codes)
 
 ## Introduction
-The `{$cleanName}` module encapsulates all operations related to {$cleanName} management within the Finzo Banking System. 
-This document provides enterprise-grade specifications for frontend developers, integrators, and DevOps engineers.
+The `Authentication` module manages user authentication, registration, session lifecycle, and step-up MFA logic for the Finzo Banking System.
 
-## Authentication Requirements
-Unless specified otherwise, endpoints in this module require a Bearer token or session cookie.
-Role restrictions and strict Gate evaluations are enforced at the Controller boundary.
+## Security & Authentication Requirements
+- **CSRF Enforcement:** ALL POST endpoints in this module require a valid `X-CSRF-TOKEN` header. Retrieve this token via `GET /api/v1/auth/csrf-token`.
+- **Session Handling:** The system currently relies on strict HTTP-only cookies (`PHPSESSID`) managed by `SessionManager.php`.
+- **Future JWT Readiness:** The API is instrumented to accept `Bearer` tokens in the `Authorization` header for future stateless authentication (Phase 18+).
+
+---
 
 ## API Endpoints
 
-### <a name="endpoint-0"></a> POST `/auth/login.php`
+### POST `/api/v1/auth/login`
+Authenticates a standard Customer account and establishes an HTTP-only secure session.
 
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::login`
+**Middleware / Guards:** `CsrfMiddleware`, `GuestMiddleware` (must not be logged in).
 
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
+#### Request Body (JSON)
 ```json
 {
-    "example_field": "value"
+    "email": "customer@finzo.com",
+    "password": "SecurePassword123!"
 }
 ```
 
@@ -68,30 +51,29 @@ Role restrictions and strict Gate evaluations are enforced at the Controller bou
 {
     "success": true,
     "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
+    "message": "Login successful",
+    "timestamp": "2026-07-25T00:00:00Z",
+    "data": {
+        "user_id": 1,
+        "email": "customer@finzo.com",
+        "role": "customer",
+        "mfa_required": false
+    }
 }
 ```
 
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
 ---
 
-### <a name="endpoint-1"></a> POST `/auth/admin-login.php`
+### POST `/api/v1/auth/admin-login`
+Authenticates an Administrative account. Employs stricter rate-limiting and authorization checks.
 
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::adminLogin`
+**Middleware / Guards:** `CsrfMiddleware`, `GuestMiddleware`.
 
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
+#### Request Body (JSON)
 ```json
 {
-    "example_field": "value"
+    "email": "admin@finzo.com",
+    "password": "AdminPassword123!"
 }
 ```
 
@@ -100,30 +82,30 @@ Role restrictions and strict Gate evaluations are enforced at the Controller bou
 {
     "success": true,
     "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
+    "message": "Admin login successful",
+    "timestamp": "2026-07-25T00:00:00Z",
+    "data": {
+        "admin_id": 1,
+        "email": "admin@finzo.com",
+        "role": "super_admin",
+        "mfa_required": true
+    }
 }
 ```
+*(Note: If `mfa_required` is true, the session is placed in a pending state until MFA is verified).*
 
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
 ---
 
-### <a name="endpoint-2"></a> POST `/auth/staff-login.php`
+### POST `/api/v1/auth/staff-login`
+Authenticates a Staff member (e.g., Manager, Teller).
 
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::staffLogin`
+**Middleware / Guards:** `CsrfMiddleware`, `GuestMiddleware`.
 
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
+#### Request Body (JSON)
 ```json
 {
-    "example_field": "value"
+    "email": "staff@finzo.com",
+    "password": "StaffPassword123!"
 }
 ```
 
@@ -132,729 +114,79 @@ Role restrictions and strict Gate evaluations are enforced at the Controller bou
 {
     "success": true,
     "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
+    "message": "Staff login successful",
+    "data": {
+        "staff_id": 1,
+        "role": "manager"
+    }
 }
 ```
 
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
 ---
 
-### <a name="endpoint-3"></a> POST `/auth/logout.php`
+### POST `/api/v1/auth/logout`
+Destroys the active session, clears authentication cookies, and invalidates the CSRF token.
 
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::logout`
+**Middleware / Guards:** `CsrfMiddleware`.
 
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
+#### Request Body
+*Empty body required. Must include CSRF token header.*
 
 #### Response Example (200 OK)
 ```json
 {
     "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
+    "message": "Logged out successfully"
 }
 ```
 
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
 ---
 
-### <a name="endpoint-4"></a> GET `/auth/logout.php`
+### POST `/api/v1/auth/register`
+Registers a new customer account.
 
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::logout`
+**Middleware / Guards:** `CsrfMiddleware`, `GuestMiddleware`.
 
-**Middleware / Guards:** ``
+#### Request Body (JSON)
+```json
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "johndoe@example.com",
+    "phone": "+1234567890",
+    "password": "StrongPassword123!",
+    "password_confirmation": "StrongPassword123!"
+}
+```
 
-#### Query Parameters (Pagination/Search)
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `page` | integer | No | Default: 1. Target page for records. |
-| `per_page` | integer | No | Default: 20. Max: 100. |
-| `sort` | string | No | The field to sort results by. |
-| `order` | string | No | `asc` or `desc`. |
-| `search` | string | No | Partial string match execution. |
+#### Response Example (201 Created)
+```json
+{
+    "success": true,
+    "message": "Registration successful. Please verify your email.",
+    "data": {
+        "user_id": 12
+    }
+}
+```
+
+---
+
+### GET `/api/v1/auth/csrf-token`
+Retrieves a valid CSRF token. Must be called before initiating any POST authentication requests.
 
 #### Response Example (200 OK)
 ```json
 {
     "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
+    "csrf_token": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
 }
 ```
 
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-5"></a> POST `/auth/register.php`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::register`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-6"></a> POST `/auth/forgot-password.php`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::forgotPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-7"></a> POST `/auth/reset-password.php`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::resetPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-8"></a> GET `/auth/get-csrf-token.php`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::getCsrfToken`
-
-**Middleware / Guards:** ``
-
-#### Query Parameters (Pagination/Search)
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `page` | integer | No | Default: 1. Target page for records. |
-| `per_page` | integer | No | Default: 20. Max: 100. |
-| `sort` | string | No | The field to sort results by. |
-| `order` | string | No | `asc` or `desc`. |
-| `search` | string | No | Partial string match execution. |
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-9"></a> POST `/api/auth/login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::login`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-10"></a> POST `/api/auth/admin-login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::adminLogin`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-11"></a> POST `/api/auth/staff-login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::staffLogin`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-12"></a> POST `/api/auth/logout`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::logout`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-13"></a> POST `/api/auth/register`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::register`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-14"></a> POST `/api/auth/forgot-password`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::forgotPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-15"></a> POST `/api/auth/reset-password`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::resetPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-16"></a> GET `/api/auth/csrf-token`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::getCsrfToken`
-
-**Middleware / Guards:** ``
-
-#### Query Parameters (Pagination/Search)
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `page` | integer | No | Default: 1. Target page for records. |
-| `per_page` | integer | No | Default: 20. Max: 100. |
-| `sort` | string | No | The field to sort results by. |
-| `order` | string | No | `asc` or `desc`. |
-| `search` | string | No | Partial string match execution. |
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-17"></a> POST `/api/v1/auth/login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::login`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-18"></a> POST `/api/v1/auth/admin-login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::adminLogin`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-19"></a> POST `/api/v1/auth/staff-login`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::staffLogin`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-20"></a> POST `/api/v1/auth/logout`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::logout`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-21"></a> POST `/api/v1/auth/register`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::register`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-22"></a> POST `/api/v1/auth/forgot-password`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::forgotPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-23"></a> POST `/api/v1/auth/reset-password`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::resetPassword`
-
-**Middleware / Guards:** ``
-
-#### Request Body Example (JSON)
-```json
-{
-    "example_field": "value"
-}
-```
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
-### <a name="endpoint-24"></a> GET `/api/v1/auth/csrf-token`
-
-**Internal Handler:** `App\Presentation\Api\V1\Auth\AuthController::getCsrfToken`
-
-**Middleware / Guards:** ``
-
-#### Query Parameters (Pagination/Search)
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `page` | integer | No | Default: 1. Target page for records. |
-| `per_page` | integer | No | Default: 20. Max: 100. |
-| `sort` | string | No | The field to sort results by. |
-| `order` | string | No | `asc` or `desc`. |
-| `search` | string | No | Partial string match execution. |
-
-#### Response Example (200 OK)
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Operation successful",
-    "timestamp": "2026-07-22T00:00:00Z",
-    "data": {}
-}
-```
-
-#### Common Error Codes
-- `400 Bad Request`
-- `401 Unauthorized` (Token invalid or expired)
-- `403 Forbidden` (Insufficient permissions)
-- `404 Not Found`
-- `422 Unprocessable Entity` (Validation failure)
----
-
+## Error Codes
+- `400 Bad Request`: Missing required fields (e.g., email or password).
+- `401 Unauthorized`: Invalid credentials, invalid CSRF token, or account locked.
+- `403 Forbidden`: Account deactivated or lacking necessary permissions.
+- `404 Not Found`: Endpoint missing.
+- `422 Unprocessable Entity`: Data validation failure (e.g., weak password).
+- `429 Too Many Requests`: Account lockout triggered due to brute-force attempts.
