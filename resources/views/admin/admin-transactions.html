@@ -14,7 +14,7 @@
       <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
+<body class="bg-surface-subtle dark:bg-surface-dark font-body antialiased">
 
     <!-- SIDEBAR -->
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -29,36 +29,36 @@
         <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
             <!-- FILTERS & TABLE -->
             <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5 relative z-20">
+                <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5 relative z-20">
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
                             <label class="ds-label mb-2">Search Transactions</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="ds-input pl-12">
                             </div>
                         </div>
 
                         <!-- Type Tabs -->
                         <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
                                 All
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="deposit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">south_west</span>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="deposit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">south_west</span>
                                 Deposits
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="withdrawal">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">north_east</span>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="withdrawal">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">north_east</span>
                                 Withdrawals
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="transfer">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">sync_alt</span>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="transfer">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">sync_alt</span>
                                 Transfers
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800 hover:scale-[1.01] dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="interest_credit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">percent</span>
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="interest_credit">
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">percent</span>
                                 Interest
                             </button>
                         </div>
@@ -67,17 +67,17 @@
                 </div>
                 <div class="overflow-x-auto w-full">
                     <table id="transactions-table" class="ds-table w-full text-left min-w-[1300px]">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>#</th>
-                                <th>TXN ID</th>
-                                <th>From Account</th>
-                                <th>To Account</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th class="text-right">Action</th>
+                                <th scope="col">#</th>
+                                <th scope="col">TXN ID</th>
+                                <th scope="col">From Account</th>
+                                <th scope="col">To Account</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Status</th>
+                                <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="txn-table-body">
@@ -87,7 +87,7 @@
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Records</div>
                     <div class="flex items-center gap-2">
                         <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
@@ -102,24 +102,24 @@
     </div>
 
     <!-- EXPORT MODAL -->
-    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm close-export-modal transition-all"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5 animate-modal-enter">
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm close-export-modal transition-all"></div>
+        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter">
             <div class="p-8 pb-4 text-center shrink-0">
-                <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary bg-primary/5 dark:bg-primary/20">
-                    <span class="material-symbols-outlined text-4xl">download</span>
+                <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary-base bg-primary/5 dark:bg-primary/20">
+                    <span class="material-symbols-outlined text-4xl" aria-hidden="true">download</span>
                 </div>
-                <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Export Data</h3>
-                <p class="text-sm text-slate-500 font-medium mt-1">Download a complete ledger of transactions</p>
+                <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Export Data</h3>
+                <p class="text-sm text-text-muted font-medium mt-1">Download a complete ledger of transactions</p>
             </div>
             <div class="px-8 py-4 space-y-6 overflow-y-auto">
-                <div class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
+                <div class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4">
                     The report will be generated in Microsoft Excel format, filtered by your currently selected criteria.
                 </div>
             </div>
-            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
-                <button class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all close-export-modal">Cancel</button>
-                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
+                <button class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all close-export-modal">Cancel</button>
+                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
             </div>
         </div>
     </div>

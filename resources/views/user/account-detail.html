@@ -19,7 +19,7 @@
 <div class="page-content ds-container py-8">
   <div class="flex items-center gap-4 mb-8 ds-animate-fade">
     <a href="accounts.html" class="w-10 h-10 rounded-full hover:bg-[var(--color-surface-hover)] flex items-center justify-center transition-colors text-[var(--color-text-main)]">
-      <span class="material-symbols-outlined">arrow_back</span>
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
     </a>
     <div>
       <div class="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Banking</div>
@@ -82,7 +82,7 @@
           </div>
           <div class="sm:text-right">
             <div class="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-1">Used Today</div>
-            <div class="font-display text-xl font-black text-primary-base" id="used-amount">₹0</div>
+            <div class="font-display text-xl font-black text-primary-base-base" id="used-amount">₹0</div>
           </div>
         </div>
         
@@ -100,7 +100,7 @@
             <label for="new-limit" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Configure New Limit</label>
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="relative flex-1">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">currency_rupee</span>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">currency_rupee</span>
                 <input type="number" class="form-control pl-10 h-12 text-lg font-bold text-[var(--color-text-main)]" id="new-limit" placeholder="Adjust exposure limit" min="1000" max="100000" step="1000"/>
               </div>
               <button class="btn btn-primary h-12 px-8" data-action="updateLimit()">Apply Change</button>
@@ -113,8 +113,8 @@
       <div class="ds-card overflow-hidden">
         <div class="ds-card-header border-b border-[var(--color-border-main)] flex justify-between items-center bg-[var(--color-surface-subtle)]">
           <h3 class="font-display text-base font-bold text-[var(--color-text-main)] uppercase tracking-wider">Recent Transactions</h3>
-          <a href="transactions.html" class="flex items-center gap-1 text-[10px] font-black text-primary-base hover:text-primary-800 uppercase tracking-widest transition-colors">
-            View Full Ledger <span class="material-symbols-outlined text-sm">open_in_new</span>
+          <a href="transactions.html" class="flex items-center gap-1 text-[10px] font-black text-primary-base-base hover:text-primary-base-800 uppercase tracking-widest transition-colors">
+            View Full Ledger <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
           </a>
         </div>
         

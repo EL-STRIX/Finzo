@@ -22,7 +22,7 @@
     <div id="banner-pending" class="ds-card p-4 border-info-base bg-info-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 rounded-full bg-info-base/20 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-info-base">assignment_ind</span>
+          <span class="material-symbols-outlined text-info-base" aria-hidden="true">assignment_ind</span>
         </div>
         <div class="flex-1">
           <div class="font-display font-bold text-info-base">Complete Your Profile to Start Banking</div>
@@ -35,7 +35,7 @@
     <div id="banner-review" class="ds-card p-4 border-warning-base bg-warning-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 rounded-full bg-warning-base/20 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-warning-base">hourglass_top</span>
+          <span class="material-symbols-outlined text-warning-base" aria-hidden="true">hourglass_top</span>
         </div>
         <div class="flex-1">
           <div class="font-display font-bold text-warning-base">Your Application is Under Review</div>
@@ -48,7 +48,7 @@
     <div id="banner-rejected" class="ds-card p-4 border-danger-base bg-danger-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 rounded-full bg-danger-base/20 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-danger-base">cancel</span>
+          <span class="material-symbols-outlined text-danger-base" aria-hidden="true">cancel</span>
         </div>
         <div class="flex-1">
           <div class="font-display font-bold text-danger-base">Application Rejected — Action Required</div>
@@ -61,14 +61,14 @@
     <div id="banner-approved" class="ds-card p-4 border-success-base bg-success-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 rounded-full bg-success-base/20 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-success-base">check_circle</span>
+          <span class="material-symbols-outlined text-success-base" aria-hidden="true">check_circle</span>
         </div>
         <div class="flex-1">
           <div class="font-display font-bold text-success-base" id="approved-msg">🎉 Your Finzo account has been activated!</div>
           <div class="text-sm text-success-base/80">You now have full access to all banking features.</div>
         </div>
         <button data-action="this.closest(&#039;.ds-card&#039;).classList.add(&#039;hidden&#039;)" class="shrink-0 text-success-base/60 hover:text-success-base">
-          <span class="material-symbols-outlined">close</span>
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
       </div>
     </div>
@@ -98,7 +98,7 @@
               <div class="text-xs font-extrabold tracking-widest text-white/50 uppercase mb-1">Account Number</div>
               <div class="flex items-center gap-2">
                 <div id="dash-account" class="font-mono text-lg font-bold text-white/90">NOT YET ASSIGNED</div>
-                <span class="material-symbols-outlined text-white/40 text-sm" id="lock-icon">lock</span>
+                <span class="material-symbols-outlined text-white/40 text-sm" id="lock-icon" aria-hidden="true">lock</span>
               </div>
             </div>
             <div id="account-badge">
@@ -143,41 +143,41 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a id="qa-transfer" href="transfer.html" class="ds-card p-4 flex items-center justify-between hover:border-primary-base group transition-colors">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-primary-surface text-primary-base flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">swap_horiz</span>
+            <div class="w-12 h-12 rounded-xl bg-primary-surface text-primary-base-base flex items-center justify-center group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>
             </div>
             <div>
               <div class="font-bold text-[var(--color-text-main)]">Fund Transfer</div>
               <div class="text-xs text-[var(--color-text-muted)]">Send money instantly</div>
             </div>
           </div>
-          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-transfer-icon">lock</span>
+          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-transfer-icon" aria-hidden="true">lock</span>
         </a>
         
         <a id="qa-txns" href="transactions.html" class="ds-card p-4 flex items-center justify-between hover:border-success-base group transition-colors">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-success-surface text-success-base flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">receipt_long</span>
+              <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
             </div>
             <div>
               <div class="font-bold text-[var(--color-text-main)]">Transactions</div>
               <div class="text-xs text-[var(--color-text-muted)]">View full history</div>
             </div>
           </div>
-          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-txns-icon">lock</span>
+          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-txns-icon" aria-hidden="true">lock</span>
         </a>
 
         <a id="qa-stmt" href="statement.html" class="ds-card p-4 flex items-center justify-between hover:border-warning-base group transition-colors">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-warning-surface text-warning-base flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">description</span>
+              <span class="material-symbols-outlined" aria-hidden="true">description</span>
             </div>
             <div>
               <div class="font-bold text-[var(--color-text-main)]">Statement</div>
               <div class="text-xs text-[var(--color-text-muted)]">Download PDF</div>
             </div>
           </div>
-          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-stmt-icon">lock</span>
+          <span class="material-symbols-outlined text-[var(--color-text-disabled)]" id="qa-stmt-icon" aria-hidden="true">lock</span>
         </a>
       </div>
     </div>
@@ -196,7 +196,7 @@
         <!-- Empty state (pending) -->
         <div id="tx-empty" class="p-12 text-center">
           <div class="w-16 h-16 mx-auto rounded-full bg-[var(--color-surface-subtle)] text-[var(--color-text-disabled)] flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt_long</span>
           </div>
           <h3 class="font-display text-lg font-bold text-[var(--color-text-main)] mb-2">No Transactions Yet</h3>
           <p class="text-sm text-[var(--color-text-muted)] max-w-sm mx-auto mb-6">Your transaction history will appear here once your account is activated and you start banking.</p>

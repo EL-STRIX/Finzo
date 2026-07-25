@@ -21,7 +21,7 @@
       <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
+<body class="bg-surface-subtle dark:bg-surface-container-low font-body text-black dark:text-on-surface antialiased">
 
   <!-- SIDEBAR -->
   <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -33,18 +33,18 @@
     <!-- TOP BAR -->
     <div class="admin-topbar">
       <div class="flex items-center gap-3 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-surface-hover dark:hover:bg-white/5 transition-colors -ml-2" aria-label="Toggle Navigation Menu">
+            <span class="material-symbols-outlined force-black" aria-hidden="true">menu</span>
         </button>
         <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">STAFF MANAGEMENT</div>
+          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-text-muted uppercase">STAFF MANAGEMENT</div>
           <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Bank Staff</div>
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
         <button id="add-staff-btn" data-action="openAddStaffModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
           style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
-          <span class="material-symbols-outlined">add</span> Add New Staff
+          <span class="material-symbols-outlined" aria-hidden="true">add</span> Add New Staff
         </button>
         
         </div>
@@ -55,7 +55,7 @@
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
           <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#e0f2fe;">
-            <span class="material-symbols-outlined" style="color:#0369a1;">group</span>
+            <span class="material-symbols-outlined" style="color:#0369a1;" aria-hidden="true">group</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-[10px]">TOTAL STAFF</div>
@@ -64,7 +64,7 @@
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
           <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#e8f8f2;">
-            <span class="material-symbols-outlined" style="color:#00b894;">badge</span>
+            <span class="material-symbols-outlined" style="color:#00b894;" aria-hidden="true">badge</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-[10px]">ACTIVE STAFF</div>
@@ -73,7 +73,7 @@
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
           <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#f1f3f5;">
-            <span class="material-symbols-outlined" style="color:#6c757d;">person_off</span>
+            <span class="material-symbols-outlined" style="color:#6c757d;" aria-hidden="true">person_off</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-[10px]">SUSPEND STAFF</div>
@@ -82,7 +82,7 @@
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
           <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#fff8e1;">
-            <span class="material-symbols-outlined" style="color:#f39c12;">receipt</span>
+            <span class="material-symbols-outlined" style="color:#f39c12;" aria-hidden="true">receipt</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-[10px]">TRANSACTIONS</div>
@@ -93,12 +93,12 @@
 
       <!-- FILTERS + TABLE -->
       <div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden">
-        <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-slate-50 dark:border-white/5 bg-slate-50/20 dark:bg-white/5">
+        <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
           <div class="col-span-1 lg:flex-1 w-full">
             <label class="ds-label">Search Staff</label>
             <div class="relative group">
               <span
-                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">search</span>
+                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted transition-colors group-focus-within:text-primary-base" aria-hidden="true">search</span>
               <input type="text" id="staff-search-input" placeholder="Search by name or staff ID"
                 class="ds-input pl-12">
             </div>
@@ -112,12 +112,12 @@
             <label class="ds-label">Branch</label>
             <div class="finzo-dropdown w-full" id="branch-filter-dropdown">
               <div
-                class="finzo-dropdown-trigger !bg-slate-100 dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
+                class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg opacity-60">location_on</span>
+                    <span class="material-symbols-outlined text-lg opacity-60" aria-hidden="true">location_on</span>
                     <span class="dropdown-label font-bold text-xs">All Branches</span>
                 </div>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
               </div>
               <div id="filter-branch-menu" class="finzo-dropdown-menu !z-[3000] !w-full">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
@@ -129,16 +129,16 @@
         </div>
         <div class="overflow-x-auto w-full">
           <table class="ds-table w-full table-fixed min-w-[1000px] text-left">
-            <thead>
+            <thead scope="col">
             <tr>
-              <th style="width: 4%;">#</th>
-              <th style="width: 25%;">Staff</th>
-              <th style="width: 10%;" class="text-center">ID</th>
-              <th style="width: 15%;">Branch</th>
-              <th style="width: 10%;" class="text-center">Trans</th>
-              <th style="width: 12%;" class="text-right">Amount</th>
-              <th style="width: 14%;">Last Login</th>
-              <th style="width: 10%;" class="text-right">ACTIONS</th>
+              <th style="width: 4%;" scope="col">#</th>
+              <th style="width: 25%;" scope="col">Staff</th>
+              <th style="width: 10%;" class="text-center" scope="col">ID</th>
+              <th style="width: 15%;" scope="col">Branch</th>
+              <th style="width: 10%;" class="text-center" scope="col">Trans</th>
+              <th style="width: 12%;" class="text-right" scope="col">Amount</th>
+              <th style="width: 14%;" scope="col">Last Login</th>
+              <th style="width: 10%;" class="text-right" scope="col">ACTIONS</th>
             </tr>
           </thead>
           <tbody id="staff-table-body">
@@ -152,8 +152,8 @@
 
         <!-- PAGINATION -->
         <div
-          class="p-4 bg-slate-50/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
-          <div id="pagination-counter" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Showing 1-5
+          class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
+          <div id="pagination-counter" class="text-[11px] text-text-muted font-bold uppercase tracking-wider">Showing 1-5
             of 8 staff</div>
           <div class="flex items-center gap-2">
             <button id="prev-page" class="admin-btn-secondary"
@@ -172,18 +172,18 @@
   </div>
 
   <!-- ADD STAFF MODAL -->
-  <div id="addStaffModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+  <div id="addStaffModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"
       data-action="closeAddStaffModal()"></div>
     <div class="ds-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
-      <div class="p-6 border-b border-slate-100 dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
+      <div class="p-6 border-b border-surface-border dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
         <div>
-          <h3 class="text-xl font-bold text-primary dark:text-slate-100">Add New Staff Member</h3>
-          <p class="text-[11px] text-slate-400 font-medium">Fill in the details to add a new staff account</p>
+          <h3 class="text-xl font-bold text-primary-base dark:text-text-muted">Add New Staff Member</h3>
+          <p class="text-[11px] text-text-muted font-medium">Fill in the details to add a new staff account</p>
         </div>
         <button data-action="closeAddStaffModal()"
-           class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
-          <span class="material-symbols-outlined">close</span>
+           class="p-2 hover:bg-surface-hover dark:hover:bg-white/5 rounded-full transition-colors">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
       </div>
       
@@ -193,47 +193,47 @@
           <!-- SECTION A: Profile Photo -->
           <div class="flex flex-col items-center justify-center pb-2">
             <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;profile_photo&#039;).click()">
-              <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
-                <span class="material-symbols-outlined text-3xl text-slate-300 group-hover:text-primary transition-colors">person</span>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1 group-hover:text-primary transition-colors">Upload Photo</span>
-                <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+              <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-surface-dark flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
+                <span class="material-symbols-outlined text-3xl text-text-muted group-hover:text-primary-base transition-colors" aria-hidden="true">person</span>
+                <span class="text-[9px] font-black uppercase tracking-widest text-text-muted mt-1 group-hover:text-primary-base transition-colors">Upload Photo</span>
+                <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden" alt="">
               </div>
-              <div class="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
-                <span class="material-symbols-outlined text-sm">edit</span>
+              <div class="absolute bottom-0 right-0 p-1.5 bg-primary-base text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
               </div>
             </div>
-            <p class="text-[10px] text-slate-400 font-bold mt-3">Optional • JPG or PNG • Max 5MB</p>
+            <p class="text-[10px] text-text-muted font-bold mt-3">Optional • JPG or PNG • Max 5MB</p>
             <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden" onchange="previewProfilePhoto(this)">
-            <div id="error-profile_photo" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+            <div id="error-profile_photo" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
           </div>
 
           <!-- SECTION B: Personal Information -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">person</span>
+              <span class="w-8 h-8 rounded-lg bg-primary-surface dark:bg-primary-surface/30 text-info-base flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">person</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Personal Information</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Personal Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="ds-label mb-2">Full Name *</label>
                 <input type="text" id="full_name" name="full_name" placeholder="John Doe" required
                   class="ds-input">
-                <div id="error-full_name" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-full_name" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Date of Birth *</label>
                 <input type="date" id="date_of_birth" name="date_of_birth" required
                   class="ds-input">
-                <div id="error-date_of_birth" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-date_of_birth" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Gender *</label>
                 <div class="finzo-dropdown">
                   <div class="finzo-dropdown-trigger modal-dropdown-trigger">
                     <span class="dropdown-label">Select Gender</span>
-                    <span class="material-symbols-outlined">expand_more</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
                   </div>
                   <div class="finzo-dropdown-menu">
                     <div class="finzo-dropdown-option" data-value="Male">Male</div>
@@ -243,7 +243,7 @@
                   </div>
                   <input type="hidden" id="gender" name="gender" required>
                 </div>
-                <div id="error-gender" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-gender" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
             </div>
           </div>
@@ -252,25 +252,25 @@
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
               <span class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">contact_phone</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">contact_phone</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Contact Information</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Contact Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="ds-label mb-2">Personal Email *</label>
                 <input type="email" id="personal_email" name="personal_email" placeholder="john.doe@email.com" required
                   class="ds-input">
-                <div id="error-personal_email" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-personal_email" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Phone Number *</label>
                 <div class="relative group">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">+91</span>
-                  <input type="text" id="phone" name="phone" placeholder="9876543210" required maxlength="10"
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black text-text-muted">+91</span>
+                  <input type="tel" id="phone" name="phone" placeholder="9876543210" required maxlength="10"
                     class="ds-input pl-12">
                 </div>
-                <div id="error-phone" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-phone" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Emergency Contact Name (Optional)</label>
@@ -288,10 +288,10 @@
           <!-- SECTION D: Identity Documents -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">badge</span>
+              <span class="w-8 h-8 rounded-lg bg-warning-surface dark:bg-warning-surface/30 text-warning-base flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Identity & Documents</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Identity & Documents</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
@@ -299,7 +299,7 @@
                 <div class="finzo-dropdown">
                   <div class="finzo-dropdown-trigger modal-dropdown-trigger">
                     <span class="dropdown-label">Select ID Type</span>
-                    <span class="material-symbols-outlined">expand_more</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
                   </div>
                   <div class="finzo-dropdown-menu">
                     <div class="finzo-dropdown-option" data-value="Aadhaar">Aadhaar</div>
@@ -308,42 +308,42 @@
                   </div>
                   <input type="hidden" id="id_type" name="id_type" required>
                 </div>
-                <div id="error-id_type" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-id_type" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">ID Number *</label>
                 <input type="text" id="id_number" name="id_number" placeholder="Enter ID number" required
                   class="ds-input">
-                <div id="error-id_number" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-id_number" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               
               <div class="col-span-1 sm:col-span-2 space-y-4">
                 <div>
                   <label class="ds-label mb-2">Front of ID Document *</label>
                   <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_front&#039;).click()">
-                    <div id="front-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
-                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
-                      <p id="front-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload front image</p>
-                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                    <div id="front-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
+                      <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
+                      <p id="front-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload front image</p>
+                      <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
+                      <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')" required>
-                  <div id="error-id_front" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                  <div id="error-id_front" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
                 </div>
 
                 <div>
                   <label class="ds-label mb-2">Back of ID Document *</label>
                   <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_back&#039;).click()">
-                    <div id="back-drop-zone" class="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-slate-50/50 dark:bg-white/5">
-                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">upload_file</span>
-                      <p id="back-file-name" class="text-xs font-bold text-slate-500">Click or drag to upload back image</p>
-                      <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                    <div id="back-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
+                      <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
+                      <p id="back-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload back image</p>
+                      <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
+                      <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')" required>
-                  <div id="error-id_back" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                  <div id="error-id_back" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
                 </div>
               </div>
             </div>
@@ -353,26 +353,26 @@
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
               <span class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">work</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">work</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Employment Information</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Employment Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="ds-label mb-2">Assigned Staff ID</label>
                 <div class="relative group">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xs text-primary dark:text-blue-400">badge</span>
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xs text-primary-base dark:text-primary-base" aria-hidden="true">badge</span>
                   <input type="text" id="staff_id_display" value="Loading..." readonly
-                    class="w-full pl-10 pr-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-black text-sm text-primary dark:text-blue-400 opacity-90 cursor-not-allowed tracking-widest">
+                    class="w-full pl-10 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-black text-sm text-primary-base dark:text-primary-base opacity-90 cursor-not-allowed tracking-widest">
                 </div>
-                <p class="text-[9px] text-slate-400 mt-1 font-bold italic">Auto-generated identifier</p>
+                <p class="text-[9px] text-text-muted mt-1 font-bold italic">Auto-generated identifier</p>
               </div>
               <div>
                 <label class="ds-label mb-2">Designation *</label>
                 <div class="finzo-dropdown">
                   <div class="finzo-dropdown-trigger modal-dropdown-trigger">
                     <span class="dropdown-label">Teller</span>
-                    <span class="material-symbols-outlined">expand_more</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
                   </div>
                   <div class="finzo-dropdown-menu">
                     <div class="finzo-dropdown-option is-selected" data-value="Teller">Teller</div>
@@ -381,33 +381,33 @@
                   </div>
                   <input type="hidden" id="designation" name="designation" value="Teller" required>
                 </div>
-                <div id="error-designation" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-designation" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Branch Assignment *</label>
                 <div class="finzo-dropdown" id="staff-branch-dropdown">
                   <div class="finzo-dropdown-trigger modal-dropdown-trigger">
                     <span class="dropdown-label">Select Branch</span>
-                    <span class="material-symbols-outlined">expand_more</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
                   </div>
                   <div id="staff-branch-menu" class="finzo-dropdown-menu">
                     <!-- Dynamically Populated -->
                   </div>
                   <input type="hidden" id="staff-branch" name="branch_id">
                 </div>
-                <div id="error-branch_id" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-branch_id" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Date of Joining</label>
                 <input type="date" id="date_of_joining" name="date_of_joining"
                   class="ds-input">
-                <p class="text-[9px] text-slate-400 mt-1 font-bold">Defaults to today's date if empty</p>
+                <p class="text-[9px] text-text-muted mt-1 font-bold">Defaults to today's date if empty</p>
               </div>
               <div>
                 <label class="ds-label mb-2">Department</label>
                 <input type="text" value="Teller Operations" readonly
-                  class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
-                <p class="text-[9px] text-slate-400 mt-1 font-bold">Assigned to Teller Operations department</p>
+                  class="w-full px-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
+                <p class="text-[9px] text-text-muted mt-1 font-bold">Assigned to Teller Operations department</p>
               </div>
             </div>
           </div>
@@ -415,10 +415,10 @@
           <!-- SECTION F: Address -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">location_on</span>
+              <span class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/30 text-danger-base flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">location_on</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Address</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Address</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div class="col-span-1 sm:col-span-2">
@@ -430,24 +430,24 @@
                 <label class="ds-label mb-2">City *</label>
                 <input type="text" id="city" name="city" placeholder="Mumbai" required
                   class="ds-input">
-                <div id="error-city" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-city" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">State *</label>
                 <input type="text" id="state" name="state" placeholder="Maharashtra" required
                   class="ds-input">
-                <div id="error-state" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-state" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Pincode *</label>
                 <input type="text" id="pincode" name="pincode" placeholder="400001" required maxlength="6"
                   class="ds-input">
-                <div id="error-pincode" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+                <div id="error-pincode" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Country</label>
                 <input type="text" value="India" readonly
-                  class="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
+                  class="w-full px-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
               </div>
             </div>
           </div>
@@ -456,42 +456,42 @@
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
               <span class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm">security</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">security</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Login & Security</h4>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Login & Security</h4>
             </div>
             
-            <div class="p-4 sm:p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
+            <div class="p-4 sm:p-5 bg-surface-subtle dark:bg-white/5 rounded-2xl border border-surface-border dark:border-white/10">
               <label class="ds-label mb-3">Account Password *</label>
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1 group">
                   <input type="text" id="staff-password" name="password" placeholder="Generate or enter a password" required
-                    class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary dark:text-blue-400">
-                  <button type="button" data-action="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined text-lg" id="pass-copy-icon">content_copy</span>
+                    class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary-base dark:text-primary-base">
+                  <button type="button" data-action="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-text-muted hover:text-primary-base transition-colors">
+                    <span class="material-symbols-outlined text-lg" id="pass-copy-icon" aria-hidden="true">content_copy</span>
                   </button>
                 </div>
                 <button type="button" data-action="generateStaffPassword()" class="admin-btn-secondary !py-3 !px-4 flex items-center justify-center gap-2 whitespace-nowrap">
-                  <span class="material-symbols-outlined text-sm" id="gen-pass-icon">refresh</span>
+                  <span class="material-symbols-outlined text-sm" id="gen-pass-icon" aria-hidden="true">refresh</span>
                   <span>Generate</span>
                 </button>
               </div>
-              <p class="text-[9px] text-slate-400 mt-3 font-bold flex items-center gap-1.5 italic">
-                <span class="material-symbols-outlined text-[12px] text-orange-400">info</span>
+              <p class="text-[9px] text-text-muted mt-3 font-bold flex items-center gap-1.5 italic">
+                <span class="material-symbols-outlined text-[12px] text-warning-base" aria-hidden="true">info</span>
                 Share this password securely with the staff member.
               </p>
-              <div id="error-password" class="text-error text-[10px] font-bold mt-1 hidden"></div>
+              <div id="error-password" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
             </div>
           </div>
 
         </div>
 
         <!-- MODAL FOOTER -->
-        <div class="p-6 border-t border-slate-100 dark:border-white/5 sticky bottom-0 bg-white dark:bg-surface-container z-20 flex flex-col-reverse sm:flex-row justify-end gap-3">
+        <div class="p-6 border-t border-surface-border dark:border-white/5 sticky bottom-0 bg-white dark:bg-surface-container z-20 flex flex-col-reverse sm:flex-row justify-end gap-3">
           <button type="button" data-action="closeAddStaffModal()"
             class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
           <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
-              <span class="material-symbols-outlined">person_add</span>
+              <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
               <span>Add Staff Member</span>
           </button>
         </div>

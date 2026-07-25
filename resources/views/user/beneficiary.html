@@ -53,7 +53,7 @@
         <div>
           <label for="new-nick" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Nick Name <span class="text-danger-base">*</span></label>
           <div class="relative">
-             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">person</span>
+             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">person</span>
              <input type="text" class="form-control pl-10" id="new-nick" placeholder="e.g. Mom, Office Rent"/>
           </div>
         </div>
@@ -62,7 +62,7 @@
           <label for="new-acc" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Account Number <span class="text-danger-base">*</span></label>
           <div class="flex gap-2">
             <div class="relative flex-1">
-               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">tag</span>
+               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">tag</span>
                <input type="text" class="form-control pl-10 font-mono font-bold uppercase tracking-wider" id="new-acc" placeholder="FNZ20260002" oninput="resetLookup()"/>
             </div>
             <button class="btn btn-secondary px-5" data-action="lookupBen()">Verify Your Identity</button>
@@ -73,11 +73,11 @@
         <div>
           <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Network</label>
           <div class="p-4 bg-primary-surface/40 border border-primary-base/20 rounded-xl flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary-base text-xl">account_balance</span>
-            <div class="text-sm font-bold text-primary-base">Finzo Internal Network</div>
+            <span class="material-symbols-outlined text-primary-base-base text-xl" aria-hidden="true">account_balance</span>
+            <div class="text-sm font-bold text-primary-base-base">Finzo Internal Network</div>
           </div>
           <div class="text-[10px] font-bold text-[var(--color-text-muted)] mt-2 flex items-center gap-1">
-             <span class="material-symbols-outlined text-[12px]">info</span> Cross-bank transfers are currently disabled.
+             <span class="material-symbols-outlined text-[12px]" aria-hidden="true">info</span> Cross-bank transfers are currently disabled.
           </div>
         </div>
         

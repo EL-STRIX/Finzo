@@ -59,7 +59,7 @@
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: scale(0.98);
   box-shadow: var(--shadow-sm);
 }
 
@@ -83,6 +83,7 @@
 
 .btn-secondary:active {
   background-color: #cbd5e1;
+  transform: scale(0.98);
 }
 
 .btn-secondary:focus-visible {
@@ -126,6 +127,11 @@
   transform: translateY(-1px);
 }
 
+.btn-danger:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Success Button */
 .btn-success {
   background-color: var(--color-success-base);
@@ -137,6 +143,11 @@
   background-color: #0b6230;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+}
+
+.btn-success:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Text Link Button */

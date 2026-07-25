@@ -35,36 +35,36 @@
           
           <!-- UNREAD ALERTS BUBBLE -->
           <div class="p-4 rounded-xl bg-primary-surface border border-primary-base/20 mb-6 flex flex-col items-center justify-center text-center">
-            <div class="text-[10px] font-bold text-primary-base uppercase tracking-widest mb-1">Unread Alerts</div>
-            <div class="font-display text-4xl font-black text-primary-base" id="unread-stat">0</div>
+            <div class="text-[10px] font-bold text-primary-base-base uppercase tracking-widest mb-1">Unread Alerts</div>
+            <div class="font-display text-4xl font-black text-primary-base-base" id="unread-stat">0</div>
           </div>
 
           <!-- FILTERS -->
           <div class="flex flex-col gap-2">
-            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base bg-primary-surface" data-action="filterNotifs(&#039;all&#039;,this)">
+            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base-base bg-primary-surface" data-action="filterNotifs(&#039;all&#039;,this)">
               <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-lg">grid_view</span> All Broadcasts
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">grid_view</span> All Broadcasts
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-white/50 border border-primary-base/10" id="count-all">0</span>
             </button>
             
             <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-main)]" data-action="filterNotifs(&#039;transaction&#039;,this)">
               <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-lg">payments</span> Transactions
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">payments</span> Transactions
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-[var(--color-border-main)]/50" id="count-transaction">0</span>
             </button>
             
             <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-main)]" data-action="filterNotifs(&#039;security&#039;,this)">
               <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-lg">security</span> Security
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">security</span> Security
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-[var(--color-border-main)]/50" id="count-security">0</span>
             </button>
             
             <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-main)]" data-action="filterNotifs(&#039;system&#039;,this)">
               <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-lg">settings</span> System
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">settings</span> System
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-[var(--color-border-main)]/50" id="count-system">0</span>
             </button>
@@ -72,7 +72,7 @@
 
           <div class="mt-8 pt-6 border-t border-dashed border-[var(--color-border-main)]">
             <button data-action="clearAll()" class="w-full flex items-center justify-center gap-2 p-3 text-sm font-bold text-danger-base hover:bg-danger-surface rounded-lg transition-colors">
-              <span class="material-symbols-outlined">delete_sweep</span> Delete All Records
+              <span class="material-symbols-outlined" aria-hidden="true">delete_sweep</span> Delete All Records
             </button>
           </div>
         </div>
@@ -91,7 +91,7 @@
 </div>
 
 <!-- View Notification Modal -->
-<div id="viewNotifModal" class="modal-overlay hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+<div id="viewNotifModal" class="modal-overlay hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
   <div class="ds-card max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
     <div id="viewNotifIcon" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4"></div>
     <div id="viewNotifTitle" class="font-display text-xl font-bold text-center text-[var(--color-text-main)] mb-1">Broadcast Subject</div>

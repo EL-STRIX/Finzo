@@ -20,18 +20,18 @@
   
   <div class="mb-8 ds-animate-fade text-center print:hidden">
     <div class="w-16 h-16 bg-success-surface text-success-base rounded-full flex items-center justify-center mx-auto mb-4">
-      <span class="material-symbols-outlined text-3xl">check_circle</span>
+      <span class="material-symbols-outlined text-3xl" aria-hidden="true">check_circle</span>
     </div>
     <h1 class="font-display text-2xl font-extrabold text-[var(--color-text-main)] tracking-tight">Transaction Successful</h1>
     <p class="text-[var(--color-text-muted)] mt-1">Your transaction has been securely processed.</p>
   </div>
 
   <div class="flex justify-between items-center mb-4 print:hidden px-4 sm:px-0">
-    <a href="transactions.html" class="flex items-center gap-1 text-xs font-bold text-[var(--color-text-muted)] hover:text-primary-base transition-colors uppercase tracking-widest">
-      <span class="material-symbols-outlined text-[16px]">arrow_back</span> History
+    <a href="transactions.html" class="flex items-center gap-1 text-xs font-bold text-[var(--color-text-muted)] hover:text-primary-base-base transition-colors uppercase tracking-widest">
+      <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> History
     </a>
     <button class="btn btn-secondary !py-1.5 !px-3" data-action="window.print()">
-      <span class="material-symbols-outlined text-[16px]">print</span> Print Receipt
+      <span class="material-symbols-outlined text-[16px]" aria-hidden="true">print</span> Print Receipt
     </button>
   </div>
 
@@ -42,7 +42,7 @@
       <!-- Letterhead -->
       <div class="flex justify-between items-start pb-6 border-b-2 border-primary-base print:border-black mb-6">
         <div>
-          <div class="font-display text-2xl font-extrabold text-primary-base print:text-black">Finzo</div>
+          <div class="font-display text-2xl font-extrabold text-primary-base-base print:text-black">Finzo</div>
           <div class="text-[10px] font-bold text-[var(--color-text-muted)] print:text-black uppercase tracking-widest mt-1">Finzo Banking System</div>
         </div>
         <div class="text-right">
@@ -96,7 +96,7 @@
 
       <!-- Amount -->
       <div class="bg-primary-surface/30 print:bg-transparent rounded-xl p-6 text-center mb-6 border border-primary-base/20 print:border-black">
-        <div class="text-[10px] font-bold text-primary-base print:text-black uppercase tracking-widest mb-2">Settlement Value</div>
+        <div class="text-[10px] font-bold text-primary-base-base print:text-black uppercase tracking-widest mb-2">Settlement Value</div>
         <div class="font-display text-4xl font-black text-[var(--color-text-main)] print:text-black" id="rcpt-amount"></div>
       </div>
 
