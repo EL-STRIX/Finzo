@@ -494,45 +494,6 @@ Application availability should be continuously monitored.
 
 ---
 
-## Centralized Logging
-
-Logs should include:
-
-Application Logs
-
-Security Logs
-
-Audit Logs
-
-Deployment Logs
-
-Infrastructure Logs
-
-Logs should be searchable and retained according to policy.
-
----
-
-## Alerting Standards
-
-Alerts should be generated for:
-
-Application Failure
-
-Database Failure
-
-Authentication Spike
-
-Security Events
-
-High Error Rate
-
-Low Disk Space
-
-Backup Failure
-
-Critical alerts should notify responsible personnel immediately.
-
----
 
 ## Backup Standards
 
@@ -558,22 +519,6 @@ Retained according to policy.
 
 ---
 
-## Disaster Recovery
-
-Document:
-
-Recovery Procedures
-
-Recovery Time Objective (RTO)
-
-Recovery Point Objective (RPO)
-
-Recovery Testing
-
-Disaster recovery should be tested periodically.
-
----
-
 ## High Availability
 
 Future architecture should support:
@@ -589,24 +534,6 @@ Database Replication
 Health Checks
 
 Business continuity should remain the priority.
-
----
-
-## Observability
-
-Operational visibility should include:
-
-Metrics
-
-Logs
-
-Traces
-
-Dashboards
-
-Alerts
-
-Observability should simplify troubleshooting.
 
 ---
 
@@ -710,7 +637,7 @@ Then improve:
 
 Automation
 
-Observability
+Automation
 
 Maintainability
 
@@ -734,7 +661,7 @@ Anything reducing enterprise operational quality.
 
 ---
 
-## DevOps Review Checklist
+## Release Review Checklist
 
 Every operational change must answer "Yes".
 
@@ -747,10 +674,6 @@ Every operational change must answer "Yes".
 ✓ Is CI passing?
 
 ✓ Is CD reliable?
-
-✓ Is monitoring active?
-
-✓ Are alerts configured?
 
 ✓ Are backups verified?
 
@@ -778,13 +701,9 @@ This chapter is complete only when:
 
 ✓ Secrets management is secured.
 
-✓ Monitoring and observability are implemented.
+✓ Backup standards are documented.
 
-✓ Backup and disaster recovery standards are documented.
-
-✓ Incident management process is established.
-
-✓ Every production deployment follows one enterprise DevOps standard.
+✓ Every production deployment follows one enterprise standard.
 
 ## End of **Chapter 27 — JavaScript Standards**
 ---

@@ -43,7 +43,7 @@ sequenceDiagram
     participant K8s
     GitHub->>CI: Push to main
     CI->>Registry: Build & Push Docker Image
-    CI->>Server: Deploy via SSH (ops/deploy.sh)
+    CI->>Server: Deploy via SSH (deploy.sh)
 ```
 
 > [!NOTE]

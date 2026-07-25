@@ -31,9 +31,8 @@
 - **`journal_entries` & `journal_lines`**: The immutable accounting core. Once `status = 'posted'`, records are permanently locked.
 - **`accounting_periods`**: Defines financial reporting windows.
 
-### 2.4 Observability Domain
+### 2.4 Security Domain
 - **`audit_log`**: Captures every API mutation, auth event, and financial insertion. Contains JSON footprints for `previous_values` and `new_values`. Strict immutable triggers prevent modification.
-- **`monitoring_alerts`**: Stores threshold values for database observability (e.g., max storage size).
 - **`password_resets`**: Time-boxed (24 hours) tokens for credential recovery. Auto-pruned by MySQL Event Scheduler.
 
 ## 3. Core Database Constraints
