@@ -448,6 +448,69 @@ html, body {
   border-radius: var(--radius-sm);
 }
 
+/* Contact Widget */
+.auth-contact-widget {
+  margin-top: 24px;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: left;
+}
+
+.auth-contact-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.auth-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-contact-item:hover {
+  color: var(--color-primary-base);
+}
+
+.auth-contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-main);
+  border: 1px solid var(--color-border-main);
+  color: var(--color-primary-base);
+  transition: all var(--transition-fast);
+}
+
+.auth-contact-icon .material-symbols-outlined {
+  font-size: 18px !important;
+}
+
+.auth-contact-item:hover .auth-contact-icon {
+  background-color: var(--color-primary-base);
+  color: #ffffff;
+  border-color: var(--color-primary-base);
+}
+
 /* Language Selector Component */
 .auth-lang-selector {
   position: absolute;
