@@ -1,41 +1,52 @@
 /* Finzo Enterprise Banking Design Tokens */
 :root {
   /* 1. COLOR SYSTEM (Light Mode) */
-  --color-primary-50: #f0f4f8;
-  --color-primary-100: #d9e2ec;
-  --color-primary-200: #bcccdc;
-  --color-primary-300: #9fb3c8;
-  --color-primary-400: #829ab1;
-  --color-primary-500: #627d98;
+  --color-primary-50: #f4f7f9;
+  --color-primary-100: #e1e5e9;
+  --color-primary-200: #d1d9e0;
+  --color-primary-300: #b0b8c1;
+  --color-primary-400: #6e7a87;
+  --color-primary-500: #4a5560;
   --color-primary-600: #0A2540;
   --color-primary-700: #061A2D;
   --color-primary-800: #03101C;
   --color-primary-900: #01080e;
   --color-primary-base: #0A2540;
-  --color-primary-hover: #061a2d;
-  --color-primary-surface: #f0f4f8;
+  --color-primary-hover: #061A2D;
+  --color-primary-surface: #f4f7f9;
   
   --color-surface-main: #ffffff;
-  --color-surface-subtle: #f8fafc;
-  --color-surface-hover: #f1f5f9;
+  --color-surface-subtle: #F4F7F9;
+  --color-surface-hover: #E6E9EC;
   
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-text-disabled: #94a3b8;
+  --color-text-main: #111820;
+  --color-text-muted: #6E7A87;
+  --color-text-disabled: #A0AAB4;
   --color-text-inverse: #ffffff;
   
-  --color-border-subtle: #e2e8f0;
-  --color-border-main: #cbd5e1;
+  --color-border-subtle: #D1D9E0;
+  --color-border-main: #b0b8c1;
   --color-border-focus: #0A2540;
   
-  --color-success-base: #059669;
-  --color-success-surface: #ecfdf5;
-  --color-warning-base: #d97706;
-  --color-warning-surface: #fffbeb;
-  --color-danger-base: #dc2626;
-  --color-danger-surface: #fef2f2;
-  --color-info-base: #2563eb;
-  --color-info-surface: #eff6ff;
+  --color-success-base: #0E793C;
+  --color-success-hover: #0B6331;
+  --color-success-surface: #E8F5E9;
+  --color-success-text: #084823;
+  
+  --color-warning-base: #B97200;
+  --color-warning-hover: #975D00;
+  --color-warning-surface: #FFF8E1;
+  --color-warning-text: #754800;
+  
+  --color-danger-base: #C62828;
+  --color-danger-hover: #A32121;
+  --color-danger-surface: #FFEBEE;
+  --color-danger-text: #7E1919;
+  
+  --color-info-base: #185ABB;
+  --color-info-hover: #134A99;
+  --color-info-surface: #E3F2FD;
+  --color-info-text: #0E3773;
 
   /* 2. TYPOGRAPHY SYSTEM */
   --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -55,20 +66,20 @@
   --space-3xl: 64px;
   
   /* 5. SHADOW SYSTEM */
-  --shadow-xs: 0 1px 2px 0 rgba(10, 37, 64, 0.03);
-  --shadow-sm: 0 1px 3px 0 rgba(10, 37, 64, 0.06), 0 1px 2px -1px rgba(10, 37, 64, 0.04);
-  --shadow-md: 0 4px 14px -1px rgba(10, 37, 64, 0.08), 0 2px 4px -2px rgba(10, 37, 64, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(10, 37, 64, 0.12), 0 4px 8px -2px rgba(10, 37, 64, 0.04);
-  --shadow-xl: 0 20px 32px -6px rgba(10, 37, 64, 0.16);
-  --shadow-focus: 0 0 0 3.5px rgba(10, 37, 64, 0.15);
-  --shadow-focus-danger: 0 0 0 3.5px rgba(220, 38, 38, 0.18);
-  --shadow-focus-success: 0 0 0 3.5px rgba(5, 150, 105, 0.18);
+  --shadow-xs: 0 1px 2px 0 rgba(10, 37, 64, 0.04);
+  --shadow-sm: 0 4px 12px rgba(10, 37, 64, 0.05), 0 1px 3px rgba(10, 37, 64, 0.03);
+  --shadow-md: 0 10px 20px rgba(10, 37, 64, 0.08), 0 4px 6px rgba(10, 37, 64, 0.04);
+  --shadow-lg: 0 20px 30px rgba(10, 37, 64, 0.1);
+  --shadow-dropdown: 0 10px 25px -5px rgba(10, 37, 64, 0.1), 0 8px 10px -6px rgba(10, 37, 64, 0.1);
+  --shadow-focus: 0 0 0 3px rgba(10, 37, 64, 0.2);
+  --shadow-focus-danger: 0 0 0 3px rgba(198, 40, 40, 0.2);
+  --shadow-focus-success: 0 0 0 3px rgba(14, 121, 60, 0.2);
   
   /* 6. BORDER RADIUS */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-2xl: 24px;
   --radius-full: 9999px;
   
@@ -79,13 +90,19 @@
 }
 
 .dark {
-  --color-surface-main: #0f172a;
-  --color-surface-subtle: #1e293b;
+  --color-surface-main: #1e293b;
+  --color-surface-subtle: #0f172a;
   --color-surface-hover: #334155;
-  --color-text-main: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-border-main: #334155;
+  
+  --color-text-main: #ffffff;
+  --color-text-muted: #A0AAB4;
+  --color-text-disabled: #6E7A87;
+  
+  --color-border-subtle: #334155;
+  --color-border-main: #4a5560;
   --color-border-focus: #38bdf8;
-  --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.6);
+  
+  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.5);
+  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }

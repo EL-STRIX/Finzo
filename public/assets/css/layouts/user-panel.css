@@ -1,14 +1,7 @@
-/* ============================================
-   FINZO USER PANEL — NAVY ACCENT OVERRIDES
-   Mirrors admin (indigo) and staff (amber) pattern.
-   ============================================ */
-
-/* --- Brand Sub Label --- */
 .brand-sub-user {
     color: #2563eb !important;
 }
 
-/* --- Sidebar Active State (Navy) --- */
 .user-sidebar-active {
     background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.02) 100%) !important;
     color: #60a5fa !important;
@@ -23,17 +16,14 @@
     color: #60a5fa !important;
 }
 
-/* Nav hover for user pages */
 .user-panel .admin-nav-item:hover {
     color: #60a5fa !important;
 }
 
-/* --- User Panel Specific Cards --- */
 .user-stat-accent {
     border-top: 3px solid #2563eb;
 }
 
-/* --- User Panel Buttons --- */
 .user-btn-primary {
     display: inline-flex !important;
     align-items: center !important;
@@ -87,7 +77,6 @@
     transform: translateY(-1px) !important;
 }
 
-/* Dark Mode Overrides for User Buttons */
 [data-theme="dark"] .user-btn-primary {
     background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
     box-shadow: none !important;
@@ -104,7 +93,6 @@
     border-color: rgba(96, 165, 250, 0.4) !important;
 }
 
-/* --- Status Indicator for User Panel --- */
 .user-status-pill {
     display: inline-flex;
     align-items: center;
@@ -151,7 +139,6 @@
     50% { opacity: 0.7; transform: scale(1.2); }
 }
 
-/* --- Page Entry Animation --- */
 @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -162,10 +149,11 @@
 }
 
 .page-enter-delay-1 { animation-delay: 0.1s; opacity: 0; }
+
 .page-enter-delay-2 { animation-delay: 0.2s; opacity: 0; }
+
 .page-enter-delay-3 { animation-delay: 0.3s; opacity: 0; }
 
-/* --- Print CSS (Receipt/Statement) --- */
 @media print {
     .admin-sidebar,
     .admin-topbar,
@@ -186,7 +174,6 @@
     }
 }
 
-/* --- Quick Action Cards --- */
 .quick-action-card {
     padding: 32px;
     border-radius: 2rem;
@@ -201,7 +188,6 @@
     transform: translateY(-4px);
 }
 
-/* --- User Nav Badge --- */
 .user-nav-badge {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
