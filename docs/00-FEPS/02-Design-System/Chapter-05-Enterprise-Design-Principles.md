@@ -560,6 +560,29 @@ Consistency
 
 Every screen should appear production-ready.
 
+## Phase 19 Architectural Updates (Implementation Synchronization)
+
+During Phase 19 of development, the following strict architectural rules were established and enforced across the codebase. All future developments must adhere to these standards:
+
+### 1. Zero-Tolerance Semantic UI
+The Finzo frontend has completely eradicated the use of legacy static Tailwind color primitives (e.g., `text-gray-700`, `bg-emerald-500`). Developers must exclusively utilize the Semantic Design System variables mapping to:
+- `text-text-main`, `text-text-muted`
+- `bg-surface-subtle`, `bg-surface-hover`
+- `success-base`, `warning-base`, `danger-base`
+
+### 2. Z-Index Architecture
+To prevent overlapping layout regressions across mobile and desktop breakpoints, Z-index is strictly gated:
+- `z-0`: Base Content
+- `z-50`: Sticky Navbars (`staff-navbar.html`, `admin-navbar.html`)
+- `z-100`: Fixed Sidebars
+- `z-200`: Modals and Dialog Overlays
+
+### 3. Micro-interactions
+Tactile user feedback is standardized globally within the `.btn` component classes. Do not inject arbitrary `active:scale` values into HTML templates. All interactive cards (`.ds-card`) utilize hardware-accelerated `translateY(-1px)` for hover states.
+
+### 4. Accessibility (Reduced Motion)
+A global `@media (prefers-reduced-motion: reduce)` directive is active in `animations.css` to respect operating system-level motion sensitivity settings, enforcing zero-duration animations where necessary. Furthermore, the `tabindex="0"` attribute is forbidden on natively focusable elements (`<button>`, `<a>`) to prevent screen reader double-focus traps.
+
 ---
 
 ## Visual Design Review Checklist
