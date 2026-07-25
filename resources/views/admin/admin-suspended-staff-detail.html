@@ -31,7 +31,7 @@
   <div class="page-content">
     <!-- BACK BUTTON -->
     <div style="margin-bottom:24px;">
-      <a href="admin-suspended-staff.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5 transition-colors">
+      <a href="admin-suspended-staff.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
         <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back
       </a>
     </div>
@@ -43,35 +43,35 @@
         <!-- STAFF PROFILE -->
         <div class="ds-card p-6 sm:p-8">
           <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 border-b border-slate-50 dark:border-white/5 pb-8 mb-8 text-center sm:text-left">
-            <div id="detail-avatar" class="w-24 h-24 rounded-2xl premium-gradient-primary flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-primary/20">
+            <div id="detail-avatar" class="w-24 h-24 rounded-2xl premium-gradient-primary flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-primary-base/20">
               -
             </div>
             <div class="flex-1">
               <div class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2">Suspended Staff</div>
-              <h1 id="detail-name" class="text-2xl sm:text-3xl font-black font-headline tracking-tight text-slate-800 dark:text-white">-</h1>
+              <h1 id="detail-name" class="text-2xl sm:text-3xl font-black font-headline tracking-tight text-text-main dark:text-white">-</h1>
               <p id="detail-email" class="text-sm font-bold opacity-40 mb-4">-</p>
               <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <span id="detail-staff-id-badge" class="px-3 py-1 bg-slate-100 dark:bg-white/5 text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
-                <span class="px-3 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-black rounded-lg uppercase tracking-widest">Internal Account</span>
+                <span id="detail-staff-id-badge" class="px-3 py-1 bg-surface-hover dark:bg-white/5 text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
+                <span class="px-3 py-1 bg-amber-500/10 text-warning-base text-[10px] font-black rounded-lg uppercase tracking-widest">Internal Account</span>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-y-6 gap-x-4">
             <div>
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Employee ID</p>
+              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Employee ID</p>
               <p id="detail-staff-id" class="font-bold text-sm tracking-widest text-[#002645] dark:text-blue-400">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mobile No</p>
+              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Mobile No</p>
               <p id="detail-phone" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Branch</p>
+              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Branch</p>
               <p id="detail-branch" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Joined Date</p>
+              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Joined Date</p>
               <p id="detail-onboarding" class="font-bold text-sm">-</p>
             </div>
           </div>
@@ -79,7 +79,7 @@
 
         <!-- SUSPENSION DETAILS -->
         <div class="ds-card p-6 sm:p-8">
-          <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-50 dark:border-white/5 pb-4">Internal Audit Analysis</div>
+          <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-6 border-b border-slate-50 dark:border-white/5 pb-4">Internal Audit Analysis</div>
           <div class="bg-red-50 dark:bg-red-500/5 p-6 rounded-2xl border border-red-100 dark:border-red-500/10 mb-8">
             <div class="flex items-start gap-4">
               <div class="w-10 h-10 rounded-xl bg-white dark:bg-red-500/20 shadow-sm flex items-center justify-center text-red-500">
@@ -112,7 +112,7 @@
         <div class="ds-card overflow-hidden">
           <div class="p-6 border-b border-slate-50 dark:border-white/5 flex items-center justify-between">
             <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Processing History</h3>
-            <a href="admin-transactions.html" class="text-[10px] font-black text-primary dark:text-blue-400 uppercase tracking-widest hover:underline">Full Logs</a>
+            <a href="admin-transactions.html" class="text-[10px] font-black text-primary-base dark:text-blue-400 uppercase tracking-widest hover:underline">Full Logs</a>
             <a href="admin-audit-log.html" class="admin-nav-item">
                 <span class="material-symbols-outlined">manage_search</span> Audit Log
             </a>
@@ -141,7 +141,7 @@
         <!-- ACTION -->
         <div class="ds-card p-6 sm:p-8 border-2 border-emerald-500/20 bg-emerald-500/5">
            <div class="text-center">
-              <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 text-emerald-500 shadow-inner">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 text-success-base shadow-inner">
                 <span class="material-symbols-outlined text-3xl">verified_user</span>
               </div>
               <h3 class="text-lg font-bold mb-2 dark:text-white">Reinstate Staff</h3>
@@ -158,32 +158,32 @@
 </div>
 
 <!-- REINSTATE MODAL -->
-<div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all" id="reinstate-modal">
+<div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-surface-dark/40 backdrop-blur-sm transition-all" id="reinstate-modal">
   <div class="relative w-full max-w-lg">
-    <div class="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-100 dark:border-white/5">
+    <div class="bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5">
       <div class="p-8 pb-4 text-center shrink-0">
-        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10">
+        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-success-base bg-emerald-50 dark:bg-emerald-500/10">
           <span class="material-symbols-outlined text-4xl">verified_user</span>
         </div>
-        <h3 class="font-headline text-2xl font-black text-slate-900 dark:text-white">Confirm Reinstatement</h3>
-        <p class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
+        <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Confirm Reinstatement</h3>
+        <p class="text-sm text-text-muted font-medium mt-1">Administrative security clearance required</p>
       </div>
       <div class="px-8 py-4 space-y-6 overflow-y-auto">
-        <div class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4">
-          You are removing the suspension from <strong id="modal-name" class="text-slate-900 dark:text-white font-bold">...</strong>'s staff account <strong id="modal-id" class="font-mono text-emerald-600 dark:text-emerald-400">...</strong>. Their system privileges will be restored immediately.
+        <div class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4">
+          You are removing the suspension from <strong id="modal-name" class="text-text-main dark:text-white font-bold">...</strong>'s staff account <strong id="modal-id" class="font-mono text-success-base dark:text-emerald-400">...</strong>. Their system privileges will be restored immediately.
         </div>
         
-        <div class="pt-6 border-t border-slate-100 dark:border-white/5">
-          <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
+        <div class="pt-6 border-t border-surface-border dark:border-white/5">
+          <label class="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
           <div class="relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">lock</span>
             <input type="password" id="admin-password" placeholder="••••••••" 
-              class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white outline-none shadow-inner">
+              class="w-full pl-12 pr-4 py-4 bg-surface-subtle dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white outline-none shadow-inner">
           </div>
         </div>
       </div>
-      <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-100 dark:border-white/5 mt-2">
-        <button data-action="closeModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+      <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
+        <button data-action="closeModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
         <button id="confirm-btn" data-action="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20 hover:bg-emerald-600 hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
       </div>
     </div>

@@ -12,7 +12,7 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
       <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 font-body text-black dark:text-on-surface antialiased">
+<body class="bg-surface-subtle dark:bg-surface-dark font-body text-black dark:text-on-surface antialiased">
 
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
     <!-- SIDEBAR COMPONENT -->
@@ -42,20 +42,20 @@
                     
                     <!-- ═══ PROFILE CARD ═══ -->
                     <div class="ds-card p-6 sm:p-8">
-                        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-slate-100 dark:border-white/5">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-surface-border dark:border-white/5">
                             <div class="relative">
-                                <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden ring-4 ring-slate-100 dark:ring-white/5 shadow-xl bg-slate-200 dark:bg-white/5 flex items-center justify-center">
-                                    <span id="photo-initials" class="text-4xl font-black text-slate-400">?</span>
+                                <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden ring-4 ring-slate-100 dark:ring-white/5 shadow-xl bg-surface-border dark:bg-white/5 flex items-center justify-center">
+                                    <span id="photo-initials" class="text-4xl font-black text-text-muted">?</span>
                                 </div>
                             </div>
                             <div class="text-center sm:text-left flex-1">
-                                <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-3">Loading...</h3>
+                                <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-main dark:text-white mb-3">Loading...</h3>
                                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-4">
-                                    <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-slate-400 border border-slate-200/50 dark:border-white/10 font-mono">---</span>
+                                    <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-surface-hover text-text-muted dark:bg-white/5 dark:text-text-muted border border-surface-border/50 dark:border-white/10 font-mono">---</span>
                                     <span id="info-designation-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-blue-600 text-white">---</span>
                                     <span id="info-department-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">---</span>
                                 </div>
-                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center justify-center sm:justify-start gap-2">
+                                <p class="text-sm font-medium text-text-muted dark:text-text-muted flex items-center justify-center sm:justify-start gap-2">
                                     <span class="material-symbols-outlined text-lg">calendar_today</span>
                                     Member since <span id="info-joined-date" class="font-bold">---</span>
                                 </p>
@@ -66,131 +66,131 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
                             <div>
                                 <label class="ds-label mb-1">Email Address</label>
-                                <div id="info-email" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-email" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Gender</label>
-                                <div id="info-gender" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-gender" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Phone Number</label>
-                                <div id="info-phone" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-phone" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Date of Birth</label>
-                                <div id="info-dob" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-dob" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Emergency Contact</label>
-                                <div id="info-emergency" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-emergency" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Branch Assignment</label>
-                                <div id="info-branch" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="info-branch" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ═══ ADDRESS ═══ -->
                     <div class="ds-card">
-                        <div class="p-5 border-b border-slate-100 dark:border-white/5">
-                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
-                                <span class="material-symbols-outlined text-primary text-lg">location_on</span> Residential Address
+                        <div class="p-5 border-b border-surface-border dark:border-white/5">
+                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-primary-base text-lg">location_on</span> Residential Address
                             </h4>
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-5 gap-5">
                             <div>
                                 <label class="ds-label mb-1">Street</label>
-                                <div id="addr-street" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="addr-street" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">City</label>
-                                <div id="addr-city" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="addr-city" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">State</label>
-                                <div id="addr-state" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="addr-state" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Pincode</label>
-                                <div id="addr-pincode" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="addr-pincode" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Country</label>
-                                <div id="addr-country" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="addr-country" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ═══ SYSTEM AUDIT INFO ═══ -->
                     <div class="ds-card">
-                        <div class="p-5 border-b border-slate-100 dark:border-white/5">
-                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
-                                <span class="material-symbols-outlined text-primary text-lg">security</span> System Audit Info
+                        <div class="p-5 border-b border-surface-border dark:border-white/5">
+                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-primary-base text-lg">security</span> System Audit Info
                             </h4>
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
                             <div>
                                 <label class="ds-label mb-1">Last Login</label>
-                                <div id="sys-last-login" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-last-login" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Login IP</label>
-                                <div id="sys-last-ip" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">---</div>
+                                <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-muted dark:text-text-muted">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Date of Joining</label>
-                                <div id="sys-joining-date" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-joining-date" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Created By</label>
-                                <div id="sys-created-by" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-created-by" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Staff ID</label>
-                                <div id="sys-staff-id" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">---</div>
+                                <div id="sys-staff-id" class="text-xs font-mono font-bold text-text-muted dark:text-text-muted">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Total Shifts</label>
-                                <div id="sys-total-shifts" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-total-shifts" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Failed Logins</label>
-                                <div id="sys-failed-logins" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-failed-logins" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Lock Status</label>
-                                <div id="sys-lock-status" class="text-xs font-bold text-slate-800 dark:text-slate-200">---</div>
+                                <div id="sys-lock-status" class="text-xs font-bold text-text-main dark:text-slate-200">---</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ═══ IDENTITY DOCUMENTS ═══ -->
                     <div class="ds-card">
-                        <div class="p-5 border-b border-slate-100 dark:border-white/5">
-                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-slate-900 dark:text-white">
-                                <span class="material-symbols-outlined text-primary text-lg">badge</span> Identity Documents
+                        <div class="p-5 border-b border-surface-border dark:border-white/5">
+                            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-primary-base text-lg">badge</span> Identity Documents
                             </h4>
                         </div>
                         <div class="p-5">
                             <div class="grid grid-cols-2 gap-5 mb-5">
                                 <div>
                                     <label class="ds-label mb-1">ID Type</label>
-                                    <div id="doc-id-type" class="text-sm font-bold text-slate-800 dark:text-slate-200">---</div>
+                                    <div id="doc-id-type" class="text-sm font-bold text-text-main dark:text-slate-200">---</div>
                                 </div>
                                 <div>
                                     <label class="ds-label mb-1">ID Number</label>
-                                    <div id="doc-id-number" class="text-sm font-bold font-mono text-slate-800 dark:text-slate-200">---</div>
+                                    <div id="doc-id-number" class="text-sm font-bold font-mono text-text-main dark:text-slate-200">---</div>
                                 </div>
                             </div>
                             <div id="doc-images-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <!-- Front -->
                                 <div>
                                     <label class="ds-label mb-2">Front of Document</label>
-                                    <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
+                                    <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-front-placeholder" class="text-center">
-                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
-                                            <p class="text-[10px] font-bold text-slate-400 mt-1">No document uploaded</p>
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted">image</span>
+                                            <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-front-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -201,10 +201,10 @@
                                 <!-- Back -->
                                 <div>
                                     <label class="ds-label mb-2">Back of Document</label>
-                                    <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
+                                    <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-back-placeholder" class="text-center">
-                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
-                                            <p class="text-[10px] font-bold text-slate-400 mt-1">No document uploaded</p>
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted">image</span>
+                                            <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-back-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -225,42 +225,42 @@
                     
                     <!-- ═══ STAFF CONTROL ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Staff Control</h5>
+                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Staff Control</h5>
                         <div class="space-y-3">
-                            <button id="deactivate-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
+                            <button id="deactivate-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-warning-base flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <span id="suspend-icon" class="material-symbols-outlined text-xl">block</span>
                                     </div>
                                     <div class="text-left">
                                         <div id="suspend-label" class="text-xs font-black dark:text-white">Deactivate Staff</div>
-                                        <div class="text-[9px] font-medium text-slate-400">Temporarily revoke access</div>
+                                        <div class="text-[9px] font-medium text-text-muted">Temporarily revoke access</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                             </button>
 
-                            <button id="reset-password-btn" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-200">
+                            <button id="reset-password-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-200">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-info-base flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <span class="material-symbols-outlined text-xl">lock_reset</span>
                                     </div>
                                     <div class="text-left">
                                         <div class="text-xs font-black dark:text-white">Reset Password</div>
-                                        <div class="text-[9px] font-medium text-slate-400">Force new credentials</div>
+                                        <div class="text-[9px] font-medium text-text-muted">Force new credentials</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                             </button>
 
-                            <button id="delete-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-slate-50 dark:bg-white/5 rounded-2xl group transition-all hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200">
+                            <button id="delete-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-danger-base flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <span class="material-symbols-outlined text-xl">person_remove</span>
                                     </div>
                                     <div class="text-left">
-                                        <div class="text-xs font-black text-rose-600">Delete Account</div>
-                                        <div class="text-[9px] font-medium text-slate-400">Permanent removal</div>
+                                        <div class="text-xs font-black text-danger-base">Delete Account</div>
+                                        <div class="text-[9px] font-medium text-text-muted">Permanent removal</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
@@ -270,58 +270,58 @@
 
                     <!-- ═══ PERFORMANCE STATS ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Performance Overview</h5>
+                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Performance Overview</h5>
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-slate-400 uppercase mb-1">Deposits</div>
-                                <div id="stat-total-deposits" class="text-sm font-black text-primary dark:text-blue-400">₹0</div>
+                            <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
+                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Deposits</div>
+                                <div id="stat-total-deposits" class="text-sm font-black text-primary-base dark:text-blue-400">₹0</div>
                             </div>
-                            <div class="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-slate-400 uppercase mb-1">Withdrawals</div>
-                                <div id="stat-total-withdrawals" class="text-sm font-black text-rose-500">₹0</div>
+                            <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
+                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Withdrawals</div>
+                                <div id="stat-total-withdrawals" class="text-sm font-black text-danger-base">₹0</div>
                             </div>
-                            <div class="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-slate-400 uppercase mb-1">Transactions</div>
-                                <div id="stat-total-txns" class="text-sm font-black text-slate-800 dark:text-white">0</div>
+                            <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
+                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Transactions</div>
+                                <div id="stat-total-txns" class="text-sm font-black text-text-main dark:text-white">0</div>
                             </div>
-                            <div class="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-slate-400 uppercase mb-1">Last Active</div>
-                                <div id="stat-last-active" class="text-xs font-black text-slate-800 dark:text-white">Never</div>
+                            <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
+                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Last Active</div>
+                                <div id="stat-last-active" class="text-xs font-black text-text-main dark:text-white">Never</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ═══ TODAY'S SHIFT ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5">Today's Shift Summary</h5>
+                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Today's Shift Summary</h5>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center pb-2.5 border-b border-slate-50 dark:border-white/5">
-                                <span class="text-[10px] font-black text-slate-400 uppercase">Deposits Done</span>
+                                <span class="text-[10px] font-black text-text-muted uppercase">Deposits Done</span>
                                 <span id="summary-deposits" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
                             </div>
                             <div class="flex justify-between items-center pb-2.5 border-b border-slate-50 dark:border-white/5">
-                                <span class="text-[10px] font-black text-slate-400 uppercase">Withdrawals Done</span>
+                                <span class="text-[10px] font-black text-text-muted uppercase">Withdrawals Done</span>
                                 <span id="summary-withdrawals" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
                             </div>
                             <div class="flex justify-between items-center pb-2.5 border-b border-slate-50 dark:border-white/5">
-                                <span class="text-[10px] font-black text-slate-400 uppercase">Total Transactions</span>
+                                <span class="text-[10px] font-black text-text-muted uppercase">Total Transactions</span>
                                 <span id="summary-total-txns" class="text-xs font-bold text-slate-700 dark:text-slate-200">0</span>
                             </div>
                             <div class="flex justify-between items-center pt-1">
-                                <span class="text-[10px] font-black text-primary dark:text-blue-400 uppercase">Net Amount</span>
-                                <span id="summary-total-amount" class="text-lg font-black text-primary dark:text-blue-400">₹0.00</span>
+                                <span class="text-[10px] font-black text-primary-base dark:text-blue-400 uppercase">Net Amount</span>
+                                <span id="summary-total-amount" class="text-lg font-black text-primary-base dark:text-blue-400">₹0.00</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- ═══ SHIFT HISTORY ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-5 flex justify-between items-center">
+                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5 flex justify-between items-center">
                             <span>Recent Shifts</span>
                             <span class="material-symbols-outlined text-sm">schedule</span>
                         </h5>
                         <div id="staff-shift-history" class="space-y-3">
-                            <div class="text-xs text-slate-400 text-center py-4">Loading shift history...</div>
+                            <div class="text-xs text-text-muted text-center py-4">Loading shift history...</div>
                         </div>
                     </div>
 
@@ -340,11 +340,11 @@
 
             <!-- ═══ TRANSACTION HISTORY (Full Width) ═══ -->
             <div class="ds-card overflow-hidden">
-                <div class="p-5 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
+                <div class="p-5 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-primary text-lg">history</span> Transaction History
+                        <span class="material-symbols-outlined text-primary-base text-lg">history</span> Transaction History
                     </h4>
-                    <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm">
+                    <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-slate-800 border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
                         <span class="material-symbols-outlined text-lg">print</span>
                         Print Statement
                     </button>
@@ -363,7 +363,7 @@
                             </tr>
                         </thead>
                         <tbody id="staff-transactions-body">
-                            <tr><td colspan="7" class="text-center py-12 text-slate-400 text-xs font-bold">Loading transactions...</td></tr>
+                            <tr><td colspan="7" class="text-center py-12 text-text-muted text-xs font-bold">Loading transactions...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -371,9 +371,9 @@
 
             <!-- ═══ RECENT ACTIVITY (Full Width) ═══ -->
             <div class="ds-card overflow-hidden mt-6">
-                <div class="p-5 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/5">
+                <div class="p-5 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-primary text-lg">local_activity</span> Recent Activity
+                        <span class="material-symbols-outlined text-primary-base text-lg">local_activity</span> Recent Activity
                     </h4>
                 </div>
                 <div class="overflow-x-auto">
@@ -388,7 +388,7 @@
                             </tr>
                         </thead>
                         <tbody id="staff-activities-body">
-                            <tr><td colspan="5" class="text-center py-12 text-slate-400 text-xs font-bold">Loading activity...</td></tr>
+                            <tr><td colspan="5" class="text-center py-12 text-text-muted text-xs font-bold">Loading activity...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -399,7 +399,7 @@
 
     <!-- GOVERNANCE SECURITY MODAL -->
     <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
-        <div id="modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md opacity-0"></div>
+        <div id="modal-backdrop" class="absolute inset-0 bg-surface-dark/40 backdrop-blur-md opacity-0"></div>
         <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300">
             <div class="ds-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
                 <div id="modal-header" class="p-8 pb-4 text-center shrink-0">
@@ -407,31 +407,31 @@
                         <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
                     </div>
                     <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
-                    <p id="modal-subtitle" class="text-sm text-slate-500 font-medium mt-1">Administrative security clearance required</p>
+                    <p id="modal-subtitle" class="text-sm text-text-muted font-medium mt-1">Administrative security clearance required</p>
                 </div>
                 <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
-                    <div id="modal-body-text" class="text-sm text-center text-slate-600 dark:text-slate-400 font-medium leading-relaxed px-4"></div>
+                    <div id="modal-body-text" class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4"></div>
                     <div id="reason-step" class="hidden">
-                        <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Select Deactivation Reason</label>
+                        <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Select Deactivation Reason</label>
                         <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                         <div id="custom-reason-container" class="mt-4 hidden">
-                            <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Additional Observations</label>
+                            <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Additional Observations</label>
                             <textarea id="custom-reason-notes" rows="2" placeholder="Elaborate..."
-                                class="w-full bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
+                                class="w-full bg-surface-subtle dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
                         </div>
                     </div>
                     <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
-                        <label class="block text-[10px] font-black uppercase text-slate-400 mb-3 ml-1">Confirm Identity (Admin Password)</label>
+                        <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">admin_panel_settings</span>
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">admin_panel_settings</span>
                             <input type="password" id="admin-password" placeholder="••••••••"
-                                class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
+                                class="w-full pl-12 pr-4 py-3 bg-surface-subtle dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
                         </div>
-                        <p id="auth-error" class="text-[10px] font-black text-rose-500 mt-2 ml-1 hidden">Invalid credentials.</p>
+                        <p id="auth-error" class="text-[10px] font-black text-danger-base mt-2 ml-1 hidden">Invalid credentials.</p>
                     </div>
                 </div>
                 <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-slate-50 dark:border-white/5">
-                    <button data-action="closeGovernanceModal()" class="flex-1 py-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 text-slate-500 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
+                    <button data-action="closeGovernanceModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
                     <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all">Authorize</button>
                 </div>
             </div>

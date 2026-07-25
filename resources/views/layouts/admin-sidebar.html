@@ -1,74 +1,74 @@
-<nav class="fixed top-0 left-0 h-full w-72 bg-slate-900 text-white z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
+<nav class="fixed top-0 left-0 h-full w-72 bg-surface-dark text-white z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
     <!-- Brand -->
-    <div class="h-20 flex flex-col justify-center px-8 border-b border-white/10 bg-slate-950">
+    <div class="h-20 flex flex-col justify-center px-8 border-b border-white/10 bg-primary-900">
         <div class="font-headline font-black text-2xl tracking-tight text-white">Finzo</div>
-        <div class="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Enterprise Admin</div>
+        <div class="text-[10px] font-black text-primary-base uppercase tracking-[0.2em]">Enterprise Admin</div>
     </div>
 
     <!-- Navigation -->
     <div class="p-4 space-y-1 overflow-y-auto admin-nav-links" style="height: calc(100vh - 80px);">
-        <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
+        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
         
-        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">analytics</span>
             <span>Executive Overview</span>
         </a>
-        <a href="admin-pending-approvals.html" class="flex items-center justify-between px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all group admin-nav-item">
+        <a href="admin-pending-approvals.html" class="flex items-center justify-between px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all group admin-nav-item">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-[20px]">rule</span>
                 <span>Approvals</span>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black tracking-widest uppercase shadow-sm" id="nav-pending-count">...</span>
         </a>
-        <a href="admin-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">group</span>
             <span>User Management</span>
         </a>
-        <a href="admin-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">badge</span>
             <span>Staff Management</span>
         </a>
-        <a href="admin-branches.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-branches.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">store</span>
             <span>Branch Operations</span>
         </a>
-        <a href="admin-transactions.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-transactions.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">swap_horiz</span>
             <span>Global Transactions</span>
         </a>
-        <a href="admin-audit-log.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-audit-log.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">manage_search</span>
             <span>System Audit Log</span>
         </a>
 
-        <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">System & Security</div>
-        <a href="admin-suspended-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 px-4 mt-8">System & Security</div>
+        <a href="admin-suspended-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">person_off</span>
             <span>Suspended Users</span>
         </a>
-        <a href="admin-suspended-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-suspended-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">work_off</span>
             <span>Suspended Staff</span>
         </a>
-        <a href="admin-locked-accounts.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-locked-accounts.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">lock_person</span>
             <span>Locked Accounts</span>
         </a>
-        <a href="admin-deleted-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-deleted-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">person_remove</span>
             <span>Deleted Users</span>
         </a>
-        <a href="admin-interest.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <a href="admin-interest.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">percent</span>
             <span>Interest Engine</span>
         </a>
 
-        <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">Account</div>
-        <a href="admin-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
+        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 px-4 mt-8">Account</div>
+        <a href="admin-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all admin-nav-item">
             <span class="material-symbols-outlined text-[20px]">account_circle</span>
             <span>My Profile</span>
         </a>
-        <button data-toggle-theme class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all text-left">
+        <button data-toggle-theme class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-white/5 hover:text-white font-bold transition-all text-left">
             <span class="material-symbols-outlined text-[20px]" data-theme-icon>light_mode</span>
             <span data-theme-label>Light Mode</span>
         </button>

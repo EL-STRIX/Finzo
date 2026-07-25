@@ -18,7 +18,7 @@
 
 <div class="page-content ds-container py-8">
   <div class="mb-8 ds-animate-fade text-center max-w-2xl mx-auto">
-    <div class="w-16 h-16 bg-primary-surface text-primary-base rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+    <div class="w-16 h-16 bg-primary-surface text-primary-base-base rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
       <span class="material-symbols-outlined text-3xl">send</span>
     </div>
     <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight">Send Money</h1>
@@ -82,7 +82,7 @@
           <label for="transfer-amount" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-4">Amount to send</label>
           <div class="relative flex items-center justify-center">
             <span class="absolute left-4 text-3xl text-[var(--color-text-muted)] font-bold">₹</span>
-            <input type="number" id="transfer-amount" class="w-full bg-transparent border-b-2 border-[var(--color-border-main)] focus:border-primary-base outline-none text-center font-display text-5xl font-black text-primary-600 pb-2 transition-colors placeholder:text-[var(--color-text-disabled)]" placeholder="0" min="1" oninput="updateSummary()"/>
+            <input type="number" id="transfer-amount" class="w-full bg-transparent border-b-2 border-[var(--color-border-main)] focus:border-primary-base outline-none text-center font-display text-5xl font-black text-primary-base-600 pb-2 transition-colors placeholder:text-[var(--color-text-disabled)]" placeholder="0" min="1" oninput="updateSummary()"/>
           </div>
           <div id="amount-words" class="text-xs font-bold text-[var(--color-text-muted)] mt-3 h-4"></div>
           <div id="amount-error" class="hidden text-xs font-bold text-danger-base mt-2"></div>

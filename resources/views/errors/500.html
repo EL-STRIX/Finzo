@@ -26,7 +26,7 @@
 <body class="bg-surface text-on-surface min-h-screen flex flex-col">
 <!-- TopNavBar (Shared Component) -->
 <!-- The TopNavBar is mapped from the JSON. Following 'The Destination Rule', we show it for public context navigation even on error pages. -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-100">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 backdrop-blur-md shadow-sm border-b border-surface-border">
 <div class="flex items-center gap-8">
 <span class="text-xl font-bold tracking-tighter text-blue-900">Finzo</span>
 <div class="hidden md:flex items-center gap-6">
@@ -46,7 +46,7 @@
 <div class="relative space-y-8">
 <div class="space-y-2">
 <span class="text-xs font-bold tracking-[0.2em] text-on-surface-variant uppercase opacity-50 font-label">ERROR 500</span>
-<h1 class="text-5xl font-extrabold text-primary tracking-tighter leading-tight font-headline">Something Went Wrong.</h1>
+<h1 class="text-5xl font-extrabold text-primary-base tracking-tighter leading-tight font-headline">Something Went Wrong.</h1>
 </div>
 <p class="text-lg text-on-surface-variant leading-relaxed font-light">
                             An unexpected error occurred on our server. Your account and data are completely safe. Please try again in a few moments.
@@ -55,13 +55,13 @@
 <div class="flex items-start gap-4">
 <span class="material-symbols-outlined text-[#00b894]" style="font-variation-settings:'FILL' 1;">shield_check</span>
 <div>
-<h4 class="text-sm font-bold text-primary font-headline">Your Data is Safe</h4>
+<h4 class="text-sm font-bold text-primary-base font-headline">Your Data is Safe</h4>
 <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Your account balance and transaction history are fully protected. This is a temporary server issue only.</p>
 </div>
 </div>
 </div>
 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-<button data-action="window.location.reload()" class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform active:scale-95 whitespace-nowrap">
+<button data-action="window.location.reload()" class="px-8 py-4 architectural-gradient text-on-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary-base/10 hover:translate-y-[-2px] transition-transform active:scale-95 whitespace-nowrap">
 <span class="material-symbols-outlined text-lg">refresh</span>
                                 Refresh Page
                             </button>
@@ -84,7 +84,7 @@
 </div>
 </main>
 <!-- Support Section (Asymmetric Data Density) -->
-<section class="py-12 px-8 bg-surface-container-low border-t border-slate-100 flex justify-center">
+<section class="py-12 px-8 bg-surface-container-low border-t border-surface-border flex justify-center">
     <div class="flex items-center gap-10">
         <a href="javascript:history.back()" class="text-sm font-bold text-[#1a3c5e] no-underline hover:opacity-80 transition-opacity">← Go Back</a>
         <a href="/" class="text-sm font-bold text-[#1a3c5e] no-underline hover:opacity-80 transition-opacity">Go to Home →</a>
@@ -92,7 +92,7 @@
 </section>
 <!-- Footer (Shared Component) -->
 <!-- Modular Footer -->
-<div id="footer-placeholder" class="bg-slate-50"></div>
+<div id="footer-placeholder" class="bg-surface-subtle"></div>
 
 <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
     <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

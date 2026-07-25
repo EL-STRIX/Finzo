@@ -14,7 +14,7 @@
       <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
+<body class="bg-surface-subtle dark:bg-surface-dark font-body antialiased">
 
     <!-- SIDEBAR -->
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -32,21 +32,21 @@
                 <div class="ds-card p-5 relative overflow-hidden group hover:border-blue-200 dark:hover:border-blue-500/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-blue-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-info-base flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">group</span>
                         </div>
-                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Users</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton min-w-[40px]" id="stat-total-users">—</div>
+                        <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Total Users</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-total-users">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 relative overflow-hidden group hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-emerald-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-success-base flex items-center justify-center mb-4 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">verified_user</span>
                         </div>
-                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Accounts</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton min-w-[40px]" id="stat-active-users">—</div>
+                        <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Active Accounts</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-active-users">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 relative overflow-hidden group hover:border-red-200 dark:hover:border-red-500/30 transition-colors">
@@ -55,8 +55,8 @@
                         <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 flex items-center justify-center mb-4 border border-red-100 dark:border-red-500/20 shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">person_off</span>
                         </div>
-                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Suspended</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton min-w-[40px]" id="stat-suspended-users">—</div>
+                        <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Suspended</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-suspended-users">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 relative overflow-hidden group hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-colors">
@@ -65,18 +65,18 @@
                         <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 flex items-center justify-center mb-4 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">new_releases</span>
                         </div>
-                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">New This Month</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton min-w-[40px]" id="stat-new-month">—</div>
+                        <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">New This Month</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-new-month">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 relative overflow-hidden group hover:border-slate-300 dark:hover:border-white/20 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-slate-500/5 rounded-bl-full -z-0"></div>
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-surface-subtle0/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 flex items-center justify-center mb-4 border border-slate-200 dark:border-white/10 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted flex items-center justify-center mb-4 border border-surface-border dark:border-white/10 shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
                         </div>
-                        <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Soft Deleted</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white skeleton min-w-[40px]" id="stat-soft-deleted">—</div>
+                        <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Soft Deleted</div>
+                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-soft-deleted">—</div>
                     </div>
                 </div>
             </div>
@@ -84,12 +84,12 @@
             <!-- TABLE WITH INTEGRATED FILTERS -->
             <div class="ds-card overflow-hidden">
                 <!-- Header / Filters -->
-                <div class="p-6 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                <div class="p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/50 dark:bg-white/[0.02]">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="ds-label">Search User</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">search</span>
                                 <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="ds-input pl-11">
                             </div>
                         </div>
@@ -132,14 +132,14 @@
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-slate-50/50 dark:bg-white/[0.02] border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/[0.02] border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Users</div>
                     <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Previous</button>
+                        <button id="prev-btn" class="px-4 py-2 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-lg text-[11px] font-bold uppercase tracking-widest text-text-muted dark:text-slate-300 hover:bg-surface-subtle dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by users.js -->
                         </div>
-                        <button id="next-btn" class="px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Next</button>
+                        <button id="next-btn" class="px-4 py-2 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-lg text-[11px] font-bold uppercase tracking-widest text-text-muted dark:text-slate-300 hover:bg-surface-subtle dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Next</button>
                     </div>
                 </div>
             </div>

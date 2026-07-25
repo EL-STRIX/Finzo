@@ -40,15 +40,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="ds-card p-5 border-l-4 border-l-emerald-500">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Deposits Done</div>
-                        <span class="material-symbols-outlined text-emerald-500">add_circle</span>
+                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Total Deposits Done</div>
+                        <span class="material-symbols-outlined text-success-base">add_circle</span>
                     </div>
-                    <div class="text-2xl font-black text-emerald-600 dark:text-emerald-500" id="stat-deposits">₹0</div>
-                    <div class="mt-2 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded inline-block">Total processed</div>
+                    <div class="text-2xl font-black text-success-base dark:text-success-base" id="stat-deposits">₹0</div>
+                    <div class="mt-2 text-[10px] font-bold text-success-base dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded inline-block">Total processed</div>
                 </div>
                 <div class="ds-card p-5 border-l-4 border-l-red-500">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Withdrawals Done</div>
+                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Total Withdrawals Done</div>
                         <span class="material-symbols-outlined text-red-500">remove_circle</span>
                     </div>
                     <div class="text-2xl font-black text-red-600 dark:text-red-500" id="stat-withdrawals">₹0</div>
@@ -56,32 +56,32 @@
                 </div>
                 <div class="ds-card p-5 border-l-4 border-l-amber-500">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Transactions</div>
-                        <span class="material-symbols-outlined text-amber-500">receipt</span>
+                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Total Transactions</div>
+                        <span class="material-symbols-outlined text-warning-base">receipt</span>
                     </div>
-                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="stat-transactions">0</div>
-                    <div class="mt-2 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded inline-block uppercase">All Time</div>
+                    <div class="text-2xl font-black text-text-main dark:text-white" id="stat-transactions">0</div>
+                    <div class="mt-2 text-[10px] font-bold text-warning-base dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded inline-block uppercase">All Time</div>
                 </div>
                 <div class="ds-card p-5 border-l-4 border-l-blue-500">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">This Month</div>
+                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">This Month</div>
                         <span class="material-symbols-outlined text-blue-500">calendar_month</span>
                     </div>
-                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="stat-month-count">0</div>
-                    <div class="mt-2 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-1 rounded inline-block uppercase" id="stat-month-label">Month</div>
+                    <div class="text-2xl font-black text-text-main dark:text-white" id="stat-month-count">0</div>
+                    <div class="mt-2 text-[10px] font-bold text-info-base dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-1 rounded inline-block uppercase" id="stat-month-label">Month</div>
                 </div>
             </div>
 
             <!-- FILTER BAR -->
             <div class="ds-card p-4 sm:p-6 space-y-4 relative z-20">
                 <!-- Tabs and Print Row -->
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-4">
+                <div class="flex items-center justify-between border-b border-surface-border dark:border-white/5 pb-4">
                     <div class="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide pb-2 sm:pb-0">
                         <button class="time-tab px-4 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs uppercase tracking-widest shadow shadow-amber-500/20">All Time</button>
-                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">Today</button>
-                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Week</button>
-                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Month</button>
-                        <button class="time-tab px-4 py-2 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-900 dark:hover:text-white transition-all text-xs uppercase tracking-widest" id="tab-custom">Custom</button>
+                        <button class="time-tab px-4 py-2 text-text-muted dark:text-text-muted font-bold hover:text-text-main dark:hover:text-white transition-all text-xs uppercase tracking-widest">Today</button>
+                        <button class="time-tab px-4 py-2 text-text-muted dark:text-text-muted font-bold hover:text-text-main dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Week</button>
+                        <button class="time-tab px-4 py-2 text-text-muted dark:text-text-muted font-bold hover:text-text-main dark:hover:text-white transition-all text-xs uppercase tracking-widest">This Month</button>
+                        <button class="time-tab px-4 py-2 text-text-muted dark:text-text-muted font-bold hover:text-text-main dark:hover:text-white transition-all text-xs uppercase tracking-widest" id="tab-custom">Custom</button>
                     </div>
                     
                     <button id="print-all-btn" data-action="printAllTransactions()" class="flex items-center gap-2 px-4 py-2 ds-btn-secondary text-xs bg-white dark:bg-white/5">
@@ -93,7 +93,7 @@
                 <!-- Inputs Row -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="md:col-span-2 relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
                         <input type="text" id="search-input" placeholder="Search customer name, account no, or ref..." class="w-full ds-input pl-10 h-10 text-sm">
                     </div>
                     
@@ -116,14 +116,14 @@
                 </div>
 
                 <!-- Custom Date Row (Hidden) -->
-                <div id="custom-date-row" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                <div id="custom-date-row" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-surface-border dark:border-white/5">
                     <div class="md:col-span-2"></div>
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">From</label>
+                        <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">From</label>
                         <input type="date" id="filter-from-date" class="w-full ds-input h-10 text-sm">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">To</label>
+                        <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">To</label>
                         <input type="date" id="filter-to-date" class="w-full ds-input h-10 text-sm">
                     </div>
                 </div>
@@ -132,28 +132,28 @@
             <!-- HISTORY TABLE (High Density) -->
             <div class="ds-card overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <table class="ds-table whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest w-12 text-center">#</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Time</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Customer / Ref</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Account</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Type</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
-                                <th class="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Receipt</th>
+                            <tr class="bg-surface-subtle dark:bg-white/5 border-b border-surface-border dark:border-white/5">
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest w-12 text-center">#</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Time</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Customer / Ref</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Account</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Type</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Amount</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Status</th>
+                                <th class="p-3 text-[10px] font-black text-text-muted uppercase tracking-widest text-right">Receipt</th>
                             </tr>
                         </thead>
                         <tbody id="transaction-table-body" class="divide-y divide-slate-100 dark:divide-white/5">
-                            <tr><td colspan="8" class="text-center py-8 font-bold text-slate-400 text-sm">Loading...</td></tr>
+                            <tr><td colspan="8" class="text-center py-8 font-bold text-text-muted text-sm">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 bg-slate-50/50 dark:bg-white/2 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <span id="showing-meta" class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Showing 0-0 of 0</span>
+                <div class="p-4 bg-surface-subtle/50 dark:bg-white/2 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <span id="showing-meta" class="text-[11px] font-bold text-text-muted uppercase tracking-widest">Showing 0-0 of 0</span>
                     <div class="flex items-center gap-1" id="page-buttons">
                         <!-- Populated by JS -->
                     </div>
@@ -163,15 +163,15 @@
     </div>
 
     <!-- MODAL OVERLAY -->
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-slate-100 dark:border-white/10">
+    <div id="modal-overlay" class="fixed inset-0 bg-surface-dark/60 backdrop-blur-sm z-[2000] items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-surface-border dark:border-white/10">
             <div class="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 flex items-center justify-center mb-6 mx-auto border border-red-100 dark:border-red-500/20">
                 <span class="material-symbols-outlined text-3xl font-black">logout</span>
             </div>
-            <h3 class="text-xl font-bold font-headline text-center mb-2 text-slate-900 dark:text-white">End Shift?</h3>
-            <p class="text-slate-500 text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
+            <h3 class="text-xl font-bold font-headline text-center mb-2 text-text-main dark:text-white">End Shift?</h3>
+            <p class="text-text-muted text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout? Your transaction summary for today will be finalized.</p>
             <div class="flex gap-3">
-                <button class="flex-1 py-2.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <button class="flex-1 py-2.5 bg-surface-hover dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-surface-border dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
                 <button data-href="../../../api/auth/logout.php" class="flex-1 py-2.5 bg-red-600 text-white text-center font-bold text-sm rounded-xl hover:bg-red-700 transition-all shadow-md shadow-red-600/20">End Shift</button>
             </div>
         </div>

@@ -26,12 +26,12 @@
 <body class="bg-surface text-on-surface">
 <!-- TopNavBar (Public Variant) -->
 <!-- According to Shell Visibility Rule: 404 Pages suppress navigation shells. However, prompt explicitly requests TopNavBar (Public variant). Rendering as fixed header. -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 :bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-slate-100 :border-slate-800">
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-white/80 :bg-surface-dark/80 backdrop-blur-md shadow-sm border-b border-surface-border :border-surface-border">
 <div class="text-xl font-bold tracking-tighter text-blue-900 :text-white">Finzo</div>
 <nav class="hidden md:flex items-center gap-8">
 </nav>
 <div class="flex items-center gap-4">
-<a href="/Finzo/resources/views/auth/login.html" class="px-5 py-2 text-sm font-semibold text-blue-900 :text-blue-100 font-['Plus_Jakarta_Sans'] tracking-tight hover:bg-slate-50 :hover:bg-slate-800 transition-colors" style="display:inline-block;text-align:center;">Log In</a>
+<a href="/Finzo/resources/views/auth/login.html" class="px-5 py-2 text-sm font-semibold text-blue-900 :text-blue-100 font-['Plus_Jakarta_Sans'] tracking-tight hover:bg-surface-subtle :hover:bg-slate-800 transition-colors" style="display:inline-block;text-align:center;">Log In</a>
 </div>
 </header>
 <main class="min-h-screen flex flex-col items-center justify-center pt-16 px-6">
@@ -40,7 +40,7 @@
 <div class="md:col-span-6 flex flex-col space-y-6">
 <div class="space-y-2">
 <span class="text-on-tertiary-container font-mono text-sm tracking-[0.2em] font-semibold">ERROR 404</span>
-<h1 class="text-5xl md:text-7xl font-extrabold text-primary tracking-tighter leading-tight font-headline">
+<h1 class="text-5xl md:text-7xl font-extrabold text-primary-base tracking-tighter leading-tight font-headline">
                         Page Not Found.
                     </h1>
 </div>
@@ -48,7 +48,7 @@
                     The page you are looking for does not exist or has been moved. Go back to your dashboard to continue banking.
                 </p>
 <div class="pt-4 flex flex-col sm:flex-row gap-4">
-<a href="/Finzo/resources/views/auth/login.html" class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-lg shadow-lg shadow-primary/10 hover:opacity-90 transition-all flex items-center justify-center gap-2 group no-underline">
+<a href="/Finzo/resources/views/auth/login.html" class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-lg shadow-lg shadow-primary-base/10 hover:opacity-90 transition-all flex items-center justify-center gap-2 group no-underline">
                         Return to Dashboard
                         <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
 </a>
@@ -59,7 +59,7 @@
 <div class="pt-8 border-t border-outline-variant/30 grid grid-cols-2 gap-8">
 <div>
 <h4 class="text-xs font-bold text-on-surface-variant/50 uppercase tracking-widest mb-2">Need Assistance?</h4>
-<a class="text-sm font-semibold text-primary flex items-center gap-1 hover:underline" href="mailto:sujaypaul892@gmail.com">
+<a class="text-sm font-semibold text-primary-base flex items-center gap-1 hover:underline" href="mailto:sujaypaul892@gmail.com">
                             Contact Support
                         </a>
 </div>
@@ -67,21 +67,21 @@
 <h4 class="text-xs font-bold text-on-surface-variant/50 uppercase tracking-widest mb-2">System Status</h4>
 <div class="flex items-center gap-2">
 <div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim shadow-[0_0_8px_rgba(74,225,131,0.5)]"></div>
-<span class="text-sm font-semibold text-primary">Finzo is Operational</span>
+<span class="text-sm font-semibold text-primary-base">Finzo is Operational</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Visual Asset Column (Bento-style Glass Card) -->
 <div class="md:col-span-6 relative">
-<div class="relative z-10 p-8 rounded-xl bg-surface-container-lowest shadow-2xl shadow-primary/5 border border-outline-variant/10 backdrop-blur-sm bg-white/40">
+<div class="relative z-10 p-8 rounded-xl bg-surface-container-lowest shadow-2xl shadow-primary-base/5 border border-outline-variant/10 backdrop-blur-sm bg-white/40">
 <div class="aspect-square relative overflow-hidden rounded-lg bg-surface-container-low flex items-center justify-center">
 <!-- Abstract Architectural Graphic -->
 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent"></div>
 <div class="flex flex-col items-center text-center space-y-4">
 <span class="material-symbols-outlined text-8xl text-on-primary-container/20 select-none" data-icon="account_balance">account_balance</span>
 <div class="relative">
-<span class="material-symbols-outlined text-9xl text-primary/80" data-icon="search_off">search_off</span>
+<span class="material-symbols-outlined text-9xl text-primary-base/80" data-icon="search_off">search_off</span>
 <div class="absolute -top-4 -right-4 w-12 h-12 bg-tertiary-fixed-dim rounded-full flex items-center justify-center shadow-lg">
 <span class="material-symbols-outlined text-on-tertiary-fixed font-bold" data-icon="question_mark">question_mark</span>
 </div>
@@ -103,7 +103,7 @@
 </main>
 <!-- Footer -->
 <!-- Modular Footer -->
-<div id="footer-placeholder" class="ml-64 bg-slate-50"></div>
+<div id="footer-placeholder" class="ml-64 bg-surface-subtle"></div>
 
 <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
     <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

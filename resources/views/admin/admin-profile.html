@@ -50,11 +50,11 @@
                     <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
                 </div>
                 <div class="text-center sm:text-left flex-1">
-                    <h1 class="text-2xl sm:text-3xl font-black font-headline text-slate-900 dark:text-white tracking-tight mb-2" id="profile-name-display">Loading...</h1>
+                    <h1 class="text-2xl sm:text-3xl font-black font-headline text-text-main dark:text-white tracking-tight mb-2" id="profile-name-display">Loading...</h1>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4">
                         <span id="badge-role" class="px-3 py-1 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-500 text-[10px] font-black uppercase tracking-widest border border-blue-200 dark:border-blue-500/20 shadow-sm">—</span>
                         <span id="badge-access" class="px-3 py-1 rounded bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-500 text-[10px] font-black uppercase tracking-widest border border-purple-200 dark:border-purple-500/20 shadow-sm">—</span>
-                        <span id="badge-status" class="px-3 py-1 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-500 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20 shadow-sm">—</span>
+                        <span id="badge-status" class="px-3 py-1 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-success-base text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20 shadow-sm">—</span>
                     </div>
                 </div>
             </div>
@@ -64,16 +64,16 @@
                 <div class="lg:col-span-2 space-y-6">
                     <!-- PERSONAL INFO -->
                     <div class="ds-card p-6 sm:p-8">
-                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary dark:text-blue-400">badge</span>
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface-border dark:border-white/5">
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary-base dark:text-blue-400">badge</span>
                                 Administrator Identity
                             </h3>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
                                 <label class="ds-label mb-1">Admin ID (System Generated)</label>
-                                <input type="text" id="profile-admin-id-input" class="ds-input opacity-70 bg-slate-100 dark:bg-white/5 cursor-not-allowed font-mono" readonly>
+                                <input type="text" id="profile-admin-id-input" class="ds-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed font-mono" readonly>
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Full Name *</label>
@@ -99,24 +99,24 @@
                             </div>
                             <div>
                                 <label class="ds-label mb-1">Email Address (Read-only)</label>
-                                <input type="email" id="profile-email-input" class="ds-input opacity-70 bg-slate-100 dark:bg-white/5 cursor-not-allowed" readonly>
+                                <input type="email" id="profile-email-input" class="ds-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed" readonly>
                             </div>
                         </div>
-                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-white/5 flex justify-end">
+                        <div class="mt-8 pt-6 border-t border-surface-border dark:border-white/5 flex justify-end">
                             <button data-action="window.AdminProfile.saveProfile()" class="ds-btn-primary px-8">Save Profile</button>
                         </div>
                     </div>
 
                     <!-- SECURITY QUESTION -->
                     <div class="ds-card p-6 sm:p-8">
-                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface-border dark:border-white/5">
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
                                 <span class="material-symbols-outlined text-teal-500">quiz</span>
                                 Master Security Question
                             </h3>
                             <div id="sq-status-container"></div>
                         </div>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">Configure a security question to recover this admin account if locked out. The answer is case-insensitive.</p>
+                        <p class="text-sm text-text-muted dark:text-text-muted mb-6 font-medium">Configure a security question to recover this admin account if locked out. The answer is case-insensitive.</p>
                         <form id="sq-setup-form" onsubmit="window.AdminProfile.saveSecurityQuestion(event)" class="space-y-6">
                             <div>
                                 <label class="ds-label mb-1">Security Question *</label>
@@ -126,7 +126,7 @@
                                 <label class="ds-label mb-1">Answer *</label>
                                 <input type="password" id="sq-answer" class="ds-input" placeholder="Your secret answer" minlength="3" required>
                             </div>
-                            <div class="pt-4 border-t border-slate-100 dark:border-white/5">
+                            <div class="pt-4 border-t border-surface-border dark:border-white/5">
                                 <label class="ds-label mb-1">Current Password (to verify) *</label>
                                 <input type="password" id="sq-curr-pw" class="ds-input" placeholder="Authenticate changes" required>
                             </div>
@@ -138,9 +138,9 @@
 
                     <!-- ACTIVITY TABLE -->
                     <div class="ds-card overflow-hidden">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/2">
-                            <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-slate-900 dark:text-white">
-                                <span class="material-symbols-outlined text-slate-500">history</span>
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/2">
+                            <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-text-muted">history</span>
                                 Admin Activity Log
                             </h3>
                         </div>
@@ -159,8 +159,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="p-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/2 hidden" id="activity-pagination-container">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
+                        <div class="p-4 border-t border-surface-border dark:border-white/5 flex items-center justify-between bg-surface-subtle/50 dark:bg-white/2 hidden" id="activity-pagination-container">
+                            <div class="text-[10px] font-black text-text-muted uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
                             <div class="flex gap-2">
                                 <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Prev</button>
                                 <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Next</button>
@@ -170,9 +170,9 @@
                     
                     <!-- ADMIN MANAGEMENT (Super Admin) -->
                     <div id="admin-management-container" class="ds-card overflow-hidden hidden">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-amber-50/30 dark:bg-amber-500/5">
-                            <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-amber-700 dark:text-amber-500">
-                                <span class="material-symbols-outlined text-amber-500">manage_accounts</span>
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-amber-50/30 dark:bg-amber-500/5">
+                            <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-amber-700 dark:text-warning-base">
+                                <span class="material-symbols-outlined text-warning-base">manage_accounts</span>
                                 Global Admin Directory
                             </h3>
                             <div class="flex gap-3">
@@ -181,7 +181,7 @@
                             </div>
                         </div>
                         <!-- Filters -->
-                        <div id="admin-filter-bar" class="p-4 border-b border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 flex gap-4">
+                        <div id="admin-filter-bar" class="p-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-white/5 flex gap-4">
                             <input type="text" id="admin-search-input" placeholder="Search admins..." class="ds-input flex-1">
                             <select id="admin-status-filter" class="ds-input w-40">
                                 <option value="all">All Status</option>
@@ -214,9 +214,9 @@
 
                     <!-- LOCKED ADMINS (Super Admin) -->
                     <div id="locked-admins-container" class="ds-card overflow-hidden hidden">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-rose-50/50 dark:bg-rose-500/5">
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-rose-50/50 dark:bg-rose-500/5">
                             <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-rose-700 dark:text-rose-400">
-                                <span class="material-symbols-outlined text-rose-500">lock</span>
+                                <span class="material-symbols-outlined text-danger-base">lock</span>
                                 Locked Admin Accounts
                             </h3>
                             <span id="locked-count-badge" class="px-3 py-1 bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400 text-[10px] font-black rounded uppercase tracking-widest border border-rose-200 dark:border-rose-500/30">0 Locked</span>
@@ -244,11 +244,11 @@
                 <div class="space-y-6">
                     <!-- SECURITY / PASSWORD -->
                     <div class="ds-card p-6 sm:p-8">
-                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-white/5">
-                            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm">
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-surface-border dark:border-white/5">
+                            <div class="w-10 h-10 rounded-xl bg-surface-hover dark:bg-white/10 text-text-muted dark:text-slate-300 flex items-center justify-center shadow-sm">
                                 <span class="material-symbols-outlined">password</span>
                             </div>
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white">Update Password</h3>
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white">Update Password</h3>
                         </div>
                         
                         <div class="space-y-4">
@@ -263,7 +263,7 @@
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-bar" style="width:0%"></div>
                                     </div>
-                                    <div class="text-[9px] font-bold mt-1 text-slate-500 uppercase tracking-widest" id="pw-text"></div>
+                                    <div class="text-[9px] font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-text"></div>
                                 </div>
                             </div>
                             <div>
@@ -276,21 +276,21 @@
 
                     <!-- SECURITY STATUS -->
                     <div class="ds-card p-6 sm:p-8 space-y-4">
-                        <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white mb-4">Security Audit</h3>
+                        <h3 class="font-headline font-bold text-lg text-text-main dark:text-white mb-4">Security Audit</h3>
                         
-                        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Last Login</span>
+                        <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Last Login</span>
                             <div class="text-right">
-                                <div id="sec-last-login" class="text-xs font-bold text-slate-900 dark:text-white">—</div>
+                                <div id="sec-last-login" class="text-xs font-bold text-text-main dark:text-white">—</div>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Address</span>
-                            <span class="text-xs font-mono font-bold text-slate-900 dark:text-white" id="sec-last-ip">—</span>
+                        <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">IP Address</span>
+                            <span class="text-xs font-mono font-bold text-text-main dark:text-white" id="sec-last-ip">—</span>
                         </div>
                         <div class="flex justify-between items-center py-2">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pwd Updated</span>
-                            <span class="text-xs font-bold text-slate-900 dark:text-white" id="sec-last-pwd">—</span>
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Pwd Updated</span>
+                            <span class="text-xs font-bold text-text-main dark:text-white" id="sec-last-pwd">—</span>
                         </div>
                     </div>
                 </div>
@@ -301,9 +301,9 @@
 
     <!-- ADD/EDIT ADMIN MODAL -->
     <div id="admin-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-action="window.AdminProfile.closeModal()"></div>
+        <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm" data-action="window.AdminProfile.closeModal()"></div>
         <div class="ds-card w-full max-w-md relative z-10 p-6 shadow-2xl animate-in zoom-in duration-200">
-            <h3 class="font-headline font-bold text-xl mb-6 text-slate-900 dark:text-white" id="admin-modal-title">Add Admin</h3>
+            <h3 class="font-headline font-bold text-xl mb-6 text-text-main dark:text-white" id="admin-modal-title">Add Admin</h3>
             <form id="admin-modal-form" onsubmit="window.AdminProfile.saveAdmin(event)" class="space-y-4">
                 <input type="hidden" id="modal-admin-id">
                 <div>
@@ -319,7 +319,7 @@
                     <input type="text" id="modal-phone" class="ds-input">
                 </div>
                 <div id="modal-pw-container">
-                    <label class="ds-label mb-1">Temporary Password <span class="text-slate-400 font-normal normal-case tracking-normal">(Required for new)</span></label>
+                    <label class="ds-label mb-1">Temporary Password <span class="text-text-muted font-normal normal-case tracking-normal">(Required for new)</span></label>
                     <input type="text" id="modal-password" class="ds-input" minlength="8">
                 </div>
                 <div>
@@ -329,7 +329,7 @@
                         <option value="moderator">Moderator</option>
                     </select>
                 </div>
-                <div class="flex gap-3 pt-4 border-t border-slate-100 dark:border-white/5 mt-4">
+                <div class="flex gap-3 pt-4 border-t border-surface-border dark:border-white/5 mt-4">
                     <button type="button" data-action="window.AdminProfile.closeModal()" class="flex-1 py-2.5 ds-btn-secondary">Cancel</button>
                     <button type="submit" id="modal-save-btn" class="flex-1 py-2.5 ds-btn-primary">Save Admin</button>
                 </div>

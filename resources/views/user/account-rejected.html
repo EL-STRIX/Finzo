@@ -86,8 +86,8 @@
         </div>
         
         <div class="mb-6 text-center lg:text-left">
-          <div class="w-16 h-16 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto lg:mx-0 mb-4">
-              <span class="material-symbols-outlined text-3xl text-slate-500">assignment_late</span>
+          <div class="w-16 h-16 rounded-full bg-surface-subtle border border-surface-border flex items-center justify-center mx-auto lg:mx-0 mb-4">
+              <span class="material-symbols-outlined text-3xl text-text-muted">assignment_late</span>
           </div>
           <h1 class="auth-hero-title text-2xl">Application Requires Attention</h1>
           <p class="auth-subtitle text-[13px]">We were unable to approve your application based on the information currently available. Please review the details below and submit the required corrections.</p>
@@ -96,12 +96,12 @@
         <div class="auth-form-body">
             
             <!-- Subtle Status Indicator -->
-            <div class="flex items-center gap-2 mb-6 p-3 bg-slate-50 border border-slate-100 rounded-md">
+            <div class="flex items-center gap-2 mb-6 p-3 bg-surface-subtle border border-surface-border rounded-md">
                 <span class="relative flex h-3 w-3">
                   <span class="relative inline-flex rounded-full h-3 w-3 bg-slate-400"></span>
                 </span>
                 <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Status:</span>
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-auto">Not Approved</span>
+                <span class="text-xs font-bold text-text-muted uppercase tracking-wider ml-auto">Not Approved</span>
             </div>
 
             <!-- Existing Timeline Preserved exactly for JS compatibility -->
@@ -152,13 +152,13 @@
                     <!-- Item 4 (Rejection) -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-slate-500 text-[16px]">assignment_returned</span>
+                            <div class="w-8 h-8 rounded-full bg-surface-hover border border-surface-border flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-text-muted text-[16px]">assignment_returned</span>
                             </div>
                         </div>
                         <div class="flex-1">
                             <div class="text-[13px] font-bold text-slate-700">Requires Correction</div>
-                            <div id="tl-rejection-reason" class="text-[11px] text-slate-600 mt-2 p-3 bg-slate-50 border border-slate-100 rounded-md leading-relaxed">
+                            <div id="tl-rejection-reason" class="text-[11px] text-text-muted mt-2 p-3 bg-surface-subtle border border-surface-border rounded-md leading-relaxed">
                                 Account was not approved
                             </div>
                             <div id="tl-rejection-time" class="text-[9px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-2"></div>
@@ -168,21 +168,21 @@
             </div>
 
             <!-- Steps to Resubmit -->
-            <div class="p-4 bg-slate-50 border border-slate-100 rounded-lg flex items-start gap-3 mb-6">
-                <span class="material-symbols-outlined text-primary-500 text-[20px] shrink-0 mt-0.5">checklist</span>
+            <div class="p-4 bg-surface-subtle border border-surface-border rounded-lg flex items-start gap-3 mb-6">
+                <span class="material-symbols-outlined text-primary-base-500 text-[20px] shrink-0 mt-0.5">checklist</span>
                 <div>
-                    <div class="text-[12px] font-bold text-slate-800 mb-2">Next Steps</div>
-                    <ul class="text-[11px] text-slate-600 leading-relaxed space-y-2 list-none">
+                    <div class="text-[12px] font-bold text-text-main mb-2">Next Steps</div>
+                    <ul class="text-[11px] text-text-muted leading-relaxed space-y-2 list-none">
                         <li class="flex items-start gap-2">
-                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
+                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-base-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">1</span>
                             <span>Review your submitted information.</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
+                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-base-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">2</span>
                             <span>Correct incomplete or incorrect details based on the reason above.</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">3</span>
+                            <span class="w-4 h-4 rounded-full bg-primary-100 text-primary-base-600 flex items-center justify-center font-bold text-[9px] shrink-0 mt-0.5">3</span>
                             <span>Resubmit your application for an expedited review.</span>
                         </li>
                     </ul>
@@ -190,7 +190,7 @@
             </div>
 
             <div class="pt-2 flex flex-col sm:flex-row gap-3">
-                <a href="/Finzo/resources/views/auth/login.html" class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 flex-1 flex justify-center shadow-sm">
+                <a href="/Finzo/resources/views/auth/login.html" class="btn bg-white border border-surface-border text-text-muted hover:bg-surface-subtle flex-1 flex justify-center shadow-sm">
                     Return to Login
                 </a>
                 <a href="complete-profile.html" class="btn btn-primary flex-1 flex justify-center gap-1.5 shadow-sm">
@@ -201,7 +201,7 @@
 
         </div>
 
-        <div class="auth-trust-badge mt-6 border-t border-slate-100 pt-6">
+        <div class="auth-trust-badge mt-6 border-t border-surface-border pt-6">
           <span class="material-symbols-outlined text-[14px]">shield</span>
           <span>Enterprise Application Processing</span>
         </div>

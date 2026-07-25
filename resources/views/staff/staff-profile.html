@@ -51,15 +51,15 @@
                     <input type="file" id="photo-upload" accept="image/*" class="hidden">
                 </div>
                 <div class="text-center sm:text-left flex-1">
-                    <h1 class="text-2xl sm:text-3xl font-black font-headline text-slate-900 dark:text-white tracking-tight mb-2" id="profile-name">Loading...</h1>
+                    <h1 class="text-2xl sm:text-3xl font-black font-headline text-text-main dark:text-white tracking-tight mb-2" id="profile-name">Loading...</h1>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
-                        <span class="px-3 py-1 rounded bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-200 dark:border-amber-500/20" id="profile-designation">—</span>
-                        <span class="px-3 py-1 rounded bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-white/10" id="profile-department">—</span>
+                        <span class="px-3 py-1 rounded bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-warning-base text-[10px] font-black uppercase tracking-widest border border-amber-200 dark:border-amber-500/20" id="profile-designation">—</span>
+                        <span class="px-3 py-1 rounded bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted text-[10px] font-black uppercase tracking-widest border border-surface-border dark:border-white/10" id="profile-department">—</span>
                     </div>
-                    <div class="flex flex-wrap justify-center sm:justify-start gap-6 text-xs font-bold text-slate-500">
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-slate-400">badge</span> ID: <span id="profile-staff-id" class="text-slate-900 dark:text-white font-mono">—</span></div>
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-slate-400">apartment</span> <span id="profile-branch" class="text-slate-900 dark:text-white">—</span></div>
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-slate-400">calendar_today</span> Joined <span id="profile-joined" class="text-slate-900 dark:text-white">—</span></div>
+                    <div class="flex flex-wrap justify-center sm:justify-start gap-6 text-xs font-bold text-text-muted">
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted">badge</span> ID: <span id="profile-staff-id" class="text-text-main dark:text-white font-mono">—</span></div>
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted">apartment</span> <span id="profile-branch" class="text-text-main dark:text-white">—</span></div>
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted">calendar_today</span> Joined <span id="profile-joined" class="text-text-main dark:text-white">—</span></div>
                     </div>
                 </div>
                 <!-- Action -> might add quick edit button if needed -->
@@ -71,36 +71,36 @@
                 <div class="lg:col-span-2 space-y-6">
                     <!-- PERSONAL INFO -->
                     <div class="ds-card">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                                <span class="material-symbols-outlined text-amber-500">person</span>
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-warning-base">person</span>
                                 Personal Details
                             </h3>
                         </div>
                         <div class="p-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-name">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Full Name</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-name">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date of Birth</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-dob">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Date of Birth</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-dob">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Gender</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-gender">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Gender</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-gender">—</div>
                                 </div>
                                 <div class="relative group">
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Phone Number</div>
-                                    <div class="text-sm font-mono font-bold text-slate-900 dark:text-white" id="info-phone">—</div>
-                                    <button data-action="openEditModal(&#039;phone&#039;)" class="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 opacity-0 group-hover:opacity-100 transition-all">
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Phone Number</div>
+                                    <div class="text-sm font-mono font-bold text-text-main dark:text-white" id="info-phone">—</div>
+                                    <button data-action="openEditModal(&#039;phone&#039;)" class="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-warning-base hover:bg-amber-50 dark:hover:bg-amber-500/10 opacity-0 group-hover:opacity-100 transition-all">
                                         <span class="material-symbols-outlined text-[16px]">edit</span>
                                     </button>
                                 </div>
                                 <div class="sm:col-span-2">
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Personal Email</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-email">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Personal Email</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-email">—</div>
                                 </div>
                             </div>
                         </div>
@@ -108,8 +108,8 @@
 
                     <!-- EMERGENCY CONTACT -->
                     <div class="ds-card">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
                                 <span class="material-symbols-outlined text-red-500">emergency</span>
                                 Emergency Contact
                             </h3>
@@ -124,8 +124,8 @@
                                         <span class="material-symbols-outlined">person</span>
                                     </div>
                                     <div>
-                                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact Name</div>
-                                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1" id="info-emergency-name">—</div>
+                                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Contact Name</div>
+                                        <div class="text-sm font-bold text-text-main dark:text-white mt-1" id="info-emergency-name">—</div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4 bg-white dark:bg-[#161b22] p-4 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -133,8 +133,8 @@
                                         <span class="material-symbols-outlined">call</span>
                                     </div>
                                     <div>
-                                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact Phone</div>
-                                        <div class="text-sm font-mono font-bold text-slate-900 dark:text-white mt-1" id="info-emergency-phone">—</div>
+                                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Contact Phone</div>
+                                        <div class="text-sm font-mono font-bold text-text-main dark:text-white mt-1" id="info-emergency-phone">—</div>
                                     </div>
                                 </div>
                             </div>
@@ -143,8 +143,8 @@
 
                     <!-- ADDRESS -->
                     <div class="ds-card">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
                                 <span class="material-symbols-outlined text-blue-500">location_on</span>
                                 Address Information
                             </h3>
@@ -152,24 +152,24 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div class="sm:col-span-2 lg:col-span-4">
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Street Address</div>
-                                    <div class="text-sm font-medium text-slate-900 dark:text-white" id="info-street">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Street Address</div>
+                                    <div class="text-sm font-medium text-text-main dark:text-white" id="info-street">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">City</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-city">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">City</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-city">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">State</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-state">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">State</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-state">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pincode</div>
-                                    <div class="text-sm font-mono font-bold text-slate-900 dark:text-white" id="info-pincode">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Pincode</div>
+                                    <div class="text-sm font-mono font-bold text-text-main dark:text-white" id="info-pincode">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Country</div>
-                                    <div class="text-sm font-bold text-slate-900 dark:text-white" id="info-country">—</div>
+                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Country</div>
+                                    <div class="text-sm font-bold text-text-main dark:text-white" id="info-country">—</div>
                                 </div>
                             </div>
                         </div>
@@ -181,29 +181,29 @@
                     <!-- SECURITY -->
                     <div class="ds-card p-6">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 flex items-center justify-center border border-amber-100 dark:border-amber-500/20">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-warning-base dark:text-warning-base flex items-center justify-center border border-amber-100 dark:border-amber-500/20">
                                 <span class="material-symbols-outlined">security</span>
                             </div>
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white">Security</h3>
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white">Security</h3>
                         </div>
                         
                         <form id="password-form" class="space-y-4">
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Current Password *</label>
+                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
                                 <input type="password" id="pw-current" required class="w-full ds-input">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">New Password *</label>
+                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
                                 <input type="password" id="pw-new" required minlength="8" class="w-full ds-input" oninput="checkPasswordStrength()">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
                                     </div>
-                                    <div class="text-[9px] font-bold mt-1 text-slate-500 uppercase tracking-widest" id="pw-strength-text"></div>
+                                    <div class="text-[9px] font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-strength-text"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Confirm Password *</label>
+                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
                                 <input type="password" id="pw-confirm" required class="w-full ds-input">
                             </div>
                             <div id="pw-error" class="hidden text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-500/10 p-2 rounded"></div>
@@ -215,30 +215,30 @@
 
                     <!-- ID DOCUMENTS -->
                     <div class="ds-card">
-                        <div class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center gap-2">
+                        <div class="p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-2">
                             <span class="material-symbols-outlined text-purple-500">verified_user</span>
-                            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white">ID Documents</h3>
+                            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white">ID Documents</h3>
                         </div>
-                        <div class="p-6 bg-slate-50/50 dark:bg-white/2" id="documents-container">
-                            <div class="text-center py-6 text-slate-400 font-bold text-xs uppercase tracking-widest">Loading...</div>
+                        <div class="p-6 bg-surface-subtle/50 dark:bg-white/2" id="documents-container">
+                            <div class="text-center py-6 text-text-muted font-bold text-xs uppercase tracking-widest">Loading...</div>
                         </div>
                     </div>
 
                     <!-- SESSION INFO -->
                     <div class="ds-card p-6 space-y-4">
-                        <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white mb-4">Account Status</h3>
+                        <h3 class="font-headline font-bold text-lg text-text-main dark:text-white mb-4">Account Status</h3>
                         
-                        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
+                        <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Status</span>
                             <div id="info-status">—</div>
                         </div>
-                        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-white/5">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Last Login</span>
-                            <span class="text-xs font-bold text-slate-900 dark:text-white text-right" id="info-last-login">—</span>
+                        <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Last Login</span>
+                            <span class="text-xs font-bold text-text-main dark:text-white text-right" id="info-last-login">—</span>
                         </div>
                         <div class="flex justify-between items-center py-2">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">IP Address</span>
-                            <span class="text-xs font-mono font-bold text-slate-900 dark:text-white" id="info-last-ip">—</span>
+                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">IP Address</span>
+                            <span class="text-xs font-mono font-bold text-text-main dark:text-white" id="info-last-ip">—</span>
                         </div>
                     </div>
                 </div>
@@ -249,13 +249,13 @@
 
     <!-- EDIT MODAL -->
     <div id="edit-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-action="closeEditModal()"></div>
+        <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm" data-action="closeEditModal()"></div>
         <div class="ds-card w-full max-w-sm relative z-10 p-6 shadow-2xl animate-in zoom-in duration-200">
-            <h3 class="font-headline font-bold text-xl mb-6 text-slate-900 dark:text-white" id="edit-modal-title">Edit</h3>
+            <h3 class="font-headline font-bold text-xl mb-6 text-text-main dark:text-white" id="edit-modal-title">Edit</h3>
             <form id="edit-form" class="space-y-4">
                 <div id="edit-fields"></div>
                 <div id="edit-error" class="hidden text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-500/10 p-2 rounded"></div>
-                <div class="flex gap-3 pt-4 border-t border-slate-100 dark:border-white/5 mt-4">
+                <div class="flex gap-3 pt-4 border-t border-surface-border dark:border-white/5 mt-4">
                     <button type="button" data-action="closeEditModal()" class="flex-1 py-2.5 ds-btn-secondary text-sm">Cancel</button>
                     <button type="submit" id="edit-submit-btn" class="flex-1 py-2.5 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-all text-sm">Save</button>
                 </div>
@@ -264,15 +264,15 @@
     </div>
 
     <!-- END SHIFT MODAL -->
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] hidden items-center justify-center opacity-0 transition-opacity duration-300">
-        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-slate-100 dark:border-white/10">
+    <div id="modal-overlay" class="fixed inset-0 bg-surface-dark/60 backdrop-blur-sm z-[2000] hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-surface-border dark:border-white/10">
             <div class="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 flex items-center justify-center mb-6 mx-auto border border-red-100 dark:border-red-500/20">
                 <span class="material-symbols-outlined text-3xl font-black">logout</span>
             </div>
-            <h3 class="text-xl font-bold font-headline text-center mb-2 text-slate-900 dark:text-white">End Shift?</h3>
-            <p class="text-slate-500 text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout?</p>
+            <h3 class="text-xl font-bold font-headline text-center mb-2 text-text-main dark:text-white">End Shift?</h3>
+            <p class="text-text-muted text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout?</p>
             <div class="flex gap-3">
-                <button class="flex-1 py-2.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <button class="flex-1 py-2.5 bg-surface-hover dark:bg-white/5 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl hover:bg-surface-border dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
                 <a href="../../../api/auth/logout.php" class="flex-1 py-2.5 bg-red-600 text-white text-center font-bold text-sm rounded-xl hover:bg-red-700 transition-all shadow-md shadow-red-600/20">End Shift</a>
             </div>
         </div>
