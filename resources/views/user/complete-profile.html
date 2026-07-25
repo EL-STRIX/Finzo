@@ -108,7 +108,7 @@
             <!-- Minimal Profile Completion Indicator -->
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Profile Completion</span>
+                    <span class="text-xs font-bold text-text-main uppercase tracking-wider">Profile Completion</span>
                     <span id="progress-text" class="text-xs font-bold text-primary-base-600">25% Complete</span>
                 </div>
                 <div class="w-full h-1.5 bg-surface-hover rounded-full overflow-hidden">
@@ -127,11 +127,11 @@
                     <div class="border-2 border-dashed border-surface-border hover:border-primary-500 bg-surface-subtle hover:bg-primary-50 rounded-md p-4 flex items-center gap-4 cursor-pointer transition-colors mt-2" id="profile-box" data-action="document.getElementById('profile-input').click()">
                         <input type="file" id="profile-input" accept="image/*" class="hidden" onchange="handleUpload(this,'profile-box','profile-preview')"/>
                         <div class="w-12 h-12 rounded-full bg-white border border-surface-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                            <img loading="lazy" id="profile-preview" class="w-full h-full object-cover hidden" />
+                            <img loading="lazy" id="profile-preview" class="w-full h-full object-cover hidden" / alt="">
                             <span id="profile-preview-wrap" class="material-symbols-outlined text-text-muted text-[20px]" aria-hidden="true">add_a_photo</span>
                         </div>
                         <div>
-                            <div class="text-[12px] font-bold text-slate-700">Click to upload profile photo</div>
+                            <div class="text-[12px] font-bold text-text-main">Click to upload profile photo</div>
                             <div class="text-[10px] font-semibold text-text-muted mt-1 uppercase tracking-wider">JPG or PNG, max 5MB. Clear photo of your face.</div>
                         </div>
                     </div>
@@ -325,9 +325,9 @@
                             <input type="file" id="front-input" accept="image/*" class="hidden" onchange="handleUpload(this,'front-box','front-preview')"/>
                             <div id="front-preview-wrap">
                                 <span class="material-symbols-outlined text-3xl text-text-muted mb-1" aria-hidden="true">document_scanner</span>
-                                <div class="text-[11px] font-bold text-slate-700">Upload Front</div>
+                                <div class="text-[11px] font-bold text-text-main">Upload Front</div>
                             </div>
-                            <img loading="lazy" id="front-preview" class="w-full h-full object-cover rounded-md hidden"/>
+                            <img loading="lazy" id="front-preview" class="w-full h-full object-cover rounded-md hidden"/ alt="">
                         </div>
                     </div>
                     <div class="fin-input-container !mb-0">
@@ -336,16 +336,16 @@
                             <input type="file" id="back-input" accept="image/*" class="hidden" onchange="handleUpload(this,'back-box','back-preview')"/>
                             <div id="back-preview-wrap">
                                 <span class="material-symbols-outlined text-3xl text-text-muted mb-1" aria-hidden="true">document_scanner</span>
-                                <div class="text-[11px] font-bold text-slate-700">Upload Back</div>
+                                <div class="text-[11px] font-bold text-text-main">Upload Back</div>
                             </div>
-                            <img loading="lazy" id="back-preview" class="w-full h-full object-cover rounded-md hidden"/>
+                            <img loading="lazy" id="back-preview" class="w-full h-full object-cover rounded-md hidden"/ alt="">
                         </div>
                     </div>
                 </div>
 
                 <div class="p-3 bg-info-surface/40 border border-info-base/20 rounded-md flex items-start gap-2">
                     <span class="material-symbols-outlined text-info-base text-[18px] shrink-0" aria-hidden="true">encrypted</span>
-                    <div class="text-[11px] text-slate-700 font-medium leading-relaxed">
+                    <div class="text-[11px] text-text-main font-medium leading-relaxed">
                         Your documents are strictly verified by our compliance team and never shared with unauthorized third parties.
                     </div>
                 </div>
@@ -413,8 +413,8 @@
 
                 <div class="mb-6 p-4 bg-surface-subtle rounded-md border border-surface-border">
                     <label class="flex items-start gap-3 cursor-pointer">
-                        <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-primary-base-600 border-slate-300 focus:ring-primary-500 focus:ring-offset-0"/>
-                        <span class="text-[11px] font-medium text-slate-700 leading-relaxed">I agree to Finzo's Terms of Service and Privacy Policy and confirm that the information provided is accurate.</span>
+                        <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-primary-base-600 border-border-main focus:ring-primary-500 focus:ring-offset-0"/>
+                        <span class="text-[11px] font-medium text-text-main leading-relaxed">I agree to Finzo's Terms of Service and Privacy Policy and confirm that the information provided is accurate.</span>
                     </label>
                 </div>
 

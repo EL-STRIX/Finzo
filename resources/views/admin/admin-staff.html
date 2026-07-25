@@ -93,7 +93,7 @@
 
       <!-- FILTERS + TABLE -->
       <div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden">
-        <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-slate-50 dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
+        <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
           <div class="col-span-1 lg:flex-1 w-full">
             <label class="ds-label">Search Staff</label>
             <div class="relative group">
@@ -152,7 +152,7 @@
 
         <!-- PAGINATION -->
         <div
-          class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
+          class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
           <div id="pagination-counter" class="text-[11px] text-text-muted font-bold uppercase tracking-wider">Showing 1-5
             of 8 staff</div>
           <div class="flex items-center gap-2">
@@ -178,7 +178,7 @@
     <div class="ds-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
       <div class="p-6 border-b border-surface-border dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
         <div>
-          <h3 class="text-xl font-bold text-primary-base dark:text-slate-100">Add New Staff Member</h3>
+          <h3 class="text-xl font-bold text-primary-base dark:text-text-muted">Add New Staff Member</h3>
           <p class="text-[11px] text-text-muted font-medium">Fill in the details to add a new staff account</p>
         </div>
         <button data-action="closeAddStaffModal()"
@@ -193,10 +193,10 @@
           <!-- SECTION A: Profile Photo -->
           <div class="flex flex-col items-center justify-center pb-2">
             <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;profile_photo&#039;).click()">
-              <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-slate-800 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
-                <span class="material-symbols-outlined text-3xl text-slate-300 group-hover:text-primary-base transition-colors" aria-hidden="true">person</span>
+              <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-surface-dark flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
+                <span class="material-symbols-outlined text-3xl text-text-muted group-hover:text-primary-base transition-colors" aria-hidden="true">person</span>
                 <span class="text-[9px] font-black uppercase tracking-widest text-text-muted mt-1 group-hover:text-primary-base transition-colors">Upload Photo</span>
-                <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden" alt="">
               </div>
               <div class="absolute bottom-0 right-0 p-1.5 bg-primary-base text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
@@ -210,7 +210,7 @@
           <!-- SECTION B: Personal Information -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-info-base flex items-center justify-center">
+              <span class="w-8 h-8 rounded-lg bg-primary-surface dark:bg-primary-surface/30 text-info-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">person</span>
               </span>
               <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Personal Information</h4>
@@ -288,7 +288,7 @@
           <!-- SECTION D: Identity Documents -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center">
+              <span class="w-8 h-8 rounded-lg bg-warning-surface dark:bg-warning-surface/30 text-warning-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
               </span>
               <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Identity & Documents</h4>
@@ -322,10 +322,10 @@
                   <label class="ds-label mb-2">Front of ID Document *</label>
                   <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_front&#039;).click()">
                     <div id="front-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
-                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2" aria-hidden="true">upload_file</span>
+                      <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
                       <p id="front-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload front image</p>
                       <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                      <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')" required>
@@ -336,10 +336,10 @@
                   <label class="ds-label mb-2">Back of ID Document *</label>
                   <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;id_back&#039;).click()">
                     <div id="back-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
-                      <span class="material-symbols-outlined text-3xl text-slate-300 mb-2" aria-hidden="true">upload_file</span>
+                      <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
                       <p id="back-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload back image</p>
                       <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
-                      <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg">
+                      <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')" required>
@@ -361,9 +361,9 @@
               <div>
                 <label class="ds-label mb-2">Assigned Staff ID</label>
                 <div class="relative group">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xs text-primary-base dark:text-blue-400" aria-hidden="true">badge</span>
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xs text-primary-base dark:text-primary-base" aria-hidden="true">badge</span>
                   <input type="text" id="staff_id_display" value="Loading..." readonly
-                    class="w-full pl-10 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-black text-sm text-primary-base dark:text-blue-400 opacity-90 cursor-not-allowed tracking-widest">
+                    class="w-full pl-10 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-black text-sm text-primary-base dark:text-primary-base opacity-90 cursor-not-allowed tracking-widest">
                 </div>
                 <p class="text-[9px] text-text-muted mt-1 font-bold italic">Auto-generated identifier</p>
               </div>
@@ -415,7 +415,7 @@
           <!-- SECTION F: Address -->
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-2">
-              <span class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 flex items-center justify-center">
+              <span class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/30 text-danger-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">location_on</span>
               </span>
               <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Address</h4>
@@ -466,8 +466,8 @@
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1 group">
                   <input type="text" id="staff-password" name="password" placeholder="Generate or enter a password" required
-                    class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary-base dark:text-blue-400">
-                  <button type="button" data-action="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-300 hover:text-primary-base transition-colors">
+                    class="w-full pl-4 pr-12 py-3 bg-white dark:bg-surface-container-high border-none rounded-xl focus:ring-4 focus:ring-primary/10 transition-all font-black text-sm tracking-wider text-primary-base dark:text-primary-base">
+                  <button type="button" data-action="copyPasswordToClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-text-muted hover:text-primary-base transition-colors">
                     <span class="material-symbols-outlined text-lg" id="pass-copy-icon" aria-hidden="true">content_copy</span>
                   </button>
                 </div>
@@ -477,7 +477,7 @@
                 </button>
               </div>
               <p class="text-[9px] text-text-muted mt-3 font-bold flex items-center gap-1.5 italic">
-                <span class="material-symbols-outlined text-[12px] text-orange-400" aria-hidden="true">info</span>
+                <span class="material-symbols-outlined text-[12px] text-warning-base" aria-hidden="true">info</span>
                 Share this password securely with the staff member.
               </p>
               <div id="error-password" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>

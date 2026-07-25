@@ -31,7 +31,7 @@
 
             <!-- FILTERS & TABLE -->
             <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
+                <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                     <div class="md:col-span-2">
                         <label class="ds-label">Search User</label>
@@ -87,7 +87,7 @@
 
                 <!-- EMPTY STATE -->
                 <div id="empty-state" class="hidden flex-col items-center justify-center py-24 animate-fade-in">
-                    <div class="w-20 h-20 rounded-full bg-surface-hover dark:bg-white/5 flex items-center justify-center text-slate-300 mb-6">
+                    <div class="w-20 h-20 rounded-full bg-surface-hover dark:bg-white/5 flex items-center justify-center text-text-muted mb-6">
                         <span class="material-symbols-outlined text-5xl" aria-hidden="true">person_off</span>
                     </div>
                     <h3 class="text-xl font-bold dark:text-white">No deleted users found</h3>
@@ -95,7 +95,7 @@
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Deleted Users</div>
                     <div id="pagination-controls" class="flex items-center gap-2">
                         <!-- Pagination injected by deleted-users.js -->
@@ -109,7 +109,7 @@
     <div id="recoverModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" data-action="window.DeletedUsers.closeModal(&#039;recoverModal&#039;)"></div>
         <div class="ds-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
-            <div class="w-16 h-16 rounded-full bg-success-surface dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+            <div class="w-16 h-16 rounded-full bg-success-surface dark:bg-success-surface/10 flex items-center justify-center mx-auto mb-6">
                 <span class="material-symbols-outlined text-success-base text-3xl" aria-hidden="true">restore</span>
             </div>
             <h3 class="text-xl font-bold text-center mb-2">Recover User Account</h3>
@@ -120,14 +120,14 @@
             <div class="bg-surface-subtle dark:bg-white/5 p-5 rounded-2xl mb-8">
                 <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-4 text-center">RESTORE OPTIONS</label>
                 <div class="space-y-3">
-                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors">
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/5 cursor-pointer hover:border-success-base/30 transition-colors">
                         <input type="radio" name="restore-option" value="full" checked class="w-5 h-5 text-success-base border-none bg-surface-hover dark:bg-white/10 focus:ring-0">
                         <div class="flex-1">
                             <div class="text-sm font-bold dark:text-white">Full Balance</div>
                             <div class="text-[10px] opacity-50">Restore previous account balance</div>
                         </div>
                     </label>
-                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/5 cursor-pointer hover:border-emerald-500/30 transition-colors">
+                    <label class="flex items-center gap-3 p-3 bg-white dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/5 cursor-pointer hover:border-success-base/30 transition-colors">
                         <input type="radio" name="restore-option" value="mandatory" class="w-5 h-5 text-success-base border-none bg-surface-hover dark:bg-white/10 focus:ring-0">
                         <div class="flex-1">
                             <div class="text-sm font-bold dark:text-white">Mandatory Balance</div>
@@ -138,7 +138,7 @@
             </div>
 
             <div class="flex flex-col gap-3">
-                <button data-action="window.DeletedUsers.confirmRecovery()" class="admin-btn-primary w-full justify-center !py-3 bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Recover Account</button>
+                <button data-action="window.DeletedUsers.confirmRecovery()" class="admin-btn-primary w-full justify-center !py-3 bg-success-surface hover:bg-success-surface !border-success-base">Recover Account</button>
                 <button data-action="window.DeletedUsers.closeModal(&#039;recoverModal&#039;)" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
             </div>
         </div>
@@ -148,7 +148,7 @@
     <div id="detailsModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" data-action="window.DeletedUsers.closeModal(&#039;detailsModal&#039;)"></div>
         <div class="ds-card w-full max-w-2xl relative z-10 animate-modal-enter overflow-hidden">
-            <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
+            <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center">
                 <h3 class="text-lg font-bold dark:text-white">Deleted User Details</h3>
                 <button data-action="window.DeletedUsers.closeModal(&#039;detailsModal&#039;)" class="p-2 hover:bg-surface-hover dark:hover:bg-white/5 rounded-full transition-colors">
                     <span class="material-symbols-outlined text-text-muted" aria-hidden="true">close</span>
@@ -166,7 +166,7 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <h4 class="text-[10px] font-black text-primary-base dark:text-blue-400 uppercase tracking-[.2em] mb-6">PERSONAL INFO</h4>
+                        <h4 class="text-[10px] font-black text-primary-base dark:text-primary-base uppercase tracking-[.2em] mb-6">PERSONAL INFO</h4>
                         <div class="space-y-5">
                             <div>
                                 <div class="text-[10px] font-bold text-text-muted uppercase mb-1">Phone</div>
@@ -175,7 +175,7 @@
                             <div class="flex gap-10">
                                 <div>
                                     <div class="text-[10px] font-bold text-text-muted uppercase mb-1">Account No</div>
-                                    <div class="text-sm font-bold font-mono text-primary-base dark:text-blue-400 details-acc">-</div>
+                                    <div class="text-sm font-bold font-mono text-primary-base dark:text-primary-base details-acc">-</div>
                                 </div>
                                 <div>
                                     <div class="text-[10px] font-bold text-text-muted uppercase mb-1">Type</div>
@@ -199,16 +199,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-red-50 dark:bg-red-500/10 p-6 rounded-2xl border border-red-100 dark:border-red-500/20">
-                            <h4 class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-4">DELETION LOG</h4>
+                        <div class="bg-danger-surface dark:bg-danger-surface/10 p-6 rounded-2xl border border-danger-base dark:border-danger-base/20">
+                            <h4 class="text-[10px] font-black text-danger-base dark:text-danger-base uppercase tracking-widest mb-4">DELETION LOG</h4>
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center font-bold text-[11px]">
-                                    <span class="text-red-800/40 uppercase">Deleted By</span>
-                                    <span class="text-red-900 dark:text-red-200">Admin</span>
+                                    <span class="text-danger-base/40 uppercase">Deleted By</span>
+                                    <span class="text-danger-base dark:text-danger-base">Admin</span>
                                 </div>
                                 <div class="flex justify-between items-center font-bold text-[11px]">
-                                    <span class="text-red-800/40 uppercase">Deleted On</span>
-                                    <span class="text-red-900 dark:text-red-200">20/04/2026</span>
+                                    <span class="text-danger-base/40 uppercase">Deleted On</span>
+                                    <span class="text-danger-base dark:text-danger-base">20/04/2026</span>
                                 </div>
                             </div>
                         </div>
@@ -216,8 +216,8 @@
                 </div>
             </div>
             <div class="p-6 bg-surface-subtle/50 dark:bg-white/5 flex gap-3">
-                <button data-action="window.DeletedUsers.recoverFromDetails()" class="admin-btn-primary flex-1 justify-center bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Recover Account</button>
-                <button data-action="window.DeletedUsers.deletePermanentlyFromDetails()" class="admin-btn-primary flex-1 justify-center bg-red-500 hover:bg-red-600 !border-red-600">Delete Permanently</button>
+                <button data-action="window.DeletedUsers.recoverFromDetails()" class="admin-btn-primary flex-1 justify-center bg-success-surface hover:bg-success-surface !border-success-base">Recover Account</button>
+                <button data-action="window.DeletedUsers.deletePermanentlyFromDetails()" class="admin-btn-primary flex-1 justify-center bg-danger-surface hover:bg-danger-surface !border-danger-base">Delete Permanently</button>
                 <button data-action="window.DeletedUsers.closeModal(&#039;detailsModal&#039;)" class="admin-btn-secondary px-8">Close</button>
             </div>
         </div>

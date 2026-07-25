@@ -28,17 +28,17 @@
 
         <main class="p-4 sm:p-6 lg:p-10">
             <!-- INFO BANNER -->
-            <div class="p-4 mb-6 bg-warning-surface dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-lg flex gap-4">
+            <div class="p-4 mb-6 bg-warning-surface dark:bg-warning-surface/10 border-l-4 border-warning-base rounded-lg flex gap-4">
                 <span class="material-symbols-outlined text-warning-base" aria-hidden="true">info</span>
                 <div>
-                    <h4 class="text-sm font-bold text-amber-800 dark:text-amber-200">How account locking works</h4>
-                    <p class="text-xs text-amber-700 dark:text-amber-300 mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
+                    <h4 class="text-sm font-bold text-warning-base dark:text-warning-base">How account locking works</h4>
+                    <p class="text-xs text-warning-base dark:text-warning-base mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
                 </div>
             </div>
 
             <!-- FILTERS & TABLE -->
             <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-slate-50 dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
+                <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
                     <div class="col-span-2">
                         <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Search Account</label>
@@ -106,7 +106,7 @@
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div id="pag-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Accounts</div>
                     <div class="flex items-center gap-2" id="pag-controls">
                         <!-- Pagination injected by locked-accounts.js -->
@@ -129,20 +129,20 @@
             <!-- Generated password display -->
             <div id="gen-pass-section" class="hidden mb-8">
                 <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Temporary Password</label>
-                <div class="flex items-center gap-3 bg-surface-hover dark:bg-white/5 border-2 border-amber-500/20 rounded-xl p-4">
-                    <code id="gen-pass-value" class="flex-1 font-mono font-bold text-xl tracking-wider text-primary-base dark:text-slate-200 text-center"></code>
+                <div class="flex items-center gap-3 bg-surface-hover dark:bg-white/5 border-2 border-warning-base/20 rounded-xl p-4">
+                    <code id="gen-pass-value" class="flex-1 font-mono font-bold text-xl tracking-wider text-primary-base dark:text-text-muted text-center"></code>
                     <button id="copy-btn" data-action="window.LockedAccounts.copyPassword()" class="p-2 hover:bg-surface-border dark:hover:bg-white/10 rounded-lg transition-colors text-warning-base">
                         <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="bg-red-50 dark:bg-red-500/10 p-3 rounded-lg flex items-center gap-3">
-                        <span class="material-symbols-outlined text-red-500 text-sm" aria-hidden="true">schedule</span>
-                        <div class="text-[10px] font-bold text-red-700 dark:text-red-300">24H VALIDITY</div>
+                    <div class="bg-danger-surface dark:bg-danger-surface/10 p-3 rounded-lg flex items-center gap-3">
+                        <span class="material-symbols-outlined text-danger-base text-sm" aria-hidden="true">schedule</span>
+                        <div class="text-[10px] font-bold text-danger-base dark:text-danger-base">24H VALIDITY</div>
                     </div>
-                    <div class="bg-blue-50 dark:bg-blue-500/10 p-3 rounded-lg flex items-center gap-3">
-                        <span class="material-symbols-outlined text-blue-500 text-sm" aria-hidden="true">verified_user</span>
-                        <div class="text-[10px] font-bold text-blue-700 dark:text-blue-300">ONE-TIME USE</div>
+                    <div class="bg-primary-surface dark:bg-primary-surface/10 p-3 rounded-lg flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary-base text-sm" aria-hidden="true">verified_user</span>
+                        <div class="text-[10px] font-bold text-primary-base dark:text-primary-base">ONE-TIME USE</div>
                     </div>
                 </div>
             </div>
@@ -152,7 +152,7 @@
                 <button data-action="window.LockedAccounts.closeUnlockModal()" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
             </div>
             <div id="unlock-done-actions" class="hidden flex flex-col gap-3">
-                <button data-action="window.LockedAccounts.closeUnlockModal()" class="admin-btn-primary w-full justify-center !py-3 bg-emerald-500 hover:bg-emerald-600 !border-emerald-600">Done</button>
+                <button data-action="window.LockedAccounts.closeUnlockModal()" class="admin-btn-primary w-full justify-center !py-3 bg-success-surface hover:bg-success-surface !border-success-base">Done</button>
             </div>
         </div>
     </div>

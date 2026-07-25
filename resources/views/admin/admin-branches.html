@@ -74,9 +74,9 @@
 
       <!-- INFO BANNER -->
       <div class="info-banner-premium animate-in">
-        <span class="material-symbols-outlined text-blue-500" style="font-size:24px;" aria-hidden="true">info</span>
+        <span class="material-symbols-outlined text-primary-base" style="font-size:24px;" aria-hidden="true">info</span>
         <div>
-          <div class="text-[13px] font-bold text-text-main dark:text-blue-100">Main Branch Note</div>
+          <div class="text-[13px] font-bold text-text-main dark:text-primary-base">Main Branch Note</div>
           <div class="text-[12px] opacity-70 mt-0.5">Finzo's main branch is <b>Barasat</b>. This is the primary hub and cannot be deleted. All other branches can be managed or removed as needed.</div>
         </div>
       </div>
@@ -133,7 +133,7 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-slate-50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
+        <div class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
           <div class="text-[11px] text-text-muted font-bold uppercase tracking-wider">Showing 1-5 of 5 branches</div>
           <div class="flex items-center gap-2">
             <button class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">&larr; Previous</button>
@@ -262,7 +262,7 @@
 
               <div class="info-banner-premium mt-4 !py-2 !gap-3 !mb-0" style="background:rgba(245,158,11,0.05); border-color:#f59e0b;">
                 <span class="material-symbols-outlined text-warning-base" style="font-size:18px;" aria-hidden="true">info</span>
-                <p class="text-[10px] text-amber-700 dark:text-amber-200 font-bold">Assigning a manager will update their branch in Staff Management.</p>
+                <p class="text-[10px] text-warning-base dark:text-warning-base font-bold">Assigning a manager will update their branch in Staff Management.</p>
               </div>
             </div>
           </div>
@@ -281,8 +281,8 @@
                 </button>
               </div>
               <div class="info-banner-premium mt-4 !py-3 !gap-3 !mb-0" style="background:rgba(239,68,68,0.05); border-color:#ef4444;">
-                <span class="material-symbols-outlined text-red-500" style="font-size:18px;" aria-hidden="true">shield</span>
-                <p class="text-[10px] text-red-700 dark:text-red-200 font-bold">This verification ensures branch creation is authorized and logged.</p>
+                <span class="material-symbols-outlined text-danger-base" style="font-size:18px;" aria-hidden="true">shield</span>
+                <p class="text-[10px] text-danger-base dark:text-danger-base font-bold">This verification ensures branch creation is authorized and logged.</p>
               </div>
             </div>
           </div>
@@ -309,15 +309,15 @@
               </div>
               <button type="button" class="admin-btn-secondary px-6 !py-2 mt-2 !rounded-lg !text-[11px] !border-primary/20">Browse Files</button>
             </div>
-            <div id="file-preview" class="hidden mt-3 p-4 bg-success-surface dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-xl flex items-center justify-between">
+            <div id="file-preview" class="hidden mt-3 p-4 bg-success-surface dark:bg-success-surface/10 border border-success-base dark:border-success-base/20 rounded-xl flex items-center justify-between">
                <div class="flex items-center gap-3">
                   <span class="material-symbols-outlined text-success-base" aria-hidden="true">check_circle</span>
                   <div>
-                    <div id="file-name" class="text-[12px] font-bold text-emerald-800 dark:text-emerald-200 truncate max-w-[200px]">branch_cert.pdf</div>
-                    <div id="file-size" class="text-[10px] text-success-base/60 dark:text-emerald-400/60 font-black">2.4 MB</div>
+                    <div id="file-name" class="text-[12px] font-bold text-success-base dark:text-success-base truncate max-w-[200px]">branch_cert.pdf</div>
+                    <div id="file-size" class="text-[10px] text-success-base/60 dark:text-success-base/60 font-black">2.4 MB</div>
                   </div>
                </div>
-               <button type="button" id="remove-file" class="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline px-2 py-1">Remove</button>
+               <button type="button" id="remove-file" class="text-[10px] font-black text-danger-base uppercase tracking-widest hover:underline px-2 py-1">Remove</button>
             </div>
           </div>
 
@@ -386,7 +386,7 @@
                <div>
                   <div id="view-manager-name" class="font-bold text-sm">Amit Sharma</div>
                   <div id="view-manager-email" class="text-[11px] opacity-60 font-bold">amit.sharma@finzobank.com</div>
-                  <a href="#" id="view-manager-link" class="text-[10px] text-blue-500 font-black uppercase tracking-widest mt-2 block hover:underline">View Staff Profile</a>
+                  <a href="#" id="view-manager-link" class="text-[10px] text-primary-base font-black uppercase tracking-widest mt-2 block hover:underline">View Staff Profile</a>
                </div>
             </div>
           </div>
@@ -394,11 +394,11 @@
 
         <div class="space-y-6">
            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl text-center border border-blue-100 dark:border-blue-500/20">
+              <div class="bg-primary-surface dark:bg-primary-surface/10 p-4 rounded-xl text-center border border-blue-100 dark:border-blue-500/20">
                  <div id="view-staff-count" class="text-[20px] font-black text-info-base">3</div>
                  <div class="text-[9px] opacity-60 font-black uppercase tracking-widest">Total Staff</div>
               </div>
-              <div class="bg-success-surface dark:bg-emerald-500/10 p-4 rounded-xl text-center border border-emerald-100 dark:border-emerald-500/20">
+              <div class="bg-success-surface dark:bg-success-surface/10 p-4 rounded-xl text-center border border-success-base dark:border-success-base/20">
                  <div id="view-txn-count" class="text-[20px] font-black text-success-base">342</div>
                  <div class="text-[9px] opacity-60 font-black uppercase tracking-widest">Total Trans</div>
               </div>
@@ -462,7 +462,7 @@
           </table>
         </div>
         <div id="no-staff-error" class="hidden p-12 text-center" aria-live="polite">
-           <span class="material-symbols-outlined text-4xl text-slate-300 mb-2" aria-hidden="true">person_off</span>
+           <span class="material-symbols-outlined text-4xl text-text-muted mb-2" aria-hidden="true">person_off</span>
            <div class="text-sm font-bold text-text-muted">No staff members assigned to this branch yet.</div>
         </div>
       </div>
@@ -476,7 +476,7 @@
   <div id="confirmModal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
      <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-md transition-all"></div>
      <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 p-8 text-center animate-modal-enter">
-        <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-red-50 text-red-500">
+        <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-danger-surface text-danger-base">
            <span class="material-symbols-outlined text-4xl" aria-hidden="true">close</span>
         </div>
         <h3 id="confirm-title" class="font-headline text-xl font-bold mb-2">Delete Branch</h3>
@@ -501,12 +501,12 @@
                  <div class="text-[9px] opacity-40">PDF, JPG or PNG (Max 5MB)</div>
               </div>
               <input type="file" id="delete-file-input" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
-              <div id="delete-file-preview" class="hidden flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
-                 <span class="material-symbols-outlined text-blue-500" aria-hidden="true">description</span>
+              <div id="delete-file-preview" class="hidden flex items-center gap-3 p-3 bg-primary-surface dark:bg-primary-surface/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
+                 <span class="material-symbols-outlined text-primary-base" aria-hidden="true">description</span>
                  <div class="flex-1 min-w-0">
                     <div id="delete-file-name" class="text-[11px] font-bold truncate">document.pdf</div>
                  </div>
-                 <button type="button" id="remove-delete-file" class="p-1.5 hover:bg-white dark:hover:bg-surface-container rounded-lg transition-colors text-red-500">
+                 <button type="button" id="remove-delete-file" class="p-1.5 hover:bg-white dark:hover:bg-surface-container rounded-lg transition-colors text-danger-base">
                     <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
                  </button>
               </div>
@@ -514,7 +514,7 @@
         </div>
 
         <div class="flex flex-col gap-3">
-           <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3 bg-red-500 !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
+           <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3 bg-danger-surface !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
            <button data-action="$(&#039;#confirmModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
         </div>
      </div>

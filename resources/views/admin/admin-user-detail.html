@@ -42,9 +42,9 @@
         </div>
       </div>
       <div class="flex items-center gap-2 sm:gap-4">
-        <div id="topbar-status-container" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-success-surface dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-full">
-          <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-          <span class="text-[10px] font-black text-success-base dark:text-emerald-400 uppercase tracking-widest">Active Account</span>
+        <div id="topbar-status-container" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-success-surface dark:bg-success-surface/10 border border-success-base dark:border-success-base/20 rounded-full">
+          <div class="w-2 h-2 bg-success-surface rounded-full animate-pulse"></div>
+          <span class="text-[10px] font-black text-success-base dark:text-success-base uppercase tracking-widest">Active Account</span>
         </div>
         </div>
     </div>
@@ -61,13 +61,13 @@
               <div>
                 <h3 id="user-name-title" class="font-headline text-2xl sm:text-3xl font-bold tracking-tighter text-black dark:text-white"><div class="skeleton w-48 h-8"></div></h3>
                 <div class="flex items-center justify-center sm:justify-start gap-3 mt-1.5">
-                  <span id="user-status-badge" class="text-[10px] font-black text-emerald-50 px-2 py-0.5 bg-emerald-500 rounded-md uppercase tracking-widest border border-emerald-100 dark:border-emerald-500/20"><div class="skeleton w-24 h-4"></div></span>
+                  <span id="user-status-badge" class="text-[10px] font-black text-success-base px-2 py-0.5 bg-success-surface rounded-md uppercase tracking-widest border border-success-base dark:border-success-base/20"><div class="skeleton w-24 h-4"></div></span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-12 border-t border-slate-50 dark:border-white/5 pt-8 text-center sm:text-left">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-12 border-t border-surface-border dark:border-white/5 pt-8 text-center sm:text-left">
             <!-- Basic Info -->
             <div>
               <p class="ds-label">CUSTOMER ID</p>
@@ -157,16 +157,16 @@
             </div>
             <div>
               <p class="ds-label text-danger-base">FAILED ATTEMPTS</p>
-              <div id="info-failed-attempts" class="info-value text-[11px] font-bold text-danger-base dark:text-rose-400"><div class="skeleton w-8 h-4"></div></div>
+              <div id="info-failed-attempts" class="info-value text-[11px] font-bold text-danger-base dark:text-danger-base"><div class="skeleton w-8 h-4"></div></div>
             </div>
             <div>
               <p class="ds-label text-danger-base">LOCKED UNTIL</p>
-              <div id="info-locked-until" class="info-value text-[11px] font-bold text-danger-base dark:text-rose-400"><div class="skeleton w-32 h-4"></div></div>
+              <div id="info-locked-until" class="info-value text-[11px] font-bold text-danger-base dark:text-danger-base"><div class="skeleton w-32 h-4"></div></div>
             </div>
 
             <div id="rejection-reason-container" class="hidden sm:col-span-2 md:col-span-3">
               <p class="ds-label text-danger-base">REJECTION REASON</p>
-              <p id="info-rejection-reason" class="info-value text-sm leading-tight text-danger-base dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-500/10 p-3 rounded-lg border border-rose-100 dark:border-rose-500/20"></p>
+              <p id="info-rejection-reason" class="info-value text-sm leading-tight text-danger-base dark:text-danger-base font-bold bg-danger-surface dark:bg-danger-surface/10 p-3 rounded-lg border border-danger-base dark:border-danger-base/20"></p>
             </div>
             
             <!-- Address (Full Width) -->
@@ -185,19 +185,19 @@
           <div class="ds-card p-6">
             <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5 ml-1">ADMIN ACTIONS</h5>
             <div class="space-y-3">
-              <button id="suspend-btn" data-action="openGovernanceModal(&#039;block&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
+              <button id="suspend-btn" data-action="openGovernanceModal(&#039;block&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-warning-surface dark:hover:bg-warning-surface/10 transition-all border border-transparent hover:border-warning-base text-text-main dark:text-text-muted">
                 <div class="flex items-center gap-3">
-                  <span id="suspend-btn-icon" class="material-symbols-outlined text-orange-500" aria-hidden="true">block</span>
+                  <span id="suspend-btn-icon" class="material-symbols-outlined text-warning-base" aria-hidden="true">block</span>
                   <span id="suspend-btn-text">Deactivate Account</span>
                 </div>
-                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
+                <span class="material-symbols-outlined text-text-muted" aria-hidden="true">chevron_right</span>
               </button>
-              <button data-action="openGovernanceModal(&#039;delete&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-100 text-slate-700 dark:text-slate-300">
+              <button data-action="openGovernanceModal(&#039;delete&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-danger-surface dark:hover:bg-danger-surface/10 transition-all border border-transparent hover:border-danger-base text-text-main dark:text-text-muted">
                 <div class="flex items-center gap-3">
                   <span class="material-symbols-outlined text-danger-base" aria-hidden="true">delete_forever</span>
                   <span>Soft Delete User</span>
                 </div>
-                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
+                <span class="material-symbols-outlined text-text-muted" aria-hidden="true">chevron_right</span>
               </button>
             </div>
           </div>
@@ -214,13 +214,13 @@
 
       <!-- TRANSACTION HISTORY SECTION -->
       <section class="ds-card overflow-hidden">
-        <div class="p-5 sm:p-8 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-surface-subtle/20 dark:bg-white/5">
+        <div class="p-5 sm:p-8 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/20 dark:bg-white/5">
           <div>
             <h3 class="font-headline text-xl font-bold text-black dark:text-white">Transaction History</h3>
             <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
           </div>
           <div class="flex items-center gap-3">
-              <button data-action="window.open(&#039;../../../api/pdf/statement.php?user_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
+              <button data-action="window.open(&#039;../../../api/pdf/statement.php?user_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-surface-dark border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
                 Print Statement
               </button>
@@ -231,13 +231,13 @@
           <table class="ds-table w-full text-left min-w-[1000px]">
             <thead scope="col">
               <tr class="bg-surface-subtle/50 dark:bg-white/5">
-                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 w-16 text-center" scope="col">#</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">TXN ID</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Type</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Date & Time</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right" scope="col">Amount</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Status</th>
-                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right" scope="col">Action</th>
+                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5 w-16 text-center" scope="col">#</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5" scope="col">TXN ID</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5" scope="col">Type</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5" scope="col">Date & Time</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5 text-right" scope="col">Amount</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5" scope="col">Status</th>
+                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5 text-right" scope="col">Action</th>
               </tr>
             </thead>
             <tbody id="user-transactions-body" class="divide-y divide-slate-50 dark:divide-white/5">
@@ -249,13 +249,13 @@
         <div class="p-6 bg-surface-subtle/20 dark:bg-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div class="text-[10px] font-black uppercase text-text-muted tracking-widest">Showing last 5 account activities</div>
           <div class="flex items-center gap-2">
-            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-slate-200 transition-all cursor-not-allowed">
+            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-text-muted transition-all cursor-not-allowed">
               <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
             </button>
             <div class="flex gap-1.5">
               <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-primary-base text-white text-[11px] font-black shadow-lg shadow-primary-base/20">1</button>
             </div>
-            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-slate-200 transition-all cursor-not-allowed">
+            <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-text-muted transition-all cursor-not-allowed">
               <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
             </button>
           </div>
@@ -299,7 +299,7 @@
           </div>
 
           <!-- Auth Step -->
-          <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
+          <div id="auth-step" class="pt-4 border-t border-surface-border dark:border-white/5">
             <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">admin_panel_settings</span>
