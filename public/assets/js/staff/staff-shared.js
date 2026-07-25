@@ -138,12 +138,11 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const res = await fetch('../../../../api/staff/dashboard.php', { credentials: 'same-origin' });
-        if (res.status === 401 || res.status === 403) {
+        const data = await window.api.get('/staff/dashboard.php');
+        if (data.status === 401 || data.status === 403) {
             window.location.href = '/Finzo/resources/views/auth/staff-login.html';
             return null;
         }
-        const data = await res.json();
         if (data.success && data.staff) {
             StaffState.staff_id = data.staff.staff_id;
             StaffState.name = data.staff.name;

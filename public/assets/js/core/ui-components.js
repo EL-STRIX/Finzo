@@ -198,6 +198,15 @@
                     if (el) el.focus();
                 }
             };
+            
+            // Expose globally
+            window.FinzoUI.closeModal = closeModal;
+            
+            // Listen for form success
+            document.addEventListener('formSuccess', () => {
+                const activeModal = document.querySelector('.modal-overlay.is-active');
+                if (activeModal) closeModal(activeModal);
+            });
 
             document.addEventListener('click', (e) => {
                 const trigger = e.target.closest('[data-modal-target]');
