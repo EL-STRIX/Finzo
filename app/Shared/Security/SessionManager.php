@@ -80,4 +80,71 @@ class SessionManager
             session_destroy();
         }
     }
+
+    /**
+     * Establish a session for a customer.
+     */
+    public static function establishUserSession(array $user, $account): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['user_id']          = (int)$user['id'];
+        $_SESSION['user_customer_id'] = $user['customer_id'];
+        $_SESSION['user_name']        = $user['full_name'];
+        $_SESSION['user_email']       = $user['email'];
+        $_SESSION['user_phone']       = $user['phone'] ?? '';
+        $_SESSION['user_status']      = $user['status'];
+        $_SESSION['user_account_no']  = $account ? $account['account_no'] : null;
+        $_SESSION['user_balance']     = $account ? $account['balance'] : null;
+        $_SESSION['role']             = 'customer';
+        $_SESSION['last_activity']    = time();
+    }
+
+    /**
+     * Establish a session for an administrator.
+     */
+    public static function establishAdminSession(array $admin): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['admin_id']      = (int)$admin['id'];
+        $_SESSION['admin_name']    = $admin['full_name'];
+        $_SESSION['admin_email']   = $admin['email'];
+        $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
+        $_SESSION['admin_role']    = $admin['admin_role'];
+        $_SESSION['admin_display_id'] = $admin['admin_id'];
+        $_SESSION['role']          = 'admin';
+        $_SESSION['last_activity'] = time();
+    }
+
+    /**
+     * Establish a session for a staff member.
+     */
+    public static function establishStaffSession(array $staff): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['staff_id']      = (int)$staff['id'];
+        $_SESSION['staff_display_id'] = $staff['staff_id'];
+        $_SESSION['staff_name']    = $staff['full_name'];
+        $_SESSION['staff_email']   = $staff['email'];
+        $_SESSION['staff_role']    = $staff['role'];
+        $_SESSION['role']          = 'staff';
+        $_SESSION['last_activity'] = time();
+    }
 }

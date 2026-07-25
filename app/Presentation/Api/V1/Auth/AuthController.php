@@ -29,8 +29,19 @@ class AuthController
 
         $result = $this->service->loginUser($identity, $password);
 
+        if ($result['mfa_required'] ?? false) {
+            return [
+                'success' => true,
+                'mfa_required' => true,
+                'mfa_token' => $result['mfa_token'] ?? '',
+                'redirect' => '/views/auth/mfa-challenge.html'
+            ];
+        }
+
         $user = $result['user'];
         $account = $result['account'];
+
+        \App\Shared\Security\SessionManager::establishUserSession($user, $account);
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 
@@ -63,7 +74,18 @@ class AuthController
 
         \App\Presentation\Validators\AuthValidator::validateLogin($email, $password, $csrfToken);
 
-        $this->service->loginAdmin($email, $password);
+        $result = $this->service->loginAdmin($email, $password);
+
+        if ($result['mfa_required'] ?? false) {
+            return [
+                'success' => true,
+                'mfa_required' => true,
+                'mfa_token' => $result['mfa_token'] ?? '',
+                'redirect' => '/views/auth/admin-mfa-challenge.html'
+            ];
+        }
+
+        \App\Shared\Security\SessionManager::establishAdminSession($result['admin']);
 
         return [
             'success'  => true,
@@ -80,7 +102,18 @@ class AuthController
 
         \App\Presentation\Validators\AuthValidator::validateLogin($identity, $password, $csrfToken);
 
-        $this->service->loginStaff($identity, $password);
+        $result = $this->service->loginStaff($identity, $password);
+
+        if ($result['mfa_required'] ?? false) {
+            return [
+                'success' => true,
+                'mfa_required' => true,
+                'mfa_token' => $result['mfa_token'] ?? '',
+                'redirect' => '/views/auth/staff-mfa-challenge.html'
+            ];
+        }
+
+        \App\Shared\Security\SessionManager::establishStaffSession($result['staff']);
 
         return [
             'success'  => true,

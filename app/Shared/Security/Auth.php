@@ -8,11 +8,17 @@ class Auth
 {
     public static function check(): bool
     {
-        return isset($_SESSION['user_id']) || isset($_SESSION['admin_id']) || isset($_SESSION['staff_id']);
+        return self::user() !== null;
     }
 
     public static function user(): ?array
     {
+        // Extension Point for JWT / API Authentication
+        $tokenUser = self::resolveBearerToken();
+        if ($tokenUser) {
+            return $tokenUser;
+        }
+
         if (isset($_SESSION['admin_id'])) {
             return ['id' => $_SESSION['admin_id'], 'type' => 'admin', 'role' => $_SESSION['admin_role'] ?? 'admin'];
         }
@@ -25,6 +31,30 @@ class Auth
         return null;
     }
 
+    private static function resolveBearerToken(): ?array
+    {
+        $headers = [];
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+        } else {
+            foreach ($_SERVER as $key => $value) {
+                if (str_starts_with($key, 'HTTP_')) {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
+                }
+            }
+        }
+        
+        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+        
+        if (str_starts_with($authHeader, 'Bearer ')) {
+            // $token = substr($authHeader, 7);
+            // TODO: Implement JWT decoding/validation
+            throw new AuthenticationException('JWT authentication is not fully configured yet.');
+        }
+
+        return null;
+    }
+
     public static function requireAuth(): array
     {
         $user = self::user();
@@ -32,13 +62,16 @@ class Auth
             throw new AuthenticationException('Unauthenticated. Please log in.');
         }
         
-        // Session Expiration Check
-        $timeout = 1800; // 30 minutes
-        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
-            self::logout();
-            throw new AuthenticationException('Session expired. Please log in again.');
+        // Skip session activity check if authenticated via token
+        if (!isset($user['is_token'])) {
+            // Session Expiration Check
+            $timeout = 1800; // 30 minutes
+            if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
+                self::logout();
+                throw new AuthenticationException('Session expired. Please log in again.');
+            }
+            $_SESSION['last_activity'] = time();
         }
-        $_SESSION['last_activity'] = time();
         
         return $user;
     }
