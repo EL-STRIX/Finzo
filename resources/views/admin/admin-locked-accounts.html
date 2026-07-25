@@ -29,7 +29,7 @@
         <main class="p-4 sm:p-6 lg:p-10">
             <!-- INFO BANNER -->
             <div class="p-4 mb-6 bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-lg flex gap-4">
-                <span class="material-symbols-outlined text-warning-base">info</span>
+                <span class="material-symbols-outlined text-warning-base" aria-hidden="true">info</span>
                 <div>
                     <h4 class="text-sm font-bold text-amber-800 dark:text-amber-200">How account locking works</h4>
                     <p class="text-xs text-amber-700 dark:text-amber-300 mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
@@ -43,7 +43,7 @@
                     <div class="col-span-2">
                         <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Search Account</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                             <input type="text" id="search-input" placeholder="Name, email or account number..." class="w-full pl-12 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             <input type="hidden" id="type-filter" value="">
                             <div class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-white/5 !border-none !py-3 !rounded-xl">
                                 <span class="dropdown-label font-bold text-sm">All Types</span>
-                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                             </div>
                             <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
                                 <div class="finzo-dropdown-option is-selected" data-value="">All Types</div>
@@ -68,7 +68,7 @@
                             <input type="hidden" id="status-filter" value="">
                             <div class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-white/5 !border-none !py-3 !rounded-xl">
                                 <span class="dropdown-label font-bold text-sm">All Statuses</span>
-                                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                                <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                             </div>
                             <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl">
                                 <div class="finzo-dropdown-option is-selected" data-value="">All Statuses</div>
@@ -86,17 +86,17 @@
                 </div>
                 <div class="overflow-x-auto w-full">
                     <table class="ds-table w-full text-left min-w-[1000px]">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>#</th>
-                                <th>Customer</th>
-                                <th>Account No</th>
-                                <th>Account Type</th>
-                                <th>Status</th>
-                                <th>Failed Attempts</th>
-                                <th>Locked On</th>
-                                <th>Lock Time</th>
-                                <th class="text-right px-6">Actions</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Account No</th>
+                                <th scope="col">Account Type</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Failed Attempts</th>
+                                <th scope="col">Locked On</th>
+                                <th scope="col">Lock Time</th>
+                                <th class="text-right px-6" scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -117,11 +117,11 @@
     </div>
 
     <!-- UNLOCK MODAL -->
-    <div id="unlock-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div id="unlock-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" data-action="window.LockedAccounts.closeUnlockModal()"></div>
         <div class="ds-card w-full max-w-md relative z-10 p-8 animate-modal-enter">
-            <div id="unlock-modal-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-amber-50">
-                <span id="unlock-modal-icon" class="material-symbols-outlined text-warning-base text-3xl">key</span>
+            <div id="unlock-modal-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-amber-50" role="dialog" aria-modal="true">
+                <span id="unlock-modal-icon" class="material-symbols-outlined text-warning-base text-3xl" aria-hidden="true">key</span>
             </div>
             <h3 id="unlock-modal-title" class="text-xl font-bold text-center mb-2">Generate Temporary Password</h3>
             <p id="unlock-modal-text" class="text-sm opacity-60 text-center mb-8 leading-relaxed"></p>
@@ -132,22 +132,22 @@
                 <div class="flex items-center gap-3 bg-surface-hover dark:bg-white/5 border-2 border-amber-500/20 rounded-xl p-4">
                     <code id="gen-pass-value" class="flex-1 font-mono font-bold text-xl tracking-wider text-primary-base dark:text-slate-200 text-center"></code>
                     <button id="copy-btn" data-action="window.LockedAccounts.copyPassword()" class="p-2 hover:bg-surface-border dark:hover:bg-white/10 rounded-lg transition-colors text-warning-base">
-                        <span class="material-symbols-outlined">content_copy</span>
+                        <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mt-4">
                     <div class="bg-red-50 dark:bg-red-500/10 p-3 rounded-lg flex items-center gap-3">
-                        <span class="material-symbols-outlined text-red-500 text-sm">schedule</span>
+                        <span class="material-symbols-outlined text-red-500 text-sm" aria-hidden="true">schedule</span>
                         <div class="text-[10px] font-bold text-red-700 dark:text-red-300">24H VALIDITY</div>
                     </div>
                     <div class="bg-blue-50 dark:bg-blue-500/10 p-3 rounded-lg flex items-center gap-3">
-                        <span class="material-symbols-outlined text-blue-500 text-sm">verified_user</span>
+                        <span class="material-symbols-outlined text-blue-500 text-sm" aria-hidden="true">verified_user</span>
                         <div class="text-[10px] font-bold text-blue-700 dark:text-blue-300">ONE-TIME USE</div>
                     </div>
                 </div>
             </div>
 
-            <div id="unlock-modal-actions" class="flex flex-col gap-3">
+            <div id="unlock-modal-actions" class="flex flex-col gap-3" role="dialog" aria-modal="true">
                 <button id="generate-btn" data-action="window.LockedAccounts.generatePassword()" class="admin-btn-primary w-full justify-center !py-3">Generate & Unlock</button>
                 <button data-action="window.LockedAccounts.closeUnlockModal()" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel</button>
             </div>

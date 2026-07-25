@@ -32,7 +32,7 @@
             <!-- BACK BUTTON -->
             <div class="mb-4 -ml-3">
                 <a href="admin-locked-accounts.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> Back
                 </a>
             </div>
 
@@ -86,7 +86,7 @@
                     <div class="ds-card p-6 sm:p-8">
                         <div class="flex items-center gap-3 mb-5">
                             <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-lg text-red-500">gpp_maybe</span>
+                                <span class="material-symbols-outlined text-lg text-red-500" aria-hidden="true">gpp_maybe</span>
                             </div>
                             <h3 class="text-[10px] font-black text-text-muted uppercase tracking-widest">Incident Report</h3>
                         </div>
@@ -100,7 +100,7 @@
                         <div class="px-6 py-4 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg bg-surface-hover dark:bg-white/5 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-lg text-text-muted">history</span>
+                                    <span class="material-symbols-outlined text-lg text-text-muted" aria-hidden="true">history</span>
                                 </div>
                                 <h3 class="text-[10px] font-black dark:text-white uppercase tracking-widest">Login History</h3>
                             </div>
@@ -108,11 +108,11 @@
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left min-w-[550px]">
-                                <thead>
+                                <thead scope="col">
                                     <tr>
-                                        <th class="text-[9px] pl-6">Status</th>
-                                        <th class="text-[9px]">IP Address</th>
-                                        <th class="text-[9px]">Date & Time</th>
+                                        <th class="text-[9px] pl-6" scope="col">Status</th>
+                                        <th class="text-[9px]" scope="col">IP Address</th>
+                                        <th class="text-[9px]" scope="col">Date & Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-logs-body">
@@ -129,7 +129,7 @@
                     <div class="ds-card p-6" id="unlock-action-card">
                         <h3 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Access Control</h3>
                         <button data-action="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
-                            <span class="material-symbols-outlined text-lg">vpn_key</span> Generate & Unlock
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">vpn_key</span> Generate & Unlock
                         </button>
                         <div class="p-3 bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-100 dark:border-amber-500/10 text-center">
                             <p class="text-[9px] font-bold text-amber-700 dark:text-amber-200 uppercase leading-relaxed">
@@ -177,11 +177,11 @@
     </div>
 
     <!-- MODAL -->
-    <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-dark/60 backdrop-blur-sm hidden">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300" id="modal-card">
+    <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-dark/60 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300" id="modal-card" role="dialog" aria-modal="true">
             <div class="p-8 text-center text-text-main dark:text-white">
                 <div class="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mx-auto mb-6 text-warning-base">
-                    <span class="material-symbols-outlined text-4xl">vpn_key</span>
+                    <span class="material-symbols-outlined text-4xl" aria-hidden="true">vpn_key</span>
                 </div>
                 <h3 class="text-xl font-black font-headline mb-3">Restore Access?</h3>
                 <p class="text-sm opacity-60 leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name">-</strong>. User must reset their credentials immediately.</p>

@@ -33,7 +33,7 @@
     <!-- BACK BUTTON -->
     <div style="margin-bottom:20px;">
       <a href="admin-suspended-users.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
-        <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> Back
       </a>
     </div>
 
@@ -92,7 +92,7 @@
           <div class="bg-red-50 dark:bg-red-500/5 p-6 rounded-2xl border border-red-100 dark:border-red-500/10 mb-8">
             <div class="flex items-start gap-4">
               <div class="w-10 h-10 rounded-xl bg-white dark:bg-red-500/20 shadow-sm flex items-center justify-center text-red-500">
-                <span class="material-symbols-outlined">report</span>
+                <span class="material-symbols-outlined" aria-hidden="true">report</span>
               </div>
               <div class="flex-1">
                 <div class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Verified Reason</div>
@@ -126,17 +126,17 @@
             </div>
             <a href="admin-transactions.html" class="text-[10px] font-black text-primary-base dark:text-blue-400 uppercase tracking-widest hover:underline">View All</a>
             <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
+                <span class="material-symbols-outlined" aria-hidden="true">manage_search</span> Audit Log
             </a>
           </div>
           <div class="overflow-x-auto w-full">
             <table class="ds-table w-full text-left min-w-[500px]">
-              <thead>
+              <thead scope="col">
                 <tr>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                  <th class="text-right">Amount</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Type</th>
+                  <th class="text-right" scope="col">Amount</th>
                 </tr>
               </thead>
               <tbody id="transactions-body">
@@ -163,12 +163,12 @@
         <div class="ds-card p-6 sm:p-8 border-2 border-emerald-500/20 bg-emerald-500/5">
           <div class="text-center">
             <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 text-success-base shadow-inner">
-              <span class="material-symbols-outlined text-3xl">verified_user</span>
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true">verified_user</span>
             </div>
             <h3 class="text-lg font-bold mb-2 dark:text-white">Account Recovery</h3>
             <p class="text-xs opacity-60 leading-relaxed mb-8">Reinstating will restore original access and notify the user via registered mobile/email.</p>
             <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
-              <span class="material-symbols-outlined">power_settings_new</span> Reinstate Account
+              <span class="material-symbols-outlined" aria-hidden="true">power_settings_new</span> Reinstate Account
             </button>
             <button data-action="openDeleteModal()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-red-500 opacity-60 hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">
               Permanent Deletion Request
@@ -184,10 +184,10 @@
 </div>
 
 <!-- REINSTATE MODAL -->
-<div class="modal-overlay hidden" id="reinstate-modal">
+<div class="modal-overlay hidden" id="reinstate-modal" role="dialog" aria-modal="true">
   <div class="modal-card">
     <div class="modal-icon" style="background:var(--green-soft)">
-      <span class="material-symbols-outlined" style="color:var(--green);font-size:30px">lock_open</span>
+      <span class="material-symbols-outlined" style="color:var(--green);font-size:30px" aria-hidden="true">lock_open</span>
     </div>
     <div class="modal-title">Confirm Reinstatement</div>
     <div class="modal-text">You are removing the suspension from <strong id="modal-name">--</strong>'s account <strong id="modal-acc">FNZ---</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
@@ -195,7 +195,7 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" data-action="closeModal()">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" data-action="processReinstate()">
-        <span class="material-symbols-outlined" style="font-size:16px">check</span>
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">check</span>
         Confirm & Reinstate
       </button>
     </div>
@@ -203,10 +203,10 @@
 </div>
 
 <!-- PERMANENT DELETION MODAL -->
-<div class="modal-overlay hidden" id="delete-modal">
+<div class="modal-overlay hidden" id="delete-modal" role="dialog" aria-modal="true">
   <div class="modal-card">
     <div class="modal-icon" style="background:#ffeef0">
-      <span class="material-symbols-outlined" style="color:#ff3b30;font-size:30px">delete_forever</span>
+      <span class="material-symbols-outlined" style="color:#ff3b30;font-size:30px" aria-hidden="true">delete_forever</span>
     </div>
     <div class="modal-title">Confirm Permanent Deletion</div>
     <div class="modal-text">You are permanently deleting <strong id="delete-modal-name">--</strong>'s account. This action will close all bank accounts and archive their dossier permanently.</div>
@@ -214,7 +214,7 @@
     <div class="mt-6 w-full text-left">
       <label class="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
       <div class="relative">
-        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">lock</span>
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">lock</span>
         <input type="password" id="delete-admin-password" placeholder="••••••••" 
           class="w-full pl-12 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
       </div>
@@ -223,7 +223,7 @@
     <div class="modal-actions mt-8">
       <button class="btn btn-ghost" data-action="closeDeleteModal()">Cancel</button>
       <button class="btn btn-danger" id="delete-confirm-btn" data-action="processDelete()" style="background:#ff3b30 !important; color:#fff !important;">
-        <span class="material-symbols-outlined" style="font-size:16px">check</span>
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">check</span>
         Confirm & Delete
       </button>
     </div>

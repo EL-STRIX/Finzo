@@ -32,7 +32,7 @@
     <!-- BACK BUTTON -->
     <div style="margin-bottom:24px;">
       <a href="admin-suspended-staff.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
-        <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> Back
       </a>
     </div>
 
@@ -83,7 +83,7 @@
           <div class="bg-red-50 dark:bg-red-500/5 p-6 rounded-2xl border border-red-100 dark:border-red-500/10 mb-8">
             <div class="flex items-start gap-4">
               <div class="w-10 h-10 rounded-xl bg-white dark:bg-red-500/20 shadow-sm flex items-center justify-center text-red-500">
-                <span class="material-symbols-outlined text-2xl">policy</span>
+                <span class="material-symbols-outlined text-2xl" aria-hidden="true">policy</span>
               </div>
               <div class="flex-1">
                 <div class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Suspension Reason</div>
@@ -114,17 +114,17 @@
             <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Processing History</h3>
             <a href="admin-transactions.html" class="text-[10px] font-black text-primary-base dark:text-blue-400 uppercase tracking-widest hover:underline">Full Logs</a>
             <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
+                <span class="material-symbols-outlined" aria-hidden="true">manage_search</span> Audit Log
             </a>
           </div>
           <div class="overflow-x-auto w-full">
             <table class="ds-table w-full text-left min-w-[600px]">
-              <thead>
+              <thead scope="col">
                 <tr>
-                  <th>Operation</th>
-                  <th>Timestamp</th>
-                  <th class="text-right">Amount</th>
-                  <th class="text-center">Status</th>
+                  <th scope="col">Operation</th>
+                  <th scope="col">Timestamp</th>
+                  <th class="text-right" scope="col">Amount</th>
+                  <th class="text-center" scope="col">Status</th>
                 </tr>
               </thead>
               <tbody id="staff-transactions-body">
@@ -142,12 +142,12 @@
         <div class="ds-card p-6 sm:p-8 border-2 border-emerald-500/20 bg-emerald-500/5">
            <div class="text-center">
               <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 text-success-base shadow-inner">
-                <span class="material-symbols-outlined text-3xl">verified_user</span>
+                <span class="material-symbols-outlined text-3xl" aria-hidden="true">verified_user</span>
               </div>
               <h3 class="text-lg font-bold mb-2 dark:text-white">Reinstate Staff</h3>
               <p class="text-xs opacity-60 leading-relaxed mb-8">This will restore system privileges and allow them to process new transactions.</p>
               <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
-                <span class="material-symbols-outlined">how_to_reg</span> Authorize Access
+                <span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Authorize Access
               </button>
            </div>
         </div>
@@ -158,12 +158,12 @@
 </div>
 
 <!-- REINSTATE MODAL -->
-<div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-surface-dark/40 backdrop-blur-sm transition-all" id="reinstate-modal">
+<div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-surface-dark/40 backdrop-blur-sm transition-all" id="reinstate-modal" role="dialog" aria-modal="true">
   <div class="relative w-full max-w-lg">
     <div class="bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5">
       <div class="p-8 pb-4 text-center shrink-0">
         <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-success-base bg-emerald-50 dark:bg-emerald-500/10">
-          <span class="material-symbols-outlined text-4xl">verified_user</span>
+          <span class="material-symbols-outlined text-4xl" aria-hidden="true">verified_user</span>
         </div>
         <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Confirm Reinstatement</h3>
         <p class="text-sm text-text-muted font-medium mt-1">Administrative security clearance required</p>
@@ -176,7 +176,7 @@
         <div class="pt-6 border-t border-surface-border dark:border-white/5">
           <label class="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
           <div class="relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">lock</span>
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">lock</span>
             <input type="password" id="admin-password" placeholder="••••••••" 
               class="w-full pl-12 pr-4 py-4 bg-surface-subtle dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-emerald-500/20 transition-all text-black dark:text-white outline-none shadow-inner">
           </div>

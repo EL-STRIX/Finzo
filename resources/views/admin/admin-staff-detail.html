@@ -27,7 +27,7 @@
             
             <!-- ALERT BANNER FOR SUSPENSION OR LOCK -->
             <div id="security-alert-banner" class="hidden rounded-2xl p-4 sm:p-5 flex items-start gap-4">
-                <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-1">warning</span>
+                <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-1" aria-hidden="true">warning</span>
                 <div>
                     <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase">Alert</h4>
                     <p id="security-alert-message" class="text-xs sm:text-sm font-medium leading-relaxed opacity-90"></p>
@@ -56,7 +56,7 @@
                                     <span id="info-department-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">---</span>
                                 </div>
                                 <p class="text-sm font-medium text-text-muted dark:text-text-muted flex items-center justify-center sm:justify-start gap-2">
-                                    <span class="material-symbols-outlined text-lg">calendar_today</span>
+                                    <span class="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span>
                                     Member since <span id="info-joined-date" class="font-bold">---</span>
                                 </p>
                             </div>
@@ -95,7 +95,7 @@
                     <div class="ds-card">
                         <div class="p-5 border-b border-surface-border dark:border-white/5">
                             <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-primary-base text-lg">location_on</span> Residential Address
+                                <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">location_on</span> Residential Address
                             </h4>
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-5 gap-5">
@@ -126,7 +126,7 @@
                     <div class="ds-card">
                         <div class="p-5 border-b border-surface-border dark:border-white/5">
                             <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-primary-base text-lg">security</span> System Audit Info
+                                <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">security</span> System Audit Info
                             </h4>
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
@@ -169,7 +169,7 @@
                     <div class="ds-card">
                         <div class="p-5 border-b border-surface-border dark:border-white/5">
                             <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-primary-base text-lg">badge</span> Identity Documents
+                                <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">badge</span> Identity Documents
                             </h4>
                         </div>
                         <div class="p-5">
@@ -189,12 +189,12 @@
                                     <label class="ds-label mb-2">Front of Document</label>
                                     <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-front-placeholder" class="text-center">
-                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted">image</span>
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted" aria-hidden="true">image</span>
                                             <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-front-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg">zoom_in</span>
+                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                         </div>
                                     </div>
                                 </div>
@@ -203,12 +203,12 @@
                                     <label class="ds-label mb-2">Back of Document</label>
                                     <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-back-placeholder" class="text-center">
-                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted">image</span>
+                                            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-text-muted" aria-hidden="true">image</span>
                                             <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-back-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg">zoom_in</span>
+                                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                         </div>
                                     </div>
                                 </div>
@@ -230,40 +230,40 @@
                             <button id="deactivate-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-warning-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span id="suspend-icon" class="material-symbols-outlined text-xl">block</span>
+                                        <span id="suspend-icon" class="material-symbols-outlined text-xl" aria-hidden="true">block</span>
                                     </div>
                                     <div class="text-left">
                                         <div id="suspend-label" class="text-xs font-black dark:text-white">Deactivate Staff</div>
                                         <div class="text-[9px] font-medium text-text-muted">Temporarily revoke access</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300 text-lg" aria-hidden="true">chevron_right</span>
                             </button>
 
                             <button id="reset-password-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-info-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span class="material-symbols-outlined text-xl">lock_reset</span>
+                                        <span class="material-symbols-outlined text-xl" aria-hidden="true">lock_reset</span>
                                     </div>
                                     <div class="text-left">
                                         <div class="text-xs font-black dark:text-white">Reset Password</div>
                                         <div class="text-[9px] font-medium text-text-muted">Force new credentials</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300 text-lg" aria-hidden="true">chevron_right</span>
                             </button>
 
                             <button id="delete-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-danger-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span class="material-symbols-outlined text-xl">person_remove</span>
+                                        <span class="material-symbols-outlined text-xl" aria-hidden="true">person_remove</span>
                                     </div>
                                     <div class="text-left">
                                         <div class="text-xs font-black text-danger-base">Delete Account</div>
                                         <div class="text-[9px] font-medium text-text-muted">Permanent removal</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300 text-lg" aria-hidden="true">chevron_right</span>
                             </button>
                         </div>
                     </div>
@@ -318,7 +318,7 @@
                     <div class="ds-card p-5">
                         <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5 flex justify-between items-center">
                             <span>Recent Shifts</span>
-                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true">schedule</span>
                         </h5>
                         <div id="staff-shift-history" class="space-y-3">
                             <div class="text-xs text-text-muted text-center py-4">Loading shift history...</div>
@@ -333,7 +333,7 @@
                                 "All staff-related actions are recorded in the global audit log. Every modification is attributed to the performing administrator's session."
                             </p>
                         </div>
-                        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl text-indigo-500/10">gavel</span>
+                        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl text-indigo-500/10" aria-hidden="true">gavel</span>
                     </div>
                 </div>
             </div>
@@ -342,24 +342,24 @@
             <div class="ds-card overflow-hidden">
                 <div class="p-5 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-primary-base text-lg">history</span> Transaction History
+                        <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">history</span> Transaction History
                     </h4>
                     <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-slate-800 border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-lg">print</span>
+                        <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
                         Print Statement
                     </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="ds-table w-full text-left">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>Receipt No</th>
-                                <th>Date & Time</th>
-                                <th>Customer</th>
-                                <th>Account</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th class="text-right">Action</th>
+                                <th scope="col">Receipt No</th>
+                                <th scope="col">Date & Time</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Account</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Amount</th>
+                                <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="staff-transactions-body">
@@ -373,18 +373,18 @@
             <div class="ds-card overflow-hidden mt-6">
                 <div class="p-5 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-primary-base text-lg">local_activity</span> Recent Activity
+                        <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">local_activity</span> Recent Activity
                     </h4>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="ds-table w-full text-left">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>Date & Time</th>
-                                <th>Action Type</th>
+                                <th scope="col">Date & Time</th>
+                                <th scope="col">Action Type</th>
 
-                                <th>Details</th>
-                                <th class="text-right">IP Address</th>
+                                <th scope="col">Details</th>
+                                <th class="text-right" scope="col">IP Address</th>
                             </tr>
                         </thead>
                         <tbody id="staff-activities-body">
@@ -398,19 +398,19 @@
     </div>
 
     <!-- GOVERNANCE SECURITY MODAL -->
-    <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
-        <div id="modal-backdrop" class="absolute inset-0 bg-surface-dark/40 backdrop-blur-md opacity-0"></div>
-        <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300">
+    <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div id="modal-backdrop" class="absolute inset-0 bg-surface-dark/40 backdrop-blur-md opacity-0" role="dialog" aria-modal="true"></div>
+        <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300" role="dialog" aria-modal="true">
             <div class="ds-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
-                <div id="modal-header" class="p-8 pb-4 text-center shrink-0">
-                    <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4">
-                        <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
+                <div id="modal-header" class="p-8 pb-4 text-center shrink-0" role="dialog" aria-modal="true">
+                    <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" role="dialog" aria-modal="true">
+                        <span id="modal-icon" class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
                     </div>
                     <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
                     <p id="modal-subtitle" class="text-sm text-text-muted font-medium mt-1">Administrative security clearance required</p>
                 </div>
                 <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
-                    <div id="modal-body-text" class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4"></div>
+                    <div id="modal-body-text" class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4" role="dialog" aria-modal="true"></div>
                     <div id="reason-step" class="hidden">
                         <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Select Deactivation Reason</label>
                         <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
@@ -423,7 +423,7 @@
                     <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
                         <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">admin_panel_settings</span>
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">admin_panel_settings</span>
                             <input type="password" id="admin-password" placeholder="••••••••"
                                 class="w-full pl-12 pr-4 py-3 bg-surface-subtle dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
                         </div>
@@ -439,10 +439,10 @@
     </div>
 
     <!-- IMAGE LIGHTBOX -->
-    <div id="lightbox-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm cursor-pointer" data-action="closeLightbox()">
+    <div id="lightbox-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm cursor-pointer" data-action="closeLightbox()" role="dialog" aria-modal="true">
         <div class="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center">
             <button class="absolute top-2 right-2 text-white/80 hover:text-white z-10" data-action="closeLightbox()">
-                <span class="material-symbols-outlined text-3xl">close</span>
+                <span class="material-symbols-outlined text-3xl" aria-hidden="true">close</span>
             </button>
             <img loading="lazy" id="lightbox-img" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl" alt="Document Preview" />
         </div>

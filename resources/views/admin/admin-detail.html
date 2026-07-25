@@ -46,7 +46,7 @@
                                     <span id="info-access-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">---</span>
                                 </div>
                                 <p class="text-sm font-medium text-text-muted dark:text-text-muted dark:text-text-muted mt-4 flex items-center justify-center sm:justify-start gap-2">
-                                    <span class="material-symbols-outlined text-lg">calendar_today</span>
+                                    <span class="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span>
                                     Member since <span id="info-joined-date">---</span>
                                 </p>
                             </div>
@@ -80,7 +80,7 @@
                     <div class="ds-card">
                         <div class="p-6 border-b border-slate-50 dark:border-white/5">
                             <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-primary-base">security</span> System Audit Info
+                                <span class="material-symbols-outlined text-primary-base" aria-hidden="true">security</span> System Audit Info
                             </h4>
                         </div>
                         <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-3 gap-8">
@@ -120,42 +120,42 @@
                             <button id="action-suspend-btn" data-action="window.AdminDetail.toggleStatus()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-warning-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span id="suspend-icon" class="material-symbols-outlined">block</span>
+                                        <span id="suspend-icon" class="material-symbols-outlined" aria-hidden="true">block</span>
                                     </div>
                                     <div class="text-left">
                                         <div id="suspend-label" class="text-sm font-black dark:text-white">Suspend Admin</div>
                                         <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Temporarily revoke access</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
                             </button>
 
                             <!-- Reset Password -->
                             <button data-action="window.AdminDetail.showResetModal()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-info-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span class="material-symbols-outlined">lock_reset</span>
+                                        <span class="material-symbols-outlined" aria-hidden="true">lock_reset</span>
                                     </div>
                                     <div class="text-left">
                                         <div class="text-sm font-black dark:text-white">Reset Password</div>
                                         <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Force new credentials</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
                             </button>
 
                             <!-- Delete -->
                             <button data-action="window.AdminDetail.showDeleteModal()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-danger-base flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <span class="material-symbols-outlined">person_remove</span>
+                                        <span class="material-symbols-outlined" aria-hidden="true">person_remove</span>
                                     </div>
                                     <div class="text-left">
                                         <div class="text-sm font-black text-danger-base">Delete Account</div>
                                         <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Permanent removal</div>
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
                             </button>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
                                 "All administrative actions performed on this account are recorded in the global audit log and attributed to your session."
                             </p>
                         </div>
-                        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl text-indigo-500/10">gavel</span>
+                        <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl text-indigo-500/10" aria-hidden="true">gavel</span>
                     </div>
                 </div>
             </div>
@@ -177,17 +177,17 @@
             <div class="ds-card overflow-hidden">
                 <div class="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
                     <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
-                        <span class="material-symbols-outlined text-primary-base">history</span> Activity Timeline
+                        <span class="material-symbols-outlined text-primary-base" aria-hidden="true">history</span> Activity Timeline
                     </h4>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="ds-table w-full text-left">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>Timestamp</th>
-                                <th>Action</th>
-                                <th>Details</th>
-                                <th class="text-right">IP Address</th>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Details</th>
+                                <th class="text-right" scope="col">IP Address</th>
                             </tr>
                         </thead>
                         <tbody id="activity-tbody">
@@ -203,23 +203,23 @@
     <!-- MODALS -->
     
     <!-- Reset Password Modal -->
-    <div id="reset-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div id="reset-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm transition-all" data-action="window.AdminDetail.closeResetModal()"></div>
         <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 bg-blue-50 dark:bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-4xl">lock_reset</span>
+                    <span class="material-symbols-outlined text-4xl" aria-hidden="true">lock_reset</span>
                 </div>
                 <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Reset Admin Password</h3>
                 <p class="text-sm text-text-muted font-medium mt-1">Set a secure temporary password</p>
             </div>
-            <div class="px-8 py-4 space-y-6 overflow-y-auto" id="reset-modal-content">
+            <div class="px-8 py-4 space-y-6 overflow-y-auto" id="reset-modal-content" role="dialog" aria-modal="true">
                 <div class="text-center py-4">
                     <p class="text-sm text-text-muted dark:text-text-muted font-medium">Clicking "Generate Now" will create a random password valid for <span class="font-bold text-primary-base dark:text-blue-400">24 hours</span>.</p>
                 </div>
                 
                 <!-- Success State (Hidden by default) -->
-                <div id="reset-success-state" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div id="reset-success-state" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500" aria-live="polite">
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl text-center">
                         <div class="ds-label mb-2 text-success-base">Temporary Password</div>
                         <div id="generated-password-display" class="text-2xl font-black tracking-widest text-text-main dark:text-white font-mono select-all cursor-pointer" title="Click to copy">--------</div>
@@ -228,23 +228,23 @@
                     <p class="text-xs text-text-muted text-center font-medium">Copy this password and provide it to the administrator. It will not be shown again.</p>
                 </div>
             </div>
-            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2" id="reset-modal-actions">
+            <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2" id="reset-modal-actions" role="dialog" aria-modal="true">
                 <button data-action="window.AdminDetail.closeResetModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
                 <button id="reset-submit-btn" data-action="window.AdminDetail.submitReset()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                     Generate Now
-                    <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
+                    <span class="material-symbols-outlined hidden animate-spin text-sm" aria-hidden="true">progress_activity</span>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div id="delete-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm transition-all" data-action="window.AdminDetail.closeDeleteModal()"></div>
         <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 text-danger-base rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-4xl">warning</span>
+                    <span class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
                 </div>
                 <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Permanent Deletion</h3>
                 <p class="text-sm text-text-muted font-medium mt-1">This action is irreversible.</p>
@@ -258,7 +258,7 @@
                 <button data-action="window.AdminDetail.closeDeleteModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
                 <button id="delete-submit-btn" data-action="window.AdminDetail.submitDelete()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-rose-500 shadow-rose-500/20 hover:bg-rose-600 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                     Delete Admin
-                    <span class="material-symbols-outlined hidden animate-spin text-sm">progress_activity</span>
+                    <span class="material-symbols-outlined hidden animate-spin text-sm" aria-hidden="true">progress_activity</span>
                 </button>
             </div>
         </div>

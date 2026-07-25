@@ -37,7 +37,7 @@
     <div class="flex gap-2 w-full sm:w-auto">
       <button class="btn btn-primary h-11 px-8 flex-1 sm:flex-none" data-action="generateStatement()">Generate</button>
       <button class="btn btn-secondary h-11 flex-1 sm:flex-none" data-action="window.print()" title="Print Statement">
-        <span class="material-symbols-outlined text-lg">print</span>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
       </button>
     </div>
   </div>
@@ -93,14 +93,14 @@
       <!-- Table -->
       <div class="overflow-x-auto print:overflow-visible">
         <table class="ds-table w-full">
-          <thead>
+          <thead scope="col">
             <tr>
-              <th>Date</th>
-              <th>Transaction ID</th>
-              <th>Description</th>
-              <th>Type</th>
-              <th class="text-right">Amount</th>
-              <th class="text-right">Balance</th>
+              <th scope="col">Date</th>
+              <th scope="col">Transaction ID</th>
+              <th scope="col">Description</th>
+              <th scope="col">Type</th>
+              <th class="text-right" scope="col">Amount</th>
+              <th class="text-right" scope="col">Balance</th>
             </tr>
           </thead>
           <tbody>

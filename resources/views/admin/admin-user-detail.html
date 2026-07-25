@@ -30,11 +30,11 @@
     <!-- TOP BAR -->
     <div class="admin-topbar">
       <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-surface-hover dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-surface-hover dark:hover:bg-white/5 transition-colors -ml-2" aria-label="Toggle Navigation Menu">
+            <span class="material-symbols-outlined force-black" aria-hidden="true">menu</span>
         </button>
         <a href="admin-users.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 hover:bg-surface-border transition-all text-text-muted">
-          <span class="material-symbols-outlined force-black">arrow_back</span>
+          <span class="material-symbols-outlined force-black" aria-hidden="true">arrow_back</span>
         </a>
         <div>
           <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">USER DETAIL</div>
@@ -187,17 +187,17 @@
             <div class="space-y-3">
               <button id="suspend-btn" data-action="openGovernanceModal(&#039;block&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-100 text-slate-700 dark:text-slate-300">
                 <div class="flex items-center gap-3">
-                  <span id="suspend-btn-icon" class="material-symbols-outlined text-orange-500">block</span>
+                  <span id="suspend-btn-icon" class="material-symbols-outlined text-orange-500" aria-hidden="true">block</span>
                   <span id="suspend-btn-text">Deactivate Account</span>
                 </div>
-                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
               </button>
               <button data-action="openGovernanceModal(&#039;delete&#039;)" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-xl text-sm font-bold hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-100 text-slate-700 dark:text-slate-300">
                 <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-danger-base">delete_forever</span>
+                  <span class="material-symbols-outlined text-danger-base" aria-hidden="true">delete_forever</span>
                   <span>Soft Delete User</span>
                 </div>
-                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                <span class="material-symbols-outlined text-slate-300" aria-hidden="true">chevron_right</span>
               </button>
             </div>
           </div>
@@ -221,7 +221,7 @@
           </div>
           <div class="flex items-center gap-3">
               <button data-action="window.open(&#039;../../../api/pdf/statement.php?user_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2.5 px-5 bg-white dark:bg-slate-800 border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
-                <span class="material-symbols-outlined text-lg">print</span>
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
                 Print Statement
               </button>
           </div>
@@ -229,15 +229,15 @@
         
         <div class="overflow-x-auto">
           <table class="ds-table w-full text-left min-w-[1000px]">
-            <thead>
+            <thead scope="col">
               <tr class="bg-surface-subtle/50 dark:bg-white/5">
-                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 w-16 text-center">#</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5">TXN ID</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Type</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Date & Time</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right">Amount</th>
-                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5">Status</th>
-                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right">Action</th>
+                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 w-16 text-center" scope="col">#</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">TXN ID</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Type</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Date & Time</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right" scope="col">Amount</th>
+                <th class="py-5 px-6 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5" scope="col">Status</th>
+                <th class="py-5 px-8 text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-slate-50 dark:border-white/5 text-right" scope="col">Action</th>
               </tr>
             </thead>
             <tbody id="user-transactions-body" class="divide-y divide-slate-50 dark:divide-white/5">
@@ -250,13 +250,13 @@
           <div class="text-[10px] font-black uppercase text-text-muted tracking-widest">Showing last 5 account activities</div>
           <div class="flex items-center gap-2">
             <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-slate-200 transition-all cursor-not-allowed">
-              <span class="material-symbols-outlined text-lg">chevron_left</span>
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
             </button>
             <div class="flex gap-1.5">
               <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-primary-base text-white text-[11px] font-black shadow-lg shadow-primary-base/20">1</button>
             </div>
             <button class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted hover:text-text-muted dark:hover:text-slate-200 transition-all cursor-not-allowed">
-              <span class="material-symbols-outlined text-lg">chevron_right</span>
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
             </button>
           </div>
         </div>
@@ -266,7 +266,7 @@
   </div>
 
   <!-- GOVERNANCE SECURITY MODAL -->
-  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden">
+  <div id="governance-modal" class="fixed inset-0 z-[2000] hidden" role="dialog" aria-modal="true">
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-md"></div>
     
@@ -274,9 +274,9 @@
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div class="ds-card !p-0 overflow-hidden shadow-3xl border-none">
         <!-- Header -->
-        <div id="modal-header" class="p-8 pb-4 text-center">
-          <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300">
-            <span id="modal-icon" class="material-symbols-outlined text-4xl">warning</span>
+        <div id="modal-header" class="p-8 pb-4 text-center" role="dialog" aria-modal="true">
+          <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 transition-all duration-300" role="dialog" aria-modal="true">
+            <span id="modal-icon" class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
           </div>
           <h3 id="modal-title" class="font-headline text-2xl font-black text-black dark:text-white">Authorize Action</h3>
           <p id="modal-subtitle" class="text-sm text-text-muted font-medium mt-1">Secure administrative override required</p>
@@ -302,7 +302,7 @@
           <div id="auth-step" class="pt-4 border-t border-slate-50 dark:border-white/5">
             <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">admin_panel_settings</span>
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">admin_panel_settings</span>
               <input type="password" id="admin-password" placeholder="••••••••"
                 class="w-full pl-12 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all">
             </div>

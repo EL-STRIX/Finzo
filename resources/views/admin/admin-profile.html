@@ -45,7 +45,7 @@
                         <img loading="lazy" id="avatar-img-preview" src="" class="hidden w-full h-full object-cover">
                     </div>
                     <label for="photo-upload" class="avatar-upload-btn">
-                        <span class="material-symbols-outlined text-[16px]">add_a_photo</span>
+                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add_a_photo</span>
                     </label>
                     <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
                 </div>
@@ -66,7 +66,7 @@
                     <div class="ds-card p-6 sm:p-8">
                         <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface-border dark:border-white/5">
                             <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary-base dark:text-blue-400">badge</span>
+                                <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">badge</span>
                                 Administrator Identity
                             </h3>
                         </div>
@@ -111,7 +111,7 @@
                     <div class="ds-card p-6 sm:p-8">
                         <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface-border dark:border-white/5">
                             <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
-                                <span class="material-symbols-outlined text-teal-500">quiz</span>
+                                <span class="material-symbols-outlined text-teal-500" aria-hidden="true">quiz</span>
                                 Master Security Question
                             </h3>
                             <div id="sq-status-container"></div>
@@ -140,18 +140,18 @@
                     <div class="ds-card overflow-hidden">
                         <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/2">
                             <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-text-muted">history</span>
+                                <span class="material-symbols-outlined text-text-muted" aria-hidden="true">history</span>
                                 Admin Activity Log
                             </h3>
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left">
-                                <thead>
+                                <thead scope="col">
                                     <tr>
-                                        <th>Action</th>
-                                        <th>Details</th>
-                                        <th>IP Address</th>
-                                        <th>Date & Time</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Details</th>
+                                        <th scope="col">IP Address</th>
+                                        <th scope="col">Date & Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="activity-table-body">
@@ -172,7 +172,7 @@
                     <div id="admin-management-container" class="ds-card overflow-hidden hidden">
                         <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-amber-50/30 dark:bg-amber-500/5">
                             <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-amber-700 dark:text-warning-base">
-                                <span class="material-symbols-outlined text-warning-base">manage_accounts</span>
+                                <span class="material-symbols-outlined text-warning-base" aria-hidden="true">manage_accounts</span>
                                 Global Admin Directory
                             </h3>
                             <div class="flex gap-3">
@@ -196,14 +196,14 @@
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left min-w-[800px]">
-                                <thead>
+                                <thead scope="col">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Admin Name & Email</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Added On</th>
-                                        <th class="text-right">Actions</th>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Admin Name & Email</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Added On</th>
+                                        <th class="text-right" scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="admin-management-body">
@@ -216,21 +216,21 @@
                     <div id="locked-admins-container" class="ds-card overflow-hidden hidden">
                         <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-rose-50/50 dark:bg-rose-500/5">
                             <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-rose-700 dark:text-rose-400">
-                                <span class="material-symbols-outlined text-danger-base">lock</span>
+                                <span class="material-symbols-outlined text-danger-base" aria-hidden="true">lock</span>
                                 Locked Admin Accounts
                             </h3>
                             <span id="locked-count-badge" class="px-3 py-1 bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400 text-[10px] font-black rounded uppercase tracking-widest border border-rose-200 dark:border-rose-500/30">0 Locked</span>
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left min-w-[800px]">
-                                <thead>
+                                <thead scope="col">
                                     <tr>
-                                        <th>Admin Profile</th>
-                                        <th>Locked At</th>
-                                        <th>Reason</th>
-                                        <th>Attempts</th>
-                                        <th>Security Q</th>
-                                        <th class="text-right">Actions</th>
+                                        <th scope="col">Admin Profile</th>
+                                        <th scope="col">Locked At</th>
+                                        <th scope="col">Reason</th>
+                                        <th scope="col">Attempts</th>
+                                        <th scope="col">Security Q</th>
+                                        <th class="text-right" scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="locked-admins-body">
@@ -246,7 +246,7 @@
                     <div class="ds-card p-6 sm:p-8">
                         <div class="flex items-center gap-3 mb-6 pb-4 border-b border-surface-border dark:border-white/5">
                             <div class="w-10 h-10 rounded-xl bg-surface-hover dark:bg-white/10 text-text-muted dark:text-slate-300 flex items-center justify-center shadow-sm">
-                                <span class="material-symbols-outlined">password</span>
+                                <span class="material-symbols-outlined" aria-hidden="true">password</span>
                             </div>
                             <h3 class="font-headline font-bold text-lg text-text-main dark:text-white">Update Password</h3>
                         </div>
@@ -300,7 +300,7 @@
     </div>
 
     <!-- ADD/EDIT ADMIN MODAL -->
-    <div id="admin-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4">
+    <div id="admin-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm" data-action="window.AdminProfile.closeModal()"></div>
         <div class="ds-card w-full max-w-md relative z-10 p-6 shadow-2xl animate-in zoom-in duration-200">
             <h3 class="font-headline font-bold text-xl mb-6 text-text-main dark:text-white" id="admin-modal-title">Add Admin</h3>
@@ -318,7 +318,7 @@
                     <label class="ds-label mb-1">Phone</label>
                     <input type="text" id="modal-phone" class="ds-input">
                 </div>
-                <div id="modal-pw-container">
+                <div id="modal-pw-container" role="dialog" aria-modal="true">
                     <label class="ds-label mb-1">Temporary Password <span class="text-text-muted font-normal normal-case tracking-normal">(Required for new)</span></label>
                     <input type="text" id="modal-password" class="ds-input" minlength="8">
                 </div>

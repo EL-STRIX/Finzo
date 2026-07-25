@@ -35,7 +35,7 @@
                         <div class="w-full md:w-96">
                             <label class="ds-label mb-2">Search Transactions</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="ds-input pl-12">
                             </div>
                         </div>
@@ -46,19 +46,19 @@
                                 All
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="deposit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">south_west</span>
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">south_west</span>
                                 Deposits
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="withdrawal">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">north_east</span>
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">north_east</span>
                                 Withdrawals
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="transfer">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">sync_alt</span>
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">sync_alt</span>
                                 Transfers
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-slate-200" data-type="interest_credit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;">percent</span>
+                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">percent</span>
                                 Interest
                             </button>
                         </div>
@@ -67,17 +67,17 @@
                 </div>
                 <div class="overflow-x-auto w-full">
                     <table id="transactions-table" class="ds-table w-full text-left min-w-[1300px]">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>#</th>
-                                <th>TXN ID</th>
-                                <th>From Account</th>
-                                <th>To Account</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th class="text-right">Action</th>
+                                <th scope="col">#</th>
+                                <th scope="col">TXN ID</th>
+                                <th scope="col">From Account</th>
+                                <th scope="col">To Account</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Status</th>
+                                <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="txn-table-body">
@@ -102,12 +102,12 @@
     </div>
 
     <!-- EXPORT MODAL -->
-    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm close-export-modal transition-all"></div>
         <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary-base bg-primary/5 dark:bg-primary/20">
-                    <span class="material-symbols-outlined text-4xl">download</span>
+                    <span class="material-symbols-outlined text-4xl" aria-hidden="true">download</span>
                 </div>
                 <h3 class="font-headline text-2xl font-black text-text-main dark:text-white">Export Data</h3>
                 <p class="text-sm text-text-muted font-medium mt-1">Download a complete ledger of transactions</p>

@@ -53,7 +53,7 @@
                     <div>
                         <a href="/Finzo/public/index.html" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
+                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
@@ -63,7 +63,7 @@
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">security</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon" aria-hidden="true">security</span>
                             <div>
                                 <h4 class="auth-hero-security-title">Zero-Trust Terminal Protection</h4>
                                 <p class="auth-hero-security-desc">Hardware security token validation combined with IP whitelist checks protect administrative system privileges.</p>
@@ -80,15 +80,15 @@
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
                     </a>
                     
                     <!-- Page Header Component -->
@@ -106,7 +106,7 @@
 
                     <!-- Alert Warning Component -->
                     <div class="alert alert-danger" role="alert">
-                        <span class="material-symbols-outlined alert-icon">warning</span>
+                        <span class="material-symbols-outlined alert-icon" aria-hidden="true">warning</span>
                         <div>
                             <strong>Mandatory Audit Notice:</strong> Access to this terminal is subject to real-time activity recording and strict forensic logging.
                         </div>
@@ -120,11 +120,11 @@
                         <div class="fin-input-container">
                             <label for="admin-id" class="fin-label fin-label-required">Administrator Email</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">shield_person</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">shield_person</span>
                                 <input type="email" id="admin-id" name="email" class="fin-input has-icon-left" placeholder="admin@finzo.com" required autocomplete="username" />
                             </div>
-                            <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Administrator email is required.
+                            <span class="fin-error-text" role="alert" aria-live="polite">
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Administrator email is required.
                             </span>
                         </div>
 
@@ -132,27 +132,27 @@
                         <div class="fin-input-container">
                             <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">vpn_key</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">vpn_key</span>
                                 <input type="password" id="admin-token" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter security token or password" required autocomplete="current-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
-                            <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Security Token is required.
+                            <span class="fin-error-text" role="alert" aria-live="polite">
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Security Token is required.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full mt-2">
                             <span>Access Terminal</span>
-                            <span class="material-symbols-outlined text-[18px]">terminal</span>
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">terminal</span>
                         </button>
                     </form>
 
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">policy</span>
+                        <span class="material-symbols-outlined auth-security-notice-icon" aria-hidden="true">policy</span>
                         <div class="auth-security-notice-text">
                             <strong>Restricted Terminal:</strong> All administrative actions require hardware security key authentication and supervisory sign-off.
                         </div>
@@ -160,8 +160,8 @@
 
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span> Zero-Trust Control</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">fingerprint</span> Hardware Token SSL</span>
                     </div>
                 </div>
             </div>

@@ -38,7 +38,7 @@
       <div class="w-full sm:flex-1">
         <label for="search" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Search</label>
         <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">search</span>
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">search</span>
           <input type="text" id="search" class="form-control pl-10 h-11" placeholder="Search transactions..." oninput="renderTable()"/>
         </div>
       </div>
@@ -53,7 +53,7 @@
       <div class="flex gap-2 w-full sm:w-auto">
         <button class="btn btn-secondary h-11 flex-1 sm:flex-none" data-action="resetFilters()">Reset</button>
         <button class="btn btn-secondary h-11 flex-1 sm:flex-none" data-action="printStatement()" title="Download Statement">
-          <span class="material-symbols-outlined text-lg">download</span>
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
         </button>
       </div>
     </div>
@@ -68,13 +68,13 @@
     
     <div class="overflow-x-auto">
       <table class="ds-table">
-        <thead>
+        <thead scope="col">
           <tr>
-            <th>Date & Time</th>
-            <th>Transaction Details</th>
-            <th class="text-right">Amount</th>
-            <th class="text-right">Balance</th>
-            <th class="text-center">Action</th>
+            <th scope="col">Date & Time</th>
+            <th scope="col">Transaction Details</th>
+            <th class="text-right" scope="col">Amount</th>
+            <th class="text-right" scope="col">Balance</th>
+            <th class="text-center" scope="col">Action</th>
           </tr>
         </thead>
         <tbody id="txn-body">

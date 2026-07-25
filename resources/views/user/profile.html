@@ -32,7 +32,7 @@
             <span class="skeleton w-full h-full rounded-full"></span>
           </div>
           <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success-base border-2 border-white flex items-center justify-center text-white" title="Identity Verified">
-            <span class="material-symbols-outlined text-[14px]">verified</span>
+            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">verified</span>
           </div>
         </div>
         <h2 class="font-display text-xl font-bold text-[var(--color-text-main)] mb-1" id="profile-name"><span class="skeleton w-32 h-6"></span></h2>
@@ -46,7 +46,7 @@
       
       <div class="ds-card p-6">
         <div class="flex items-center gap-3 mb-4">
-          <span class="material-symbols-outlined text-primary-base-base">account_balance_wallet</span>
+          <span class="material-symbols-outlined text-primary-base-base" aria-hidden="true">account_balance_wallet</span>
           <h3 class="font-display font-bold">Account Ledger</h3>
         </div>
         
@@ -64,7 +64,7 @@
         
         <div class="mt-4 p-5 rounded-xl bg-primary-600 text-white relative overflow-hidden shadow-md">
           <div class="absolute -right-6 -bottom-6 opacity-10">
-            <span class="material-symbols-outlined text-8xl">account_balance</span>
+            <span class="material-symbols-outlined text-8xl" aria-hidden="true">account_balance</span>
           </div>
           <div class="relative z-10">
             <div class="text-xs font-extrabold text-white/70 uppercase tracking-widest mb-1">Portfolio Balance</div>
@@ -90,9 +90,9 @@
             <div class="form-group mb-0">
               <label for="edit-name" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Full Legal Name</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-disabled)]">person</span>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-disabled)]" aria-hidden="true">person</span>
                 <input type="text" class="form-control pl-10 bg-[var(--color-surface-subtle)] text-[var(--color-text-disabled)] border-dashed cursor-not-allowed" id="edit-name" readonly tabindex="-1" placeholder="Legal full name"/>
-                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-success-base text-lg" title="Identity Verified">verified</span>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-success-base text-lg" title="Identity Verified" aria-hidden="true">verified</span>
               </div>
               <div class="text-xs text-[var(--color-text-muted)] mt-2 font-medium">Verified legal name cannot be changed.</div>
             </div>
@@ -100,7 +100,7 @@
             <div class="form-group mb-0">
               <label for="edit-phone" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Phone Number</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">call</span>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">call</span>
                 <input type="text" class="form-control pl-10" id="edit-phone" placeholder="+91 00000 00000"/>
               </div>
             </div>
@@ -109,11 +109,11 @@
           <div class="form-group mb-6">
             <label for="edit-email" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Primary Email Address</label>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">mail</span>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">mail</span>
               <input type="email" class="form-control pl-10" id="edit-email" placeholder="example@finzo.com"/>
             </div>
             <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-[var(--color-text-muted)]">
-              <span class="material-symbols-outlined text-success-base text-sm">check_circle</span>
+              <span class="material-symbols-outlined text-success-base text-sm" aria-hidden="true">check_circle</span>
               Email is verified and linked to your ACID protection.
             </div>
           </div>
@@ -129,7 +129,7 @@
         <div class="ds-card-body p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-primary-surface flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-primary-base-base text-2xl">lock_open</span>
+              <span class="material-symbols-outlined text-primary-base-base text-2xl" aria-hidden="true">lock_open</span>
             </div>
             <div>
               <h3 class="font-display font-bold text-[var(--color-text-main)]">Credentials Registry</h3>

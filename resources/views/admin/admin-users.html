@@ -33,7 +33,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-blue-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-info-base flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">group</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">group</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Total Users</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-total-users">—</div>
@@ -43,7 +43,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-emerald-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-success-base flex items-center justify-center mb-4 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">verified_user</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Active Accounts</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-active-users">—</div>
@@ -53,7 +53,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-red-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 flex items-center justify-center mb-4 border border-red-100 dark:border-red-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">person_off</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person_off</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Suspended</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-suspended-users">—</div>
@@ -63,7 +63,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-indigo-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 flex items-center justify-center mb-4 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">new_releases</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">new_releases</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">New This Month</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-new-month">—</div>
@@ -73,7 +73,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-surface-subtle0/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted flex items-center justify-center mb-4 border border-surface-border dark:border-white/10 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">delete_sweep</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Soft Deleted</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton min-w-[40px]" id="stat-soft-deleted">—</div>
@@ -89,7 +89,7 @@
                         <div>
                             <label class="ds-label">Search User</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="ds-input pl-11">
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                                 <input type="hidden" id="filter-status" value="all">
                                 <div class="finzo-dropdown-trigger ds-input !flex items-center justify-between">
                                     <span class="dropdown-label">All Status</span>
-                                    <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                                    <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>
                                 <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl z-50">
                                     <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
@@ -115,14 +115,14 @@
                 <!-- Table Content -->
                 <div class="overflow-x-auto">
                     <table id="users-table" class="ds-table w-full text-left">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Status</th>
-                                <th>Last Active</th>
-                                <th class="text-right">Action</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Last Active</th>
+                                <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,11 +147,11 @@
     </div>
 
     <!-- EXPORT MODAL -->
-    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+    <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm close-export-modal"></div>
         <div class="admin-card w-full max-w-md relative z-10 p-8 text-center animate-modal-enter">
             <div class="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mx-auto mb-6">
-                <span class="material-symbols-outlined text-blue-500 text-3xl">download</span>
+                <span class="material-symbols-outlined text-blue-500 text-3xl" aria-hidden="true">download</span>
             </div>
             <h3 class="text-xl font-bold mb-2">Export User List</h3>
             <p class="text-sm opacity-60 mb-8 leading-relaxed">Download a complete list of users filtered by your currently selected criteria in Microsoft Excel format.</p>

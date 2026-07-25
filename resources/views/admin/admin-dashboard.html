@@ -40,7 +40,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-amber-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-warning-base dark:text-warning-base flex items-center justify-center mb-4 border border-amber-100 dark:border-amber-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">account_balance_wallet</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Total Assets</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton" id="stat-total-assets">₹0.00</div>
@@ -51,7 +51,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-emerald-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-success-base dark:text-success-base flex items-center justify-center mb-4 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">download_for_offline</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">download_for_offline</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Today's Deposits</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton">0</div>
@@ -62,7 +62,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-blue-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-info-base dark:text-blue-500 flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">upload_file</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Today's Withdrawals</div>
                         <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton">0</div>
@@ -73,7 +73,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-purple-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 flex items-center justify-center mb-4 border border-purple-100 dark:border-purple-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">group</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">group</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Total Users</div>
                         <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
@@ -84,7 +84,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-primary/5 text-primary-base flex items-center justify-center mb-4 border border-primary/10 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">badge</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">badge</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Active Staff</div>
                         <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
@@ -95,7 +95,7 @@
                     <div class="absolute right-0 top-0 w-16 h-16 bg-rose-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 text-danger-base dark:text-danger-base flex items-center justify-center mb-4 border border-rose-100 dark:border-rose-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">lock</span>
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">lock</span>
                         </div>
                         <div class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Locked Accounts</div>
                         <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
@@ -169,20 +169,20 @@
             <div class="ds-card overflow-hidden">
                 <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/2">
                     <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-text-main dark:text-white">
-                        <span class="material-symbols-outlined text-primary-base">history</span> Recent Onboarding
+                        <span class="material-symbols-outlined text-primary-base" aria-hidden="true">history</span> Recent Onboarding
                     </h3>
                     <a href="admin-users.html" class="text-[10px] font-black text-primary-base hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
                 <div class="overflow-x-auto w-full">
                     <table class="ds-table w-full text-left min-w-[800px]">
-                        <thead>
+                        <thead scope="col">
                             <tr>
-                                <th>User Profile</th>
-                                <th>Account Status</th>
-                                <th>Verification</th>
-                                <th>Tier</th>
-                                <th>Joined Date</th>
-                                <th class="text-right">Action</th>
+                                <th scope="col">User Profile</th>
+                                <th scope="col">Account Status</th>
+                                <th scope="col">Verification</th>
+                                <th scope="col">Tier</th>
+                                <th scope="col">Joined Date</th>
+                                <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="dash-user-tbody">

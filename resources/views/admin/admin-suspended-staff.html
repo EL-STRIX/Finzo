@@ -38,7 +38,7 @@
           <div>
             <div class="ds-label mb-2 ml-1">Search Staff</div>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg">search</span>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
               <input type="text" id="search-input" class="ds-input pl-10 py-2.5" placeholder="Name, staff ID...">
             </div>
           </div>
@@ -55,9 +55,9 @@
             <div class="finzo-dropdown w-full" id="reason-dropdown">
               <input type="hidden" id="reason-filter" value="">
               <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-surface-border dark:!border-white/10 !rounded-xl !py-2 !px-4">
-                <span class="material-symbols-outlined text-lg opacity-60">filter_alt</span>
+                <span class="material-symbols-outlined text-lg opacity-60" aria-hidden="true">filter_alt</span>
                 <span class="dropdown-label font-bold text-sm text-text-muted">All Reasons</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
                 <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
@@ -74,17 +74,17 @@
         </div>
         <div class="w-full overflow-x-auto scrollbar-thin">
           <table class="ds-table w-full min-w-[1300px]">
-            <thead>
+            <thead scope="col">
               <tr>
-                <th class="w-12">#</th>
-                <th>Staff</th>
-                <th class="w-24">ID</th>
-                <th class="w-32">Branch</th>
-                <th>Reason</th>
-                <th class="w-40">Date</th>
-                <th class="w-32">By</th>
-                <th class="w-24">Duration</th>
-                <th class="text-center px-6">Actions</th>
+                <th class="w-12" scope="col">#</th>
+                <th scope="col">Staff</th>
+                <th class="w-24" scope="col">ID</th>
+                <th class="w-32" scope="col">Branch</th>
+                <th scope="col">Reason</th>
+                <th class="w-40" scope="col">Date</th>
+                <th class="w-32" scope="col">By</th>
+                <th class="w-24" scope="col">Duration</th>
+                <th class="text-center px-6" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="table-body">
@@ -105,16 +105,16 @@
     </main>
   </div>
 
-<div class="modal-overlay hidden" id="reinstate-modal" style="z-index: 2100;">
+<div class="modal-overlay hidden" id="reinstate-modal" style="z-index: 2100;" role="dialog" aria-modal="true">
   <div class="modal-card">
-    <div class="modal-icon" style="background:#e8f5e9"><span class="material-symbols-outlined" style="color:#2e7d32;font-size:28px">how_to_reg</span></div>
+    <div class="modal-icon" style="background:#e8f5e9"><span class="material-symbols-outlined" style="color:#2e7d32;font-size:28px" aria-hidden="true">how_to_reg</span></div>
     <div class="modal-title">Reinstate Staff Account</div>
-    <div class="modal-text" id="modal-text">You are reinstating this staff account.</div>
+    <div class="modal-text" id="modal-text" role="dialog" aria-modal="true">You are reinstating this staff account.</div>
     
     <div class="mt-6 w-full text-left">
       <label class="ds-label mb-3 ml-1">Authorize Action (Admin Password)</label>
       <div class="relative">
-        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">lock</span>
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">lock</span>
         <input type="password" id="admin-password" placeholder="••••••••" 
           class="w-full pl-12 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
       </div>
@@ -123,7 +123,7 @@
     <div class="modal-actions mt-8">
       <button class="btn btn-ghost" data-action="window.SuspendedStaff.closeModal()">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" data-action="window.SuspendedStaff.confirmReinstate()">
-        <span class="material-symbols-outlined" style="font-size:15px">check_circle</span>Reinstate Staff
+        <span class="material-symbols-outlined" style="font-size:15px" aria-hidden="true">check_circle</span>Reinstate Staff
       </button>
     </div>
   </div>

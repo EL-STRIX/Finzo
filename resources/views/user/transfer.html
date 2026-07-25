@@ -19,7 +19,7 @@
 <div class="page-content ds-container py-8">
   <div class="mb-8 ds-animate-fade text-center max-w-2xl mx-auto">
     <div class="w-16 h-16 bg-primary-surface text-primary-base-base rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-      <span class="material-symbols-outlined text-3xl">send</span>
+      <span class="material-symbols-outlined text-3xl" aria-hidden="true">send</span>
     </div>
     <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight">Send Money</h1>
     <p class="text-[var(--color-text-muted)] mt-2">Instant, ACID-protected digital settlement</p>
@@ -45,7 +45,7 @@
           <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Finzo Account Identifier</label>
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">account_box</span>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">account_box</span>
               <input type="text" class="form-control pl-10 font-mono font-bold tracking-wider uppercase h-12" id="to-account" placeholder="Enter Finzo Account No." oninput="resetLookup()"/>
             </div>
             <button class="btn btn-secondary h-12 px-6" data-action="lookupAccount()">Verify Identity</button>
@@ -55,14 +55,14 @@
         <!-- Lookup Result -->
         <div id="lookup-result" class="hidden mt-4">
           <div id="lookup-found" class="hidden p-4 rounded-xl bg-success-surface border border-success-base/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-            <span class="material-symbols-outlined text-success-base text-2xl">check_circle</span>
+            <span class="material-symbols-outlined text-success-base text-2xl" aria-hidden="true">check_circle</span>
             <div>
               <div class="text-sm font-bold text-[var(--color-text-main)]" id="recipient-name">Name</div>
               <div class="text-[10px] font-bold text-success-base tracking-widest uppercase mt-0.5"><span id="recipient-type">Savings</span> • Verified</div>
             </div>
           </div>
           <div id="lookup-not-found" class="hidden p-4 rounded-xl bg-danger-surface border border-danger-base/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-            <span class="material-symbols-outlined text-danger-base text-2xl">error</span>
+            <span class="material-symbols-outlined text-danger-base text-2xl" aria-hidden="true">error</span>
             <div class="text-sm font-bold text-danger-base">Unrecognized Account Identifier</div>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <input type="number" id="transfer-amount" class="w-full bg-transparent border-b-2 border-[var(--color-border-main)] focus:border-primary-base outline-none text-center font-display text-5xl font-black text-primary-base-600 pb-2 transition-colors placeholder:text-[var(--color-text-disabled)]" placeholder="0" min="1" oninput="updateSummary()"/>
           </div>
           <div id="amount-words" class="text-xs font-bold text-[var(--color-text-muted)] mt-3 h-4"></div>
-          <div id="amount-error" class="hidden text-xs font-bold text-danger-base mt-2"></div>
+          <div id="amount-error" class="hidden text-xs font-bold text-danger-base mt-2" aria-live="polite"></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,7 +104,7 @@
         </button>
         
         <div class="flex items-center justify-center gap-2 mt-6 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
-           <span class="material-symbols-outlined text-[14px]">encrypted</span>
+           <span class="material-symbols-outlined text-[14px]" aria-hidden="true">encrypted</span>
            End-to-end encrypted • ISO 20022 Compliant
         </div>
       </div>
@@ -114,10 +114,10 @@
 </div>
 
 <!-- CONFIRM MODAL -->
-<div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+<div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
   <div class="ds-card max-w-md w-full p-6 sm:p-8 animate-in zoom-in-95 duration-200">
     <div class="w-16 h-16 bg-info-surface text-info-base rounded-full flex items-center justify-center mx-auto mb-4">
-      <span class="material-symbols-outlined text-3xl">verified_user</span>
+      <span class="material-symbols-outlined text-3xl" aria-hidden="true">verified_user</span>
     </div>
     <h3 class="font-display text-xl font-bold text-center text-[var(--color-text-main)] mb-6">Authorize Settlement</h3>
     
@@ -145,7 +145,7 @@
     <div class="flex gap-4">
       <button class="btn btn-secondary flex-1" data-action="closeModal(&#039;confirm-modal&#039;)">Cancel</button>
       <button class="btn btn-primary flex-[2]" id="final-transfer-btn" data-action="processTransfer()">
-        <span class="material-symbols-outlined">done_all</span> Authorize & Send
+        <span class="material-symbols-outlined" aria-hidden="true">done_all</span> Authorize & Send
       </button>
     </div>
   </div>

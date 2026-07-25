@@ -39,7 +39,7 @@
           <div>
             <div class="text-[10px] font-black tracking-[0.15em] text-text-muted uppercase mb-2 ml-1">Search User</div>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg">search</span>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
               <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, email or account number...">
             </div>
           </div>
@@ -56,9 +56,9 @@
             <div class="finzo-dropdown w-full" id="reason-dropdown">
               <input type="hidden" id="reason-filter" value="">
               <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-surface-border dark:!border-white/10 !rounded-xl !py-2 !px-4">
-                <span class="material-symbols-outlined text-lg opacity-60">filter_alt</span>
+                <span class="material-symbols-outlined text-lg opacity-60" aria-hidden="true">filter_alt</span>
                 <span class="dropdown-label font-bold text-sm text-text-muted">All Reasons</span>
-                <span class="material-symbols-outlined chevron transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
               </div>
               <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
                 <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
@@ -76,17 +76,17 @@
 
         <div class="w-full overflow-x-auto selection:bg-[#002645]/10">
           <table class="ds-table w-full text-left min-w-[1300px]">
-            <thead>
+            <thead scope="col">
               <tr class="bg-surface-subtle/50 dark:bg-white/[0.02]">
-                <th class="py-4 px-6 text-left">#</th>
-                <th class="py-4 px-6 text-left">Customer</th>
-                <th class="py-4 px-6 text-left">Account No</th>
-                <th class="py-4 px-6 text-left">Account Type</th>
-                <th class="py-4 px-6 text-left">Suspension Reason</th>
-                <th class="py-4 px-6 text-left">Suspended On</th>
-                <th class="py-4 px-6 text-left">Suspended By</th>
-                <th class="py-4 px-6 text-left">Duration</th>
-                <th class="py-4 px-6 text-center min-w-[100px] w-28">Actions</th>
+                <th class="py-4 px-6 text-left" scope="col">#</th>
+                <th class="py-4 px-6 text-left" scope="col">Customer</th>
+                <th class="py-4 px-6 text-left" scope="col">Account No</th>
+                <th class="py-4 px-6 text-left" scope="col">Account Type</th>
+                <th class="py-4 px-6 text-left" scope="col">Suspension Reason</th>
+                <th class="py-4 px-6 text-left" scope="col">Suspended On</th>
+                <th class="py-4 px-6 text-left" scope="col">Suspended By</th>
+                <th class="py-4 px-6 text-left" scope="col">Duration</th>
+                <th class="py-4 px-6 text-center min-w-[100px] w-28" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="table-body">
@@ -108,17 +108,17 @@
   </div>
 
 <!-- REINSTATE CONFIRM MODAL -->
-<div class="modal-overlay hidden" id="reinstate-modal">
+<div class="modal-overlay hidden" id="reinstate-modal" role="dialog" aria-modal="true">
   <div class="modal-card">
     <div class="modal-icon" style="background:var(--green-soft)">
-      <span class="material-symbols-outlined" style="color:var(--green);font-size:28px">how_to_reg</span>
+      <span class="material-symbols-outlined" style="color:var(--green);font-size:28px" aria-hidden="true">how_to_reg</span>
     </div>
     <div class="modal-title">Reinstate Account</div>
-    <div class="modal-text" id="reinstate-modal-text">You are reinstating this customer account.</div>
+    <div class="modal-text" id="reinstate-modal-text" role="dialog" aria-modal="true">You are reinstating this customer account.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" data-action="window.SuspendedUsers.closeReinstateModal()">Cancel</button>
       <button class="btn btn-success" id="reinstate-confirm-btn" data-action="window.SuspendedUsers.confirmReinstate()">
-        <span class="material-symbols-outlined" style="font-size:15px">check_circle</span>
+        <span class="material-symbols-outlined" style="font-size:15px" aria-hidden="true">check_circle</span>
         Reinstate Account
       </button>
     </div>

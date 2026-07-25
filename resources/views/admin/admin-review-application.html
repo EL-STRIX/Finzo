@@ -33,18 +33,18 @@
     <!-- TOP BAR -->
     <div class="admin-topbar">
       <div class="flex items-center gap-2 sm:gap-4 flex-1">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-surface-hover dark:hover:bg-white/5 transition-colors -ml-2">
-            <span class="material-symbols-outlined force-black">menu</span>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-surface-hover dark:hover:bg-white/5 transition-colors -ml-2" aria-label="Toggle Navigation Menu">
+            <span class="material-symbols-outlined force-black" aria-hidden="true">menu</span>
         </button>
         <a href="admin-pending-approvals.html" class="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-surface-hover dark:bg-white/5 hover:bg-surface-border transition-all text-text-muted">
-          <span class="material-symbols-outlined force-black">arrow_back</span>
+          <span class="material-symbols-outlined force-black" aria-hidden="true">arrow_back</span>
         </a>
         <div class="flex flex-col">
           <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">
              <span class="hidden sm:inline">Admin</span>
-             <span class="material-symbols-outlined text-[10px] hidden sm:inline force-black">chevron_right</span>
+             <span class="material-symbols-outlined text-[10px] hidden sm:inline force-black" aria-hidden="true">chevron_right</span>
              <span class="whitespace-nowrap">Pending Approvals</span>
-             <span class="material-symbols-outlined text-[10px] force-black">chevron_right</span>
+             <span class="material-symbols-outlined text-[10px] force-black" aria-hidden="true">chevron_right</span>
              <span class="text-primary-base dark:text-blue-400 whitespace-nowrap" id="bc-name"><div class="skeleton w-24 h-3 inline-block"></div></span>
           </div>
           <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Review Application</div>
@@ -64,18 +64,18 @@
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
               <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-surface-border dark:border-white/5 overflow-hidden shrink-0 bg-surface-subtle dark:bg-white/5 flex items-center justify-center relative">
                  <img loading="lazy" id="profile-photo" src="" alt="Profile Photo" class="w-full h-full object-cover hidden absolute inset-0 z-10" />
-                 <span id="profile-photo-placeholder" class="material-symbols-outlined text-slate-300 dark:text-text-muted text-4xl">person</span>
+                 <span id="profile-photo-placeholder" class="material-symbols-outlined text-slate-300 dark:text-text-muted text-4xl" aria-hidden="true">person</span>
               </div>
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="material-symbols-outlined text-primary-base dark:text-blue-400 text-sm">person</span>
+                  <span class="material-symbols-outlined text-primary-base dark:text-blue-400 text-sm" aria-hidden="true">person</span>
                   <span class="text-[10px] font-black uppercase tracking-widest text-text-muted">Personal Details</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold tracking-tight force-black mb-1" id="header-full-name"><div class="skeleton w-40 h-6"></div></h2>
                 <div class="text-[11px] font-mono font-bold tracking-widest text-primary-base dark:text-blue-400 uppercase bg-primary/5 dark:bg-blue-400/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
               </div>
               <div class="hidden sm:block">
-                 <span class="material-symbols-outlined text-primary-base dark:text-blue-400 opacity-20" style="font-size: 64px;">badge</span>
+                 <span class="material-symbols-outlined text-primary-base dark:text-blue-400 opacity-20" style="font-size: 64px;" aria-hidden="true">badge</span>
               </div>
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6" id="personal-fields">
@@ -137,7 +137,7 @@
           <!-- Address Info -->
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary-base dark:text-blue-400">home</span>
+              <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">home</span>
               <h3 class="admin-section-title" style="font-size:16px;">Address Information</h3>
             </div>
             <div class="p-5 sm:p-8 space-y-6" id="address-fields">
@@ -169,7 +169,7 @@
           <!-- Identity Verification -->
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary-base dark:text-blue-400">verified_user</span>
+              <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">verified_user</span>
               <h3 class="admin-section-title" style="font-size:16px;">Identity Verification</h3>
             </div>
             <div class="p-5 sm:p-8">
@@ -187,14 +187,14 @@
                 <div class="flex-1">
                   <label class="ds-label mb-2">Front Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
-                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2">image</span>
+                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
                     <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
                   </div>
                 </div>
                 <div class="flex-1">
                   <label class="ds-label mb-2">Back Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
-                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2">image</span>
+                    <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
                     <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
                   </div>
                 </div>
@@ -205,7 +205,7 @@
           <!-- Account Preference -->
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary-base dark:text-blue-400">account_balance_wallet</span>
+              <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">account_balance_wallet</span>
               <h3 class="admin-section-title" style="font-size:16px;">Account Details</h3>
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4" id="account-fields">
@@ -230,7 +230,7 @@
           <!-- Timeline -->
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary-base dark:text-blue-400">timeline</span>
+              <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">timeline</span>
               <h3 class="admin-section-title" style="font-size:16px;">Application Status</h3>
             </div>
             <div class="p-5 sm:p-8 overflow-y-auto max-h-[400px]" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
@@ -245,7 +245,7 @@
           <!-- Decision Card -->
           <div class="ds-card overflow-visible">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary-base dark:text-blue-400">gavel</span>
+              <span class="material-symbols-outlined text-primary-base dark:text-blue-400" aria-hidden="true">gavel</span>
               <h3 class="admin-section-title" style="font-size:16px;">Make Decision</h3>
             </div>
             <div class="p-5 sm:p-8 space-y-6 sm:space-y-8">
@@ -253,7 +253,7 @@
               <div class="p-6 rounded-2xl border border-green-100 dark:border-green-900/40 bg-green-50/30 dark:bg-green-900/5">
                 <div class="flex items-start gap-4 mb-6">
                   <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined">check_circle</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
                   </div>
                   <div>
                     <div class="font-bold text-green-900 dark:text-green-300">Approve this application</div>
@@ -278,7 +278,7 @@
               <div class="p-6 rounded-2xl border border-red-100 dark:border-red-900/40">
                 <div class="flex items-start gap-4 mb-6">
                   <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined">cancel</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
                   </div>
                   <div>
                     <div class="font-bold text-red-900 dark:text-red-300">Reject this application</div>
@@ -297,11 +297,11 @@
   </div>
 
   <!-- APPROVE MODAL -->
-  <div id="approveModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+  <div id="approveModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" data-action="closeApproveModal()"></div>
     <div class="ds-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
       <div class="w-20 h-20 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 mx-auto mb-6 flex items-center justify-center">
-        <span class="material-symbols-outlined text-4xl">check_circle</span>
+        <span class="material-symbols-outlined text-4xl" aria-hidden="true">check_circle</span>
       </div>
       <h3 class="admin-section-title text-2xl mb-4">Confirm Account Approval</h3>
       <p class="text-text-muted dark:text-text-muted mb-8 leading-relaxed">
@@ -316,11 +316,11 @@
   </div>
 
   <!-- REJECT MODAL -->
-  <div id="rejectModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4">
+  <div id="rejectModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" data-action="closeRejectModal()"></div>
     <div class="ds-card w-full max-w-lg relative z-10 animate-modal-enter text-center p-8">
       <div class="w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 mx-auto mb-6 flex items-center justify-center">
-        <span class="material-symbols-outlined text-4xl">cancel</span>
+        <span class="material-symbols-outlined text-4xl" aria-hidden="true">cancel</span>
       </div>
       <h3 class="admin-section-title text-2xl mb-4">Confirm Rejection</h3>
       <p class="text-text-muted dark:text-text-muted mb-6 leading-relaxed">
