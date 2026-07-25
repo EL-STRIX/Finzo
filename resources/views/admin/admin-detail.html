@@ -117,7 +117,7 @@
                         <h5 class="ds-label mb-6 block">Administrative Control</h5>
                         <div class="space-y-4">
                             <!-- Suspend/Activate -->
-                            <button id="action-suspend-btn" data-action="window.AdminDetail.toggleStatus()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-amber-50 dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
+                            <button id="action-suspend-btn" data-action="window.AdminDetail.toggleStatus()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-warning-surface dark:hover:bg-amber-500/10 border border-transparent hover:border-amber-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-warning-base flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <span id="suspend-icon" class="material-symbols-outlined" aria-hidden="true">block</span>
@@ -220,7 +220,7 @@
                 
                 <!-- Success State (Hidden by default) -->
                 <div id="reset-success-state" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500" aria-live="polite">
-                    <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl text-center">
+                    <div class="p-4 bg-success-surface dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl text-center">
                         <div class="ds-label mb-2 text-success-base">Temporary Password</div>
                         <div id="generated-password-display" class="text-2xl font-black tracking-widest text-text-main dark:text-white font-mono select-all cursor-pointer" title="Click to copy">--------</div>
                         <div class="text-[10px] font-bold text-text-muted mt-2 italic">Valid until <span id="password-expiry-display">--:--</span></div>
