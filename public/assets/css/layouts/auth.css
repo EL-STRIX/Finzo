@@ -1,11 +1,24 @@
 /* Finzo Enterprise Authentication Component & Layout Foundation */
 
+@keyframes smoothAuthFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .auth-page-wrapper {
   min-height: 100vh;
   width: 100%;
   display: flex;
   background-color: var(--color-surface-subtle);
   font-family: var(--font-body);
+  animation: smoothAuthFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0; /* Ensures it starts hidden before animation runs */
 }
 
 .auth-split-grid {
