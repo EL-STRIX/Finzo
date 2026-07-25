@@ -28,7 +28,7 @@
       <div>
         <div class="flex items-center gap-2 mb-8">
           <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
-            <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
           </div>
           <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
         </div>
@@ -44,7 +44,7 @@
         <div class="space-y-2">
           <div class="auth-security-block">
             <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">how_to_reg</span>
+              <span class="material-symbols-outlined text-lg">how_to_reg</span>
             </div>
             <div class="auth-security-content">
               <h4>Identity Verification</h4>
@@ -54,7 +54,7 @@
           
           <div class="auth-security-block">
             <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">shield</span>
+              <span class="material-symbols-outlined text-lg">shield</span>
             </div>
             <div class="auth-security-content">
               <h4>Privacy Protection</h4>
@@ -76,9 +76,9 @@
     <div class="auth-right-area" style="align-items: flex-start; padding-top: 3rem; padding-bottom: 3rem; overflow-y: auto;">
       <!-- Language Selector -->
       <div class="auth-lang-selector hidden lg:flex fixed top-8 right-12 z-50">
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span>
+        <span class="material-symbols-outlined text-[16px]">language</span>
         <span>EN</span>
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">expand_more</span>
+        <span class="material-symbols-outlined text-[16px]">expand_more</span>
       </div>
       
       <!-- Auth Card -->
@@ -86,7 +86,7 @@
         <!-- Brand Header (Mobile Only) -->
         <div class="auth-brand-header lg:hidden">
           <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.html">
-            <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
           </div>
         </div>
         
@@ -108,31 +108,31 @@
             <!-- Minimal Profile Completion Indicator -->
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-bold text-text-main uppercase tracking-wider">Profile Completion</span>
-                    <span id="progress-text" class="text-xs font-bold text-primary-base-600">25% Complete</span>
+                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Profile Completion</span>
+                    <span id="progress-text" class="text-xs font-bold text-primary-600">25% Complete</span>
                 </div>
-                <div class="w-full h-1.5 bg-surface-hover rounded-full overflow-hidden">
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div id="progress-bar" class="h-full bg-primary-600 transition-all duration-300 ease-out" style="width: 25%"></div>
                 </div>
             </div>
 
             <!-- STEP 1: PERSONAL INFO -->
             <div class="step-content active" id="step1">
-                <div class="mb-5 border-b border-surface-border pb-2">
-                    <h3 class="font-display text-sm font-bold text-text-main">Personal Information</h3>
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Personal Information</h3>
                 </div>
                 
                 <div class="fin-input-container !mb-5">
                     <label class="form-label" for="profile-input">Profile Photo (Selfie or Passport Size) <span class="text-danger-base">*</span></label>
-                    <div class="border-2 border-dashed border-surface-border hover:border-primary-500 bg-surface-subtle hover:bg-primary-50 rounded-md p-4 flex items-center gap-4 cursor-pointer transition-colors mt-2" id="profile-box" data-action="document.getElementById('profile-input').click()">
+                    <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex items-center gap-4 cursor-pointer transition-colors mt-2" id="profile-box" data-action="document.getElementById('profile-input').click()">
                         <input type="file" id="profile-input" accept="image/*" class="hidden" onchange="handleUpload(this,'profile-box','profile-preview')"/>
-                        <div class="w-12 h-12 rounded-full bg-white border border-surface-border flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
-                            <img loading="lazy" id="profile-preview" class="w-full h-full object-cover hidden" / alt="">
-                            <span id="profile-preview-wrap" class="material-symbols-outlined text-text-muted text-[20px]" aria-hidden="true">add_a_photo</span>
+                        <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                            <img loading="lazy" id="profile-preview" class="w-full h-full object-cover hidden" />
+                            <span id="profile-preview-wrap" class="material-symbols-outlined text-slate-400 text-[20px]">add_a_photo</span>
                         </div>
                         <div>
-                            <div class="text-[12px] font-bold text-text-main">Click to upload profile photo</div>
-                            <div class="text-[10px] font-semibold text-text-muted mt-1 uppercase tracking-wider">JPG or PNG, max 5MB. Clear photo of your face.</div>
+                            <div class="text-[12px] font-bold text-slate-700">Click to upload profile photo</div>
+                            <div class="text-[10px] font-semibold text-slate-500 mt-1 uppercase tracking-wider">JPG or PNG, max 5MB. Clear photo of your face.</div>
                         </div>
                     </div>
                 </div>
@@ -146,14 +146,14 @@
                         <label class="form-label" for="gender">Gender <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select gender</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select gender</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Male">Male</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Female">Female</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Other">Other</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Prefer not to say">Prefer not to say</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Male">Male</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Female">Female</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Other">Other</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Prefer not to say">Prefer not to say</div>
                             </div>
                             <input type="hidden" id="gender" value="">
                         </div>
@@ -170,14 +170,14 @@
                         <label class="form-label" for="marital-status">Marital Status <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select status</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select status</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Single">Single</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Married">Married</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Divorced">Divorced</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Widowed">Widowed</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Single">Single</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Married">Married</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Divorced">Divorced</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Widowed">Widowed</div>
                             </div>
                             <input type="hidden" id="marital-status" value="">
                         </div>
@@ -190,15 +190,15 @@
                         <label class="form-label" for="occupation">Occupation <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select occupation</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select occupation</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Employed">Employed</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Self-Employed">Self-Employed</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Student">Student</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Business">Business</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Retired">Retired</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Employed">Employed</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Self-Employed">Self-Employed</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Student">Student</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Business">Business</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Retired">Retired</div>
                             </div>
                             <input type="hidden" id="occupation" value="">
                         </div>
@@ -207,14 +207,14 @@
                         <label class="form-label" for="income">Annual Income <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select range</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select range</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Below ₹1 Lakh">Below ₹1 Lakh</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="₹1L – ₹5L">₹1L – ₹5L</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="₹5L – ₹10L">₹5L – ₹10L</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Above ₹10L">Above ₹10L</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Below ₹1 Lakh">Below ₹1 Lakh</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="₹1L – ₹5L">₹1L – ₹5L</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="₹5L – ₹10L">₹5L – ₹10L</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Above ₹10L">Above ₹10L</div>
                             </div>
                             <input type="hidden" id="income" value="">
                         </div>
@@ -228,15 +228,15 @@
                 <div class="flex justify-end mt-6 pt-5">
                     <button class="btn btn-primary" onclick="window.customNextStep(1)" data-action="nextStep(1)">
                         <span>Continue</span>
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </button>
                 </div>
             </div>
 
             <!-- STEP 2: ADDRESS -->
             <div class="step-content" id="step2">
-                <div class="mb-5 border-b border-surface-border pb-2">
-                    <h3 class="font-display text-sm font-bold text-text-main">Contact Information</h3>
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Contact Information</h3>
                 </div>
                 
                 <div class="fin-input-container !mb-4">
@@ -253,16 +253,16 @@
                         <label class="form-label" for="state">State <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select state</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select state</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Andhra Pradesh">Andhra Pradesh</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Delhi">Delhi</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Karnataka">Karnataka</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Maharashtra">Maharashtra</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Tamil Nadu">Tamil Nadu</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="West Bengal">West Bengal</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Andhra Pradesh">Andhra Pradesh</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Delhi">Delhi</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Karnataka">Karnataka</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Maharashtra">Maharashtra</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Tamil Nadu">Tamil Nadu</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="West Bengal">West Bengal</div>
                             </div>
                             <input type="hidden" id="state" value="">
                         </div>
@@ -274,25 +274,25 @@
                     <div class="fin-input-container !mb-0">
                         <!-- Reusing the country display input logic from original -->
                         <label class="form-label" for="id-type-country">Country</label>
-                        <input type="text" class="fin-input mt-2 bg-surface-subtle text-text-muted" value="India" readonly id="id-type-country" />
+                        <input type="text" class="fin-input mt-2 bg-slate-50 text-slate-500" value="India" readonly id="id-type-country" />
                     </div>
                 </div>
 
                 <div class="flex justify-between mt-6 pt-5">
-                    <button class="btn bg-white border border-surface-border text-text-muted hover:bg-surface-subtle shadow-sm" onclick="window.customPrevStep(2)" data-action="prevStep(2)">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(2)" data-action="prevStep(2)">
                         Back
                     </button>
                     <button class="btn btn-primary" onclick="window.customNextStep(2)" data-action="nextStep(2)">
                         <span>Continue</span>
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </button>
                 </div>
             </div>
 
             <!-- STEP 3: IDENTITY -->
             <div class="step-content" id="step3">
-                <div class="mb-5 border-b border-surface-border pb-2">
-                    <h3 class="font-display text-sm font-bold text-text-main">Identity Information</h3>
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Identity Information</h3>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -300,14 +300,14 @@
                         <label class="form-label">ID Type <span class="text-danger-base">*</span></label>
                         <div class="finzo-dropdown relative mt-2">
                             <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                                <span class="dropdown-label text-text-muted">Select document</span>
-                                <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                                <span class="dropdown-label text-slate-500">Select document</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                             </div>
-                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden">
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Aadhaar">Aadhaar Card</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="PAN">PAN Card</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Passport">Passport</div>
-                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-surface-subtle cursor-pointer" data-value="Driving License">Driving License</div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Aadhaar">Aadhaar Card</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="PAN">PAN Card</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Passport">Passport</div>
+                                <div class="finzo-dropdown-option p-2.5 text-[13px] font-medium hover:bg-slate-50 cursor-pointer" data-value="Driving License">Driving License</div>
                             </div>
                             <input type="hidden" id="id-type" value="">
                         </div>
@@ -321,50 +321,50 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                     <div class="fin-input-container !mb-0">
                         <label class="form-label" for="front-input">Front Side <span class="text-danger-base">*</span></label>
-                        <div class="border-2 border-dashed border-surface-border hover:border-primary-500 bg-surface-subtle hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="front-box" data-action="document.getElementById('front-input').click()">
+                        <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="front-box" data-action="document.getElementById('front-input').click()">
                             <input type="file" id="front-input" accept="image/*" class="hidden" onchange="handleUpload(this,'front-box','front-preview')"/>
                             <div id="front-preview-wrap">
-                                <span class="material-symbols-outlined text-3xl text-text-muted mb-1" aria-hidden="true">document_scanner</span>
-                                <div class="text-[11px] font-bold text-text-main">Upload Front</div>
+                                <span class="material-symbols-outlined text-3xl text-slate-400 mb-1">document_scanner</span>
+                                <div class="text-[11px] font-bold text-slate-700">Upload Front</div>
                             </div>
-                            <img loading="lazy" id="front-preview" class="w-full h-full object-cover rounded-md hidden"/ alt="">
+                            <img loading="lazy" id="front-preview" class="w-full h-full object-cover rounded-md hidden"/>
                         </div>
                     </div>
                     <div class="fin-input-container !mb-0">
                         <label class="form-label" for="back-input">Back Side <span class="text-danger-base">*</span></label>
-                        <div class="border-2 border-dashed border-surface-border hover:border-primary-500 bg-surface-subtle hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="back-box" data-action="document.getElementById('back-input').click()">
+                        <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="back-box" data-action="document.getElementById('back-input').click()">
                             <input type="file" id="back-input" accept="image/*" class="hidden" onchange="handleUpload(this,'back-box','back-preview')"/>
                             <div id="back-preview-wrap">
-                                <span class="material-symbols-outlined text-3xl text-text-muted mb-1" aria-hidden="true">document_scanner</span>
-                                <div class="text-[11px] font-bold text-text-main">Upload Back</div>
+                                <span class="material-symbols-outlined text-3xl text-slate-400 mb-1">document_scanner</span>
+                                <div class="text-[11px] font-bold text-slate-700">Upload Back</div>
                             </div>
-                            <img loading="lazy" id="back-preview" class="w-full h-full object-cover rounded-md hidden"/ alt="">
+                            <img loading="lazy" id="back-preview" class="w-full h-full object-cover rounded-md hidden"/>
                         </div>
                     </div>
                 </div>
 
                 <div class="p-3 bg-info-surface/40 border border-info-base/20 rounded-md flex items-start gap-2">
-                    <span class="material-symbols-outlined text-info-base text-[18px] shrink-0" aria-hidden="true">encrypted</span>
-                    <div class="text-[11px] text-text-main font-medium leading-relaxed">
+                    <span class="material-symbols-outlined text-info-base text-[18px] shrink-0">encrypted</span>
+                    <div class="text-[11px] text-slate-700 font-medium leading-relaxed">
                         Your documents are strictly verified by our compliance team and never shared with unauthorized third parties.
                     </div>
                 </div>
 
                 <div class="flex justify-between mt-6 pt-5">
-                    <button class="btn bg-white border border-surface-border text-text-muted hover:bg-surface-subtle shadow-sm" onclick="window.customPrevStep(3)" data-action="prevStep(3)">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(3)" data-action="prevStep(3)">
                         Back
                     </button>
                     <button class="btn btn-primary" onclick="window.customNextStep(3)" data-action="nextStep(3)">
                         <span>Continue</span>
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </button>
                 </div>
             </div>
 
             <!-- STEP 4: ACCOUNT PREFERENCES -->
             <div class="step-content" id="step4">
-                <div class="mb-5 border-b border-surface-border pb-2">
-                    <h3 class="font-display text-sm font-bold text-text-main">Banking Information</h3>
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Banking Information</h3>
                 </div>
                 
                 <div class="mb-5">
@@ -372,25 +372,25 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <label class="cursor-pointer">
                             <input type="radio" name="account-type" value="savings" class="hidden peer" checked/>
-                            <div class="p-4 rounded-md border border-surface-border peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
+                            <div class="p-4 rounded-md border border-slate-200 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
-                                        <span class="font-display text-[13px] font-bold text-text-main">Standard Savings</span>
-                                        <span class="material-symbols-outlined text-primary-base-600 text-[18px] opacity-0 peer-checked:opacity-100 transition-opacity" aria-hidden="true">check_circle</span>
+                                        <span class="font-display text-[13px] font-bold text-slate-800">Standard Savings</span>
+                                        <span class="material-symbols-outlined text-primary-600 text-[18px] opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
                                     </div>
-                                    <div class="text-[11px] text-text-muted leading-relaxed">Zero maintenance, 4% APY, instant transfers. Best for daily use.</div>
+                                    <div class="text-[11px] text-slate-500 leading-relaxed">Zero maintenance, 4% APY, instant transfers. Best for daily use.</div>
                                 </div>
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="radio" name="account-type" value="current" class="hidden peer"/>
-                            <div class="p-4 rounded-md border border-surface-border peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
+                            <div class="p-4 rounded-md border border-slate-200 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
-                                        <span class="font-display text-[13px] font-bold text-text-main">Business Current</span>
-                                        <span class="material-symbols-outlined text-primary-base-600 text-[18px] opacity-0 peer-checked:opacity-100 transition-opacity" aria-hidden="true">check_circle</span>
+                                        <span class="font-display text-[13px] font-bold text-slate-800">Business Current</span>
+                                        <span class="material-symbols-outlined text-primary-600 text-[18px] opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
                                     </div>
-                                    <div class="text-[11px] text-text-muted leading-relaxed">Higher daily limits, payroll ready, overdraft protection.</div>
+                                    <div class="text-[11px] text-slate-500 leading-relaxed">Higher daily limits, payroll ready, overdraft protection.</div>
                                 </div>
                             </div>
                         </label>
@@ -401,29 +401,29 @@
                     <label class="form-label">Preferred Branch <span class="text-danger-base">*</span></label>
                     <div class="finzo-dropdown relative mt-2">
                         <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                            <span class="dropdown-label text-text-muted">Select local branch</span>
-                            <span class="material-symbols-outlined dropdown-icon text-lg" aria-hidden="true">expand_more</span>
+                            <span class="dropdown-label text-slate-500">Select local branch</span>
+                            <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
                         </div>
-                        <div id="branch-dropdown-menu" class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-surface-border rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
+                        <div id="branch-dropdown-menu" class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
                             <!-- Loaded via JS -->
                         </div>
                         <input type="hidden" id="branch" value="">
                     </div>
                 </div>
 
-                <div class="mb-6 p-4 bg-surface-subtle rounded-md border border-surface-border">
+                <div class="mb-6 p-4 bg-slate-50 rounded-md border border-slate-100">
                     <label class="flex items-start gap-3 cursor-pointer">
-                        <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-primary-base-600 border-border-main focus:ring-primary-500 focus:ring-offset-0"/>
-                        <span class="text-[11px] font-medium text-text-main leading-relaxed">I agree to Finzo's Terms of Service and Privacy Policy and confirm that the information provided is accurate.</span>
+                        <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-primary-600 border-slate-300 focus:ring-primary-500 focus:ring-offset-0"/>
+                        <span class="text-[11px] font-medium text-slate-700 leading-relaxed">I agree to Finzo's Terms of Service and Privacy Policy and confirm that the information provided is accurate.</span>
                     </label>
                 </div>
 
                 <div class="flex justify-between mt-6 pt-5">
-                    <button class="btn bg-white border border-surface-border text-text-muted hover:bg-surface-subtle shadow-sm" onclick="window.customPrevStep(4)" data-action="prevStep(4)">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(4)" data-action="prevStep(4)">
                         Back
                     </button>
                     <button class="btn btn-primary" id="submit-btn" data-action="submitProfile()">
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">done_all</span>
+                        <span class="material-symbols-outlined text-[18px]">done_all</span>
                         <span>Submit Profile</span>
                     </button>
                 </div>
@@ -431,8 +431,8 @@
 
         </div>
 
-        <div class="auth-trust-badge mt-6 border-t border-surface-border pt-6">
-          <span class="material-symbols-outlined text-[14px]" aria-hidden="true">shield</span>
+        <div class="auth-trust-badge mt-6 border-t border-slate-100 pt-6">
+          <span class="material-symbols-outlined text-[14px]">shield</span>
           <span>Enterprise Secure Onboarding</span>
         </div>
       </div>
@@ -440,10 +440,10 @@
             <!-- Global Footer -->
       <div class="auth-global-footer">
         <ul>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]" aria-hidden="true">verified_user</span> Secure Digital Banking Access</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]" aria-hidden="true">gpp_good</span> Privacy Protected</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]" aria-hidden="true">credit_card</span> PCI DSS Compliant</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">enhanced_encryption</span> 256-bit Encryption</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified_user</span> Secure Digital Banking Access</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">gpp_good</span> Privacy Protected</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">credit_card</span> PCI DSS Compliant</span></li>
         </ul>
       </div>
     </div>

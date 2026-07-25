@@ -40,7 +40,7 @@
     <script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="bg-surface-subtle font-body text-on-surface">
+<body class="bg-gray-50 font-body text-on-surface">
     <main class="auth-page-wrapper">
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
@@ -53,7 +53,7 @@
                     <div>
                         <a href="/Finzo/public/index.html" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+                                <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
@@ -63,7 +63,7 @@
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon" aria-hidden="true">gpp_maybe</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">gpp_maybe</span>
                             <div>
                                 <h4 class="auth-hero-security-title">Too many failed login attempts</h4>
                                 <p class="auth-hero-security-desc">Accounts are automatically locked after multiple incorrect password attempts to protect against unauthorized access.</p>
@@ -80,20 +80,20 @@
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span>
+                    <span class="material-symbols-outlined text-[16px]">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">expand_more</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+                        <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
                     <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-danger-surface border border-danger-base text-danger-base rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-3xl" aria-hidden="true">lock_person</span>
+                    <div class="w-16 h-16 bg-red-50 border border-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-3xl">lock_person</span>
                     </div>
 
                     <!-- Page Header Component -->
@@ -104,30 +104,30 @@
 
                     <!-- Alert Danger Component -->
                     <div class="alert alert-danger text-left" role="alert">
-                        <span class="material-symbols-outlined alert-icon" aria-hidden="true">error</span>
+                        <span class="material-symbols-outlined alert-icon">error</span>
                         <div>
                             Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
                         </div>
                     </div>
 
                     <!-- Contact Support Block -->
-                    <div class="mt-6 rounded-xl border border-surface-border bg-surface-subtle p-5 text-left space-y-3">
-                        <p class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-1">Need immediate assistance?</p>
-                        <a href="tel:+18005550199" class="flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
-                            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-surface-border text-primary-base shadow-sm group-hover:bg-primary-base group-hover:text-white transition-all">
-                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">phone</span>
+                    <div class="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 text-left space-y-3">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1">Need immediate assistance?</p>
+                        <a href="tel:+18005550199" class="flex items-center gap-3 text-sm font-medium text-slate-700 hover:text-primary transition-colors group">
+                            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-[18px]">phone</span>
                             </span>
                             <div>
-                                <span class="block text-[11px] text-text-muted font-normal">24/7 Fraud &amp; Security Hotline</span>
+                                <span class="block text-[11px] text-slate-400 font-normal">24/7 Fraud &amp; Security Hotline</span>
                                 +1-800-555-0199
                             </div>
                         </a>
-                        <a href="mailto:support@finzo.com" class="flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
-                            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-surface-border text-primary-base shadow-sm group-hover:bg-primary-base group-hover:text-white transition-all">
-                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">mail</span>
+                        <a href="mailto:support@finzo.com" class="flex items-center gap-3 text-sm font-medium text-slate-700 hover:text-primary transition-colors group">
+                            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-[18px]">mail</span>
                             </span>
                             <div>
-                                <span class="block text-[11px] text-text-muted font-normal">Email Support</span>
+                                <span class="block text-[11px] text-slate-400 font-normal">Email Support</span>
                                 support@finzo.com
                             </div>
                         </a>
@@ -136,14 +136,14 @@
                     <!-- Actions Group Component -->
                     <div class="mt-4">
                         <a href="/Finzo/public/index.html" class="btn btn-primary btn-full">
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">home</span>
+                            <span class="material-symbols-outlined text-[18px]">home</span>
                             <span>Return to Homepage</span>
                         </a>
                     </div>
 
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice text-left mt-6">
-                        <span class="material-symbols-outlined auth-security-notice-icon" aria-hidden="true">shield</span>
+                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
                             <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
                         </div>
@@ -151,8 +151,8 @@
 
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Automated Defense</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
                     </div>
                 </div>
             </div>

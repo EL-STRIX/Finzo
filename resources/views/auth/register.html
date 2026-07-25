@@ -40,7 +40,7 @@
     <script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="bg-surface-subtle font-body text-on-surface">
+<body class="bg-gray-50 font-body text-on-surface">
     <main class="auth-page-wrapper">
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
@@ -53,7 +53,7 @@
                     <div>
                         <a href="/Finzo/public/index.html" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+                                <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
@@ -63,7 +63,7 @@
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon" aria-hidden="true">encrypted</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">encrypted</span>
                             <div>
                                 <h4 class="auth-hero-security-title">Your data is protected</h4>
                                 <p class="auth-hero-security-desc">All personal and financial information you submit is encrypted in transit and never shared with unauthorized parties.</p>
@@ -80,15 +80,15 @@
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span>
+                    <span class="material-symbols-outlined text-[16px]">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">expand_more</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+                        <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
                     <!-- Page Header Component -->
@@ -102,60 +102,60 @@
                         <input type="hidden" name="csrf_token" value="" />
                         
                         <!-- Section 1: Personal Details -->
-                        <div class="mb-4 border-b border-surface-border pb-2">
-                            <h3 class="text-xs font-bold text-text-main uppercase tracking-wider">1. Personal Information</h3>
+                        <div class="mb-4 border-b border-gray-100 pb-2">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">1. Personal Information</h3>
                         </div>
                         
                         <div class="fin-input-container">
                             <label for="full-name" class="fin-label fin-label-required">Full Legal Name</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">person</span>
+                                <span class="material-symbols-outlined input-icon-left">person</span>
                                 <input type="text" id="full-name" name="full_name" class="fin-input has-icon-left" placeholder="As stated on government ID" required autocomplete="name" />
                             </div>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Full name is required.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Full name is required.
                             </span>
                         </div>
 
                         <!-- Section 2: Contact Details -->
-                        <div class="mb-4 border-b border-surface-border pb-2 mt-6">
-                            <h3 class="text-xs font-bold text-text-main uppercase tracking-wider">2. Contact Details</h3>
+                        <div class="mb-4 border-b border-gray-100 pb-2 mt-6">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">2. Contact Details</h3>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="reg-email" class="fin-label fin-label-required">Email Address</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">mail</span>
+                                <span class="material-symbols-outlined input-icon-left">mail</span>
                                 <input type="email" id="reg-email" name="email" class="fin-input has-icon-left" placeholder="name@example.com" required autocomplete="email" />
                             </div>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Valid email address is required.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Valid email address is required.
                             </span>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="mobile-number" class="fin-label fin-label-required">Mobile Number</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">call</span>
+                                <span class="material-symbols-outlined input-icon-left">call</span>
                                 <input type="tel" id="mobile-number" name="phone" class="fin-input has-icon-left" placeholder="+91 98765 43210" required autocomplete="tel" />
                             </div>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Mobile number is required.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Mobile number is required.
                             </span>
                         </div>
 
                         <!-- Section 3: Password & Security -->
-                        <div class="mb-4 border-b border-surface-border pb-2 mt-6">
-                            <h3 class="text-xs font-bold text-text-main uppercase tracking-wider">3. Security Credentials</h3>
+                        <div class="mb-4 border-b border-gray-100 pb-2 mt-6">
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">3. Security Credentials</h3>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="create-password" class="fin-label fin-label-required">Create Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">lock</span>
+                                <span class="material-symbols-outlined input-icon-left">lock</span>
                                 <input type="password" id="create-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Minimum 8 characters" required autocomplete="new-password" data-strength-meter="true" />
-                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" >
-                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
                                 </button>
                             </div>
                             
@@ -169,28 +169,28 @@
                                     <span>Enterprise Standard</span>
                                 </div>
                                 <div class="requirement-checklist">
-                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> 8+ Characters</span>
-                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Uppercase Letter</span>
-                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Number (0-9)</span>
-                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Symbol (!@#$)</span>
+                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined">cancel</span> 8+ Characters</span>
+                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined">cancel</span> Uppercase Letter</span>
+                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined">cancel</span> Number (0-9)</span>
+                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined">cancel</span> Symbol (!@#$)</span>
                                 </div>
                             </div>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Password is required.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Password is required.
                             </span>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="reg-confirm-password" class="fin-label fin-label-required">Confirm Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">check_circle</span>
+                                <span class="material-symbols-outlined input-icon-left">check_circle</span>
                                 <input type="password" id="reg-confirm-password" name="confirm_password" class="fin-input has-icon-left has-icon-right" placeholder="Confirm password" required autocomplete="new-password" />
-                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" >
-                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
+                                    <span class="material-symbols-outlined">visibility</span>
                                 </button>
                             </div>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Passwords must match.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Passwords must match.
                             </span>
                         </div>
 
@@ -199,29 +199,29 @@
                             <label class="fin-checkbox-wrapper">
                                 <input type="checkbox" id="agree-terms" name="terms" class="fin-checkbox-input" required />
                                 <span class="fin-checkbox-label">
-                                    I agree to Finzo Banking's <a href="#" class="font-semibold text-primary-base hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-primary-base hover:underline">Privacy Policy</a>.
+                                    I agree to Finzo Banking's <a href="#" class="font-semibold text-primary hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-primary hover:underline">Privacy Policy</a>.
                                 </span>
                             </label>
-                            <span class="fin-error-text" role="alert" aria-live="polite">
-                                <span class="material-symbols-outlined" aria-hidden="true">error</span> You must accept the Terms and Privacy Policy.
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> You must accept the Terms and Privacy Policy.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full">
                             <span>Submit Application</span>
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </form>
 
                     <!-- Page Footer Link -->
-                    <div class="mt-6 text-center text-sm text-text-muted border-t border-surface-border pt-6">
-                        Already have an account? <a href="login.html" class="font-semibold text-primary-base hover:underline">Sign In</a>
+                    <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-6">
+                        Already have an account? <a href="login.html" class="font-semibold text-primary hover:underline">Sign In</a>
                     </div>
 
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon" aria-hidden="true">verified</span>
+                        <span class="material-symbols-outlined auth-security-notice-icon">verified</span>
                         <div class="auth-security-notice-text">
                             <strong>Identity Verification:</strong> We will verify your credentials using official records. Your information is never sold or shared with unauthorized third parties.
                         </div>
@@ -229,8 +229,8 @@
 
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Privacy Protected</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
                 </div>
             </div>
