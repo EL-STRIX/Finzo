@@ -42,7 +42,7 @@ class UploadController
         }
 
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            \App\Shared\Security\SessionManager::start();
         }
         
         $userId = $_SESSION['user_id'] ?? 0;

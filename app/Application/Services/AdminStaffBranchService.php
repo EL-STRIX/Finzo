@@ -153,8 +153,7 @@ class AdminStaffBranchService
 
     public function createStaff(array $data, array $files, int $adminId): array
     {
-        $pdo = $this->repo->getPDO();
-        $this->security->checkAdminPermission($pdo, $adminId, 'add_staff');
+        $this->security->checkAdminPermission($adminId, 'add_staff');
 
         $data['department'] = 'Teller Operations';
         if (empty($data['date_of_joining'])) {

@@ -52,14 +52,8 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 // =====================================================
 define('SESSION_LIFETIME', 86400); // 24 hours
 
-if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-    ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
-    ini_set('session.save_path', STORAGE_PATH . 'sessions');
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
-    ini_set('session.cookie_samesite', 'Lax'); // Added industry-standard SameSite attribute
-    ini_set('session.cookie_path', '/');
-    session_start();
+if (!defined('FINZO_TESTING')) {
+    \App\Shared\Security\SessionManager::start();
 }
 
 // =====================================================

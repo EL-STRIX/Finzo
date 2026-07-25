@@ -21,18 +21,11 @@ class AdminStaffController
         $this->service = $service;
     }
 
-    protected function checkCsrf()
-    {
-        $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
-        if (!$this->security->validateCsrfToken($csrf)) {
-            throw new ApiException('Invalid CSRF token', 403);
-        }
-    }
+
 
     public function addStaff()
     {
-        $this->checkCsrf();
+
         $adminId = $_SESSION['admin_id'];
 
         $data = [
@@ -96,7 +89,7 @@ class AdminStaffController
 
     public function generateStaffPassword(?string $id = null, ?string $extra = null): array
     {
-        $this->checkCsrf();
+
         return ['success' => true, 'password' => $this->service->generateStrongPassword(12)];
     }
 
@@ -109,10 +102,9 @@ class AdminStaffController
     {
         $adminId = $_SESSION['admin_id'];
         $input = json_decode(file_get_contents('php://input'), true);
-        $this->checkCsrf();
 
-        $pdo = $this->service->getRepo()->getPDO();
-        $this->security->checkAdminPermission($pdo, $adminId, 'reset_staff_password');
+
+        $this->security->checkAdminPermission($adminId, 'reset_staff_password');
 
         $staffId = intval($input['staff_id'] ?? ($id ?? $_POST['staff_id'] ?? null) ?? 0);
         $newPassword = $input['new_password'] ?? $_POST['new_password'] ?? '';
@@ -124,6 +116,7 @@ class AdminStaffController
             throw new ApiException('Password must be at least 8 characters', 422);
         }
 
+        $pdo = $this->service->getRepo()->getPDO();
         $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_4623d5b9'));
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
@@ -161,7 +154,7 @@ class AdminStaffController
 
         $pdo = $this->service->getRepo()->getPDO();
         if (in_array($action, ['suspend', 'reinstate', 'delete'])) {
-            $this->security->checkAdminPermission($pdo, $adminId, 'suspend_staff');
+            $this->security->checkAdminPermission($adminId, 'suspend_staff');
         }
 
         $admin_stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_271aedbc'));

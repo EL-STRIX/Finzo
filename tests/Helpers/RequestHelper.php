@@ -25,6 +25,7 @@ class RequestHelper {
             $router = require dirname(__DIR__, 2) . '/routes/api.php';
             $router->dispatch($method, $_SERVER['REQUEST_URI']);
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
+            ob_end_clean();
             $payload = ['success' => false, 'status' => $e->getCode(), 'message' => $e->getMessage()];
             if (!empty($e->getPayload())) $payload = array_merge($payload, $e->getPayload());
             // Since we are testing, we can format it like json_response does when testing

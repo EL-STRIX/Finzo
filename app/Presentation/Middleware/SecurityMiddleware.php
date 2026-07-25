@@ -7,23 +7,16 @@ class SecurityMiddleware
 {
     public function handle(): void
     {
-        if (session_status() === PHP_SESSION_NONE && getenv('APP_ENV') !== 'testing') {
-            session_set_cookie_params([
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Strict',
-                'lifetime' => 1800 // 30 minutes
-            ]);
-            session_start();
-        }
-
         // OWASP Security Headers
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: DENY');
-        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+        // X-XSS-Protection is deprecated in modern browsers, but we keep it for legacy client support
         header('X-XSS-Protection: 1; mode=block');
-        header("Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none';");
+        // Hardened CSP
+        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
         header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()');
 
         // Basic CORS (Restrictive)
         header('Access-Control-Allow-Origin: ' . ($_ENV['APP_URL'] ?? '*'));

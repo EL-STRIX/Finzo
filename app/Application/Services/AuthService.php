@@ -71,28 +71,15 @@ class AuthService
 
         $account = $this->repository->fetchActiveAccount($user['customer_id']);
 
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
-        }
-        $_SESSION['user_id']          = (int)$user['id'];
-        $_SESSION['user_customer_id'] = $user['customer_id'];
-        $_SESSION['user_name']        = $user['full_name'];
-        $_SESSION['user_email']       = $user['email'];
-        $_SESSION['user_phone']       = $user['phone'] ?? '';
-        $_SESSION['user_status']      = $user['status'];
-        $_SESSION['user_account_no']  = $account ? $account['account_no'] : null;
-        $_SESSION['user_balance']     = $account ? $account['balance'] : null;
-        $_SESSION['role']             = 'customer';
-        $_SESSION['last_activity']    = time();
-
         $pdo = $this->repository->getDb();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}")
 );
 
         return [
-            'user'    => $user,
-            'account' => $account
+            'mfa_required' => false,
+            'user'         => $user,
+            'account'      => $account
         ];
     }
 
@@ -157,24 +144,15 @@ class AuthService
 
         $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
 
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
-        }
-        $_SESSION['admin_id']      = (int)$admin['id'];
-        $_SESSION['admin_name']    = $admin['full_name'];
-        $_SESSION['admin_email']   = $admin['email'];
-        $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
-        $_SESSION['admin_role']    = $admin['admin_role'];
-        $_SESSION['admin_display_id'] = $admin['admin_id'];
-        $_SESSION['role']          = 'admin';
-        $_SESSION['last_activity'] = time();
-
         $pdo = $this->repository->getDb();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}")
 );
 
-        return $admin;
+        return [
+            'mfa_required' => false,
+            'admin'        => $admin
+        ];
     }
 
     public function loginStaff(string $identity, string $password): array
@@ -222,23 +200,15 @@ class AuthService
         $ip = get_client_ip();
         $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
 
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
-        }
-        $_SESSION['staff_id']      = (int)$staff['id'];
-        $_SESSION['staff_display_id'] = $staff['staff_id'];
-        $_SESSION['staff_name']    = $staff['full_name'];
-        $_SESSION['staff_email']   = $staff['email'];
-        $_SESSION['staff_role']    = $staff['role'];
-        $_SESSION['role']          = 'staff';
-        $_SESSION['last_activity'] = time();
-
         $pdo = $this->repository->getDb();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}")
 );
 
-        return $staff;
+        return [
+            'mfa_required' => false,
+            'staff'        => $staff
+        ];
     }
 
     public function forgotPassword(string $email): bool
@@ -320,7 +290,7 @@ class AuthService
             $userId = $this->repository->createUser($customer_id, $fullName, $email, $phone, $password_hash);
 
             if (session_status() === PHP_SESSION_ACTIVE) {
-                session_regenerate_id(true);
+                \App\Shared\Security\SessionManager::regenerate(true);
             }
             $_SESSION['user_id']     = (int)$userId;
             $_SESSION['user_name']   = $fullName;

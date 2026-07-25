@@ -47,7 +47,7 @@ function html_encode($data)
 function generate_csrf_token()
 {
     if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-        session_start();
+        \App\Shared\Security\SessionManager::start();
     }
     $token = bin2hex(random_bytes(32));
     $_SESSION['csrf_token'] = $token;
@@ -63,7 +63,7 @@ function generate_csrf_token()
 function validate_csrf_token($token)
 {
     if (!defined('FINZO_TESTING') && session_status() === PHP_SESSION_NONE) {
-        session_start();
+        \App\Shared\Security\SessionManager::start();
     }
     if (empty($token) || empty($_SESSION['csrf_token'])) {
         return false;
@@ -441,22 +441,7 @@ function refresh_session_activity()
  */
 function destroy_session()
 {
-    $_SESSION = [];
-    if (ini_get('session.use_cookies')) {
-        $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
-        );
-    }
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        session_destroy();
-    }
+    \App\Shared\Security\SessionManager::destroy();
 }
 
 // =====================================================
@@ -496,6 +481,9 @@ function validate_password_strength($password)
     }
     if (!preg_match('/[A-Z]/', $password)) {
         return ['valid' => false, 'message' => 'Password must contain at least one uppercase letter'];
+    }
+    if (!preg_match('/[a-z]/', $password)) {
+        return ['valid' => false, 'message' => 'Password must contain at least one lowercase letter'];
     }
     if (!preg_match('/[0-9]/', $password)) {
         return ['valid' => false, 'message' => 'Password must contain at least one number'];
@@ -568,46 +556,9 @@ function get_greeting()
  */
 function check_admin_permission($pdo, $adminId, $action)
 {
-    $stmt = $pdo->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
-    $stmt->execute([$adminId]);
-    $role = $stmt->fetchColumn();
-
-    if (!$role) {
-        throw new \App\Shared\Core\Exceptions\ApiException('Admin account not found', 403);
-    }
-
-    // Super Admin — zero restrictions, can do everything
-    if ($role === 'super_admin') {
-        return true;
-    }
-
-    // Admin role — blocked from these actions only
-    $admin_blocked = [
-        'suspend_user',
-        'reinstate_user',
-        'soft_delete_user',
-        'change_interest_rate',
-        'add_branch',
-        'manage_admins',
-        'suspend_staff',
-        'delete_staff'
-        // 'add_staff' removed — admin role is allowed to create staff members
-    ];
-
-    if ($role === 'admin' && in_array($action, $admin_blocked)) {
-        throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
-    }
-
-    // Moderator role — can ONLY do these actions
-    $moderator_allowed = [
-        'view_dashboard',
-        'view_users',
-        'review_kyc_application',
-        'approve_kyc_application',
-        'reject_kyc_application'
-    ];
-
-    if ($role === 'moderator' && !in_array($action, $moderator_allowed)) {
+    $rbac = \App\Shared\Security\RbacService::getInstance($pdo);
+    
+    if (!$rbac->can('admin', $adminId, $action)) {
         throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
     }
 

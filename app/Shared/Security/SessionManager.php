@@ -1,0 +1,150 @@
+<?php
+namespace App\Shared\Security;
+
+class SessionManager
+{
+    private const SESSION_LIFETIME = 1800; // 30 minutes
+
+    /**
+     * Start the session with enterprise-grade secure defaults.
+     */
+    public static function start(): void
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            
+            // Do not override in CLI/Testing environments unexpectedly
+            if (defined('FINZO_TESTING') && FINZO_TESTING) {
+                session_start();
+                return;
+            }
+
+            ini_set('session.use_strict_mode', '1');
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.cookie_httponly', '1');
+            ini_set('session.cookie_samesite', 'Strict');
+            ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
+            
+            // Set max lifetime for garbage collection
+            ini_set('session.gc_maxlifetime', (string)self::SESSION_LIFETIME);
+            
+            if (defined('STORAGE_PATH')) {
+                ini_set('session.save_path', STORAGE_PATH . 'sessions');
+            }
+
+            session_set_cookie_params([
+                'lifetime' => self::SESSION_LIFETIME,
+                'path' => '/',
+                'domain' => $_SERVER['HTTP_HOST'] ?? '',
+                'secure' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'),
+                'httponly' => true,
+                'samesite' => 'Strict'
+            ]);
+
+            session_start();
+        }
+    }
+
+    /**
+     * Regenerate session ID to prevent Session Fixation.
+     * @param bool $deleteOldSession Whether to delete the old associated session file.
+     */
+    public static function regenerate(bool $deleteOldSession = true): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id($deleteOldSession);
+        }
+    }
+
+    /**
+     * Completely destroy the session and invalidate the cookie.
+     */
+    public static function destroy(): void
+    {
+        $_SESSION = [];
+        
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            if (ini_get('session.use_cookies')) {
+                $params = session_get_cookie_params();
+                setcookie(
+                    session_name(),
+                    '',
+                    time() - 42000,
+                    $params["path"],
+                    $params["domain"],
+                    $params["secure"],
+                    $params["httponly"]
+                );
+            }
+            
+            session_unset();
+            session_destroy();
+        }
+    }
+
+    /**
+     * Establish a session for a customer.
+     */
+    public static function establishUserSession(array $user, $account): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['user_id']          = (int)$user['id'];
+        $_SESSION['user_customer_id'] = $user['customer_id'];
+        $_SESSION['user_name']        = $user['full_name'];
+        $_SESSION['user_email']       = $user['email'];
+        $_SESSION['user_phone']       = $user['phone'] ?? '';
+        $_SESSION['user_status']      = $user['status'];
+        $_SESSION['user_account_no']  = $account ? $account['account_no'] : null;
+        $_SESSION['user_balance']     = $account ? $account['balance'] : null;
+        $_SESSION['role']             = 'customer';
+        $_SESSION['last_activity']    = time();
+    }
+
+    /**
+     * Establish a session for an administrator.
+     */
+    public static function establishAdminSession(array $admin): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['admin_id']      = (int)$admin['id'];
+        $_SESSION['admin_name']    = $admin['full_name'];
+        $_SESSION['admin_email']   = $admin['email'];
+        $_SESSION['admin_profile_photo']  = $admin['profile_photo'];
+        $_SESSION['admin_role']    = $admin['admin_role'];
+        $_SESSION['admin_display_id'] = $admin['admin_id'];
+        $_SESSION['role']          = 'admin';
+        $_SESSION['last_activity'] = time();
+    }
+
+    /**
+     * Establish a session for a staff member.
+     */
+    public static function establishStaffSession(array $staff): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::regenerate(true);
+        } else {
+            self::start();
+            self::regenerate(true);
+        }
+
+        $_SESSION['staff_id']      = (int)$staff['id'];
+        $_SESSION['staff_display_id'] = $staff['staff_id'];
+        $_SESSION['staff_name']    = $staff['full_name'];
+        $_SESSION['staff_email']   = $staff['email'];
+        $_SESSION['staff_role']    = $staff['role'];
+        $_SESSION['role']          = 'staff';
+        $_SESSION['last_activity'] = time();
+    }
+}

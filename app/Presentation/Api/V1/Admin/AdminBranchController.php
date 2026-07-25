@@ -16,18 +16,11 @@ class AdminBranchController
         $this->service = $service;
     }
 
-    protected function checkCsrf()
-    {
-        $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? $_POST['csrf_token'] ?? '';
-        if (!$this->security->validateCsrfToken($csrf)) {
-            throw new ApiException('Invalid CSRF token', 403);
-        }
-    }
+
 
     public function deleteBranch(?string $id = null, ?string $extra = null): array
     {
-        $this->checkCsrf();
+
         $adminId = $_SESSION['admin_id'];
         $branchId = intval($_POST['branch_id'] ?? 0);
         $admin_password = $_POST['admin_password'] ?? '';

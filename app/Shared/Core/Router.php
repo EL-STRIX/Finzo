@@ -55,6 +55,10 @@ class Router
         $security = new \App\Presentation\Middleware\SecurityMiddleware();
         $security->handle();
 
+        // Run Global CSRF Middleware
+        $csrf = new \App\Presentation\Middleware\CsrfMiddleware();
+        $csrf->handle();
+
         // Strip query string and base path
         $uri = parse_url($uri, PHP_URL_PATH);
 

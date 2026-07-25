@@ -53,7 +53,7 @@ class AuthServiceTest extends TestCase {
         
         $result = $this->authService->loginUser('valid@test.com', 'CorrectPassword123');
         
-        $this->assertEquals('CUST123', $_SESSION['user_customer_id']);
+        $this->assertEquals('CUST123', $result['user']['customer_id']);
         $this->assertEquals('ACC123', $result['account']['account_no']);
     }
 

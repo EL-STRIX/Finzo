@@ -53,9 +53,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
 
         $staffId = $_SESSION['staff_id'];
         $currentPassword  = $_POST['current_password'] ?? '';
@@ -136,9 +134,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
 
         $staffId = $_SESSION['staff_id'];
         $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
@@ -296,9 +292,7 @@ class StaffController
         }
 
         if ($method === 'POST') {
-            if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-                json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-            }
+
 
             $phone                   = $this->security->cleanInput($_POST['phone'] ?? '');
             $emergency_contact_name  = $this->security->cleanInput($_POST['emergency_contact_name'] ?? '');
@@ -359,9 +353,7 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if (!$this->security->validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            json_response(['success' => false, 'message' => 'Invalid security token'], 403);
-        }
+
 
         $staffId = $_SESSION['staff_id'];
         $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
