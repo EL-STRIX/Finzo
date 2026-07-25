@@ -1,111 +1,58 @@
----
-title: "README"
-version: "4.0.0"
-status: "Active"
-owner: "Frontend Architecture"
-category: "User Interface"
-last_updated: "2026-07-22"
----
+# Frontend Architecture
 
-# README
+## Overview
+The Finzo Banking Management System utilizes a deeply decoupled, highly modular **Vanilla Frontend Architecture**. 
+We completely bypass heavy JavaScript frameworks (React, Vue, Angular) and heavy build tools (Webpack, Vite) in favor of native browser APIs (ES6 Modules, Fetch) and a centralized CSS Utility System (Tailwind-inspired).
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
-12. [Change Log](#change-log)
+This architecture ensures:
+1. **Ultra-fast Page Loads:** Minimal JavaScript payload and no virtual DOM overhead.
+2. **High Security:** Total compatibility with strict Content Security Policies (CSP) and automatic CSRF mitigation via `window.api`.
+3. **Enterprise Maintainability:** A strictly enforced separation of concerns where logic lives in JS, layout lives in CSS, and content lives in HTML.
 
-## Purpose
-Establishes a unified, accessible, and highly responsive user experience mapping the Design System. This specific document (`README`) codifies the structural implementation of README within the Finzo ecosystem.
+## Folder Structure
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying README.
+The frontend layer is entirely contained within `public/assets/` and `resources/views/`.
 
-## Detailed Explanation
-In an enterprise environment, README is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-
-
-### Architectural Flow
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant CDN
-    participant Gateway
-    Browser->>CDN: Request Assets (JS/CSS)
-    CDN-->>Browser: Return cached (SRI validated)
-    Browser->>Gateway: API Fetch (JWT)
+```text
+public/assets/
+├── css/
+│   ├── components/      # UI components (buttons, cards, inputs)
+│   ├── layouts/         # Structural grids (sidebar, header, grids)
+│   ├── pages/           # Page-specific styling (rarely used, prefer components)
+│   ├── base.css         # CSS Reset and basic typography rules
+│   ├── utilities.css    # Tailwind-inspired utility classes
+│   └── variables.css    # Centralized Design Tokens
+├── js/
+│   ├── admin/           # Admin-specific logic
+│   ├── core/            # Global modules (api.js, component-loader.js, ui-components.js)
+│   ├── staff/           # Staff-specific logic
+│   └── user/            # Customer portal logic
+├── images/              # Optimized static SVGs, WebP, PNGs
+└── fonts/               # Local WOFF2 font files
 ```
 
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
+## Coding Standards
 
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of README away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
+### 1. Vanilla JavaScript First
+- Do not introduce jQuery, React, or Vue.
+- Use `document.querySelector` and `document.addEventListener`.
+- Always use `async/await` for asynchronous logic. Avoid `.then()` chaining when possible.
+- Use the global `window.api.get()` or `window.api.post()` wrappers for all network communication (see `API-Integration.md`).
 
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If README encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat README processes as ephemeral cattle.
+### 2. Vanilla CSS and Utility Classes
+- Styling is predominantly achieved through utility classes mapping to `variables.css`.
+- Avoid deeply nested SCSS-style nesting to prevent specificity wars.
+- Never use `!important` to override layouts. Instead, build a specific modifier class.
+- Always use CSS Custom Properties (`var(--color-primary-base)`) instead of hardcoded hex values.
 
-## Implementation Details
-The exact programmatic implementation of README requires strict adherence to PHP 8.x standards.
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with README.
+### 3. Progressive Enhancement
+- Ensure the application does not completely break if a specific JS module fails to load.
+- Ensure HTML remains semantically accurate and WCAG 2.2 AA compliant.
 
-
-### Code Reference
-```html
-<!-- Subresource Integrity (SRI) Enforced -->
-<script src="https://cdn.example.com/app.js"
-        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
-        crossorigin="anonymous"></script>
-```
-
-> [!WARNING]
-> Failure to strictly validate the input constraints of README directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
-
-## Banking-Specific Examples
-Financial dashboards require precise localization (i18n) and accessibility (WCAG 2.1 AA) so that visually impaired users can still execute transfers via screen readers.
-
-## Best Practices
-- Utilize Subresource Integrity (SRI) for external scripts.
-
-> [!CAUTION]
-> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
-- Implement skeleton loaders for asynchronous data fetching.
-
-## Anti-Patterns
-- Injecting raw HTML variables from the backend (Reflected XSS risk).
-- Loading unoptimized 2MB imagery on the dashboard.
-
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
-
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
-
-## Traceability Matrix
-| Standard | Control | Description |
-|---|---|---|
-| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
-| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
-
-## Change Log
-
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
-| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
+## Related Documents
+- [Design System](Design-System.md) - CSS Variables, Colors, and Typography
+- [Component Library](Component-Library.md) - Reusable UI elements (Modals, Toasts)
+- [JavaScript Architecture](JavaScript-Architecture.md) - Global state and event delegation
+- [API Integration](API-Integration.md) - Fetch wrappers and CSRF protection
+- [Accessibility](Accessibility.md) - WCAG 2.2 AA and ARIA specs
+- [Performance](Performance.md) - Asset optimization and lazy-loading

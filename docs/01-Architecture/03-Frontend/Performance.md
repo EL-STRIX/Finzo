@@ -1,111 +1,40 @@
----
-title: "Performance"
-version: "4.0.0"
-status: "Active"
-owner: "Frontend Architecture"
-category: "User Interface"
-last_updated: "2026-07-22"
----
+# Performance Optimization Standards
 
-# Performance
+## Overview
+The Finzo Frontend Architecture is designed to achieve near-instant First Contentful Paint (FCP) and Time to Interactive (TTI). By entirely avoiding heavy JavaScript frameworks (React/Vue/Angular), the browser spends zero milliseconds parsing Virtual DOM trees or executing client-side hydration.
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
-12. [Change Log](#change-log)
+## 1. CSS Delivery Optimization
+All CSS layout architecture has been converted to an atomic-inspired utility system.
 
-## Purpose
-Establishes a unified, accessible, and highly responsive user experience mapping the Design System. This specific document (`Performance`) codifies the structural implementation of Performance within the Finzo ecosystem.
+- **Zero Duplication:** Layout classes (e.g., flexbox wrappers, paddings, colors) are defined exactly once in `utilities.css`.
+- **Render Blocking Mitigation:** Because the CSS payload is so incredibly tiny, it does not significantly block rendering. The browser instantly paints the layout based on classes present in the HTML.
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying Performance.
+## 2. JavaScript Execution Strategy
+All JavaScript files are decoupled from the render pipeline to ensure the DOM paints immediately.
 
-## Detailed Explanation
-In an enterprise environment, Performance is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-
-
-### Architectural Flow
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant CDN
-    participant Gateway
-    Browser->>CDN: Request Assets (JS/CSS)
-    CDN-->>Browser: Return cached (SRI validated)
-    Browser->>Gateway: API Fetch (JWT)
-```
-
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
-
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of Performance away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
-
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If Performance encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat Performance processes as ephemeral cattle.
-
-## Implementation Details
-The exact programmatic implementation of Performance requires strict adherence to PHP 8.x standards.
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Performance.
-
-
-### Code Reference
+### The `defer` Attribute
+Every `<script>` tag included in the DOM must carry the `defer` attribute.
 ```html
-<!-- Subresource Integrity (SRI) Enforced -->
-<script src="https://cdn.example.com/app.js"
-        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
-        crossorigin="anonymous"></script>
+<script src="/assets/js/core/api.js" defer></script>
 ```
+**Why?** `defer` guarantees that the HTML parser is never blocked while the browser downloads the script. The script only executes strictly after the DOM has been fully parsed.
 
-> [!WARNING]
-> Failure to strictly validate the input constraints of Performance directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
+### Component Loading Pipeline
+The `component-loader.js` script fetches HTML partials dynamically without reloading the page. It fires `componentsLoaded` when finished, ensuring that downstream domain scripts only initialize heavily after the exact DOM fragments they need are fully painted.
 
-## Banking-Specific Examples
-Financial dashboards require precise localization (i18n) and accessibility (WCAG 2.1 AA) so that visually impaired users can still execute transfers via screen readers.
+## 3. Asset and Image Optimization
 
-## Best Practices
-- Utilize Subresource Integrity (SRI) for external scripts.
+### Native Lazy Loading
+All image assets outside the immediate initial viewport (below the fold) or inside Modals must include the native `loading="lazy"` attribute.
+```html
+<img src="/assets/images/promotions/banking-banner.webp" loading="lazy" alt="Promotion">
+```
+**Why?** This prevents the browser from utilizing network bandwidth or decoding CPU cycles on images the user cannot even see yet.
 
-> [!CAUTION]
-> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
-- Implement skeleton loaders for asynchronous data fetching.
+### Format Standards
+- Use **SVG** exclusively for logos, icons, and vector graphics to ensure crisp scaling and zero-loss compression.
+- Use **WebP** for all raster graphics and profile pictures. Never use uncompressed PNGs or heavy JPEGs.
 
-## Anti-Patterns
-- Injecting raw HTML variables from the backend (Reflected XSS risk).
-- Loading unoptimized 2MB imagery on the dashboard.
-
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
-
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
-
-## Traceability Matrix
-| Standard | Control | Description |
-|---|---|---|
-| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
-| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
-
-## Change Log
-
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
-| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
+## 4. DOM Manipulation Restrictions
+- **No Layout Thrashing:** Javascript should never repeatedly read a DOM property (like `offsetHeight`) and then write a style in a loop.
+- **Batch Updates:** When rendering dynamic tables (e.g., Transaction Lists), concatenate the HTML string fully in memory before injecting it into `.innerHTML` once. Do not append nodes individually in a loop.

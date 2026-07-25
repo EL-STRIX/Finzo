@@ -1,111 +1,81 @@
----
-title: "Component Library"
-version: "4.0.0"
-status: "Active"
-owner: "Frontend Architecture"
-category: "User Interface"
-last_updated: "2026-07-22"
----
+# Component Library Architecture
 
-# Component Library
+## Overview
+The Finzo Frontend encapsulates highly reusable UI elements into standalone **Component Specifications**. 
+Instead of redefining the DOM structure and CSS logic repeatedly, developers utilize semantic class names mapped directly to the Finzo Design System.
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
-12. [Change Log](#change-log)
+Component CSS files are located in `public/assets/css/components/`.
 
-## Purpose
-Establishes a unified, accessible, and highly responsive user experience mapping the Design System. This specific document (`Component-Library`) codifies the structural implementation of Component Library within the Finzo ecosystem.
+## Core Components
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying Component Library.
+### 1. Buttons (`buttons.css`)
+Buttons dictate the primary interactive state. We supply variants to manage hierarchy.
+- **Base Class:** `.btn` (applies flexbox, padding, border-radius, transition logic)
+- **Primary:** `.btn-primary` (solid blue background, white text)
+- **Secondary:** `.btn-secondary` (solid gray/surface background)
+- **Outline:** `.btn-outline` (transparent background with solid border)
+- **Danger:** `.btn-danger` (red semantic coloring for destructive actions)
 
-## Detailed Explanation
-In an enterprise environment, Component Library is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-
-
-### Architectural Flow
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant CDN
-    participant Gateway
-    Browser->>CDN: Request Assets (JS/CSS)
-    CDN-->>Browser: Return cached (SRI validated)
-    Browser->>Gateway: API Fetch (JWT)
-```
-
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
-
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of Component Library away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
-
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If Component Library encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat Component Library processes as ephemeral cattle.
-
-## Implementation Details
-The exact programmatic implementation of Component Library requires strict adherence to PHP 8.x standards.
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Component Library.
-
-
-### Code Reference
+**Usage Example:**
 ```html
-<!-- Subresource Integrity (SRI) Enforced -->
-<script src="https://cdn.example.com/app.js"
-        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
-        crossorigin="anonymous"></script>
+<button class="btn btn-primary w-full">Submit Transfer</button>
 ```
 
-> [!WARNING]
-> Failure to strictly validate the input constraints of Component Library directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
+### 2. Forms & Inputs (`forms.css`)
+Form controls maintain strict visual conformity. 
+- **Container:** `.fin-input-container` (wraps labels, inputs, and error text)
+- **Inputs:** `.form-control` (applies width, padding, border, focus rings)
+- **Labels:** `.form-label` (standardized font size, weight, and margin)
+- **Errors:** `.is-invalid` (triggers red borders and reveals `.fin-error-text`)
 
-## Banking-Specific Examples
-Financial dashboards require precise localization (i18n) and accessibility (WCAG 2.1 AA) so that visually impaired users can still execute transfers via screen readers.
+**Usage Example:**
+```html
+<div class="fin-input-container">
+    <label class="form-label">Account Number</label>
+    <input type="text" name="account_no" class="form-control" required>
+    <span class="fin-error-text"></span>
+</div>
+```
 
-## Best Practices
-- Utilize Subresource Integrity (SRI) for external scripts.
+### 3. Modals (`modals.css` & `ui-components.js`)
+Modals are managed via global event delegation to ensure they trap focus properly.
+- **Structure:** Overlay `.modal-overlay` > Dialog `.modal-dialog`
+- **Triggers:** Bind via `data-modal-target="[modal_id]"`
+- **Closing:** Bind via `data-modal-close` attribute.
 
-> [!CAUTION]
-> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
-- Implement skeleton loaders for asynchronous data fetching.
+**Usage Example:**
+```html
+<!-- Trigger -->
+<button class="btn btn-primary" data-modal-target="transferModal">Open Transfer</button>
 
-## Anti-Patterns
-- Injecting raw HTML variables from the backend (Reflected XSS risk).
-- Loading unoptimized 2MB imagery on the dashboard.
+<!-- Modal -->
+<div id="transferModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+        <h3>Transfer Funds</h3>
+        <!-- Content -->
+        <button class="btn" data-modal-close>Cancel</button>
+    </div>
+</div>
+```
 
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
+### 4. Toast Notifications (`core/utils.js`)
+The `FinzoUtils.showToast()` method dynamically injects accessible toast notifications for form successes or network failures.
 
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
+**Usage Example:**
+```javascript
+// Success state
+window.FinzoUtils.showToast('Transfer completed successfully!', 'success');
 
-## Traceability Matrix
-| Standard | Control | Description |
-|---|---|---|
-| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
-| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
+// Error state
+window.FinzoUtils.showToast('Insufficient funds.', 'error');
+```
 
-## Change Log
+## HTML Partials (`component-loader.js`)
+For structurally massive components like sidebars and headers, Finzo uses a lightweight HTML partial loader. 
+Developers inject the `data-include` attribute on a placeholder element, and the JS engine fetches and swaps the DOM cleanly.
 
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
-| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
+**Usage Example:**
+```html
+<!-- Automatically fetches and renders the unified Sidebar -->
+<div data-include="/Finzo/resources/views/admin/components/sidebar.html"></div>
+```
