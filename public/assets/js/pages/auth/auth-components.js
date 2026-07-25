@@ -44,24 +44,18 @@ function initCsrfToken() {
     const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
     if (csrfInputs.length === 0) return;
 
-    const endpoint = '/Finzo/public/api/auth/get-csrf-token.php';
+    const endpoint = '/auth/get-csrf-token.php';
 
-    fetch(endpoint)
-        .then(res => res.text())
-        .then(text => {
-            try {
-                const data = JSON.parse(text);
-                if (data && data.csrf_token) {
-                    csrfInputs.forEach(input => {
-                        input.value = data.csrf_token;
-                    });
-                }
-            } catch (_) {
-                console.warn('[Finzo] CSRF endpoint returned non-JSON. Check public/api/.htaccess and XAMPP.');
+    window.api.get(endpoint)
+        .then(data => {
+            if (data && data.csrf_token) {
+                csrfInputs.forEach(input => {
+                    input.value = data.csrf_token;
+                });
             }
         })
         .catch(() => {
-            console.warn('[Finzo] CSRF endpoint unreachable. Ensure XAMPP Apache is running.');
+            console.warn('[Finzo] CSRF endpoint unreachable.');
         });
 }
 
@@ -490,25 +484,11 @@ function initAuthFormSubmission() {
 
             try {
                 const formData = new FormData(form);
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-
-                // Read as text first to handle non-JSON responses (Apache 404 HTML, PHP errors)
-                const text = await response.text();
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (_) {
-                    // Server returned a non-JSON body — likely a routing/config issue
-                    showNotificationToast(
-                        `Server error (HTTP ${response.status}). Check server configuration.`,
-                        'error'
-                    );
-                    return;
-                }
+                // If it's a FormData object, window.api handles the fetch automatically
+                // However, since it's auth, we should map endpoint
+                const apiEndpoint = endpoint.replace('/Finzo/public/api', '');
+                
+                const data = await window.api.post(apiEndpoint, formData, true);
 
                 if (data.success) {
                     if (data.redirect) {
@@ -531,7 +511,7 @@ function initAuthFormSubmission() {
                     }
                 }
             } catch (err) {
-                showNotificationToast('Connection failed. Please check XAMPP is running.', 'error');
+                showNotificationToast('Connection failed. Please check your network.', 'error');
             } finally {
                 if (submitBtn) {
                     submitBtn.classList.remove('is-loading');

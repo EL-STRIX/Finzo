@@ -75,3 +75,8 @@ The AI must never falsely report completion. Before marking work complete:
 - Verify no obvious errors, warnings, or broken tests remain.
 - Clearly disclose any incomplete work, edge cases, or follow-up tasks required.
 - Never claim "fully completed" without manual verification and testing.
+
+## 11. Git Commit Policy
+When executing large workflows that span multiple files, agents MUST NOT create a single monolithic commit at the end.
+- **Commit Repeatedly & Atomically:** Group commits by logical change type (e.g., "Change the UI", "Fix JS", "Update Docs") and commit them sequentially as you progress.
+- **One-Line Messages:** Format all commit messages in a single, concise line. Do not write multi-line commit descriptions.

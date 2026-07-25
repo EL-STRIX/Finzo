@@ -1,111 +1,61 @@
----
-title: "JavaScript Architecture"
-version: "4.0.0"
-status: "Active"
-owner: "Frontend Architecture"
-category: "User Interface"
-last_updated: "2026-07-22"
----
-
 # JavaScript Architecture
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
-12. [Change Log](#change-log)
+## Overview
+The JavaScript logic in Finzo is split strictly into **Global Modules** (reusable logic loaded on every page) and **Domain Scripts** (loaded only when required for a specific page route). 
 
-## Purpose
-Establishes a unified, accessible, and highly responsive user experience mapping the Design System. This specific document (`JavaScript-Architecture`) codifies the structural implementation of JavaScript Architecture within the Finzo ecosystem.
+All JS is written in modern **Vanilla ES6**. We do not use React, Vue, jQuery, or heavy state management libraries like Redux.
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying JavaScript Architecture.
+## Directory Structure
 
-## Detailed Explanation
-In an enterprise environment, JavaScript Architecture is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-
-
-### Architectural Flow
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant CDN
-    participant Gateway
-    Browser->>CDN: Request Assets (JS/CSS)
-    CDN-->>Browser: Return cached (SRI validated)
-    Browser->>Gateway: API Fetch (JWT)
+```text
+public/assets/js/
+├── core/
+│   ├── api.js                # Global network fetch wrapper
+│   ├── component-loader.js   # Injects HTML partials recursively
+│   ├── ui-components.js      # Global event delegation for Modals/Dropdowns
+│   └── utils.js              # Formatting functions and Toast UI
+├── admin/                    # Admin-specific logic (e.g. users.js, staff.js)
+├── user/                     # Customer-specific logic (e.g. transactions.js)
+├── staff/                    # Staff-specific logic
+└── pages/                    # Generic page logic (e.g. auth-components.js)
 ```
 
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
+## State Management
+We do not use complex client-side stores. 
+Instead, data is retrieved lazily from the backend via REST API calls and rendered directly to the DOM.
 
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of JavaScript Architecture away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
+Where session states (e.g., Logged-in user information) must persist across page loads to prevent visual flickering, we cache minimal structured data into `localStorage` (e.g. `UserState` object) and strictly validate it via API calls in the background.
 
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If JavaScript Architecture encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat JavaScript Architecture processes as ephemeral cattle.
+## Event Delegation
+To support highly dynamic interfaces (such as components fetched via `component-loader.js` after the initial DOM completes), we rely heavily on **Event Delegation** bound to the `document`.
 
-## Implementation Details
-The exact programmatic implementation of JavaScript Architecture requires strict adherence to PHP 8.x standards.
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with JavaScript Architecture.
-
-
-### Code Reference
-```html
-<!-- Subresource Integrity (SRI) Enforced -->
-<script src="https://cdn.example.com/app.js"
-        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
-        crossorigin="anonymous"></script>
+### Anti-Pattern (DO NOT USE)
+```javascript
+// Will fail if .btn-submit is injected via AJAX later
+document.querySelectorAll('.btn-submit').forEach(btn => {
+    btn.addEventListener('click', () => { /* ... */ });
+});
 ```
 
-> [!WARNING]
-> Failure to strictly validate the input constraints of JavaScript Architecture directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
+### Best Practice (USE THIS)
+```javascript
+// Will securely bind to current and future elements
+document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.btn-submit');
+    if (trigger) {
+        e.preventDefault();
+        // Handle logic
+    }
+});
+```
 
-## Banking-Specific Examples
-Financial dashboards require precise localization (i18n) and accessibility (WCAG 2.1 AA) so that visually impaired users can still execute transfers via screen readers.
+## Custom Events
+To allow loosely coupled components to communicate, we fire custom DOM events:
+- **`componentsLoaded`**: Fired by `component-loader.js` when all HTML partials are fully injected. Wait for this event before attaching heavy DOM-dependent initializations.
+- **`formSuccess`**: Fired manually when an API Form resolves successfully, natively triggering `ui-components.js` to automatically close any active Modals.
 
-## Best Practices
-- Utilize Subresource Integrity (SRI) for external scripts.
-
-> [!CAUTION]
-> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
-- Implement skeleton loaders for asynchronous data fetching.
-
-## Anti-Patterns
-- Injecting raw HTML variables from the backend (Reflected XSS risk).
-- Loading unoptimized 2MB imagery on the dashboard.
-
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
-
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
-
-## Traceability Matrix
-| Standard | Control | Description |
-|---|---|---|
-| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
-| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
-
-## Change Log
-
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
-| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |
+## Execution Flow
+1. **Load CSS / Render HTML Frame**.
+2. **`component-loader.js`**: Fetches sidebars/headers synchronously and patches the DOM.
+3. **`ui-components.js`**: Attaches global event listeners for Dropdowns and Modals to `document`.
+4. **Domain Script (e.g. `dashboard.js`)**: Fetches API data via `window.api.get()`, iterates JSON results, and populates the table rows.

@@ -14,6 +14,9 @@
 @import 'components/cards.css';
 @import 'components/tables.css';
 @import 'components/badges.css';
+@import 'components/dropdowns.css';
+@import 'components/modals.css';
+@import 'components/toasts.css';
 
 /* 3. Layouts */
 @import 'layouts/grid.css';

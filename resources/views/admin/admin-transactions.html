@@ -7,94 +7,24 @@
     <title>Finzo Admin — Transactions</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script defer src="https://cdn.tailwindcss.com?plugins=forms"></script>
     
-    <script src="/Finzo/public/assets/js/tailwind-config.js"></script>
+    <script defer src="/Finzo/public/assets/js/tailwind-config.js"></script>
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
-  </head>
+      <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+</head>
 
 <body class="bg-slate-50 dark:bg-slate-900 font-body antialiased">
 
     <!-- SIDEBAR -->
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-    <nav class="admin-sidebar" id="admin-sidebar">
-        <div class="admin-sidebar-brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub">ADMIN CONSOLE</div>
-        </div>
-        <div class="admin-nav">
-            <div class="admin-nav-section">MAIN</div>
-            <a href="admin-dashboard.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">analytics</span> Overview
-            </a>
-            <a href="admin-pending-approvals.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-            </a>
-            <a href="admin-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">group</span> User Management
-            </a>
-            <a href="admin-staff.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">badge</span> Staff Management
-            </a>
-            <a href="admin-branches.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">store</span> Branch Management
-            </a>
-            <a href="admin-transactions.html" class="admin-nav-item active">
-                <span class="material-symbols-outlined">swap_horiz</span> Transactions
-            </a>
-            <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
-            </a>
-
-            <div class="admin-nav-section">System</div>
-            <a href="admin-suspended-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_off</span> Suspended Users
-            </a>
-            <a href="admin-suspended-staff.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">work_off</span> Suspended Staff
-            </a>
-            <a href="admin-locked-accounts.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-            </a>
-            <a href="admin-deleted-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_remove</span> Deleted Users
-            </a>
-            <a href="admin-interest.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">percent</span> Interest Management
-            </a>
-
-            <div class="admin-nav-section">ACCOUNT</div>
-            <a href="admin-profile.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">account_circle</span> Admin Profile
-            </a>
-            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-                <span data-theme-label>Dark Mode</span>
-            </button>
-            <a href="/Finzo/resources/views/auth/login.html" class="admin-nav-item" style="color:#ff3b30;">
-                <span class="material-symbols-outlined">logout</span> Logout
-            </a>
-        </div>
-    </nav>
+    <!-- SIDEBAR COMPONENT -->
+    <div data-include="/Finzo/resources/views/layouts/admin-sidebar.html"></div>
 
     <!-- MAIN AREA -->
     <div class="admin-main min-w-0 flex-1">
-        <header class="admin-topbar">
-            <div class="flex items-center gap-3 flex-1">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors -ml-2">
-                    <span class="material-symbols-outlined force-black">menu</span>
-                </button>
-                <div>
-                    <div class="text-[10px] font-bold tracking-[0.2em] text-[#002645] dark:text-slate-400 uppercase">LEDGER</div>
-                    <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Global Transactions</div>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <button id="open-export-modal" class="admin-btn-secondary hidden sm:flex items-center gap-2">
-                    <span class="material-symbols-outlined">download</span> Export
-                </button>
-            </div>
-        </header>
+        <!-- TOP NAVBAR COMPONENT -->
+        <div data-include="/Finzo/resources/views/layouts/admin-navbar.html"></div>
 
         <main class="p-4 sm:p-6 lg:p-10 min-w-0 flex-1 w-full flex flex-col">
             <!-- FILTERS & TABLE -->
@@ -193,10 +123,11 @@
             </div>
         </div>
     </div>
-    <script src="/Finzo/public/assets/js/core/utils.js"></script>
-    <script src="/Finzo/public/assets/js/core/api.js"></script>
-    <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
-    <script src="/Finzo/public/assets/js/admin/transactions.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+    <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
+    <script defer src="/Finzo/public/assets/js/admin/transactions.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 </body>
 
 </html>

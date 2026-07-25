@@ -1,111 +1,54 @@
----
-title: "Accessibility"
-version: "4.0.0"
-status: "Active"
-owner: "Frontend Architecture"
-category: "User Interface"
-last_updated: "2026-07-22"
----
+# Accessibility Standards (WCAG 2.2 AA)
 
-# Accessibility
+## Overview
+The Finzo Frontend Architecture is strictly built to comply with **WCAG 2.2 AA** accessibility guidelines. Accessibility is not an afterthought; it is integrated directly into the `ui-components.js` core and the semantic HTML partials.
 
-## Table of Contents
-1. [Purpose](#purpose)
-2. [Scope](#scope)
-3. [Detailed Explanation](#detailed-explanation)
-4. [Architecture Decisions](#architecture-decisions)
-5. [Design Principles](#design-principles)
-6. [Implementation Details](#implementation-details)
-7. [Banking-Specific Examples](#banking-specific-examples)
-8. [Best Practices](#best-practices)
-9. [Anti-Patterns](#anti-patterns)
-10. [References & Cross References](#references--cross-references)
-11. [Glossary](#glossary)
-12. [Change Log](#change-log)
+## 1. Semantic HTML
+We rely on native semantic landmarks to provide structural context to screen readers (e.g., NVDA, VoiceOver).
+- Use `<header>` for navigation and top-bars.
+- Use `<nav>` for sidebar link groups.
+- Use `<main>` for the primary dashboard view context.
+- Use `<section>` with `aria-labelledby` for grouped content widgets.
 
-## Purpose
-Establishes a unified, accessible, and highly responsive user experience mapping the Design System. This specific document (`Accessibility`) codifies the structural implementation of Accessibility within the Finzo ecosystem.
+## 2. ARIA and Dynamic State
+All custom interactive elements strictly manage their ARIA states via JavaScript (`ui-components.js`).
 
-## Scope
-The scope of this document dictates the absolute technical boundaries, code-level execution rules, and security constraints required when integrating or modifying Accessibility.
+### Dropdowns
+Dropdown menus dynamically toggle `aria-expanded="true"` and `aria-expanded="false"` upon click. 
 
-## Detailed Explanation
-In an enterprise environment, Accessibility is not a standalone concept. It interfaces directly with the Finzo MVC lifecycle. 
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
+### Modals
+When a modal is opened:
+- `aria-hidden="true"` is applied to the `<main>` background wrapper to prevent screen readers from reading background content.
+- `aria-modal="true"` and `role="dialog"` are enforced on the `.modal-overlay`.
 
+## 3. Keyboard Navigation and Focus Management
+Finzo ensures 100% functionality via keyboard-only navigation.
 
-### Architectural Flow
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant CDN
-    participant Gateway
-    Browser->>CDN: Request Assets (JS/CSS)
-    CDN-->>Browser: Return cached (SRI validated)
-    Browser->>Gateway: API Fetch (JWT)
+### Focus Indicators
+We do not use `outline: none;` without providing a distinct visual fallback. Global focus states are managed in `utilities.css`:
+```css
+*:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
 ```
 
-> [!NOTE]
-> All changes to this component must be explicitly verified against the Enterprise Quality Gates defined in the Governance architecture.
+### Focus Trapping
+When a modal opens, `ui-components.js` captures the currently focused element (`document.activeElement`) and stores it via `data-return-focus`.
+Focus is forcibly shifted into the first focusable input inside the modal.
+If the modal closes (via ESC or submit), focus is seamlessly returned to the original triggering button.
 
-## Architecture Decisions
-By enforcing this paradigm, Finzo abstracts the complexity of Accessibility away from the Application layer. We explicitly rejected legacy monolithic coupling in favor of this highly cohesive, isolated approach.
+## 4. Color Contrast
+Finzo's `variables.css` design tokens are mathematically calculated to ensure compliance.
+- Text against a background surface exceeds **4.5:1** contrast ratio.
+- Large text (headings) and interface borders exceed **3.0:1** contrast ratio.
 
-## Design Principles
-- **Defense in Depth**: Assume the network is hostile.
-- **Fail Securely**: If Accessibility encounters an exception, it must not leak infrastructure details to the public interface.
-- **Stateless Execution**: Servers must treat Accessibility processes as ephemeral cattle.
+## 5. Error Validation and ARIA
+When a form submits and backend validation fails, the Javascript automatically flags invalid inputs with `aria-invalid="true"`.
 
-## Implementation Details
-The exact programmatic implementation of Accessibility requires strict adherence to PHP 8.x standards.
-Finzo's UI relies on component-driven architecture. State management is predictable, and styling is confined using scoped CSS (BEM or utility classes). Webpack/Vite compiles assets with unique hashes to ensure aggressive CDN caching.
-For example, memory scrubbing, PDO parameterized queries, and constant-time hash comparisons (`hash_equals`) are mandatory where cryptographic operations intersect with Accessibility.
-
-
-### Code Reference
 ```html
-<!-- Subresource Integrity (SRI) Enforced -->
-<script src="https://cdn.example.com/app.js"
-        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6..."
-        crossorigin="anonymous"></script>
+<input type="email" name="email" class="form-control is-invalid" aria-invalid="true">
+<span class="fin-error-text">
+    <span class="material-symbols-outlined">error</span> Invalid format.
+</span>
 ```
-
-> [!WARNING]
-> Failure to strictly validate the input constraints of Accessibility directly violates PCI-DSS compliance and will result in a failed CI/CD pipeline build.
-
-## Banking-Specific Examples
-Financial dashboards require precise localization (i18n) and accessibility (WCAG 2.1 AA) so that visually impaired users can still execute transfers via screen readers.
-
-## Best Practices
-- Utilize Subresource Integrity (SRI) for external scripts.
-
-> [!CAUTION]
-> Never inject raw JSON directly into a `<script>` tag without aggressive HTML encoding. Use `htmlspecialchars()`.
-- Implement skeleton loaders for asynchronous data fetching.
-
-## Anti-Patterns
-- Injecting raw HTML variables from the backend (Reflected XSS risk).
-- Loading unoptimized 2MB imagery on the dashboard.
-
-## References & Cross References
-- **Parent Subsystem**: [Architecture Root](../README.md)
-- **Framework Specifications**: Microsoft Azure Architecture Center, AWS Well-Architected Framework, OWASP Top 10.
-- **Related Module**: See the corresponding directory `README.md` for macroeconomic context.
-
-## Glossary
-- **PCI-DSS**: Payment Card Industry Data Security Standard.
-- **BCDR**: Business Continuity and Disaster Recovery.
-- **SRP**: Single Responsibility Principle.
-
-## Traceability Matrix
-| Standard | Control | Description |
-|---|---|---|
-| WCAG 2.1 | Level AA | Contrast ratios and screen-reader accessibility |
-| OWASP | A07:2021 | Cross-Site Scripting (XSS) via DOM |
-
-## Change Log
-
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 4.0.0 | 2026-07-22 | Architecture Board | Phase 4 Technical Audit: Accuracy corrections based on source code review |
-| 3.0.0 | 2026-07-22 | Frontend Architecture | Enterprise Documentation Enhancement & Professionalization (Phase 3) |

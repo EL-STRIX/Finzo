@@ -74,6 +74,57 @@ $(function () {
             $('#logout-modal').removeClass('scale-100').addClass('hidden');
         }
     });
+
+    // Component Loaded Event (for active nav highlighting)
+    document.addEventListener('componentsLoaded', function() {
+        const currentPath = window.location.pathname.split('/').pop();
+        const sidebar = document.getElementById('admin-sidebar');
+        if (sidebar) {
+            const links = sidebar.querySelectorAll('a.staff-nav-item');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href === currentPath) {
+                    link.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-white/5', 'hover:text-slate-900', 'dark:hover:text-white');
+                    link.classList.add('bg-amber-50', 'dark:bg-amber-500/10', 'text-amber-600', 'dark:text-amber-500', 'border', 'border-amber-200', 'dark:border-amber-500/20');
+                }
+            });
+        }
+
+        // Set Navbar Title based on page title
+        const navbarTitle = document.getElementById('page-title');
+        if (navbarTitle) {
+            const title = document.title.split('—')[1] || document.title;
+            if (title) {
+                navbarTitle.textContent = title.trim();
+            }
+        }
+        
+        // Re-bind sidebar toggle
+        $('#mobile-menu-btn').on('click', function () {
+            $('#admin-sidebar').addClass('mobile-open');
+            $('#sidebar-overlay').addClass('active');
+        });
+
+        // Re-bind theme toggle
+        $('#toggle-theme-btn').on('click', function() {
+            const current = localStorage.getItem('finzo-staff-theme') || 'light';
+            const html = document.documentElement;
+            const theme = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', theme);
+            html.classList.toggle('dark', theme === 'dark');
+            localStorage.setItem('finzo-staff-theme', theme);
+    
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+            if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+            if (label) label.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        });
+
+        // Populate staff info if loaded
+        if (StaffState && StaffState.loaded) {
+            populateStaffUI(StaffState);
+        }
+    });
 });
 
 // ── STAFF SESSION STATE ──
@@ -87,12 +138,11 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const res = await fetch('../../../../api/staff/dashboard.php', { credentials: 'same-origin' });
-        if (res.status === 401 || res.status === 403) {
+        const data = await window.api.get('/staff/dashboard.php');
+        if (data.status === 401 || data.status === 403) {
             window.location.href = '/Finzo/resources/views/auth/staff-login.html';
             return null;
         }
-        const data = await res.json();
         if (data.success && data.staff) {
             StaffState.staff_id = data.staff.staff_id;
             StaffState.name = data.staff.name;

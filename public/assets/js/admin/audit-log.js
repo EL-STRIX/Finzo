@@ -28,15 +28,12 @@
                 per_page: rowsPerPage
             };
 
-            console.log('[AuditLog] Fetching with params:', params);
             const response = await window.api.get('/admin/audit-log.php', params);
-            console.log('[AuditLog] Response:', response);
 
             if (response && response.success) {
                 renderTable(response.entries, response.total, response.pages);
                 updateStats(response);
             } else {
-                console.warn('[AuditLog] API returned failure or empty:', response);
                 if (tbody) {
                     tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">Failed to load audit log. Please refresh the page.</td></tr>';
                     tbody.style.opacity = '1';
