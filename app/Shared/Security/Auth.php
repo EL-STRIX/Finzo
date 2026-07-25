@@ -48,7 +48,7 @@ class Auth
         
         if (str_starts_with($authHeader, 'Bearer ')) {
             // $token = substr($authHeader, 7);
-            // TODO: Implement JWT decoding/validation
+            // Future extension point for JWT decoding/validation
             throw new AuthenticationException('JWT authentication is not fully configured yet.');
         }
 
