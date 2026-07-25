@@ -14,88 +14,13 @@
 <body class="bg-slate-50 dark:bg-slate-900 font-body text-black dark:text-on-surface antialiased">
 
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
-    <nav class="admin-sidebar" id="admin-sidebar">
-        <div class="admin-sidebar-brand">
-            <div class="brand-name">Finzo</div>
-            <div class="brand-sub">ADMIN CONSOLE</div>
-        </div>
-        <div class="admin-nav">
-            <div class="admin-nav-section">MAIN</div>
-            <a href="admin-dashboard.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">analytics</span> Overview
-            </a>
-            <a href="admin-pending-approvals.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">rule</span> <span style="flex:1;">Pending Approvals</span>
-            </a>
-            <a href="admin-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">group</span> User Management
-            </a>
-            <a href="admin-staff.html" class="admin-nav-item active">
-                <span class="material-symbols-outlined">badge</span> Staff Management
-            </a>
-            <a href="admin-branches.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">store</span> Branch Management
-            </a>
-            <a href="admin-transactions.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">swap_horiz</span> Transactions
-            </a>
-            <a href="admin-audit-log.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">manage_search</span> Audit Log
-            </a>
-
-            <div class="admin-nav-section">System</div>
-            <a href="admin-suspended-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_off</span> Suspended Users
-            </a>
-            <a href="admin-suspended-staff.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">work_off</span> Suspended Staff
-            </a>
-            <a href="admin-locked-accounts.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">lock_person</span> Locked Accounts
-            </a>
-            <a href="admin-deleted-users.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">person_remove</span> Deleted Users
-            </a>
-            <a href="admin-interest.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">percent</span> Interest Management
-            </a>
-
-            <div class="admin-nav-section">ACCOUNT</div>
-            <a href="admin-profile.html" class="admin-nav-item">
-                <span class="material-symbols-outlined">account_circle</span> Admin Profile
-            </a>
-            <button class="admin-nav-item w-full text-left" data-toggle-theme style="background:none;border:none;width:100%;cursor:pointer;">
-                <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
-                <span data-theme-label>Dark Mode</span>
-            </button>
-            <a href="/Finzo/resources/views/auth/admin-login.html" class="admin-nav-item" style="color:#ff3b30;">
-                <span class="material-symbols-outlined">logout</span> Logout
-            </a>
-        </div>
-    </nav>
+    <!-- SIDEBAR COMPONENT -->
+    <div data-include="/Finzo/resources/views/layouts/admin-sidebar.html"></div>
 
     <div class="admin-main transition-all duration-300">
         <!-- TOP BAR -->
-        <header class="admin-topbar sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5">
-            <div class="flex items-center gap-4 flex-1">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
-                    <span class="material-symbols-outlined force-black dark:text-white">menu</span>
-                </button>
-                <a href="admin-staff.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-all text-slate-500">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                </a>
-                <div>
-                    <div class="text-[10px] font-bold tracking-[0.2em] text-primary dark:text-slate-400 uppercase">STAFF DOSSIER</div>
-                    <div id="header-staff-name" class="text-xl font-black tracking-tight mt-1 dark:text-white">Loading Staff...</div>
-                </div>
-            </div>
-            <div class="flex items-center gap-3 px-4">
-                <div id="header-status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5">
-                    <div class="status-dot w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                    <span class="status-label text-[10px] font-black uppercase tracking-widest text-slate-400">Loading</span>
-                </div>
-                </div>
-        </header>
+        <!-- TOP NAVBAR COMPONENT -->
+        <div data-include="/Finzo/resources/views/layouts/admin-navbar.html"></div>
 
         <main class="p-4 sm:p-6 lg:p-10 space-y-8">
             
@@ -525,6 +450,7 @@
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <script src="/Finzo/public/assets/js/admin/staff-detail.js?v=20260527"></script>
+    <script src="/Finzo/public/assets/js/core/component-loader.js"></script>
 </body>
 </html>
 

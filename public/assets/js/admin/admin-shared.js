@@ -185,4 +185,61 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
 
     // Final sync on load
     document.addEventListener('DOMContentLoaded', () => applyTheme());
+
+    // Component Loaded Event (for active nav highlighting)
+    document.addEventListener('componentsLoaded', function() {
+        // Highlight active sidebar link
+        const currentPath = window.location.pathname.split('/').pop();
+        const sidebar = document.getElementById('admin-sidebar');
+        if (sidebar) {
+            const links = sidebar.querySelectorAll('a.admin-nav-item');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href === currentPath) {
+                    link.classList.remove('text-slate-400', 'hover:bg-white/5');
+                    link.classList.add('bg-primary/20', 'text-primary', 'border', 'border-primary/30');
+                }
+            });
+        }
+
+        // Set Navbar Title based on page title
+        const navbarTitle = document.getElementById('navbar-title');
+        if (navbarTitle) {
+            const title = document.title.split('—')[1];
+            if (title) {
+                navbarTitle.textContent = title.trim();
+            }
+        }
+        
+        // Rebind logout since component is newly loaded
+        const logoutBtn = document.querySelector('.admin-logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await window.api.post('/auth/logout.php');
+                    window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                } catch (error) {
+                    window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                }
+            });
+        }
+        
+        // Apply theme to newly loaded components
+        applyTheme();
+        
+        // Re-bind sidebar toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (menuBtn && sidebar && overlay) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-open', 'active');
+                overlay.classList.add('active');
+            });
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open', 'active');
+                overlay.classList.remove('active');
+            });
+        }
+    });
 })();

@@ -25,104 +25,14 @@
     <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
 
     <!-- SIDEBAR -->
-    <nav class="fixed top-0 left-0 h-full w-72 bg-slate-900 text-white z-[100] transition-transform duration-300 -translate-x-full lg:translate-x-0" id="admin-sidebar">
-        <!-- Brand -->
-        <div class="h-20 flex flex-col justify-center px-8 border-b border-white/10 bg-slate-950">
-            <div class="font-headline font-black text-2xl tracking-tight text-white">Finzo</div>
-            <div class="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Enterprise Admin</div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="p-4 space-y-1 overflow-y-auto" style="height: calc(100vh - 80px);">
-            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-2">Core Operations</div>
-            
-            <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">analytics</span>
-                <span>Executive Overview</span>
-            </a>
-            <a href="admin-pending-approvals.html" class="flex items-center justify-between px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all group">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-[20px]">rule</span>
-                    <span>Approvals</span>
-                </div>
-            </a>
-            <a href="admin-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">group</span>
-                <span>User Management</span>
-            </a>
-            <a href="admin-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">badge</span>
-                <span>Staff Management</span>
-            </a>
-            <a href="admin-branches.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">store</span>
-                <span>Branch Operations</span>
-            </a>
-            <a href="admin-transactions.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">swap_horiz</span>
-                <span>Global Transactions</span>
-            </a>
-            <a href="admin-audit-log.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">manage_search</span>
-                <span>System Audit Log</span>
-            </a>
-
-            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">System & Security</div>
-            <a href="admin-suspended-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">person_off</span>
-                <span>Suspended Users</span>
-            </a>
-            <a href="admin-suspended-staff.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">work_off</span>
-                <span>Suspended Staff</span>
-            </a>
-            <a href="admin-locked-accounts.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">lock_person</span>
-                <span>Locked Accounts</span>
-            </a>
-            <a href="admin-deleted-users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">person_remove</span>
-                <span>Deleted Users</span>
-            </a>
-            <a href="admin-interest.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
-                <span class="material-symbols-outlined text-[20px]">percent</span>
-                <span>Interest Engine</span>
-            </a>
-
-            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-4 mt-8">Account</div>
-            <a href="admin-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/20 text-primary font-bold transition-all border border-primary/30">
-                <span class="material-symbols-outlined text-[20px]">account_circle</span>
-                <span>My Profile</span>
-            </a>
-            <button id="toggle-theme-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all text-left">
-                <span class="material-symbols-outlined text-[20px]" id="theme-icon">light_mode</span>
-                <span id="theme-label">Light Mode</span>
-            </button>
-            <a href="/Finzo/resources/views/auth/admin-login.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 font-bold transition-all mt-4 border border-red-500/10">
-                <span class="material-symbols-outlined text-[20px]">logout</span>
-                <span>Secure Logout</span>
-            </a>
-        </div>
-    </nav>
+    <!-- SIDEBAR COMPONENT -->
+    <div data-include="/Finzo/resources/views/layouts/admin-sidebar.html"></div>
 
     <!-- MAIN CONTENT -->
     <div class="lg:ml-72 min-h-screen flex flex-col transition-all duration-300">
         <!-- TOP NAVBAR -->
-        <header class="h-20 bg-white/80 dark:bg-[#0d1117]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 sticky top-0 z-50 px-4 sm:px-8 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-                <div class="hidden sm:block">
-                    <div class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-0.5">Account</div>
-                    <div class="font-headline text-xl font-black tracking-tight text-slate-900 dark:text-white">Admin Profile</div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-6" id="header-actions-container">
-                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-primary/30 uppercase" id="topbar-avatar">A</div>
-            </div>
-        </header>
+        <!-- TOP NAVBAR COMPONENT -->
+        <div data-include="/Finzo/resources/views/layouts/admin-navbar.html"></div>
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
             
@@ -433,5 +343,6 @@
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <script src="/Finzo/public/assets/js/admin/profile.js"></script>
+    <script src="/Finzo/public/assets/js/core/component-loader.js"></script>
 </body>
 </html>
