@@ -72,8 +72,9 @@ class AdminManagementService
             throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_password']);
         }
 
-        if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[^a-zA-Z0-9]/', $password)) {
-            throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'password']);
+        $pw_check = \validate_password_strength($password);
+        if (!$pw_check['valid']) {
+            throw new ApiException($pw_check['message'], 422, ['field' => 'password']);
         }
 
         if (!in_array($admin_role, ['admin', 'moderator'])) {
@@ -357,8 +358,9 @@ class AdminManagementService
             if ($new_pwd === $current_pwd) {
                 throw new ApiException('New password cannot be the same as current', 422, ['field' => 'new_password']);
             }
-            if (strlen($new_pwd) < 8 || !preg_match('/[A-Z]/', $new_pwd) || !preg_match('/[0-9]/', $new_pwd) || !preg_match('/[^a-zA-Z0-9]/', $new_pwd)) {
-                throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'new_password']);
+            $pw_check = \validate_password_strength($new_pwd);
+            if (!$pw_check['valid']) {
+                throw new ApiException($pw_check['message'], 422, ['field' => 'new_password']);
             }
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);

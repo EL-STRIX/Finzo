@@ -93,18 +93,23 @@ class StaffService
         ];
     }
 
+    private function validateAccountForTransaction(string $accountNumber): array
+    {
+        $account = $this->repository->findAccountForUpdate($accountNumber);
+        if (!$account) {
+            throw new \Exception("Account not found", 404);
+        }
+        if ($account['status'] !== 'active') {
+            throw new \Exception("Account is not active. Status: " . $account['status'], 403);
+        }
+        return $account;
+    }
+
     public function processDeposit(int $staffId, string $accountNumber, float $amount, string $reference_note)
     {
         try {
             $this->repository->beginTransaction();
-
-            $account = $this->repository->findAccountForUpdate($accountNumber);
-            if (!$account) {
-                throw new Exception("Account not found", 404);
-            }
-            if ($account['status'] !== 'active') {
-                throw new Exception("Account is not active. Status: " . $account['status'], 403);
-            }
+            $account = $this->validateAccountForTransaction($accountNumber);
 
             $new_balance = (float)$account['balance'] + $amount;
             $this->repository->creditAccount($account['id'], $amount);
@@ -155,14 +160,7 @@ class StaffService
     {
         try {
             $this->repository->beginTransaction();
-
-            $account = $this->repository->findAccountForUpdate($accountNumber);
-            if (!$account) {
-                throw new Exception("Account not found", 404);
-            }
-            if ($account['status'] !== 'active') {
-                throw new Exception("Account is not active. Status: " . $account['status'], 403);
-            }
+            $account = $this->validateAccountForTransaction($accountNumber);
 
             if ((float)$account['balance'] < $amount) {
                 throw new Exception("Insufficient balance. Available: " . format_currency($account['balance']), 422);
