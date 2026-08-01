@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // =============================
     async function loadStaffData() {
         try {
-            let response = await window.api.get('/staff/' + );
+            let response = await window.api.get('/staff/' + staffId);
 
             if (!response || (!response.success && response.status !== 'success')) {
                 if (window.showToast) window.showToast(response?.message || 'Error loading staff details', 'error');
