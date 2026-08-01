@@ -39,7 +39,7 @@ class Validator
         $clean = [];
         foreach ($data as $key => $value) {
             if (is_string($value)) {
-                $clean[$key] = htmlspecialchars(strip_tags(trim($value)), ENT_QUOTES, 'UTF-8');
+                $clean[$key] = strip_tags(trim($value));
             } else {
                 $clean[$key] = $value;
             }
