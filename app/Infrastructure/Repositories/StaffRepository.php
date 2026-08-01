@@ -167,10 +167,7 @@ class StaffRepository extends BaseRepository
         ]);
     }
 
-    public function getPDO(): PDO
-    {
-        return $this->db;
-    }
+
 
     public function countTransactionsByStaff(int $staffId, array $where_clauses, array $params)
     {

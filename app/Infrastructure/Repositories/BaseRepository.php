@@ -14,6 +14,11 @@ abstract class BaseRepository
         $this->db = Database::getInstance();
     }
 
+    public function getPDO(): PDO
+    {
+        return $this->db;
+    }
+
     /**
      * Helper for fetching a single row
      */

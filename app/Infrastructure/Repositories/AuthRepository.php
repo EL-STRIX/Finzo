@@ -243,8 +243,5 @@ class AuthRepository extends BaseRepository
         return $this->db->rollBack();
     }
 
-    public function getDb(): \PDO
-    {
-        return $this->db;
-    }
+
 }

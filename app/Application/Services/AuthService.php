@@ -44,7 +44,7 @@ class AuthService
         if (!password_verify($password, $user['password_hash'])) {
             $new_attempts = $user['failed_attempts'] + 1;
 
-            $pdo = $this->repository->getDb();
+            $pdo = $this->repository->getPDO();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'customer_lockout_duration', LOCKOUT_DURATION);
 
@@ -71,7 +71,7 @@ class AuthService
 
         $account = $this->repository->fetchActiveAccount($user['customer_id']);
 
-        $pdo = $this->repository->getDb();
+        $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}")
 );
@@ -122,7 +122,7 @@ class AuthService
                 $auto_unlock_at = $this->repository->lockAdmin($admin['id']);
                 $this->repository->logAdminLock($admin['admin_id'], $ip, $admin['id']);
 
-                $pdo = $this->repository->getDb();
+                $pdo = $this->repository->getPDO();
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords')
 );
@@ -144,7 +144,7 @@ class AuthService
 
         $this->repository->updateAdminSuccessfulLogin($admin['id'], $ip);
 
-        $pdo = $this->repository->getDb();
+        $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}")
 );
@@ -175,7 +175,7 @@ class AuthService
         if (!password_verify($password, $staff['password_hash'])) {
             $new_attempts = $staff['failed_attempts'] + 1;
 
-            $pdo = $this->repository->getDb();
+            $pdo = $this->repository->getPDO();
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'staff_lockout_duration', LOCKOUT_DURATION);
 
@@ -200,7 +200,7 @@ class AuthService
         $ip = get_client_ip();
         $this->repository->updateStaffSuccessfulLogin($staff['id'], $ip);
 
-        $pdo = $this->repository->getDb();
+        $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction('staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}")
 );

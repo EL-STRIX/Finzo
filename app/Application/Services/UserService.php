@@ -164,7 +164,7 @@ class UserService
         }
 
         $initial_deposit = $data['initial_deposit'];
-        $min_deposit = get_setting($this->repository->getDb(), 'min_initial_deposit', 500);
+        $min_deposit = get_setting($this->repository->getPDO(), 'min_initial_deposit', 500);
         if ($initial_deposit < $min_deposit) {
             $errors['initial_deposit'] = 'Initial deposit must be at least ' . CURRENCY_SYMBOL . $min_deposit;
         }

@@ -6,9 +6,9 @@ use PDO;
 
 class AdminStaffBranchRepository extends BaseRepository
 {
-    public function getPDO(): PDO
+    public function getActiveBranches()
     {
-        return $this->db;
+        return $this->fetchAll("SELECT id, name, branch_code FROM branches WHERE status = 'active'", [], \App\Domain\Models\Branch::class);
     }
 
     public function findStaffByEmail(string $email)

@@ -6,10 +6,7 @@ use PDO;
 
 class UserRepository extends BaseRepository
 {
-    public function getDb(): PDO
-    {
-        return $this->db;
-    }
+
 
     public function fetchAccountLookup(string $accountNumber)
     {
