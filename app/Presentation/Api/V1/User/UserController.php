@@ -154,19 +154,12 @@ class UserController
                     json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
                 }
             }
-            $nickname   = $this->security->cleanInput($_POST['nickname'] ?? '');
-            $accountNumber = $this->security->cleanInput($_POST['account_no'] ?? '');
-            $bank_name  = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
-            $errors = [];
-            if (\App\Shared\Core\Validation\Validator::isEmpty($nickname) || \App\Shared\Core\Validation\Validator::length($nickname) < 2 || \App\Shared\Core\Validation\Validator::length($nickname) > 100) {
-                $errors['nickname'] = 'Nickname must be between 2 and 100 characters';
-            }
-            if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
-                $errors['account_no'] = 'Account number is required';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-                json_response(['success' => false, 'errors' => $errors], 422);
-            }
+            $validator = new \App\Presentation\Validators\UserValidator($this->service);
+            $validated = $validator->validateBeneficiary($_POST);
+            $nickname = $validated['nickname'];
+            $accountNumber = $validated['account_no'];
+            $bank_name = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
+
             try {
                 $max_beneficiaries = get_setting($this->service->getDb(), 'max_beneficiaries', 10);
                 $count = $this->service->countBeneficiaries($userId);
@@ -213,30 +206,11 @@ class UserController
         }
 
         $userId = $_SESSION['user_id'];
-        $currentPassword = $_POST['current_password'] ?? '';
-        $newPassword     = $_POST['new_password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($currentPassword)) {
-            $errors['current_password'] = 'Current password is required';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
-            $errors['new_password'] = 'New password is required';
-        } else {
-            $strength = validate_password_strength($newPassword);
-            if (!$strength['valid']) {
-                $errors['new_password'] = $strength['message'];
-            }
-        }
-        if ($newPassword !== $confirmPassword) {
-            $errors['confirm_password'] = 'Passwords do not match';
-        }
-        if ($currentPassword === $newPassword && !\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
-            $errors['new_password'] = 'New password must be different from current password';
-        }
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
+        $validator = new \App\Presentation\Validators\UserValidator($this->service);
+        $validated = $validator->validatePasswordUpdate($_POST);
+        $currentPassword = $validated['current_password'];
+        $newPassword = $validated['new_password'];
+
 
         try {
             $user = $this->service->getUserPasswordHash($userId);
@@ -478,28 +452,12 @@ class UserController
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $fullName = $this->security->cleanInput($_POST['full_name'] ?? '');
-            $phone = $this->security->cleanInput($_POST['phone'] ?? '');
-            $email = $this->security->cleanInput($_POST['email'] ?? '');
-            $errors = [];
-            if (\App\Shared\Core\Validation\Validator::isEmpty($fullName) || \App\Shared\Core\Validation\Validator::length($fullName) < 2 || \App\Shared\Core\Validation\Validator::length($fullName) > 100) {
-                $errors['full_name'] = 'Full name must be between 2 and 100 characters';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($phone) && !validate_phone($phone)) {
-                $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($email) && !\App\Shared\Core\Validation\Validator::filterVar($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = 'Please enter a valid email address';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($email) && $email !== $_SESSION['user_email'] && $this->service->checkEmailExists($email, $userId)) {
-                $errors['email'] = 'This email is already in use by another account';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($phone) && $this->service->checkPhoneExists($phone, $userId)) {
-                $errors['phone'] = 'This phone number is already in use by another account';
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-                json_response(['success' => false, 'errors' => $errors], 422);
-            }
+            $validator = new \App\Presentation\Validators\UserValidator($this->service);
+            $validated = $validator->validateProfileUpdate($_POST, $userId, $_SESSION['user_email'] ?? '');
+            $fullName = $validated['full_name'];
+            $phone = $validated['phone'];
+            $email = $validated['email'];
+
             try {
                 $this->service->updateProfile($userId, $fullName, $phone, $email);
                 $_SESSION['user_name'] = $fullName;
@@ -632,31 +590,15 @@ class UserController
         }
 
         $userId = $_SESSION['user_id'];
-        $to_account_no = $this->security->cleanInput($_POST['to_account_no'] ?? '');
-        $amount = floatval($_POST['amount'] ?? 0);
-        $description = $this->security->cleanInput($_POST['description'] ?? '');
-        $transactionPin = $_POST['txn_pin'] ?? '';
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($to_account_no)) {
-            $errors['to_account_no'] = 'Recipient account number is required';
-        }
-        if ($amount <= 0) {
-            $errors['amount'] = 'Amount must be greater than zero';
-        } elseif ($amount != round($amount, 2)) {
-            $errors['amount'] = 'Amount can have at most 2 decimal places';
-        }
-        if (\App\Shared\Core\Validation\Validator::length($description) > 100) {
-            $errors['description'] = 'Description must not exceed 100 characters';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($transactionPin) || !\App\Shared\Core\Validation\Validator::pregMatch('/^\d{4}$/', $transactionPin)) {
-            $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
-        }
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
+        $validator = new \App\Presentation\Validators\UserValidator($this->service);
+        $validated = $validator->validateTransfer($_POST);
+        $to_account_no = $validated['to_account_no'];
+        $amount = $validated['amount'];
+        $description = $validated['description'];
+        $txnPin = $validated['txn_pin'];
 
         $pdo = $this->service->getDb();
-        if (!validate_pin($pdo, $userId, $transactionPin)) {
+        if (!validate_pin($pdo, $userId, $txnPin)) {
             json_response(['success' => false, 'message' => 'Invalid transaction PIN'], 401);
         }
 

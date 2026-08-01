@@ -56,24 +56,11 @@ class StaffController
 
 
         $staffId = $_SESSION['staff_id'];
-        $currentPassword  = $_POST['current_password'] ?? '';
-        $newPassword      = $_POST['new_password'] ?? '';
-        $confirmPassword  = $_POST['confirm_password'] ?? '';
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validatePasswordUpdate($_POST);
+        $currentPassword = $validated['current_password'];
+        $newPassword = $validated['new_password'];
 
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($currentPassword)) {
-            $errors['current_password'] = 'Current password is required';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
-            $errors['new_password'] = 'New password is required';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($confirmPassword)) {
-            $errors['confirm_password'] = 'Please confirm your new password';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
 
         $strength = validate_password_strength($newPassword);
         if (!$strength['valid']) {
@@ -137,21 +124,12 @@ class StaffController
 
 
         $staffId = $_SESSION['staff_id'];
-        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
-        $amount         = floatval($_POST['amount'] ?? 0);
-        $reference_note = $this->security->cleanInput($_POST['reference_note'] ?? '');
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validateDeposit($_POST);
+        $accountNumber = $validated['account_no'];
+        $amount = $validated['amount'];
+        $reference_note = $validated['reference_note'];
 
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
-            $errors['account_no'] = 'Account number is required';
-        }
-        if ($amount < 100) {
-            $errors['amount'] = 'Minimum deposit amount is ₹100';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
 
         try {
             $data = $this->service->processDeposit($staffId, $accountNumber, $amount, $reference_note);
@@ -294,34 +272,14 @@ class StaffController
         if ($method === 'POST') {
 
 
-            $phone                   = $this->security->cleanInput($_POST['phone'] ?? '');
-            $emergency_contact_name  = $this->security->cleanInput($_POST['emergency_contact_name'] ?? '');
-            $emergency_contact_phone = $this->security->cleanInput($_POST['emergency_contact_phone'] ?? '');
+            $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
+            
+            $validator = new \App\Presentation\Validators\StaffValidator();
+            $validated = $validator->validateProfileUpdate($_POST, $file);
+            $phone = $validated['phone'];
+            $emergency_contact_name = $validated['emergency_contact_name'];
+            $emergency_contact_phone = $validated['emergency_contact_phone'];
 
-            $errors = [];
-            if ($phone !== '' && !validate_phone($phone)) {
-                $errors['phone'] = 'Enter a valid 10-digit mobile number';
-            }
-            if ($emergency_contact_phone !== '' && !validate_phone($emergency_contact_phone)) {
-                $errors['emergency_contact_phone'] = 'Enter a valid 10-digit emergency contact number';
-            }
-
-            $file = null;
-            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-                $file = $_FILES['profile_photo'];
-                $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                $mimeType = $finfo->file($file['tmp_name']);
-                if (!in_array($mimeType, ALLOWED_IMAGE_TYPES)) {
-                    $errors['profile_photo'] = 'Only JPEG and PNG images are allowed';
-                }
-                if ($file['size'] > MAX_UPLOAD_SIZE) {
-                    $errors['profile_photo'] = 'Profile photo must be under 5 MB';
-                }
-            }
-
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-                json_response(['success' => false, 'errors' => $errors], 422);
-            }
 
             try {
                 $updated = $this->service->updateProfile($staffId, [
@@ -356,21 +314,12 @@ class StaffController
 
 
         $staffId = $_SESSION['staff_id'];
-        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
-        $amount         = floatval($_POST['amount'] ?? 0);
-        $identity_notes = $this->security->cleanInput($_POST['identity_notes'] ?? '');
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validateWithdrawal($_POST);
+        $accountNumber = $validated['account_no'];
+        $amount = $validated['amount'];
+        $identity_notes = $validated['identity_notes'];
 
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
-            $errors['account_no'] = 'Account number is required';
-        }
-        if ($amount <= 0) {
-            $errors['amount'] = 'Amount must be greater than zero';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
 
         try {
             $data = $this->service->processWithdrawal($staffId, $accountNumber, $amount, $identity_notes);
