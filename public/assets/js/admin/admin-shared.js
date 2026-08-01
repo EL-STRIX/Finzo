@@ -81,9 +81,9 @@ window.AdminPortal = {
                     e.preventDefault();
                     try {
                         await window.api.post('/auth/logout.php');
-                        window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
                     } catch (error) {
-                        window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
                     }
                 });
             }
@@ -218,9 +218,9 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
                 e.preventDefault();
                 try {
                     await window.api.post('/auth/logout.php');
-                    window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
                 } catch (error) {
-                    window.location.href = '/Finzo/resources/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
                 }
             });
         }

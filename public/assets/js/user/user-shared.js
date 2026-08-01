@@ -64,7 +64,7 @@ async function fetchUserSession() {
   try {
     const res = await window.api.get('/user/dashboard.php');
     if (res.status === 401 || res.status === 403) {   // Not logged in — redirect to login
-      window.location.href = '/Finzo/resources/views/auth/login.html';
+      window.location.href = '/Finzo/public/views/auth/login.html';
       return;
     }
     if (res.success) {
@@ -635,7 +635,7 @@ function requireLogin() {
   // Session validation is handled server-side by middleware.
   // This provides a client-side fallback.
   const status = UserState.status;
-  if (!status) { window.location.href = '/Finzo/resources/views/auth/login.html'; return false; }
+  if (!status) { window.location.href = '/Finzo/public/views/auth/login.html'; return false; }
   return true;
 }
 
@@ -707,7 +707,7 @@ window.FinzoSession = {
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
       window.location.href = '/Finzo/public/index.html';
     } catch (e) {
-      window.location.href = '/Finzo/resources/views/auth/login.html';
+      window.location.href = '/Finzo/public/views/auth/login.html';
     }
   }
 };

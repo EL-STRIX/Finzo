@@ -17,7 +17,4 @@
     
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]
-    
-    # Bridge legacy view redirects to the resources directory
-    RewriteRule ^views/(.*)$ resources/views/$1 [L,QSA]
 </IfModule>

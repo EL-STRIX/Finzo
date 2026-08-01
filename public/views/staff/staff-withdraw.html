@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Staff — New Withdrawal</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    
+    <!-- Design System Configuration -->
+    <script defer src="/Finzo/public/assets/js/tailwind-config.js"></script>
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+    <script defer src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+    <script defer src="/Finzo/public/assets/js/staff/staff-shared.js"></script>
+    
+    
+  </head>
+
+<body class="ds-bg ds-text antialiased">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <!-- SIDEBAR COMPONENT -->
+    <div data-include="/Finzo/public/views/layouts/staff-sidebar.html"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="lg:ml-72 min-h-screen flex flex-col">
+        <!-- TOP NAVBAR -->
+        <!-- TOP NAVBAR COMPONENT -->
+        <div data-include="/Finzo/public/views/layouts/staff-navbar.html"></div>
+
+        <main class="flex-1 p-4 sm:p-8 max-w-5xl mx-auto w-full space-y-8">
+            
+            <!-- PAGE HEADER -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-black font-headline text-text-main dark:text-white tracking-tight">Debit Money</h2>
+                    <p class="text-text-muted dark:text-text-muted text-sm mt-1 font-medium">Safely withdraw money from customer account.</p>
+                </div>
+                <a href="staff-dashboard.html" class="flex items-center gap-2 px-4 py-2 bg-surface-hover dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 text-xs font-bold text-text-muted dark:text-text-muted hover:bg-surface-border dark:hover:bg-white/10 transition-all">
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
+                    Back
+                </a>
+            </div>
+
+            <!-- STEP INDICATOR (Compact) -->
+            <div class="ds-card p-4 flex items-center justify-between px-6 mb-8 overflow-x-auto">
+                <div class="flex items-center gap-3">
+                    <div class="step-indicator" data-step="1">1</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-text-muted whitespace-nowrap">Find Account</span>
+                </div>
+                <div class="flex-1 h-px bg-surface-border dark:bg-white/10 mx-4 hidden sm:block"></div>
+                <div class="flex items-center gap-3">
+                    <div class="step-indicator" data-step="2">2</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-text-muted whitespace-nowrap">Details</span>
+                </div>
+                <div class="flex-1 h-px bg-surface-border dark:bg-white/10 mx-4 hidden sm:block"></div>
+                <div class="flex items-center gap-3">
+                    <div class="step-indicator" data-step="3">3</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-text-muted whitespace-nowrap">Confirm</span>
+                </div>
+                <div class="flex-1 h-px bg-surface-border dark:bg-white/10 mx-4 hidden sm:block"></div>
+                <div class="flex items-center gap-3">
+                    <div class="step-indicator" data-step="4">4</div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-text-muted whitespace-nowrap">Receipt</span>
+                </div>
+            </div>
+
+            <!-- STEP 1: FIND ACCOUNT -->
+            <div id="section-1" class="space-y-6">
+                <div class="ds-card p-6 sm:p-8">
+                    <h3 class="text-lg font-black font-headline text-text-main dark:text-white mb-6 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/10 flex items-center justify-center text-danger-base dark:text-danger-base">1</span>
+                        Customer Account Lookup
+                    </h3>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Account Number</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
+                                <input type="text" id="account-lookup" placeholder="Enter 10-digit account number" 
+                                    class="w-full ds-input pl-12 focus:border-danger-base dark:focus:border-danger-base focus:ring-red-500/20">
+                            </div>
+                        </div>
+                        <div class="flex items-end">
+                            <button id="find-btn" class="h-[46px] px-8 bg-danger-surface text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-danger-surface transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                                <span>Find Account</span>
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUCCESS BANNER -->
+                <div id="account-success" class="hidden animate-in fade-in duration-300" aria-live="polite">
+                    <div class="ds-card border-l-4 border-l-emerald-500 p-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 pb-6 border-b border-surface-border dark:border-white/5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-full bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base flex items-center justify-center text-xl font-black shadow-inner" id="res-initials">--</div>
+                                <div>
+                                    <h4 class="text-xl font-black font-headline text-text-main dark:text-white leading-tight" id="res-name">Loading...</h4>
+                                    <div class="text-text-muted font-mono text-sm mt-1" id="res-acc">FNZ---</div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base border border-success-base dark:border-success-base/20 rounded-lg text-[10px] font-black uppercase tracking-widest">Account Active</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-surface-subtle dark:bg-white/5 rounded-xl p-4 border border-surface-border dark:border-white/5">
+                                <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Account Type</div>
+                                <div class="font-bold text-text-main dark:text-white account-type-val">Loading...</div>
+                            </div>
+                            <div class="bg-surface-subtle dark:bg-white/5 rounded-xl p-4 border border-surface-border dark:border-white/5">
+                                <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Current Balance</div>
+                                <div class="font-black text-success-base dark:text-success-base text-lg current-balance-val">₹0.00</div>
+                            </div>
+                            <div class="bg-surface-subtle dark:bg-white/5 rounded-xl p-4 border border-surface-border dark:border-white/5">
+                                <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Daily Limit Left</div>
+                                <div class="font-bold text-text-main dark:text-white daily-limit-val">₹0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button class="flex-1 py-3 ds-btn-secondary text-sm" data-action="resetForm()">Search Again</button>
+                            <button class="flex-1 py-3 bg-danger-surface text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-danger-surface transition-all text-sm flex items-center justify-center gap-2" data-action="goToStep2()">
+                                <span>Proceed with Withdrawal</span>
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ERROR BANNER -->
+                <div id="account-error" class="hidden ds-card border-l-4 border-l-red-500 p-6 flex items-center gap-4 animate-in fade-in duration-300" aria-live="polite">
+                    <div class="w-10 h-10 rounded-full bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base flex items-center justify-center">
+                        <span class="material-symbols-outlined" aria-hidden="true">error</span>
+                    </div>
+                    <div>
+                        <h4 class="text-text-main dark:text-white font-bold">Account Not Found</h4>
+                        <p class="text-text-muted text-sm">Verify the 10-digit number and try again.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: WITHDRAWAL DETAILS -->
+            <div id="section-2" class="hidden space-y-6">
+                <div class="ds-card p-6 sm:p-8">
+                    <h3 class="text-lg font-black font-headline text-text-main dark:text-white mb-6 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/10 flex items-center justify-center text-danger-base dark:text-danger-base">2</span>
+                        Enter Withdrawal Details
+                    </h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3 space-y-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Withdrawal Amount (₹)</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-text-muted text-xl">₹</span>
+                                    <input type="number" id="with-amount" placeholder="0.00"
+                                        class="w-full ds-input pl-10 h-16 text-2xl font-black font-mono tracking-tight focus:border-danger-base dark:focus:border-danger-base focus:ring-red-500/20">
+                                </div>
+                                <div id="limit-msg" class="mt-2 text-[10px] font-bold px-1 hidden"></div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Withdrawal Type</label>
+                                    <select id="with-type" class="w-full ds-input h-[46px] focus:border-danger-base dark:focus:border-danger-base focus:ring-red-500/20">
+                                        <option value="Cash Withdrawal">Cash Withdrawal</option>
+                                        <option value="Cheque Encashment">Cheque Encashment</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Staff Notes (Internal Only)</label>
+                                    <textarea id="with-notes" placeholder="e.g. Identity verified via Aadhaar Card..." rows="3"
+                                        class="w-full ds-input p-3 focus:border-danger-base dark:focus:border-danger-base focus:ring-red-500/20"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dense Live Summary Sidebar -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-danger-surface dark:bg-danger-surface/10 rounded-2xl p-6 border border-danger-base dark:border-danger-base/10 sticky top-24">
+                                <h4 class="text-danger-base dark:text-danger-base font-black uppercase text-[10px] tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">receipt_long</span>
+                                    Live Summary
+                                </h4>
+                                <div class="space-y-4 font-mono text-sm">
+                                    <div class="flex justify-between items-center opacity-80">
+                                        <span class="text-text-muted dark:text-text-muted text-xs">Daily Limit Remaining</span>
+                                        <span class="text-text-main dark:text-white font-bold text-xs daily-limit-display">₹---</span>
+                                    </div>
+                                    <div class="h-px bg-danger-surface/50 dark:bg-danger-surface/20"></div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-text-muted dark:text-text-muted">Debit Amount</span>
+                                        <span class="text-lg font-black text-danger-base dark:text-danger-base" id="sum-amt">₹0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 rounded bg-white/50 dark:bg-white/5 border border-danger-base/50 dark:border-danger-base/20">
+                                        <span class="text-text-main dark:text-text-muted font-bold text-xs">Bal After</span>
+                                        <span class="text-text-main dark:text-white font-black text-sm" id="sum-after">₹---</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-surface-border dark:border-white/5 flex justify-end gap-3">
+                        <button class="px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep1()">Back</button>
+                        <button id="confirm-step-btn" class="px-8 py-2.5 bg-danger-surface text-white font-bold rounded-xl shadow-lg shadow-red-600/20 hover:bg-danger-surface transition-all text-sm flex items-center gap-2" data-action="goToStep3()">
+                            Review & Confirm <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: CONFIRMATION -->
+            <div id="section-3" class="hidden space-y-6 animate-in fade-in duration-300">
+                <div class="ds-card overflow-hidden">
+                    <div class="bg-danger-surface p-8 text-center text-white relative">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-30"></div>
+                        <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 relative z-10 shadow-inner">
+                            <span class="material-symbols-outlined text-3xl" aria-hidden="true">warning</span>
+                        </div>
+                        <h3 class="text-2xl font-black font-headline relative z-10">Confirm Withdrawal</h3>
+                        <p class="text-danger-base font-bold text-xs mt-2 uppercase tracking-widest relative z-10">Verify Identity First</p>
+                    </div>
+
+                    <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <h4 class="text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5 pb-2">Transaction Details</h4>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-muted text-sm font-medium">Account Name</span>
+                                <span class="text-text-main dark:text-white font-bold" id="confirm-customer-name">Loading...</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-muted text-sm font-medium">Account Number</span>
+                                <span class="text-text-main dark:text-white font-mono font-bold" id="confirm-acc">--</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-danger-surface dark:bg-danger-surface/10 p-3 rounded-xl border border-danger-base dark:border-danger-base/10 mt-2">
+                                <span class="text-danger-base dark:text-danger-base font-bold">Amount to Debit</span>
+                                <span class="text-2xl font-black text-danger-base dark:text-danger-base font-mono tracking-tight" id="confirm-amt">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-[10px] font-black text-text-muted uppercase tracking-widest border-b border-surface-border dark:border-white/5 pb-2">Audit Trail</h4>
+                            <div class="grid grid-cols-2 gap-4 bg-surface-subtle dark:bg-white/5 p-4 rounded-xl border border-surface-border dark:border-white/5">
+                                <div>
+                                    <div class="text-[10px] text-text-muted uppercase">Processed By</div>
+                                    <div class="font-bold text-text-main dark:text-white text-sm staff-name-display truncate">--</div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-text-muted uppercase">Staff ID</div>
+                                    <div class="font-bold text-text-main dark:text-white text-sm font-mono staff-id-display">--</div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-text-muted uppercase">Branch</div>
+                                    <div class="font-bold text-text-main dark:text-white text-sm staff-branch-display">--</div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-text-muted uppercase">Date</div>
+                                    <div class="font-bold text-text-main dark:text-white text-sm" id="current-date-display">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 bg-surface-subtle dark:bg-white/2 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-3 text-xs font-bold text-danger-base dark:text-danger-base max-w-sm">
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">verified_user</span>
+                            Ensure customer ID proof is verified before executing this debit.
+                        </div>
+                        <div class="flex gap-3 w-full sm:w-auto">
+                            <button class="flex-1 sm:flex-none px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep2()">Edit</button>
+                            <button id="final-withdraw-btn" class="flex-1 sm:flex-none px-8 py-2.5 bg-danger-surface hover:bg-danger-surface text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">done_all</span>
+                                Confirm Withdrawal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL OVERLAYS -->
+    <div id="modal-overlay" class="fixed inset-0 bg-surface-dark/60 backdrop-blur-sm z-[2000] hidden items-center justify-center opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-surface-border dark:border-white/10" role="dialog" aria-modal="true">
+            <div class="w-16 h-16 rounded-2xl bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base flex items-center justify-center mb-6 mx-auto border border-danger-base dark:border-danger-base/20">
+                <span class="material-symbols-outlined text-3xl" aria-hidden="true">logout</span>
+            </div>
+            <h3 class="text-xl font-bold font-headline text-center mb-2 text-text-main dark:text-white">End Shift?</h3>
+            <p class="text-text-muted text-sm text-center mb-8 font-medium">Are you sure you want to end your shift and logout?</p>
+            <div class="flex gap-3">
+                <button class="flex-1 py-2.5 bg-surface-hover dark:bg-white/5 text-text-main dark:text-text-muted font-bold text-sm rounded-xl hover:bg-surface-border dark:hover:bg-white/10 transition-all modal-close">Cancel</button>
+                <a href="../../../api/auth/logout.php" class="flex-1 py-2.5 bg-danger-surface text-white text-center font-bold text-sm rounded-xl hover:bg-danger-surface transition-all shadow-md shadow-red-600/20">End Shift</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    
+<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
+</body>
+</html>

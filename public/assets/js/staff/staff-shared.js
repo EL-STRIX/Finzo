@@ -140,7 +140,7 @@ async function fetchStaffSession() {
     try {
         const data = await window.api.get('/staff/dashboard.php');
         if (data.status === 401 || data.status === 403) {
-            window.location.href = '/Finzo/resources/views/auth/staff-login.html';
+            window.location.href = '/Finzo/public/views/auth/staff-login.html';
             return null;
         }
         if (data.success && data.staff) {
