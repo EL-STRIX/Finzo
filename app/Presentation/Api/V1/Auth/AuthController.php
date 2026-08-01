@@ -32,7 +32,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/mfa-challenge.html'
+                'redirect' => '/public/views/auth/mfa-challenge.php'
             ];
         }
 
@@ -44,9 +44,9 @@ class AuthController
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 
         if ($user['status'] === 'pending') {
-            $redirect = $base . '/public/views/user/complete-profile.html';
+            $redirect = $base . '/public/views/user/complete-profile.php';
         } else {
-            $redirect = $base . '/public/views/user/dashboard.html';
+            $redirect = $base . '/public/views/user/dashboard.php';
         }
 
         return [
@@ -77,7 +77,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/admin-mfa-challenge.html'
+                'redirect' => '/public/views/auth/admin-mfa-challenge.php'
             ];
         }
 
@@ -86,7 +86,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/admin/admin-dashboard.html'
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/admin/admin-dashboard.php'
         ];
     }
 
@@ -103,7 +103,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/staff-mfa-challenge.html'
+                'redirect' => '/public/views/auth/staff-mfa-challenge.php'
             ];
         }
 
@@ -112,7 +112,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/staff/staff-dashboard.html'
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/staff/staff-dashboard.php'
         ];
     }
 
@@ -147,7 +147,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Password has been reset successfully. You can now log in with your new password.',
-            'redirect' => $base . '/public/views/auth/login.html'
+            'redirect' => $base . '/public/views/auth/login.php'
         ];
     }
 
@@ -166,7 +166,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
-            'redirect' => $base . '/public/views/auth/login.html'
+            'redirect' => $base . '/public/views/auth/login.php'
         ];
     }
 
@@ -178,14 +178,14 @@ class AuthController
 
         switch ($role) {
             case 'staff':
-                $redirect = $base . '/public/views/auth/staff-login.html';
+                $redirect = $base . '/public/views/auth/staff-login.php';
                 break;
             case 'admin':
-                $redirect = $base . '/public/views/auth/admin-login.html';
+                $redirect = $base . '/public/views/auth/admin-login.php';
                 break;
             case 'customer':
             default:
-                $redirect = $base . '/public/views/auth/login.html';
+                $redirect = $base . '/public/views/auth/login.php';
                 break;
         }
 
