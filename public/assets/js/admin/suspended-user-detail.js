@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetail() {
         try {
-            const response = await window.api.get(`/users/`);
+            const response = await window.api.get(`/users/${userId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data.user);
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         window.api.setButtonLoading(btn, true, 'Confirming...');
         try {
-            const response = await window.api.patch(/users/{}, );
+            const response = await window.api.patch('/users/' + userId, { action: 'delete', password: password });
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account archived successfully', 'success');
                 setTimeout(() => window.location.href = 'admin-deleted-users.html', 1500);
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true, 'Confirming...');
         
         try {
-            const response = await window.api.patch(/users/{}, );
+            const response = await window.api.patch('/users/' + userId, { action: 'reinstate' });
 
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account reinstated. Redirecting...', 'success');

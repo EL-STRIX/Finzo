@@ -311,7 +311,11 @@ window.executeGovernanceAction = async () => {
     const mappedAction = currentMode === 'block' ? 'suspend' : 'delete';
 
     try {
-        const response = await window.api.patch(/users/{}, );
+        const response = await window.api.patch('/users/' + userId, {
+            action: mappedAction,
+            reason: reason,
+            password: pass
+        });
 
         if (response.status === 'success' || response.success) {
             document.getElementById('confirm-governance-btn').textContent = 'SUCCESS! AUDIT LOGGED';
@@ -401,7 +405,7 @@ function renderUserTransactions(transactions) {
 async function executeReinstatement() {
     const userId = new URLSearchParams(window.location.search).get('id');
     try {
-        const response = await window.api.patch(/users/{}, );
+        const response = await window.api.patch('/users/' + userId, { action: 'reinstate' });
 
         if (response.status === 'success' || response.success) {
             window.portal.showToast('User account reactivated successfully', 'success');

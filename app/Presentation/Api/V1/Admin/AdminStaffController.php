@@ -257,59 +257,7 @@ class AdminStaffController
         return ['success' => true, 'message' => 'Photo updated successfully', 'photo_url' => APP_URL . '/' . $new_photo_path];
     }
 
-    public function staffDetail(?string $id = null, ?string $extra = null): array
-    {
-        $staffId = intval($_GET['staff_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
-        if (!$staffId) {
-            throw new ApiException('Staff ID is required', 422);
-        }
 
-        $pdo = $this->service->getRepo()->getPDO();
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e828e2ca'));
-        $stmt->execute([$staffId]);
-        $staff = $stmt->fetch();
-        if (!$staff) {
-            throw new ApiException('Staff member not found', 404);
-        }
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_897e4bad'));
-        $stmt->execute([$staffId]);
-        $performance = $stmt->fetch();
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_478c127d'));
-        $stmt->execute([$staffId]);
-        $today_performance = $stmt->fetch();
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_d9c30801'));
-        $stmt->execute([$staffId]);
-        $total_shifts = (int)$stmt->fetchColumn();
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_969d95c9'));
-        $stmt->execute([$staffId]);
-        $transactions = $stmt->fetchAll();
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_79365276'));
-        $stmt->execute(['id' => $staffId, 'actor_id' => $staff['staff_id']]);
-        $shifts = $stmt->fetchAll();
-
-        $documents = [];
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($staff['id_type'])) {
-            $documents[] = ['id_type' => $staff['id_type'], 'id_number' => $staff['id_number'], 'front_image' => $staff['front_image'], 'back_image' => $staff['back_image']];
-        }
-
-        $address = ['street' => $staff['street'], 'city' => $staff['city'], 'state' => $staff['state'], 'pincode' => $staff['pincode'], 'country' => $staff['country']];
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_31441bc5'));
-        $stmt->execute([$staff['staff_id']]);
-        $activities = $stmt->fetchAll();
-
-        return [
-            'success' => true, 'staff' => $staff, 'performance' => $performance, 'today_performance' => $today_performance,
-            'total_shifts' => $total_shifts, 'shifts' => $shifts, 'transactions' => $transactions,
-            'activities' => $activities, 'documents' => $documents, 'address' => $address
-        ];
-    }
 
     public function getStaffList(?string $id = null, ?string $extra = null): array
     {
@@ -369,51 +317,6 @@ class AdminStaffController
             'success' => true, 'staff' => $staff_list, 'total' => $total, 'pages' => $pages, 'current_page' => $page,
             'stats' => ['total_staff' => (int)$total_staff, 'active_staff' => (int)$active_staff, 'suspended_staff' => (int)$suspended_staff, 'transactions_today' => (int)$txns_today]
         ];
-    }
-
-    public function suspendedStaffDetail(?string $id = null, ?string $extra = null): array
-    {
-        $staffId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
-        if (!$staffId) {
-            throw new ApiException('Staff ID is required', 422);
-        }
-
-        $pdo = $this->service->getRepo()->getPDO();
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_0b1bf48e'));
-        $stmt->execute([$staffId]);
-        $staff = $stmt->fetch();
-
-        if (!$staff) {
-            throw new ApiException('Suspended staff record not found', 404);
-        }
-
-        $name_parts = explode(' ', $staff['full_name']);
-        $staff['initials'] = strtoupper(substr($name_parts[0], 0, 1) . (\App\Shared\Core\Validation\Validator::isSet($name_parts[1]) ? substr($name_parts[1], 0, 1) : ''));
-        $staff['suspended_at'] = date('d M Y, H:i', strtotime($staff['suspended_at']));
-        $staff['onboarding_date'] = date('d M Y', strtotime($staff['onboarding_date']));
-        $staff['duration'] = 'Indefinite';
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_6ba2bbee'));
-        $stmt->execute([$staffId]);
-        $stats = $stmt->fetch();
-
-        $staff['lifetime_volume'] = '₹' . number_format($stats['total_volume'], 2);
-        $staff['deposit_count'] = $stats['deposit_count'];
-        $staff['withdrawal_count'] = $stats['withdrawal_count'];
-        $staff['avg_daily_volume'] = '₹' . number_format($stats['total_volume'] / 30, 2);
-
-        $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_2ad69a5c'));
-        $stmt->execute([$staffId]);
-        $history = $stmt->fetchAll();
-
-        foreach ($history as &$h) {
-            $h['amount'] = '₹' . number_format($h['amount'], 2);
-            $h['timestamp'] = date('d M Y, H:i', strtotime($h['timestamp']));
-            $h['type'] = strtoupper($h['type']);
-            $h['status'] = strtoupper($h['status']);
-        }
-
-        return ['status' => 'success', 'data' => ['staff' => $staff, 'history' => $history]];
     }
 
     public function getSuspendedStaff(?string $id = null, ?string $extra = null): array

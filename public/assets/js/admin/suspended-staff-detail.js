@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetail() {
         try {
-            const response = await window.api.get(`/staff/suspended/`);
+            const response = await window.api.get(`/staff/${staffId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data.staff);
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true);
         
         try {
-            const response = await window.api.patch(/staff/{}, );
+            const response = await window.api.patch('/staff/' + staffId, { action: 'reinstate', password: password });
 
             if (response.success || response.status === 'success') {
                 window.showToast('Staff account reinstated. Redirecting...', 'success');

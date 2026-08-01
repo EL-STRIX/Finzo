@@ -43,6 +43,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Other'
             ]
         },
+        reinstate: {
+            title: 'Reinstate Staff',
+            subtitle: 'Restore system access',
+            body: 'You are about to reinstate <b id="reinstate-target-name">...</b>. This will restore all system access immediately.',
+            icon: 'check_circle',
+            color: 'emerald',
+            btnText: 'Yes, Reinstate Account',
+            btnClass: 'bg-emerald-600 shadow-emerald-600/20',
+            reasons: []
+        },
         delete: {
             title: 'Delete Staff Account',
             subtitle: 'Critical security procedure',
@@ -313,16 +323,25 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('summary-total-amount', fmtCurrency((parseFloat(today.total_deposits) || 0) + (parseFloat(today.total_withdrawals) || 0)));
 
             // ─── BUTTON STATE ───────────────────────
-            if ((staff.status || '').toLowerCase() !== 'active') {
-                let deactivateBtn = document.getElementById('deactivate-staff-btn');
+            let deactivateBtn = document.getElementById('deactivate-staff-btn');
+            if ((staff.status || '').toLowerCase() === 'suspended') {
                 if (deactivateBtn) {
-                    deactivateBtn.disabled = true;
-                    deactivateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    deactivateBtn.dataset.action = 'reinstate';
+                    deactivateBtn.classList.remove('hover:border-warning-base', 'hover:bg-warning-surface');
+                    deactivateBtn.classList.add('hover:border-emerald-500', 'hover:bg-emerald-50');
                 }
                 let suspendLabel = document.getElementById('suspend-label');
-                if (suspendLabel) suspendLabel.textContent = 'Already Suspended';
+                if (suspendLabel) suspendLabel.textContent = 'Reinstate Staff';
                 let suspendIcon = document.getElementById('suspend-icon');
-                if (suspendIcon) suspendIcon.textContent = 'check_circle';
+                if (suspendIcon) {
+                    suspendIcon.textContent = 'check_circle';
+                    suspendIcon.parentElement.classList.replace('text-warning-base', 'text-emerald-500');
+                    suspendIcon.parentElement.classList.replace('bg-warning-surface/10', 'bg-emerald-100');
+                }
+                let suspendSubtext = deactivateBtn ? deactivateBtn.querySelector('.text-\\[9px\\]') : null;
+                if (suspendSubtext) suspendSubtext.textContent = 'Restore access';
+            } else {
+                if (deactivateBtn) deactivateBtn.dataset.action = 'deactivate';
             }
 
             // ─── TRANSACTIONS TABLE ─────────────────
@@ -472,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Button bindings
     let dBtn = document.getElementById('deactivate-staff-btn');
-    if (dBtn) dBtn.addEventListener('click', function() { if (!this.disabled) openGovernanceModal('deactivate'); });
+    if (dBtn) dBtn.addEventListener('click', function() { if (!this.disabled) openGovernanceModal(this.dataset.action || 'deactivate'); });
 
     let delBtn = document.getElementById('delete-staff-btn');
     if (delBtn) delBtn.addEventListener('click', function() { openGovernanceModal('delete'); });
@@ -496,6 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentAction === 'deactivate') apiAction = 'suspend';
             else if (currentAction === 'reset') apiAction = 'reset_password';
             else if (currentAction === 'delete') apiAction = 'delete';
+            else if (currentAction === 'reinstate') apiAction = 'reinstate';
 
             if (currentAction === 'deactivate' && !reason) {
                 alert('Please select a reason for deactivation.');
@@ -507,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 let notesEl = document.getElementById('custom-reason-notes');
-                let resp = await window.api.patch(/staff/{}, );
+                let resp = await window.api.patch('/staff/' + staffId, { action: apiAction, password: password, reason: reason });
 
                 if (resp.status === 'success' || resp.success) {
                     if (currentAction === 'reset') {

@@ -50,6 +50,11 @@ if (file_exists($envFile)) {
     }
 }
 
+// Populate $_POST for PUT/PATCH requests
+if (in_array($_SERVER['REQUEST_METHOD'] ?? '', ['PUT', 'PATCH'])) {
+    parse_str(file_get_contents('php://input'), $_POST);
+}
+
 // Register global error/exception handlers only if we are not running tests
 if (getenv('APP_ENV') !== 'testing') {
     // Global Exception Handler for API standard

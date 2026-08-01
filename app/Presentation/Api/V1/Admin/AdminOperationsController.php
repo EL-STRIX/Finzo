@@ -79,44 +79,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function exportUsers()
-    {
-        $filters = [
-            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
-        ];
 
-        $users = $this->service->exportUsers($filters);
-
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=Finzo_Users_Export_' . date('Y-m-d') . '.csv');
-
-        $output = fopen('php://output', 'w');
-        fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Last Active']);
-
-        foreach ($users as $row) {
-            $safe_name = $row['full_name'];
-            if (\App\Shared\Core\Validation\Validator::pregMatch('/^[=\-+@\t\r]/', $safe_name)) {
-                $safe_name = "'" . $safe_name;
-            }
-
-            fputcsv($output, [
-                $row['customer_id'] ?: 'Pending',
-                $safe_name,
-                $row['email'],
-                $row['phone'],
-                ucfirst($row['status']),
-                $row['created_at'],
-                $row['last_login_at'] ?: 'Never'
-            ]);
-        }
-
-        fclose($output);
-        if (defined('FINZO_TESTING') && FINZO_TESTING) {
-            throw new \Exception('Exit called after export');
-        }
-        exit();
-    }
 
     public function interest(?string $id = null, ?string $extra = null): array
     {
@@ -355,19 +318,7 @@ class AdminOperationsController
         return $data;
     }
 
-    public function suspendedUserDetail(?string $id = null, ?string $extra = null): array
-    {
-        $userId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
-        if (!$userId) {
-            throw new ApiException('User ID is required', 422);
-        }
 
-        $data = $this->service->getSuspendedUserDetail($userId);
-        if (!$data['success']) {
-            throw new ApiException($data['message'], 404);
-        }
-        return $data;
-    }
 
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {

@@ -159,7 +159,7 @@
             if (!confirm(confirmMsg)) return;
 
             try {
-                const response = await window.api.patch(/admins/{}, );
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'toggle_status' });
 
                 if (response.success) {
                     window.portal.showToast(response.message, 'success');
@@ -203,7 +203,7 @@
             window.api.setButtonLoading(btn, true);
 
             try {
-                const response = await window.api.patch(/admins/{}, );
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'reset_password' });
 
                 if (response.success) {
                     // Show success UI
@@ -254,7 +254,7 @@
             window.api.setButtonLoading(btn, true);
 
             try {
-                const response = await window.api.patch(/admins/{}, );
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'delete' });
 
                 if (response.success) {
                     window.portal.showToast(response.message, 'success');

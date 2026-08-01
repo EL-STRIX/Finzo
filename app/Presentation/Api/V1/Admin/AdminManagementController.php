@@ -78,32 +78,7 @@ class AdminManagementController
         return ['success' => true, 'next_id' => $next_id];
     }
 
-    public function profile(?string $id = null, ?string $extra = null): array
-    {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            return $this->service->getProfileData($adminId);
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $this->security->cleanInput($_POST['action'] ?? 'update_profile');
-
-            if ($action === 'change_password') {
-                $result = $this->service->changePassword($adminId, $_POST);
-            } elseif ($action === 'upload_avatar') {
-                $file = $_FILES['avatar'] ?? null;
-                $result = $this->service->uploadAvatar($adminId, $file, true);
-            } else {
-                $result = $this->service->updateProfile($adminId, $_POST);
-            }
-
-            unset($result['code']);
-            return $result;
-        }
-
-        throw new ApiException('Method not allowed', 405);
-    }
 
     public function updateAdminProfile(?string $id = null, ?string $extra = null): array
     {

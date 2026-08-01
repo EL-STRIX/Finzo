@@ -270,62 +270,9 @@ class AdminManagementService
         ];
     }
 
-    public function getProfileData(int $adminId): array
-    {
-        $admin = $this->repository->getAdminById($adminId);
-        if (!$admin) {
-            throw new ApiException('Admin not found', 404);
-        }
-        $recent_activity = $this->repository->getAdminActivity($admin['admin_id'], 10);
-        $total_actions = $this->repository->getActivityCount($admin['admin_id']);
 
-        return [
-            'success' => true,
-            'admin'   => [
-                'id' => $admin['id'], 'admin_id' => $admin['admin_id'], 'full_name' => $admin['full_name'],
-                'email' => $admin['email'], 'phone' => $admin['phone'], 'profile_photo' => $admin['profile_photo'],
-                'status' => $admin['status'], 'last_login_at' => $admin['last_login_at'], 'last_login_ip' => $admin['last_login_ip'], 'created_at' => $admin['created_at']
-            ],
-            'recent_activity' => $recent_activity,
-            'security' => [
-                'total_actions' => $total_actions,
-                'last_login_at' => $admin['last_login_at'],
-                'last_login_ip' => $admin['last_login_ip']
-            ]
-        ];
-    }
 
-    public function changePassword(int $adminId, array $data): array
-    {
-        $current = $data['current_password'] ?? '';
-        $new_pwd = $data['new_password'] ?? '';
-        $confirm = $data['confirm_password'] ?? '';
 
-        if (empty($current) || empty($new_pwd)) {
-            throw new ApiException('All password fields are required', 422);
-        }
-        if ($new_pwd !== $confirm) {
-            throw new ApiException('Passwords do not match', 422);
-        }
-        $strength = validate_password_strength($new_pwd);
-        if (!$strength['valid']) {
-            throw new ApiException($strength['message'], 422);
-        }
-
-        $admin = $this->repository->getAdminById($adminId);
-        if (!password_verify($current, $admin['password_hash'])) {
-            throw new ApiException('Current password is incorrect', 401);
-        }
-
-        $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
-        $this->repository->updateAdminPassword($adminId, $new_hash);
-
-        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_changed', $adminId, 'admin', $adminId, 'admin', 'Admin password changed')
-);
-
-        return ['success' => true, 'message' => 'Password changed successfully'];
-    }
 
     public function uploadAvatar(int $adminId, ?array $file, bool $isProfileEndpoint = false): array
     {
@@ -384,32 +331,7 @@ class AdminManagementService
         throw new ApiException('Failed to move uploaded file', 500);
     }
 
-    public function updateProfile(int $adminId, array $data): array
-    {
-        $fullName = $this->security->cleanInput($data['full_name'] ?? $data['name'] ?? '');
-        $email     = $this->security->cleanInput($data['email'] ?? '');
-        $phone     = $this->security->cleanInput($data['phone'] ?? '');
-        $password  = $data['password'] ?? '';
 
-        if (empty($fullName)) {
-            throw new ApiException('Full name is required', 422);
-        }
-        if (empty($password)) {
-            throw new ApiException('Admin password is required for verification', 422);
-        }
-
-        $admin = $this->repository->getAdminById($adminId);
-        if (!$admin || !password_verify($password, $admin['password_hash'])) {
-            throw new ApiException('Verification failed: Incorrect password', 401);
-        }
-
-        $this->repository->updateProfileFields($adminId, ["full_name = ?", "email = ?", "phone = ?", "updated_at = NOW()"], [$fullName, $email, $phone]);
-
-        $_SESSION['admin_name']  = $fullName;
-        $_SESSION['admin_email'] = $email;
-
-        return ['success' => true, 'message' => 'Profile updated successfully'];
-    }
 
     public function updateTwoFaSettings(int $adminId, int $enabled): array
     {

@@ -195,7 +195,7 @@
             if (!pendingUserId) return;
             const option = document.querySelector('input[name="restore-option"]:checked')?.value || 'full';
             try {
-                const response = await window.api.patch(/users/{}, );
+                const response = await window.api.post('/users/' + pendingUserId + '/recover', { balance_option: option });
                 if (response.status === 'success' || response.success) {
                     window.portal.showToast('User account recovered successfully', 'success');
                     window.DeletedUsers.closeModal('recoverModal');
@@ -267,7 +267,7 @@
             if (!confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and all data will be lost forever.')) return;
             
             try {
-                const response = await window.api.patch(/users/{}, );
+                const response = await window.api.patch('/users/' + pendingUserId, { action: 'delete_permanent' });
                 if (response.status === 'success' || response.success) {
                     window.portal.showToast('User account permanently deleted', 'success');
                     window.DeletedUsers.closeModal('detailsModal');
@@ -285,7 +285,7 @@
             if (!confirm('Are you sure you want to PERMANENTLY delete this account (but keep the user)? This action cannot be undone.')) return;
             
             try {
-                const response = await window.api.patch(/users/{}, );
+                const response = await window.api.patch('/users/' + id, { action: 'delete_account_only' });
                 if (response.status === 'success' || response.success) {
                     window.portal.showToast('Account permanently deleted', 'success');
                     loadDeletedUsers();
