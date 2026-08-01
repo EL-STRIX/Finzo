@@ -11,7 +11,7 @@
      */
     async function loadDashboard() {
         try {
-            const response = await window.api.get('/admin/dashboard.php');
+            const response = await window.api.get('/admin/dashboard');
             if (response.success) {
                 const data = response.data || response;
                 updateStats(data.stats);

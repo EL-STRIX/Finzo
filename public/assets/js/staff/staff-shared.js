@@ -138,7 +138,7 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const data = await window.api.get('/staff/dashboard.php');
+        const data = await window.api.get('/staff-portal/dashboard');
         if (data.status === 401 || data.status === 403) {
             window.location.href = '/Finzo/public/views/auth/staff-login.html';
             return null;
@@ -176,3 +176,4 @@ async function fetchStaffSession() {
     }
     return null;
 }
+

@@ -44,7 +44,7 @@ function initCsrfToken() {
     const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
     if (csrfInputs.length === 0) return;
 
-    const endpoint = '/auth/get-csrf-token.php';
+    const endpoint = '/auth/csrf-token';
 
     window.api.get(endpoint)
         .then(data => {
@@ -457,12 +457,12 @@ function initResetPasswordTokenFromUrl() {
  */
 function initAuthFormSubmission() {
     const formMap = [
-        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login.php' },
-        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login.php' },
-        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login.php' },
-        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register.php' },
-        { selector: 'form[data-action="forgot-password"]',  endpoint: '/Finzo/public/api/auth/forgot-password.php' },
-        { selector: 'form[data-action="reset-password"]',   endpoint: '/Finzo/public/api/auth/reset-password.php' },
+        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login' },
+        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login' },
+        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login' },
+        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register' },
+        { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
+        { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
     ];
 
     formMap.forEach(({ selector, endpoint }) => {

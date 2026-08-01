@@ -37,7 +37,7 @@
         }
 
         try {
-            const response = await window.api.get('/admin/suspended-staff.php', {
+            const response = await window.api.get('/staff/suspended', {
                 search: search,
                 reason: reason,
                 start_date: startDate,
@@ -188,11 +188,7 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
             
             try {
-                const response = await window.api.post('/admin/staff-action.php', {
-                    action: 'reinstate',
-                    staff_id: pendingId,
-                    password: password
-                });
+                const response = await window.api.patch(/staff/{}, );
 
                 if (response.status === 'success' || response.success) {
                     window.SuspendedStaff.closeModal();

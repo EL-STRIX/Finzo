@@ -16,7 +16,7 @@
 
         try {
             const searchInput = document.getElementById('approval-search');
-            const response = await window.api.get('/admin/pending-approvals.php', {
+            const response = await window.api.get('/users/pending', {
                 status: currentStatus,
                 search: searchInput ? searchInput.value : '',
                 page: currentPage,

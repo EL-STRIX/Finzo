@@ -15,7 +15,7 @@ async function loadUserData() {
     }
 
     try {
-        const response = await window.api.get(`/admin/user-detail.php?id=${userId}`);
+        const response = await window.api.get(`/users/`);
         if (response.status === 'success' || response.success) {
             const data = response;
             const user = data.user;
@@ -311,13 +311,7 @@ window.executeGovernanceAction = async () => {
     const mappedAction = currentMode === 'block' ? 'suspend' : 'delete';
 
     try {
-        const response = await window.api.post('/admin/user-action.php', {
-            action: mappedAction,
-            user_id: userId,
-            reason: reason,
-            notes: document.getElementById('governance-notes').value,
-            password: pass
-        });
+        const response = await window.api.patch(/users/{}, );
 
         if (response.status === 'success' || response.success) {
             document.getElementById('confirm-governance-btn').textContent = 'SUCCESS! AUDIT LOGGED';
@@ -394,7 +388,7 @@ function renderUserTransactions(transactions) {
             </span>
             </td>
             <td class="text-right p-4">
-                <button onclick="window.open('../../../../api/pdf/receipt-pdf.php?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                <button onclick="window.open('../../../../api/v1/documents/receipt?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                     <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
                 </button>
             </td>
@@ -407,10 +401,7 @@ function renderUserTransactions(transactions) {
 async function executeReinstatement() {
     const userId = new URLSearchParams(window.location.search).get('id');
     try {
-        const response = await window.api.post('/admin/user-action.php', {
-            action: 'reinstate',
-            user_id: userId
-        });
+        const response = await window.api.patch(/users/{}, );
 
         if (response.status === 'success' || response.success) {
             window.portal.showToast('User account reactivated successfully', 'success');

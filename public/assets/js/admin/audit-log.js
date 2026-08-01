@@ -28,7 +28,7 @@
                 per_page: rowsPerPage
             };
 
-            const response = await window.api.get('/admin/audit-log.php', params);
+            const response = await window.api.get('/admin/audit-logs', params);
 
             if (response && response.success) {
                 renderTable(response.entries, response.total, response.pages);
@@ -236,7 +236,7 @@
             export: 'xlsx'
         };
         
-        window.location.href = window.api.buildUrl('/admin/audit-log.php', filters);
+        window.location.href = window.api.buildUrl('/admin/audit-logs', filters);
     }
 
     // Init

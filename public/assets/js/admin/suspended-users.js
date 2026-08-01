@@ -37,7 +37,7 @@
         }
 
         try {
-            const response = await window.api.get('/admin/suspended-users.php', {
+            const response = await window.api.get('/users/suspended', {
                 search: search,
                 reason: reason,
                 start_date: startDate,
@@ -197,10 +197,7 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
             
             try {
-                const response = await window.api.post('/admin/user-action.php', {
-                    user_id: pendingReinstateId,
-                    action: 'reinstate'
-                });
+                const response = await window.api.patch(/users/{}, );
 
                 if (response.status === 'success' || response.success) {
                     window.SuspendedUsers.closeReinstateModal();

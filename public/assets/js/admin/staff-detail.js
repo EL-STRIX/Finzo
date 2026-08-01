@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // =============================
     async function loadStaffData() {
         try {
-            let response = await window.api.get('/admin/staff-detail.php?id=' + staffId);
+            let response = await window.api.get('/staff/' + );
 
             if (!response || (!response.success && response.status !== 'success')) {
                 if (window.showToast) window.showToast(response?.message || 'Error loading staff details', 'error');
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '<td class="font-mono text-xs opacity-60">' + t.account_no + '</td>';
                         html += '<td><span class="status-badge ' + typeClass + '">' + t.type.toUpperCase() + '</span></td>';
                         html += '<td class="font-black text-xs ' + amtClass + '">' + fmtCurrency(t.amount) + '</td>';
-                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/pdf/receipt-pdf.php?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
+                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/v1/documents/receipt?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
                         html += '</tr>';
                     }
                     tbody.innerHTML = html;
@@ -507,13 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 let notesEl = document.getElementById('custom-reason-notes');
-                let resp = await window.api.post('/admin/staff-action.php', {
-                    action: apiAction,
-                    staff_id: staffId,
-                    password: password,
-                    reason: reason,
-                    notes: notesEl ? notesEl.value : ''
-                });
+                let resp = await window.api.patch(/staff/{}, );
 
                 if (resp.status === 'success' || resp.success) {
                     if (currentAction === 'reset') {

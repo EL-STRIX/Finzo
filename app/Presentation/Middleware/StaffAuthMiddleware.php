@@ -1,31 +1,12 @@
 <?php
-
 namespace App\Presentation\Middleware;
 
-use App\Shared\Core\Exceptions\ApiException;
+use App\Shared\Security\Auth;
 
 class StaffAuthMiddleware
 {
-    public function handle()
+    public function handle(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            \App\Shared\Security\SessionManager::start();
-        }
-
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'staff') {
-            throw new ApiException('Authentication required. Please log in.', 401, ['redirect' => '/views/auth/staff-login.html']);
-        }
-
-        if (!isset($_SESSION['staff_id'])) {
-            destroy_session();
-            throw new ApiException('Session expired. Please log in again.', 401, ['redirect' => '/views/auth/staff-login.html']);
-        }
-
-        if (is_session_expired()) {
-            destroy_session();
-            throw new ApiException('Session expired. Please log in again.', 401, ['redirect' => '/views/auth/staff-login.html']);
-        }
-
-        refresh_session_activity();
+        Auth::requireStrictStaff();
     }
 }

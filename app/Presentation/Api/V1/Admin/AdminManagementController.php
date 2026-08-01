@@ -80,7 +80,7 @@ class AdminManagementController
 
     public function profile(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             return $this->service->getProfileData($adminId);
@@ -117,14 +117,14 @@ class AdminManagementController
 
         if (\App\Shared\Core\Validation\Validator::isSet($_POST['two_fa_enabled']) && count($_POST) <= 2) {
             $enable = intval($_POST['two_fa_enabled']);
-            $result = $this->service->updateTwoFaSettings($_SESSION['admin_id'], $enable);
+            $result = $this->service->updateTwoFaSettings(\App\Shared\Security\Auth::user()['id'], $enable);
             unset($result['code']);
             return $result;
         }
 
 
 
-        $result = $this->service->updateAdminProfile($_SESSION['admin_id'], $_POST);
+        $result = $this->service->updateAdminProfile(\App\Shared\Security\Auth::user()['id'], $_POST);
         unset($result['code']);
         return $result;
     }
@@ -132,13 +132,14 @@ class AdminManagementController
     public function uploadAdminPhoto(?string $id = null, ?string $extra = null): array
     {
         $file = $_FILES['profile_photo'] ?? null;
-        $result = $this->service->uploadAvatar($_SESSION['admin_id'], $file, false);
+        $result = $this->service->uploadAvatar(\App\Shared\Security\Auth::user()['id'], $file, false);
         unset($result['code']);
         return $result;
     }
 
     public function getAdminProfile(?string $id = null, ?string $extra = null): array
     {
-        return $this->service->getAdminProfileForUser($_SESSION['admin_id']);
+        return $this->service->getAdminProfileForUser(\App\Shared\Security\Auth::user()['id']);
     }
 }
+

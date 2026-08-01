@@ -80,7 +80,25 @@ class Auth
     {
         $user = self::requireAuth();
         if ($user['type'] !== 'admin' && $user['type'] !== 'staff') {
-            throw new AuthorizationException('Access denied. Administrator privileges required.');
+            throw new AuthorizationException('Access denied. Administrator or Staff privileges required.');
+        }
+        return $user;
+    }
+
+    public static function requireStrictAdmin(): array
+    {
+        $user = self::requireAuth();
+        if ($user['type'] !== 'admin') {
+            throw new AuthorizationException('Access denied. Strict Administrator privileges required.');
+        }
+        return $user;
+    }
+
+    public static function requireStrictStaff(): array
+    {
+        $user = self::requireAuth();
+        if ($user['type'] !== 'staff') {
+            throw new AuthorizationException('Access denied. Staff privileges required.');
         }
         return $user;
     }

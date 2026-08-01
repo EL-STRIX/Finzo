@@ -40,7 +40,7 @@ class AdminOperationsController
 
     public function dashboard(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $data = $this->service->getDashboardData($adminId);
 
         if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
@@ -120,7 +120,7 @@ class AdminOperationsController
 
     public function interest(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data = $this->service->getInterestData();
@@ -201,7 +201,7 @@ class AdminOperationsController
             throw new ApiException('User ID is required', 422);
         }
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $result = $this->service->recoverUser($userId, $adminId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
@@ -211,7 +211,7 @@ class AdminOperationsController
 
     public function reviewApplication(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
@@ -248,7 +248,7 @@ class AdminOperationsController
 
     public function viewKycDocument(?string $id = null, ?string $extra = null): void
     {
-        $adminId = $_SESSION['admin_id'] ?? null;
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? null;
         if (!$adminId) {
             http_response_code(401);
             echo "Unauthorized";
@@ -372,7 +372,7 @@ class AdminOperationsController
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
         $userId  = intval($_POST['user_id'] ?? 0);
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
@@ -391,7 +391,7 @@ class AdminOperationsController
         $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
         $password = $_POST['password'] ?? '';
         $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
@@ -418,3 +418,4 @@ class AdminOperationsController
         return $data;
     }
 }
+

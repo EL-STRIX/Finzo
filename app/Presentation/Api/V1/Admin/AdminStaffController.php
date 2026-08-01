@@ -26,7 +26,7 @@ class AdminStaffController
     public function addStaff()
     {
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         $data = [
             'full_name' => $this->security->cleanInput($_POST['full_name'] ?? ''),
@@ -100,7 +100,7 @@ class AdminStaffController
 
     public function resetStaffPassword(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $input = json_decode(file_get_contents('php://input'), true);
 
 
@@ -146,7 +146,7 @@ class AdminStaffController
             throw new ApiException('Invalid action', 422);
         }
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $password = $_POST['password'] ?? '';
         if (\App\Shared\Core\Validation\Validator::isEmpty($password)) {
             throw new ApiException('Admin password is required for this action', 422);
@@ -473,3 +473,4 @@ class AdminStaffController
         return ['status' => 'success', 'data' => ['staff' => $staff_list, 'total' => $total, 'pages' => $pages, 'current_page' => $page]];
     }
 }
+

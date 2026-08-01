@@ -14,7 +14,7 @@ window.AdminPortal = {
      */
     init: async function() {
         try {
-            const data = await window.api.get('/admin/dashboard.php');
+            const data = await window.api.get('/admin/dashboard');
             if (data.success) {
                 this.state.admin = data.admin;
                 window.csrfToken = data.csrf_token;
@@ -80,7 +80,7 @@ window.AdminPortal = {
                 link.addEventListener('click', async (e) => {
                     e.preventDefault();
                     try {
-                        await window.api.post('/auth/logout.php');
+                        await window.api.post('/auth/logout');
                         window.location.href = '/Finzo/public/views/auth/admin-login.html';
                     } catch (error) {
                         window.location.href = '/Finzo/public/views/auth/admin-login.html';
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
             logoutBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 try {
-                    await window.api.post('/auth/logout.php');
+                    await window.api.post('/auth/logout');
                     window.location.href = '/Finzo/public/views/auth/admin-login.html';
                 } catch (error) {
                     window.location.href = '/Finzo/public/views/auth/admin-login.html';

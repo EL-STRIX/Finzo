@@ -10,7 +10,7 @@ $(document).ready(function() {
         // --- Grouped Bar Chart (Institutional Ledger) ---
         if (type === 'grouped-bar') {
             $.ajax({
-                url: '../../../../api/public/chart-stats.php',
+                url: '../../../../api/v1/public/stats',
                 method: 'GET',
                 success: function(response) {
                     if (!response.success) return;

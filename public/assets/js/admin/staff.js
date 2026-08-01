@@ -29,7 +29,7 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const response = await window.api.get('/admin/staff.php', {
+            const response = await window.api.get('/staff', {
                 search: document.getElementById('staff-search-input').value,
                 status: document.getElementById('filter-status').value,
                 branch_id: document.getElementById('filter-branch').value,
@@ -153,7 +153,7 @@
      */
     async function loadBranches() {
         try {
-            const response = await window.api.get('/admin/branches.php');
+            const response = await window.api.get('/branches');
             if (response.success) {
                 // Populate Modal Dropdown
                 const modalMenu = document.getElementById('staff-branch-menu');
@@ -243,7 +243,7 @@
         if (icon) icon.classList.add('animate-spin');
         
         try {
-            const response = await window.api.post('/admin/generate-staff-password.php', {});
+            const response = await window.api.post('/staff/password/generate', {});
             if (response.success && passInput) {
                 passInput.value = response.password;
             }

@@ -7,6 +7,6 @@ class AdminAuthMiddleware
 {
     public function handle(): void
     {
-        Auth::requireAdmin();
+        Auth::requireStrictAdmin();
     }
 }

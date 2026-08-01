@@ -21,7 +21,7 @@ class AdminBranchController
     public function deleteBranch(?string $id = null, ?string $extra = null): array
     {
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $branchId = intval($_POST['branch_id'] ?? 0);
         $admin_password = $_POST['admin_password'] ?? '';
         $confirm_name = $_POST['confirm_name'] ?? '';

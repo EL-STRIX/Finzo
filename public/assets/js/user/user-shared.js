@@ -62,7 +62,7 @@ const _userCache = {
  */
 async function fetchUserSession() {
   try {
-    const res = await window.api.get('/user/dashboard.php');
+    const res = await window.api.get('/user/dashboard');
     if (res.status === 401 || res.status === 403) {   // Not logged in — redirect to login
       window.location.href = '/Finzo/public/views/auth/login.html';
       return;
@@ -157,7 +157,7 @@ const UserState = {
 };
 
 // ── BALANCE SECURITY (PIN) ──
-// PIN is verified server-side via /api/user/verify-pin.php (or kept client-side for demo)
+// PIN is verified server-side via /api/user/security/verify-pin (or kept client-side for demo)
 
 function injectRevealButton(el) {
   // Prevent duplicate wrappers
@@ -283,7 +283,7 @@ function showPINModal() {
         if (currentPin.length === 4) {
           btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:16px">progress_activity</span>';
           try {
-            const data = await window.api.post('/user/verify-pin.php', { pin: currentPin });
+            const data = await window.api.post('/user/security/verify-pin', { pin: currentPin });
             if (data.success) {
               UserState.unlockBalance();
               showToast('Security Verified', 'success');
@@ -508,7 +508,7 @@ async function loadNavbarNotifications() {
   const list = document.getElementById('notif-list');
   list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)">autorenew</span></div>';
   try {
-    const data = await window.api.get('/user/notifications.php?per_page=4');
+    const data = await window.api.get('/user/notifications?per_page=4');
     if (data.success && data.notifications) {
       if (data.notifications.length === 0) {
         list.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--text-placeholder)">No recent notifications</div>';
@@ -538,7 +538,7 @@ async function markAllRead() {
   localStorage.setItem(STATE_KEYS.NOTIF_COUNT, '0');
   // Call API to mark all as read
   try {
-    await window.api.post('/user/notifications.php', { action: 'mark_all_read' });
+    await window.api.post('/user/notifications', { action: 'mark_all_read' });
     // refresh the dropdown if open
     loadNavbarNotifications();
     // also refresh the badge
@@ -702,7 +702,7 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await window.api.post('/auth/logout.php', {});
+      await window.api.post('/auth/logout', {});
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
       window.location.href = '/Finzo/public/index.html';

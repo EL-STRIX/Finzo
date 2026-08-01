@@ -14,7 +14,7 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const response = await window.api.get('/admin/users.php', {
+            const response = await window.api.get('/users', {
                 search: document.getElementById('user-search').value,
                 status: document.getElementById('filter-status').value,
                 page: currentPage,
@@ -254,7 +254,7 @@
                 const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
                 
                 const queryParams = new URLSearchParams({ search, status }).toString();
-                const exportUrl = `${window.api.baseUrl}/admin/export-users.php?${queryParams}`;
+                const exportUrl = `${window.api.baseUrl}/users/export?${queryParams}`;
                 
                 // Trigger download
                 window.location.href = exportUrl;
