@@ -25,61 +25,10 @@ class BusinessRuleValidations
             END;
         ");
 
-        // 2. Validate Transactions (Status, Limits, Duplicates)
-        $db->exec("
-            CREATE TRIGGER trg_validate_transaction
-            BEFORE INSERT ON transactions
-            FOR EACH ROW
-            BEGIN
-                DECLARE v_account_status VARCHAR(20);
-                DECLARE v_daily_total DECIMAL(15,2);
-                DECLARE v_daily_limit DECIMAL(15,2);
-                DECLARE v_recent_duplicate INT;
+        // 2. [REMOVED] Validate Transactions (Status, Limits, Duplicates)
+        // This logic has been successfully migrated to the PHP Service Layer (UserService & StaffService)
+        // to conform to Clean Architecture.
 
-                -- Prevent duplicates (same amount from same account in last 5 seconds)
-                SELECT COUNT(*) INTO v_recent_duplicate 
-                FROM transactions 
-                WHERE from_account_id = NEW.from_account_id 
-                  AND amount = NEW.amount 
-                  AND type = NEW.type 
-                  AND created_at >= DATE_SUB(NOW(), INTERVAL 5 SECOND);
-                
-                IF v_recent_duplicate > 0 THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Duplicate transaction detected. Please wait before retrying.';
-                END IF;
-
-                -- Check frozen/closed states for outgoing accounts
-                IF NEW.from_account_id IS NOT NULL THEN
-                    SELECT status, daily_limit INTO v_account_status, v_daily_limit FROM accounts WHERE id = NEW.from_account_id;
-                    
-                    IF v_account_status != 'active' THEN
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot process transaction: Source account is not active.';
-                    END IF;
-                    
-                    -- Check daily limits for transfers
-                    IF NEW.type = 'transfer' THEN
-                        SELECT COALESCE(SUM(amount), 0) INTO v_daily_total 
-                        FROM transactions 
-                        WHERE from_account_id = NEW.from_account_id 
-                          AND type = 'transfer' 
-                          AND status = 'completed'
-                          AND DATE(created_at) = CURDATE();
-                          
-                        IF (v_daily_total + NEW.amount) > v_daily_limit THEN
-                            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Transaction exceeds daily transfer limit.';
-                        END IF;
-                    END IF;
-                END IF;
-                
-                -- Check frozen/closed states for incoming accounts
-                IF NEW.to_account_id IS NOT NULL THEN
-                    SELECT status INTO v_account_status FROM accounts WHERE id = NEW.to_account_id;
-                    IF v_account_status != 'active' THEN
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot process transaction: Destination account is not active.';
-                    END IF;
-                END IF;
-            END;
-        ");
         
         // 3. Ensure Ledger Lines always balance before marking a journal as posted
         $db->exec("
@@ -107,7 +56,6 @@ class BusinessRuleValidations
     public function down(PDO $db): void
     {
         $db->exec("DROP TRIGGER IF EXISTS trg_validate_account_creation");
-        $db->exec("DROP TRIGGER IF EXISTS trg_validate_transaction");
         $db->exec("DROP TRIGGER IF EXISTS trg_validate_journal_balancing");
     }
 }

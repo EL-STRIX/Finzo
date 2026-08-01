@@ -492,4 +492,14 @@ class UserService
     {
         return $this->repository->insertTransaction(...$args);
     }
+
+    public function checkDuplicateTransaction(int $fromAccountId, float $amount, string $type): void
+    {
+        $this->repository->checkDuplicateTransaction($fromAccountId, $amount, $type);
+    }
+
+    public function checkDailyTransferLimit(int $fromAccountId, float $amount, float $dailyLimit): void
+    {
+        $this->repository->checkDailyTransferLimit($fromAccountId, $amount, $dailyLimit);
+    }
 }

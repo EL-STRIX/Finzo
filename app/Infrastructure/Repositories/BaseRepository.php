@@ -75,4 +75,47 @@ abstract class BaseRepository
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params);
     }
+
+    /**
+     * Enforce business rules to prevent duplicate transactions
+     */
+    public function checkDuplicateTransaction(int $fromAccountId, float $amount, string $type): void
+    {
+        $sql = "SELECT COUNT(*) as dup_count 
+                FROM transactions 
+                WHERE from_account_id = :from_account_id 
+                  AND amount = :amount 
+                  AND type = :type 
+                  AND created_at >= DATE_SUB(NOW(), INTERVAL 5 SECOND)";
+        
+        $result = $this->fetchOne($sql, [
+            ':from_account_id' => $fromAccountId,
+            ':amount'          => $amount,
+            ':type'            => $type
+        ]);
+
+        if ($result && $result['dup_count'] > 0) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Duplicate transaction detected. Please wait before retrying.');
+        }
+    }
+
+    /**
+     * Enforce business rules for daily limits
+     */
+    public function checkDailyTransferLimit(int $fromAccountId, float $amount, float $dailyLimit): void
+    {
+        $sql = "SELECT COALESCE(SUM(amount), 0) as daily_total 
+                FROM transactions 
+                WHERE from_account_id = :from_account_id 
+                  AND type = 'transfer' 
+                  AND status = 'completed'
+                  AND DATE(created_at) = CURDATE()";
+
+        $result = $this->fetchOne($sql, [':from_account_id' => $fromAccountId]);
+        $dailyTotal = $result ? (float)$result['daily_total'] : 0.0;
+
+        if (($dailyTotal + $amount) > $dailyLimit) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Transaction exceeds daily transfer limit.');
+        }
+    }
 }
