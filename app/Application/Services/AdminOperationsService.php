@@ -20,52 +20,14 @@ class AdminOperationsService
 
     public function getAuditLog(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["1=1"];
-        $params = [];
-
-        if ($filters['action_type'] !== 'all') {
-            $where_clauses[] = "al.action_type LIKE ?";
-            $params[] = "%{$filters['action_type']}%";
-        }
-
-        if ($filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
-            if ($filters['actor_role'] === 'admin') {
-                $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
-            } elseif ($filters['actor_role'] === 'staff') {
-                $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
-            } elseif ($filters['actor_role'] === 'system') {
-                $where_clauses[] = "al.actor_role IN ('System', 'system')";
-            } elseif ($filters['actor_role'] === 'user') {
-                $where_clauses[] = "al.actor_role IN ('User', 'user')";
-            }
-        }
-
-        if (!empty($filters['from_date'])) {
-            $where_clauses[] = "DATE(al.created_at) >= ?";
-            $params[] = $filters['from_date'];
-        }
-
-        if (!empty($filters['to_date'])) {
-            $where_clauses[] = "DATE(al.created_at) <= ?";
-            $params[] = $filters['to_date'];
-        }
-
-        if (!empty($filters['search'])) {
-            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
-            $s = "%{$filters['search']}%";
-            $params[] = $s;
-            $params[] = $s;
-        }
-
-        $where_sql = implode(' AND ', $where_clauses);
-        $total = $this->repository->countAuditLogs($where_sql, $params);
+        $total = $this->repository->countAuditLogs($filters);
 
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $entries = $this->repository->getAuditLogs($where_sql, $params, $perPage, $offset);
+        $entries = $this->repository->getAuditLogs($filters, $perPage, $offset);
         $action_types = $this->repository->getAuditLogActionTypes();
-        $stats = $this->repository->getAuditLogStats($where_sql, $params);
+        $stats = $this->repository->getAuditLogStats($filters);
 
         return [
             'entries'      => $entries,

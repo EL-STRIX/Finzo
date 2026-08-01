@@ -163,7 +163,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
             ]);
         } catch (Exception $e) {
             $code = $e->getCode() ?: 500;
@@ -382,7 +382,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
             ]);
         } catch (Exception $e) {
             $code = $e->getCode() ?: 500;

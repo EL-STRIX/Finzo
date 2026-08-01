@@ -10,12 +10,14 @@ class AdminOperationsRepository extends BaseRepository
     // ---------------------------------------------------------
     // Audit Log Methods
     // ---------------------------------------------------------
-    public function countAuditLogs(string $whereSql, array $params): int
+    public function countAuditLogs(array $filters): int
     {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getAuditLogs(array $filters, int $perPage, int $offset) {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchAll("
             SELECT al.id, al.action_type, al.entity_id, al.entity_type,
                    al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
@@ -39,7 +41,8 @@ class AdminOperationsRepository extends BaseRepository
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getAuditLogStats(string $whereSql, array $params) {
+    public function getAuditLogStats(array $filters) {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchOne("
             SELECT 
                 SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
@@ -48,6 +51,48 @@ class AdminOperationsRepository extends BaseRepository
             FROM audit_log al
             WHERE {$whereSql}
         ", $params);
+    }
+
+    private function buildAuditLogFilters(array $filters): array
+    {
+        $where_clauses = ["1=1"];
+        $params = [];
+
+        if (isset($filters['action_type']) && $filters['action_type'] !== 'all') {
+            $where_clauses[] = "al.action_type LIKE ?";
+            $params[] = "%{$filters['action_type']}%";
+        }
+
+        if (isset($filters['actor_role']) && $filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
+            if ($filters['actor_role'] === 'admin') {
+                $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
+            } elseif ($filters['actor_role'] === 'staff') {
+                $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
+            } elseif ($filters['actor_role'] === 'system') {
+                $where_clauses[] = "al.actor_role IN ('System', 'system')";
+            } elseif ($filters['actor_role'] === 'user') {
+                $where_clauses[] = "al.actor_role IN ('User', 'user')";
+            }
+        }
+
+        if (!empty($filters['from_date'])) {
+            $where_clauses[] = "DATE(al.created_at) >= ?";
+            $params[] = $filters['from_date'];
+        }
+
+        if (!empty($filters['to_date'])) {
+            $where_clauses[] = "DATE(al.created_at) <= ?";
+            $params[] = $filters['to_date'];
+        }
+
+        if (!empty($filters['search'])) {
+            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
+            $s = "%{$filters['search']}%";
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        return [implode(' AND ', $where_clauses), $params];
     }
 
     // ---------------------------------------------------------

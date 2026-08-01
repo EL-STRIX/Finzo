@@ -109,4 +109,7 @@ require_once FINZO_ROOT . '/config/config.php';
 require_once FINZO_ROOT . '/config/db.php';
 require_once FINZO_ROOT . '/config/functions.php';
 
+// Load Event Listeners
+require_once FINZO_ROOT . '/config/events.php';
+
 // If middleware files exist, load them or they will be called manually

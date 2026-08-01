@@ -6,7 +6,7 @@ class LoginRequest extends FormRequest
     protected function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'identity' => 'required',
             'password' => 'required|min:6'
         ];
     }

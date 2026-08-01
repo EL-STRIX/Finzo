@@ -326,7 +326,7 @@ class UserController
             require_once FINZO_ROOT . '/config/mailer.php';
             send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
             send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
-            json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/views/user/dashboard.html']);
+            json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/public/views/user/dashboard.html']);
         } catch (\PDOException $e) {
             if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
                 $pdo->rollBack();
@@ -356,7 +356,7 @@ class UserController
             $user = $this->service->getUserDashboardData($userId);
             if (!$user) {
                 destroy_session();
-                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/views/auth/login.html'], 404);
+                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/public/views/auth/login.html'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
             $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
@@ -724,7 +724,7 @@ class UserController
 
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
-            json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $transactionId, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/views/user/receipt.html?id=' . $transactionId]);
+            json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $transactionId, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/public/views/user/receipt.html?id=' . $transactionId]);
         } catch (PDOException $e) {
             if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
                 $pdo->rollBack();
