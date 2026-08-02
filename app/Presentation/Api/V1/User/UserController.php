@@ -612,18 +612,15 @@ class UserController
             $pdo->beginTransaction();
             $account = $this->service->getActiveAccount($userId);
             if (!$account) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Source account not found or inactive'], 404);
+                throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Source account not found or inactive');
             }
             $source_id = $account['id'];
             $dest_id = $this->service->getAccountIdByNumber($to_account_no);
             if (!$dest_id) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Destination account not found or inactive'], 404);
+                throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Destination account not found or inactive');
             }
             if ($source_id === $dest_id) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Cannot transfer to your own account'], 422);
+                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Cannot transfer to your own account');
             }
 
             $first_id = min($source_id, $dest_id);
@@ -633,26 +630,22 @@ class UserController
             $source = ($first['id'] == $source_id) ? $first : $second;
             $dest = ($first['id'] == $dest_id) ? $first : $second;
             if (!$source || !$dest) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Account error during locking'], 500);
+                throw new \App\Shared\Core\Exceptions\ApiException('Account error during locking', 500);
             }
             $dest['dest_user_id'] = $dest['customer_id'];
             if ($source['balance'] < $amount) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Insufficient balance'], 422);
+                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Insufficient balance');
             }
             $min_transfer = get_setting($pdo, 'min_transfer_amount', 10);
             if ($amount < $min_transfer) {
-                $pdo->rollBack();
-                json_response(['success' => false, 'message' => 'Minimum transfer amount is ' . format_currency($min_transfer)], 422);
+                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Minimum transfer amount is ' . format_currency($min_transfer));
             }
 
             $today_total = (float)$this->service->fetchTodayTransferTotal($source['id']);
             $daily_limit = $source['daily_limit'];
             if (($today_total + $amount) > $daily_limit) {
-                $pdo->rollBack();
                 $remaining = max(0, $daily_limit - $today_total);
-                json_response(['success' => false, 'message' => "Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining)], 422);
+                throw new \App\Shared\Core\Exceptions\BusinessRuleException("Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining));
             }
 
             $new_source_balance = $source['balance'] - $amount;
@@ -666,17 +659,28 @@ class UserController
             $safe_dest_name = html_encode($dest['full_name']);
             $safe_source_name = html_encode($source['full_name']);
 
-            send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
-            send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
-            $this->security->writeAuditLog('fund_transfer', $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
-
             $pdo->commit();
             $_SESSION['user_balance'] = $new_source_balance;
+
+            // Notifications after commit to isolate failure domain
+            try {
+                send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
+                send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
+                $this->security->writeAuditLog('fund_transfer', $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
+            } catch (\Throwable $notifErr) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send transfer notifications: ', ['context' => $notifErr->getMessage()]);
+            }
+
             json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $transactionId, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/public/views/user/receipt.html?id=' . $transactionId]);
-        } catch (PDOException $e) {
-            if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
+        } catch (\Throwable $e) {
+            if (isset($pdo) && $pdo->inTransaction()) {
                 $pdo->rollBack();
-            } json_response(['success' => false, 'message' => 'Transfer failed. Please try again.'], 500);
+            }
+            if ($e instanceof \PDOException) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Transfer error: ', ['context' => $e->getMessage()]);
+                throw new \App\Shared\Core\Exceptions\ApiException('Transfer failed. Please try again.', 500);
+            }
+            throw $e;
         }
     }
 

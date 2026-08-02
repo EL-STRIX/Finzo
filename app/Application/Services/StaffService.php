@@ -349,10 +349,18 @@ class StaffService
             throw new BusinessRuleException("No fields provided to update");
         }
 
-        $this->repository->updateStaffProfile($staffId, $fields, $params);
-        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_profile_update', $staffId, 'staff', $staffId, 'staff', 'Staff updated their profile')
-);
+        try {
+            $this->repository->updateStaffProfile($staffId, $fields, $params);
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction('staff_profile_update', $staffId, 'staff', $staffId, 'staff', 'Staff updated their profile')
+            );
+        } catch (\PDOException $e) {
+            // Clean up the newly uploaded photo if database update fails
+            if (isset($dest_path) && file_exists($dest_path)) {
+                @unlink($dest_path);
+            }
+            throw $e;
+        }
 
         return $this->repository->getFullStaffProfile($staffId);
     }

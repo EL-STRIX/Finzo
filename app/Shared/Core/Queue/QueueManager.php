@@ -59,12 +59,14 @@ class QueueManager
             'timestamp' => date('Y-m-d H:i:s'),
             'attempts' => $job->getAttempts()
         ];
-        
-        // Write to failed_jobs DB table (placeholder for architecture)
-        // $pdo = \App\Shared\Core\Database::getInstance();
-        // $stmt = $pdo->prepare("INSERT INTO failed_jobs (payload, exception, failed_at) VALUES (?, ?, NOW())");
-        // $stmt->execute([serialize($job), $e->getMessage()]);
-    }
+        try {
+            // Write to failed_jobs DB table
+            $pdo = \App\Shared\Core\Database::getInstance();
+            $stmt = $pdo->prepare("INSERT INTO failed_jobs (payload, exception, failed_at) VALUES (?, ?, NOW())");
+            $stmt->execute([serialize($job), $e->getMessage()]);
+        } catch (\PDOException $dbException) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Failed to persist failed job to database: ', ['context' => $dbException->getMessage()]);
+        }
 
     public function getFailedJobs(): array
     {
