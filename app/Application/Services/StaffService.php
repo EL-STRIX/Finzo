@@ -158,7 +158,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             ? 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId
             : 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId;
 
-        send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, $notifTitle, $notifBody);
+        send_notification($this->repository->getPDO(), $account['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, $notifTitle, $notifBody);
 
         $auditAction = $isDeposit ? \App\Domain\Enums\AuditActionEnum::STAFF_DEPOSIT->value : \App\Domain\Enums\AuditActionEnum::STAFF_WITHDRAWAL->value;
         $auditBody = $isDeposit 
@@ -193,6 +193,11 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             $this->repository->beginTransaction();
             $account = $this->validateAccountForTransaction($accountNumber);
             
+            $max_deposit = get_setting($this->repository->getPDO(), 'max_deposit_amount', 100000);
+            if ($amount > $max_deposit) {
+                throw new BusinessRuleException("Maximum deposit amount is " . format_currency($max_deposit) . ". Strict AML proof of funds required.");
+            }
+
             $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value, $reference_note, $staffId);
 
             $this->repository->commit();
