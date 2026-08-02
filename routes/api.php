@@ -60,6 +60,14 @@ $router->post('/api/v1/staff/{id}/password/reset', [AdminStaffController::class,
 $router->post('/api/v1/staff/{id}/photo', [AdminStaffController::class, 'uploadStaffPhoto'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/branches', [AdminBranchController::class, 'getBranches'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->delete('/api/v1/branches/{id}', [AdminBranchController::class, 'deleteBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\AdminLoanController;
+$router->post('/api/v1/admin/loan-products', [AdminLoanController::class, 'createProduct'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/loan-applications', [AdminLoanController::class, 'applications'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/loan-applications/approve', [AdminLoanController::class, 'approveApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/loan-applications/reject', [AdminLoanController::class, 'rejectApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/loans/{id}/schedules', [AdminLoanController::class, 'schedules'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/loans/{id}/foreclose', [AdminLoanController::class, 'foreclose'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
@@ -76,6 +84,14 @@ $router->get('/api/v1/user/transactions', [UserController::class, 'transactions'
 $router->post('/api/v1/user/transactions/transfer', [UserController::class, 'transfer'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/change-password', [UserController::class, 'changePassword'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\User\UserLoanController;
+$router->get('/api/v1/loan-products', [UserLoanController::class, 'products']);
+$router->post('/api/v1/loans/apply', [UserLoanController::class, 'apply'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/loans/{id}/schedules', [UserLoanController::class, 'schedules'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/loans/{id}/repay', [UserLoanController::class, 'repay'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/loans/{id}/repayments', [UserLoanController::class, 'repayments'], [UserAuthMiddleware::class]);
+
 $router->get('/api/v1/public/stats', [PublicController::class, 'chartStats']);
 $router->post('/api/v1/uploads/branch-cert', [UploadController::class, 'uploadBranchCert'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/uploads/id-document', [UploadController::class, 'uploadIdDocument'], [\App\Presentation\Middleware\UserAuthMiddleware::class]);
