@@ -151,6 +151,7 @@ class UserController
                     }
                     json_response(['success' => true, 'message' => 'Beneficiary removed successfully']);
                 } catch (PDOException $e) {
+                    \App\Shared\Core\Logging\Logger::getInstance()->error('Delete beneficiary error', ['context' => $e->getMessage()]);
                     json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
                 }
             }
@@ -177,6 +178,7 @@ class UserController
                     'beneficiary' => ['id' => (int)$new_id, 'nickname' => $nickname, 'account_no' => $accountNumber, 'bank_name' => $bank_name]
                 ], 201);
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Add beneficiary error', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to add beneficiary'], 500);
             }
         }
@@ -193,6 +195,7 @@ class UserController
                 }
                 json_response(['success' => true, 'message' => 'Beneficiary removed successfully']);
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Delete beneficiary error', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
             }
         }
@@ -225,6 +228,7 @@ class UserController
 
             json_response(['success' => true, 'message' => 'Password updated successfully. Please log in again.']);
         } catch (PDOException $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Change password error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to change password'], 500);
         }
     }
@@ -379,6 +383,7 @@ class UserController
                 'past_rejections' => $past_rejections, 'recent_transactions' => $recent_transactions, 'monthly_stats' => $monthly_stats, 'notification_count' => $notification_count, 'greeting' => $greeting
             ]);
         } catch (PDOException $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Dashboard error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load dashboard data'], 500);
         }
     }
@@ -465,6 +470,7 @@ class UserController
                 $_SESSION['user_phone'] = $phone;
                 json_response(['success' => true, 'message' => 'Profile updated successfully']);
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Profile update error', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to update profile'], 500);
             }
         }

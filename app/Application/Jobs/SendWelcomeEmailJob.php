@@ -16,6 +16,6 @@ class SendWelcomeEmailJob implements JobInterface
     public function handle(): void
     {
         // Implement SendWelcomeEmailJob logic
-        error_log('Handling ' . self::class . ' with data: ' . json_encode($this->data));
+        \App\Shared\Core\Logging\Logger::getInstance()->info('Handling ' . self::class . ' with data: ' . json_encode($this->data));
     }
 }
