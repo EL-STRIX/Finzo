@@ -15,6 +15,7 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface::class, \App\Infrastructure\Repositories\AdminStaffBranchRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\PdfRepositoryInterface::class, \App\Infrastructure\Repositories\PdfRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\UploadRepositoryInterface::class, \App\Infrastructure\Repositories\UploadRepository::class);
+        $container->bind(\App\Domain\Contracts\Repositories\LoanRepositoryInterface::class, \App\Infrastructure\Repositories\LoanRepository::class);
 
         // Security
         $container->bind(\App\Domain\Contracts\Security\SecurityServiceInterface::class, \App\Shared\Security\SecurityService::class);
@@ -28,5 +29,6 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class, \App\Application\Services\AdminStaffBranchService::class);
         $container->bind(\App\Domain\Contracts\Services\PdfServiceInterface::class, \App\Application\Services\PdfService::class);
         $container->bind(\App\Domain\Contracts\Services\UploadServiceInterface::class, \App\Application\Services\UploadService::class);
+        $container->bind(\App\Domain\Contracts\Services\LoanServiceInterface::class, \App\Application\Services\LoanService::class);
     }
 }
