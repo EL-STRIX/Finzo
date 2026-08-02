@@ -117,7 +117,6 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             'recent_activity' => $recent_activity
         ];
     }
-
     private function validateAccountForTransaction(string $accountNumber): array
     {
         $account = $this->repository->findAccountForUpdate($accountNumber);
@@ -129,6 +128,56 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         }
         return $account;
     }
+    private function executeTransactionCore(array $account, float $amount, string $type, string $note, int $staffId): array
+    {
+        $transactionId = generate_transaction_id();
+        $isDeposit = $type === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $new_balance = $isDeposit ? ((float)$account['balance'] + $amount) : ((float)$account['balance'] - $amount);
+        
+        if ($isDeposit) {
+            $this->repository->creditAccount($account['id'], $amount);
+        } else {
+            $this->repository->debitAccount($account['id'], $amount);
+        }
+
+        $this->repository->recordTransaction([
+            'txn_id' => $transactionId,
+            'from_account_id' => $isDeposit ? null : $account['id'],
+            'to_account_id' => $isDeposit ? $account['id'] : null,
+            'type' => $type,
+            'amount' => $amount,
+            'balance_after' => $new_balance,
+            'description' => $isDeposit ? 'Cash Deposit' : 'Cash Withdrawal',
+            'reference_note' => $note,
+            'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
+            'processed_by_staff_id' => $staffId
+        ]);
+
+        $notifTitle = $isDeposit ? 'Cash Deposit Received' : 'Cash Withdrawal Processed';
+        $notifBody = $isDeposit 
+            ? 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId
+            : 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId;
+
+        send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, $notifTitle, $notifBody);
+
+        $auditAction = $isDeposit ? \App\Domain\Enums\AuditActionEnum::STAFF_DEPOSIT->value : \App\Domain\Enums\AuditActionEnum::STAFF_WITHDRAWAL->value;
+        $auditBody = $isDeposit 
+            ? "Deposit of " . format_currency($amount) . " to account {$account['account_no']}"
+            : "Withdrawal of " . format_currency($amount) . " from account {$account['account_no']}. Identity notes: {$note}";
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction($auditAction, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $auditBody)
+        );
+
+        return [
+            'transaction_id' => $transactionId,
+            'customer_name'  => $account['full_name'],
+            'account_no'     => $account['account_no'],
+            'amount'         => $amount,
+            'new_balance'    => $new_balance,
+        ];
+    }
+
     /**
      * Process Deposit.
      *
@@ -143,43 +192,11 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         try {
             $this->repository->beginTransaction();
             $account = $this->validateAccountForTransaction($accountNumber);
-
-            $new_balance = (float)$account['balance'] + $amount;
-            $this->repository->creditAccount($account['id'], $amount);
-
-            $transactionId = generate_transaction_id();
-
-            $this->repository->recordTransaction([
-                'txn_id' => $transactionId,
-                'from_account_id' => null,
-                'to_account_id' => $account['id'],
-                'type' => \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value,
-                'amount' => $amount,
-                'balance_after' => $new_balance,
-                'description' => 'Cash Deposit',
-                'reference_note' => $reference_note,
-                'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
-                'processed_by_staff_id' => $staffId
-            ]);
-
-            send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value,
-                'Cash Deposit Received',
-                'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
-            );
-
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_DEPOSIT->value, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, "Deposit of " . format_currency($amount) . " to account {$accountNumber}")
-);
+            
+            $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value, $reference_note, $staffId);
 
             $this->repository->commit();
-
-            return [
-                'transaction_id' => $transactionId,
-                'customer_name'  => $account['full_name'],
-                'account_no'     => $accountNumber,
-                'amount'         => $amount,
-                'new_balance'    => $new_balance,
-            ];
+            return $result;
         } catch (Exception $e) {
             $this->repository->rollBack();
             throw $e;
@@ -209,42 +226,10 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
                 throw new BusinessRuleException("Maximum withdrawal amount is " . format_currency($max_withdrawal));
             }
 
-            $new_balance = (float)$account['balance'] - $amount;
-            $this->repository->debitAccount($account['id'], $amount);
-
-            $transactionId = generate_transaction_id();
-
-            $this->repository->recordTransaction([
-                'txn_id' => $transactionId,
-                'from_account_id' => $account['id'],
-                'to_account_id' => null,
-                'type' => \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value,
-                'amount' => $amount,
-                'balance_after' => $new_balance,
-                'description' => 'Cash Withdrawal',
-                'reference_note' => $identity_notes,
-                'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
-                'processed_by_staff_id' => $staffId
-            ]);
-
-            send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value,
-                'Cash Withdrawal Processed',
-                'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
-            );
-
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_WITHDRAWAL->value, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, "Withdrawal of " . format_currency($amount) . " from account {$accountNumber}. Identity notes: {$identity_notes}")
-);
+            $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value, $identity_notes, $staffId);
 
             $this->repository->commit();
-
-            return [
-                'transaction_id' => $transactionId,
-                'customer_name'  => $account['full_name'],
-                'account_no'     => $accountNumber,
-                'amount'         => $amount,
-                'new_balance'    => $new_balance,
-            ];
+            return $result;
         } catch (Exception $e) {
             $this->repository->rollBack();
             throw $e;

@@ -240,82 +240,13 @@ class UserController
         }
 
 
-        $userId = $_SESSION['user_id'];
-        $customer_id_str = $this->service->getCustomerId($userId);
-
-        $data = [
-            'dob' => $this->security->cleanInput($_POST['dob'] ?? ''), 'gender' => $this->security->cleanInput($_POST['gender'] ?? ''),
-            'father_name' => $this->security->cleanInput($_POST['father_name'] ?? ''), 'mother_name' => $this->security->cleanInput($_POST['mother_name'] ?? ''),
-            'marital_status' => $this->security->cleanInput($_POST['marital_status'] ?? ''), 'nationality' => $this->security->cleanInput($_POST['nationality'] ?? ''),
-            'occupation' => $this->security->cleanInput($_POST['occupation'] ?? ''), 'annual_income' => $this->security->cleanInput($_POST['annual_income'] ?? ''),
-            'source_of_income' => $this->security->cleanInput($_POST['source_of_income'] ?? ''), 'street' => $this->security->cleanInput($_POST['street'] ?? ''),
-            'city' => $this->security->cleanInput($_POST['city'] ?? ''), 'state' => $this->security->cleanInput($_POST['state'] ?? ''),
-            'pincode' => $this->security->cleanInput($_POST['pincode'] ?? ''), 'id_type' => $this->security->cleanInput($_POST['id_type'] ?? ''),
-            'id_number' => $this->security->cleanInput($_POST['id_number'] ?? ''), 'account_type' => $this->security->cleanInput($_POST['account_type'] ?? ''),
-            'initial_deposit' => floatval($_POST['initial_deposit'] ?? 0), 'txn_pin' => $_POST['txn_pin'] ?? '',
-        ];
-
-        $existing_user = $this->service->getUserFiles($userId);
-        $data['has_profile_pic'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['profile_picture']);
-        $data['has_id_front'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['id_front_path']);
-        $data['has_id_back'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['id_back_path']);
-
-        $errors = $this->service->validateKyc($data, $_FILES);
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
-
         try {
-            $paths = $this->service->processKycUploads($_FILES, $userId, $existing_user);
-        } catch (Exception $e) {
-            json_response(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-
-        try {
-            $pdo = $this->service->getDb();
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_ef776789'));
-            $stmt->execute([$paths['profile_pic_path'], $data['dob'], $data['gender'], $data['father_name'], $data['mother_name'], $data['marital_status'], $data['nationality'], $data['occupation'], $data['annual_income'], $data['source_of_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $userId]);
-
-            $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
-            $existing_account = $this->service->getExistingAccountByCustomerId($customer_id_str);
-
-            if ($existing_account) {
-                $this->service->updateAccountResubmission($data['account_type'], $data['initial_deposit'], $txn_pin_hash, $customer_id_str);
-            } else {
-                $this->service->insertPendingAccount($customer_id_str, 'PENDING_' . $userId, $data['account_type'], $data['initial_deposit'], $txn_pin_hash);
-            }
-
-            $year = date('Y');
-            $next_num = $this->service->getNextKycApplicationNo($year) + 1;
-            $application_no = 'KYC' . $year . str_pad($next_num, 7, '0', STR_PAD_LEFT);
-            $existing_app = $this->service->getKycApplication($customer_id_str);
-
-            if ($existing_app) {
-                $new_count = $existing_app['submission_count'] + 1;
-                $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_371058c0'));
-                $stmt->execute([$new_count, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit'], $customer_id_str]);
-            } else {
-                $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e07f7e3c'));
-                $stmt->execute([$customer_id_str, $application_no, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit']]);
-            }
-            $pdo->commit();
-            $_SESSION['user_status'] = 'under_review';
-            require_once FINZO_ROOT . '/config/mailer.php';
-            send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
-            send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            $action = new \App\Application\Actions\CompleteUserProfileAction($this->service, $this->security);
+            $action->execute($userId, $_POST, $_FILES);
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/public/views/user/dashboard.html']);
-        } catch (\PDOException $e) {
-            if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
-                $pdo->rollBack();
-            }
-            if (\App\Shared\Core\Validation\Validator::isSet($paths['front_destination']) && file_exists($paths['front_destination'])) {
-                unlink($paths['front_destination']);
-            }
-            if (\App\Shared\Core\Validation\Validator::isSet($paths['back_destination']) && file_exists($paths['back_destination'])) {
-                unlink($paths['back_destination']);
-            }
-            \App\Shared\Core\Logging\Logger::getInstance()->error('KYC DB Error: ', ['context' => $e->getMessage()]);
+        } catch (\App\Shared\Core\Exceptions\ApiException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
+        } catch (\Throwable $e) {
             json_response(['success' => false, 'message' => 'An error occurred while processing your application. Please try again.'], 500);
         }
     }
@@ -603,84 +534,29 @@ class UserController
         $description = $validated['description'];
         $txnPin = $validated['txn_pin'];
 
-        $pdo = $this->service->getDb();
-        if (!validate_pin($pdo, $userId, $txnPin)) {
-            json_response(['success' => false, 'message' => 'Invalid transaction PIN'], 401);
-        }
-
         try {
-            $pdo->beginTransaction();
-            $account = $this->service->getActiveAccount($userId);
-            if (!$account) {
-                throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Source account not found or inactive');
-            }
-            $source_id = $account['id'];
-            $dest_id = $this->service->getAccountIdByNumber($to_account_no);
-            if (!$dest_id) {
-                throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Destination account not found or inactive');
-            }
-            if ($source_id === $dest_id) {
-                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Cannot transfer to your own account');
-            }
-
-            $first_id = min($source_id, $dest_id);
-            $second_id = max($source_id, $dest_id);
-            $first = $this->service->getAccountForUpdate($first_id);
-            $second = $this->service->getAccountForUpdate($second_id);
-            $source = ($first['id'] == $source_id) ? $first : $second;
-            $dest = ($first['id'] == $dest_id) ? $first : $second;
-            if (!$source || !$dest) {
-                throw new \App\Shared\Core\Exceptions\ApiException('Account error during locking', 500);
-            }
-            $dest['dest_user_id'] = $dest['customer_id'];
-            if ($source['balance'] < $amount) {
-                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Insufficient balance');
-            }
-            $min_transfer = get_setting($pdo, 'min_transfer_amount', 10);
-            if ($amount < $min_transfer) {
-                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Minimum transfer amount is ' . format_currency($min_transfer));
-            }
-
-            $today_total = (float)$this->service->fetchTodayTransferTotal($source['id']);
-            $daily_limit = $source['daily_limit'];
-            if (($today_total + $amount) > $daily_limit) {
-                $remaining = max(0, $daily_limit - $today_total);
-                throw new \App\Shared\Core\Exceptions\BusinessRuleException("Daily transfer limit exceeded. Remaining limit: " . format_currency($remaining));
-            }
-
-            $new_source_balance = $source['balance'] - $amount;
-            $this->service->updateAccountBalance($source['id'], -$amount);
-            $new_dest_balance = $dest['balance'] + $amount;
-            $this->service->updateAccountBalance($dest['id'], $amount);
-
-            $transactionId = generate_transaction_id();
-            $this->service->insertTransaction($transactionId, $source['id'], $dest['id'], $amount, $new_source_balance, $new_dest_balance, $description);
-
-            $safe_dest_name = html_encode($dest['full_name']);
-            $safe_source_name = html_encode($source['full_name']);
-
-            $pdo->commit();
-            $_SESSION['user_balance'] = $new_source_balance;
-
-            // Notifications after commit to isolate failure domain
-            try {
-                send_notification($pdo, $source['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
-                send_notification($pdo, $dest['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
-                $this->security->writeAuditLog(\App\Domain\Enums\AuditActionEnum::FUND_TRANSFER->value, $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
-            } catch (\Throwable $notifErr) {
-                \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send transfer notifications: ', ['context' => $notifErr->getMessage()]);
-            }
-
-            json_response(['success' => true, 'message' => 'Transfer successful', 'transaction_id' => $transactionId, 'amount' => $amount, 'to_name' => $safe_dest_name, 'to_account' => $to_account_no, 'new_balance' => $new_source_balance, 'redirect' => '/public/views/user/receipt.html?id=' . $transactionId]);
+            $action = new \App\Application\Actions\ProcessTransferAction($this->service, $this->security);
+            $result = $action->execute($userId, $validated);
+            $_SESSION['user_balance'] = $result['new_balance'];
+            
+            json_response([
+                'success' => true, 
+                'message' => 'Transfer successful', 
+                'transaction_id' => $result['transaction_id'], 
+                'amount' => $result['amount'], 
+                'to_name' => $result['to_name'], 
+                'to_account' => $result['to_account'], 
+                'new_balance' => $result['new_balance'], 
+                'redirect' => '/public/views/user/receipt.html?id=' . $result['transaction_id']
+            ]);
+        } catch (\App\Shared\Core\Exceptions\ApiException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
+        } catch (\App\Shared\Core\Exceptions\BusinessRuleException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 422);
+        } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 404);
         } catch (\Throwable $e) {
-            if (isset($pdo) && $pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-            if ($e instanceof \PDOException) {
-                \App\Shared\Core\Logging\Logger::getInstance()->error('Transfer error: ', ['context' => $e->getMessage()]);
-                throw new \App\Shared\Core\Exceptions\ApiException('Transfer failed. Please try again.', 500);
-            }
-            throw $e;
+            json_response(['success' => false, 'message' => 'An error occurred while processing your transfer. Please try again.'], 500);
         }
     }
 
