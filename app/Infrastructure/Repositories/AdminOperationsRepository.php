@@ -220,6 +220,22 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
         ", [$userId, $type, $title, $message]);
     }
 
+    public function getTransactionForReversal(string $txnId)
+    {
+        return $this->fetchOne("SELECT * FROM transactions WHERE txn_id = ? FOR UPDATE", [$txnId]);
+    }
+
+    public function getAccountForUpdate(int $accountId)
+    {
+        return $this->fetchOne("
+            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id
+            FROM accounts a
+            JOIN users u ON a.user_id = u.customer_id
+            WHERE a.id = ? AND a.status = 'active'
+            FOR UPDATE
+        ", [$accountId]);
+    }
+
     public function getExportUsers(string $whereSql, array $params) {
         return $this->fetchAll("
             SELECT

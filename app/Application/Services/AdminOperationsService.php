@@ -272,31 +272,47 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         if ($apply_from === 'Immediately') {
             $this->repository->updateActiveSavingsInterestRate($new_rate);
             $savings_accounts = $this->repository->getActiveSavingsAccounts();
+            $pdo = \App\Shared\Core\Database::getInstance();
 
             foreach ($savings_accounts as $acc) {
-                $balance = (float)$acc['balance'];
-                $interest_amount = round($balance * ($new_rate / 100) / 12, 2);
+                try {
+                    $pdo->beginTransaction();
+                    $lockedAcc = $this->repository->getAccountForUpdate($acc['id']);
+                    if (!$lockedAcc) {
+                        $pdo->rollBack();
+                        continue;
+                    }
 
-                if ($interest_amount >= 0.01) {
-                    $new_balance = $balance + $interest_amount;
-                    $transactionId = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
+                    $balance = (float)$lockedAcc['balance'];
+                    $interest_amount = round($balance * ($new_rate / 100) / 12, 2);
 
-                    $this->repository->addTransaction(
-                        $transactionId,
-                        null,
-                        $acc['id'],
-                        'interest_credit',
-                        $interest_amount,
-                        $new_balance,
-                        "Savings Interest Credit",
-                        "Interest credited at " . number_format($new_rate, 2) . "% p.a.",
-                        'completed'
-                    );
+                    if ($interest_amount >= 0.01) {
+                        $new_balance = $balance + $interest_amount;
+                        $transactionId = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 
-                    $this->repository->updateAccountBalance($new_balance, $acc['id']);
+                        $this->repository->addTransaction(
+                            $transactionId,
+                            null,
+                            $lockedAcc['id'],
+                            'interest_credit',
+                            $interest_amount,
+                            $new_balance,
+                            "Savings Interest Credit",
+                            "Interest credited at " . number_format($new_rate, 2) . "% p.a.",
+                            'completed'
+                        );
 
-                    $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
-                    $this->repository->addNotification($acc['user_id'], 'transaction', 'Interest Credited', $notifMessage);
+                        $this->repository->updateAccountBalance($new_balance, $lockedAcc['id']);
+
+                        $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
+                        $this->repository->addNotification($lockedAcc['customer_id'] ?? $acc['user_id'], 'transaction', 'Interest Credited', $notifMessage);
+                    }
+                    $pdo->commit();
+                } catch (\Throwable $e) {
+                    if ($pdo->inTransaction()) {
+                        $pdo->rollBack();
+                    }
+                    \App\Shared\Core\Logging\Logger::getInstance()->error('Interest credit error for account ' . $acc['id'], ['context' => $e->getMessage()]);
                 }
             }
         }
@@ -535,11 +551,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * Recover User.
      *
      * @param int $userId
-     * @param int $adminId
+* @param int $adminId
      * @return array
      */
     public function recoverUser(int $userId, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $user = $this->repository->getUserForRecovery($userId);
 
         if (!$user) {
@@ -974,8 +991,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $search_param = "%{$filters['search']}%";
+            $params[] = $search_param;
+            $params[] = $search_param;
             $params[] = $search_param;
             $params[] = $search_param;
         }
@@ -1114,6 +1133,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function unlockAccount(int $userId, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
         $temp_pass = '';
         $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
@@ -1173,6 +1193,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function processUserAction(int $userId, string $action, string $reason, string $password, string $balanceOption, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
         if (!in_array($action, $valid_actions)) {
             return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
@@ -1354,5 +1375,110 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 'back_url'  => $id_back_url
             ]
         ];
+    }
+    public function reverseTransaction(string $transactionId, int $adminId, string $reason): array
+    {
+        $pdo = \App\Shared\Core\Database::getInstance();
+        try {
+            $pdo->beginTransaction();
+            $txn = $this->repository->getTransactionForReversal($transactionId);
+            if (!$txn) {
+                return ['success' => false, 'message' => 'Transaction not found or already locked', 'code' => 404];
+            }
+            if ($txn['status'] === 'reversed') {
+                return ['success' => false, 'message' => 'Transaction is already reversed', 'code' => 422];
+            }
+            if ($txn['status'] !== 'completed') {
+                return ['success' => false, 'message' => 'Only completed transactions can be reversed', 'code' => 422];
+            }
+
+            $source_id = $txn['from_account_id'];
+            $dest_id = $txn['to_account_id'];
+            $amount = (float)$txn['amount'];
+
+            // We need to reverse the flow. The receiver must have enough funds to be debited.
+            $first_id = null;
+            $second_id = null;
+            if ($source_id && $dest_id) {
+                $first_id = min($source_id, $dest_id);
+                $second_id = max($source_id, $dest_id);
+                $first = $this->repository->getAccountForUpdate($first_id);
+                $second = $this->repository->getAccountForUpdate($second_id);
+                $source = ($first['id'] == $source_id) ? $first : $second;
+                $dest = ($first['id'] == $dest_id) ? $first : $second;
+            } elseif ($source_id) {
+                $source = $this->repository->getAccountForUpdate($source_id);
+                $dest = null;
+            } elseif ($dest_id) {
+                $dest = $this->repository->getAccountForUpdate($dest_id);
+                $source = null;
+            }
+
+            $new_source_balance = $source ? $source['balance'] : null;
+            $new_dest_balance = $dest ? $dest['balance'] : null;
+
+            if ($txn['type'] === 'deposit' && $dest) {
+                if ($dest['balance'] < $amount) {
+                    return ['success' => false, 'message' => 'Account has insufficient funds to reverse this deposit', 'code' => 422];
+                }
+                $new_dest_balance = $dest['balance'] - $amount;
+                $this->repository->updateAccountBalance($new_dest_balance, $dest['id']);
+            } elseif ($txn['type'] === 'withdrawal' && $source) {
+                $new_source_balance = $source['balance'] + $amount;
+                $this->repository->updateAccountBalance($new_source_balance, $source['id']);
+            } elseif ($txn['type'] === 'transfer' && $source && $dest) {
+                if ($dest['balance'] < $amount) {
+                    return ['success' => false, 'message' => 'Destination account has insufficient funds to reverse this transfer', 'code' => 422];
+                }
+                $new_dest_balance = $dest['balance'] - $amount;
+                $this->repository->updateAccountBalance($new_dest_balance, $dest['id']);
+                
+                $new_source_balance = $source['balance'] + $amount;
+                $this->repository->updateAccountBalance($new_source_balance, $source['id']);
+            } else {
+                return ['success' => false, 'message' => 'Unsupported transaction type for reversal', 'code' => 422];
+            }
+
+            // Mark original as reversed
+            $pdo->prepare("UPDATE transactions SET status = 'reversed', updated_at = NOW() WHERE id = ?")->execute([$txn['id']]);
+
+            // Create Reversal transaction
+            $revTxnId = generate_transaction_id();
+            $this->repository->addTransaction(
+                $revTxnId,
+                $dest ? $dest['id'] : null, // Reversing flow
+                $source ? $source['id'] : null,
+                'transfer', // Store as transfer or just reversed depending on type. But we'll use original type in reference.
+                $amount,
+                $new_dest_balance ?? 0,
+                "Reversal of {$transactionId}",
+                "Admin Reason: {$reason}",
+                'completed'
+            );
+
+            // Update destination balance_after for the new transaction properly
+            $pdo->prepare("UPDATE transactions SET dest_balance_after = ? WHERE txn_id = ?")->execute([$new_source_balance, $revTxnId]);
+
+            // Write Audit
+            if ($this->security) {
+                $this->security->writeAuditLog(
+                    \App\Domain\Enums\AuditActionEnum::ADMIN_ACTION->value,
+                    $txn['id'],
+                    'transaction',
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Reversed transaction {$transactionId}. Reason: {$reason}"
+                );
+            }
+
+            $pdo->commit();
+            return ['success' => true, 'message' => 'Transaction reversed successfully', 'code' => 200];
+        } catch (\Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Reversal error: ', ['context' => $e->getMessage()]);
+            return ['success' => false, 'message' => 'An error occurred during reversal', 'code' => 500];
+        }
     }
 }

@@ -48,6 +48,7 @@ $router->get('/api/v1/users/{id}/kyc', [AdminOperationsController::class, 'viewK
 $router->patch('/api/v1/users/{id}', [AdminOperationsController::class, 'userAction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/users/{id}/recover', [AdminOperationsController::class, 'recoverUser'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/transactions', [AdminOperationsController::class, 'transactions'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/transactions/{id}/reverse', [AdminOperationsController::class, 'reverseTransaction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff', [AdminStaffController::class, 'getStaffList'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff', [AdminStaffController::class, 'addStaff'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff/suspended', [AdminStaffController::class, 'getSuspendedStaff'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

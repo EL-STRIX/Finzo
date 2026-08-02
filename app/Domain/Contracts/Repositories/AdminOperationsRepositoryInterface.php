@@ -76,4 +76,6 @@ interface AdminOperationsRepositoryInterface
     public function getThisMonthInterest(): float;
     public function getLastMonthInterest(): float;
     public function getHistoricalMonthInterest(int $monthsAgo): float;
+    public function getTransactionForReversal(string $txnId);
+    public function getAccountForUpdate(int $accountId);
 }

@@ -368,5 +368,27 @@ class AdminOperationsController
         }
         return $data;
     }
+    public function reverseTransaction(?string $id = null, ?string $extra = null): array
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new ApiException('Method Not Allowed', 405);
+        }
+
+        $transactionId = $id ?? $_POST['transaction_id'] ?? '';
+        $reason = $this->security->cleanInput($_POST['reason'] ?? '');
+        $adminId = $_SESSION['admin_id'] ?? 0;
+
+        if (empty($transactionId) || empty($reason)) {
+            throw new ApiException('Transaction ID and reason are required', 422);
+        }
+
+        $result = $this->service->reverseTransaction($transactionId, $adminId, $reason);
+
+        if (!$result['success']) {
+            throw new ApiException($result['message'], $result['code'] ?? 422);
+        }
+
+        return $result;
+    }
 }
 
