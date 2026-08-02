@@ -9,17 +9,32 @@ use DateTime;
 class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
 {
     protected UserRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\UserRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\UserRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->repository = $repository;
     }
-
+    /**
+     * Get Repository.
+     *
+     * @return UserRepository
+     */
     public function getRepository(): UserRepository
     {
         return $this->repository;
     }
-
+    /**
+     * Validate Kyc.
+     *
+     * @param array $data
+     * @param array $files
+     * @return mixed
+     */
     public function validateKyc(array $data, array $files)
     {
         $errors = [];
@@ -176,7 +191,14 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
 
         return $errors;
     }
-
+    /**
+     * Process Kyc Uploads.
+     *
+     * @param mixed $files
+     * @param mixed $userId
+     * @param mixed $existing_files
+     * @return mixed
+     */
     public function processKycUploads($files, $userId, $existing_files)
     {
         if (!is_dir(STORAGE_KYC_PATH)) {
@@ -247,257 +269,516 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
             'back_destination' => $back_destination
         ];
     }
-
+    /**
+     * Fetch Account Lookup.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchAccountLookup(...$args)
     {
         return $this->repository->fetchAccountLookup(...$args);
     }
-
+    /**
+     * Fetch Account Settings.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchAccountSettings(...$args)
     {
         return $this->repository->fetchAccountSettings(...$args);
     }
-
+    /**
+     * Fetch Used Today.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchUsedToday(...$args)
     {
         return $this->repository->fetchUsedToday(...$args);
     }
-
+    /**
+     * Update Daily Limit.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function updateDailyLimit(...$args)
     {
         return $this->repository->updateDailyLimit(...$args);
     }
-
+    /**
+     * Fetch Account Details.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchAccountDetails(...$args)
     {
         return $this->repository->fetchAccountDetails(...$args);
     }
-
+    /**
+     * Fetch Mini Statement.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchMiniStatement(...$args)
     {
         return $this->repository->fetchMiniStatement(...$args);
     }
-
+    /**
+     * Fetch Today Transfer Total.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchTodayTransferTotal(...$args)
     {
         return $this->repository->fetchTodayTransferTotal(...$args);
     }
-
+    /**
+     * Get Customer Id.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getCustomerId(...$args)
     {
         return $this->repository->getCustomerId(...$args);
     }
-
+    /**
+     * Fetch Beneficiaries.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function fetchBeneficiaries(...$args)
     {
         return $this->repository->fetchBeneficiaries(...$args);
     }
-
+    /**
+     * Delete Beneficiary.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function deleteBeneficiary(...$args)
     {
         return $this->repository->deleteBeneficiary(...$args);
     }
-
+    /**
+     * Get Db.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getDb(...$args)
     {
         return $this->repository->getDb(...$args);
     }
-
+    /**
+     * Count Beneficiaries.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function countBeneficiaries(...$args)
     {
         return $this->repository->countBeneficiaries(...$args);
     }
-
+    /**
+     * Get Beneficiary By Account.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getBeneficiaryByAccount(...$args)
     {
         return $this->repository->getBeneficiaryByAccount(...$args);
     }
-
+    /**
+     * Add Beneficiary.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function addBeneficiary(...$args)
     {
         return $this->repository->addBeneficiary(...$args);
     }
-
+    /**
+     * Get User Password Hash.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getUserPasswordHash(...$args)
     {
         return $this->repository->getUserPasswordHash(...$args);
     }
-
+    /**
+     * Update Password.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function updatePassword(...$args)
     {
         return $this->repository->updatePassword(...$args);
     }
-
+    /**
+     * Get User Files.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getUserFiles(...$args)
     {
         return $this->repository->getUserFiles(...$args);
     }
-
+    /**
+     * Get Existing Account By Customer Id.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getExistingAccountByCustomerId(...$args)
     {
         return $this->repository->getExistingAccountByCustomerId(...$args);
     }
-
+    /**
+     * Update Account Resubmission.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function updateAccountResubmission(...$args)
     {
         return $this->repository->updateAccountResubmission(...$args);
     }
-
+    /**
+     * Insert Pending Account.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function insertPendingAccount(...$args)
     {
         return $this->repository->insertPendingAccount(...$args);
     }
-
+    /**
+     * Get Next Kyc Application No.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getNextKycApplicationNo(...$args)
     {
         return $this->repository->getNextKycApplicationNo(...$args);
     }
-
+    /**
+     * Get Kyc Application.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getKycApplication(...$args)
     {
         return $this->repository->getKycApplication(...$args);
     }
-
+    /**
+     * Get User Dashboard Data.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getUserDashboardData(...$args)
     {
         return $this->repository->getUserDashboardData(...$args);
     }
-
+    /**
+     * Get Active Account By Customer Id.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getActiveAccountByCustomerId(...$args)
     {
         return $this->repository->getActiveAccountByCustomerId(...$args);
     }
-
+    /**
+     * Get Recent Transactions.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getRecentTransactions(...$args)
     {
         return $this->repository->getRecentTransactions(...$args);
     }
-
+    /**
+     * Get Transaction To Account Id.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getTransactionToAccountId(...$args)
     {
         return $this->repository->getTransactionToAccountId(...$args);
     }
-
+    /**
+     * Get Monthly Income.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getMonthlyIncome(...$args)
     {
         return $this->repository->getMonthlyIncome(...$args);
     }
-
+    /**
+     * Get Monthly Expenses.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getMonthlyExpenses(...$args)
     {
         return $this->repository->getMonthlyExpenses(...$args);
     }
-
+    /**
+     * Get Unread Notification Count.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getUnreadNotificationCount(...$args)
     {
         return $this->repository->getUnreadNotificationCount(...$args);
     }
-
+    /**
+     * Get Past Rejections.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getPastRejections(...$args)
     {
         return $this->repository->getPastRejections(...$args);
     }
-
+    /**
+     * Get Notifications Total.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getNotificationsTotal(...$args)
     {
         return $this->repository->getNotificationsTotal(...$args);
     }
-
+    /**
+     * Get Notifications.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getNotifications(...$args)
     {
         return $this->repository->getNotifications(...$args);
     }
-
+    /**
+     * Mark Notification Read.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function markNotificationRead(...$args)
     {
         return $this->repository->markNotificationRead(...$args);
     }
-
+    /**
+     * Mark All Notifications Read.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function markAllNotificationsRead(...$args)
     {
         return $this->repository->markAllNotificationsRead(...$args);
     }
-
+    /**
+     * Delete Notification.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function deleteNotification(...$args)
     {
         return $this->repository->deleteNotification(...$args);
     }
-
+    /**
+     * Clear All Notifications.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function clearAllNotifications(...$args)
     {
         return $this->repository->clearAllNotifications(...$args);
     }
-
+    /**
+     * Get Full Profile.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getFullProfile(...$args)
     {
         return $this->repository->getFullProfile(...$args);
     }
-
+    /**
+     * Check Email Exists.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function checkEmailExists(...$args)
     {
         return $this->repository->checkEmailExists(...$args);
     }
-
+    /**
+     * Check Phone Exists.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function checkPhoneExists(...$args)
     {
         return $this->repository->checkPhoneExists(...$args);
     }
-
+    /**
+     * Update Profile.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function updateProfile(...$args)
     {
         return $this->repository->updateProfile(...$args);
     }
-
+    /**
+     * Get Active Account.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getActiveAccount(...$args)
     {
         return $this->repository->getActiveAccount(...$args);
     }
-
+    /**
+     * Get Statement Transactions.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getStatementTransactions(...$args)
     {
         return $this->repository->getStatementTransactions(...$args);
     }
-
+    /**
+     * Get Opening Balance.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getOpeningBalance(...$args)
     {
         return $this->repository->getOpeningBalance(...$args);
     }
-
+    /**
+     * Get Transactions Count.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getTransactionsCount(...$args)
     {
         return $this->repository->getTransactionsCount(...$args);
     }
-
+    /**
+     * Get Transactions List.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getTransactionsList(...$args)
     {
         return $this->repository->getTransactionsList(...$args);
     }
-
+    /**
+     * Get Account Id By Number.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getAccountIdByNumber(...$args)
     {
         return $this->repository->getAccountIdByNumber(...$args);
     }
-
+    /**
+     * Get Account For Update.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getAccountForUpdate(...$args)
     {
         return $this->repository->getAccountForUpdate(...$args);
     }
-
+    /**
+     * Update Account Balance.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function updateAccountBalance(...$args)
     {
         return $this->repository->updateAccountBalance(...$args);
     }
-
+    /**
+     * Insert Transaction.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function insertTransaction(...$args)
     {
         return $this->repository->insertTransaction(...$args);
     }
-
+    /**
+     * Check Duplicate Transaction.
+     *
+     * @param int $fromAccountId
+     * @param float $amount
+     * @param string $type
+     * @return void
+     */
     public function checkDuplicateTransaction(int $fromAccountId, float $amount, string $type): void
     {
         $this->repository->checkDuplicateTransaction($fromAccountId, $amount, $type);
     }
-
+    /**
+     * Check Daily Transfer Limit.
+     *
+     * @param int $fromAccountId
+     * @param float $amount
+     * @param float $dailyLimit
+     * @return void
+     */
     public function checkDailyTransferLimit(int $fromAccountId, float $amount, float $dailyLimit): void
     {
         $this->repository->checkDailyTransferLimit($fromAccountId, $amount, $dailyLimit);

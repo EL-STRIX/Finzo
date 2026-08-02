@@ -34,7 +34,7 @@ class UserController
         }
         try {
             $result = $this->service->fetchAccountLookup($accountNumber);
-            if (!$result || $result['status'] !== 'active') {
+            if (!$result || $result['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 json_response(['success' => false, 'message' => 'Finzo account not found'], 404);
             }
             json_response([
@@ -93,7 +93,7 @@ class UserController
                 json_response(['success' => true, 'account' => null, 'message' => 'No account found']);
             }
             $mini_statement = [];
-            if ($account['status'] === 'active') {
+            if ($account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 $mini_statement = $this->service->fetchMiniStatement($account['id']);
             }
             $today_transfer_total = (float)$this->service->fetchTodayTransferTotal($account['id']);
@@ -222,7 +222,7 @@ class UserController
             }
             $new_hash = password_hash($newPassword, PASSWORD_BCRYPT);
             $this->service->updatePassword($userId, $new_hash);
-            send_notification($this->service->getDb(), $user['customer_id'], 'security', 'Password Changed', 'Your account password was changed successfully. If you did not make this change, please contact support immediately.');
+            send_notification($this->service->getDb(), $user['customer_id'], \App\Domain\Enums\NotificationTypeEnum::SECURITY->value, 'Password Changed', 'Your account password was changed successfully. If you did not make this change, please contact support immediately.');
 
             \App\Shared\Security\SessionManager::destroy();
 
@@ -303,7 +303,7 @@ class UserController
             $_SESSION['user_status'] = 'under_review';
             require_once FINZO_ROOT . '/config/mailer.php';
             send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
-            send_notification($pdo, $customer_id_str, 'system', 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/public/views/user/dashboard.html']);
         } catch (\PDOException $e) {
             if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
@@ -339,10 +339,10 @@ class UserController
             $_SESSION['user_status'] = $user['status'];
             $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
             $recent_transactions = [];
-            if ($account && $account['status'] === 'active') {
+            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 $recent_transactions = $this->service->getRecentTransactions($account['id']);
                 foreach ($recent_transactions as &$txn) {
-                    if ($txn['type'] === 'transfer') {
+                    if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
                         $txn['direction'] = 'debit';
                         $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
                         $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
@@ -355,7 +355,7 @@ class UserController
                 unset($txn);
             }
             $monthly_stats = ['income_total' => 0, 'expense_total' => 0, 'month_label' => date('F Y')];
-            if ($account && $account['status'] === 'active') {
+            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
                 $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
             }
@@ -494,7 +494,7 @@ class UserController
             $opening_row = $this->service->getOpeningBalance($account['id'], $fromDate);
             $opening_balance = $opening_row ? (float)$opening_row['balance_after'] : 0;
             foreach ($transactions as &$txn) {
-                if (in_array($txn['type'], ['deposit', 'interest_credit']) || ($txn['type'] === 'transfer' && $txn['to_account_id'] == $account['id'])) {
+                if (in_array($txn['type'], ['deposit', 'interest_credit']) || ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value && $txn['to_account_id'] == $account['id'])) {
                     $txn['direction'] = 'credit';
                     $txn['debit'] = 0;
                     $txn['credit'] = (float)$txn['amount'];
@@ -569,9 +569,9 @@ class UserController
             foreach ($transactions as &$txn) {
                 if (in_array($txn['type'], ['deposit', 'interest_credit'])) {
                     $txn['direction'] = 'credit';
-                } elseif ($txn['type'] === 'withdrawal') {
+                } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                     $txn['direction'] = 'debit';
-                } elseif ($txn['type'] === 'transfer') {
+                } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
                     $txn['direction'] = ($txn['to_account_id'] == $account_id) ? 'credit' : 'debit';
                     if ($txn['to_account_id'] == $account_id && $txn['dest_balance_after'] !== null) {
                         $txn['balance_after'] = $txn['dest_balance_after'];
@@ -591,7 +591,7 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if ($_SESSION['user_status'] !== 'active') {
+        if ($_SESSION['user_status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }
 
@@ -664,9 +664,9 @@ class UserController
 
             // Notifications after commit to isolate failure domain
             try {
-                send_notification($pdo, $source['owner_user_id'], 'transaction', 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
-                send_notification($pdo, $dest['owner_user_id'], 'transaction', 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
-                $this->security->writeAuditLog('fund_transfer', $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
+                send_notification($pdo, $source['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, 'Transfer Successful', "You transferred " . format_currency($amount) . " to {$safe_dest_name} ({$to_account_no}). Transaction ID: {$transactionId}");
+                send_notification($pdo, $dest['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, 'Money Received', "You received " . format_currency($amount) . " from {$safe_source_name} ({$source['account_no']}). Transaction ID: {$transactionId}");
+                $this->security->writeAuditLog(\App\Domain\Enums\AuditActionEnum::FUND_TRANSFER->value, $transactionId, 'transaction', $userId, 'user', "Transfer of " . format_currency($amount) . " from {$source['account_no']} to {$to_account_no}");
             } catch (\Throwable $notifErr) {
                 \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send transfer notifications: ', ['context' => $notifErr->getMessage()]);
             }

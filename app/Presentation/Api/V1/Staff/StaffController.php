@@ -182,10 +182,10 @@ class StaffController
 
             $customer_name = '';
             $accountNumber    = '';
-            if ($transaction['type'] === 'deposit') {
+            if ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value) {
                 $customer_name = $transaction['to_name'];
                 $accountNumber    = $transaction['to_account_no'];
-            } elseif ($transaction['type'] === 'withdrawal') {
+            } elseif ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                 $customer_name = $transaction['from_name'];
                 $accountNumber    = $transaction['from_account_no'];
             }

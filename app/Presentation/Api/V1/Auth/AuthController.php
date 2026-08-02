@@ -43,7 +43,7 @@ class AuthController
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 
-        if ($user['status'] === 'pending') {
+        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $redirect = $base . '/public/views/user/complete-profile.php';
         } else {
             $redirect = $base . '/public/views/user/dashboard.php';

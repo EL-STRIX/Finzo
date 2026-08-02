@@ -13,13 +13,24 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
     protected SecurityService $security;
 
     private AuthRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\AuthRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\AuthRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security;
         $this->repository = $repository;
     }
-
+    /**
+     * Login User.
+     *
+     * @param string $identity
+     * @param string $password
+     * @return array
+     */
     public function loginUser(string $identity, string $password): array
     {
         $user = $this->repository->findUserByIdentity($identity);
@@ -33,11 +44,11 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
-        if ($user['status'] === 'rejected') {
+        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
             throw new ApiException('Your application has been rejected. Please contact support for assistance.', 403);
         }
 
-        if ($user['status'] === 'suspended') {
+        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
             throw new ApiException('Your account has been suspended. Please contact support.', 403);
         }
 
@@ -53,7 +64,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
 
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_locked', $user['id'], 'user', $user['id'], 'user', "Account locked after {$new_attempts} failed login attempts")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::ACCOUNT_LOCKED->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Account locked after {$new_attempts} failed login attempts")
 );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
@@ -73,7 +84,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 
         $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_login', $user['id'], 'user', $user['id'], 'user', "Customer login from IP: {$ip}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::USER_LOGIN->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Customer login from IP: {$ip}")
 );
 
         return [
@@ -82,7 +93,13 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             'account'      => $account
         ];
     }
-
+    /**
+     * Login Admin.
+     *
+     * @param string $email
+     * @param string $password
+     * @return array
+     */
     public function loginAdmin(string $email, string $password): array
     {
         $admin = $this->repository->findAdminByEmail($email);
@@ -95,7 +112,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException('Your temporary password has expired. Please contact a super administrator for a new one.', 401);
         }
 
-        if ($admin['status'] === 'suspended') {
+        if ($admin['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
             throw new ApiException('Your account has been suspended. Contact the system administrator.', 403);
         }
 
@@ -124,7 +141,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 
                 $pdo = $this->repository->getPDO();
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_account_locked', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', 'Account locked: 3 wrong passwords')
+    new \App\Application\Events\GenericAuditAction('admin_account_locked', $admin['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, $admin['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, 'Account locked: 3 wrong passwords')
 );
 
                 throw new ApiException('Account locked.', 401, [
@@ -146,7 +163,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 
         $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_login', $admin['admin_id'], 'admin', $admin['admin_id'], 'admin', "Admin login from IP: {$ip}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::ADMIN_LOGIN->value, $admin['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, $admin['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Admin login from IP: {$ip}")
 );
 
         return [
@@ -154,7 +171,13 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             'admin'        => $admin
         ];
     }
-
+    /**
+     * Login Staff.
+     *
+     * @param string $identity
+     * @param string $password
+     * @return array
+     */
     public function loginStaff(string $identity, string $password): array
     {
         $staff = $this->repository->findStaffByIdentity($identity);
@@ -168,7 +191,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
-        if ($staff['status'] === 'suspended') {
+        if ($staff['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
             throw new ApiException('Your account has been suspended. Please contact the administrator.', 403);
         }
 
@@ -184,7 +207,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
                 $this->repository->lockStaff($staff['id'], $new_attempts, $lock_until);
 
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_locked', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff account locked after {$new_attempts} failed login attempts")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::ACCOUNT_LOCKED->value, $staff['staff_id'], \App\Domain\Enums\RoleEnum::STAFF->value, $staff['staff_id'], \App\Domain\Enums\RoleEnum::STAFF->value, "Staff account locked after {$new_attempts} failed login attempts")
 );
 
                 $lockout_minutes = ceil($lockout_duration / 60);
@@ -202,7 +225,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 
         $pdo = $this->repository->getPDO();
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_login', $staff['staff_id'], 'staff', $staff['staff_id'], 'staff', "Staff login from IP: {$ip}")
+    new \App\Application\Events\GenericAuditAction('staff_login', $staff['staff_id'], \App\Domain\Enums\RoleEnum::STAFF->value, $staff['staff_id'], \App\Domain\Enums\RoleEnum::STAFF->value, "Staff login from IP: {$ip}")
 );
 
         return [
@@ -210,7 +233,12 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             'staff'        => $staff
         ];
     }
-
+    /**
+     * Forgot Password.
+     *
+     * @param string $email
+     * @return bool
+     */
     public function forgotPassword(string $email): bool
     {
         $user = $this->repository->findUserByEmail($email);
@@ -241,7 +269,13 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
-
+    /**
+     * Reset Password.
+     *
+     * @param string $token
+     * @param string $newPassword
+     * @return bool
+     */
     public function resetPassword(string $token, string $newPassword): bool
     {
         $reset = $this->repository->findPasswordReset($token);
@@ -273,7 +307,15 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException('An error occurred. Please try again.', 500);
         }
     }
-
+    /**
+     * Register User.
+     *
+     * @param string $fullName
+     * @param string $email
+     * @param string $phone
+     * @param string $password
+     * @return bool
+     */
     public function registerUser(string $fullName, string $email, string $phone, string $password): bool
     {
         if ($this->repository->findUserByEmailAny($email)) {

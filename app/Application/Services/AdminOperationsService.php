@@ -11,13 +11,25 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     protected SecurityService $security;
 
     protected AdminOperationsRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security;
         $this->repository = $repository;
     }
-
+    /**
+     * Get Audit Log.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getAuditLog(array $filters, int $page, int $perPage): array
     {
         $total = $this->repository->countAuditLogs($filters);
@@ -43,7 +55,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             ]
         ];
     }
-
+    /**
+     * Get Dashboard Data.
+     *
+     * @param int $adminId
+     * @return array
+     */
     public function getDashboardData(int $adminId): array
     {
         $stats = $this->repository->getDashboardStats();
@@ -94,7 +111,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'admin' => $admin_data
         ];
     }
-
+    /**
+     * Get Deleted Users.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getDeletedUsers(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 1"];
@@ -143,7 +167,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'current_page' => $page
         ];
     }
-
+    /**
+     * Get Interest Data.
+     *
+     * @return array
+     */
     public function getInterestData(): array
     {
         $current_rate_row = $this->repository->getCurrentInterestRate();
@@ -200,7 +228,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'history'          => $history
         ];
     }
-
+    /**
+     * Update Interest Rate.
+     *
+     * @param float $new_rate
+     * @param string $apply_from
+     * @param string $custom_date
+     * @param int $adminId
+     * @return array
+     */
     public function updateInterestRate(float $new_rate, string $apply_from, string $custom_date, int $adminId): array
     {
         if ($new_rate < 0.01 || $new_rate > 99.99) {
@@ -268,13 +304,18 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         // Global function from config/functions.php
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
+    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, \App\Domain\Enums\RoleEnum::SYSTEM->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
 );
         
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }
-
+    /**
+     * Export Users.
+     *
+     * @param array $filters
+     * @return array
+     */
     public function exportUsers(array $filters): array
     {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
@@ -296,7 +337,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         return $this->repository->getExportUsers($where_sql, $params);
     }
-
+    /**
+     * Get Locked Accounts.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getLockedAccounts(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0"];
@@ -310,7 +358,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $where_clauses[] = "(u.temp_pass_status IN ('pending', 'done') OR u.failed_attempts >= 3)";
         }
 
-        if ($filters['status'] === 'pending') {
+        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $where_clauses[] = "u.temp_pass_status = 'pending'";
         } elseif ($filters['status'] === 'done') {
             $where_clauses[] = "u.temp_pass_status = 'done'";
@@ -357,7 +405,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'current_page' => $page
         ];
     }
-
+    /**
+     * Get Locked Account Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getLockedAccountDetail(int $userId): array
     {
         $user = $this->repository->getLockedAccountDetail($userId);
@@ -415,13 +468,20 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         return ['success' => true, 'user' => $user, 'logs' => $logs];
     }
-
+    /**
+     * Get Pending Approvals.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getPendingApprovals(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        if ($filters['status'] === 'pending') {
+        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $where_clauses[] = "u.status = 'pending'";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
@@ -471,7 +531,13 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             ]
         ];
     }
-
+    /**
+     * Recover User.
+     *
+     * @param int $userId
+     * @param int $adminId
+     * @return array
+     */
     public function recoverUser(int $userId, int $adminId): array
     {
         $user = $this->repository->getUserForRecovery($userId);
@@ -487,10 +553,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $this->repository->recoverUser($userId, $user['customer_id']);
 
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification(
-                $pdo,
-                $userId,
-                'system',
+            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
                 'Account Restored',
                 'Your account has been restored and is now active. You can log in and continue banking.'
             );
@@ -498,13 +561,18 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}")
 );
         
 
         return ['success' => true, 'message' => 'User recovered successfully'];
     }
-
+    /**
+     * Get Application Details.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getApplicationDetails(int $userId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
@@ -548,12 +616,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             [
                 'status' => 'Account Registered',
                 'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ],
             [
                 'status' => 'Profile Submitted',
                 'time' => $first_submit_time,
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ]
         ];
 
@@ -580,7 +648,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $timeline[] = [
                 'status' => 'Profile Resubmitted',
                 'time' => $resubmit_time,
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
         }
 
@@ -588,31 +656,31 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $timeline[] = [
                 'status' => 'Under Admin Review',
                 'time' => 'In Progress',
-                'type' => 'active'
+                'type' => \App\Domain\Enums\AccountStatusEnum::ACTIVE->value
             ];
             $timeline[] = [
                 'status' => 'Account Activated',
                 'time' => 'Waiting for approval',
-                'type' => 'pending'
+                'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
-        } elseif ($user['status'] === 'pending') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $timeline[] = [
                 'status' => 'Pending Review',
                 'time' => 'Awaiting admin review',
-                'type' => 'active'
+                'type' => \App\Domain\Enums\AccountStatusEnum::ACTIVE->value
             ];
             $timeline[] = [
                 'status' => 'Account Activated',
                 'time' => 'Waiting for approval',
-                'type' => 'pending'
+                'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
-        } elseif ($user['status'] === 'active') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             $timeline[] = [
                 'status' => 'Approved & Activated',
                 'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
-        } elseif ($user['status'] === 'rejected') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
             $timeline[] = [
                 'status' => 'Application Rejected',
                 'time' => 'KYC Rejected',
@@ -636,7 +704,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'expected_acc' => $expected_acc
         ];
     }
-
+    /**
+     * Process Application.
+     *
+     * @param int $userId
+     * @param string $action
+     * @param string $reason
+     * @param string $notes
+     * @param int $adminId
+     * @return array
+     */
     public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
@@ -683,11 +760,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                         send_approved_email($user['email'], $user['full_name'], $accountNumber);
                     }
                     if (function_exists('send_notification')) {
-                        send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::KYC_APPROVED->value, $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
 );
                     
 
@@ -705,11 +782,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                         send_rejected_email($user['email'], $user['full_name'], $reason);
                     }
                     if (function_exists('send_notification')) {
-                        send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::KYC_REJECTED->value, $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
 );
                     
 
@@ -718,7 +795,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 case 'save_notes':
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}")
+    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Admin notes: {$notes}")
 );
                     
                     $this->repository->saveAdminNotes($customer_id, $notes);
@@ -734,7 +811,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             throw $e;
         }
     }
-
+    /**
+     * Get Suspended Users.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getSuspendedUsers(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.status = 'suspended'", "u.is_deleted = 0"];
@@ -800,7 +884,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'current_page' => $page
         ];
     }
-
+    /**
+     * Get Transactions.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @param bool $isExport
+     * @return array
+     */
     public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array
     {
         $where_clauses = ["1=1"];
@@ -863,7 +955,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'summary'      => $summary
         ];
     }
-
+    /**
+     * Get Users List.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
@@ -918,6 +1017,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             ]
         ];
     }
+    /**
+     * Get Suspended User Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getSuspendedUserDetail(int $userId): array
     {
         $user = $this->repository->getSuspendedUserProfile($userId);
@@ -951,9 +1056,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $txs = $this->repository->getRecentTransactions($account['account_no'], 10);
             foreach ($txs as $tx) {
                 $is_debit = false;
-                if ($tx['type'] === 'withdrawal') {
+                if ($tx['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                     $is_debit = true;
-                } elseif ($tx['type'] === 'transfer' && $tx['description'] !== 'Deposit') {
+                } elseif ($tx['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value && $tx['description'] !== 'Deposit') {
                     $is_debit = true;
                 }
 
@@ -1000,7 +1105,13 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'transactions' => $transactions
         ];
     }
-
+    /**
+     * Unlock Account.
+     *
+     * @param int $userId
+     * @param int $adminId
+     * @return array
+     */
     public function unlockAccount(int $userId, int $adminId): array
     {
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
@@ -1023,10 +1134,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $this->repository->unlockUserAccount($password_hash, $userId);
 
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification(
-                $pdo,
-                $userId,
-                'security',
+            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                 'Account Unlocked',
                 'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.'
             );
@@ -1034,7 +1142,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
 );
         
 
@@ -1052,7 +1160,17 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'temp_password' => $temp_pass
         ];
     }
-
+    /**
+     * Process User Action.
+     *
+     * @param int $userId
+     * @param string $action
+     * @param string $reason
+     * @param string $password
+     * @param string $balanceOption
+     * @param int $adminId
+     * @return array
+     */
     public function processUserAction(int $userId, string $action, string $reason, string $password, string $balanceOption, int $adminId): array
     {
         $valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
@@ -1077,24 +1195,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 if (function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'suspend_user');
                 }
-                if ($user['status'] === 'suspended') {
+                if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                     return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
                 }
 
                 $this->repository->suspendUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('send_notification') && isset($pdo)) {
-                    send_notification(
-                        $pdo,
-                        $userId,
-                        'security',
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                         'Account Suspended',
                         'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.'
                     );
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} suspended. Reason: {$reason}")
 );
                 
                 return ['success' => true, 'message' => 'User suspended successfully'];
@@ -1103,21 +1218,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 if (function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'reinstate_user');
                 }
-                if ($user['status'] === 'active') {
+                if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                     return ['success' => true, 'message' => 'User is already active'];
                 }
-                if ($user['status'] !== 'suspended') {
+                if ($user['status'] !== \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                     return ['success' => false, 'message' => 'User is not suspended', 'code' => 409];
                 }
 
                 $this->repository->reinstateUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('send_notification') && isset($pdo)) {
-                    send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value, 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated")
+    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} reinstated")
 );
                 
                 return ['success' => true, 'message' => 'User reinstated successfully'];
@@ -1134,7 +1249,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} soft-deleted. Reason: {$reason}")
 );
                 
                 return ['success' => true, 'message' => 'User deleted successfully'];
@@ -1156,24 +1271,24 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                         $transactionId = 'TXN' . strtoupper(uniqid());
                         $this->repository->addSystemChargeTransaction($transactionId, $account['id'], $deduction_amount);
                         if (function_exists('send_notification') && isset($pdo)) {
-                            send_notification($pdo, $userId, 'system', 'Account Restored – Balance Adjusted', 'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
+                            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored – Balance Adjusted', 'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
                         }
                     } else {
                         if (function_exists('send_notification') && isset($pdo)) {
-                            send_notification($pdo, $userId, 'system', 'Account Restored', 'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
+                            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored', 'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
                         }
                     }
                     $this->repository->updateAccountBalanceLease500($user['customer_id']);
                 } else {
                     $this->repository->activateAccount($user['customer_id']);
                     if (function_exists('send_notification') && isset($pdo)) {
-                        send_notification($pdo, $userId, 'system', 'Account Restored', 'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored', 'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
                     }
                 }
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
                 
                 return ['success' => true, 'message' => 'User recovered successfully'];
@@ -1185,7 +1300,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} permanently deleted.")
 );
                 
                 return ['success' => true, 'message' => 'User permanently deleted'];
@@ -1197,14 +1312,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Account for user {$user['full_name']} permanently deleted.")
 );
                 
                 return ['success' => true, 'message' => 'Account permanently deleted'];
         }
         return ['success' => false, 'message' => 'Action failed', 'code' => 500];
     }
-
+    /**
+     * Get User Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getUserDetail(int $userId): array
     {
         $user = $this->repository->getUserProfile($userId);

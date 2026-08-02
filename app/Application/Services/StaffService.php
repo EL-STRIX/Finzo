@@ -17,13 +17,23 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
     protected SecurityService $security;
 
     private StaffRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\StaffRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\StaffRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security;
         $this->repository = $repository;
     }
-
+    /**
+     * Account Lookup.
+     *
+     * @param string $accountNumber
+     * @return mixed
+     */
     public function accountLookup(string $accountNumber)
     {
         $result = $this->repository->findAccountByNo($accountNumber);
@@ -46,7 +56,14 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             ]
         ];
     }
-
+    /**
+     * Change Password.
+     *
+     * @param int $staffId
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @return mixed
+     */
     public function changePassword(int $staffId, string $currentPassword, string $newPassword)
     {
         $hash = $this->repository->findStaffPasswordHash($staffId);
@@ -63,11 +80,16 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
 
         // write_audit_log requires pdo
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_password_change', $staffId, 'staff', $staffId, 'staff', 'Staff changed their password')
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_PASSWORD_CHANGE->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff changed their password')
 );
         return true;
     }
-
+    /**
+     * Get Dashboard Data.
+     *
+     * @param int $staffId
+     * @return mixed
+     */
     public function getDashboardData(int $staffId)
     {
         $deposits = $this->repository->getStaffShiftDeposits($staffId);
@@ -102,12 +124,20 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         if (!$account) {
             throw new ResourceNotFoundException("Account not found");
         }
-        if ($account['status'] !== 'active') {
+        if ($account['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             throw new BusinessRuleException("Account is not active. Status: " . $account['status']);
         }
         return $account;
     }
-
+    /**
+     * Process Deposit.
+     *
+     * @param int $staffId
+     * @param string $accountNumber
+     * @param float $amount
+     * @param string $reference_note
+     * @return mixed
+     */
     public function processDeposit(int $staffId, string $accountNumber, float $amount, string $reference_note)
     {
         try {
@@ -123,25 +153,22 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
                 'txn_id' => $transactionId,
                 'from_account_id' => null,
                 'to_account_id' => $account['id'],
-                'type' => 'deposit',
+                'type' => \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value,
                 'amount' => $amount,
                 'balance_after' => $new_balance,
                 'description' => 'Cash Deposit',
                 'reference_note' => $reference_note,
-                'status' => 'completed',
+                'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
                 'processed_by_staff_id' => $staffId
             ]);
 
-            send_notification(
-                $this->repository->getPDO(),
-                $account['customer_id'],
-                'transaction',
+            send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value,
                 'Cash Deposit Received',
                 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
             );
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_deposit', $transactionId, 'transaction', $staffId, 'staff', "Deposit of " . format_currency($amount) . " to account {$accountNumber}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_DEPOSIT->value, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, "Deposit of " . format_currency($amount) . " to account {$accountNumber}")
 );
 
             $this->repository->commit();
@@ -158,7 +185,15 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             throw $e;
         }
     }
-
+    /**
+     * Process Withdrawal.
+     *
+     * @param int $staffId
+     * @param string $accountNumber
+     * @param float $amount
+     * @param string $identity_notes
+     * @return mixed
+     */
     public function processWithdrawal(int $staffId, string $accountNumber, float $amount, string $identity_notes)
     {
         try {
@@ -183,25 +218,22 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
                 'txn_id' => $transactionId,
                 'from_account_id' => $account['id'],
                 'to_account_id' => null,
-                'type' => 'withdrawal',
+                'type' => \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value,
                 'amount' => $amount,
                 'balance_after' => $new_balance,
                 'description' => 'Cash Withdrawal',
                 'reference_note' => $identity_notes,
-                'status' => 'completed',
+                'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
                 'processed_by_staff_id' => $staffId
             ]);
 
-            send_notification(
-                $this->repository->getPDO(),
-                $account['customer_id'],
-                'transaction',
+            send_notification($this->repository->getPDO(), $account['customer_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value,
                 'Cash Withdrawal Processed',
                 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
             );
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_withdrawal', $transactionId, 'transaction', $staffId, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$accountNumber}. Identity notes: {$identity_notes}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_WITHDRAWAL->value, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, "Withdrawal of " . format_currency($amount) . " from account {$accountNumber}. Identity notes: {$identity_notes}")
 );
 
             $this->repository->commit();
@@ -218,7 +250,13 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             throw $e;
         }
     }
-
+    /**
+     * Get History.
+     *
+     * @param int $staffId
+     * @param array $filters
+     * @return mixed
+     */
     public function getHistory(int $staffId, array $filters)
     {
         $where_clauses = ["t.processed_by_staff_id = ?"];
@@ -258,7 +296,12 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             'pages'        => $pages
         ];
     }
-
+    /**
+     * Get Receipt.
+     *
+     * @param string $transactionId
+     * @return mixed
+     */
     public function getReceipt(string $transactionId)
     {
         $transaction = $this->repository->getTransactionReceipt($transactionId);
@@ -267,7 +310,12 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         }
         return $transaction;
     }
-
+    /**
+     * Get Full Profile.
+     *
+     * @param int $staffId
+     * @return mixed
+     */
     public function getFullProfile(int $staffId)
     {
         $staff = $this->repository->getFullStaffProfile($staffId);
@@ -301,7 +349,14 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             'documents' => $documents
         ];
     }
-
+    /**
+     * Update Profile.
+     *
+     * @param int $staffId
+     * @param array $data
+     * @param mixed $file
+     * @return mixed
+     */
     public function updateProfile(int $staffId, array $data, $file = null)
     {
         $fields = [];
@@ -352,7 +407,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         try {
             $this->repository->updateStaffProfile($staffId, $fields, $params);
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-                new \App\Application\Events\GenericAuditAction('staff_profile_update', $staffId, 'staff', $staffId, 'staff', 'Staff updated their profile')
+                new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_PROFILE_UPDATE->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff updated their profile')
             );
         } catch (\PDOException $e) {
             // Clean up the newly uploaded photo if database update fails

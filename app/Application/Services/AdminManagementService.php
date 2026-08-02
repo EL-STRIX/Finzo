@@ -13,7 +13,12 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
     protected SecurityService $security;
 
     private AdminManagementRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security;
@@ -21,20 +26,34 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
     }
 
 
-
+    /**
+     * Require Super Admin.
+     *
+     * @return void
+     */
     public function requireSuperAdmin(): void
     {
         if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
             throw new ApiException('Forbidden: Only Super Administrator can perform this action.', 403);
         }
     }
-
+    /**
+     * Get Next Admin Id.
+     *
+     * @return string
+     */
     public function getNextAdminId(): string
     {
         $max_id = $this->repository->getMaxAdminIdNumber();
         return 'ADM' . str_pad((string)($max_id + 1), 3, '0', STR_PAD_LEFT);
     }
-
+    /**
+     * Add Admin.
+     *
+     * @param array $data
+     * @param ?array $file
+     * @return array
+     */
     public function addAdmin(array $data, ?array $file): array
     {
         $fullName = $this->security->cleanInput($data['full_name'] ?? '');
@@ -137,7 +156,7 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $this->repository->createAdmin($insertData);
 
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$fullName} | Role: {$admin_role}")
+    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "New admin created: {$fullName} | Role: {$admin_role}")
 );
 
         return [
@@ -148,7 +167,13 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             'code' => 201
         ];
     }
-
+    /**
+     * Handle Admin Action.
+     *
+     * @param string $action
+     * @param int $target_numeric_id
+     * @return array
+     */
     public function handleAdminAction(string $action, int $target_numeric_id): array
     {
         if ($target_numeric_id <= 0) {
@@ -170,21 +195,21 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         switch ($action) {
             case 'toggle_status':
-                $new_status = ($target['status'] === 'active') ? 'suspended' : 'active';
+                $new_status = ($target['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) ? 'suspended' : 'active';
                 $this->repository->updateStatus($target_numeric_id, $new_status);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}")
+    new \App\Application\Events\GenericAuditAction('admin_status_change', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Changed status of {$target['full_name']} to {$new_status}")
 );
 
                 return [
                     'success' => true,
-                    'message' => "Admin account has been " . ($new_status === 'active' ? 'activated' : 'suspended') . " successfully.",
+                    'message' => "Admin account has been " . ($new_status === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value ? 'activated' : 'suspended') . " successfully.",
                     'new_status' => $new_status
                 ];
 
             case 'delete':
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}")
+    new \App\Application\Events\GenericAuditAction('admin_deleted', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Permanently deleted admin account: {$target['full_name']}")
 );
                 $this->repository->deleteAdmin($target_numeric_id);
                 return ['success' => true, 'message' => "Admin account has been permanently removed from the system."];
@@ -196,7 +221,7 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
                 $this->repository->resetPassword($target_numeric_id, $hash);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}")
+    new \App\Application\Events\GenericAuditAction('admin_password_reset', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Forced auto-generated password reset for {$target['full_name']}")
 );
 
                 return [
@@ -210,7 +235,12 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
                 throw new ApiException('Invalid action', 400);
         }
     }
-
+    /**
+     * Get Admin Detail.
+     *
+     * @param int $target_id
+     * @return array
+     */
     public function getAdminDetail(int $target_id): array
     {
         if ($target_id <= 0) {
@@ -233,7 +263,12 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             'activity' => $activity
         ];
     }
-
+    /**
+     * Get Admin Profile For User.
+     *
+     * @param int $adminId
+     * @return array
+     */
     public function getAdminProfileForUser(int $adminId): array
     {
         $profile = $this->repository->getAdminProfile($adminId);
@@ -247,7 +282,11 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             'activity' => $activity
         ];
     }
-
+    /**
+     * Get Admins.
+     *
+     * @return array
+     */
     public function getAdmins(): array
     {
         $admins = $this->repository->getAllAdmins();
@@ -257,7 +296,11 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             'total' => count($admins)
         ];
     }
-
+    /**
+     * Get Locked Admins.
+     *
+     * @return array
+     */
     public function getLockedAdmins(): array
     {
         $locked = $this->repository->getLockedAdmins();
@@ -274,7 +317,14 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
 
 
-
+    /**
+     * Upload Avatar.
+     *
+     * @param int $adminId
+     * @param ?array $file
+     * @param bool $isProfileEndpoint
+     * @return array
+     */
     public function uploadAvatar(int $adminId, ?array $file, bool $isProfileEndpoint = false): array
     {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -333,13 +383,25 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
     }
 
 
-
+    /**
+     * Update Two Fa Settings.
+     *
+     * @param int $adminId
+     * @param int $enabled
+     * @return array
+     */
     public function updateTwoFaSettings(int $adminId, int $enabled): array
     {
         $this->repository->updateTwoFa($adminId, $enabled);
         return ['success' => true, 'message' => '2FA settings updated'];
     }
-
+    /**
+     * Update Admin Profile.
+     *
+     * @param int $adminId
+     * @param array $data
+     * @return array
+     */
     public function updateAdminProfile(int $adminId, array $data): array
     {
         if (!empty($data['new_password'])) {
@@ -366,7 +428,7 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($adminId, $new_hash);
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_updated', $adminId, 'admin', $adminId, 'admin', 'Password updated successfully')
+    new \App\Application\Events\GenericAuditAction('admin_password_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Password updated successfully')
 );
 
             return ['success' => true, 'message' => 'Password updated successfully'];
@@ -404,7 +466,7 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         $this->repository->updateProfileFields($adminId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, 'admin', $adminId, 'admin', 'Profile information updated')
+    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
 );
 
         return ['success' => true, 'message' => 'Profile updated successfully'];

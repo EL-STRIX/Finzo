@@ -7,12 +7,23 @@ use App\Shared\Core\Logging\Logger;
 class UploadService implements \App\Domain\Contracts\Services\UploadServiceInterface
 {
     private UploadRepository $repository;
-
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\UploadRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
     public function __construct(\App\Domain\Contracts\Repositories\UploadRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->repository = $repository;
     }
-
+    /**
+     * Handle Branch Cert Upload.
+     *
+     * @param array $file
+     * @param int $branchId
+     * @return array
+     */
     public function handleBranchCertUpload(array $file, int $branchId): array
     {
         if ($file['size'] > 5242880) return ['success' => false, 'message' => 'File size must be less than 5MB', 'status' => 422];
@@ -48,7 +59,13 @@ class UploadService implements \App\Domain\Contracts\Services\UploadServiceInter
 
         return ['success' => true, 'message' => 'Certificate uploaded successfully', 'path' => $relative_path, 'filename' => $filename, 'status' => 200];
     }
-
+    /**
+     * Handle Id Document Upload.
+     *
+     * @param array $file
+     * @param int $userId
+     * @return array
+     */
     public function handleIdDocumentUpload(array $file, int $userId): array
     {
         if ($file['size'] > 5242880) return ['success' => false, 'message' => 'File size must be less than 5MB', 'status' => 422];

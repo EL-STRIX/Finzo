@@ -172,7 +172,7 @@ class AdminStaffController
         }
 
         if ($action === 'suspend') {
-            if ($staff['status'] === 'suspended') {
+            if ($staff['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                 throw new ApiException('Staff is already suspended', 409);
             }
             $suspended_by = $_SESSION['admin_name'] ?? 'Admin';
@@ -181,7 +181,7 @@ class AdminStaffController
             $this->security->writeAuditLog($pdo, 'staff_suspended', $staff['staff_id'], 'staff', $adminId, 'admin', "Suspended staff: {$staff['full_name']}. Reason: {$reason}");
             return ['success' => true, 'message' => 'Staff member suspended successfully'];
         } elseif ($action === 'reinstate') {
-            if ($staff['status'] !== 'suspended') {
+            if ($staff['status'] !== \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                 throw new ApiException('Staff is not suspended', 409);
             }
             $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_953d62ef'));
