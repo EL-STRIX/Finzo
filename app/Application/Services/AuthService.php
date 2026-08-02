@@ -229,7 +229,11 @@ class AuthService
             $this->repository->createPasswordReset($user['customer_id'], $token, $expires_at);
 
             require_once FINZO_ROOT . '/config/mailer.php';
-            send_password_reset_email($user['email'], $user['full_name'], $token);
+            try {
+                send_password_reset_email($user['email'], $user['full_name'], $token);
+            } catch (\Throwable $mailError) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send password reset email', ['context' => $mailError->getMessage()]);
+            }
 
             return true;
         } catch (PDOException $e) {
