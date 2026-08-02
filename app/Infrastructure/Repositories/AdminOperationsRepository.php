@@ -746,11 +746,19 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
 
     public function getDashboardStats(): array
     {
+        $active_status = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        $pending_status = \App\Domain\Enums\AccountStatusEnum::PENDING->value;
+        $under_review_status = \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value;
+        $suspended_status = \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value;
+
+        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
+
         return [
             'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
-            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'active' AND is_deleted = 0"),
-            'pending_users'      => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
-            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'suspended' AND is_deleted = 0"),
+            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
+            'pending_users'      => $pending_users,
+            'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
+            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$suspended_status}' AND is_deleted = 0"),
             'total_staff'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM staff"),
             'total_branches'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM branches")
         ];
@@ -758,43 +766,58 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
 
     public function getCachedDashboardStats(): array
     {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $transfer = \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value;
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+
         return [
             'transactions_today' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
             'transactions_month' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'pending_approvals'  => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
+            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
+            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
+            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
             'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
-            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
-            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
-            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
+            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = '{$active}'"),
+            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = '{$active}'"),
+            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'"),
             'soft_deleted_users' => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
         ];
     }
 
     public function getTotalInterestCredited(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'");
     }
 
     public function getEarningAccountsCount(): int
     {
-        return (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'");
+        $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        return (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = '{$active}'");
     }
 
     public function getThisMonthInterest(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
     }
 
     public function getLastMonthInterest(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
     }
 
     public function getHistoricalMonthInterest(int $monthsAgo): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
     }
 }

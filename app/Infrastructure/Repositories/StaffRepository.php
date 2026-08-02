@@ -47,30 +47,35 @@ class StaffRepository implements \App\Domain\Contracts\Repositories\StaffReposit
 
     public function getStaffShiftDeposits(int $staffId)
     {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
-            WHERE processed_by_staff_id = ? AND type = 'deposit'
-                AND status = 'completed' AND DATE(created_at) = CURDATE()
+            WHERE processed_by_staff_id = ? AND type = '{$deposit}'
+                AND status = '{$completed}' AND DATE(created_at) = CURDATE()
         ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffShiftWithdrawals(int $staffId)
     {
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
-            WHERE processed_by_staff_id = ? AND type = 'withdrawal'
-                AND status = 'completed' AND DATE(created_at) = CURDATE()
+            WHERE processed_by_staff_id = ? AND type = '{$withdrawal}'
+                AND status = '{$completed}' AND DATE(created_at) = CURDATE()
         ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffTotalTransactionsToday(int $staffId)
     {
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as count
             FROM transactions
-            WHERE processed_by_staff_id = ? AND status = 'completed'
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
                 AND DATE(created_at) = CURDATE()
         ");
         $stmt->execute([$staffId]);
