@@ -312,7 +312,7 @@ class UserController
                 unlink($paths['back_destination']);
             }
             \App\Shared\Core\Logging\Logger::getInstance()->error('KYC DB Error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'DB Error: ' . $e->getMessage()], 500);
+            json_response(['success' => false, 'message' => 'An error occurred while processing your application. Please try again.'], 500);
         }
     }
 

@@ -5,6 +5,9 @@ namespace App\Application\Services;
 use App\Shared\Security\SecurityService;
 
 use App\Infrastructure\Repositories\StaffRepository;
+use App\Shared\Core\Exceptions\AuthenticationException;
+use App\Shared\Core\Exceptions\BusinessRuleException;
+use App\Shared\Core\Exceptions\ResourceNotFoundException;
 use Exception;
 use PDOException;
 use finfo;
@@ -48,11 +51,11 @@ class StaffService
     {
         $hash = $this->repository->findStaffPasswordHash($staffId);
         if (!$hash) {
-            throw new Exception("Staff account not found", 404);
+            throw new ResourceNotFoundException("Staff account not found");
         }
 
         if (!password_verify($currentPassword, $hash)) {
-            throw new Exception("Current password is incorrect", 401);
+            throw new AuthenticationException("Current password is incorrect");
         }
 
         $new_hash = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -97,10 +100,10 @@ class StaffService
     {
         $account = $this->repository->findAccountForUpdate($accountNumber);
         if (!$account) {
-            throw new \Exception("Account not found", 404);
+            throw new ResourceNotFoundException("Account not found");
         }
         if ($account['status'] !== 'active') {
-            throw new \Exception("Account is not active. Status: " . $account['status'], 403);
+            throw new BusinessRuleException("Account is not active. Status: " . $account['status']);
         }
         return $account;
     }
@@ -163,12 +166,12 @@ class StaffService
             $account = $this->validateAccountForTransaction($accountNumber);
 
             if ((float)$account['balance'] < $amount) {
-                throw new Exception("Insufficient balance. Available: " . format_currency($account['balance']), 422);
+                throw new BusinessRuleException("Insufficient balance. Available: " . format_currency($account['balance']));
             }
 
             $max_withdrawal = get_setting($this->repository->getPDO(), 'max_withdrawal_amount', 50000);
             if ($amount > $max_withdrawal) {
-                throw new Exception("Maximum withdrawal amount is " . format_currency($max_withdrawal), 422);
+                throw new BusinessRuleException("Maximum withdrawal amount is " . format_currency($max_withdrawal));
             }
 
             $new_balance = (float)$account['balance'] - $amount;
@@ -260,7 +263,7 @@ class StaffService
     {
         $transaction = $this->repository->getTransactionReceipt($transactionId);
         if (!$transaction) {
-            throw new Exception("Transaction not found", 404);
+            throw new ResourceNotFoundException("Transaction not found");
         }
         return $transaction;
     }
@@ -269,7 +272,7 @@ class StaffService
     {
         $staff = $this->repository->getFullStaffProfile($staffId);
         if (!$staff) {
-            throw new Exception("Staff profile not found", 404);
+            throw new ResourceNotFoundException("Staff profile not found");
         }
 
         $address = [
@@ -323,7 +326,7 @@ class StaffService
             $dest_path = UPLOAD_STAFF_PHOTOS_PATH . $filename;
 
             if (!move_uploaded_file($file['tmp_name'], $dest_path)) {
-                throw new Exception("Failed to save profile photo", 500);
+                throw new \RuntimeException("Failed to save profile photo");
             }
 
             $new_photo_path = 'uploads/staff-photos/' . $filename;
@@ -343,7 +346,7 @@ class StaffService
         }
 
         if (empty($fields)) {
-            throw new Exception("No fields provided to update", 422);
+            throw new BusinessRuleException("No fields provided to update");
         }
 
         $this->repository->updateStaffProfile($staffId, $fields, $params);

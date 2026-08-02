@@ -57,47 +57,10 @@ if (in_array($_SERVER['REQUEST_METHOD'] ?? '', ['PUT', 'PATCH'])) {
 
 // Register global error/exception handlers only if we are not running tests
 if (getenv('APP_ENV') !== 'testing') {
-    // Global Exception Handler for API standard
+    // Global Exception Handler — delegates to the centralized ExceptionHandler
+    // for a single, consistent JSON response format across the entire application.
     set_exception_handler(function (\Throwable $e) {
-        $debug = getenv('APP_DEBUG') === 'true';
-        $statusCode = 500;
-
-        // Check if it's our custom ApiException to inherit status codes
-        if (method_exists($e, 'getStatusCode')) {
-            $statusCode = $e->getStatusCode();
-        }
-
-        $message = $debug ? $e->getMessage() : 'A server error occurred. Please try again later.';
-
-        // Expose Database Business Validation Errors (Phase 10)
-        if ($e instanceof \PDOException && isset($e->errorInfo[0]) && $e->errorInfo[0] === '45000') {
-            // Error format is often: SQLSTATE[45000]: ... : 1644 Duplicate transaction detected...
-            $message = preg_replace('/SQLSTATE\[45000\].*?: \d+ /', '', $e->getMessage());
-            $statusCode = 422; // Unprocessable Entity
-        }
-
-        if (!headers_sent()) {
-            http_response_code($statusCode);
-            header('Content-Type: application/json; charset=utf-8');
-        }
-
-        $response = [
-            'success' => false,
-            'message' => $message
-        ];
-
-        if (method_exists($e, 'getPayload') && !empty($e->getPayload())) {
-            $response = array_merge($response, $e->getPayload());
-        }
-
-        if ($debug) {
-            $response['file'] = $e->getFile();
-            $response['line'] = $e->getLine();
-        }
-
-        error_log("Uncaught Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
-        echo json_encode($response);
-        exit;
+        \App\Shared\Core\Exceptions\ExceptionHandler::handle($e);
     });
 
     // Global Error Handler for API standard
