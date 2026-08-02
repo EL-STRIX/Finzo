@@ -692,3 +692,100 @@ DELIMITER ;
 ALTER TABLE transactions ADD CONSTRAINT fk_txn_journal FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE RESTRICT;
 
 -- =====================================================
+-- TABLE 19: loan_products
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT NULL,
+    interest_rate DECIMAL(5, 2) NOT NULL,
+    min_amount DECIMAL(15, 2) NOT NULL,
+    max_amount DECIMAL(15, 2) NOT NULL,
+    min_tenure_months INT NOT NULL,
+    max_tenure_months INT NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 20: loan_applications
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_applications (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    user_id INT UNSIGNED NOT NULL,
+    loan_product_id INT UNSIGNED NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    tenure_months INT NOT NULL,
+    purpose TEXT NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    admin_notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_loan_app_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_loan_app_product (loan_product_id) REFERENCES loan_products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 21: loans
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loans (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    loan_id_ref VARCHAR(50) NOT NULL UNIQUE,
+    user_id INT UNSIGNED NOT NULL,
+    loan_product_id INT UNSIGNED NOT NULL,
+    application_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    principal_amount DECIMAL(15, 2) NOT NULL,
+    interest_rate DECIMAL(5, 2) NOT NULL,
+    tenure_months INT NOT NULL,
+    total_amount_payable DECIMAL(15, 2) NOT NULL,
+    total_amount_paid DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    next_emi_date DATE NULL,
+    status ENUM('active', 'closed', 'defaulted') NOT NULL DEFAULT 'active',
+    disbursed_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_loan_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_loan_product (loan_product_id) REFERENCES loan_products(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_application (application_id) REFERENCES loan_applications(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    INDEX idx_loan_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 22: loan_schedules
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_schedules (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    loan_id INT UNSIGNED NOT NULL,
+    installment_no INT NOT NULL,
+    due_date DATE NOT NULL,
+    emi_amount DECIMAL(15, 2) NOT NULL,
+    principal_component DECIMAL(15, 2) NOT NULL,
+    interest_component DECIMAL(15, 2) NOT NULL,
+    outstanding_balance DECIMAL(15, 2) NOT NULL,
+    status ENUM('pending', 'paid', 'late') NOT NULL DEFAULT 'pending',
+    penalty_assessed DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_schedule_loan (loan_id) REFERENCES loans(id) ON DELETE CASCADE,
+    INDEX idx_schedule_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 23: loan_repayments
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_repayments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    loan_id INT UNSIGNED NOT NULL,
+    schedule_id INT UNSIGNED NULL, -- Null if advance payment
+    amount_paid DECIMAL(15, 2) NOT NULL,
+    transaction_id VARCHAR(50) NOT NULL,
+    paid_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_repayment_loan (loan_id) REFERENCES loans(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_repayment_schedule (schedule_id) REFERENCES loan_schedules(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
