@@ -119,6 +119,10 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
         $id_number = $data['id_number'];
         if (empty($id_number)) {
             $errors['id_number'] = 'Document number is required';
+        } elseif (!empty($id_type) && in_array($id_type, $valid_id_types)) {
+            if ($this->checkIdNumberExists($id_type, $id_number, $data['user_id'] ?? 0)) {
+                $errors['id_number'] = 'This document number is already registered';
+            }
         }
 
         $has_profile_pic = !empty($data['has_profile_pic']);
@@ -655,9 +659,14 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
      * @param mixed $args
      * @return mixed
      */
-    public function checkPhoneExists(...$args)
+    public function checkPhoneExists(string $phone, int $exclude_user_id)
     {
-        return $this->repository->checkPhoneExists(...$args);
+        return $this->repository->checkPhoneExists($phone, $exclude_user_id);
+    }
+
+    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
+    {
+        return $this->repository->checkIdNumberExists($idType, $idNumber, $excludeUserId);
     }
     /**
      * Update Profile.

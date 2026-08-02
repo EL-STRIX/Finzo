@@ -46,6 +46,12 @@ class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositor
         $stmt = $this->db->prepare("UPDATE accounts SET daily_limit = ? WHERE id = ?");
         return $stmt->execute([$daily_limit, $account_id]);
     }
+    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM user_profiles WHERE id_type = ? AND id_number = ? AND user_id != ?");
+        $stmt->execute([$idType, $idNumber, $excludeUserId]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
 
     public function fetchAccountDetails(int $userId)
     {

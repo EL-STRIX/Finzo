@@ -239,7 +239,7 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
+        $userId = $_SESSION['user_id'];
         try {
             $action = new \App\Application\Actions\CompleteUserProfileAction($this->service, $this->security);
             $action->execute($userId, $_POST, $_FILES);

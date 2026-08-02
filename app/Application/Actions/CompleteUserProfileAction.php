@@ -23,6 +23,7 @@ class CompleteUserProfileAction
         $customer_id_str = $this->userService->getCustomerId($userId);
 
         $data = [
+            'user_id' => $userId,
             'dob' => $this->security->cleanInput($postData['dob'] ?? ''), 'gender' => $this->security->cleanInput($postData['gender'] ?? ''),
             'father_name' => $this->security->cleanInput($postData['father_name'] ?? ''), 'mother_name' => $this->security->cleanInput($postData['mother_name'] ?? ''),
             'marital_status' => $this->security->cleanInput($postData['marital_status'] ?? ''), 'nationality' => $this->security->cleanInput($postData['nationality'] ?? ''),

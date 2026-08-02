@@ -43,6 +43,7 @@ interface UserRepositoryInterface
     public function getFullProfile(int $userId);
     public function checkEmailExists(string $email, int $exclude_user_id);
     public function checkPhoneExists(string $phone, int $exclude_user_id);
+    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool;
     public function updateProfile(int $userId, string $fullName, string $phone, string $email);
     public function getActiveAccount(int $userId);
     public function getStatementTransactions(int $account_id, string $fromDate, string $toDate);
