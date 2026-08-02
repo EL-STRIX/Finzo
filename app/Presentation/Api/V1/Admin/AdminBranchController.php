@@ -10,7 +10,7 @@ class AdminBranchController
     protected SecurityService $security;
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security ?? new SecurityService();
         $this->service = $service;

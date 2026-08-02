@@ -8,15 +8,15 @@ use App\Infrastructure\Repositories\AdminManagementRepository;
 use App\Shared\Core\Exceptions\ApiException;
 use PDO;
 
-class AdminManagementService
+class AdminManagementService implements \App\Domain\Contracts\Services\AdminManagementServiceInterface
 {
     protected SecurityService $security;
 
     private AdminManagementRepository $repository;
 
-    public function __construct(AdminManagementRepository $repository, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
 

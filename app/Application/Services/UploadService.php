@@ -4,11 +4,11 @@ namespace App\Application\Services;
 use App\Infrastructure\Repositories\UploadRepository;
 use App\Shared\Core\Logging\Logger;
 
-class UploadService
+class UploadService implements \App\Domain\Contracts\Services\UploadServiceInterface
 {
     private UploadRepository $repository;
 
-    public function __construct(UploadRepository $repository)
+    public function __construct(\App\Domain\Contracts\Repositories\UploadRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->repository = $repository;
     }

@@ -80,4 +80,8 @@ require_once FINZO_ROOT . '/config/functions.php';
 // Load Event Listeners
 require_once FINZO_ROOT . '/config/events.php';
 
+// Initialize IoC Container and register bindings
+$container = \App\Shared\Core\Container::getInstance();
+\App\Shared\Core\AppServiceProvider::register($container);
+
 // If middleware files exist, load them or they will be called manually

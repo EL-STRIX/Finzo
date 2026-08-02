@@ -14,9 +14,9 @@ class AdminManagementController
 
     private AdminManagementService $service;
 
-    public function __construct(AdminManagementService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\AdminManagementServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
     }
 

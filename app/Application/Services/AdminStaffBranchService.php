@@ -8,7 +8,7 @@ use App\Infrastructure\Repositories\AdminStaffBranchRepository;
 use Exception;
 use DateTime;
 
-class AdminStaffBranchService
+class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminStaffBranchServiceInterface
 {
     protected SecurityService $security;
 
@@ -16,7 +16,7 @@ class AdminStaffBranchService
 
     public function __construct(AdminStaffBranchRepository $repo, ?SecurityService $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repo = $repo;
     }
 

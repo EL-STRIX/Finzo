@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use PDO;
 use PDOException;
 
-class AdminOperationsRepository extends BaseRepository
+class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface
 {
     // ---------------------------------------------------------
     // Audit Log Methods

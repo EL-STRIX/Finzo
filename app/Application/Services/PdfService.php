@@ -3,11 +3,11 @@ namespace App\Application\Services;
 
 use App\Infrastructure\Repositories\PdfRepository;
 
-class PdfService
+class PdfService implements \App\Domain\Contracts\Services\PdfServiceInterface
 {
     private PdfRepository $repository;
 
-    public function __construct(PdfRepository $repository)
+    public function __construct(\App\Domain\Contracts\Repositories\PdfRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->repository = $repository;
     }

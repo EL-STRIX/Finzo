@@ -6,11 +6,11 @@ use App\Infrastructure\Repositories\UserRepository;
 use Exception;
 use DateTime;
 
-class UserService
+class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
 {
     protected UserRepository $repository;
 
-    public function __construct(UserRepository $repository)
+    public function __construct(\App\Domain\Contracts\Repositories\UserRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->repository = $repository;
     }

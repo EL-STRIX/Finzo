@@ -6,15 +6,15 @@ use App\Shared\Security\SecurityService;
 
 use App\Infrastructure\Repositories\AdminOperationsRepository;
 
-class AdminOperationsService
+class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOperationsServiceInterface
 {
     protected SecurityService $security;
 
     protected AdminOperationsRepository $repository;
 
-    public function __construct(AdminOperationsRepository $repository, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
 

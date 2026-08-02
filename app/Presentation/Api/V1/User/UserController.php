@@ -16,9 +16,9 @@ class UserController
     protected UserService $service;
     protected UserRepository $repository;
 
-    public function __construct(UserService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\UserServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
         $this->repository = $service->getRepository();
     }

@@ -12,15 +12,15 @@ use Exception;
 use PDOException;
 use finfo;
 
-class StaffService
+class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterface
 {
     protected SecurityService $security;
 
     private StaffRepository $repository;
 
-    public function __construct(StaffRepository $repository, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Repositories\StaffRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
 

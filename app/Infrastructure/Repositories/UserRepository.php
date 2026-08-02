@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class UserRepository extends BaseRepository
+class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositoryInterface
 {
 
 

@@ -8,15 +8,15 @@ use App\Infrastructure\Repositories\AuthRepository;
 use App\Shared\Core\Exceptions\ApiException;
 use PDOException;
 
-class AuthService
+class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 {
     protected SecurityService $security;
 
     private AuthRepository $repository;
 
-    public function __construct(AuthRepository $repository, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Repositories\AuthRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
 

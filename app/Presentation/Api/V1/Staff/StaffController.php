@@ -13,9 +13,9 @@ class StaffController
 
     private StaffService $service;
 
-    public function __construct(StaffService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\StaffServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
     }
 

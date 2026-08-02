@@ -129,32 +129,8 @@ class Router
 
     private function instantiateController(string $controllerClass)
     {
-        // Simple DI container implementation
-        $reflection = new \ReflectionClass($controllerClass);
-        $constructor = $reflection->getConstructor();
-
-        if (is_null($constructor)) {
-            return new $controllerClass();
-        }
-
-        $dependencies = [];
-        foreach ($constructor->getParameters() as $parameter) {
-            $type = $parameter->getType();
-            if ($type && !$type->isBuiltin()) {
-                $dependencyClass = $type->getName();
-
-                // If it's a Service, it might need a Repository
-                if (str_ends_with($dependencyClass, 'Service')) {
-                    $dependencies[] = $this->instantiateController($dependencyClass);
-                } elseif (str_ends_with($dependencyClass, 'Repository')) {
-                    $dependencies[] = new $dependencyClass();
-                } else {
-                    $dependencies[] = new $dependencyClass();
-                }
-            }
-        }
-
-        return $reflection->newInstanceArgs($dependencies);
+        $container = \App\Shared\Core\Container::getInstance();
+        return $container->get($controllerClass);
     }
 
     public function getRoutes(): array
