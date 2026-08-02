@@ -48,6 +48,13 @@ class ProcessTransferAction
                 throw new \App\Shared\Core\Exceptions\BusinessRuleException('Cannot transfer to your own account');
             }
 
+            // Idempotency: Prevent duplicate transfers (same amount to same destination within 2 minutes)
+            $stmt = $pdo->prepare("SELECT id FROM transactions WHERE from_account_id = ? AND to_account_id = ? AND amount = ? AND created_at > (NOW() - INTERVAL 2 MINUTE)");
+            $stmt->execute([$source_id, $dest_id, $amount]);
+            if ($stmt->fetch()) {
+                throw new \App\Shared\Core\Exceptions\BusinessRuleException('Duplicate transaction detected. Please wait 2 minutes before transferring the exact same amount to this recipient.');
+            }
+
             $first_id = min($source_id, $dest_id);
             $second_id = max($source_id, $dest_id);
             $first = $this->userService->getAccountForUpdate($first_id);
