@@ -84,4 +84,27 @@ require_once FINZO_ROOT . '/config/events.php';
 $container = \App\Shared\Core\Container::getInstance();
 \App\Shared\Core\AppServiceProvider::register($container);
 
+// Maintenance Mode Interception
+$isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false;
+$isAdminRoute = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/v1/admin/') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/api/v1/auth/admin-login') !== false;
+
+if ($isApi && !$isAdminRoute) {
+    try {
+        $settingsService = $container->get(\App\Domain\Contracts\Services\SettingsServiceInterface::class);
+        $maintenanceMode = $settingsService->getSetting('maintenance_mode');
+        
+        if ($maintenanceMode === true) {
+            header('Content-Type: application/json');
+            http_response_code(503);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Service Unavailable. The system is currently undergoing scheduled maintenance.'
+            ]);
+            exit;
+        }
+    } catch (\Throwable $e) {
+        // Fail open if settings cannot be loaded during boot (e.g., database not ready)
+    }
+}
+
 // If middleware files exist, load them or they will be called manually
