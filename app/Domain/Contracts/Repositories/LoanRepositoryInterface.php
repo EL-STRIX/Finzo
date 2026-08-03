@@ -4,6 +4,9 @@ namespace App\Domain\Contracts\Repositories;
 
 interface LoanRepositoryInterface
 {
+    public function beginTransaction(): bool;
+    public function commit(): bool;
+    public function rollBack(): bool;
     public function createLoanProduct(string $name, string $description, float $interestRate, float $minAmount, float $maxAmount, int $minTenure, int $maxTenure, string $status): int;
     public function getLoanProducts(string $status = 'all'): array;
     public function getLoanProductById(int $productId);

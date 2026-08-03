@@ -4,6 +4,10 @@ namespace App\Domain\Contracts\Repositories;
 
 interface AdminOperationsRepositoryInterface
 {
+    public function beginTransaction(): bool;
+    public function commit(): bool;
+    public function rollBack(): bool;
+    public function inTransaction(): bool;
     public function countAuditLogs(array $filters): int;
     public function getAuditLogs(array $filters, int $perPage, int $offset);
     public function getAuditLogActionTypes();

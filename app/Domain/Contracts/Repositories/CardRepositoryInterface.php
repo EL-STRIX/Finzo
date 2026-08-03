@@ -4,6 +4,9 @@ namespace App\Domain\Contracts\Repositories;
 
 interface CardRepositoryInterface
 {
+    public function beginTransaction(): bool;
+    public function commit(): bool;
+    public function rollBack(): bool;
     public function createCardProduct(array $data): int;
     public function getCardProducts(string $status = 'all'): array;
     public function getCardProductById(int $productId);
