@@ -604,6 +604,70 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
         return $this->repository->markNotificationRead(...$args);
     }
     /**
+     * Get Transactions
+     */
+    public function getTransactions(int $accountId, array $filters): array
+    {
+        $where_clauses = ["(t.from_account_id = ? OR t.to_account_id = ?)"];
+        $params = [$accountId, $accountId];
+
+        if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
+            $where_clauses[] = "t.type = ?";
+            $params[] = $filters['type'];
+        }
+        if ($filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
+            $where_clauses[] = "t.status = ?";
+            $params[] = $filters['status'];
+        }
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($filters['from_date'])) {
+            $where_clauses[] = "DATE(t.created_at) >= ?";
+            $params[] = $filters['from_date'];
+        }
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($filters['to_date'])) {
+            $where_clauses[] = "DATE(t.created_at) <= ?";
+            $params[] = $filters['to_date'];
+        }
+        if (!\App\Shared\Core\Validation\Validator::isEmpty($filters['search'])) {
+            $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR t.reference_note LIKE ?)";
+            $search_param = "%{$filters['search']}%";
+            $params[] = $search_param;
+            $params[] = $search_param;
+            $params[] = $search_param;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+        $total = (int)$this->repository->getTransactionsCount($where_sql, $params);
+        
+        $per_page = $filters['per_page'];
+        $page = $filters['page'];
+        $pages = max(1, ceil($total / $per_page));
+        $offset = ($page - 1) * $per_page;
+        
+        $transactions = $this->repository->getTransactionsList($where_sql, $params, $per_page, $offset);
+
+        foreach ($transactions as &$txn) {
+            if (in_array($txn['type'], ['deposit', 'interest_credit'])) {
+                $txn['direction'] = 'credit';
+            } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
+                $txn['direction'] = 'debit';
+            } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
+                $txn['direction'] = ($txn['to_account_id'] == $accountId) ? 'credit' : 'debit';
+                if ($txn['to_account_id'] == $accountId && $txn['dest_balance_after'] !== null) {
+                    $txn['balance_after'] = $txn['dest_balance_after'];
+                }
+            }
+        }
+        unset($txn);
+
+        return [
+            'transactions' => $transactions,
+            'total' => $total,
+            'pages' => $pages,
+            'current_page' => $page,
+            'per_page' => $per_page
+        ];
+    }
+    /**
      * Mark All Notifications Read.
      *
      * @param mixed $args

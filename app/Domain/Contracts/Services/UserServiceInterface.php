@@ -40,6 +40,7 @@ interface UserServiceInterface
     public function getNotificationsTotal(...$args);
     public function getNotifications(...$args);
     public function markNotificationRead(...$args);
+    public function getTransactions(int $accountId, array $filters): array;
     public function markAllNotificationsRead(...$args);
     public function deleteNotification(...$args);
     public function clearAllNotifications(...$args);

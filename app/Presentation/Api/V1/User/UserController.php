@@ -457,60 +457,25 @@ class UserController
                 json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
             }
             $account_id = $account['id'];
-            $search = $this->security->cleanInput($_GET['search'] ?? '');
-            $type = $this->security->cleanInput($_GET['type'] ?? 'all');
-            $status = $this->security->cleanInput($_GET['status'] ?? 'all');
-            $fromDate = $this->security->cleanInput($_GET['from_date'] ?? '');
-            $toDate = $this->security->cleanInput($_GET['to_date'] ?? '');
-            $page = max(1, intval($_GET['page'] ?? 1));
-            $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+            $filters = [
+                'type' => $this->security->cleanInput($_GET['type'] ?? 'all'),
+                'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
+                'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
+                'to_date' => $this->security->cleanInput($_GET['to_date'] ?? ''),
+                'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+                'page' => max(1, intval($_GET['page'] ?? 1)),
+                'per_page' => min(50, max(10, intval($_GET['per_page'] ?? 20)))
+            ];
 
-            $where_clauses = ["(t.from_account_id = ? OR t.to_account_id = ?)"];
-            $params = [$account_id, $account_id];
-            if ($type !== 'all' && in_array($type, ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
-                $where_clauses[] = "t.type = ?";
-                $params[] = $type;
-            }
-            if ($status !== 'all' && in_array($status, ['completed', 'pending', 'failed', 'reversed'])) {
-                $where_clauses[] = "t.status = ?";
-                $params[] = $status;
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($fromDate)) {
-                $where_clauses[] = "DATE(t.created_at) >= ?";
-                $params[] = $fromDate;
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($toDate)) {
-                $where_clauses[] = "DATE(t.created_at) <= ?";
-                $params[] = $toDate;
-            }
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($search)) {
-                $where_clauses[] = "(t.txn_id LIKE ? OR t.description LIKE ? OR t.reference_note LIKE ?)";
-                $search_param = "%{$search}%";
-                $params[] = $search_param;
-                $params[] = $search_param;
-                $params[] = $search_param;
-            }
-
-            $where_sql = implode(' AND ', $where_clauses);
-            $total = (int)$this->service->getTransactionsCount($where_sql, $params);
-            $pages = max(1, ceil($total / $per_page));
-            $offset = ($page - 1) * $per_page;
-            $transactions = $this->service->getTransactionsList($where_sql, $params, $per_page, $offset);
-
-            foreach ($transactions as &$txn) {
-                if (in_array($txn['type'], ['deposit', 'interest_credit'])) {
-                    $txn['direction'] = 'credit';
-                } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
-                    $txn['direction'] = 'debit';
-                } elseif ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
-                    $txn['direction'] = ($txn['to_account_id'] == $account_id) ? 'credit' : 'debit';
-                    if ($txn['to_account_id'] == $account_id && $txn['dest_balance_after'] !== null) {
-                        $txn['balance_after'] = $txn['dest_balance_after'];
-                    }
-                }
-            }
-            unset($txn);
-            json_response(['success' => true, 'transactions' => $transactions, 'total' => $total, 'pages' => $pages, 'current_page' => $page, 'per_page' => $per_page]);
+            $data = $this->service->getTransactions($account_id, $filters);
+            json_response([
+                'success' => true, 
+                'transactions' => $data['transactions'], 
+                'total' => $data['total'], 
+                'pages' => $data['pages'], 
+                'current_page' => $data['current_page'], 
+                'per_page' => $data['per_page']
+            ]);
         } catch (PDOException $e) {
             json_response(['success' => false, 'message' => 'Failed to load transactions'], 500);
         }
