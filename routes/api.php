@@ -96,6 +96,12 @@ $router->post('/api/v1/admin/cards/{id}/force-close', [AdminCardController::clas
 use App\Presentation\Api\V1\Admin\AdminReportController;
 $router->get('/api/v1/admin/reports/financial', [AdminReportController::class, 'financialSummary'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/reports/demographics', [AdminReportController::class, 'demographics'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\LedgerController;
+$router->get('/api/v1/admin/ledger/accounts', [LedgerController::class, 'getChartOfAccounts'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/ledger/journals', [LedgerController::class, 'getJournals'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/ledger/periods/active', [LedgerController::class, 'getActivePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/ledger/periods/close', [LedgerController::class, 'closePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
@@ -147,6 +153,8 @@ $router->get('/api/v1/staff-portal/account-lookup', [StaffController::class, 'ac
 $router->post('/api/v1/staff-portal/deposit', [StaffController::class, 'deposit'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/withdrawal', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff-portal/history', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/shift/clock-in', [StaffController::class, 'clockIn'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/shift/clock-out', [StaffController::class, 'clockOut'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff-portal/receipt', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);

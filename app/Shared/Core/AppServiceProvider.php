@@ -19,6 +19,7 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Repositories\ReportRepositoryInterface::class, \App\Infrastructure\Repositories\ReportRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\RoleRepositoryInterface::class, \App\Infrastructure\Repositories\RoleRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\SettingsRepositoryInterface::class, \App\Infrastructure\Repositories\SettingsRepository::class);
+        $container->bind(\App\Domain\Contracts\Repositories\LedgerRepositoryInterface::class, \App\Infrastructure\Repositories\LedgerRepository::class);
 
         // Security
         $container->bind(\App\Domain\Contracts\Security\SecurityServiceInterface::class, \App\Shared\Security\SecurityService::class);
@@ -38,5 +39,7 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Repositories\CardRepositoryInterface::class, \App\Infrastructure\Repositories\CardRepository::class);
         $container->bind(\App\Domain\Contracts\Services\CardServiceInterface::class, \App\Application\Services\CardService::class);
         $container->bind(\App\Domain\Contracts\Services\ReportServiceInterface::class, \App\Application\Services\ReportService::class);
+        $container->bind(\App\Domain\Contracts\Services\NotificationServiceInterface::class, \App\Application\Services\NotificationService::class);
+        $container->bind(\App\Domain\Contracts\Services\LedgerServiceInterface::class, \App\Application\Services\LedgerService::class);
     }
 }
