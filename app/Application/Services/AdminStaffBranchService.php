@@ -369,4 +369,12 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             'stats' => ['total' => (int)$stats['total'], 'active' => (int)$stats['active'], 'total_staff' => (int)$stats['total_staff']]
         ];
     }
+
+    public function getDepartmentAnalytics(): array
+    {
+        return [
+            'success' => true,
+            'data' => $this->repo->getDepartmentAnalytics()
+        ];
+    }
 }

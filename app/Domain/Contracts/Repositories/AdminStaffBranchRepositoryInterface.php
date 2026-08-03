@@ -24,6 +24,9 @@ interface AdminStaffBranchRepositoryInterface
     public function reinstateStaff(int $staffId);
     public function deleteStaff(int $staffId);
     public function insertStaff(array $data);
+    public function updateStaff(int $id, array $data);
+    public function getBranchesList(string $search, string $type, string $status);
+    public function getDepartmentAnalytics();
     public function updateStaffPhoto(int $staffId, string $path);
     public function getAdminPasswordHash(int $adminId): ?string;
     public function deleteBranchAndUnassignStaff(int $branchId): void;

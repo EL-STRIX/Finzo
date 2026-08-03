@@ -58,8 +58,24 @@ $router->get('/api/v1/staff/{id}', [AdminStaffController::class, 'getStaffDetail
 $router->patch('/api/v1/staff/{id}', [AdminStaffController::class, 'staffAction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff/{id}/password/generate', [AdminStaffController::class, 'generateStaffPassword'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff/{id}/password/reset', [AdminStaffController::class, 'resetStaffPassword'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\RoleController;
+$router->get('/api/v1/admin/roles', [RoleController::class, 'index'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/roles', [RoleController::class, 'create'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/roles/{id}', [RoleController::class, 'show'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->put('/api/v1/admin/roles/{id}', [RoleController::class, 'update'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->delete('/api/v1/admin/roles/{id}', [RoleController::class, 'destroy'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/permissions', [RoleController::class, 'permissions'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/assign-roles', [RoleController::class, 'assignRoles'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\AdminSettingsController;
+$router->get('/api/v1/admin/settings', [AdminSettingsController::class, 'index'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->put('/api/v1/admin/settings', [AdminSettingsController::class, 'update'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->patch('/api/v1/admin/settings', [AdminSettingsController::class, 'update'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/settings/backup', [AdminSettingsController::class, 'triggerBackup'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff/{id}/photo', [AdminStaffController::class, 'uploadStaffPhoto'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/branches', [AdminBranchController::class, 'getBranches'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/branches/departments', [AdminBranchController::class, 'departments'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->delete('/api/v1/branches/{id}', [AdminBranchController::class, 'deleteBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\AdminLoanController;

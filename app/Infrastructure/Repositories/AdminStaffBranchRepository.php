@@ -228,4 +228,15 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
 
         return ['branches' => $branches, 'stats' => $stats];
     }
+
+    public function getDepartmentAnalytics()
+    {
+        $stmt = $this->db->query("
+            SELECT department, COUNT(id) as staff_count, SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_staff
+            FROM staff
+            GROUP BY department
+            ORDER BY staff_count DESC
+        ");
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

@@ -42,4 +42,10 @@ class AdminBranchController
 
         return $this->service->getBranchesList($search, $type, $status);
     }
+
+    public function departments(): array
+    {
+        $this->security->enforcePermission('view_branches');
+        return $this->service->getDepartmentAnalytics();
+    }
 }
