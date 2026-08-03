@@ -280,17 +280,36 @@ class AdminOperationsController
         $export   = $this->security->cleanInput($_GET['export'] ?? '');
 
         if ($export === 'csv') {
-            $rows = $this->service->getTransactions($filters, $page, $per_page, true);
+            $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($isAsync) {
+                $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+                \App\Shared\Core\Queue\QueueManager::getInstance()->dispatch(
+                    new \App\Application\Jobs\ExportCsvJob([
+                        'admin_id' => $adminId,
+                        'type' => 'transactions',
+                        'filters' => $filters
+                    ])
+                );
+                http_response_code(202);
+                echo json_encode(['success' => true, 'message' => 'Export job started asynchronously. You will be notified when it is ready.']);
+                exit;
+            }
 
+            $generator = $this->service->getTransactions($filters, $page, $per_page, true);
+
+            header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename="finzo_transactions_' . date('Y-m-d') . '.csv"');
+            header('X-Accel-Buffering: no');
 
             $output = fopen('php://output', 'w');
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($rows)) {
-                fputcsv($output, array_keys($rows[0]));
-                foreach ($rows as $row) {
-                    fputcsv($output, $row);
+            $headerWritten = false;
+            foreach ($generator as $row) {
+                if (!$headerWritten) {
+                    fputcsv($output, array_keys($row));
+                    $headerWritten = true;
                 }
+                fputcsv($output, $row);
             }
             fclose($output);
             if (defined('FINZO_TESTING') && FINZO_TESTING) {
@@ -318,7 +337,50 @@ class AdminOperationsController
         return $data;
     }
 
+    public function exportUsers(): void
+    {
+        $filters = [
+            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
+        ];
 
+        $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        if ($isAsync) {
+            $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+            \App\Shared\Core\Queue\QueueManager::getInstance()->dispatch(
+                new \App\Application\Jobs\ExportCsvJob([
+                    'admin_id' => $adminId,
+                    'type' => 'users',
+                    'filters' => $filters
+                ])
+            );
+            http_response_code(202);
+            echo json_encode(['success' => true, 'message' => 'Export job started asynchronously. You will be notified when it is ready.']);
+            exit;
+        }
+
+        $generator = $this->service->exportUsers($filters);
+
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="finzo_users_' . date('Y-m-d') . '.csv"');
+        header('X-Accel-Buffering: no');
+
+        $output = fopen('php://output', 'w');
+        $headerWritten = false;
+        foreach ($generator as $row) {
+            if (!$headerWritten) {
+                fputcsv($output, array_keys($row));
+                $headerWritten = true;
+            }
+            fputcsv($output, $row);
+        }
+        fclose($output);
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            throw new \Exception('Exit called after export');
+        }
+        exit;
+    }
 
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {

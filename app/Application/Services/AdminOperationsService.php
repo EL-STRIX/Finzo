@@ -332,7 +332,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * @param array $filters
      * @return array
      */
-    public function exportUsers(array $filters): array
+    public function exportUsers(array $filters): array|\Generator
     {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
         $params = [];
@@ -351,7 +351,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->getExportUsers($where_sql, $params);
+        return $this->repository->exportUsersGenerator($where_sql, $params);
     }
     /**
      * Get Locked Accounts.
@@ -910,7 +910,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * @param bool $isExport
      * @return array
      */
-    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array
+    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array|\Generator
     {
         $where_clauses = ["1=1"];
         $params = [];
@@ -953,7 +953,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         ";
 
         if ($isExport) {
-            return $this->repository->exportTransactions($base_sql, $params);
+            return $this->repository->exportTransactionsGenerator($base_sql, $params);
         }
 
         $total = $this->repository->countTransactions($base_sql, $params);
@@ -1036,6 +1036,8 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             ]
         ];
     }
+
+
     /**
      * Get Suspended User Detail.
      *

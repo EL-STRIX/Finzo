@@ -246,6 +246,27 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
         ", $params);
     }
 
+    public function exportUsersGenerator(string $whereSql, array $params): \Generator {
+        $sql = "
+            SELECT
+                u.customer_id as 'Customer ID',
+                u.full_name as 'Full Name',
+                u.email as 'Email',
+                u.phone as 'Phone',
+                u.status as 'Status',
+                u.created_at as 'Created At',
+                u.last_login_at as 'Last Login'
+            FROM users u
+            WHERE {$whereSql}
+            ORDER BY u.created_at DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $row;
+        }
+    }
+
     // ---------------------------------------------------------
     // Locked Accounts Methods
     // ---------------------------------------------------------
@@ -521,6 +542,30 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
             ORDER BY t.created_at DESC, t.id DESC
         ";
         return $this->fetchAll($sql, $params);
+    }
+
+    public function exportTransactionsGenerator(string $baseSql, array $params): \Generator {
+        $sql = "
+            SELECT
+                t.txn_id as 'Transaction ID',
+                COALESCE(fa.account_no, 'N/A') as 'From Account',
+                COALESCE(fu.full_name, 'N/A') as 'From Name',
+                COALESCE(ta.account_no, 'N/A') as 'To Account',
+                COALESCE(tu.full_name, 'N/A') as 'To Name',
+                t.type as 'Type',
+                t.amount as 'Amount',
+                t.status as 'Status',
+                t.description as 'Description',
+                COALESCE(s.staff_id, 'N/A') as 'Processed By',
+                t.created_at as 'Date'
+            {$baseSql}
+            ORDER BY t.created_at DESC, t.id DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $row;
+        }
     }
 
     // ---------------------------------------------------------

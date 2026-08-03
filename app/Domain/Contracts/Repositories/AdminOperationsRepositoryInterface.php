@@ -23,6 +23,7 @@ interface AdminOperationsRepositoryInterface
     public function updateAccountBalance(float $balance, int $accountId): void;
     public function addNotification(int $userId, string $type, string $title, string $message): void;
     public function getExportUsers(string $whereSql, array $params);
+    public function exportUsersGenerator(string $whereSql, array $params): \Generator;
     public function countLockedAccounts(string $whereSql, array $params): int;
     public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset);
     public function getLockedAccountDetail(int $userId);
@@ -45,6 +46,7 @@ interface AdminOperationsRepositoryInterface
     public function getTransactions(string $baseSql, array $params, int $perPage, int $offset);
     public function getTransactionsSummary(string $baseSql, array $params);
     public function exportTransactions(string $baseSql, array $params);
+    public function exportTransactionsGenerator(string $baseSql, array $params): \Generator;
     public function countUsers(string $whereSql, array $params): int;
     public function getUsers(string $whereSql, array $params, int $perPage, int $offset);
     public function getUsersStats();
