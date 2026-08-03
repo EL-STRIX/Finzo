@@ -38,6 +38,7 @@ date_default_timezone_set('Asia/Kolkata');
 define('APP_NAME', 'Finzo');
 define('APP_URL', getenv('APP_URL') ?: 'http://localhost/Finzo');
 define('APP_VERSION', '1.0');
+define('APP_KEY', getenv('APP_KEY') ?: ''); // Must be exactly 32 bytes base64 encoded for AES-256
 
 // =====================================================
 // DATABASE CREDENTIALS

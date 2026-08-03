@@ -77,6 +77,12 @@ require_once FINZO_ROOT . '/config/config.php';
 require_once FINZO_ROOT . '/config/db.php';
 require_once FINZO_ROOT . '/config/functions.php';
 
+// Enforce APP_KEY for security
+if (empty(APP_KEY) && php_sapi_name() !== 'cli' && getenv('APP_ENV') !== 'testing') {
+    http_response_code(500);
+    die(json_encode(['success' => false, 'message' => 'Critical Error: APP_KEY is not set.']));
+}
+
 // Load Event Listeners
 require_once FINZO_ROOT . '/config/events.php';
 
