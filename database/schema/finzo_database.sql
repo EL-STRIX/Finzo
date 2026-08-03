@@ -789,3 +789,77 @@ CREATE TABLE IF NOT EXISTS loan_repayments (
     FOREIGN KEY fk_repayment_loan (loan_id) REFERENCES loans(id) ON DELETE CASCADE,
     FOREIGN KEY fk_repayment_schedule (schedule_id) REFERENCES loan_schedules(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 24: card_products
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type ENUM('debit', 'credit', 'virtual') NOT NULL,
+    network ENUM('visa', 'mastercard', 'rupay') NOT NULL,
+    daily_withdrawal_limit DECIMAL(15, 2) NOT NULL DEFAULT 50000.00,
+    daily_purchase_limit DECIMAL(15, 2) NOT NULL DEFAULT 100000.00,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 25: card_requests
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_requests (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    card_product_id INT UNSIGNED NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_request_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_request_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_request_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 26: cards
+-- =====================================================
+CREATE TABLE IF NOT EXISTS cards (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    card_number VARCHAR(16) NOT NULL UNIQUE,
+    user_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    card_product_id INT UNSIGNED NOT NULL,
+    name_on_card VARCHAR(100) NOT NULL,
+    expiry_date VARCHAR(5) NOT NULL, -- MM/YY format
+    cvv_hash VARCHAR(255) NOT NULL, -- Never store CVV in plaintext
+    pin_hash VARCHAR(255) NULL, -- Null until activated
+    failed_pin_attempts INT DEFAULT 0,
+    status ENUM('pending_activation', 'active', 'frozen', 'blocked', 'closed') NOT NULL DEFAULT 'pending_activation',
+    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activated_at TIMESTAMP NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT,
+    INDEX idx_card_number (card_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 27: card_transactions
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_transactions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    card_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    transaction_type ENUM('pos', 'atm', 'online') NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    status ENUM('completed', 'failed', 'reversed') NOT NULL DEFAULT 'completed',
+    reference_id VARCHAR(50) NOT NULL UNIQUE,
+    merchant_name VARCHAR(100) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_txn_card (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_txn_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    INDEX idx_card_txn_date (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
