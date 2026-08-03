@@ -409,4 +409,32 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
 
         return $this->repository->getFullStaffProfile($staffId);
     }
+
+    public function clockIn(int $staffId): void
+    {
+        $staff = $this->repository->findStaffById($staffId);
+        if (!$staff) {
+            throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Staff not found');
+        }
+        if (!$this->repository->clockIn($staffId, $staff['staff_id'])) {
+            throw new \Exception('Failed to clock in');
+        }
+        $this->dispatcher->dispatch(
+            new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_IN->value ?? 'STAFF_CLOCK_IN', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked in for shift')
+        );
+    }
+
+    public function clockOut(int $staffId, string $notes): void
+    {
+        $staff = $this->repository->findStaffById($staffId);
+        if (!$staff) {
+            throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Staff not found');
+        }
+        if (!$this->repository->clockOut($staffId, $staff['staff_id'], $notes)) {
+            throw new \Exception('Failed to clock out. Ensure you are clocked in first.');
+        }
+        $this->dispatcher->dispatch(
+            new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_OUT->value ?? 'STAFF_CLOCK_OUT', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked out of shift')
+        );
+    }
 }

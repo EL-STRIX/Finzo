@@ -300,4 +300,36 @@ class StaffController
             throw $e;
         }
     }
+
+    public function clockIn()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $staffId = $_SESSION['staff_id'];
+        try {
+            $this->service->clockIn($staffId);
+            json_response(['success' => true, 'message' => 'Successfully clocked in']);
+        } catch (\Exception $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function clockOut()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $staffId = $_SESSION['staff_id'];
+        $notes = $this->security->cleanInput($_POST['notes'] ?? '');
+        
+        try {
+            $this->service->clockOut($staffId, $notes);
+            json_response(['success' => true, 'message' => 'Successfully clocked out']);
+        } catch (\Exception $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 422);
+        }
+    }
 }

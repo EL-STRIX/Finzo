@@ -26,4 +26,6 @@ interface StaffRepositoryInterface
     public function getTransactionReceipt(string $transactionId);
     public function getFullStaffProfile(int $staffId);
     public function updateStaffProfile(int $staffId, array $fields, array $params);
+    public function clockIn(int $staffId, string $staffIdentifier): bool;
+    public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool;
 }

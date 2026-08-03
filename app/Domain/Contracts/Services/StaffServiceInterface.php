@@ -13,4 +13,6 @@ interface StaffServiceInterface
     public function getReceipt(string $transactionId);
     public function getFullProfile(int $staffId);
     public function updateProfile(int $staffId, array $data, $file = null);
+    public function clockIn(int $staffId): void;
+    public function clockOut(int $staffId, string $notes): void;
 }

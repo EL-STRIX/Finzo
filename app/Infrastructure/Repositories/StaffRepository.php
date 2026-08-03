@@ -276,4 +276,24 @@ class StaffRepository implements \App\Domain\Contracts\Repositories\StaffReposit
         $sql = "UPDATE staff SET " . implode(', ', $fields) . " WHERE id = ?";
         return $this->execute($sql, $params);
     }
+
+    public function clockIn(int $staffId, string $staffIdentifier): bool
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO staff_shifts (staff_id, shift_date, clock_in, status)
+            VALUES (?, CURDATE(), NOW(), 'active')
+            ON DUPLICATE KEY UPDATE clock_in = IF(clock_in IS NULL, NOW(), clock_in)
+        ");
+        return $stmt->execute([$staffIdentifier]);
+    }
+
+    public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool
+    {
+        $stmt = $this->db->prepare("
+            UPDATE staff_shifts 
+            SET clock_out = NOW(), status = 'completed', notes = ?
+            WHERE staff_id = ? AND shift_date = CURDATE() AND status = 'active'
+        ");
+        return $stmt->execute([$notes, $staffIdentifier]);
+    }
 }
