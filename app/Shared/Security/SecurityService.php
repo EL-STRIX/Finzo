@@ -29,6 +29,15 @@ class SecurityService
         $this->checkPermission('admin', $adminId, $permission);
     }
 
+    public function enforcePermission(string $permission): void
+    {
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+        if (!$adminId) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Unauthorized access', 401);
+        }
+        $this->checkAdminPermission($adminId, $permission);
+    }
+
     public function writeAuditLog(string $actionType, string|int|null $targetId, string $targetType, string|int|null $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void
     {
         \write_audit_log(\App\Shared\Core\Database::getInstance(), $actionType, $targetId ?? '', $targetType, $actorId ?? '', $actorRole, $details);
