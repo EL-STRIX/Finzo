@@ -45,6 +45,12 @@ class CompleteUserProfileAction
             throw new \App\Shared\Core\Exceptions\ApiException('Validation failed', 422, $errors);
         }
 
+        // Encrypt highly sensitive PII before saving to the database
+        if (!empty($data['id_number'])) {
+            $crypto = new \App\Shared\Security\EncryptionService();
+            $data['id_number'] = $crypto->encryptSearchable($data['id_number']);
+        }
+
         try {
             $paths = $this->userService->processKycUploads($files, $userId, $existing_user);
         } catch (Exception $e) {

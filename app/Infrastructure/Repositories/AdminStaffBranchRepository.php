@@ -84,7 +84,7 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
 
     public function getStaffDetail(int $staffId)
     {
-        return $this->fetchOne("
+        $staff = $this->fetchOne("
             SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone,
                    s.designation, s.department, s.status, s.profile_photo, s.created_at,
                    s.last_login_at, s.last_login_ip, s.street, s.city, s.state, s.pincode, s.country,
@@ -93,6 +93,13 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
             LEFT JOIN branches b ON b.id = s.branch_id
             WHERE s.id = ?
         ", [$staffId], \App\Domain\Models\Staff::class);
+        
+        if ($staff && !empty($staff->id_number)) {
+            $crypto = new \App\Shared\Security\EncryptionService();
+            $staff->id_number = $crypto->decrypt($staff->id_number);
+        }
+        
+        return $staff;
     }
 
     public function getStaffPerformance(int $staffId)

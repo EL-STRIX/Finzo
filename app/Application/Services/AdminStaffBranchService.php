@@ -214,6 +214,12 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             $this->repo->beginTransaction();
             $data['staff_id'] = $this->generateStaffId();
             $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
+            
+            // Encrypt highly sensitive PII before saving to the database
+            if (!empty($data['id_number'])) {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $data['id_number'] = $crypto->encryptSearchable($data['id_number']);
+            }
 
             $admin = $this->repo->findAdminById($adminId);
             $data['created_by'] = $admin['admin_id'] ?? null;

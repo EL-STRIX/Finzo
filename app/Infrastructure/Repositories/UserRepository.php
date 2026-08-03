@@ -48,8 +48,11 @@ class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositor
     }
     public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
     {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM user_profiles WHERE id_type = ? AND id_number = ? AND user_id != ?");
-        $stmt->execute([$idType, $idNumber, $excludeUserId]);
+        $crypto = new \App\Shared\Security\EncryptionService();
+        $encryptedId = $crypto->encryptSearchable($idNumber);
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE id_type = ? AND id_number = ? AND id != ?");
+        $stmt->execute([$idType, $encryptedId, $excludeUserId]);
         return (int)$stmt->fetchColumn() > 0;
     }
 
@@ -372,7 +375,14 @@ class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositor
             WHERE id = ? AND is_deleted = 0
         ");
         $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($row && !empty($row['id_number'])) {
+            $crypto = new \App\Shared\Security\EncryptionService();
+            $row['id_number'] = $crypto->decrypt($row['id_number']);
+        }
+        
+        return $row;
     }
 
     public function checkEmailExists(string $email, int $exclude_user_id)
