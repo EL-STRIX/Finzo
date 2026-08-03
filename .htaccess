@@ -18,3 +18,11 @@
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]
 </IfModule>
+
+# Block access to sensitive configuration files and logs
+<FilesMatch "^\.env|^\.git|composer\.(json|lock)|.*\.log$">
+    Require all denied
+</FilesMatch>
+
+# Block access to the entire storage directory from the web
+RewriteRule ^storage/ - [F,L,NC]

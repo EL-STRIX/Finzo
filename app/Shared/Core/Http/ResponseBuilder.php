@@ -83,6 +83,11 @@ class ResponseBuilder
 
     private static function scrub($data)
     {
+        if (is_string($data)) {
+            // Globally sanitize string outputs to prevent XSS on the client-side
+            return htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
         if (is_array($data)) {
             $sensitive = ['password', 'password_hash', 'token', 'reset_token', 'temp_password_expiry'];
             foreach ($sensitive as $key) {
