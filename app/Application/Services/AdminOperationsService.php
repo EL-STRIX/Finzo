@@ -276,10 +276,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
             foreach ($savings_accounts as $acc) {
                 try {
-                    $pdo->beginTransaction();
+                    $this->repository->beginTransaction();
                     $lockedAcc = $this->repository->getAccountForUpdate($acc['id']);
                     if (!$lockedAcc) {
-                        $pdo->rollBack();
+                        $this->repository->rollBack();
                         continue;
                     }
 
@@ -307,10 +307,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                         $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
                         $this->repository->addNotification($lockedAcc['customer_id'] ?? $acc['user_id'], 'transaction', 'Interest Credited', $notifMessage);
                     }
-                    $pdo->commit();
+                    $this->repository->commit();
                 } catch (\Throwable $e) {
-                    if ($pdo->inTransaction()) {
-                        $pdo->rollBack();
+                    if ($this->repository->inTransaction()) {
+                        $this->repository->rollBack();
                     }
                     \App\Shared\Core\Logging\Logger::getInstance()->error('Interest credit error for account ' . $acc['id'], ['context' => $e->getMessage()]);
                 }
@@ -749,7 +749,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         try {
             switch ($action) {
                 case 'approve':
-                    $pdo->beginTransaction();
+                    $this->repository->beginTransaction();
                     $accountNumber = generate_account_number($pdo);
                     $this->repository->approveApplication($userId, $customer_id, $accountNumber, $admin_display_id);
 
@@ -771,7 +771,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                             'completed'
                         );
                     }
-                    $pdo->commit();
+                    $this->repository->commit();
 
                     if (function_exists('send_approved_email')) {
                         send_approved_email($user['email'], $user['full_name'], $accountNumber);
@@ -791,9 +791,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                     if (empty($reason)) {
                         return ['success' => false, 'message' => 'Rejection reason is required', 'code' => 422];
                     }
-                    $pdo->beginTransaction();
+                    $this->repository->beginTransaction();
                     $this->repository->rejectApplication($userId, $customer_id, $reason, $admin_display_id);
-                    $pdo->commit();
+                    $this->repository->commit();
 
                     if (function_exists('send_rejected_email')) {
                         send_rejected_email($user['email'], $user['full_name'], $reason);
@@ -821,9 +821,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 default:
                     return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
             }
-        } catch (\PDOException $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+        } catch (\Exception $e) {
+            if ($this->repository->inTransaction()) {
+                $this->repository->rollBack();
             }
             throw $e;
         }
@@ -1382,7 +1382,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     {
         $pdo = \App\Shared\Core\Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
             $txn = $this->repository->getTransactionForReversal($transactionId);
             if (!$txn) {
                 return ['success' => false, 'message' => 'Transaction not found or already locked', 'code' => 404];
@@ -1472,12 +1472,13 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                     "Reversed transaction {$transactionId}. Reason: {$reason}"
                 );
             }
+            $this->repository->addNotification($txn['to_user_id'], 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
 
-            $pdo->commit();
+            $this->repository->commit();
             return ['success' => true, 'message' => 'Transaction reversed successfully', 'code' => 200];
         } catch (\Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            if ($this->repository->inTransaction()) {
+                $this->repository->rollBack();
             }
             \App\Shared\Core\Logging\Logger::getInstance()->error('Reversal error: ', ['context' => $e->getMessage()]);
             return ['success' => false, 'message' => 'An error occurred during reversal', 'code' => 500];

@@ -88,9 +88,8 @@ class LoanService implements LoanServiceInterface
 
     public function approveApplication(int $applicationId, int $adminId, string $notes = ''): array
     {
-        $pdo = Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
 
             $application = $this->repository->getLoanApplicationForUpdate($applicationId);
             if (!$application) {
@@ -184,14 +183,13 @@ class LoanService implements LoanServiceInterface
             );
             $this->adminOpsRepository->updateAccountBalance($newBalance, $lockedAcc['id']);
 
-            // 4. Notifications & Audit
             $this->adminOpsRepository->addNotification($userId, 'system', 'Loan Approved & Disbursed', "Your loan of ₹" . number_format($principal, 2) . " has been approved and credited to your savings account.");
             $this->security->writeAuditLog('loan_approved', $loanId, 'loans', $adminId, 'admin', "Approved loan application {$applicationId} for user {$userId}");
 
-            $pdo->commit();
-            return ['success' => true, 'message' => 'Loan approved and disbursed successfully'];
+            $this->repository->commit();
+            return ['success' => true, 'message' => 'Loan application approved and activated', 'loan_id' => $loanId];
         } catch (Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             if ($e instanceof BusinessRuleException || $e instanceof ResourceNotFoundException) {
                 return ['success' => false, 'message' => $e->getMessage()];
             }
@@ -220,9 +218,8 @@ class LoanService implements LoanServiceInterface
 
     public function processRepayment(int $userId, int $loanId, int $scheduleId): array
     {
-        $pdo = Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
 
             $loan = $this->repository->getLoanForUpdate($loanId);
             if (!$loan || (int)$loan['user_id'] !== $userId || $loan['status'] !== 'active') {
@@ -237,7 +234,6 @@ class LoanService implements LoanServiceInterface
                 throw new BusinessRuleException('This EMI is already paid');
             }
 
-            // Deduct from savings account
             $user = $this->userRepository->getUserProfile($userId);
             $accounts = $this->userRepository->getUserAccounts($user['customer_id']);
             $savingsAccount = null;
@@ -265,7 +261,7 @@ class LoanService implements LoanServiceInterface
                 $txnId,
                 $lockedAcc['id'],
                 null,
-                'withdrawal', // System deduction
+                'withdrawal',
                 $emiAmount,
                 $newBalance,
                 'EMI Repayment',
@@ -274,26 +270,22 @@ class LoanService implements LoanServiceInterface
             );
             $this->adminOpsRepository->updateAccountBalance($newBalance, $lockedAcc['id']);
 
-            // Update loan tables
-            // Update loan tables
             $this->repository->markSchedulePaid($scheduleId);
             $this->repository->recordRepayment($loanId, $scheduleId, $emiAmount, $txnId);
             $this->repository->updateLoanTotals($loanId, $emiAmount);
 
-            // Check if all schedules are paid to auto-close the loan
             $unpaidPrincipal = $this->repository->getUnpaidPrincipalSum($loanId);
             if ($unpaidPrincipal <= 0) {
                 $this->repository->updateLoanStatus($loanId, 'closed');
                 $this->adminOpsRepository->addNotification($userId, 'system', 'Loan Closed', "Congratulations! Your loan {$loan['loan_id_ref']} has been successfully closed.");
             }
 
-            // Audit & Notification
             $this->adminOpsRepository->addNotification($userId, 'transaction', 'EMI Paid', "EMI of ₹" . number_format($emiAmount, 2) . " has been successfully deducted for Loan {$loan['loan_id_ref']}.");
             
-            $pdo->commit();
+            $this->repository->commit();
             return ['success' => true, 'message' => 'EMI repayment processed successfully'];
         } catch (Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             if ($e instanceof BusinessRuleException || $e instanceof ResourceNotFoundException) {
                 return ['success' => false, 'message' => $e->getMessage()];
             }
@@ -309,9 +301,8 @@ class LoanService implements LoanServiceInterface
 
     public function forecloseLoan(int $loanId, int $adminId, float $penaltyRate): array
     {
-        $pdo = Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
 
             $loan = $this->repository->getLoanForUpdate($loanId);
             if (!$loan || $loan['status'] !== 'active') {
@@ -323,11 +314,9 @@ class LoanService implements LoanServiceInterface
                 throw new BusinessRuleException('No unpaid principal left to foreclose');
             }
 
-            // Calculate penalty
             $penaltyAmount = round(($unpaidPrincipal * $penaltyRate) / 100, 2);
             $totalForeclosureAmount = $unpaidPrincipal + $penaltyAmount;
 
-            // Deduct from savings account
             $user = $this->userRepository->getUserProfile($loan['user_id']);
             $accounts = $this->userRepository->getUserAccounts($user['customer_id']);
             $savingsAccount = null;
@@ -363,20 +352,18 @@ class LoanService implements LoanServiceInterface
             );
             $this->adminOpsRepository->updateAccountBalance($newBalance, $lockedAcc['id']);
 
-            // Clean up schedules and mark closed
             $this->repository->cancelPendingSchedules($loanId);
-            $this->repository->recordRepayment($loanId, 0, $totalForeclosureAmount, $txnId); // schedule_id is NULL for advance payment
+            $this->repository->recordRepayment($loanId, 0, $totalForeclosureAmount, $txnId); 
             $this->repository->updateLoanTotals($loanId, $totalForeclosureAmount);
             $this->repository->updateLoanStatus($loanId, 'closed');
 
-            // Audit & Notification
             $this->adminOpsRepository->logAudit($adminId, \App\Domain\Enums\AuditActionEnum::USER_STATUS_UPDATE->value, "Foreclosed Loan {$loan['loan_id_ref']} with penalty {$penaltyRate}%");
             $this->adminOpsRepository->addNotification($loan['user_id'], 'system', 'Loan Foreclosed', "Your loan {$loan['loan_id_ref']} has been fully settled and closed.");
             
-            $pdo->commit();
+            $this->repository->commit();
             return ['success' => true, 'message' => 'Loan foreclosed successfully'];
         } catch (Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             if ($e instanceof BusinessRuleException || $e instanceof ResourceNotFoundException) {
                 return ['success' => false, 'message' => $e->getMessage()];
             }

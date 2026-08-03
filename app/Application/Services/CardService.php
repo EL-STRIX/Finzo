@@ -152,10 +152,10 @@ class CardService implements CardServiceInterface
             $this->adminOpsRepository->logAudit($adminId, \App\Domain\Enums\AuditActionEnum::USER_STATUS_UPDATE->value, "Issued Card to User {$request['user_id']}");
             $this->adminOpsRepository->addNotification($request['user_id'], 'system', 'Card Issued', "Your new card ending in " . substr($cardNumber, -4) . " has been issued. CVV: {$cvv}. Note: CVV is only shown once here and is hashed securely in our systems. Please keep it safe.");
 
-            $pdo->commit();
+            $this->repository->commit();
             return ['success' => true, 'message' => 'Card issued successfully'];
         } catch (\Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             \App\Shared\Core\Logging\Logger::getInstance()->error('Card issuance error: ', ['context' => $e->getMessage()]);
             return ['success' => false, 'message' => 'An error occurred during card issuance'];
         }
@@ -189,19 +189,18 @@ class CardService implements CardServiceInterface
 
         $pinHash = password_hash($pin, PASSWORD_BCRYPT);
         
-        $pdo = Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
             
             $this->repository->updateCardPin($cardId, $pinHash);
             $this->repository->updateCardStatus($cardId, 'active');
             
             $this->adminOpsRepository->addNotification($userId, 'system', 'Card Activated', "Your card ending in " . substr($card['card_number'], -4) . " has been successfully activated.");
             
-            $pdo->commit();
+            $this->repository->commit();
             return ['success' => true, 'message' => 'Card activated successfully'];
         } catch (\Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             throw $e;
         }
     }
@@ -316,9 +315,8 @@ class CardService implements CardServiceInterface
             throw new BusinessRuleException("Transaction exceeds the daily limit of ₹" . number_format($limit, 2) . " for this card type");
         }
 
-        $pdo = Database::getInstance();
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
 
             // 3. Lock the linked account
             $lockedAcc = $this->adminOpsRepository->getAccountForUpdate($card['account_id']);
@@ -350,14 +348,14 @@ class CardService implements CardServiceInterface
             // 6. Record in card_transactions
             $cardTxnId = $this->repository->recordCardTransaction($cardId, $card['account_id'], $type, $amount, $txnId, $merchant);
 
-            $pdo->commit();
+            $this->repository->commit();
 
             // Notify
             $this->adminOpsRepository->addNotification($userId, 'transaction', 'Card Swiped', "₹" . number_format($amount, 2) . " spent at $merchant using your card ending in " . substr($card['card_number'], -4));
 
             return ['success' => true, 'message' => 'Transaction approved', 'transaction_id' => $txnId];
         } catch (\Exception $e) {
-            $pdo->rollBack();
+            $this->repository->rollBack();
             \App\Shared\Core\Logging\Logger::getInstance()->error('Card transaction error: ', ['context' => $e->getMessage()]);
             throw new BusinessRuleException('Transaction failed due to an internal error');
         }
