@@ -37,6 +37,7 @@ $router->post('/api/v1/admin/interest', [AdminOperationsController::class, 'inte
 $router->get('/api/v1/admin/applications/{id}', [AdminOperationsController::class, 'reviewApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/applications/{id}/review', [AdminOperationsController::class, 'reviewApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users', [AdminOperationsController::class, 'users'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/users/export', [AdminOperationsController::class, 'exportUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/suspended', [AdminOperationsController::class, 'suspendedUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/deleted', [AdminOperationsController::class, 'deletedUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/locked', [AdminOperationsController::class, 'lockedAccounts'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
@@ -75,6 +76,10 @@ $router->get('/api/v1/admin/card-requests', [AdminCardController::class, 'reques
 $router->post('/api/v1/admin/card-requests/issue', [AdminCardController::class, 'issueCard'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/card-requests/reject', [AdminCardController::class, 'rejectRequest'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/cards/{id}/force-close', [AdminCardController::class, 'forceClose'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\AdminReportController;
+$router->get('/api/v1/admin/reports/financial', [AdminReportController::class, 'financialSummary'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/reports/demographics', [AdminReportController::class, 'demographics'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
