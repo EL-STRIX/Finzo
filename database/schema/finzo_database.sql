@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS branches (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS admin_users (
   id                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  uuid                    VARCHAR(36) UNIQUE DEFAULT (UUID()),
   admin_id                VARCHAR(20) NOT NULL UNIQUE,
   full_name               VARCHAR(150) NOT NULL,
   date_of_birth           DATE NULL,
@@ -261,7 +262,7 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
     account_no VARCHAR(20) NOT NULL,
     bank_name VARCHAR(150) NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_beneficiary_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY fk_beneficiary_user (user_id) REFERENCES users(customer_id) ON DELETE RESTRICT,
     UNIQUE KEY uniq_user_account (user_id, account_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -723,8 +724,8 @@ CREATE TABLE IF NOT EXISTS loan_applications (
     admin_notes TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_loan_app_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY fk_loan_app_product (loan_product_id) REFERENCES loan_products(id) ON DELETE CASCADE
+    FOREIGN KEY fk_loan_app_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_app_product (loan_product_id) REFERENCES loan_products(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -748,7 +749,7 @@ CREATE TABLE IF NOT EXISTS loans (
     disbursed_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_loan_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_loan_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_loan_product (loan_product_id) REFERENCES loan_products(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_loan_application (application_id) REFERENCES loan_applications(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_loan_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
@@ -771,7 +772,7 @@ CREATE TABLE IF NOT EXISTS loan_schedules (
     penalty_assessed DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_schedule_loan (loan_id) REFERENCES loans(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_schedule_loan (loan_id) REFERENCES loans(id) ON DELETE RESTRICT,
     INDEX idx_schedule_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -786,7 +787,7 @@ CREATE TABLE IF NOT EXISTS loan_repayments (
     transaction_id VARCHAR(50) NOT NULL,
     paid_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_repayment_loan (loan_id) REFERENCES loans(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_repayment_loan (loan_id) REFERENCES loans(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_repayment_schedule (schedule_id) REFERENCES loan_schedules(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -817,7 +818,7 @@ CREATE TABLE IF NOT EXISTS card_requests (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_card_request_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_request_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_card_request_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_card_request_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -840,7 +841,7 @@ CREATE TABLE IF NOT EXISTS cards (
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     activated_at TIMESTAMP NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_card_user (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_card_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_card_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT,
     INDEX idx_card_number (card_number)
@@ -859,7 +860,7 @@ CREATE TABLE IF NOT EXISTS card_transactions (
     reference_id VARCHAR(50) NOT NULL UNIQUE,
     merchant_name VARCHAR(100) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_card_txn_card (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+    FOREIGN KEY fk_card_txn_card (card_id) REFERENCES cards(id) ON DELETE RESTRICT,
     FOREIGN KEY fk_card_txn_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
     INDEX idx_card_txn_date (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
