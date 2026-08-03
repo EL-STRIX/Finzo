@@ -30,5 +30,7 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Services\PdfServiceInterface::class, \App\Application\Services\PdfService::class);
         $container->bind(\App\Domain\Contracts\Services\UploadServiceInterface::class, \App\Application\Services\UploadService::class);
         $container->bind(\App\Domain\Contracts\Services\LoanServiceInterface::class, \App\Application\Services\LoanService::class);
+        $container->bind(\App\Domain\Contracts\Repositories\CardRepositoryInterface::class, \App\Infrastructure\Repositories\CardRepository::class);
+        $container->bind(\App\Domain\Contracts\Services\CardServiceInterface::class, \App\Application\Services\CardService::class);
     }
 }
