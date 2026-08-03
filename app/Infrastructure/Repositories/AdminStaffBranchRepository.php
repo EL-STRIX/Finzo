@@ -72,7 +72,7 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
 
     public function deleteBranch(int $branchId)
     {
-        $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
         return $stmt->execute([$branchId]);
     }
 
@@ -131,7 +131,7 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
 
     public function deleteStaff(int $staffId)
     {
-        $stmt = $this->db->prepare("DELETE FROM staff WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE staff SET is_deleted = 1, status = 'suspended', deleted_at = NOW() WHERE id = ?");
         return $stmt->execute([$staffId]);
     }
 
@@ -178,7 +178,7 @@ class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\A
             $stmt = $this->db->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
             $stmt->execute([$branchId]);
 
-            $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
+            $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
             $stmt->execute([$branchId]);
             $this->db->commit();
         } catch (\PDOException $e) {

@@ -741,15 +741,12 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
 
     public function hardDeleteUserAccount(int $userId, string $customerId)
     {
-        $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
-        $stmt->execute([$customerId]);
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
+        throw new \App\Shared\Core\Exceptions\BusinessRuleException("Hard deletion of users and accounts is strictly prohibited by data retention policies. Use soft deletion.");
     }
 
     public function deleteAccountOnly(string $customerId)
     {
-        $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
+        $stmt = $this->db->prepare("UPDATE accounts SET status = 'closed', updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
