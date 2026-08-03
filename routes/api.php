@@ -68,6 +68,13 @@ $router->post('/api/v1/admin/loan-applications/approve', [AdminLoanController::c
 $router->post('/api/v1/admin/loan-applications/reject', [AdminLoanController::class, 'rejectApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/loans/{id}/schedules', [AdminLoanController::class, 'schedules'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/loans/{id}/foreclose', [AdminLoanController::class, 'foreclose'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\AdminCardController;
+$router->post('/api/v1/admin/card-products', [AdminCardController::class, 'createProduct'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/card-requests', [AdminCardController::class, 'requests'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/card-requests/issue', [AdminCardController::class, 'issueCard'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/card-requests/reject', [AdminCardController::class, 'rejectRequest'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/cards/{id}/force-close', [AdminCardController::class, 'forceClose'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
@@ -91,6 +98,15 @@ $router->post('/api/v1/loans/apply', [UserLoanController::class, 'apply'], [User
 $router->get('/api/v1/loans/{id}/schedules', [UserLoanController::class, 'schedules'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/loans/{id}/repay', [UserLoanController::class, 'repay'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/loans/{id}/repayments', [UserLoanController::class, 'repayments'], [UserAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\User\UserCardController;
+$router->get('/api/v1/card-products', [UserCardController::class, 'products']);
+$router->post('/api/v1/cards/request', [UserCardController::class, 'requestCard'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/cards/{id}/activate', [UserCardController::class, 'activate'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/cards/{id}/change-pin', [UserCardController::class, 'changePin'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/cards/{id}/status', [UserCardController::class, 'updateStatus'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/cards/{id}/transact', [UserCardController::class, 'transact'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/cards/{id}/statement', [UserCardController::class, 'statement'], [UserAuthMiddleware::class]);
 
 $router->get('/api/v1/public/stats', [PublicController::class, 'chartStats']);
 $router->post('/api/v1/uploads/branch-cert', [UploadController::class, 'uploadBranchCert'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
