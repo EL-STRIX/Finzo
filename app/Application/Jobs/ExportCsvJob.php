@@ -57,8 +57,8 @@ class ExportCsvJob implements JobInterface
                 
                 $pdo = \App\Shared\Core\Database::getInstance();
                 if (function_exists('send_notification')) {
-                    $downloadLink = '/storage/exports/' . $filename;
-                    send_notification($pdo, $adminId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Export Complete', "Your {$exportType} CSV export is ready. Path: {$downloadLink}");
+                    $downloadLink = '/api/v1/admin/download-export?file=' . urlencode($filename);
+                    send_notification($pdo, $adminId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Export Complete', "Your {$exportType} CSV export is ready. <a href=\"{$downloadLink}\">Download Here</a>");
                 }
             }
         } catch (\Throwable $e) {

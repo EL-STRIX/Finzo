@@ -382,6 +382,32 @@ class AdminOperationsController
         exit;
     }
 
+    public function downloadExport(?string $id = null, ?string $extra = null): void
+    {
+        $filename = $this->security->cleanInput($_GET['file'] ?? '');
+        if (empty($filename) || strpos($filename, 'finzo_') !== 0 || pathinfo($filename, PATHINFO_EXTENSION) !== 'csv') {
+            throw new ApiException('Invalid file requested', 400);
+        }
+
+        $exportDir = defined('FINZO_ROOT') ? FINZO_ROOT . '/storage/exports' : dirname(__DIR__, 4) . '/storage/exports';
+        $filePath = $exportDir . '/' . $filename;
+
+        if (!file_exists($filePath)) {
+            throw new ApiException('File not found', 404);
+        }
+
+        // Output file securely
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Length: ' . filesize($filePath));
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        readfile($filePath);
+        exit;
+    }
+
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
         $userId  = intval($_POST['user_id'] ?? 0);
