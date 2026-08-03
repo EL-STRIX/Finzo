@@ -109,6 +109,26 @@ switch ($command) {
         
         break;
 
+    case 'prune':
+        echo "Starting data pruning for compliance (GDPR Data Minimization)...\n";
+        try {
+            // Delete audit logs older than 365 days
+            $stmt = $pdo->prepare("DELETE FROM audit_log WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY)");
+            $stmt->execute();
+            $deletedAudit = $stmt->rowCount();
+            echo "Deleted {$deletedAudit} audit log entries older than 365 days.\n";
+
+            // Delete rejected KYC applications older than 90 days (Privacy)
+            $stmt = $pdo->prepare("DELETE FROM users WHERE status = 'rejected' AND is_deleted = 1 AND deleted_at < DATE_SUB(NOW(), INTERVAL 90 DAY)");
+            $stmt->execute();
+            $deletedKyc = $stmt->rowCount();
+            echo "Deleted {$deletedKyc} rejected KYC user profiles older than 90 days.\n";
+            
+        } catch (Exception $e) {
+            echo "Pruning failed: " . $e->getMessage() . "\n";
+        }
+        break;
+
     case 'help':
     default:
         echo "Finzo Database Management CLI (Enterprise BCDR Edition)\n\n";
