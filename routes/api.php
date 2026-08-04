@@ -13,6 +13,15 @@ $router = new Router();
 // ==========================================
 // V1 API ROUTES (Phase 16.2 & Phase 2.3)
 // ==========================================
+$router->get('/api/health', function () {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'ok',
+        'timestamp' => date('c'),
+        'environment' => getenv('APP_ENV') ?: 'production'
+    ]);
+    exit;
+});
 $router->post('/api/v1/auth/login', [AuthController::class, 'login']);
 $router->post('/api/v1/auth/admin-login', [AuthController::class, 'adminLogin']);
 $router->post('/api/v1/auth/staff-login', [AuthController::class, 'staffLogin']);
