@@ -14,7 +14,6 @@
     <rule ref="PSR12">
         <exclude name="Generic.Files.LineLength"/>
         <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
-        <exclude name="Generic.Files.LineEndings"/>
     </rule>
 
     <!-- Output format -->
