@@ -1,7 +1,7 @@
 <?php
 namespace App\Infrastructure\Repositories;
 
-class PdfRepository implements \App\Domain\Contracts\Repositories\PdfRepositoryInterface
+class PdfRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\PdfRepositoryInterface
 {
     public function getTransactionForReceipt(string $txnId): ?array
     {

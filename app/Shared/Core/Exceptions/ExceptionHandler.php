@@ -58,7 +58,7 @@ class ExceptionHandler
         }
         echo json_encode($formatted, JSON_UNESCAPED_UNICODE);
         
-        if (getenv('APP_ENV') !== 'testing') {
+        if (getenv('APP_ENV') !== 'testing' && php_sapi_name() !== 'cli') {
             exit;
         }
     }

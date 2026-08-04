@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repositories;
 
-class AuthRepository implements \App\Domain\Contracts\Repositories\AuthRepositoryInterface
+class AuthRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AuthRepositoryInterface
 {
     // =====================================================
     // USER METHODS

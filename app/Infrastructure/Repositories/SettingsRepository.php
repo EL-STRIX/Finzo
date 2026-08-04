@@ -6,7 +6,7 @@ use PDO;
 use App\Shared\Core\Database;
 use App\Domain\Contracts\Repositories\SettingsRepositoryInterface;
 
-class SettingsRepository implements SettingsRepositoryInterface
+class SettingsRepository extends BaseRepository implements SettingsRepositoryInterface
 {
     private PDO $db;
 

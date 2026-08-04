@@ -19,6 +19,13 @@ class AuthController
         $this->service = $service;
     }
 
+    /**
+     * Authenticate a standard banking user.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string, user?: array{full_name: string, email: string, status: string, account_no: string, account_type: string, balance: string}}
+     */
     public function login(?string $id = null, ?string $extra = null): array
     {
         $request = new \App\Application\Requests\LoginRequest();
@@ -64,6 +71,13 @@ class AuthController
         ];
     }
 
+    /**
+     * Authenticate a system administrator.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string}
+     */
     public function adminLogin(?string $id = null, ?string $extra = null): array
     {
         $request = new \App\Application\Requests\LoginRequest();
@@ -90,6 +104,13 @@ class AuthController
         ];
     }
 
+    /**
+     * Authenticate a branch staff member.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string}
+     */
     public function staffLogin(?string $id = null, ?string $extra = null): array
     {
         $request = new \App\Application\Requests\LoginRequest();

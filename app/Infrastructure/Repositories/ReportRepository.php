@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Contracts\Repositories\ReportRepositoryInterface;
 use App\Shared\Core\Database;
 
-class ReportRepository implements ReportRepositoryInterface
+class ReportRepository extends BaseRepository implements ReportRepositoryInterface
 {
     protected \PDO $db;
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Infrastructure\Repositories;
 
-class UploadRepository implements \App\Domain\Contracts\Repositories\UploadRepositoryInterface
+class UploadRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\UploadRepositoryInterface
 {
     public function updateBranchCert(int $branchId, string $path): void
     {

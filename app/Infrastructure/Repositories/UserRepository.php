@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositoryInterface
+class UserRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\UserRepositoryInterface
 {
 
 
@@ -46,7 +46,8 @@ class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositor
         $stmt = $this->db->prepare("UPDATE accounts SET daily_limit = ? WHERE id = ?");
         return $stmt->execute([$daily_limit, $account_id]);
     }
-    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
+
+    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
     {
         $crypto = new \App\Shared\Security\EncryptionService();
         $encryptedId = $crypto->encryptSearchable($idNumber);

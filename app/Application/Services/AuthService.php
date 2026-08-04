@@ -10,7 +10,7 @@ use PDOException;
 
 class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
     private AuthRepository $repository;
     /**

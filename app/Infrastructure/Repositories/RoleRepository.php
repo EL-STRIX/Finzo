@@ -6,7 +6,7 @@ use PDO;
 use App\Shared\Core\Database;
 use App\Domain\Contracts\Repositories\RoleRepositoryInterface;
 
-class RoleRepository implements RoleRepositoryInterface
+class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 {
     private PDO $db;
 

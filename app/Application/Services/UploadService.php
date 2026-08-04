@@ -20,9 +20,9 @@ class UploadService implements \App\Domain\Contracts\Services\UploadServiceInter
     /**
      * Handle Branch Cert Upload.
      *
-     * @param array $file
-     * @param int $branchId
-     * @return array
+     * @param array{name: string, type: string, tmp_name: string, error: int, size: int} $file $_FILES array payload
+     * @param int $branchId The ID of the branch
+     * @return array{success: bool, message: string, status: int, path?: string, filename?: string}
      */
     public function handleBranchCertUpload(array $file, int $branchId): array
     {
@@ -57,9 +57,9 @@ class UploadService implements \App\Domain\Contracts\Services\UploadServiceInter
     /**
      * Handle Id Document Upload.
      *
-     * @param array $file
-     * @param int $userId
-     * @return array
+     * @param array{name: string, type: string, tmp_name: string, error: int, size: int} $file $_FILES array payload
+     * @param int $userId The ID of the user uploading the document
+     * @return array{success: bool, message: string, status: int, path?: string, filename?: string}
      */
     public function handleIdDocumentUpload(array $file, int $userId): array
     {

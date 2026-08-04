@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Contracts\Repositories\CardRepositoryInterface;
 use App\Shared\Core\Database;
 
-class CardRepository implements CardRepositoryInterface
+class CardRepository extends BaseRepository implements CardRepositoryInterface
 {
     private \PDO $db;
 

@@ -64,3 +64,4 @@ class LoanValidator extends Validator
 
         return $sanitized;
     }
+}

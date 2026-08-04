@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class AdminStaffBranchRepository implements \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface
+class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface
 {
     public function getActiveBranches()
     {

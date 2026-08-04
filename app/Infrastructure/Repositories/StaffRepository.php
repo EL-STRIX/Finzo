@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class StaffRepository implements \App\Domain\Contracts\Repositories\StaffRepositoryInterface
+class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\StaffRepositoryInterface
 {
     public function findAccountByNo(string $accountNumber)
     {

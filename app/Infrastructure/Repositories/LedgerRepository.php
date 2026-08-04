@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Contracts\Repositories\LedgerRepositoryInterface;
 use App\Shared\Core\Database;
 
-class LedgerRepository implements LedgerRepositoryInterface
+class LedgerRepository extends BaseRepository implements LedgerRepositoryInterface
 {
     protected \PDO $db;
 
