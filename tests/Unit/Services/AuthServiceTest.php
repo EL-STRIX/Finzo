@@ -39,9 +39,9 @@ class AuthServiceTest extends TestCase {
             ->willReturn($user);
             
         // The service fetches setting for max_attempts, but it uses the static `get_setting` which requires a real DB connection or we need to bypass it.
-        // Wait, the service gets a PDO instance: $pdo = $this->repository->getDb();
+        // Wait, the service gets a PDO instance: $pdo = $this->repository->getPDO();
         $dbMock = $this->createMock(\PDO::class);
-        $this->authRepoMock->method('getDb')->willReturn($dbMock);
+        $this->authRepoMock->method('getPDO')->willReturn($dbMock);
 
         $this->authRepoMock->expects($this->once())
             ->method('updateSuccessfulLogin');
@@ -78,7 +78,7 @@ class AuthServiceTest extends TestCase {
         $stmtMock->method('fetchColumn')->willReturn(5); // 5 max attempts
         $dbMock->method('prepare')->willReturn($stmtMock);
         
-        $this->authRepoMock->method('getDb')->willReturn($dbMock);
+        $this->authRepoMock->method('getPDO')->willReturn($dbMock);
 
         $this->authRepoMock->expects($this->once())
             ->method('updateFailedAttempts')

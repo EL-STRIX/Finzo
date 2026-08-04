@@ -14,7 +14,12 @@ class RequestHelper {
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['HTTP_ACCEPT'] = 'application/json';
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
-        $_SERVER['REQUEST_URI'] = '/Finzo/api/' . ltrim($controllerPath, '/');
+        // Strip .php extension and map to modern v1 routes if not already containing api/v1
+        $cleanPath = str_replace('.php', '', ltrim($controllerPath, '/'));
+        if (strpos($cleanPath, 'api/v1') === false) {
+            $cleanPath = 'api/v1/' . ltrim(str_ireplace('api/', '', $cleanPath), '/');
+        }
+        $_SERVER['REQUEST_URI'] = '/' . ltrim($cleanPath, '/');
         $_SESSION = $sessionData;
 
         // Ensure database connection is ready for controllers

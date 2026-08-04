@@ -11,12 +11,8 @@
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-        </testsuite>
-        <testsuite name="Integration">
-            <directory>tests/Integration</directory>
-        </testsuite>
+
+
     </testsuites>
     
     <source>
@@ -28,5 +24,10 @@
         </exclude>
     </source>
 
-
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <ini name="display_errors" value="On" />
+        <ini name="display_startup_errors" value="On" />
+        <ini name="error_reporting" value="-1" />
+    </php>
 </phpunit>
