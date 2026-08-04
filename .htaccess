@@ -1,28 +1,63 @@
+# ============================================================
+# Finzo Enterprise Security .htaccess
+# Phase 9 — Sprint 1: Server Configuration Hardening
+# ============================================================
+
+# ------------------------------------------------------------
+# SECTION 1: Sensitive File & Directory Access Blocking (S-01)
+# ------------------------------------------------------------
+
+# Block access to environment and configuration files
+<FilesMatch "^(\.env.*|\.git.*|phpunit\.xml|phpcs\.xml|phpstan\.neon|\.htaccess|composer\.(json|lock)|package(\.lock)?\.json|\.editorconfig|\.gitignore)">
+    Require all denied
+</FilesMatch>
+
+# Block access to any PHP files in the project root (only public/ should serve PHP)
+<FilesMatch "^[^/]+\.php$">
+    Require all denied
+</FilesMatch>
+
+# Block access to log and backup files anywhere
+<FilesMatch "\.(log|sql|zip|bak|swp|DS_Store)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to the storage/ and tests/ directories
+RewriteRule ^storage/(.*)$ - [F,L,NC]
+RewriteRule ^tests/(.*)$ - [F,L,NC]
+RewriteRule ^bin/(.*)$ - [F,L,NC]
+RewriteRule ^bootstrap/(.*)$ - [F,L,NC]
+RewriteRule ^config/(.*)$ - [F,L,NC]
+RewriteRule ^database/(.*)$ - [F,L,NC]
+RewriteRule ^docs/(.*)$ - [F,L,NC]
+RewriteRule ^routes/(.*)$ - [F,L,NC]
+RewriteRule ^vendor/(.*)$ - [F,L,NC]
+
+# ------------------------------------------------------------
+# SECTION 2: Security Headers (S-01)
+# ------------------------------------------------------------
 <IfModule mod_headers.c>
-    Header set X-XSS-Protection "1; mode=block"
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
 </IfModule>
 
+# ------------------------------------------------------------
+# SECTION 3: URL Rewriting & Routing (S-02 Verification)
+# ------------------------------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /Finzo/
-    
-    # Bridge legacy frontend API calls to the new Front Controller
+
+    # Route all API calls through the single front controller
     RewriteRule ^public/assets/api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^public/api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^app/Controllers/(.*)$ public/api/index.php [L,QSA]
-    
+
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]
 </IfModule>
-
-# Block access to sensitive configuration files and logs
-<FilesMatch "^\.env|^\.git|composer\.(json|lock)|.*\.log$">
-    Require all denied
-</FilesMatch>
-
-# Block access to the entire storage directory from the web
-RewriteRule ^storage/ - [F,L,NC]
