@@ -15,7 +15,7 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <link href="/Finzo/public/assets/css/tailwind.css" rel="stylesheet" />
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
-    <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
   </head>
 
 <body class="ds-bg ds-text antialiased">
@@ -24,19 +24,50 @@
     <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
 
     <!-- SIDEBAR COMPONENT -->
-    <div data-include="/Finzo/public/views/layouts/admin-sidebar.html"></div>
+    <?php include __DIR__ . '/../layouts/admin-sidebar.html'; ?>
 
     <!-- MAIN CONTENT -->
     <div class="lg:ml-72 min-h-screen flex flex-col transition-all duration-300">
         <!-- TOP NAVBAR COMPONENT -->
-        <div data-include="/Finzo/public/views/layouts/admin-navbar.html"></div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finzo Admin — Dashboard</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    
+    <!-- Design System Configuration -->
+    
+  <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
+    <link href="/Finzo/public/assets/css/tailwind.css" rel="stylesheet" />
+    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    
+  </head>
+
+<body class="ds-bg ds-text antialiased">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div class="fixed inset-0 bg-black/60 z-[90] hidden" id="sidebar-overlay"></div>
+
+    <!-- SIDEBAR COMPONENT -->
+    <?php include __DIR__ . '/../layouts/admin-sidebar.html'; ?>
+
+    <!-- MAIN CONTENT -->
+    <div class="lg:ml-72 min-h-screen flex flex-col transition-all duration-300">
+        <!-- TOP NAVBAR COMPONENT -->
+        <?php include __DIR__ . '/../layouts/admin-navbar.html'; ?>
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full space-y-8">
             
             <!-- KEY PERFORMANCE INDICATORS GRID -->
             <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
                 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-warning-base dark:hover:border-warning-base/30 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-warning-base dark:lg:hover:border-warning-base/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-warning-surface/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-warning-surface dark:bg-warning-surface/10 text-warning-base dark:text-warning-base flex items-center justify-center mb-4 border border-warning-base dark:border-warning-base/20 shadow-sm">
@@ -47,7 +78,7 @@
                     </div>
                 </div>
                 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-success-base dark:hover:border-success-base/30 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-success-base dark:lg:hover:border-success-base/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-success-surface/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base flex items-center justify-center mb-4 border border-success-base dark:border-success-base/20 shadow-sm">
@@ -58,7 +89,7 @@
                     </div>
                 </div>
                 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-blue-200 dark:hover:border-blue-500/30 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-blue-200 dark:lg:hover:border-blue-500/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-primary-surface/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-primary-surface dark:bg-primary-surface/10 text-info-base dark:text-primary-base flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
@@ -69,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-purple-200 dark:hover:border-purple-500/30 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-purple-200 dark:lg:hover:border-purple-500/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-purple-500/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 flex items-center justify-center mb-4 border border-purple-100 dark:border-purple-500/20 shadow-sm">
@@ -80,7 +111,7 @@
                     </div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-primary/20 dark:hover:border-primary/50 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-primary/20 dark:lg:hover:border-primary/50 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-primary/5 text-primary-base flex items-center justify-center mb-4 border border-primary/10 shadow-sm">
@@ -91,7 +122,7 @@
                     </div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group hover:border-danger-base dark:hover:border-danger-base/30 transition-colors">
+                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-danger-base dark:lg:hover:border-danger-base/30 transition-colors">
                     <div class="absolute right-0 top-0 w-16 h-16 bg-danger-surface/5 rounded-bl-full -z-0"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base flex items-center justify-center mb-4 border border-danger-base dark:border-danger-base/20 shadow-sm">
@@ -173,7 +204,7 @@
                     </h3>
                     <a href="admin-users.html" class="text-[10px] font-black text-primary-base hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
-                <div class="overflow-x-auto w-full">
+                <div class="overflow-x-auto w-full" style="-webkit-overflow-scrolling: touch;">
                     <table class="ds-table w-full text-left min-w-[800px]">
                         <thead scope="col">
                             <tr>
@@ -186,7 +217,7 @@
                             </tr>
                         </thead>
                         <tbody id="dash-user-tbody">
-                            <tr class="skeleton-row"><td><div class="skeleton h-10 w-full rounded-xl"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-8 w-16 float-right"></div></td></tr>
+                            <tr class="skeleton-row"><td><div class="skeleton h-12 lg:h-10 w-full rounded-xl"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-6 w-20 rounded-lg"></div></td><td><div class="skeleton h-4 w-16"></div></td><td><div class="skeleton h-4 w-12"></div></td><td><div class="skeleton h-10 lg:h-8 w-16 float-right"></div></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -196,10 +227,17 @@
 
     <!-- Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
     <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
     <script defer src="/Finzo/public/assets/js/core/api.js"></script>
     <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>
+    <script>
+        // Trigger componentsLoaded event manually since we removed component-loader.js
+        document.addEventListener('DOMContentLoaded', () => {
+            const event = new CustomEvent('componentsLoaded');
+            document.dispatchEvent(event);
+            window.componentsLoaded = true;
+        });
+    </script>
 </body>
 </html>
