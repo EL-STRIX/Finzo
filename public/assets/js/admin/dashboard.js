@@ -71,7 +71,12 @@
             return;
         }
 
-        tbody.innerHTML = users.map(u => {
+        // Clear existing skeletons efficiently
+        tbody.innerHTML = '';
+
+        // Build the fragment string and insert efficiently
+        let rowsHtml = '';
+        users.forEach(u => {
             const fallbackName = u.full_name || 'Unknown User';
             const initials = fallbackName.split(' ').map(n=>n[0]).join('').substring(0, 2).toUpperCase();
             const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-error' : 'badge-warn');
@@ -83,7 +88,7 @@
 
             const timeDisplay = window.FinzoUtils ? window.FinzoUtils.timeAgo(u.created_at) : (u.created_at || 'N/A');
 
-            return `
+            rowsHtml += `
             <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                 <td>
                     <div class="flex items-center gap-3">
@@ -104,7 +109,10 @@
                     </a>
                 </td>
             </tr>`;
-        }).join('');
+        });
+        
+        // Inject single large string at once (avoids thrashing existing DOM logic during map)
+        tbody.insertAdjacentHTML('beforeend', rowsHtml);
     }
 
     /**

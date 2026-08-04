@@ -48,7 +48,12 @@
             return;
         }
 
-        tbody.innerHTML = users.map(u => {
+        // Clear existing skeletons efficiently
+        tbody.innerHTML = '';
+
+        // Build the fragment string and insert efficiently
+        let rowsHtml = '';
+        users.forEach(u => {
             const name = u.full_name || 'User';
             const initials = name.split(' ').filter(Boolean).map(n => n ? n[0] : '').join('').toUpperCase() || 'U';
             const statusVal = u.status || 'pending';
@@ -63,7 +68,7 @@
             const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A';
             const lastActive = u.last_login_at ? window.FinzoUtils.formatDate(u.last_login_at) : 'Never';
             
-            return `
+            rowsHtml += `
             <tr>
                 <td>
                     <div class="flex items-center gap-3">
@@ -84,7 +89,10 @@
                     </a>
                 </td>
             </tr>`;
-        }).join('');
+        });
+        
+        // Inject single large string at once (avoids thrashing existing DOM logic during map)
+        tbody.insertAdjacentHTML('beforeend', rowsHtml);
     }
 
     /**
