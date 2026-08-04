@@ -247,6 +247,7 @@ class UserController
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
             json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
         } catch (\Throwable $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Complete profile error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'An error occurred while processing your application. Please try again.'], 500);
         }
     }
@@ -335,6 +336,7 @@ class UserController
                 $notifications = $this->service->getNotifications($userId, $per_page, $offset);
                 json_response(['success' => true, 'notifications' => $notifications, 'unread_count' => $unread_count, 'total' => $total, 'pages' => max(1, ceil($total / $per_page)), 'current_page' => $page]);
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Notifications API error (GET)', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to load notifications'], 500);
             }
         }
@@ -365,6 +367,7 @@ class UserController
                     json_response(['success' => false, 'message' => 'Invalid action'], 422);
                 }
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Notifications API error (POST)', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to update notifications'], 500);
             }
         }
@@ -383,6 +386,7 @@ class UserController
                 $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
                 json_response(['success' => true, 'user' => $user, 'account' => $account]);
             } catch (PDOException $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->error('Profile API error (GET)', ['context' => $e->getMessage()]);
                 json_response(['success' => false, 'message' => 'Failed to load profile'], 500);
             }
         }
@@ -441,6 +445,7 @@ class UserController
             $closing_balance = (float)$account['balance'];
             json_response(['success' => true, 'account' => ['account_no' => $account['account_no'], 'account_type' => $account['account_type'], 'holder_name' => $account['full_name']], 'statement' => ['from_date' => $fromDate, 'to_date' => $toDate, 'opening_balance' => $opening_balance, 'closing_balance' => $closing_balance, 'total_credits' => $total_credits, 'total_debits' => $total_debits, 'transactions' => $transactions]]);
         } catch (PDOException $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Statement generation error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to generate statement'], 500);
         }
     }
@@ -477,6 +482,7 @@ class UserController
                 'per_page' => $data['per_page']
             ]);
         } catch (PDOException $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Transactions fetch error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'Failed to load transactions'], 500);
         }
     }
@@ -521,6 +527,7 @@ class UserController
         } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
             json_response(['success' => false, 'message' => $e->getMessage()], 404);
         } catch (\Throwable $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Transfer error', ['context' => $e->getMessage()]);
             json_response(['success' => false, 'message' => 'An error occurred while processing your transfer. Please try again.'], 500);
         }
     }

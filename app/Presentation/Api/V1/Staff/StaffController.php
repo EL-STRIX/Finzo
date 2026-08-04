@@ -312,7 +312,7 @@ class StaffController
             $this->service->clockIn($staffId);
             json_response(['success' => true, 'message' => 'Successfully clocked in']);
         } catch (\Exception $e) {
-            json_response(['success' => false, 'message' => $e->getMessage()], 422);
+            throw $e;
         }
     }
 
@@ -329,7 +329,7 @@ class StaffController
             $this->service->clockOut($staffId, $notes);
             json_response(['success' => true, 'message' => 'Successfully clocked out']);
         } catch (\Exception $e) {
-            json_response(['success' => false, 'message' => $e->getMessage()], 422);
+            throw $e;
         }
     }
 }
