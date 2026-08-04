@@ -56,7 +56,7 @@ if (in_array($_SERVER['REQUEST_METHOD'] ?? '', ['PUT', 'PATCH'])) {
 }
 
 // Register global error/exception handlers only if we are not running tests
-if (getenv('APP_ENV') !== 'testing') {
+if (getenv('APP_ENV') !== 'testing' && !defined('FINZO_TESTING')) {
     // Global Exception Handler — delegates to the centralized ExceptionHandler
     // for a single, consistent JSON response format across the entire application.
     set_exception_handler(function (\Throwable $e) {
