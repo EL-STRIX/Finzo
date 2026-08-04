@@ -447,10 +447,10 @@ class UserRepository implements \App\Domain\Contracts\Repositories\UserRepositor
             LEFT JOIN users tu ON ta.user_id = tu.customer_id
             WHERE (t.from_account_id = ? OR t.to_account_id = ?)
                 AND t.status = 'completed'
-                AND DATE(t.created_at) BETWEEN ? AND ?
+                AND t.created_at BETWEEN ? AND ?
             ORDER BY t.created_at ASC
         ");
-        $stmt->execute([$account_id, $account_id, $fromDate, $toDate]);
+        $stmt->execute([$account_id, $account_id, $fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

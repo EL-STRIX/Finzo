@@ -129,6 +129,58 @@ switch ($command) {
         }
         break;
 
+    case 'queue:work':
+        echo "Starting Finzo Enterprise Queue Worker...\n";
+        $queue = $argv[2] ?? 'default';
+        $manager = \App\Shared\Core\Queue\QueueManager::getInstance();
+        
+        while (true) {
+            try {
+                $pdo->beginTransaction();
+                
+                // Get next available job and lock it (FOR UPDATE)
+                $stmt = $pdo->prepare("SELECT * FROM jobs WHERE queue = ? AND available_at <= ? AND reserved_at IS NULL ORDER BY id ASC LIMIT 1 FOR UPDATE");
+                $stmt->execute([$queue, time()]);
+                $jobRecord = $stmt->fetch();
+                
+                if ($jobRecord) {
+                    // Mark as reserved
+                    $updateStmt = $pdo->prepare("UPDATE jobs SET reserved_at = ?, attempts = attempts + 1 WHERE id = ?");
+                    $updateStmt->execute([time(), $jobRecord['id']]);
+                    $pdo->commit();
+                    
+                    // Process job
+                    $job = unserialize($jobRecord['payload']);
+                    echo "Processing job: " . get_class($job) . "\n";
+                    
+                    try {
+                        $manager->processJobSync($job);
+                        // If success, delete it
+                        $delStmt = $pdo->prepare("DELETE FROM jobs WHERE id = ?");
+                        $delStmt->execute([$jobRecord['id']]);
+                        echo "Job completed successfully.\n";
+                    } catch (Exception $e) {
+                        echo "Job failed: " . $e->getMessage() . "\n";
+                        // If it fails permanently, processJobSync handles logging and inserting to failed_jobs. 
+                        // We still delete it from the active queue.
+                        $delStmt = $pdo->prepare("DELETE FROM jobs WHERE id = ?");
+                        $delStmt->execute([$jobRecord['id']]);
+                    }
+                } else {
+                    $pdo->commit();
+                    sleep(2); // No jobs, sleep before polling again
+                }
+                
+            } catch (Exception $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                echo "Worker Error: " . $e->getMessage() . "\n";
+                sleep(5);
+            }
+        }
+        break;
+
     case 'help':
     default:
         echo "Finzo Database Management CLI (Enterprise BCDR Edition)\n\n";

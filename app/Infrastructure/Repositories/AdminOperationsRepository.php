@@ -23,13 +23,16 @@ class AdminOperationsRepository implements \App\Domain\Contracts\Repositories\Ad
                    al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
                    al.actor_id as actor_display_id,
                    al.actor_role as actor_specific_role,
-                   CASE 
-                       WHEN al.entity_type = 'user' THEN COALESCE((SELECT customer_id FROM users WHERE id = al.entity_id OR customer_id = al.entity_id LIMIT 1), al.entity_id)
-                       WHEN al.entity_type = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.entity_id OR staff_id = al.entity_id LIMIT 1), al.entity_id)
-                       WHEN al.entity_type = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.entity_id OR admin_id = al.entity_id LIMIT 1), al.entity_id)
-                       ELSE al.entity_id 
-                   END as entity_display_id
+                   COALESCE(
+                       CASE WHEN al.entity_type = 'user' THEN u.customer_id ELSE NULL END,
+                       CASE WHEN al.entity_type = 'staff' THEN s.staff_id ELSE NULL END,
+                       CASE WHEN al.entity_type = 'admin' THEN a.admin_id ELSE NULL END,
+                       al.entity_id
+                   ) as entity_display_id
             FROM audit_log al
+            LEFT JOIN users u ON al.entity_type = 'user' AND (u.id = al.entity_id OR u.customer_id = al.entity_id)
+            LEFT JOIN staff s ON al.entity_type = 'staff' AND (s.id = al.entity_id OR s.staff_id = al.entity_id)
+            LEFT JOIN admin_users a ON al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)
             WHERE {$whereSql}
             ORDER BY al.created_at DESC
             LIMIT {$perPage} OFFSET {$offset}
