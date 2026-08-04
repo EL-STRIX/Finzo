@@ -124,7 +124,7 @@ class Router
 
         // The legacy fallback logic has been intentionally removed to resolve a Directory Traversal (LFI) vulnerability.
 
-        json_response(['success' => false, 'message' => 'Not Found - ' . $uri], 404);
+        json_response(['success' => false, 'message' => 'The requested resource was not found.'], 404);
     }
 
     private function instantiateController(string $controllerClass)
