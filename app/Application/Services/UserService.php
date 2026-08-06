@@ -723,9 +723,9 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
      * @param mixed $args
      * @return mixed
      */
-    public function checkPhoneExists(string $phone, int $exclude_user_id)
+    public function checkPhoneExists(...$args)
     {
-        return $this->repository->checkPhoneExists($phone, $exclude_user_id);
+        return $this->repository->checkPhoneExists(...$args);
     }
 
     public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool

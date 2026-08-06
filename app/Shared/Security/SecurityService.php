@@ -4,7 +4,7 @@ namespace App\Shared\Security;
 
 use PDO;
 
-class SecurityService
+class SecurityService implements \App\Domain\Contracts\Security\SecurityServiceInterface
 {
     public function cleanInput($data)
     {
