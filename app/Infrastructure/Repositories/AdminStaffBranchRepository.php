@@ -246,4 +246,26 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         ");
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function updateStaff(int $id, array $data)
+    {
+        if (empty($data)) return false;
+        
+        $fields = [];
+        $values = [];
+        foreach ($data as $key => $value) {
+            $fields[] = "$key = ?";
+            $values[] = $value;
+        }
+        $values[] = $id;
+        
+        $sql = "UPDATE staff SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public function getBranchesList(string $search, string $type, string $status)
+    {
+        return $this->getBranchesWithStats($search, $type, $status)['branches'];
+    }
 }

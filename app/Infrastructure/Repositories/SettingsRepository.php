@@ -8,7 +8,7 @@ use App\Domain\Contracts\Repositories\SettingsRepositoryInterface;
 
 class SettingsRepository extends BaseRepository implements SettingsRepositoryInterface
 {
-    private PDO $db;
+    protected PDO $db;
 
     public function __construct(?PDO $db = null)
     {
