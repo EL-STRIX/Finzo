@@ -100,8 +100,8 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
 
         return [
             'staff' => [
-                'staff_id'      => $staff_info['staff_id'] ?? $_SESSION['staff_display_id'],
-                'name'          => $staff_info['full_name'] ?? $_SESSION['staff_name'],
+                'staff_id'      => $staff_info['staff_id'] ?? ($_SESSION['staff_display_id'] ?? null),
+                'name'          => $staff_info['full_name'] ?? ($_SESSION['staff_name'] ?? 'Unknown Staff'),
                 'role'          => $staff_info['designation'] ?? 'Teller',
                 'profile_photo' => $staff_info['profile_photo'] ?? null,
                 'branch_name'   => $staff_info['branch_name'] ?? 'Unassigned'
