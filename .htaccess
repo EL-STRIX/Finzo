@@ -12,8 +12,8 @@
     Require all denied
 </FilesMatch>
 
-# Block access to any PHP files in the project root (only public/ should serve PHP)
-<FilesMatch "^[^/]+\.php$">
+# Block access to any PHP files in the project root except index.php
+<FilesMatch "^(?!index\.php$)[^/]+\.php$">
     Require all denied
 </FilesMatch>
 
