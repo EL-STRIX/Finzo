@@ -385,7 +385,9 @@ class AdminOperationsController
     public function downloadExport(?string $id = null, ?string $extra = null): void
     {
         $filename = $this->security->cleanInput($_GET['file'] ?? '');
-        if (empty($filename) || strpos($filename, 'finzo_') !== 0 || pathinfo($filename, PATHINFO_EXTENSION) !== 'csv') {
+        
+        // Strict path traversal prevention
+        if (empty($filename) || basename($filename) !== $filename || strpos($filename, 'finzo_') !== 0 || pathinfo($filename, PATHINFO_EXTENSION) !== 'csv') {
             throw new ApiException('Invalid file requested', 400);
         }
 
@@ -404,7 +406,15 @@ class AdminOperationsController
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        readfile($filePath);
+        $handle = fopen($filePath, 'rb');
+        if ($handle) {
+            while (!feof($handle)) {
+                echo fread($handle, 8192);
+                ob_flush();
+                flush();
+            }
+            fclose($handle);
+        }
         exit;
     }
 
@@ -451,6 +461,20 @@ class AdminOperationsController
         }
 
         $data = $this->service->getUserDetail($userId);
+        if (!$data['success']) {
+            throw new ApiException($data['message'], 404);
+        }
+        return $data;
+    }
+
+    public function suspendedUserDetail(?string $id = null, ?string $extra = null): array
+    {
+        $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
+        if (!$userId) {
+            throw new ApiException('User ID is required', 422);
+        }
+
+        $data = $this->service->getSuspendedUserDetail($userId);
         if (!$data['success']) {
             throw new ApiException($data['message'], 404);
         }

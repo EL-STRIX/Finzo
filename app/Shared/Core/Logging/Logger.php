@@ -53,7 +53,7 @@ class Logger implements LoggerInterface
 
     private function maskSensitiveData(array $context): array
     {
-        $sensitiveKeys = ['password', 'password_confirmation', 'pin', 'txn_pin', 'token', 'csrf_token', 'secret'];
+        $sensitiveKeys = ['password', 'password_confirmation', 'pin', 'txn_pin', 'token', 'csrf_token', 'secret', 'card_number', 'pan', 'cvv'];
         array_walk_recursive($context, function (&$value, $key) use ($sensitiveKeys) {
             if (in_array(strtolower($key), $sensitiveKeys)) {
                 $value = '********';

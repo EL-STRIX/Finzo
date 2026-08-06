@@ -13,6 +13,7 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
     protected SecurityService $security;
 
     private AdminManagementRepository $repository;
+
     /**
      *   construct.
      *
@@ -26,17 +27,6 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
     }
 
 
-    /**
-     * Require Super Admin.
-     *
-     * @return void
-     */
-    public function requireSuperAdmin(): void
-    {
-        if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
-            throw new ApiException('Forbidden: Only Super Administrator can perform this action.', 403);
-        }
-    }
     /**
      * Get Next Admin Id.
      *

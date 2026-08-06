@@ -12,8 +12,10 @@ class EncryptionService
         if (empty($this->key)) {
             throw new \Exception('Encryption key not set.');
         }
-        // Key should be exactly 32 bytes after base64 decode
         $this->key = base64_decode($this->key);
+        if (strlen($this->key) !== 32) {
+            throw new \Exception('Encryption key must be exactly 32 bytes long after base64 decoding.');
+        }
     }
 
     public function encrypt(string $plaintext): string

@@ -49,6 +49,7 @@ $router->get('/api/v1/users', [AdminOperationsController::class, 'users'], [\App
 $router->get('/api/v1/users/export', [AdminOperationsController::class, 'exportUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/download-export', [AdminOperationsController::class, 'downloadExport'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/suspended', [AdminOperationsController::class, 'suspendedUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/users/suspended/{id}', [AdminOperationsController::class, 'suspendedUserDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/deleted', [AdminOperationsController::class, 'deletedUsers'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/locked', [AdminOperationsController::class, 'lockedAccounts'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/locked/{id}', [AdminOperationsController::class, 'lockedAccountDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

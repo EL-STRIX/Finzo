@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetail() {
         try {
-            const response = await window.api.get(`/users/${userId}`);
+            const response = await window.api.get(`/users/suspended/${userId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data.user);

@@ -68,4 +68,43 @@ class AdminReportController
 
         return $this->service->generateDemographicsReport($adminId, $filters);
     }
+
+    public function downloadExport(): void
+    {
+        $adminId = Auth::user()['id'] ?? 0;
+        $fileId = $this->security->cleanInput($_GET['file'] ?? '');
+
+        if (empty($fileId)) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'message' => 'File ID is required']));
+        }
+
+        // Validate the file path securely to prevent directory traversal
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $fileId)) {
+            http_response_code(403);
+            die(json_encode(['success' => false, 'message' => 'Invalid file requested']));
+        }
+
+        $filePath = STORAGE_PATH . 'exports/' . $fileId;
+        if (!file_exists($filePath)) {
+            http_response_code(404);
+            die(json_encode(['success' => false, 'message' => 'File not found']));
+        }
+
+        // Output headers for file download
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($filePath));
+
+        // Read the file and send to the output buffer
+        readfile($filePath);
+        
+        // C-01: Optional, delete after download to save space if needed
+        // unlink($filePath);
+        exit;
+    }
 }
