@@ -21,8 +21,9 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Repositories\SettingsRepositoryInterface::class, \App\Infrastructure\Repositories\SettingsRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\LedgerRepositoryInterface::class, \App\Infrastructure\Repositories\LedgerRepository::class);
 
-        // Security
+        // Security & Infrastructure
         $container->bind(\App\Domain\Contracts\Security\SecurityServiceInterface::class, \App\Shared\Security\SecurityService::class);
+        $container->bind(\App\Shared\Core\Storage\StorageServiceInterface::class, \App\Shared\Core\Storage\LocalStorageService::class);
 
         // Services
         $container->bind(\App\Domain\Contracts\Services\UserServiceInterface::class, \App\Application\Services\UserService::class);
