@@ -8,7 +8,7 @@ use App\Infrastructure\Repositories\AdminOperationsRepository;
 
 class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOperationsServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
     protected AdminOperationsRepository $repository;
     /**

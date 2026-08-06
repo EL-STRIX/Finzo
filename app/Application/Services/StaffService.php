@@ -14,7 +14,7 @@ use finfo;
 
 class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
     private StaffRepository $repository;
     /**
