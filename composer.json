@@ -1,4 +1,7 @@
 {
+    "name": "finzo/finzo",
+    "description": "Enterprise Banking & Financial Platform",
+    "license": "proprietary",
     "require-dev": {
         "phpunit/phpunit": "^13.2",
         "phpstan/phpstan": "^2.2",
