@@ -68,7 +68,7 @@ class StaffServiceTest extends TestCase {
             ->willReturn($account);
             
         $this->expectException(BusinessRuleException::class);
-        $this->expectExceptionMessage('Insufficient balance. Available: ₹500.00');
+        $this->expectExceptionMessage('Insufficient balance. Available: ' . CURRENCY_SYMBOL . '500.00');
         
         $this->staffService->processWithdrawal(1, 'FNZ123', 600.00, 'Test');
     }

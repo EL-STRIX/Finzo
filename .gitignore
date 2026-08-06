@@ -35,7 +35,7 @@ error_log
 php_errors.log
 tmp/
 temp/
-storage/
+/storage/
 
 # ------------------------------------------------------------------------------
 # User Uploads
