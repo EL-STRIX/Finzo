@@ -113,6 +113,7 @@ $router->get('/api/v1/admin/ledger/accounts', [LedgerController::class, 'getChar
 $router->get('/api/v1/admin/ledger/journals', [LedgerController::class, 'getJournals'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/ledger/periods/active', [LedgerController::class, 'getActivePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/ledger/periods/close', [LedgerController::class, 'closePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+use App\Presentation\Middleware\UserAuthMiddleware;
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
@@ -131,6 +132,7 @@ $router->post('/api/v1/user/security/change-password', [UserController::class, '
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\User\UserLoanController;
+use App\Presentation\Api\V1\User\UserController;
 $router->get('/api/v1/loan-products', [UserLoanController::class, 'products']);
 $router->post('/api/v1/loans/apply', [UserLoanController::class, 'apply'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/loans/{id}/schedules', [UserLoanController::class, 'schedules'], [UserAuthMiddleware::class]);
