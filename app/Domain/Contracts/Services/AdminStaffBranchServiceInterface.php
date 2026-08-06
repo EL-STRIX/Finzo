@@ -4,7 +4,7 @@ namespace App\Domain\Contracts\Services;
 
 interface AdminStaffBranchServiceInterface
 {
-    public function getRepo(): AdminStaffBranchRepository;
+    public function getRepo(): \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface;
     public function handleStaffUpload($file, $prefix, $dir, &$errors, $field, $required = false);
     public function validateStaffData(array $data);
     public function generateBranchCode($state);

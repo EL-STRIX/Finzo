@@ -10,16 +10,16 @@ use DateTime;
 
 class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminStaffBranchServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
-    protected AdminStaffBranchRepository $repo;
+    protected \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface $repo;
     /**
      *   construct.
      *
      * @param AdminStaffBranchRepository $repo
      * @param ?SecurityService $security
      */
-    public function __construct(AdminStaffBranchRepository $repo, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface $repo, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security;
         $this->repo = $repo;
@@ -29,7 +29,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      *
      * @return AdminStaffBranchRepository
      */
-    public function getRepo(): AdminStaffBranchRepository
+    public function getRepo(): \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface
     {
         return $this->repo;
     }
