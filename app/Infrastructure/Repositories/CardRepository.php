@@ -7,30 +7,10 @@ use App\Shared\Core\Database;
 
 class CardRepository extends BaseRepository implements CardRepositoryInterface
 {
-    private \PDO $db;
 
-    public function __construct()
-    {
-        $this->db = Database::getInstance();
-    }
 
-    private function execute(string $sql, array $params = []): \PDOStatement
-    {
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
-    }
 
-    private function fetchAll(string $sql, array $params = []): array
-    {
-        return $this->execute($sql, $params)->fetchAll(\PDO::FETCH_ASSOC) ?: [];
-    }
 
-    private function fetchOne(string $sql, array $params = [])
-    {
-        $result = $this->execute($sql, $params)->fetch(\PDO::FETCH_ASSOC);
-        return $result ?: null;
-    }
 
     public function createCardProduct(array $data): int
     {

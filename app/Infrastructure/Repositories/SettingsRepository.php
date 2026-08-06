@@ -8,12 +8,6 @@ use App\Domain\Contracts\Repositories\SettingsRepositoryInterface;
 
 class SettingsRepository extends BaseRepository implements SettingsRepositoryInterface
 {
-    protected PDO $db;
-
-    public function __construct(?PDO $db = null)
-    {
-        $this->db = $db ?? Database::getInstance();
-    }
 
     public function getAllSettings(): array
     {

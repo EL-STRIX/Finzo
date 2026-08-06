@@ -7,26 +7,8 @@ use App\Shared\Core\Database;
 
 class ReportRepository extends BaseRepository implements ReportRepositoryInterface
 {
-    protected \PDO $db;
 
-    public function __construct()
-    {
-        $this->db = Database::getInstance();
-    }
 
-    protected function fetchAll(string $sql, array $params = []): array
-    {
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function fetchOne(string $sql, array $params = [])
-    {
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
 
     public function getFinancialSummary(array $filters): array
     {

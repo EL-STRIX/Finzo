@@ -8,12 +8,6 @@ use App\Domain\Contracts\Repositories\RoleRepositoryInterface;
 
 class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 {
-    private PDO $db;
-
-    public function __construct(?PDO $db = null)
-    {
-        $this->db = $db ?? Database::getInstance();
-    }
 
     public function getAllRoles(): array
     {

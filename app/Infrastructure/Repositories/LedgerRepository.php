@@ -7,12 +7,6 @@ use App\Shared\Core\Database;
 
 class LedgerRepository extends BaseRepository implements LedgerRepositoryInterface
 {
-    protected \PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getInstance();
-    }
 
     public function getChartOfAccounts(): array
     {
