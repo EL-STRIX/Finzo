@@ -241,8 +241,9 @@ class UserController
 
         $userId = $_SESSION['user_id'];
         try {
+            $dto = new \App\Application\DTOs\KycRequestDTO($userId, $_POST, $_FILES);
             $action = new \App\Application\Actions\CompleteUserProfileAction($this->service, $this->security);
-            $action->execute($userId, $_POST, $_FILES);
+            $action->execute($dto);
             json_response(['success'  => true, 'message'  => 'Your profile has been submitted for review. We will notify you once it is processed.', 'redirect' => '/public/views/user/dashboard.html']);
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
             json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
@@ -506,8 +507,9 @@ class UserController
         $txnPin = $validated['txn_pin'];
 
         try {
+            $dto = new \App\Application\DTOs\TransferRequestDTO($userId, $validated);
             $action = new \App\Application\Actions\ProcessTransferAction($this->service, $this->security);
-            $result = $action->execute($userId, $validated);
+            $result = $action->execute($dto);
             $_SESSION['user_balance'] = $result['new_balance'];
             
             json_response([

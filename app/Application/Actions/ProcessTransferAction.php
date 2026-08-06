@@ -21,12 +21,13 @@ class ProcessTransferAction
         $this->security = $security;
     }
 
-    public function execute(int $userId, array $validatedData): array
+    public function execute(\App\Application\DTOs\TransferRequestDTO $dto): array
     {
-        $to_account_no = $validatedData['to_account_no'];
-        $amount = $validatedData['amount'];
-        $description = $validatedData['description'];
-        $txnPin = $validatedData['txn_pin'];
+        $userId = $dto->userId;
+        $to_account_no = $dto->toAccountNo;
+        $amount = $dto->amount;
+        $description = $dto->description;
+        $txnPin = $dto->txnPin;
 
         $pdo = $this->userService->getDb();
         if (!validate_pin($pdo, $userId, $txnPin)) {

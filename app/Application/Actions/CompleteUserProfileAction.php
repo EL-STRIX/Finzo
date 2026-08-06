@@ -18,8 +18,11 @@ class CompleteUserProfileAction
         $this->security = $security;
     }
 
-    public function execute(int $userId, array $postData, array $files): void
+    public function execute(\App\Application\DTOs\KycRequestDTO $dto): void
     {
+        $userId = $dto->userId;
+        $postData = $dto->postData;
+        $files = $dto->filesData;
         $customer_id_str = $this->userService->getCustomerId($userId);
 
         $data = [
