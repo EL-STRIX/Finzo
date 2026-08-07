@@ -196,7 +196,7 @@ async function fetchStaffSession() {
                     el.textContent = StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
                 });
             }
-            document.querySelectorAll('.staff-branch-display').forEach(el => el.textContent = StaffState.branch_name);
+            document.querySelectorAll('.badge badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
             
             return data;
         }

@@ -47,12 +47,12 @@ ob_start();
       <div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden">
         <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
           <div class="col-span-1 lg:flex-1 w-full">
-            <label class="ds-label">Search Staff</label>
+            <label class="fin-label">Search Staff</label>
             <div class="relative group">
               <span
                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted transition-colors group-focus-within:text-primary-base" aria-hidden="true">search</span>
               <input type="text" id="staff-search-input" placeholder="Search by name or staff ID"
-                class="ds-input pl-12">
+                class="fin-input pl-12">
             </div>
           </div>
 
@@ -61,7 +61,7 @@ ob_start();
           </div>
 
           <div class="w-full lg:w-64">
-            <label class="ds-label">Branch</label>
+            <label class="fin-label">Branch</label>
             <div class="finzo-dropdown w-full" id="branch-filter-dropdown">
               <div
                 class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
@@ -93,7 +93,7 @@ ob_start();
               <th style="width: 10%;" class="text-right" scope="col">ACTIONS</th>
             </tr>
           </thead>
-          <tbody id="staff-table-body">
+          <tbody id="ds-table-body">
               <!-- Rows will be injected by api.js -->
               <tr><td colspan="8" style="padding:0;"><div class="skeleton-row"></div></td></tr>
               <tr><td colspan="8" style="padding:0;"><div class="skeleton-row"></div></td></tr>
@@ -108,13 +108,13 @@ ob_start();
           <div id="pagination-counter" class="text-xs text-text-muted font-bold uppercase tracking-wider">Showing 1-5
             of 8 staff</div>
           <div class="flex items-center gap-2">
-            <button id="prev-page" class="admin-btn-secondary"
+            <button id="prev-page" class="btn btn-secondary"
               style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">&larr;
               Previous</button>
             <div id="page-numbers" class="flex gap-1.5">
               <!-- Dynamically Generated -->
             </div>
-            <button id="next-page" class="admin-btn-secondary"
+            <button id="next-page" class="btn btn-secondary"
               style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">Next
               &rarr;</button>
           </div>

@@ -182,7 +182,7 @@
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
                 <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
                 <td class="text-right">
-                    <button onclick="window.open('../../../../api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                    <button onclick="window.open('../../../../api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                         <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
                     </button>
                 </td>

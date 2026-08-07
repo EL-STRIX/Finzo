@@ -49,10 +49,10 @@ ob_start();
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
-                            <label class="ds-label mb-2">Search Applications</label>
+                            <label class="fin-label mb-2">Search Applications</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
-                                <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="ds-input pl-12">
+                                <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="fin-input pl-12">
                             </div>
                         </div>
 
@@ -96,11 +96,11 @@ ob_start();
                 <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div id="pagination-info" class="text-xs font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Items</div>
                     <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <button id="prev-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by pending-approvals.js -->
                         </div>
-                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                        <button id="next-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                     </div>
                 </div>
             </div>

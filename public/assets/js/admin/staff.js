@@ -25,7 +25,7 @@
             }, 100);
         }
 
-        const tbody = document.getElementById('staff-table-body');
+        const tbody = document.getElementById('ds-table-body');
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
@@ -74,7 +74,7 @@
      * Render the staff table rows
      */
     function renderTable(staff) {
-        const tbody = document.getElementById('staff-table-body');
+        const tbody = document.getElementById('ds-table-body');
         if (!tbody) return;
 
         if (!staff.length) {
@@ -131,7 +131,7 @@
         if (container) {
             let html = '';
             for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
+                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
             }
             container.innerHTML = html;
         }

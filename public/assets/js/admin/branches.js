@@ -492,7 +492,7 @@
         document.getElementById('branchStaffModal').classList.remove('hidden');
         document.getElementById('branchStaffModal').classList.add('flex');
         
-        const tbody = document.getElementById('branch-staff-table-body');
+        const tbody = document.getElementById('branch-ds-table-body');
         const noStaff = document.getElementById('no-staff-error');
         if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 opacity-50">Loading...</td></tr>';
         if (noStaff) noStaff.classList.add('hidden');
@@ -536,7 +536,7 @@
                                 <span class="status-badge ${statusStyle} !text-[9px] !px-2">${(s.status || '').toUpperCase()}</span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="admin-staff-detail.html?id=${s.id}" class="admin-btn-secondary !px-4 !py-1.5 !text-[10px]" target="_blank">View Profile</a>
+                                <a href="admin-staff-detail.html?id=${s.id}" class="btn btn-secondary !px-4 !py-1.5 !text-[10px]" target="_blank">View Profile</a>
                             </td>
                         </tr>
                         `;

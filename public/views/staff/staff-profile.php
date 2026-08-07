@@ -154,11 +154,11 @@ ob_start();
                         <form id="password-form" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
-                                <input type="password" id="pw-current" required class="w-full ds-input">
+                                <input type="password" id="pw-current" required class="w-full fin-input">
                             </div>
                             <div>
                                 <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
-                                <input type="password" id="pw-new" required minlength="8" class="w-full ds-input" oninput="checkPasswordStrength()">
+                                <input type="password" id="pw-new" required minlength="8" class="w-full fin-input" oninput="checkPasswordStrength()">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
@@ -168,7 +168,7 @@ ob_start();
                             </div>
                             <div>
                                 <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
-                                <input type="password" id="pw-confirm" required class="w-full ds-input">
+                                <input type="password" id="pw-confirm" required class="w-full fin-input">
                             </div>
                             <div id="pw-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
                             <button type="submit" id="pw-submit-btn" class="w-full h-10 bg-warning-surface text-white font-bold rounded-lg shadow-md shadow-amber-500/20 hover:bg-warning-surface transition-all text-xs uppercase tracking-widest mt-2">

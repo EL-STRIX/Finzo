@@ -43,27 +43,27 @@ ob_start();
                         <!-- Personal Info Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
                             <div>
-                                <label class="ds-label mb-1">Email Address</label>
+                                <label class="fin-label mb-1">Email Address</label>
                                 <div id="info-email" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Gender</label>
+                                <label class="fin-label mb-1">Gender</label>
                                 <div id="info-gender" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Phone Number</label>
+                                <label class="fin-label mb-1">Phone Number</label>
                                 <div id="info-phone" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Date of Birth</label>
+                                <label class="fin-label mb-1">Date of Birth</label>
                                 <div id="info-dob" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Emergency Contact</label>
+                                <label class="fin-label mb-1">Emergency Contact</label>
                                 <div id="info-emergency" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Branch Assignment</label>
+                                <label class="fin-label mb-1">Branch Assignment</label>
                                 <div id="info-branch" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                         </div>
@@ -78,23 +78,23 @@ ob_start();
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-5 gap-5">
                             <div>
-                                <label class="ds-label mb-1">Street</label>
+                                <label class="fin-label mb-1">Street</label>
                                 <div id="addr-street" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">City</label>
+                                <label class="fin-label mb-1">City</label>
                                 <div id="addr-city" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">State</label>
+                                <label class="fin-label mb-1">State</label>
                                 <div id="addr-state" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Pincode</label>
+                                <label class="fin-label mb-1">Pincode</label>
                                 <div id="addr-pincode" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Country</label>
+                                <label class="fin-label mb-1">Country</label>
                                 <div id="addr-country" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                         </div>
@@ -109,35 +109,35 @@ ob_start();
                         </div>
                         <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
                             <div>
-                                <label class="ds-label mb-1">Last Login</label>
+                                <label class="fin-label mb-1">Last Login</label>
                                 <div id="sys-last-login" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Login IP</label>
+                                <label class="fin-label mb-1">Login IP</label>
                                 <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-muted dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Date of Joining</label>
+                                <label class="fin-label mb-1">Date of Joining</label>
                                 <div id="sys-joining-date" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Created By</label>
+                                <label class="fin-label mb-1">Created By</label>
                                 <div id="sys-created-by" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Staff ID</label>
+                                <label class="fin-label mb-1">Staff ID</label>
                                 <div id="sys-staff-id" class="text-xs font-mono font-bold text-text-muted dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Total Shifts</label>
+                                <label class="fin-label mb-1">Total Shifts</label>
                                 <div id="sys-total-shifts" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Failed Logins</label>
+                                <label class="fin-label mb-1">Failed Logins</label>
                                 <div id="sys-failed-logins" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Lock Status</label>
+                                <label class="fin-label mb-1">Lock Status</label>
                                 <div id="sys-lock-status" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                         </div>
@@ -153,18 +153,18 @@ ob_start();
                         <div class="p-5">
                             <div class="grid grid-cols-2 gap-5 mb-5">
                                 <div>
-                                    <label class="ds-label mb-1">ID Type</label>
+                                    <label class="fin-label mb-1">ID Type</label>
                                     <div id="doc-id-type" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                                 </div>
                                 <div>
-                                    <label class="ds-label mb-1">ID Number</label>
+                                    <label class="fin-label mb-1">ID Number</label>
                                     <div id="doc-id-number" class="text-sm font-bold font-mono text-text-main dark:text-text-muted">---</div>
                                 </div>
                             </div>
                             <div id="doc-images-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <!-- Front -->
                                 <div>
-                                    <label class="ds-label mb-2">Front of Document</label>
+                                    <label class="fin-label mb-2">Front of Document</label>
                                     <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-front-placeholder" class="text-center">
                                             <span class="material-symbols-outlined text-4xl text-text-muted dark:text-text-muted" aria-hidden="true">image</span>
@@ -178,7 +178,7 @@ ob_start();
                                 </div>
                                 <!-- Back -->
                                 <div>
-                                    <label class="ds-label mb-2">Back of Document</label>
+                                    <label class="fin-label mb-2">Back of Document</label>
                                     <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-back-placeholder" class="text-center">
                                             <span class="material-symbols-outlined text-4xl text-text-muted dark:text-text-muted" aria-hidden="true">image</span>

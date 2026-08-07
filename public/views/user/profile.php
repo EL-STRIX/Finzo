@@ -31,8 +31,8 @@ ob_start();
         <div class="font-mono text-sm font-bold text-text-muted mb-4" id="info-customer-id">—</div>
         
         <div class="flex flex-wrap justify-center gap-2 mb-2">
-          <span class="ds-badge ds-badge-success text-xs">Verified</span>
-          <span class="ds-badge ds-badge-warning text-xs">Premium Client</span>
+          <span class="badge badge badge-success text-xs">Verified</span>
+          <span class="badge badge badge-warning text-xs">Premium Client</span>
         </div>
       </div>
       

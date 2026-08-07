@@ -44,7 +44,7 @@ ob_start();
       </div>
       
       <div class="text-center mb-8 print:hidden">
-        <span class="ds-badge ds-badge-success !py-1 !px-3">✅ TRANSACTION SUCCESSFUL</span>
+        <span class="badge badge badge-success !py-1 !px-3">✅ TRANSACTION SUCCESSFUL</span>
       </div>
 
       <!-- Core Details -->

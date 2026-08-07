@@ -41,7 +41,7 @@ ob_start();
               <div>
                 <h3 id="user-name-title" class="font-headline text-2xl sm:text-3xl font-bold tracking-tighter text-black dark:text-white"><div class="skeleton w-48 h-8"></div></h3>
                 <div class="flex items-center justify-center sm:justify-start gap-3 mt-1.5">
-                  <span id="user-status-badge" class="text-xs font-black text-success-base px-2 py-0.5 bg-success-surface rounded-md uppercase tracking-widest border border-success-base dark:border-success-base/20"><div class="skeleton w-24 h-4"></div></span>
+                  <span id="badge badge-danger" class="text-xs font-black text-success-base px-2 py-0.5 bg-success-surface rounded-md uppercase tracking-widest border border-success-base dark:border-success-base/20"><div class="skeleton w-24 h-4"></div></span>
                 </div>
               </div>
             </div>
@@ -50,108 +50,108 @@ ob_start();
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-12 border-t border-surface-border dark:border-white/5 pt-8 text-center sm:text-left">
             <!-- Basic Info -->
             <div>
-              <p class="ds-label">CUSTOMER ID</p>
+              <p class="fin-label">CUSTOMER ID</p>
               <div id="info-customer-id" class="info-value text-sm font-mono"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">FULL NAME</p>
+              <p class="fin-label">FULL NAME</p>
               <div id="info-full-name" class="info-value text-sm"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">DATE OF BIRTH</p>
+              <p class="fin-label">DATE OF BIRTH</p>
               <div id="info-dob" class="info-value text-sm"><div class="skeleton w-24 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">GENDER</p>
+              <p class="fin-label">GENDER</p>
               <div id="info-gender" class="info-value text-sm"><div class="skeleton w-16 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">MARITAL STATUS</p>
+              <p class="fin-label">MARITAL STATUS</p>
               <div id="info-marital-status" class="info-value text-sm"><div class="skeleton w-16 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">NATIONALITY</p>
+              <p class="fin-label">NATIONALITY</p>
               <div id="info-nationality" class="info-value text-sm"><div class="skeleton w-24 h-4"></div></div>
             </div>
             
             <!-- Family & Employment -->
             <div>
-              <p class="ds-label">FATHER'S NAME</p>
+              <p class="fin-label">FATHER'S NAME</p>
               <div id="info-father-name" class="info-value text-sm"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">MOTHER'S NAME</p>
+              <p class="fin-label">MOTHER'S NAME</p>
               <div id="info-mother-name" class="info-value text-sm"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">OCCUPATION</p>
+              <p class="fin-label">OCCUPATION</p>
               <div id="info-occupation" class="info-value text-sm"><div class="skeleton w-24 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">ANNUAL INCOME</p>
+              <p class="fin-label">ANNUAL INCOME</p>
               <div id="info-income" class="info-value text-sm"><div class="skeleton w-20 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">SOURCE OF INCOME</p>
+              <p class="fin-label">SOURCE OF INCOME</p>
               <div id="info-source-income" class="info-value text-sm"><div class="skeleton w-24 h-4"></div></div>
             </div>
 
             <!-- Contact -->
             <div>
-              <p class="ds-label">PHONE NUMBER</p>
+              <p class="fin-label">PHONE NUMBER</p>
               <div id="info-phone" class="info-value text-sm"><div class="skeleton w-28 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">EMAIL ADDRESS</p>
+              <p class="fin-label">EMAIL ADDRESS</p>
               <div id="info-email" class="info-value text-sm break-all"><div class="skeleton w-40 h-4"></div></div>
             </div>
             
             <!-- Identification -->
             <div>
-              <p class="ds-label">AADHAAR (VERIFIED ID)</p>
+              <p class="fin-label">AADHAAR (VERIFIED ID)</p>
               <div id="info-aadhaar" class="info-value text-sm font-mono tracking-wider"><div class="skeleton w-32 h-4"></div></div>
             </div>
 
             <!-- Registration Meta -->
             <div>
-              <p class="ds-label">SUBMITTED ON</p>
+              <p class="fin-label">SUBMITTED ON</p>
               <div id="info-submitted" class="info-value text-xs font-bold"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">REGISTERED ON</p>
+              <p class="fin-label">REGISTERED ON</p>
               <div id="info-registered" class="info-value text-xs font-bold"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">LAST UPDATED</p>
+              <p class="fin-label">LAST UPDATED</p>
               <div id="info-updated-at" class="info-value text-xs font-bold"><div class="skeleton w-32 h-4"></div></div>
             </div>
 
             <!-- Access Meta -->
             <div>
-              <p class="ds-label">LAST LOGIN</p>
+              <p class="fin-label">LAST LOGIN</p>
               <div id="info-last-login" class="info-value text-xs font-bold"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label">LOGIN IP</p>
+              <p class="fin-label">LOGIN IP</p>
               <div id="info-login-ip" class="info-value text-xs font-bold"><div class="skeleton w-32 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label text-danger-base">FAILED ATTEMPTS</p>
+              <p class="fin-label text-danger-base">FAILED ATTEMPTS</p>
               <div id="info-failed-attempts" class="info-value text-xs font-bold text-danger-base dark:text-danger-base"><div class="skeleton w-8 h-4"></div></div>
             </div>
             <div>
-              <p class="ds-label text-danger-base">LOCKED UNTIL</p>
+              <p class="fin-label text-danger-base">LOCKED UNTIL</p>
               <div id="info-locked-until" class="info-value text-xs font-bold text-danger-base dark:text-danger-base"><div class="skeleton w-32 h-4"></div></div>
             </div>
 
             <div id="rejection-reason-container" class="hidden sm:col-span-2 md:col-span-3">
-              <p class="ds-label text-danger-base">REJECTION REASON</p>
+              <p class="fin-label text-danger-base">REJECTION REASON</p>
               <p id="info-rejection-reason" class="info-value text-sm leading-tight text-danger-base dark:text-danger-base font-bold bg-danger-surface dark:bg-danger-surface/10 p-3 rounded-lg border border-danger-base dark:border-danger-base/20"></p>
             </div>
             
             <!-- Address (Full Width) -->
             <div class="sm:col-span-2 md:col-span-3">
-              <p class="ds-label">RESIDENTIAL ADDRESS</p>
+              <p class="fin-label">RESIDENTIAL ADDRESS</p>
               <p id="info-address" class="info-value text-sm leading-tight"><div class="skeleton w-64 h-4"></div></p>
             </div>
           </div>

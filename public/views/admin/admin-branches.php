@@ -19,7 +19,7 @@ ob_start();
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
-        <button data-action="openAddModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
+        <button data-action="openAddModal()" class="btn btn-primary flex whitespace-nowrap flex-shrink-0"
           style="background: var(--color-primary-base) !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined" aria-hidden="true">add</span> Add New Branch
         </button>
@@ -67,7 +67,7 @@ ob_start();
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
             <input type="text" id="admin-branch-finder" name="branch_query_ignore" placeholder="Search by branch name, location or manager..." 
               autocomplete="one-time-code" data-lpignore="true" 
-              class="ds-input pl-12">
+              class="fin-input pl-12">
           </div>
         </div>
 
@@ -116,11 +116,11 @@ ob_start();
         <div class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
           <div class="text-xs text-text-muted font-bold uppercase tracking-wider">Showing 1-5 of 5 branches</div>
           <div class="flex items-center gap-2">
-            <button class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">&larr; Previous</button>
+            <button class="btn btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">&larr; Previous</button>
             <div class="flex gap-1.5">
-              <button class="admin-btn-primary" style="width:32px; height:32px; padding:0 !important; border-radius:8px !important; font-size:11px !important;">1</button>
+              <button class="btn btn-primary" style="width:32px; height:32px; padding:0 !important; border-radius:8px !important; font-size:11px !important;">1</button>
             </div>
-            <button class="admin-btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">Next &rarr;</button>
+            <button class="btn btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">Next &rarr;</button>
           </div>
         </div>
       </div>
@@ -147,24 +147,24 @@ ob_start();
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 1: Branch Information</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div class="col-span-1">
-                <label class="ds-label mb-2">Branch Name *</label>
+                <label class="fin-label mb-2">Branch Name *</label>
                 <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. West Branch" required
-                  class="ds-input">
+                  class="fin-input">
               </div>
               <div class="col-span-1">
-                <label class="ds-label mb-2">Branch Code *</label>
+                <label class="fin-label mb-2">Branch Code *</label>
                 <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly
                   class="w-full px-4 py-3 bg-surface-hover dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary-base/60">
                 <p class="text-xs text-text-muted mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
               </div>
               <div class="col-span-1">
-                <label class="ds-label mb-2">City *</label>
+                <label class="fin-label mb-2">City *</label>
                 <input type="text" name="city" placeholder="e.g. Kolkata" required
-                  class="ds-input">
+                  class="fin-input">
               </div>
 
               <div class="col-span-1">
-                <label class="ds-label mb-2">State *</label>
+                <label class="fin-label mb-2">State *</label>
                 <div class="finzo-dropdown w-full" id="branch-state-dropdown">
                   <div class="finzo-dropdown-trigger !bg-surface-subtle dark:!bg-surface-container !border-none !rounded-xl !py-3">
                     <span class="dropdown-label font-bold text-sm text-text-muted">Select State / UT</span>
@@ -214,9 +214,9 @@ ob_start();
                 </div>
               </div>
               <div class="col-span-1 sm:col-span-2">
-                <label class="ds-label mb-2">Full Address *</label>
+                <label class="fin-label mb-2">Full Address *</label>
                 <textarea name="address" rows="2" placeholder="Building no., street name, locality, city, PIN code" required
-                  class="ds-input"></textarea>
+                  class="fin-input"></textarea>
               </div>
             </div>
           </div>
@@ -225,7 +225,7 @@ ob_start();
           <div>
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 2: Branch Manager</div>
             <div class="mb-4">
-              <label class="ds-label mb-2">Assign Branch Manager *</label>
+              <label class="fin-label mb-2">Assign Branch Manager *</label>
               
               <!-- Custom Styled Manager Dropdown -->
               <div class="finzo-dropdown w-full" id="manager-dropdown">
@@ -251,7 +251,7 @@ ob_start();
           <div>
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 3: Admin Verification</div>
             <div class="mb-2">
-              <label class="ds-label mb-2">Admin Password *</label>
+              <label class="fin-label mb-2">Admin Password *</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" style="font-size:18px;" aria-hidden="true">admin_panel_settings</span>
                 <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your admin password" required
@@ -269,15 +269,15 @@ ob_start();
 
           <!-- SECTION 4 -->
           <div>
-             <label class="ds-label mb-2">Branch Description / Notes</label>
+             <label class="fin-label mb-2">Branch Description / Notes</label>
              <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
-               class="ds-input"></textarea>
+               class="fin-input"></textarea>
              <div class="char-counter" id="branch-desc-counter">0 / 500</div>
           </div>
 
           <!-- SECTION 5 -->
           <div>
-            <label class="ds-label mb-1">Branch Registration Certificate</label>
+            <label class="fin-label mb-1">Branch Registration Certificate</label>
             <p class="text-xs opacity-40 mb-3 font-bold uppercase tracking-tighter">Upload the official documents</p>
             
             <input type="file" id="branch-file-input" name="certificate" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
@@ -287,7 +287,7 @@ ob_start();
                 <div class="text-sm font-bold text-primary-base">Upload Registration Certificate</div>
                 <div class="text-xs opacity-40 font-bold mt-1">PDF, JPG or PNG — Max 10MB</div>
               </div>
-              <button type="button" class="admin-btn-secondary px-6 !py-2 mt-2 !rounded-lg !text-xs !border-primary/20">Browse Files</button>
+              <button type="button" class="btn btn-secondary px-6 !py-2 mt-2 !rounded-lg !text-xs !border-primary/20">Browse Files</button>
             </div>
             <div id="file-preview" class="hidden mt-3 p-4 bg-success-surface dark:bg-success-surface/10 border border-success-base dark:border-success-base/20 rounded-xl flex items-center justify-between">
                <div class="flex items-center gap-3">
@@ -308,8 +308,8 @@ ob_start();
             </div>
 
             <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
-              <button type="button" data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary py-3 px-8 text-center justify-center">Cancel</button>
-              <button type="submit" id="submit-branch-btn" class="admin-btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none" style="background: var(--color-primary-base) !important;">Create Branch</button>
+              <button type="button" data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="btn btn-secondary py-3 px-8 text-center justify-center">Cancel</button>
+              <button type="submit" id="submit-branch-btn" class="btn btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none" style="background: var(--color-primary-base) !important;">Create Branch</button>
             </div>
           </div>
         </form>
@@ -336,7 +336,7 @@ ob_start();
       <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div class="space-y-6">
           <div class="ds-card !bg-surface-subtle dark:!bg-white/5 !p-5 !border-none">
-            <label class="ds-label mb-3 block">Branch Details</label>
+            <label class="fin-label mb-3 block">Branch Details</label>
             <div class="space-y-4">
                <div>
                  <div class="text-xs opacity-60 font-bold">Branch Code</div>
@@ -360,7 +360,7 @@ ob_start();
           </div>
           
           <div class="ds-card !bg-surface-subtle dark:!bg-white/5 !p-5 !border-none">
-            <label class="ds-label mb-3 block">Manager Info</label>
+            <label class="fin-label mb-3 block">Manager Info</label>
             <div class="flex items-center gap-4">
                <div id="view-manager-avatar" class="manager-avatar premium-gradient-primary">AS</div>
                <div>
@@ -385,7 +385,7 @@ ob_start();
            </div>
 
            <div>
-              <label class="ds-label mb-2 block">Registration Certificate</label>
+              <label class="fin-label mb-2 block">Registration Certificate</label>
               <div id="view-cert-container" class="flex items-center gap-3 p-3 bg-surface-hover dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/5">
                  <span class="material-symbols-outlined text-danger-base" aria-hidden="true">picture_as_pdf</span>
                  <div class="flex-1 min-w-0">
@@ -397,7 +397,7 @@ ob_start();
            </div>
 
            <div>
-              <label class="ds-label mb-2 block">Branch Description</label>
+              <label class="fin-label mb-2 block">Branch Description</label>
               <div id="view-branch-desc" class="text-xs p-4 bg-surface-subtle dark:bg-white/5 rounded-xl text-text-muted dark:text-text-muted font-medium leading-relaxed italic">
                  "Main central hub responsible for high-value corporate accounts and treasury operations. Operates 24/7 with specialized support for international transfers."
               </div>
@@ -405,8 +405,8 @@ ob_start();
         </div>
       </div>
       <div class="p-6 border-t border-surface-border dark:border-white/5 flex gap-3 justify-end">
-         <button id="view-btn-edit" class="admin-btn-secondary px-6">Edit Branch Info</button>
-         <button id="view-btn-staff" class="admin-btn-primary px-6" style="background:#002644 !important;">View Staff List</button>
+         <button id="view-btn-edit" class="btn btn-secondary px-6">Edit Branch Info</button>
+         <button id="view-btn-staff" class="btn btn-primary px-6" style="background:#002644 !important;">View Staff List</button>
       </div>
     </div>
   </div>
@@ -436,7 +436,7 @@ ob_start();
                 <th class="px-6 py-4 text-xs font-black tracking-widest text-text-muted uppercase text-right" scope="col">Action</th>
               </tr>
             </thead>
-            <tbody id="branch-staff-table-body">
+            <tbody id="branch-ds-table-body">
               <!-- Staff rows injected here -->
             </tbody>
           </table>
@@ -447,7 +447,7 @@ ob_start();
         </div>
       </div>
       <div class="p-6 border-t border-surface-border dark:border-white/5 flex justify-end bg-surface-subtle/50 dark:bg-white/5">
-         <button data-action="$(&#039;#branchStaffModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary px-8">Close List</button>
+         <button data-action="$(&#039;#branchStaffModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="btn btn-secondary px-8">Close List</button>
       </div>
     </div>
   </div>
@@ -464,17 +464,17 @@ ob_start();
         
         <div id="confirm-input-area" class="hidden space-y-5 text-left mb-8">
            <div>
-              <label class="ds-label mb-2">Confirm Branch Name *</label>
+              <label class="fin-label mb-2">Confirm Branch Name *</label>
               <input type="text" id="confirm-branch-name-input" placeholder="Type name here" class="w-full px-4 py-3 bg-surface-hover border-none rounded-xl font-bold">
            </div>
            
            <div>
-              <label class="ds-label mb-2">Admin Security Password *</label>
+              <label class="fin-label mb-2">Admin Security Password *</label>
               <input type="password" id="confirm-admin-pw" placeholder="Enter admin password" class="w-full px-4 py-3 bg-surface-hover border-none rounded-xl font-bold">
            </div>
 
            <div>
-              <label class="ds-label mb-2">Official Closure Document *</label>
+              <label class="fin-label mb-2">Official Closure Document *</label>
               <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-surface-border dark:border-white/10 rounded-xl hover:bg-surface-subtle dark:hover:bg-white/5 transition-all text-center">
                  <span class="material-symbols-outlined text-text-muted mb-1" aria-hidden="true">upload_file</span>
                  <div class="text-xs font-bold text-text-muted uppercase">Click to upload document</div>
@@ -494,8 +494,8 @@ ob_start();
         </div>
 
         <div class="flex flex-col gap-3">
-           <button id="confirm-btn-action" class="admin-btn-primary w-full justify-center !py-3 bg-danger-surface !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
-           <button data-action="$(&#039;#confirmModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="admin-btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
+           <button id="confirm-btn-action" class="btn btn-primary w-full justify-center !py-3 bg-danger-surface !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
+           <button data-action="$(&#039;#confirmModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="btn btn-secondary w-full justify-center !py-3 border-none">Cancel Action</button>
         </div>
      </div>
   </div>

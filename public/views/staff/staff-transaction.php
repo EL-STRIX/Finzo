@@ -52,11 +52,11 @@ ob_start();
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="account-lookup" placeholder="Enter 10-digit account number" 
-                                    class="w-full ds-input pl-12">
+                                    class="w-full fin-input pl-12">
                             </div>
                         </div>
                         <div class="flex items-end">
-                            <button id="find-btn" class="ds-btn-primary w-full sm:w-auto h-[46px] px-8 flex items-center justify-center gap-2">
+                            <button id="find-btn" class="btn btn-primary w-full sm:w-auto h-[46px] px-8 flex items-center justify-center gap-2">
                                 <span>Find Account</span>
                                 <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                             </button>
@@ -94,8 +94,8 @@ ob_start();
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button class="flex-1 py-3 ds-btn-secondary text-sm" data-action="resetForm()">Search Again</button>
-                            <button class="flex-1 py-3 ds-btn-primary text-sm flex items-center justify-center gap-2" data-action="goToStep2()">
+                            <button class="flex-1 py-3 btn btn-secondary text-sm" data-action="resetForm()">Search Again</button>
+                            <button class="flex-1 py-3 btn btn-primary text-sm flex items-center justify-center gap-2" data-action="goToStep2()">
                                 <span>Proceed with Deposit</span>
                                 <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                             </button>
@@ -130,7 +130,7 @@ ob_start();
                                 <div class="relative">
                                     <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-text-muted text-xl">₹</span>
                                     <input type="number" id="dep-amount" placeholder="0.00" min="100"
-                                        class="w-full ds-input pl-10 h-16 text-2xl font-black font-mono tracking-tight">
+                                        class="w-full fin-input pl-10 h-16 text-2xl font-black font-mono tracking-tight">
                                 </div>
                                 <p id="amt-words" class="mt-2 text-xs font-bold text-warning-base dark:text-warning-base uppercase tracking-widest px-1 italic">Waiting for input...</p>
                             </div>
@@ -138,14 +138,14 @@ ob_start();
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Deposit Type</label>
-                                    <select id="dep-type" class="w-full ds-input h-[46px]">
+                                    <select id="dep-type" class="w-full fin-input h-[46px]">
                                         <option value="Cash Deposit">Cash Deposit</option>
                                         <option value="Cheque Deposit">Cheque Deposit</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Reference / Note</label>
-                                    <input type="text" id="dep-ref" placeholder="Optional reference" class="w-full ds-input h-[46px]">
+                                    <input type="text" id="dep-ref" placeholder="Optional reference" class="w-full fin-input h-[46px]">
                                 </div>
                             </div>
                         </div>
@@ -189,8 +189,8 @@ ob_start();
                     </div>
                     
                     <div class="mt-8 pt-6 border-t border-surface-border dark:border-white/5 flex justify-end gap-3">
-                        <button class="px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep1()">Back</button>
-                        <button class="px-8 py-2.5 ds-btn-primary text-sm flex items-center gap-2" data-action="goToStep3()">
+                        <button class="px-6 py-2.5 btn btn-secondary text-sm" data-action="goToStep1()">Back</button>
+                        <button class="px-8 py-2.5 btn btn-primary text-sm flex items-center gap-2" data-action="goToStep3()">
                             Review & Confirm <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                         </button>
                     </div>
@@ -243,7 +243,7 @@ ob_start();
                                 </div>
                                 <div>
                                     <div class="text-xs text-text-muted uppercase">Branch</div>
-                                    <div class="font-bold text-text-main dark:text-white text-sm staff-branch-display">--</div>
+                                    <div class="font-bold text-text-main dark:text-white text-sm badge badge-neutral">--</div>
                                 </div>
                                 <div>
                                     <div class="text-xs text-text-muted uppercase">Date</div>
@@ -259,7 +259,7 @@ ob_start();
                             Double check physical cash before confirming.
                         </div>
                         <div class="flex gap-3 w-full sm:w-auto">
-                            <button class="flex-1 sm:flex-none px-6 py-2.5 ds-btn-secondary text-sm" data-action="goToStep2()">Edit</button>
+                            <button class="flex-1 sm:flex-none px-6 py-2.5 btn btn-secondary text-sm" data-action="goToStep2()">Edit</button>
                             <button id="final-deposit-btn" class="flex-1 sm:flex-none px-8 py-2.5 bg-success-surface hover:bg-success-surface text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span>
                                 Execute Deposit

@@ -127,7 +127,7 @@ ob_start();
               </div>
               <h3 class="text-lg font-bold mb-2 dark:text-white">Reinstate Staff</h3>
               <p class="text-xs opacity-60 leading-relaxed mb-8">This will restore system privileges and allow them to process new transactions.</p>
-              <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
+              <button data-action="openReinstateModal()" class="btn btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
                 <span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Authorize Access
               </button>
            </div>

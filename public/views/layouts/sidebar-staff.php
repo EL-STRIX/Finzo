@@ -23,7 +23,7 @@ function isActiveStaff($path, $current) {
                 <div class="w-1.5 h-1.5 rounded-full bg-warning-base animate-pulse"></div>
                 <span class="text-[10px] font-black text-warning-base uppercase tracking-widest">Active Shift</span>
             </div>
-            <div class="text-[10px] font-bold text-text-muted uppercase tracking-widest staff-branch-display">Loading...</div>
+            <div class="text-[10px] font-bold text-text-muted uppercase tracking-widest badge badge-neutral">Loading...</div>
         </div>
     </div>
 

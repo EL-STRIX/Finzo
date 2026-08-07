@@ -46,7 +46,7 @@ ob_start();
                     <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
                 
-                <div class="auth-card-container">
+                <div class="ds-card-container">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>

@@ -11,22 +11,22 @@ ob_start();
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-surface-subtle/20 dark:bg-white/[0.02]">
           <div>
-            <div class="ds-label mb-2 ml-1">Search Staff</div>
+            <div class="fin-label mb-2 ml-1">Search Staff</div>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
-              <input type="text" id="search-input" class="ds-input pl-10 py-2.5" placeholder="Name, staff ID...">
+              <input type="text" id="search-input" class="fin-input pl-10 py-2.5" placeholder="Name, staff ID...">
             </div>
           </div>
           <div>
-            <div class="ds-label mb-2 ml-1">Start Date</div>
-            <input type="date" id="start-date" class="ds-input py-2">
+            <div class="fin-label mb-2 ml-1">Start Date</div>
+            <input type="date" id="start-date" class="fin-input py-2">
           </div>
           <div>
-            <div class="ds-label mb-2 ml-1">End Date</div>
-            <input type="date" id="end-date" class="ds-input py-2">
+            <div class="fin-label mb-2 ml-1">End Date</div>
+            <input type="date" id="end-date" class="fin-input py-2">
           </div>
           <div>
-            <div class="ds-label mb-2 ml-1">Reason</div>
+            <div class="fin-label mb-2 ml-1">Reason</div>
             <div class="finzo-dropdown w-full" id="reason-dropdown">
               <input type="hidden" id="reason-filter" value="">
               <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-surface-border dark:!border-white/10 !rounded-xl !py-2 !px-4">

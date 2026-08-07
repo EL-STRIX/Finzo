@@ -35,7 +35,7 @@ ob_start();
                 <div class="font-display text-4xl font-black tracking-tighter" id="acc-balance-big">₹0.00</div>
                 <div class="text-xs font-bold text-white/50 uppercase mt-1 tracking-wider">AVAILABLE BALANCE</div>
               </div>
-              <span class="ds-badge ds-badge-success !bg-white/20 !border-white/30 text-white text-xs tracking-widest py-1">ACTIVE</span>
+              <span class="badge badge badge-success !bg-white/20 !border-white/30 text-white text-xs tracking-widest py-1">ACTIVE</span>
             </div>
             
             <div class="mt-8 p-4 rounded-xl bg-black/10 border border-white/10 backdrop-blur-sm">

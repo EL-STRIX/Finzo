@@ -167,7 +167,7 @@
         const s = (currentPage - 1) * ROWS_PP + 1, e = Math.min(currentPage * ROWS_PP, total);
         pagInfo.textContent = total ? `Showing ${s}–${e} of ${total} locked account${total !== 1 ? 's' : ''}` : 'No results found';
         
-        let pcHtml = `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.LockedAccounts.goPage(-1)">← Prev</button>`;
+        let pcHtml = `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.LockedAccounts.goPage(-1)">← Prev</button>`;
         
         pcHtml += `<div class="flex items-center gap-1.5">`;
         for (let i = 1; i <= totalPages; i++) {
@@ -179,7 +179,7 @@
         }
         pcHtml += `</div>`;
         
-        pcHtml += `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= totalPages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= totalPages ? 'disabled' : ''} onclick="window.LockedAccounts.goPage(1)">Next →</button>`;
+        pcHtml += `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= totalPages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= totalPages ? 'disabled' : ''} onclick="window.LockedAccounts.goPage(1)">Next →</button>`;
         
         pagControls.innerHTML = `<div class="flex items-center gap-2 font-bold">${pcHtml}</div>`;
     }

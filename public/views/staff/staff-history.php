@@ -51,7 +51,7 @@ ob_start();
                         <button class="time-tab px-4 py-2 text-text-muted dark:text-text-muted font-bold hover:text-text-main dark:hover:text-white transition-all text-xs uppercase tracking-widest" id="tab-custom">Custom</button>
                     </div>
                     
-                    <button id="print-all-btn" data-action="printAllTransactions()" class="flex items-center gap-2 px-4 py-2 ds-btn-secondary text-xs bg-white dark:bg-white/5">
+                    <button id="print-all-btn" data-action="printAllTransactions()" class="flex items-center gap-2 px-4 py-2 btn btn-secondary text-xs bg-white dark:bg-white/5">
                         <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
                         <span class="hidden sm:inline">Print Report</span>
                     </button>
@@ -61,11 +61,11 @@ ob_start();
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="md:col-span-2 relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
-                        <input type="text" id="search-input" placeholder="Search customer name, account no, or ref..." class="w-full ds-input pl-10 h-10 text-sm">
+                        <input type="text" id="search-input" placeholder="Search customer name, account no, or ref..." class="w-full fin-input pl-10 h-10 text-sm">
                     </div>
                     
                     <div>
-                        <select id="filter-type" class="w-full ds-input h-10 text-sm appearance-none">
+                        <select id="filter-type" class="w-full fin-input h-10 text-sm appearance-none">
                             <option value="All Types">All Types</option>
                             <option value="Deposits">Deposits</option>
                             <option value="Withdrawals">Withdrawals</option>
@@ -73,7 +73,7 @@ ob_start();
                     </div>
                     
                     <div>
-                        <select id="filter-status" class="w-full ds-input h-10 text-sm appearance-none">
+                        <select id="filter-status" class="w-full fin-input h-10 text-sm appearance-none">
                             <option value="All Status">All Status</option>
                             <option value="Completed">Completed</option>
                             <option value="Pending">Pending</option>
@@ -87,11 +87,11 @@ ob_start();
                     <div class="md:col-span-2"></div>
                     <div>
                         <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">From</label>
-                        <input type="date" id="filter-from-date" class="w-full ds-input h-10 text-sm">
+                        <input type="date" id="filter-from-date" class="w-full fin-input h-10 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">To</label>
-                        <input type="date" id="filter-to-date" class="w-full ds-input h-10 text-sm">
+                        <input type="date" id="filter-to-date" class="w-full fin-input h-10 text-sm">
                     </div>
                 </div>
             </div>

@@ -65,7 +65,7 @@ ob_start();
       </div>
       
       <!-- Auth Card -->
-      <div class="auth-card-wrapper w-full max-w-[480px] mx-auto my-auto">
+      <div class="ds-card-wrapper w-full max-w-[480px] mx-auto my-auto">
         <!-- Brand Header (Mobile Only) -->
         <div class="auth-brand-header lg:hidden">
           <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.php">

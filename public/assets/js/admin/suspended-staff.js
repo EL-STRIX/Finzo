@@ -127,7 +127,7 @@
         const end = Math.min(currentPage * 10, total);
         pagInfo.textContent = total ? `Showing ${start}–${end} of ${total} suspended staff` : 'No results';
 
-        let pcHtml = `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.SuspendedStaff.goPage(-1)">← Previous</button>`;
+        let pcHtml = `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage <= 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage <= 1 ? 'disabled' : ''} onclick="window.SuspendedStaff.goPage(-1)">← Previous</button>`;
         pcHtml += `<div class="flex items-center gap-1.5">`;
         for (let i = 1; i <= pages; i++) {
             if (i > 5 && i < pages - 1) { 
@@ -137,7 +137,7 @@
             pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" onclick="window.SuspendedStaff.goPageTo(${i})">${i}</button>`;
         }
         pcHtml += `</div>`;
-        pcHtml += `<button class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.SuspendedStaff.goPage(1)">Next →</button>`;
+        pcHtml += `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.SuspendedStaff.goPage(1)">Next →</button>`;
         
         pagControls.innerHTML = `<div class="flex items-center gap-2">${pcHtml}</div>`;
     }

@@ -148,10 +148,10 @@ ob_start();
             </div>
             <h3 class="text-lg font-bold mb-2 dark:text-white">Account Recovery</h3>
             <p class="text-xs opacity-60 leading-relaxed mb-8">Reinstating will restore original access and notify the user via registered mobile/email.</p>
-            <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
+            <button data-action="openReinstateModal()" class="btn btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
               <span class="material-symbols-outlined" aria-hidden="true">power_settings_new</span> Reinstate Account
             </button>
-            <button data-action="openDeleteModal()" class="admin-btn-secondary w-full justify-center !py-3 mt-4 border-none text-danger-base opacity-60 hover:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
+            <button data-action="openDeleteModal()" class="btn btn-secondary w-full justify-center !py-3 mt-4 border-none text-danger-base opacity-60 hover:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
               Permanent Deletion Request
             </button>
           </div>

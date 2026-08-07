@@ -33,7 +33,7 @@ ob_start();
               <div class="text-xs font-bold text-text-muted tracking-wide">Primary Wealth Container</div>
             </div>
           </div>
-          <span class="ds-badge ds-badge-success text-xs tracking-widest uppercase">ACTIVE</span>
+          <span class="badge badge badge-success text-xs tracking-widest uppercase">ACTIVE</span>
         </div>
         
         <!-- Card Body -->

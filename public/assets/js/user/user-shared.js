@@ -368,7 +368,7 @@ function buildSidebar(activePage) {
         <div class="sidebar-brand-sub">Customer Portal</div>
       </div>
       <div class="sidebar-user">
-        <div class="sidebar-user-card">
+        <div class="sidebar-ds-card">
           <div class="sidebar-avatar" ${UserState.avatarUrl ? `style="background-image:url(${UserState.avatarUrl});background-size:cover;color:transparent"` : ''}>${UserState.initials}</div>
           <div>
             <div class="sidebar-user-name">${UserState.name}</div>

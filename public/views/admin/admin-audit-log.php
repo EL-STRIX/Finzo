@@ -52,17 +52,17 @@ ob_start();
                 <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5 relative z-20">
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 items-end">
                     <div class="col-span-2">
-                        <label class="ds-label mb-2">Search
+                        <label class="fin-label mb-2">Search
                             Events</label>
                         <div class="relative">
                             <span
                                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                             <input type="text" id="filter-search" placeholder="Search by Staff ID (e.g. STF001)…"
-                                class="ds-input pl-12">
+                                class="fin-input pl-12">
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="ds-label mb-2">Action
+                        <label class="fin-label mb-2">Action
                             Type</label>
                         <div class="finzo-dropdown" id="action-type-dropdown">
                             <input type="hidden" id="filter-action-type" value="all">
@@ -87,7 +87,7 @@ ob_start();
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="ds-label mb-2">Actor
+                        <label class="fin-label mb-2">Actor
                             Role</label>
                         <div class="finzo-dropdown" id="actor-role-dropdown">
                             <input type="hidden" id="filter-actor-role" value="all">
@@ -106,16 +106,16 @@ ob_start();
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="ds-label mb-2">From
+                        <label class="fin-label mb-2">From
                             Date</label>
                         <input type="date" id="date-from"
-                            class="ds-input">
+                            class="fin-input">
                     </div>
                     <div class="col-span-1">
-                        <label class="ds-label mb-2">To
+                        <label class="fin-label mb-2">To
                             Date</label>
                         <input type="date" id="date-to"
-                            class="ds-input">
+                            class="fin-input">
                     </div>
                 </div>
                 </div>
@@ -145,12 +145,12 @@ ob_start();
                         0-0 of 0 Records</div>
                     <div class="flex items-center gap-2">
                         <button id="prev-btn"
-                            class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                            class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by audit-log.js -->
                         </div>
                         <button id="next-btn"
-                            class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                     </div>
                 </div>
             </div>

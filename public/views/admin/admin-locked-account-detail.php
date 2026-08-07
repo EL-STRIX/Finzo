@@ -110,7 +110,7 @@ ob_start();
                     <!-- ACCESS CONTROL -->
                     <div class="ds-card p-6" id="unlock-action-card">
                         <h3 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Access Control</h3>
-                        <button data-action="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
+                        <button data-action="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">vpn_key</span> Generate & Unlock
                         </button>
                         <div class="p-3 bg-warning-surface dark:bg-warning-surface/5 rounded-xl border border-warning-base dark:border-warning-base/10 text-center">

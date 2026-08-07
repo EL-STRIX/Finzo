@@ -18,7 +18,7 @@ function isActiveUser($path, $current) {
                 <div class="text-xs text-text-muted user-id">---</div>
             </div>
         </div>
-        <div class="user-status-badge">
+        <div class="badge badge-danger">
             <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-success-surface/10 border border-success-base/20 hidden" id="status-active">
                 <div class="w-1.5 h-1.5 rounded-full bg-success-base"></div>
                 <span class="text-[10px] font-black text-success-base uppercase tracking-widest">Active</span>

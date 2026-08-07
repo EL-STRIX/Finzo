@@ -32,7 +32,7 @@ ob_start();
           <div class="font-display font-bold text-warning-base">Your Application is Under Review</div>
           <div class="text-sm text-warning-base/80">Our team is reviewing your details. You'll be notified within 24 hours.</div>
         </div>
-        <a href="account-pending.php" class="ds-badge ds-badge-warning shrink-0">View Status</a>
+        <a href="account-pending.php" class="badge badge badge-warning shrink-0">View Status</a>
       </div>
     </div>
 

@@ -104,7 +104,7 @@
                 <td class="text-xs font-semibold">Savings</td>
                 <td class="text-[11px] opacity-40 font-bold">${timeDisplay}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
+                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-xs">visibility</span> View
                     </a>
                 </td>

@@ -108,7 +108,7 @@ async function loadUserData() {
                 'rejected': 'rose'
             };
             const color = statusColors[userStatus] || 'slate';
-            const badge = document.getElementById('user-status-badge');
+            const badge = document.getElementById('badge badge-danger');
             if (badge) {
                 badge.className = `text-[10px] font-black text-${color}-50 px-2 py-0.5 bg-${color}-500 rounded-md uppercase tracking-widest border border-${color}-100 dark:border-${color}-500/20`;
                 badge.textContent = `Account ${userStatus.replace('_', ' ')}`;
@@ -191,7 +191,7 @@ async function loadUserData() {
             
             // Append documents to the UI since it wasn't there
             if (data.id_documents && (data.id_documents.front_url || data.id_documents.back_url)) {
-                let docHtml = '<div class="admin-card p-5 sm:p-8 mt-6 sm:mt-8"><h3 class="font-headline text-lg font-bold text-black dark:text-white mb-6">Identity Documents</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">';
+                let docHtml = '<div class="ds-card p-5 sm:p-8 mt-6 sm:mt-8"><h3 class="font-headline text-lg font-bold text-black dark:text-white mb-6">Identity Documents</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">';
                 if (data.id_documents.front_url) {
                     docHtml += `<div><label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Front Side</label><div class="aspect-video rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10"><img src="${data.id_documents.front_url}" class="w-full h-full object-cover"></div></div>`;
                 }
@@ -392,7 +392,7 @@ function renderUserTransactions(transactions) {
             </span>
             </td>
             <td class="text-right p-4">
-                <button onclick="window.open('../../../../api/v1/documents/receipt?id=${t.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                <button onclick="window.open('../../../../api/v1/documents/receipt?id=${t.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                     <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
                 </button>
             </td>

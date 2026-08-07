@@ -63,17 +63,17 @@ ob_start();
                 <div class="p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/50 dark:bg-white/[0.02]">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="ds-label">Search User</label>
+                            <label class="fin-label">Search User</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
-                                <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="ds-input pl-11">
+                                <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="fin-input pl-11">
                             </div>
                         </div>
                         <div>
-                            <label class="ds-label">Account Status</label>
+                            <label class="fin-label">Account Status</label>
                             <div class="finzo-dropdown w-full" id="status-dropdown">
                                 <input type="hidden" id="filter-status" value="all">
-                                <div class="finzo-dropdown-trigger ds-input !flex items-center justify-between">
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
                                     <span class="dropdown-label">All Status</span>
                                     <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>

@@ -86,7 +86,7 @@
                 </td>
                 <td>
                     <div class="flex justify-end">
-                        <a href="admin-review-application.html?id=${app.id}" class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
+                        <a href="admin-review-application.html?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
                             <span class="material-symbols-outlined !text-xs">settings_accessibility</span> Manage
                         </a>
                     </div>
@@ -120,7 +120,7 @@
                 if (i === 4) html += '<span class="px-2 opacity-50">...</span>';
                 continue;
             }
-            const activeClass = i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary';
+            const activeClass = i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary';
             const style = i === currentPage ? 'background: #1a3c5e !important;' : '';
             html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" style="${style}" data-page="${i}">${i}</button>`;
         }

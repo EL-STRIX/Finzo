@@ -57,55 +57,55 @@ ob_start();
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6" id="personal-fields">
               <div>
-                <label class="ds-label mb-1">Date of Birth</label>
+                <label class="fin-label mb-1">Date of Birth</label>
                 <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Gender</label>
+                <label class="fin-label mb-1">Gender</label>
                 <div class="font-bold"><div class="skeleton w-16 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Marital Status</label>
+                <label class="fin-label mb-1">Marital Status</label>
                 <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Nationality</label>
+                <label class="fin-label mb-1">Nationality</label>
                 <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Father's Name</label>
+                <label class="fin-label mb-1">Father's Name</label>
                 <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Mother's Name</label>
+                <label class="fin-label mb-1">Mother's Name</label>
                 <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Occupation</label>
+                <label class="fin-label mb-1">Occupation</label>
                 <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Source of Income</label>
+                <label class="fin-label mb-1">Source of Income</label>
                 <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Annual Income</label>
+                <label class="fin-label mb-1">Annual Income</label>
                 <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Phone</label>
+                <label class="fin-label mb-1">Phone</label>
                 <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">Email</label>
+                <label class="fin-label mb-1">Email</label>
                 <div class="font-bold"><div class="skeleton w-40 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">SUBMITTED ON</label>
+                <label class="fin-label mb-1">SUBMITTED ON</label>
                 <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-1">REGISTERED ON</label>
+                <label class="fin-label mb-1">REGISTERED ON</label>
                 <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
               </div>
             </div>
@@ -119,24 +119,24 @@ ob_start();
             </div>
             <div class="p-5 sm:p-8 space-y-6" id="address-fields">
               <div>
-                <label class="ds-label mb-1">Street Address</label>
+                <label class="fin-label mb-1">Street Address</label>
                 <div class="font-bold"><div class="skeleton w-full max-w-sm h-4"></div></div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="ds-label mb-1">City</label>
+                  <label class="fin-label mb-1">City</label>
                   <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
                 </div>
                 <div>
-                  <label class="ds-label mb-1">State</label>
+                  <label class="fin-label mb-1">State</label>
                   <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
                 </div>
                 <div>
-                  <label class="ds-label mb-1">PIN Code</label>
+                  <label class="fin-label mb-1">PIN Code</label>
                   <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
                 </div>
                 <div>
-                  <label class="ds-label mb-1">Country</label>
+                  <label class="fin-label mb-1">Country</label>
                   <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
                 </div>
               </div>
@@ -152,24 +152,24 @@ ob_start();
             <div class="p-5 sm:p-8">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-6 sm:mb-8" id="identity-fields">
                 <div>
-                  <label class="ds-label mb-1">ID Type</label>
+                  <label class="fin-label mb-1">ID Type</label>
                   <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
                 </div>
                 <div>
-                  <label class="ds-label mb-1">ID Number</label>
+                  <label class="fin-label mb-1">ID Number</label>
                   <div class="font-bold tracking-widest"><div class="skeleton w-36 h-4"></div></div>
                 </div>
               </div>
               <div class="flex flex-col sm:flex-row gap-6">
                 <div class="flex-1">
-                  <label class="ds-label mb-2">Front Side</label>
+                  <label class="fin-label mb-2">Front Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
                     <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
                     <span class="text-xs font-bold opacity-40">Click to view full image</span>
                   </div>
                 </div>
                 <div class="flex-1">
-                  <label class="ds-label mb-2">Back Side</label>
+                  <label class="fin-label mb-2">Back Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
                     <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
                     <span class="text-xs font-bold opacity-40">Click to view full image</span>
@@ -187,15 +187,15 @@ ob_start();
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4" id="account-fields">
               <div>
-                <label class="ds-label mb-2">Account Type</label>
+                <label class="fin-label mb-2">Account Type</label>
                 <div class="skeleton w-24 h-6 rounded-full"></div>
               </div>
               <div>
-                <label class="ds-label mb-2">Initial Deposit</label>
+                <label class="fin-label mb-2">Initial Deposit</label>
                 <div class="font-bold text-lg"><div class="skeleton w-20 h-6"></div></div>
               </div>
               <div>
-                <label class="ds-label mb-2">Transaction PIN</label>
+                <label class="fin-label mb-2">Transaction PIN</label>
                 <div class="skeleton w-16 h-6"></div>
               </div>
             </div>
@@ -286,8 +286,8 @@ ob_start();
         A <span id="modal-acc-type">Savings</span> Account with number <span class="font-code font-bold text-green-600" id="modal-approve-acc">FNZ---</span> will be generated and activated. An email will be sent to the applicant immediately.
       </p>
       <div class="flex gap-3">
-        <button data-action="closeApproveModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
-        <button id="confirmApprove" class="flex-1 admin-btn-primary py-4" style="background:#00b894 !important; border:none !important;">Yes, Approve Now</button>
+        <button data-action="closeApproveModal()" class="flex-1 btn btn-secondary py-4">Cancel</button>
+        <button id="confirmApprove" class="flex-1 btn btn-primary py-4" style="background:#00b894 !important; border:none !important;">Yes, Approve Now</button>
       </div>
     </div>
   </div>
@@ -311,8 +311,8 @@ ob_start();
       </div>
 
       <div class="flex gap-3">
-        <button data-action="closeRejectModal()" class="flex-1 admin-btn-secondary py-4">Cancel</button>
-        <button id="confirmReject" class="flex-1 admin-btn-primary py-4" style="background:#ef4444 !important; border:none !important;">Yes, Reject Application</button>
+        <button data-action="closeRejectModal()" class="flex-1 btn btn-secondary py-4">Cancel</button>
+        <button id="confirmReject" class="flex-1 btn btn-primary py-4" style="background:#ef4444 !important; border:none !important;">Yes, Reject Application</button>
       </div>
     </div>
   </div>

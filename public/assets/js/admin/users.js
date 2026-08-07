@@ -84,7 +84,7 @@
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
+                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-[14px]">visibility</span> View
                     </a>
                 </td>
@@ -110,7 +110,7 @@
         if (container) {
             let html = '';
             for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
+                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
             }
             container.innerHTML = html;
         }

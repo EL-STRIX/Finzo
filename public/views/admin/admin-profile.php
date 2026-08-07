@@ -38,20 +38,20 @@ ob_start();
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
-                                <label class="ds-label mb-1">Admin ID (System Generated)</label>
-                                <input type="text" id="profile-admin-id-input" class="ds-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed font-mono" readonly>
+                                <label class="fin-label mb-1">Admin ID (System Generated)</label>
+                                <input type="text" id="profile-admin-id-input" class="fin-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed font-mono" readonly>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Full Name *</label>
-                                <input type="text" id="profile-name-input" class="ds-input">
+                                <label class="fin-label mb-1">Full Name *</label>
+                                <input type="text" id="profile-name-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Date of Birth</label>
-                                <input type="date" id="profile-dob-input" class="ds-input">
+                                <label class="fin-label mb-1">Date of Birth</label>
+                                <input type="date" id="profile-dob-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Gender</label>
-                                <select id="profile-gender-input" class="ds-input">
+                                <label class="fin-label mb-1">Gender</label>
+                                <select id="profile-gender-input" class="fin-input">
                                     <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -60,16 +60,16 @@ ob_start();
                                 </select>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Phone Number</label>
-                                <input type="text" id="profile-phone-input" class="ds-input">
+                                <label class="fin-label mb-1">Phone Number</label>
+                                <input type="text" id="profile-phone-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Email Address (Read-only)</label>
-                                <input type="email" id="profile-email-input" class="ds-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed" readonly>
+                                <label class="fin-label mb-1">Email Address (Read-only)</label>
+                                <input type="email" id="profile-email-input" class="fin-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed" readonly>
                             </div>
                         </div>
                         <div class="mt-8 pt-6 border-t border-surface-border dark:border-white/5 flex justify-end">
-                            <button data-action="window.AdminProfile.saveProfile()" class="ds-btn-primary px-8">Save Profile</button>
+                            <button data-action="window.AdminProfile.saveProfile()" class="btn btn-primary px-8">Save Profile</button>
                         </div>
                     </div>
 
@@ -85,19 +85,19 @@ ob_start();
                         <p class="text-sm text-text-muted dark:text-text-muted mb-6 font-medium">Configure a security question to recover this admin account if locked out. The answer is case-insensitive.</p>
                         <form id="sq-setup-form" onsubmit="window.AdminProfile.saveSecurityQuestion(event)" class="space-y-6">
                             <div>
-                                <label class="ds-label mb-1">Security Question *</label>
-                                <input type="text" id="sq-question" class="ds-input" placeholder="e.g. In what city were you born?" minlength="10" required>
+                                <label class="fin-label mb-1">Security Question *</label>
+                                <input type="text" id="sq-question" class="fin-input" placeholder="e.g. In what city were you born?" minlength="10" required>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Answer *</label>
-                                <input type="password" id="sq-answer" class="ds-input" placeholder="Your secret answer" minlength="3" required>
+                                <label class="fin-label mb-1">Answer *</label>
+                                <input type="password" id="sq-answer" class="fin-input" placeholder="Your secret answer" minlength="3" required>
                             </div>
                             <div class="pt-4 border-t border-surface-border dark:border-white/5">
-                                <label class="ds-label mb-1">Current Password (to verify) *</label>
-                                <input type="password" id="sq-curr-pw" class="ds-input" placeholder="Authenticate changes" required>
+                                <label class="fin-label mb-1">Current Password (to verify) *</label>
+                                <input type="password" id="sq-curr-pw" class="fin-input" placeholder="Authenticate changes" required>
                             </div>
                             <div class="flex justify-end pt-4">
-                                <button type="submit" id="btn-save-sq" class="ds-btn-secondary px-8"><span id="sq-btn-text">Set Security Question</span></button>
+                                <button type="submit" id="btn-save-sq" class="btn btn-secondary px-8"><span id="sq-btn-text">Set Security Question</span></button>
                             </div>
                         </form>
                     </div>
@@ -128,8 +128,8 @@ ob_start();
                         <div class="p-4 border-t border-surface-border dark:border-white/5 flex items-center justify-between bg-surface-subtle/50 dark:bg-white/2 hidden" id="activity-pagination-container">
                             <div class="text-xs font-black text-text-muted uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
                             <div class="flex gap-2">
-                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-xs">Prev</button>
-                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-xs">Next</button>
+                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Prev</button>
+                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Next</button>
                             </div>
                         </div>
                     </div>
@@ -143,18 +143,18 @@ ob_start();
                             </h3>
                             <div class="flex gap-3">
                                 <span id="management-count-badge" class="px-3 py-1 bg-warning-surface text-warning-base dark:bg-warning-surface/20 dark:text-warning-base text-xs font-black rounded uppercase tracking-widest border border-warning-base dark:border-warning-base/30">0 Admins</span>
-                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="ds-btn-primary !px-4 !py-1 !text-xs">Add Admin</button>
+                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="btn btn-primary !px-4 !py-1 !text-xs">Add Admin</button>
                             </div>
                         </div>
                         <!-- Filters -->
                         <div id="admin-filter-bar" class="p-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-white/5 flex gap-4">
-                            <input type="text" id="admin-search-input" placeholder="Search admins..." class="ds-input flex-1">
-                            <select id="admin-status-filter" class="ds-input w-40">
+                            <input type="text" id="admin-search-input" placeholder="Search admins..." class="fin-input flex-1">
+                            <select id="admin-status-filter" class="fin-input w-40">
                                 <option value="all">All Status</option>
                                 <option value="active">Active</option>
                                 <option value="suspended">Suspended</option>
                             </select>
-                            <select id="admin-role-filter" class="ds-input w-40">
+                            <select id="admin-role-filter" class="fin-input w-40">
                                 <option value="all">All Roles</option>
                                 <option value="admin">Admin</option>
                                 <option value="moderator">Moderator</option>
@@ -219,12 +219,12 @@ ob_start();
                         
                         <div class="space-y-4">
                             <div>
-                                <label class="ds-label mb-1">Current Password</label>
-                                <input type="password" id="curr-pw" class="ds-input">
+                                <label class="fin-label mb-1">Current Password</label>
+                                <input type="password" id="curr-pw" class="fin-input">
                             </div>
                             <div>
-                                <label class="ds-label mb-1">New Password</label>
-                                <input type="password" id="new-pw" class="ds-input" oninput="window.AdminProfile.checkStrength(this.value)">
+                                <label class="fin-label mb-1">New Password</label>
+                                <input type="password" id="new-pw" class="fin-input" oninput="window.AdminProfile.checkStrength(this.value)">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-bar" style="width:0%"></div>
@@ -233,10 +233,10 @@ ob_start();
                                 </div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1">Confirm New Password</label>
-                                <input type="password" id="conf-pw" class="ds-input">
+                                <label class="fin-label mb-1">Confirm New Password</label>
+                                <input type="password" id="conf-pw" class="fin-input">
                             </div>
-                            <button data-action="window.AdminProfile.updatePassword()" class="w-full ds-btn-primary mt-4">Change Password</button>
+                            <button data-action="window.AdminProfile.updatePassword()" class="w-full btn btn-primary mt-4">Change Password</button>
                         </div>
                     </div>
 

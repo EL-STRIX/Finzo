@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (data.id_documents) {
-            const docBlocks = document.querySelectorAll('.admin-card .aspect-video');
+            const docBlocks = document.querySelectorAll('.ds-card .aspect-video');
             if (data.id_documents.front_url && docBlocks.length > 0) {
                 let url = data.id_documents.front_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Disable buttons if already processed
         if (user.status === 'active' || user.status === 'rejected') {
-            const decisionBtns = document.querySelectorAll('.admin-card:last-child button:not(.btn-ghost)');
+            const decisionBtns = document.querySelectorAll('.ds-card:last-child button:not(.btn-ghost)');
             decisionBtns.forEach(btn => {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');

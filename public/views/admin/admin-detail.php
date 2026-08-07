@@ -33,21 +33,21 @@ ob_start();
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-6">
                                 <div>
-                                    <label class="ds-label mb-1.5 block">Email Address</label>
+                                    <label class="fin-label mb-1.5 block">Email Address</label>
                                     <div id="info-email" class="text-sm font-bold text-text-main dark:text-text-muted flex items-center gap-2">---</div>
                                 </div>
                                 <div>
-                                    <label class="ds-label mb-1.5 block">Phone Number</label>
+                                    <label class="fin-label mb-1.5 block">Phone Number</label>
                                     <div id="info-phone" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                                 </div>
                             </div>
                             <div class="space-y-6">
                                 <div>
-                                    <label class="ds-label mb-1.5 block">Gender</label>
+                                    <label class="fin-label mb-1.5 block">Gender</label>
                                     <div id="info-gender" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                                 </div>
                                 <div>
-                                    <label class="ds-label mb-1.5 block">Date of Birth</label>
+                                    <label class="fin-label mb-1.5 block">Date of Birth</label>
                                     <div id="info-dob" class="text-sm font-bold text-text-main dark:text-text-muted">---</div>
                                 </div>
                             </div>
@@ -63,24 +63,24 @@ ob_start();
                         </div>
                         <div class="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-3 gap-8">
                             <div>
-                                <label class="ds-label mb-1.5 block">Last Login</label>
+                                <label class="fin-label mb-1.5 block">Last Login</label>
                                 <div id="sys-last-login" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                                 <div id="sys-last-ip" class="text-xs font-black text-text-muted dark:text-text-muted mt-1">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1.5 block">PWD Last Changed</label>
+                                <label class="fin-label mb-1.5 block">PWD Last Changed</label>
                                 <div id="sys-pwd-change" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1.5 block">Failed Attempts</label>
+                                <label class="fin-label mb-1.5 block">Failed Attempts</label>
                                 <div id="sys-failed-attempts" class="text-xs font-bold text-danger-base">0</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1.5 block">Added By</label>
+                                <label class="fin-label mb-1.5 block">Added By</label>
                                 <div id="sys-created-by" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
                             </div>
                             <div>
-                                <label class="ds-label mb-1.5 block">Account ID</label>
+                                <label class="fin-label mb-1.5 block">Account ID</label>
                                 <div id="sys-id" class="text-xs font-mono font-bold text-text-muted dark:text-text-muted dark:text-text-muted">---</div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@ ob_start();
                     
                     <!-- Action Panel -->
                     <div class="ds-card p-6">
-                        <h5 class="ds-label mb-6 block">Administrative Control</h5>
+                        <h5 class="fin-label mb-6 block">Administrative Control</h5>
                         <div class="space-y-4">
                             <!-- Suspend/Activate -->
                             <button id="action-suspend-btn" data-action="window.AdminDetail.toggleStatus()" class="w-full flex items-center justify-between p-4 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-warning-surface dark:hover:bg-warning-surface/10 border border-transparent hover:border-warning-base">

@@ -8,25 +8,25 @@ ob_start();
                 <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                     <div class="md:col-span-2">
-                        <label class="ds-label">Search User</label>
+                        <label class="fin-label">Search User</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
-                            <input type="text" id="filter-search" placeholder="ID, name, email or account number..." class="ds-input pl-11">
+                            <input type="text" id="filter-search" placeholder="ID, name, email or account number..." class="fin-input pl-11">
                         </div>
                     </div>
                     <div>
-                        <label class="ds-label">From Date</label>
-                        <input type="date" id="filter-date-from" class="ds-input">
+                        <label class="fin-label">From Date</label>
+                        <input type="date" id="filter-date-from" class="fin-input">
                     </div>
                     <div>
-                        <label class="ds-label">To Date</label>
-                        <input type="date" id="filter-date-to" class="ds-input">
+                        <label class="fin-label">To Date</label>
+                        <input type="date" id="filter-date-to" class="fin-input">
                     </div>
                     <div>
-                        <label class="ds-label">Account Type</label>
+                        <label class="fin-label">Account Type</label>
                         <div class="finzo-dropdown w-full" id="type-dropdown">
                             <input type="hidden" id="filter-type" value="">
-                            <div class="finzo-dropdown-trigger ds-input !flex items-center justify-between">
+                            <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
                                 <span class="dropdown-label">All Types</span>
                                 <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                             </div>
