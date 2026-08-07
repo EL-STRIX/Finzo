@@ -5,11 +5,7 @@ ob_start();
 ?>
 
 
-<div class="flex-1 min-w-0 lg:ml-[260px] transition-all duration-300 overflow-hidden">
 
-  
-
-  <div class="page-content">
     <!-- BACK BUTTON -->
     <div style="margin-bottom:24px;">
       <a href="admin-suspended-staff.php" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
@@ -168,10 +164,7 @@ ob_start();
         <button id="confirm-btn" data-action="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-success-surface shadow-emerald-500/20 hover:bg-success-surface hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
       </div>
     </div>
-  </div>
-</div>
-
-<script defer src="/Finzo/public/assets/js/admin/suspended-staff-detail.js"></script>
+  <script defer src="/Finzo/public/assets/js/admin/suspended-staff-detail.js"></script>
     <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
 $slot = ob_get_clean();
