@@ -140,14 +140,14 @@ html, body {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(8px);
-  color: #ffffff;
+  color: var(--color-surface-main);
 }
 
 .auth-brand-name {
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-surface-main);
   letter-spacing: -0.02em;
 }
 
@@ -155,7 +155,7 @@ html, body {
   font-family: var(--font-display);
   font-size: 36px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-surface-main);
   line-height: 1.2;
   margin-bottom: 16px;
   letter-spacing: -0.02em;
@@ -182,7 +182,7 @@ html, body {
 }
 
 .auth-hero-security-icon {
-  color: #ffffff;
+  color: var(--color-surface-main);
   font-size: 28px;
   margin-top: 2px;
 }
@@ -190,7 +190,7 @@ html, body {
 .auth-hero-security-title {
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-surface-main);
   margin-bottom: 4px;
 }
 
@@ -288,7 +288,7 @@ html, body {
 /* Shared Role Switcher Component */
 .auth-role-switcher {
   display: flex;
-  background-color: #f8fafc;
+  background-color: var(--color-surface-subtle);
   padding: 4px;
   border-radius: var(--radius-md);
   margin-bottom: 28px;
@@ -341,26 +341,26 @@ html, body {
 
 .alert-info {
   background-color: var(--color-info-surface);
-  border-color: #bfdbfe;
-  color: #1e40af;
+  border-color: var(--color-info-surface);
+  color: var(--color-info-text);
 }
 
 .alert-success {
   background-color: var(--color-success-surface);
-  border-color: #bbf7d0;
-  color: #166534;
+  border-color: var(--color-success-surface);
+  color: var(--color-success-text);
 }
 
 .alert-warning {
   background-color: var(--color-warning-surface);
-  border-color: #fef08a;
-  color: #854d0e;
+  border-color: var(--color-warning-surface);
+  color: var(--color-warning-text);
 }
 
 .alert-danger, .alert-security {
   background-color: var(--color-danger-surface);
-  border-color: #fecaca;
-  color: #991b1b;
+  border-color: var(--color-danger-surface);
+  color: var(--color-danger-text);
 }
 
 .alert-icon {
@@ -397,7 +397,7 @@ html, body {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background-color: #fafbfc;
+  background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
   padding: 14px 16px;
@@ -507,7 +507,7 @@ html, body {
 
 .auth-contact-item:hover .auth-contact-icon {
   background-color: var(--color-primary-base);
-  color: #ffffff;
+  color: var(--color-surface-main);
   border-color: var(--color-primary-base);
 }
 
@@ -539,7 +539,7 @@ html, body {
 }
 
 .auth-lang-selector:hover {
-  border-color: #a0aec0;
+  border-color: var(--color-border-main);
   box-shadow: var(--shadow-md);
 }
 
@@ -596,7 +596,7 @@ html, body {
   padding: 14px 20px;
   border-radius: var(--radius-md);
   background-color: var(--color-primary-base);
-  color: #ffffff;
+  color: var(--color-surface-main);
   font-size: 13px;
   font-weight: 500;
   box-shadow: var(--shadow-lg);
@@ -613,8 +613,8 @@ html, body {
 }
 
 .fin-toast-success {
-  background-color: #064e3b;
-  border-color: #059669;
+  background-color: var(--color-success-base);
+  border-color: var(--color-success-hover);
 }
 
 .fin-toast-info {
@@ -623,13 +623,13 @@ html, body {
 }
 
 .fin-toast-error {
-  background-color: #7f1d1d;
-  border-color: #dc2626;
+  background-color: var(--color-danger-base);
+  border-color: var(--color-danger-hover);
 }
 
 .fin-toast-warning {
-  background-color: #78350f;
-  border-color: #d97706;
+  background-color: var(--color-warning-base);
+  border-color: var(--color-warning-hover);
 }
 
 .fin-toast-icon {

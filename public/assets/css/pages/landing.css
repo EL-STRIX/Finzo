@@ -24,7 +24,7 @@ body {
     right: 0;
     width: min(320px, 85vw);
     height: 100%;
-    background: #ffffff;
+    background: var(--color-surface-main);
     z-index: 100;
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -44,7 +44,7 @@ body {
 
 .enterprise-card {
     border: 1px solid #e5e7eb;
-    background: #ffffff;
+    background: var(--color-surface-main);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
@@ -64,12 +64,12 @@ body {
     height: 2px;
     bottom: -4px;
     left: 0;
-    background-color: #002645;
+    background-color: var(--color-primary-base);
     transition: width 0.3s ease;
 }
 
 .nav-link-active {
-    color: #002645 !important;
+    color: var(--color-primary-base) !important;
     font-weight: 600;
 }
 

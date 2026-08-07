@@ -30,8 +30,8 @@
     justify-content: center !important;
     gap: 10px !important;
     padding: 11px 24px !important;
-    background: linear-gradient(135deg, #1a3c5e 0%, #2563eb 100%) !important;
-    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--color-primary-hover) 0%, #2563eb 100%) !important;
+    color: var(--color-surface-main) !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     border-radius: 12px !important;
     font-size: 13px !important;
@@ -165,7 +165,7 @@
     }
 
     body {
-        background: #ffffff !important;
+        background: var(--color-surface-main) !important;
         color: #000000 !important;
     }
 
@@ -190,7 +190,7 @@
 
 .user-nav-badge {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--color-danger-base);
     font-size: 10px;
     font-weight: 800;
     padding: 2px 8px;
