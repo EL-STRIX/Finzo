@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const badge = document.getElementById('detail-acc-type-badge');
         badge.textContent = user.account_type || 'N/A';
-        badge.className = 'badge badge-green';
+        badge.className = 'badge badge-success';
         
         document.getElementById('detail-type').textContent = user.account_type ? (user.account_type + ' Account') : 'N/A';
         document.getElementById('detail-opened').textContent = user.opened_at || 'N/A';
@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTransactions(txs) {
         const tbody = document.getElementById('transactions-body');
         if (!txs || txs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 opacity-40">No recent transactions recorded</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"4\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No recent transactions recorded</div></div></td></tr>';
             return;
         }
         const html = txs.map(tx => `
             <tr style="border-bottom:1px solid var(--border)">
                 <td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">${tx.date}</td>
                 <td style="padding:12px 16px;font-size:13px;font-weight:600">${tx.description}</td>
-                <td style="padding:12px 16px"><span class="badge ${tx.type === 'Debit' ? 'badge-red' : 'badge-green'}">${tx.type}</span></td>
+                <td style="padding:12px 16px"><span class="badge ${tx.type === 'Debit' ? 'badge-danger' : 'badge-success'}">${tx.type}</span></td>
                 <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:var(${tx.type === 'Debit' ? '--red' : '--green'})">${tx.amount}</td>
             </tr>
         `).join('');

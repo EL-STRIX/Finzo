@@ -331,7 +331,7 @@ function initFormValidation() {
                     confirmPassInput.classList.add('is-invalid');
                     confirmPassInput.setAttribute('aria-invalid', 'true');
                     if (errorText) {
-                        errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Passwords do not match.';
+                        errorText.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">error</span> Passwords do not match.';
                         errorText.classList.add('is-visible');
                     }
                 }
@@ -396,7 +396,7 @@ function showNotificationToast(message, type = 'info') {
         info:    'info'
     };
     toast.innerHTML = `
-        <span class="material-symbols-outlined fin-toast-icon">${iconMap[type] || 'info'}</span>
+        <span class="material-symbols-outlined fin-toast-icon" aria-hidden="true">${iconMap[type] || 'info'}</span>
         <span class="fin-toast-msg">${message}</span>
     `;
 
@@ -542,7 +542,7 @@ function displayFieldErrors(form, errors) {
                 errorEl.className = 'fin-error-text';
                 container.appendChild(errorEl);
             }
-            errorEl.innerHTML = `<span class="material-symbols-outlined">error</span> ${message}`;
+            errorEl.innerHTML = `<span class="material-symbols-outlined" aria-hidden="true">error</span> ${message}`;
             errorEl.classList.add('is-visible');
         }
     });

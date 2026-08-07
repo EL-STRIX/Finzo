@@ -38,7 +38,7 @@
         if (!tbody) return;
 
         if (!branches.length) {
-            tbody.innerHTML = '<tr><td colspan="8" class="py-20 text-center font-bold opacity-30">No branches found matching your records.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"8\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No branches found matching your records.</div></div></td></tr>';
             return;
         }
 
@@ -66,14 +66,14 @@
                 <td class="text-right">
                     <div class="flex justify-end gap-2">
                         <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-primary action-view" data-id="${b.id}" data-name="${b.name}" title="View">
-                            <span class="material-symbols-outlined !text-[18px]">visibility</span>
+                            <span class="material-symbols-outlined !text-[18px]" aria-hidden="true">visibility</span>
                         </button>
                         <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-primary action-edit" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Edit">
-                            <span class="material-symbols-outlined !text-[18px]">edit</span>
+                            <span class="material-symbols-outlined !text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${b.type !== 'system' ? `
                         <button type="button" class="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 action-delete" data-id="${b.id}" data-name="${b.name}" data-code="${b.branch_code}" title="Delete">
-                            <span class="material-symbols-outlined !text-[18px]">delete</span>
+                            <span class="material-symbols-outlined !text-[18px]" aria-hidden="true">delete</span>
                         </button>` : ''}
                     </div>
                 </td>
@@ -163,7 +163,7 @@
                 formData.append('admin_password', pw);
                 formData.append('closure_document', fileInput.files[0]);
                 
-                confirmBtn.innerHTML = '<span class="material-symbols-outlined spin">refresh</span> Deleting...';
+                confirmBtn.innerHTML = '<span class="material-symbols-outlined spin" aria-hidden="true">refresh</span> Deleting...';
                 confirmBtn.setAttribute('disabled', 'true');
                 
                 try {
@@ -367,7 +367,7 @@
         const badgesContainer = document.getElementById('view-branch-badges');
         if (badgesContainer) {
             const typeStyle = branch.type === 'system' ? 'background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;' : 'background:#fffbeb;color:#b45309;border-color:#fef3c7;';
-            const statusStyle = branch.status === 'active' ? 'badge-success' : 'badge-error';
+            const statusStyle = branch.status === 'active' ? 'badge-success' : 'badge-danger';
             badgesContainer.innerHTML = `
                 <span class="status-badge" style="${typeStyle}font-size:9px;padding:2px 6px;">${branch.type || 'BRANCH'}</span>
                 <span class="status-badge ${statusStyle}" style="font-size:9px;padding:2px 6px;">${(branch.status || 'ACTIVE').toUpperCase()}</span>
@@ -494,7 +494,7 @@
         
         const tbody = document.getElementById('branch-ds-table-body');
         const noStaff = document.getElementById('no-staff-error');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 opacity-50">Loading...</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Loading...</div></div></td></tr>';
         if (noStaff) noStaff.classList.add('hidden');
         
         try {
@@ -510,7 +510,7 @@
                     if (noStaff) noStaff.classList.add('hidden');
                     let html = '';
                     staff.forEach(s => {
-                        const statusStyle = s.status === 'active' ? 'badge-success' : 'badge-error';
+                        const statusStyle = s.status === 'active' ? 'badge-success' : 'badge-danger';
                         let avatarHtml = `<div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 font-bold text-xs flex items-center justify-center">${s.initials}</div>`;
                         if (s.profile_photo_url) {
                             avatarHtml = `<img src="${s.profile_photo_url}" class="w-8 h-8 rounded-full object-cover">`;
@@ -544,10 +544,10 @@
                     if (tbody) tbody.innerHTML = html;
                 }
             } else {
-                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-red-500 font-bold">Failed to load staff</td></tr>';
+                if (tbody) tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Failed to load staff</div></div></td></tr>';
             }
         } catch (e) {
-            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-red-500 font-bold">Error loading staff</td></tr>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Error loading staff</div></div></td></tr>';
         }
     };
 

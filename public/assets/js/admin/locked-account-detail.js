@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (countBadge) countBadge.textContent = `${filtered.length} Event${filtered.length !== 1 ? 's' : ''}`;
 
         if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-10 opacity-40 text-xs font-bold uppercase">No login history found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"3\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No login history found</div></div></td></tr>';
             return;
         }
 
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td class="pl-6">
                         <div class="flex items-center gap-2.5">
                             <div class="w-7 h-7 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0">
-                                <span class="material-symbols-outlined text-[16px] ${s.color}">${s.icon}</span>
+                                <span class="material-symbols-outlined text-[16px] ${s.color}" aria-hidden="true">${s.icon}</span>
                             </div>
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${s.label}</span>
                         </div>

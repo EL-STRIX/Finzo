@@ -35,14 +35,14 @@
                 updateStats(response);
             } else {
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">Failed to load audit log. Please refresh the page.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Failed to load audit log. Please refresh the page.</div></div></td></tr>';
                     tbody.style.opacity = '1';
                 }
             }
         } catch (error) {
             console.error('[AuditLog] Failed to load audit log:', error);
             if (tbody) {
-                tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">Error loading data. Please refresh.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Error loading data. Please refresh.</div></div></td></tr>';
             }
         } finally {
             if (tbody) tbody.style.opacity = '1';
@@ -55,7 +55,7 @@
         if (!tbody) return;
 
         if (!entries || !entries.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="py-20 text-center font-bold opacity-40">No audit log entries found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No audit log entries found.</div></div></td></tr>';
             updatePagination(total, pages);
             return;
         }
@@ -106,7 +106,7 @@
         } else if (['delete', 'reject', 'suspend'].includes(type)) {
             badgeClass = 'badge-withdrawal'; // red
         } else if (['update', 'unlock', 'reset_password'].includes(type)) {
-            badgeClass = 'badge-pending'; // amber
+            badgeClass = 'badge-warning'; // amber
         }
         
         const label = type.replace(/_/g, ' ').toUpperCase();
@@ -114,7 +114,7 @@
         if (badgeClass) {
             return `<span class="badge ${badgeClass}">${label}</span>`;
         } else {
-            return `<span class="badge" style="background:#e2e8f0;color:#64748b">${label}</span>`;
+            return `<span class="badge" >${label}</span>`;
         }
     }
 
@@ -122,17 +122,17 @@
     function getActorBadge(role) {
         const r = (role || '').toLowerCase();
         if (r === 'super_admin') {
-            return `<span class="badge" style="background:#faf5ff;color:#6b21a8;border:1px solid #d8b4fe">SUPER ADMIN</span>`;
+            return `<span class="badge" >SUPER ADMIN</span>`;
         } else if (r === 'admin') {
-            return `<span class="badge" style="background:#dbeafe;color:#1e40af">ADMIN</span>`;
+            return `<span class="badge" >ADMIN</span>`;
         } else if (r === 'moderator') {
-            return `<span class="badge" style="background:#e0f2fe;color:#0369a1">MODERATOR</span>`;
+            return `<span class="badge" >MODERATOR</span>`;
         } else if (r === 'staff') {
-            return `<span class="badge" style="background:#ede9fe;color:#5b21b6">STAFF</span>`;
+            return `<span class="badge" >STAFF</span>`;
         } else if (r === 'system') {
-            return `<span class="badge" style="background:#f1f5f9;color:#475569">SYSTEM</span>`;
+            return `<span class="badge" >SYSTEM</span>`;
         } else if (r === 'user') {
-            return `<span class="badge" style="background:#ccfbf1;color:#0f766e">USER</span>`;
+            return `<span class="badge" >USER</span>`;
         }
         return `<span class="badge">${r.replace(/_/g, ' ').toUpperCase()}</span>`;
     }

@@ -52,7 +52,7 @@
                 updatePagination(data.total || 0, data.pages || 1);
             } else {
                 if (tableBody) {
-                    tableBody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No suspended accounts found</div></div></td></tr>`;
                 }
                 if (pagInfo) pagInfo.textContent = 'No results';
                 if (pagControls) pagControls.innerHTML = '';
@@ -60,7 +60,7 @@
         } catch (error) {
             console.error('Failed to load suspended users:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">Failed to load data.</div></div></td></tr>`;
             }
         }
     }
@@ -72,7 +72,7 @@
         if (!tableBody) return;
 
         if (!users || !users.length) {
-            tableBody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">person_off</span><div class="empty-title">No suspended accounts found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No suspended accounts found</div></div></td></tr>`;
             return;
         }
 
@@ -83,7 +83,7 @@
             
             const avatarHtml = u.avatar_url 
                 ? `<img src="${u.avatar_url}" class="avatar-circle object-cover w-10 h-10 rounded-full" alt="${u.full_name}">` 
-                : `<div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" style="background:${gradient}">${initials}</div>`;
+                : `<div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" >${initials}</div>`;
             
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
@@ -99,17 +99,17 @@
                 </td>
                 <td class="py-4 px-6"><span class="mono font-mono text-xs opacity-80">${u.account_no || 'N/A'}</span></td>
                 <td class="py-4 px-6"><span class="status-badge ${u.account_type === 'savings' ? 'badge-success' : 'badge-primary'}">${u.account_type || 'N/A'}</span></td>
-                <td class="py-4 px-6"><span class="status-badge badge-error">${u.suspension_reason || 'Suspended'}</span></td>
+                <td class="py-4 px-6"><span class="status-badge badge-danger">${u.suspension_reason || 'Suspended'}</span></td>
                 <td class="py-4 px-6 text-xs font-bold text-slate-500">${u.suspended_at || 'N/A'}</td>
                 <td class="py-4 px-6 text-xs font-semibold opacity-60">${u.suspended_by || 'Admin'}</td>
                 <td class="py-4 px-6"><span class="status-badge badge-secondary">${u.duration || 'Eternal'}</span></td>
                 <td class="py-4 px-6 text-center min-w-[100px] w-28">
                     <div class="flex items-center justify-center gap-2 flex-nowrap">
                         <a href="admin-user-detail.html?id=${u.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
-                            <span class="material-symbols-outlined" style="font-size:18px">visibility</span>
+                            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">visibility</span>
                         </a>
                         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500" onclick="window.SuspendedUsers.openReinstate('${u.id}','${u.full_name}')" title="Restore Account">
-                            <span class="material-symbols-outlined" style="font-size:18px">lock_open</span>
+                            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">lock_open</span>
                         </button>
                     </div>
                 </td>
@@ -194,7 +194,7 @@
             const btn = reinstateConfirmBtn;
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px" aria-hidden="true">autorenew</span> Processing...';
             
             try {
                 const response = await window.api.patch('/users/' + pendingReinstateId, { action: 'reinstate' });

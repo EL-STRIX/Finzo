@@ -88,7 +88,7 @@
             // Info Grid
             document.getElementById('info-name').textContent = admin.full_name;
             document.getElementById('info-admin-id').textContent = admin.admin_id || '---';
-            document.getElementById('info-email').innerHTML = `<span class="material-symbols-outlined text-slate-400 text-lg">mail</span> ${admin.email}`;
+            document.getElementById('info-email').innerHTML = `<span class="material-symbols-outlined text-slate-400 text-lg" aria-hidden="true">mail</span> ${admin.email}`;
             document.getElementById('info-phone').textContent = admin.phone || 'Not Provided';
             document.getElementById('info-gender').textContent = admin.gender || 'Not Specified';
             document.getElementById('info-dob').textContent = admin.date_of_birth ? window.FinzoUtils.formatDate(admin.date_of_birth) : 'Not Provided';
@@ -131,7 +131,7 @@
         renderActivity: function(activities) {
             const tbody = document.getElementById('activity-tbody');
             if (!activities || activities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-slate-400 text-xs font-bold">No activity recorded for this administrator.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No activity recorded for this administrator.</div></div></td></tr>`;
                 return;
             }
 

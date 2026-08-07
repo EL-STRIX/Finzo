@@ -74,14 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderHistory(txs) {
         const tbody = document.getElementById('staff-transactions-body');
         if (!txs || txs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 opacity-40 font-bold">No historical transactions found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"4\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No historical transactions found</div></div></td></tr>';
             return;
         }
         const html = txs.map(t => `
             <tr style="border-bottom:1px solid var(--border)" class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td style="padding:16px 24px;font-size:13px;font-weight:700;color:var(--text-primary)">
                    <div class="flex items-center gap-2">
-                     <span class="material-symbols-outlined text-[16px] ${t.type === 'DEPOSIT' ? 'text-green-500' : 'text-red-500'}">
+                     <span class="material-symbols-outlined text-[16px] ${t.type === 'DEPOSIT' ? 'text-green-500' : 'text-red-500'}" aria-hidden="true">
                         ${t.type === 'DEPOSIT' ? 'vertical_align_bottom' : 'vertical_align_top'}
                      </span>
                      ${t.type}
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td style="padding:16px 24px;font-size:12px;color:var(--text-secondary);font-weight:600">${t.timestamp}</td>
                 <td style="padding:16px 24px;text-align:right;font-size:13px;font-weight:800;color:var(--text-primary)">${t.amount}</td>
                 <td style="padding:16px 24px;text-align:center">
-                    <span class="badge ${t.status === 'COMPLETED' || t.status === 'SUCCESS' ? 'badge-green' : t.status === 'FAILED' ? 'badge-red' : 'badge-amber'}">${t.status}</span>
+                    <span class="badge ${t.status === 'COMPLETED' || t.status === 'SUCCESS' ? 'badge-success' : t.status === 'FAILED' ? 'badge-danger' : 'badge-warning'}">${t.status}</span>
                 </td>
             </tr>
         `).join('');

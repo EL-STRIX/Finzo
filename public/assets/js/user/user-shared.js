@@ -171,7 +171,7 @@ function injectRevealButton(el) {
   btn.type = 'button';
   
   const isUnlocked = UserState.isBalanceUnlocked;
-  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px">${isUnlocked ? 'visibility_off' : 'visibility'}</span>`;
+  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">${isUnlocked ? 'visibility_off' : 'visibility'}</span>`;
   btn.title = isUnlocked ? 'Hide balance' : 'Enter PIN to reveal';
 
   const toggleVisibility = (e) => {
@@ -237,8 +237,8 @@ function showPINModal() {
   modal.className = 'modal-overlay';
   modal.innerHTML = `
     <div class="modal-card pin-modal-card">
-      <div class="modal-icon" style="background:rgba(8,145,178,0.1)">
-        <span class="material-symbols-outlined" style="color:#0891b2;font-size:28px">lock</span>
+      <div class="modal-icon" >
+        <span class="material-symbols-outlined"  aria-hidden="true">lock</span>
       </div>
       <div class="modal-title">Security Verification</div>
       <div class="modal-text">Please enter your 4-digit PIN to reveal financial information.</div>
@@ -281,7 +281,7 @@ function showPINModal() {
         currentPin += btn.getAttribute('data-val');
         updateDots();
         if (currentPin.length === 4) {
-          btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:16px">progress_activity</span>';
+          btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:16px" aria-hidden="true">progress_activity</span>';
           try {
             const data = await window.api.post('/user/security/verify-pin', { pin: currentPin });
             if (data.success) {
@@ -388,10 +388,10 @@ function buildSidebar(activePage) {
             <a href="${locked ? '#' : link.href}" 
                class="nav-item ${isActive2 ? 'active' : ''} ${locked ? 'locked' : ''} ${link.highlight ? 'highlight-item' : ''}"
                ${locked ? 'title="Available after account activation"' : ''}>
-              <span class="material-symbols-outlined nav-icon">${link.icon}</span>
+              <span class="material-symbols-outlined nav-icon" aria-hidden="true">${link.icon}</span>
               <span style="flex:1">${link.label}</span>
               ${link.badge ? `<span class="nav-badge">${link.badge}</span>` : ''}
-              ${locked ? '<span class="material-symbols-outlined" style="font-size:14px;color:rgba(255,255,255,0.25)">lock</span>' : ''}
+              ${locked ? '<span class="material-symbols-outlined" style="font-size:14px;color:rgba(255,255,255,0.25)" aria-hidden="true">lock</span>' : ''}
             </a>`;
         }).join('')}
         
@@ -401,7 +401,7 @@ function buildSidebar(activePage) {
           return `
             <a href="${link.href}" class="nav-item ${isActive2 ? 'active' : ''}" 
                style="${link.highlight ? 'color:var(--primary);background:rgba(8,145,178,0.08);' : ''}">
-              <span class="material-symbols-outlined nav-icon">${link.icon}</span>
+              <span class="material-symbols-outlined nav-icon" aria-hidden="true">${link.icon}</span>
               ${link.label}
             </a>`;
         }).join('')}
@@ -409,11 +409,11 @@ function buildSidebar(activePage) {
         <div class="sidebar-section">Account</div>
         <div class="sidebar-bottom">
           <button class="nav-item" onclick="toggleTheme()">
-            <span class="material-symbols-outlined nav-icon" data-theme-icon>dark_mode</span>
+            <span class="material-symbols-outlined nav-icon" data-theme-icon aria-hidden="true">dark_mode</span>
             <span data-theme-label>Dark Mode</span>
           </button>
           <button class="nav-item logout-item" onclick="FinzoSession.logout()">
-            <span class="material-symbols-outlined nav-icon">logout</span>
+            <span class="material-symbols-outlined nav-icon" aria-hidden="true">logout</span>
             Logout
           </button>
         </div>
@@ -452,7 +452,7 @@ function buildNavbar(eyebrow, title) {
     <nav class="navbar">
       <div class="navbar-left">
         <button class="nav-icon-btn nav-mobile-toggle" onclick="document.getElementById('user-sidebar').classList.add('mobile-open'); document.getElementById('user-sidebar-overlay').classList.add('active');" style="margin-right:4px;">
-          <span class="material-symbols-outlined">menu</span>
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
         </button>
         <div class="navbar-title-wrap">
           <div class="navbar-eyebrow">${eyebrow}</div>
@@ -462,7 +462,7 @@ function buildNavbar(eyebrow, title) {
       <div class="navbar-right">
         <div style="position:relative">
           <button class="nav-icon-btn" onclick="toggleNotifDropdown()">
-            <span class="material-symbols-outlined">notifications</span>
+            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
             ${notifCount > 0 ? `<span style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:#f43f5e;border-radius:50%;border:2px solid var(--bg-navbar);animation:pulse 2s infinite"></span>` : ''}
           </button>
           <div id="notif-dropdown" class="notif-dropdown hidden">
@@ -480,7 +480,7 @@ function buildNavbar(eyebrow, title) {
           </div>
         </div>
         <button class="nav-icon-btn" onclick="toggleTheme()" title="Toggle theme">
-          <span class="material-symbols-outlined" data-theme-icon>dark_mode</span>
+          <span class="material-symbols-outlined" data-theme-icon aria-hidden="true">dark_mode</span>
         </button>
       </div>
     </nav>`;
@@ -506,7 +506,7 @@ function toggleNotifDropdown() {
 
 async function loadNavbarNotifications() {
   const list = document.getElementById('notif-list');
-  list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)">autorenew</span></div>';
+  list.innerHTML = '<div style="padding:20px;text-align:center"><span class="material-symbols-outlined spin" style="font-size:24px;color:var(--text-placeholder)" aria-hidden="true">autorenew</span></div>';
   try {
     const data = await window.api.get('/user/notifications?per_page=4');
     if (data.success && data.notifications) {
@@ -515,8 +515,8 @@ async function loadNavbarNotifications() {
       } else {
         list.innerHTML = data.notifications.map(n => `
           <div class="notif-item ${!n.is_read ? 'unread' : ''}">
-            <div class="notif-item-icon" style="background:${n.icon_bg || 'rgba(8,145,178,0.1)'}">
-              <span class="material-symbols-outlined" style="font-size:18px;color:${n.icon_color || '#0891b2'}">${n.icon || 'notifications'}</span>
+            <div class="notif-item-icon" >
+              <span class="material-symbols-outlined" style="font-size:18px;color:${n.icon_color || '#0891b2'}" aria-hidden="true">${n.icon || 'notifications'}</span>
             </div>
             <div>
               <div class="notif-item-title">${n.title}</div>
@@ -568,7 +568,7 @@ function showToast(message, type = 'success', duration = 3000) {
   const icons = { success: 'check_circle', error: 'cancel', warning: 'warning', info: 'info' };
   const colors = { success: '#10b981', error: '#f43f5e', warning: '#f59e0b', info: '#0891b2' };
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span class="material-symbols-outlined" style="color:${colors[type]};font-size:20px;flex-shrink:0">${icons[type]}</span><span>${message}</span>`;
+  toast.innerHTML = `<span class="material-symbols-outlined"  aria-hidden="true">${icons[type]}</span><span>${message}</span>`;
   container.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = '0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
 }
@@ -584,8 +584,8 @@ function openConfirm(title, text, onConfirm, danger = false) {
   modal.className = 'modal-overlay';
   modal.innerHTML = `
     <div class="modal-card" style="max-width:400px">
-      <div class="modal-icon" style="background:${danger ? 'rgba(244,63,94,0.1)' : 'rgba(8,145,178,0.1)'}">
-        <span class="material-symbols-outlined" style="color:${danger ? '#f43f5e' : '#0891b2'};font-size:28px">${danger ? 'warning' : 'help'}</span>
+      <div class="modal-icon" >
+        <span class="material-symbols-outlined"  aria-hidden="true">${danger ? 'warning' : 'help'}</span>
       </div>
       <div class="modal-title">${title}</div>
       <div class="modal-text">${text}</div>

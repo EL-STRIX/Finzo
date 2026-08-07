@@ -36,7 +36,7 @@
      */
     async function loadData() {
         if (tableBody) {
-            tableBody.innerHTML = `<tr><td colspan="10" class="py-10"><div class="finzo-spinner mx-auto border-primary"></div></td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted"></div></div></td></tr>`;
         }
         
         try {
@@ -67,14 +67,14 @@
                     lockedDate: acc.locked_at || 'N/A',
                     lockTime: acc.lock_time || 'N/A',
                     tempSent: acc.status === 'unlocked' || acc.status === 'done', 
-                    statusBadge: acc.status_badge || 'badge-warn',
+                    statusBadge: acc.status_badge || 'badge-warning',
                     statusText: acc.status_text || 'Pending'
                 }));
                 
                 renderTable(data.total || 0, data.pages || 1);
             } else {
                 if (tableBody) {
-                    tableBody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">${response.message || 'All accounts are currently accessible.'}</div></div></td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No locked accounts found</div></div></td></tr>`;
                 }
                 if (pagInfo) pagInfo.textContent = 'No results found';
                 if (pagControls) pagControls.innerHTML = '';
@@ -82,7 +82,7 @@
         } catch (error) {
             console.error('Failed to load locked accounts:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="10" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">Failed to load data.</div></div></td></tr>`;
             }
         }
     }
@@ -102,7 +102,7 @@
         if (!tableBody) return;
 
         if (!allData || !allData.length) {
-            tableBody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><span class="material-symbols-outlined">lock_open</span><div class="empty-title">No locked accounts found</div><div class="empty-sub">All accounts are currently accessible.</div></div></td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No locked accounts found</div></div></td></tr>`;
             if (pagInfo) pagInfo.textContent = 'No results found';
             if (pagControls) pagControls.innerHTML = '';
             return;
@@ -119,7 +119,7 @@
                     <div class="user-cell flex items-center gap-3">
                         ${r.profile_photo 
                             ? `<img src="/Finzo/public/assets/${r.profile_photo}" class="w-10 h-10 rounded-full object-cover shadow-sm">` 
-                            : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm" style="background:${gradient}">${r.initials}</div>`
+                            : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm" >${r.initials}</div>`
                         }
                         <div>
                             <div class="user-name font-bold text-sm dark:text-slate-200">${r.name}</div>
@@ -131,7 +131,7 @@
                 <td><span class="status-badge ${r.accType === 'Savings' ? 'badge-success' : 'badge-primary'}">${r.accType}</span></td>
                 <td>
                     <span class="status-badge ${r.statusBadge}">
-                        <span class="material-symbols-outlined" style="font-size:12px; vertical-align:middle;">${r.tempSent ? 'check_circle' : 'pending'}</span>
+                        <span class="material-symbols-outlined" style="font-size:12px; vertical-align:middle;" aria-hidden="true">${r.tempSent ? 'check_circle' : 'pending'}</span>
                         ${r.statusText}
                     </span>
                 </td>
@@ -141,14 +141,14 @@
                 <td>
                     <div class="flex items-center justify-center gap-2">
                         <a href="admin-locked-account-detail.html?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary">
-                            <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                            <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </a>
                         ${!r.tempSent ? `
                         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-amber-500" onclick="window.LockedAccounts.openUnlock('${r.id}','${r.name}','${r.accNo}')">
-                            <span class="material-symbols-outlined" style="font-size:18px;">key</span>
+                            <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">key</span>
                         </button>
                         ` : `
-                        <div class="p-2 text-emerald-500"><span class="material-symbols-outlined" style="font-size:18px;">check_circle</span></div>
+                        <div class="p-2 text-emerald-500"><span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">check_circle</span></div>
                         `}
                     </div>
                 </td>
@@ -241,7 +241,7 @@
             
             if (generateBtn) {
                 generateBtn.disabled = false;
-                generateBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:middle;">key</span> Generate & Unlock';
+                generateBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:middle;" aria-hidden="true">key</span> Generate & Unlock';
             }
             
             if (unlockModal) {
@@ -262,7 +262,7 @@
             if (!btn) return;
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px; vertical-align:middle;">autorenew</span> Generating...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px; vertical-align:middle;" aria-hidden="true">autorenew</span> Generating...';
 
             try {
                 const response = await window.api.post(/users/locked/{}/unlock, );
@@ -312,7 +312,7 @@
                 const btn = copyBtn;
                 if (btn) {
                     const originalIcon = btn.innerHTML;
-                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;color:var(--green);">check</span>';
+                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;color:var(--green);" aria-hidden="true">check</span>';
                     setTimeout(() => btn.innerHTML = originalIcon, 2000);
                 }
                 window.portal.showToast('Password copied to clipboard', 'success');

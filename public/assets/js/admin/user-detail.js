@@ -159,7 +159,7 @@ async function loadUserData() {
                         <div class="p-5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer group mb-4 last:mb-0">
                         <div class="flex justify-between items-start mb-6">
                             <div class="h-8 w-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-primary dark:text-white shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">account_balance_wallet</span>
                             </div>
                             <div class="flex flex-col items-end gap-1">
                                 <span class="status-badge !text-[9px] !px-2 !py-0.5">${typeFormatted}</span>
@@ -170,7 +170,7 @@ async function loadUserData() {
                         <div class="mt-3 flex items-center justify-between text-[9px] text-slate-400 font-mono font-bold">
                             <div class="flex items-center gap-2">
                                 <span>${acc.account_no || 'Pending'}</span>
-                                <span class="material-symbols-outlined text-[12px] opacity-40">content_copy</span>
+                                <span class="material-symbols-outlined text-[12px] opacity-40" aria-hidden="true">content_copy</span>
                             </div>
                             <div>IR: ${acc.interest_rate || '0'}%</div>
                         </div>
@@ -361,7 +361,7 @@ function renderUserTransactions(transactions) {
         const dateFormatted = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '') : 'N/A';
         const isSpecial = typeVal === 'special';
         
-        const badgeClass = typeVal === 'deposit' ? 'badge-green' : (typeVal === 'withdrawal' ? 'badge-red' : (typeVal === 'transfer' ? 'badge-blue' : 'badge-gray'));
+        const badgeClass = typeVal === 'deposit' ? 'badge-success' : (typeVal === 'withdrawal' ? 'badge-danger' : (typeVal === 'transfer' ? 'badge-blue' : 'badge-gray'));
         const dotClass = typeVal === 'deposit' ? 'bg-emerald-500' : (typeVal === 'withdrawal' ? 'bg-rose-500' : (typeVal === 'transfer' ? 'bg-blue-500' : 'bg-slate-400 animate-pulse'));
 
         return `
@@ -393,7 +393,7 @@ function renderUserTransactions(transactions) {
             </td>
             <td class="text-right p-4">
                 <button onclick="window.open('../../../../api/v1/documents/receipt?id=${t.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
-                    <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
+                    <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">receipt_long</span> Receipt
                 </button>
             </td>
         </tr>

@@ -52,7 +52,7 @@
                 updatePagination(data.total || 0, data.pages || 1);
             } else {
                 if (tableBody) {
-                    tableBody.innerHTML = `<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">${response.message || 'No suspended staff found.'}</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">${response.message || 'No suspended staff found.'}</div></div></td></tr>`;
                 }
                 if (pagInfo) pagInfo.textContent = 'No results';
                 if (pagControls) pagControls.innerHTML = '';
@@ -60,7 +60,7 @@
         } catch (error) {
             console.error('Failed to load suspended staff:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="9" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">Failed to load data.</div></div></td></tr>`;
             }
         }
     }
@@ -72,7 +72,7 @@
         if (!tableBody) return;
 
         if (!staff || !staff.length) {
-            tableBody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="material-symbols-outlined">work_off</span><div class="empty-title">No suspended staff found</div><div class="empty-sub">Try adjusting your search or filters</div></div></td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No suspended staff found</div></div></td></tr>`;
             return;
         }
 
@@ -86,7 +86,7 @@
                 <td style="font-size:11px;font-weight:800;color:var(--text-secondary)">${rowNum}</td>
                 <td class="py-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg uppercase overflow-hidden" style="background:${gradient}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg uppercase overflow-hidden" >
                             ${s.profile_photo ? `<img src="/Finzo/public/assets/${s.profile_photo}" class="w-full h-full object-cover" alt="${s.full_name}">` : initials}
                         </div>
                         <div>
@@ -97,19 +97,19 @@
                 </td>
                 <td><span class="mono font-mono text-xs opacity-70">${s.staff_id}</span></td>
                 <td style="font-weight:600 font-bold">${s.branch_name || 'N/A'}</td>
-                <td><span class="status-badge ${s.status_badge || 'badge-warn'}">${s.suspension_reason || 'Suspended'}</span></td>
+                <td><span class="status-badge ${s.status_badge || 'badge-warning'}">${s.suspension_reason || 'Suspended'}</span></td>
                 <td style="font-weight:600">${s.suspended_at || 'N/A'}</td>
-                <td style="color:var(--text-secondary)">${s.suspended_by || 'Admin'}</td>
+                <td >${s.suspended_by || 'Admin'}</td>
                 <td><span class="status-badge badge-secondary">${s.duration || 'Permanent'}</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <div class="flex items-center justify-center gap-2">
                         <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
-                            <span class="material-symbols-outlined" style="font-size:18px">visibility</span>
+                            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">visibility</span>
                         </a>
                         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500" 
                                 onclick="window.SuspendedStaff.openReinstate('${s.id}', '${s.full_name.replace(/'/g, "\\'")}')"
                                 title="Reinstate Staff">
-                            <span class="material-symbols-outlined" style="font-size:18px">lock_open</span>
+                            <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">lock_open</span>
                         </button>
                     </div>
                 </td>
@@ -185,7 +185,7 @@
 
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px" aria-hidden="true">autorenew</span> Processing...';
             
             try {
                 const response = await window.api.patch('/staff/' + pendingId, {

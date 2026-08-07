@@ -55,7 +55,7 @@
         } catch (error) {
             console.error('Failed to load deleted users:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="8" class="py-20 text-center font-bold opacity-40 text-red-500">Failed to load data.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">Failed to load data.</div></div></td></tr>`;
             }
         }
     }
@@ -93,7 +93,7 @@
             
             const avatarHtml = u.avatar_url 
                 ? `<img src="${u.avatar_url}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10" alt="DP">`
-                : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" style="background:${gradient}">${initials}</div>`;
+                : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" >${initials}</div>`;
 
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
@@ -108,8 +108,8 @@
                     </div>
                 </td>
                 <td><span class="font-mono text-xs opacity-80">${u.phone || 'N/A'}</span></td>
-                <td><span class="px-2 py-1 bg-slate-100 dark:bg-white/5 rounded-lg text-[11px] font-mono opacity-80 flex items-center gap-1.5 w-fit border border-slate-200 dark:border-white/5"><span class="material-symbols-outlined" style="font-size:14px;color:#94a3b8;">account_balance</span>${u.account_no || 'N/A'}</span></td>
-                <td><span class="status-badge ${isSavings ? 'badge-success' : 'badge-primary'} flex items-center gap-1.5 w-fit text-[10px]"><span class="material-symbols-outlined" style="font-size:12px;">${isSavings ? 'savings' : 'account_balance_wallet'}</span>${(u.account_type || 'N/A').toUpperCase()}</span></td>
+                <td><span class="px-2 py-1 bg-slate-100 dark:bg-white/5 rounded-lg text-[11px] font-mono opacity-80 flex items-center gap-1.5 w-fit border border-slate-200 dark:border-white/5"><span class="material-symbols-outlined" style="font-size:14px;color:#94a3b8;" aria-hidden="true">account_balance</span>${u.account_no || 'N/A'}</span></td>
+                <td><span class="status-badge ${isSavings ? 'badge-success' : 'badge-primary'} flex items-center gap-1.5 w-fit text-[10px]"><span class="material-symbols-outlined" style="font-size:12px;" aria-hidden="true">${isSavings ? 'savings' : 'account_balance_wallet'}</span>${(u.account_type || 'N/A').toUpperCase()}</span></td>
                 <td><span class="text-[11px] opacity-60 font-semibold">${u.deleted_at || 'N/A'}</span></td>
                 <td>
                     <div class="bg-amber-500/5 dark:bg-amber-500/10 p-2 rounded-xl border border-amber-500/10 max-w-[150px]">
@@ -119,10 +119,10 @@
                 <td class="text-right">
                     <div class="flex justify-end gap-2">
                         <button onclick="window.DeletedUsers.openRecoverModal(${u.id})" class="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition-colors" title="Recover Account">
-                            <span class="material-symbols-outlined" style="font-size:18px;">restore</span>
+                            <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">restore</span>
                         </button>
                         <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
-                            <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                            <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </button>
                     </div>
                 </td>
@@ -149,7 +149,7 @@
                 if (i === 4) pagHtml += `<span class="px-2 opacity-30">...</span>`;
                 continue;
             }
-            pagHtml += `<button onclick="window.DeletedUsers.goToPage(${i})" class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" ${i === currentPage ? 'style="background:#002645;"' : ''}>${i}</button>`;
+            pagHtml += `<button onclick="window.DeletedUsers.goToPage(${i})" class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" ${i === currentPage ? '' : ''}>${i}</button>`;
         }
         
         pagHtml += `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.DeletedUsers.goPage(1)">Next →</button>`;
