@@ -17,9 +17,9 @@
         /* Essential Custom UI Utilities for Finzo Architectural Theme */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #faf9fc;
+            background-color: var(--color-surface-subtle);
             line-height: 1.6;
-            color: #1a1c1e;
+            color: var(--color-text-main);
         }
         h1, h2, h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -28,14 +28,14 @@
 
         /* Essential Custom UI Utilities for Finzo Architectural Theme */
         .architectural-gradient {
-            background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%);
-            color: #ffffff;
+            background: linear-gradient(135deg, var(--color-primary-base) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-surface-main);
             transition: all 0.3s ease;
         }
         .architectural-gradient:hover {
-            background: linear-gradient(135deg, #001d36 0%, #002645 100%);
+            background: linear-gradient(135deg, var(--color-primary-800) 0%, var(--color-primary-base) 100%);
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px -5px rgba(0, 38, 69, 0.3);
+            box-shadow: 0 10px 20px -5px rgba(10, 37, 64, 0.3);
         }
         /* Premium Entrance Animations (Scroll-Triggered) */
         .reveal-up {
@@ -77,11 +77,11 @@
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             background: rgba(255, 255, 255, 0.75);
-            border-bottom: 1px solid rgba(0, 38, 69, 0.05);
+            border-bottom: 1px solid rgba(10, 37, 64, 0.05);
             transition: all 0.3s ease;
         }
         .logo-text {
-            background: linear-gradient(135deg, #002645 0%, #1a3c5e 100%);
+            background: linear-gradient(135deg, var(--color-primary-base) 0%, var(--color-primary-hover) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -91,12 +91,12 @@
         }
         .nav-link {
             position: relative;
-            color: #545f6f;
+            color: var(--color-text-muted);
             font-weight: 500;
             transition: all 0.3s ease;
         }
         .nav-link:hover {
-            color: #002645;
+            color: var(--color-primary-base);
         }
         .nav-link::after {
             content: "";
@@ -105,7 +105,7 @@
             bottom: -6px;
             width: 0;
             height: 2px;
-            background: #002645;
+            background: var(--color-primary-base);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             transform: translateX(-50%);
         }
@@ -113,7 +113,7 @@
             width: 100%;
         }
         .nav-link-active {
-            color: #002645 !important;
+            color: var(--color-primary-base) !important;
             font-weight: 700;
         }
         .nav-link-active::after {
@@ -138,7 +138,7 @@
             -webkit-backdrop-filter: blur(24px);
             background: rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px 0 rgba(0, 38, 69, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(10, 37, 64, 0.05);
         }
 
         /* Subtle Professional Card Hover Animations */
@@ -154,13 +154,13 @@
         .hover-premium:hover {
             background-color: rgba(79, 70, 229, 0.08); /* Sophisticated Indigo Tint */
             transform: translateX(6px);
-            color: #4f46e5 !important;
+            color: var(--color-info-base) !important;
         }
 
         .dark .hover-premium:hover {
             background-color: rgba(129, 140, 248, 0.12); /* Rich Indigo Glass */
-            color: #818cf8 !important;
-            border-left: 4px solid #818cf8;
+            color: var(--color-info-hover) !important;
+            border-left: 4px solid var(--color-info-hover);
             padding-left: 1.5rem !important; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
@@ -177,12 +177,12 @@
             top: 0;
             bottom: 0;
             width: 0;
-            background: #4f46e5;
+            background: var(--color-info-base);
             transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .dark .dropdown-item-hover::before {
-            background: #818cf8;
+            background: var(--color-info-hover);
         }
 
         .dropdown-item-hover:hover::before {
@@ -197,7 +197,7 @@
 
         .dark .dropdown-item-hover:hover {
             background-color: rgba(129, 140, 248, 0.1);
-            border-left-color: #818cf8;
+            border-left-color: var(--color-info-hover);
         }
 
         @keyframes dropdownScale {
@@ -218,20 +218,20 @@
             padding: 8px;
             border-radius: 9999px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            color: #64748b; /* text-slate-500 */
+            color: var(--color-text-disabled); /* text-slate-500 */
             cursor: pointer;
         }
 
         .btn-icon-hover:hover {
             background-color: rgba(79, 70, 229, 0.08); /* bg-indigo-50/50 approx */
-            color: #4f46e5 !important;
+            color: var(--color-info-base) !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
         }
 
         .dark .btn-icon-hover:hover {
             background-color: rgba(255, 255, 255, 0.06); 
-            color: #818cf8 !important;
+            color: var(--color-info-hover) !important;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
@@ -240,7 +240,7 @@
             --finzo-shadow-sm: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02);
             --finzo-shadow-md: 0 4px 12px rgba(0, 32, 64, 0.05), 0 2px 4px rgba(0, 32, 64, 0.02), 0 0 0 1px rgba(0, 32, 64, 0.01);
             --finzo-shadow-lg: 0 12px 24px -8px rgba(0, 32, 64, 0.08), 0 4px 12px -4px rgba(0, 32, 64, 0.04);
-            --finzo-shadow-premium: 0 20px 40px -12px rgba(0, 38, 69, 0.12), 0 12px 24px -12px rgba(0, 38, 69, 0.08);
+            --finzo-shadow-premium: 0 20px 40px -12px rgba(10, 37, 64, 0.12), 0 12px 24px -12px rgba(10, 37, 64, 0.08);
         }
 
         /* Semantic Elevation Utilities */
@@ -252,9 +252,9 @@
         /* Catch-all for Card-like content across the platform (Light Mode Only) */
         :root:not(.dark) div[class*="rounded-xl"]:not(.no-card-style),
         :root:not(.dark) div[class*="rounded-3xl"]:not(.no-card-style) {
-            border: 1px solid #e2e8f0; 
+            border: 1px solid var(--color-border-subtle); 
             box-shadow: 0 1px 2px rgba(0, 32, 64, 0.04), 0 0 0 1px rgba(0, 32, 64, 0.02); /* Removed !important */
-            background-color: #ffffff; /* Removed !important */
+            background-color: var(--color-surface-main); /* Removed !important */
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -264,7 +264,7 @@
         div[class*="rounded-xl"]:hover:not(.no-hover-scale) {
             transform: translateY(-4px);
             box-shadow: var(--finzo-shadow-premium);
-            border-color: rgba(0, 38, 69, 0.08);
+            border-color: rgba(10, 37, 64, 0.08);
             cursor: pointer;
         }
 
@@ -302,7 +302,7 @@
             top: 1.25rem;
             width: 6px;
             height: 6px;
-            background: #ef4444; /* red-500 */
+            background: var(--color-danger-base); /* red-500 */
             border-radius: 9999px;
         }
 
@@ -329,14 +329,14 @@
         /* Sidebar Active State (Clean 'Small' Highlight) */
         .sidebar-link-active {
             background: rgba(99, 102, 241, 0.1) !important;
-            color: #818cf8 !important;
-            border-left: 3px solid #818cf8 !important;
+            color: var(--color-info-hover) !important;
+            border-left: 3px solid var(--color-info-hover) !important;
             padding-left: 1rem !important;
             transition: all 0.3s ease;
         }
 
         .sidebar-link-active span {
-            color: #818cf8 !important;
+            color: var(--color-info-hover) !important;
             opacity: 1 !important;
         }
 
@@ -349,11 +349,11 @@
 
         /* Forced Visibility Utilities (Bypasses Tailwind Load Delays) */
         .bg-primary-forced {
-            background-color: #002645 !important;
-            color: #ffffff !important;
+            background-color: var(--color-primary-base) !important;
+            color: var(--color-surface-main) !important;
         }
         .bg-white-forced {
-            background-color: #ffffff !important;
+            background-color: var(--color-surface-main) !important;
         }
         .text-high-contrast {
             text-rendering: optimizeLegibility;
@@ -430,7 +430,7 @@ select {
 
 select:focus {
     outline: none;
-    border-color: #6366f1 !important;
+    border-color: var(--color-primary-400) !important;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
 }
 
@@ -441,25 +441,25 @@ select:hover {
 /* Dark mode selects */
 .dark select {
     background-color: #1e2333;
-    color: #e2e8f0;
+    color: var(--color-border-subtle);
     border-color: rgba(255,255,255,0.08);
 }
 
 .dark select option {
     background-color: #1e2333;
-    color: #e2e8f0;
+    color: var(--color-border-subtle);
 }
 
 /* Light mode selects */
 select {
-    background-color: #f8fafc;
-    color: #1a1c1e;
-    border-color: #e2e8f0;
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-main);
+    border-color: var(--color-border-subtle);
 }
 
 select option {
-    background-color: #f8fafc;
-    color: #1a1c1e;
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-main);
     padding: 8px 12px;
 }
 
@@ -494,7 +494,7 @@ select option {
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.08);
     background: rgba(30, 35, 51, 0.6);
-    color: #e2e8f0;
+    color: var(--color-border-subtle);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -508,13 +508,13 @@ select option {
 }
 
 .finzo-dropdown-trigger.is-open {
-    border-color: #6366f1;
+    border-color: var(--color-primary-400);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 .finzo-dropdown-trigger .chevron {
     transition: transform 0.25s ease;
-    color: #6366f1;
+    color: var(--color-primary-400);
 }
 
 .finzo-dropdown-trigger.is-open .chevron {
@@ -553,12 +553,12 @@ select option {
 
 .finzo-dropdown-option:hover {
     background: rgba(99, 102, 241, 0.12);
-    color: #ffffff;
+    color: var(--color-surface-main);
     padding-left: 22px;
 }
 
 .finzo-dropdown-option.is-selected {
-    color: #818cf8;
+    color: var(--color-info-hover);
     background: rgba(99, 102, 241, 0.08);
 }
 

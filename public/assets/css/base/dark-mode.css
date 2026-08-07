@@ -226,7 +226,7 @@
 [data-theme="dark"] span[style*="background:#eef2ff"],
 [data-theme="dark"] span[style*="background:#f0f2ff"] { 
     background: rgba(108, 99, 255, 0.08) !important; 
-    color: #818cf8 !important; 
+    color: var(--color-info-hover) !important; 
     border: 1px solid rgba(108, 99, 255, 0.15) !important;
 }
 
@@ -276,7 +276,7 @@
 
 [data-theme="dark"] .admin-btn-primary {
   background: var(--dk-blue) !important;
-  color: #ffffff !important;
+  color: var(--color-surface-main) !important;
   border: none !important;
 }
 
@@ -335,7 +335,7 @@
    SOLID DARK BLOCKS (keep but restyle)
 -------------------------------- */
 /* The dark blue primary cards (interest rates, audit critical) stay */
-[data-theme="dark"] .admin-card[style*="background:#002645"] {
+[data-theme="dark"] .admin-card[style*="background:var(--color-primary-base)"] {
   background: #0a2038 !important; /* very slightly lighter navy */
   border-color: rgba(88,166,255,0.15) !important;
 }
@@ -418,14 +418,14 @@
 /* CSS Variables for user pages */
 :root {
   --user-bg:          #f6f8fc;
-  --user-surface:     #ffffff;
+  --user-surface:     var(--color-surface-main);
   --user-surface-alt: #f4f3f6;
   --user-border:      #eef0f5;
   --user-text-1:      #0a0f1e;
   --user-text-2:      #5a6270;
   --user-text-3:      #9aa0b0;
   --user-sidebar-bg:  #0a0f1e;
-  --user-nav-bg:      #ffffff;
+  --user-nav-bg:      var(--color-surface-main);
   --user-input-bg:    #f6f8fc;
 }
 
@@ -563,8 +563,8 @@ input:focus::placeholder { color: transparent !important; }
 
 /* Light mode override for user toggle */
 [data-theme="light"] .user-theme-toggle {
-  border-color: #e2e8f0;
-  color: #64748b;
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-disabled);
   background: transparent;
 }
 [data-theme="light"] .user-theme-toggle:hover {
