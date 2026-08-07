@@ -20,7 +20,7 @@ ob_start();
         <div class="relative z-20">
             <a href="/Finzo/public/index.php" class="flex items-center gap-3 text-white mb-16 hover:opacity-90 transition-opacity w-max">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-inner">
-                    <span class="material-symbols-outlined text-2xl">account_balance</span>
+                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
                 </div>
                 <span class="text-2xl font-bold font-display tracking-tight">Finzo</span>
             </a>
@@ -32,7 +32,7 @@ ob_start();
         <div class="relative z-20 mt-12">
             <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-8 shadow-lg transition-transform hover:-translate-y-1 duration-300">
                 <div class="flex items-start gap-4">
-                    <span class="material-symbols-outlined text-success-400 text-3xl mt-1"><?= htmlspecialchars($authSecurityIcon) ?></span>
+                    <span class="material-symbols-outlined text-success-400 text-3xl mt-1" aria-hidden="true"><?= htmlspecialchars($authSecurityIcon) ?></span>
                     <div>
                         <h4 class="font-bold text-white mb-1 tracking-wide"><?= htmlspecialchars($authSecurityTitle) ?></h4>
                         <p class="text-sm text-primary-200/80 leading-relaxed"><?= htmlspecialchars($authSecurityDesc) ?></p>
@@ -48,16 +48,16 @@ ob_start();
         
         <!-- Language Selector -->
         <div class="absolute top-6 right-6 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-subtle border border-border-main text-xs font-semibold text-text-main cursor-pointer shadow-sm hover:border-border-focus transition-all" aria-label="Select Language">
-            <span class="material-symbols-outlined text-base">language</span>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">language</span>
             <span>EN</span>
-            <span class="material-symbols-outlined text-base">expand_more</span>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
         </div>
         
         <div class="w-full max-w-[440px] auth-form-container">
             <!-- Mobile Logo -->
             <div class="lg:hidden mb-10 flex justify-center">
                  <a href="/Finzo/public/index.php" class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-surface text-primary-base border border-primary-200 shadow-sm" aria-label="Finzo Homepage">
-                     <span class="material-symbols-outlined text-3xl">account_balance</span>
+                     <span class="material-symbols-outlined text-3xl" aria-hidden="true">account_balance</span>
                  </a>
             </div>
             

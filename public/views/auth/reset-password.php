@@ -22,10 +22,10 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="new-password" class="fin-label fin-label-required">New Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">lock</span>
                                 <input type="password" id="new-password" name="new_password" class="fin-input has-icon-left has-icon-right" placeholder="Enter new password" required autocomplete="new-password" data-strength-meter="true" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             
@@ -39,14 +39,14 @@ ob_start();
                                     <span>Enterprise Standard</span>
                                 </div>
                                 <div class="requirement-checklist">
-                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined">cancel</span> 8+ Characters</span>
-                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined">cancel</span> Uppercase Letter</span>
-                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined">cancel</span> Number (0-9)</span>
-                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined">cancel</span> Symbol (!@#$)</span>
+                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> 8+ Characters</span>
+                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Uppercase Letter</span>
+                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Number (0-9)</span>
+                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Symbol (!@#$)</span>
                                 </div>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> New password is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> New password is required.
                             </span>
                         </div>
 
@@ -54,27 +54,27 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="confirm-password" class="fin-label fin-label-required">Confirm New Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">check_circle</span>
                                 <input type="password" id="confirm-password" name="confirm_password" class="fin-input has-icon-left has-icon-right" placeholder="Confirm new password" required autocomplete="new-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Passwords must match.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Passwords must match.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full mt-2">
                             <span>Update Password</span>
-                            <span class="material-symbols-outlined text-lg">verified</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">verified</span>
                         </button>
                     </form>
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">shield</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Tip:</strong> Use a unique password that you don't use on other websites or apps.
                         </div>
@@ -82,8 +82,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit SSL</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Multi-Layer Security</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit SSL</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Multi-Layer Security</span>
                     </div>
 <?php
 $slot = ob_get_clean();

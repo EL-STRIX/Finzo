@@ -15,7 +15,7 @@ ob_start();
 
                     <!-- Alert Danger Component -->
                     <div class="flex items-start gap-3 p-4 rounded-md mb-6 text-sm bg-danger-surface border border-danger-surface text-danger-text text-left" role="alert">
-                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">error</span>
+                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5" aria-hidden="true">error</span>
                         <div>
                             Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
                         </div>
@@ -27,13 +27,13 @@ ob_start();
                         <div class="flex flex-col gap-4">
                             <a href="tel:+18005550199" class="inline-flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
                                 <span class="flex items-center justify-center w-8 h-8 rounded-md bg-surface-main border border-border-main text-primary-base transition-colors group-hover:bg-primary-base group-hover:text-white group-hover:border-primary-base">
-                                    <span class="material-symbols-outlined">phone</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">phone</span>
                                 </span>
                                 <span>24/7 Fraud &amp; Security Hotline: +1-800-555-0199</span>
                             </a>
                             <a href="mailto:support@finzo.com" class="inline-flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
                                 <span class="flex items-center justify-center w-8 h-8 rounded-md bg-surface-main border border-border-main text-primary-base transition-colors group-hover:bg-primary-base group-hover:text-white group-hover:border-primary-base">
-                                    <span class="material-symbols-outlined">mail</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">mail</span>
                                 </span>
                                 <span>Email Support: support@finzo.com</span>
                             </a>
@@ -43,14 +43,14 @@ ob_start();
                     <!-- Actions Group Component -->
                     <div class="mt-4">
                         <a href="/Finzo/public/index.php" class="btn btn-primary btn-full">
-                            <span class="material-symbols-outlined text-lg">home</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">home</span>
                             <span>Return to Homepage</span>
                         </a>
                     </div>
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8 text-left mt-6">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">shield</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
                         </div>
@@ -58,8 +58,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Automated Defense</span>
                     </div>
 <?php
 $slot = ob_get_clean();

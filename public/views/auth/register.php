@@ -25,11 +25,11 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="full-name" class="fin-label fin-label-required">Full Legal Name</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">person</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">person</span>
                                 <input type="text" id="full-name" name="full_name" class="fin-input has-icon-left" placeholder="As stated on government ID" required autocomplete="name" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Full name is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Full name is required.
                             </span>
                         </div>
 
@@ -41,22 +41,22 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="reg-email" class="fin-label fin-label-required">Email Address</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">mail</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">mail</span>
                                 <input type="email" id="reg-email" name="email" class="fin-input has-icon-left" placeholder="name@example.com" required autocomplete="email" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Valid email address is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Valid email address is required.
                             </span>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="mobile-number" class="fin-label fin-label-required">Mobile Number</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">call</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">call</span>
                                 <input type="tel" id="mobile-number" name="phone" class="fin-input has-icon-left" placeholder="+91 98765 43210" required autocomplete="tel" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Mobile number is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Mobile number is required.
                             </span>
                         </div>
 
@@ -68,10 +68,10 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="create-password" class="fin-label fin-label-required">Create Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">lock</span>
                                 <input type="password" id="create-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Minimum 8 characters" required autocomplete="new-password" data-strength-meter="true" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             
@@ -85,28 +85,28 @@ ob_start();
                                     <span>Enterprise Standard</span>
                                 </div>
                                 <div class="requirement-checklist">
-                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined">cancel</span> 8+ Characters</span>
-                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined">cancel</span> Uppercase Letter</span>
-                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined">cancel</span> Number (0-9)</span>
-                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined">cancel</span> Symbol (!@#$)</span>
+                                    <span class="req-item" data-req="length"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> 8+ Characters</span>
+                                    <span class="req-item" data-req="upper"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Uppercase Letter</span>
+                                    <span class="req-item" data-req="number"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Number (0-9)</span>
+                                    <span class="req-item" data-req="special"><span class="material-symbols-outlined" aria-hidden="true">cancel</span> Symbol (!@#$)</span>
                                 </div>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Password is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Password is required.
                             </span>
                         </div>
 
                         <div class="fin-input-container">
                             <label for="reg-confirm-password" class="fin-label fin-label-required">Confirm Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">check_circle</span>
                                 <input type="password" id="reg-confirm-password" name="confirm_password" class="fin-input has-icon-left has-icon-right" placeholder="Confirm password" required autocomplete="new-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Passwords must match.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Passwords must match.
                             </span>
                         </div>
 
@@ -119,14 +119,14 @@ ob_start();
                                 </span>
                             </label>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> You must accept the Terms and Privacy Policy.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> You must accept the Terms and Privacy Policy.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full">
                             <span>Submit Application</span>
-                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                         </button>
                     </form>
 
@@ -137,7 +137,7 @@ ob_start();
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">verified</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">verified</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Identity Verification:</strong> We will verify your credentials using official records. Your information is never sold or shared with unauthorized third parties.
                         </div>
@@ -145,8 +145,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Privacy Protected</span>
                     </div>
 <?php
 $slot = ob_get_clean();

@@ -11,7 +11,7 @@ function isActiveStaff($path, $current) {
     <div class="px-6 py-5 border-b border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
         <div class="flex items-center gap-4 mb-3">
             <div class="w-10 h-10 rounded-lg bg-warning-surface flex items-center justify-center font-bold text-white shadow-sm staff-initials-display">
-                <span class="material-symbols-outlined text-[20px]">badge</span>
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">badge</span>
             </div>
             <div>
                 <div class="text-sm font-bold text-text-main dark:text-white staff-name-display truncate max-w-[150px]">Loading...</div>

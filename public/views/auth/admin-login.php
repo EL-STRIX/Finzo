@@ -22,7 +22,7 @@ ob_start();
 
                     <!-- Alert Warning Component -->
                     <div class="flex items-start gap-3 p-4 rounded-md mb-6 text-sm bg-danger-surface border border-danger-surface text-danger-text" role="alert">
-                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">warning</span>
+                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5" aria-hidden="true">warning</span>
                         <div>
                             <strong>Mandatory Audit Notice:</strong> Access to this terminal is subject to real-time activity recording and strict forensic logging.
                         </div>
@@ -36,11 +36,11 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="admin-id" class="fin-label fin-label-required">Administrator Email</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">shield_person</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">shield_person</span>
                                 <input type="email" id="admin-id" name="email" class="fin-input has-icon-left" placeholder="admin@finzo.com" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Administrator email is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Administrator email is required.
                             </span>
                         </div>
 
@@ -48,27 +48,27 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">vpn_key</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">vpn_key</span>
                                 <input type="password" id="admin-token" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter security token or password" required autocomplete="current-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Security Token is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Security Token is required.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full mt-2">
                             <span>Access Terminal</span>
-                            <span class="material-symbols-outlined text-lg">terminal</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">terminal</span>
                         </button>
                     </form>
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">policy</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">policy</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Restricted Terminal:</strong> All administrative actions require hardware security key authentication and supervisory sign-off.
                         </div>
@@ -76,8 +76,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span> Zero-Trust Control</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">fingerprint</span> Hardware Token SSL</span>
                     </div>
 <?php
 $slot = ob_get_clean();

@@ -11,7 +11,7 @@ function isActive($path, $current) {
     <div class="px-6 py-5 border-b border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
         <div class="flex items-center gap-3 mb-1">
             <div class="w-8 h-8 rounded-lg bg-primary-base flex items-center justify-center shadow-sm">
-                <span class="material-symbols-outlined text-white text-[18px]">admin_panel_settings</span>
+                <span class="material-symbols-outlined text-white text-[18px]" aria-hidden="true">admin_panel_settings</span>
             </div>
             <div class="font-headline font-black text-xl tracking-tight text-text-main dark:text-white">Finzo</div>
         </div>

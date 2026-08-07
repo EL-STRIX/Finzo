@@ -28,11 +28,11 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="customer-id" class="fin-label fin-label-required">Customer ID or Email</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">person</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">person</span>
                                 <input type="text" id="customer-id" name="identity" class="fin-input has-icon-left" placeholder="Enter Customer ID or email" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Customer ID or email is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Customer ID or email is required.
                             </span>
                         </div>
 
@@ -43,14 +43,14 @@ ob_start();
                                 <a href="forgot-password.php" class="btn-text">Forgot password?</a>
                             </div>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">lock</span>
                                 <input type="password" id="login-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter password" required autocomplete="current-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Password is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Password is required.
                             </span>
                         </div>
 
@@ -65,7 +65,7 @@ ob_start();
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full">
                             <span>Secure Login</span>
-                            <span class="material-symbols-outlined text-lg">login</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">login</span>
                         </button>
                     </form>
 
@@ -76,7 +76,7 @@ ob_start();
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">shield</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Protected Session:</strong> Never share your online banking credentials or OTP with anyone. Finzo staff will never request your password.
                         </div>
@@ -84,9 +84,9 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">verified</span> Verified Platform</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Privacy Protected</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">verified</span> Verified Platform</span>
                     </div>
 <?php
 $slot = ob_get_clean();

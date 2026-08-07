@@ -30,7 +30,7 @@ ob_start();
                         <!-- Primary Submit Button -->
                         <button type="submit" class="btn btn-primary btn-full mb-4">
                             <span>Verify Identity</span>
-                            <span class="material-symbols-outlined text-lg">verified_user</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">verified_user</span>
                         </button>
 
                         <!-- Resend Component with Countdown -->
@@ -42,7 +42,7 @@ ob_start();
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8 text-left mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">phonelink_lock</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">phonelink_lock</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Important:</strong> OTP codes expire in 5 minutes. Never share this code with anyone, including Finzo staff.
                         </div>
@@ -50,8 +50,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">gpp_good</span> Privacy Protected</span>
                     </div>
 <?php
 $slot = ob_get_clean();

@@ -28,11 +28,11 @@ ob_start();
                         <div class="fin-input-container">
                             <label for="staff-id" class="fin-label fin-label-required">Staff ID or Email</label>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">badge</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">badge</span>
                                 <input type="text" id="staff-id" name="identity" class="fin-input has-icon-left" placeholder="e.g. STF-84920 or email" required autocomplete="username" />
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Staff ID or email is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Staff ID or email is required.
                             </span>
                         </div>
 
@@ -43,27 +43,27 @@ ob_start();
                                 <a href="forgot-password.php" class="btn-text">Reset Password</a>
                             </div>
                             <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">lock</span>
+                                <span class="material-symbols-outlined input-icon-left" aria-hidden="true">lock</span>
                                 <input type="password" id="staff-password" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter password" required autocomplete="current-password" />
                                 <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" tabindex="0">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
                             <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Password is required.
+                                <span class="material-symbols-outlined" aria-hidden="true">error</span> Password is required.
                             </span>
                         </div>
 
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full mt-2">
                             <span>Access Dashboard</span>
-                            <span class="material-symbols-outlined text-lg">login</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">login</span>
                         </button>
                     </form>
 
                     <!-- Security Notice Component -->
                     <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
-                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">lock</span>
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5" aria-hidden="true">lock</span>
                         <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Internal Operations:</strong> Access restricted to authorized Finzo personnel. Unauthorized access attempts are monitored and reported.
                         </div>
@@ -71,8 +71,8 @@ ob_start();
 
                     <!-- Trust Badges Component -->
                     <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> Encrypted Connection</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">verified_user</span> Dual-Factor MFA</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">enhanced_encryption</span> Encrypted Connection</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined" aria-hidden="true">verified_user</span> Dual-Factor MFA</span>
                     </div>
 <?php
 $slot = ob_get_clean();

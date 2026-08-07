@@ -13,7 +13,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         <!-- Brand Area (Visible on mobile if sidebar is hidden, or on desktop if no sidebar) -->
         <div class="flex items-center gap-3 <?= $portal === 'guest' ? '' : 'lg:hidden' ?>">
             <div class="w-8 h-8 rounded-lg bg-primary-base flex items-center justify-center">
-                <span class="material-symbols-outlined text-white text-sm">account_balance</span>
+                <span class="material-symbols-outlined text-white text-sm" aria-hidden="true">account_balance</span>
             </div>
             <div class="font-headline font-black text-xl tracking-tight text-text-main dark:text-white">Finzo</div>
         </div>
@@ -22,7 +22,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         <div class="hidden lg:flex flex-col justify-center">
             <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-xs font-bold text-text-muted uppercase tracking-widest mb-0.5">
                 <a href="#" class="hover:text-primary-base transition-colors"><?= ucfirst($portal) ?> Portal</a>
-                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
                 <span aria-current="page" class="text-text-main dark:text-white"><?= htmlspecialchars($pageTitle) ?></span>
             </nav>
         </div>
@@ -33,7 +33,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         <!-- Search -->
         <div class="hidden md:flex relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-text-muted text-[18px]">search</span>
+                <span class="material-symbols-outlined text-text-muted text-[18px]" aria-hidden="true">search</span>
             </div>
             <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 border border-border-subtle rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-base bg-surface-subtle dark:bg-surface-dark text-text-main dark:text-white transition-all group-hover:border-border-focus placeholder:text-text-muted">
         </div>
@@ -53,7 +53,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
                 <div class="text-xs text-text-muted">ID: #99321</div>
             </div>
             <div class="w-10 h-10 rounded-full bg-primary-surface text-primary-base border border-primary-base/20 flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
-                <span class="material-symbols-outlined text-[20px]">person</span>
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
             </div>
         </div>
     </div>
