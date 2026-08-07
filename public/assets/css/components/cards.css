@@ -11,7 +11,7 @@
 }
 
 .ds-card:hover, .auth-card:hover {
-  border-color: #b0b8c1;
+  border-color: var(--color-border-main);
   box-shadow: var(--shadow-lg);
 }
 
@@ -50,7 +50,7 @@
 
 .ds-card-footer, .auth-card-footer {
   padding: var(--space-sm) var(--space-md);
-  background-color: #fafbfc;
+  background-color: var(--color-surface-subtle);
   border-top: 1px solid var(--color-border-subtle);
 }
 
