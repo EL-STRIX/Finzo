@@ -1,71 +1,21 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Verify your email address.';
+$authHeroSubtitle = 'We need to confirm your email before activating your account. Check your inbox for the verification link we sent.';
+$authSecurityIcon = 'mark_email_read';
+$authSecurityTitle = 'Secure verification link';
+$authSecurityDesc = 'The link in your email is valid for 30 minutes and can only be used once. After it expires, you can request a new one.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Verify your email address.</h2>
-                        <p class="auth-hero-subtitle">We need to confirm your email before activating your account. Check your inbox for the verification link we sent.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">mark_email_read</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">Secure verification link</h4>
-                                <p class="auth-hero-security-desc">The link in your email is valid for 30 minutes and can only be used once. After it expires, you can request a new one.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container text-center">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
-                    </div>
-
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Check Your Email</h1>
-                        <p class="auth-page-subtitle">We sent a secure verification link to your registered email address.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Check Your Email</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">We sent a secure verification link to your registered email address.</p>
                     </div>
 
                     <!-- Alert Info Component -->
-                    <div class="alert alert-info text-left" role="status">
-                        <span class="material-symbols-outlined alert-icon">info</span>
+                    <div class="flex items-start gap-3 p-4 rounded-md mb-6 text-sm bg-info-surface border border-info-surface text-info-text text-left" role="status">
+                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">info</span>
                         <div>
                             Click the secure link inside the email to complete your registration. The link will expire in 30 minutes.
                         </div>
@@ -85,22 +35,19 @@ ob_start();
                     </div>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">forward_to_inbox</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8 text-left mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">forward_to_inbox</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Tip:</strong> If you don't see the email within a few minutes, please check your spam or junk folder.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

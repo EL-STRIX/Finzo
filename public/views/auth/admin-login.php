@@ -1,73 +1,28 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'admin_bg.png';
+$authHeroTitle = 'Enterprise System Management';
+$authHeroSubtitle = 'Centralized core system configuration, security audit trail monitoring, interest yield management, and global access administration.';
+$authSecurityIcon = 'security';
+$authSecurityTitle = 'Zero-Trust Terminal Protection';
+$authSecurityDesc = 'Hardware security token validation combined with IP whitelist checks protect administrative system privileges.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/admin_bg.png" alt="Admin Terminal Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/admin_bg.png" alt="Admin Terminal Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Enterprise System Management</h2>
-                        <p class="auth-hero-subtitle">Centralized core system configuration, security audit trail monitoring, interest yield management, and global access administration.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">security</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">Zero-Trust Terminal Protection</h4>
-                                <p class="auth-hero-security-desc">Hardware security token validation combined with IP whitelist checks protect administrative system privileges.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Admin Authentication</h1>
-                        <p class="auth-page-subtitle">Strictly authorized administrative personnel only.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Admin Authentication</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">Strictly authorized administrative personnel only.</p>
                     </div>
 
                     <!-- Role Switcher Component -->
-                    <div class="auth-role-switcher" role="tablist" aria-label="Select Authentication Role">
-                        <a href="login.php" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
-                        <a href="staff-login.php" class="auth-role-tab" role="tab" aria-selected="false">Staff</a>
-                        <a href="admin-login.php" class="auth-role-tab active" role="tab" aria-selected="true">Admin</a>
+                    <div class="flex bg-surface-subtle p-1 rounded-lg mb-8 border border-border-main" role="tablist" aria-label="Select Authentication Role">
+                        <a href="login.php" class="flex-1 text-center py-2 text-sm font-medium text-text-muted hover:text-text-main transition-colors" role="tab" aria-selected="false">Customer</a>
+                        <a href="staff-login.php" class="flex-1 text-center py-2 text-sm font-medium text-text-muted hover:text-text-main transition-colors" role="tab" aria-selected="false">Staff</a>
+                        <a href="admin-login.php" class="flex-1 text-center py-2 text-sm font-semibold rounded-md bg-surface-main text-primary-base shadow-sm border border-border-subtle" role="tab" aria-selected="true">Admin</a>
                     </div>
 
                     <!-- Alert Warning Component -->
-                    <div class="alert alert-danger" role="alert">
-                        <span class="material-symbols-outlined alert-icon">warning</span>
+                    <div class="flex items-start gap-3 p-4 rounded-md mb-6 text-sm bg-danger-surface border border-danger-surface text-danger-text" role="alert">
+                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">warning</span>
                         <div>
                             <strong>Mandatory Audit Notice:</strong> Access to this terminal is subject to real-time activity recording and strict forensic logging.
                         </div>
@@ -112,22 +67,19 @@ ob_start();
                     </form>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">policy</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">policy</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Restricted Terminal:</strong> All administrative actions require hardware security key authentication and supervisory sign-off.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

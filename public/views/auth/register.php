@@ -1,61 +1,16 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Open your account in minutes.';
+$authHeroSubtitle = 'Create a Finzo account to manage your finances, make transfers, and access secure banking services from anywhere.';
+$authSecurityIcon = 'encrypted';
+$authSecurityTitle = 'Your data is protected';
+$authSecurityDesc = 'All personal and financial information you submit is encrypted in transit and never shared with unauthorized parties.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/register-page-image.png" alt="Registration Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/register-page-image.png" alt="Registration Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Open your account in minutes.</h2>
-                        <p class="auth-hero-subtitle">Create a Finzo account to manage your finances, make transfers, and access secure banking services from anywhere.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">encrypted</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">Your data is protected</h4>
-                                <p class="auth-hero-security-desc">All personal and financial information you submit is encrypted in transit and never shared with unauthorized parties.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Create Account</h1>
-                        <p class="auth-page-subtitle">Fill in the details below to open your Finzo account.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Create Account</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">Fill in the details below to open your Finzo account.</p>
                     </div>
 
                     <!-- Registration Form Component -->
@@ -181,22 +136,19 @@ ob_start();
                     </div>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">verified</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">verified</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Identity Verification:</strong> We will verify your credentials using official records. Your information is never sold or shared with unauthorized third parties.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

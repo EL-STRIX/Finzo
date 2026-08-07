@@ -1,68 +1,23 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Secure online banking, built for you.';
+$authHeroSubtitle = 'Sign in to access your accounts, manage transactions, and stay in control of your finances — securely and reliably.';
+$authSecurityIcon = 'verified_user';
+$authSecurityTitle = 'Your session is protected';
+$authSecurityDesc = 'Every login is secured with 256-bit encryption and monitored for unauthorized access attempts.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Enterprise Banking Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Enterprise Banking Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Secure online banking, built for you.</h2>
-                        <p class="auth-hero-subtitle">Sign in to access your accounts, manage transactions, and stay in control of your finances — securely and reliably.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">verified_user</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">Your session is protected</h4>
-                                <p class="auth-hero-security-desc">Every login is secured with 256-bit encryption and monitored for unauthorized access attempts.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Welcome Back</h1>
-                        <p class="auth-page-subtitle">Sign in to manage your enterprise accounts securely.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Welcome Back</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">Sign in to manage your enterprise accounts securely.</p>
                     </div>
 
                     <!-- Role Switcher Component -->
-                    <div class="auth-role-switcher" role="tablist" aria-label="Select Authentication Role">
-                        <a href="login.php" class="auth-role-tab active" role="tab" aria-selected="true">Customer</a>
-                        <a href="staff-login.php" class="auth-role-tab" role="tab" aria-selected="false">Staff</a>
-                        <a href="admin-login.php" class="auth-role-tab" role="tab" aria-selected="false">Admin</a>
+                    <div class="flex bg-surface-subtle p-1 rounded-lg mb-8 border border-border-main" role="tablist" aria-label="Select Authentication Role">
+                        <a href="login.php" class="flex-1 text-center py-2 text-sm font-semibold rounded-md bg-surface-main text-primary-base shadow-sm border border-border-subtle" role="tab" aria-selected="true">Customer</a>
+                        <a href="staff-login.php" class="flex-1 text-center py-2 text-sm font-medium text-text-muted hover:text-text-main transition-colors" role="tab" aria-selected="false">Staff</a>
+                        <a href="admin-login.php" class="flex-1 text-center py-2 text-sm font-medium text-text-muted hover:text-text-main transition-colors" role="tab" aria-selected="false">Admin</a>
                     </div>
 
                     <!-- Login Form Component -->
@@ -120,23 +75,20 @@ ob_start();
                     </div>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Protected Session:</strong> Never share your online banking credentials or OTP with anyone. Finzo staff will never request your password.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">verified</span> Verified Platform</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">verified</span> Verified Platform</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

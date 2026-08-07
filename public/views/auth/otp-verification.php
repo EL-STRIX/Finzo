@@ -1,61 +1,16 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Two-step verification.';
+$authHeroSubtitle = 'We sent a one-time code to your registered phone number. Enter it to confirm your identity and sign in.';
+$authSecurityIcon = 'smartphone';
+$authSecurityTitle = 'New device detected';
+$authSecurityDesc = 'When you sign in from a new or unrecognized device, we require a verification code to confirm it\'s you.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Two-step verification.</h2>
-                        <p class="auth-hero-subtitle">We sent a one-time code to your registered phone number. Enter it to confirm your identity and sign in.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">smartphone</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">New device detected</h4>
-                                <p class="auth-hero-security-desc">When you sign in from a new or unrecognized device, we require a verification code to confirm it's you.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Device Verification</h1>
-                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Device Verification</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
                     </div>
 
                     <!-- OTP Form Component -->
@@ -86,22 +41,19 @@ ob_start();
                     </form>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">phonelink_lock</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8 text-left mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">phonelink_lock</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Important:</strong> OTP codes expire in 5 minutes. Never share this code with anyone, including Finzo staff.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

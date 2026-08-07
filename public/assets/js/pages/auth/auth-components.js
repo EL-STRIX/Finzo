@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * 0. Page Entrance Animation & Smooth Reveal
  */
 function initPageAnimations() {
-    const cardContainer = document.querySelector('.ds-card-container');
+    const cardContainer = document.querySelector('.auth-form-container');
     if (cardContainer) {
         cardContainer.style.opacity = '0';
         cardContainer.style.transform = 'translateY(8px)';

@@ -1,88 +1,38 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Your account has been locked.';
+$authHeroSubtitle = 'Too many failed login attempts were detected. Your account has been temporarily suspended to prevent unauthorized access.';
+$authSecurityIcon = 'gpp_maybe';
+$authSecurityTitle = 'Too many failed login attempts';
+$authSecurityDesc = 'Accounts are automatically locked after multiple incorrect password attempts to protect against unauthorized access.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Your account has been locked.</h2>
-                        <p class="auth-hero-subtitle">Too many failed login attempts were detected. Your account has been temporarily suspended to prevent unauthorized access.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">gpp_maybe</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">Too many failed login attempts</h4>
-                                <p class="auth-hero-security-desc">Accounts are automatically locked after multiple incorrect password attempts to protect against unauthorized access.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container text-center">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-red-50 border border-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-3xl">lock_person</span>
-                    </div>
-
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Account Locked</h1>
-                        <p class="auth-page-subtitle">Access temporarily suspended for security reasons.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Account Locked</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">Access temporarily suspended for security reasons.</p>
                     </div>
 
                     <!-- Alert Danger Component -->
-                    <div class="alert alert-danger text-left" role="alert">
-                        <span class="material-symbols-outlined alert-icon">error</span>
+                    <div class="flex items-start gap-3 p-4 rounded-md mb-6 text-sm bg-danger-surface border border-danger-surface text-danger-text text-left" role="alert">
+                        <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">error</span>
                         <div>
                             Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
                         </div>
                     </div>
 
                     <!-- Contact Support Block -->
-                    <div class="auth-contact-widget">
-                        <p class="auth-contact-title">Need immediate assistance?</p>
-                        <div class="auth-contact-list">
-                            <a href="tel:+18005550199" class="auth-contact-item">
-                                <span class="auth-contact-icon">
+                    <div class="bg-surface-subtle border border-border-subtle rounded-xl p-5 text-left mt-6">
+                        <p class="text-xs font-semibold uppercase text-text-muted mb-4 tracking-wider">Need immediate assistance?</p>
+                        <div class="flex flex-col gap-4">
+                            <a href="tel:+18005550199" class="inline-flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
+                                <span class="flex items-center justify-center w-8 h-8 rounded-md bg-surface-main border border-border-main text-primary-base transition-colors group-hover:bg-primary-base group-hover:text-white group-hover:border-primary-base">
                                     <span class="material-symbols-outlined">phone</span>
                                 </span>
                                 <span>24/7 Fraud &amp; Security Hotline: +1-800-555-0199</span>
                             </a>
-                            <a href="mailto:support@finzo.com" class="auth-contact-item">
-                                <span class="auth-contact-icon">
+                            <a href="mailto:support@finzo.com" class="inline-flex items-center gap-3 text-sm font-medium text-text-main hover:text-primary-base transition-colors group">
+                                <span class="flex items-center justify-center w-8 h-8 rounded-md bg-surface-main border border-border-main text-primary-base transition-colors group-hover:bg-primary-base group-hover:text-white group-hover:border-primary-base">
                                     <span class="material-symbols-outlined">mail</span>
                                 </span>
                                 <span>Email Support: support@finzo.com</span>
@@ -99,22 +49,19 @@ ob_start();
                     </div>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-6">
-                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8 text-left mt-6">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>

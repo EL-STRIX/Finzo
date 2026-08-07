@@ -1,61 +1,16 @@
 <?php
-$portal = 'auth';
 $pageTitle = 'Finzo';
+$authBgImage = 'customer_bg.png';
+$authHeroTitle = 'Set a new password.';
+$authHeroSubtitle = 'Choose a strong password to protect your account and keep your banking information secure.';
+$authSecurityIcon = 'published_with_changes';
+$authSecurityTitle = 'All other sessions will be signed out';
+$authSecurityDesc = 'When you change your password, any active sessions on other devices will be ended for your protection.';
 ob_start();
 ?>
-<div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
-            <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/reset-password-page-image.png" alt="Reset Password Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/reset-password-page-image.png" alt="Reset Password Illustration" class="auth-hero-img-secondary" />
-                <div class="auth-hero-overlay"></div>
-                
-                <div class="auth-hero-content">
-                    <div>
-                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
-                            <div class="auth-brand-icon-box">
-                                <span class="material-symbols-outlined text-2xl">account_balance</span>
-                            </div>
-                            <span class="auth-brand-name">Finzo</span>
-                        </a>
-                        <h2 class="auth-hero-headline">Set a new password.</h2>
-                        <p class="auth-hero-subtitle">Choose a strong password to protect your account and keep your banking information secure.</p>
-                    </div>
-                    
-                    <div>
-                        <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">published_with_changes</span>
-                            <div>
-                                <h4 class="auth-hero-security-title">All other sessions will be signed out</h4>
-                                <p class="auth-hero-security-desc">When you change your password, any active sessions on other devices will be ended for your protection.</p>
-                            </div>
-                        </div>
-                        <div class="auth-hero-footer">
-                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Auth Component Container -->
-            <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-base">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </div>
-                
-                <div class="ds-card-container">
-                    <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
-                        <span class="material-symbols-outlined text-2xl">account_balance</span>
-                    </a>
-                    
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Set New Password</h1>
-                        <p class="auth-page-subtitle">Your new password must meet the minimum security requirements.</p>
+<div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-3xl font-bold font-display text-text-main mb-2 tracking-tight">Set New Password</h1>
+                        <p class="text-sm text-text-muted leading-relaxed">Your new password must meet the minimum security requirements.</p>
                     </div>
 
                     <!-- Reset Password Form Component -->
@@ -118,22 +73,19 @@ ob_start();
                     </form>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
-                        <div class="auth-security-notice-text">
+                    <div class="flex items-start gap-3 bg-surface-subtle border border-border-subtle rounded-xl p-4 mt-8">
+                        <span class="material-symbols-outlined text-primary-base text-xl flex-shrink-0 mt-0.5">shield</span>
+                        <div class="text-xs text-text-muted leading-relaxed">
                             <strong>Tip:</strong> Use a unique password that you don't use on other websites or apps.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
-                    <div class="trust-badge-group">
-                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit SSL</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Multi-Layer Security</span>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-8 pt-6 border-t border-border-subtle">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit SSL</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted"><span class="material-symbols-outlined">gpp_good</span> Multi-Layer Security</span>
                     </div>
-                </div>
-            </div>
-        </div>
 <?php
 $slot = ob_get_clean();
-include __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/auth-layout.php';
 ?>
