@@ -40,18 +40,18 @@
           <span class="material-symbols-outlined force-black" aria-hidden="true">arrow_back</span>
         </a>
         <div class="flex flex-col">
-          <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] force-black uppercase">
+          <div class="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-xs font-bold tracking-widest force-black uppercase">
              <span class="hidden sm:inline">Admin</span>
-             <span class="material-symbols-outlined text-[10px] hidden sm:inline force-black" aria-hidden="true">chevron_right</span>
+             <span class="material-symbols-outlined text-xs hidden sm:inline force-black" aria-hidden="true">chevron_right</span>
              <span class="whitespace-nowrap">Pending Approvals</span>
-             <span class="material-symbols-outlined text-[10px] force-black" aria-hidden="true">chevron_right</span>
+             <span class="material-symbols-outlined text-xs force-black" aria-hidden="true">chevron_right</span>
              <span class="text-primary-base dark:text-primary-base whitespace-nowrap" id="bc-name"><div class="skeleton w-24 h-3 inline-block"></div></span>
           </div>
           <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Review Application</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
-        <span class="status-badge px-4 py-2 text-[11px]" id="top-status-badge">PENDING</span>
+        <span class="status-badge px-4 py-2 text-xs" id="top-status-badge">PENDING</span>
         </div>
     </div>
 
@@ -69,10 +69,10 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="material-symbols-outlined text-primary-base dark:text-primary-base text-sm" aria-hidden="true">person</span>
-                  <span class="text-[10px] font-black uppercase tracking-widest text-text-muted">Personal Details</span>
+                  <span class="text-xs font-black uppercase tracking-widest text-text-muted">Personal Details</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold tracking-tight force-black mb-1" id="header-full-name"><div class="skeleton w-40 h-6"></div></h2>
-                <div class="text-[11px] font-mono font-bold tracking-widest text-primary-base dark:text-primary-base uppercase bg-primary/5 dark:bg-primary-surface/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
+                <div class="text-xs font-mono font-bold tracking-widest text-primary-base dark:text-primary-base uppercase bg-primary/5 dark:bg-primary-surface/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
               </div>
               <div class="hidden sm:block">
                  <span class="material-symbols-outlined text-primary-base dark:text-primary-base opacity-20" style="font-size: 64px;" aria-hidden="true">badge</span>
@@ -188,14 +188,14 @@
                   <label class="ds-label mb-2">Front Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
                     <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
-                    <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
+                    <span class="text-xs font-bold opacity-40">Click to view full image</span>
                   </div>
                 </div>
                 <div class="flex-1">
                   <label class="ds-label mb-2">Back Side</label>
                   <div class="aspect-video bg-surface-subtle dark:bg-white/5 rounded-2xl border border-dashed border-surface-border dark:border-white/10 flex flex-col items-center justify-center p-4 text-center cursor-pointer hover:border-primary transition-all">
                     <span class="material-symbols-outlined text-3xl opacity-20 mb-2" aria-hidden="true">image</span>
-                    <span class="text-[10px] font-bold opacity-40">Click to view full image</span>
+                    <span class="text-xs font-bold opacity-40">Click to view full image</span>
                   </div>
                 </div>
               </div>
@@ -262,15 +262,15 @@
                 </div>
                 <!-- Account Preview -->
                 <div class="bg-white dark:bg-surface-dark p-4 rounded-xl border border-green-100 dark:border-green-900/40 text-center mb-6 shadow-sm">
-                   <div class="text-[9px] font-black uppercase tracking-widest text-green-600 mb-1">Expected Account Number</div>
+                   <div class="text-xs font-black uppercase tracking-widest text-green-600 mb-1">Expected Account Number</div>
                    <div class="font-code text-xl font-black text-green-700 dark:text-green-400 tracking-wider">FNZ2026<span class="opacity-30">XXXX</span></div>
                 </div>
-                <button data-action="openApproveModal()" class="w-full py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-success-surface shadow-emerald-500/20 hover:bg-success-surface hover:scale-[1.02] active:scale-[0.98]">Approve & Activate Account</button>
+                <button data-action="openApproveModal()" class="w-full py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-success-surface shadow-emerald-500/20 hover:bg-success-surface hover:scale-[1.02] active:scale-[0.98]">Approve & Activate Account</button>
               </div>
 
               <div class="flex items-center gap-4 px-4">
                 <div class="flex-1 h-px bg-surface-hover dark:bg-white/5"></div>
-                <div class="text-[10px] font-black opacity-30 tracking-widest">OR</div>
+                <div class="text-xs font-black opacity-30 tracking-widest">OR</div>
                 <div class="flex-1 h-px bg-surface-hover dark:bg-white/5"></div>
               </div>
 
@@ -285,7 +285,7 @@
                   </div>
                 </div>
                 <textarea id="reject-reason-input" placeholder="Enter reason for rejection. This will be shown to the applicant." class="w-full bg-surface-subtle dark:bg-white/5 border border-danger-base dark:border-danger-base/40 rounded-xl p-4 text-xs min-h-[100px] mb-6 focus:ring-red-500/20"></textarea>
-                <button data-action="openRejectModal()" class="w-full py-4 bg-transparent border-2 border-danger-base text-danger-base hover:bg-danger-surface hover:border-danger-base hover:text-danger-base dark:hover:bg-danger-surface/10 font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Reject Application</button>
+                <button data-action="openRejectModal()" class="w-full py-4 bg-transparent border-2 border-danger-base text-danger-base hover:bg-danger-surface hover:border-danger-base hover:text-danger-base dark:hover:bg-danger-surface/10 font-black rounded-2xl text-xs uppercase tracking-widest transition-all">Reject Application</button>
               </div>
 
 
@@ -329,7 +329,7 @@
       
       <!-- Rejection Reason Preview -->
       <div class="bg-surface-subtle dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl p-4 mb-8 text-left">
-        <div class="text-[9px] font-black uppercase tracking-widest text-text-muted mb-1">REJECTION REASON:</div>
+        <div class="text-xs font-black uppercase tracking-widest text-text-muted mb-1">REJECTION REASON:</div>
         <div id="rejection-reason-preview" class="text-xs font-semibold text-text-muted dark:text-text-muted italic">No reason provided</div>
       </div>
 

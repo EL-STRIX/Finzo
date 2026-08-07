@@ -37,13 +37,13 @@
             <span class="material-symbols-outlined force-black" aria-hidden="true">menu</span>
         </button>
         <div>
-          <div class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#002645] dark:text-text-muted uppercase">STAFF MANAGEMENT</div>
+          <div class="text-xs sm:text-xs font-bold tracking-widest text-primary-base dark:text-text-muted uppercase">STAFF MANAGEMENT</div>
           <div class="text-xl sm:text-2xl font-bold force-black tracking-tight mt-1">Bank Staff</div>
         </div>
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
         <button id="add-staff-btn" data-action="openAddStaffModal()" class="admin-btn-primary flex whitespace-nowrap flex-shrink-0"
-          style="background:#002645 !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
+          style="background: var(--color-primary-base) !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
           <span class="material-symbols-outlined" aria-hidden="true">add</span> Add New Staff
         </button>
         
@@ -58,7 +58,7 @@
             <span class="material-symbols-outlined" style="color:#0369a1;" aria-hidden="true">group</span>
           </div>
           <div>
-            <div class="admin-stat-label !mb-1 text-[10px]">TOTAL STAFF</div>
+            <div class="admin-stat-label !mb-1 text-xs">TOTAL STAFF</div>
             <div id="stat-total-staff" class="admin-stat-value text-xl font-black h-7 skeleton min-w-[40px]"></div>
           </div>
         </div>
@@ -67,7 +67,7 @@
             <span class="material-symbols-outlined" style="color:#00b894;" aria-hidden="true">badge</span>
           </div>
           <div>
-            <div class="admin-stat-label !mb-1 text-[10px]">ACTIVE STAFF</div>
+            <div class="admin-stat-label !mb-1 text-xs">ACTIVE STAFF</div>
             <div id="stat-active-staff" class="admin-stat-value text-xl font-black h-7 skeleton min-w-[40px]"></div>
           </div>
         </div>
@@ -76,7 +76,7 @@
             <span class="material-symbols-outlined" style="color:#6c757d;" aria-hidden="true">person_off</span>
           </div>
           <div>
-            <div class="admin-stat-label !mb-1 text-[10px]">SUSPEND STAFF</div>
+            <div class="admin-stat-label !mb-1 text-xs">SUSPEND STAFF</div>
             <div id="stat-suspend-staff" class="admin-stat-value text-xl font-black h-7 skeleton min-w-[40px]"></div>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <span class="material-symbols-outlined" style="color:#f39c12;" aria-hidden="true">receipt</span>
           </div>
           <div>
-            <div class="admin-stat-label !mb-1 text-[10px]">TRANSACTIONS</div>
+            <div class="admin-stat-label !mb-1 text-xs">TRANSACTIONS</div>
             <div id="stat-transactions-today" class="admin-stat-value text-xl font-black h-7 skeleton min-w-[40px]"></div>
           </div>
         </div>
@@ -153,7 +153,7 @@
         <!-- PAGINATION -->
         <div
           class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all mt-4 w-full">
-          <div id="pagination-counter" class="text-[11px] text-text-muted font-bold uppercase tracking-wider">Showing 1-5
+          <div id="pagination-counter" class="text-xs text-text-muted font-bold uppercase tracking-wider">Showing 1-5
             of 8 staff</div>
           <div class="flex items-center gap-2">
             <button id="prev-page" class="admin-btn-secondary"
@@ -175,11 +175,11 @@
   <div id="addStaffModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-primary/40 backdrop-blur-sm"
       data-action="closeAddStaffModal()"></div>
-    <div class="ds-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
+    <div class="ds-card w-full max-w-2xl max-h-full overflow-y-auto relative z-10 animate-modal-enter shadow-2xl">
       <div class="p-6 border-b border-surface-border dark:border-white/5 sticky top-0 bg-white dark:bg-surface-container z-20 flex justify-between items-center">
         <div>
           <h3 class="text-xl font-bold text-primary-base dark:text-text-muted">Add New Staff Member</h3>
-          <p class="text-[11px] text-text-muted font-medium">Fill in the details to add a new staff account</p>
+          <p class="text-xs text-text-muted font-medium">Fill in the details to add a new staff account</p>
         </div>
         <button data-action="closeAddStaffModal()"
            class="p-2 hover:bg-surface-hover dark:hover:bg-white/5 rounded-full transition-colors">
@@ -195,16 +195,16 @@
             <div class="relative group cursor-pointer" data-action="document.getElementById(&#039;profile_photo&#039;).click()">
               <div id="photo-preview-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-surface-dark flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-primary/20">
                 <span class="material-symbols-outlined text-3xl text-text-muted group-hover:text-primary-base transition-colors" aria-hidden="true">person</span>
-                <span class="text-[9px] font-black uppercase tracking-widest text-text-muted mt-1 group-hover:text-primary-base transition-colors">Upload Photo</span>
+                <span class="text-xs font-black uppercase tracking-widest text-text-muted mt-1 group-hover:text-primary-base transition-colors">Upload Photo</span>
                 <img loading="lazy" id="profile-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden" alt="">
               </div>
               <div class="absolute bottom-0 right-0 p-1.5 bg-primary-base text-white rounded-full border-2 border-white dark:border-surface-container shadow-lg">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
               </div>
             </div>
-            <p class="text-[10px] text-text-muted font-bold mt-3">Optional • JPG or PNG • Max 5MB</p>
+            <p class="text-xs text-text-muted font-bold mt-3">Optional • JPG or PNG • Max 5MB</p>
             <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden" onchange="previewProfilePhoto(this)">
-            <div id="error-profile_photo" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+            <div id="error-profile_photo" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
           </div>
 
           <!-- SECTION B: Personal Information -->
@@ -213,20 +213,20 @@
               <span class="w-8 h-8 rounded-lg bg-primary-surface dark:bg-primary-surface/30 text-info-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">person</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Personal Information</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Personal Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="ds-label mb-2">Full Name *</label>
                 <input type="text" id="full_name" name="full_name" placeholder="John Doe" required
                   class="ds-input">
-                <div id="error-full_name" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-full_name" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Date of Birth *</label>
                 <input type="date" id="date_of_birth" name="date_of_birth" required
                   class="ds-input">
-                <div id="error-date_of_birth" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-date_of_birth" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Gender *</label>
@@ -243,7 +243,7 @@
                   </div>
                   <input type="hidden" id="gender" name="gender" required>
                 </div>
-                <div id="error-gender" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-gender" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
             </div>
           </div>
@@ -254,14 +254,14 @@
               <span class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">contact_phone</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Contact Information</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Contact Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="ds-label mb-2">Personal Email *</label>
                 <input type="email" id="personal_email" name="personal_email" placeholder="john.doe@email.com" required
                   class="ds-input">
-                <div id="error-personal_email" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-personal_email" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Phone Number *</label>
@@ -270,7 +270,7 @@
                   <input type="tel" id="phone" name="phone" placeholder="9876543210" required maxlength="10"
                     class="ds-input pl-12">
                 </div>
-                <div id="error-phone" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-phone" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Emergency Contact Name (Optional)</label>
@@ -291,7 +291,7 @@
               <span class="w-8 h-8 rounded-lg bg-warning-surface dark:bg-warning-surface/30 text-warning-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Identity & Documents</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Identity & Documents</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
@@ -308,13 +308,13 @@
                   </div>
                   <input type="hidden" id="id_type" name="id_type" required>
                 </div>
-                <div id="error-id_type" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-id_type" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">ID Number *</label>
                 <input type="text" id="id_number" name="id_number" placeholder="Enter ID number" required
                   class="ds-input">
-                <div id="error-id_number" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-id_number" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               
               <div class="col-span-1 sm:col-span-2 space-y-4">
@@ -324,12 +324,12 @@
                     <div id="front-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
                       <p id="front-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload front image</p>
-                      <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
+                      <p class="text-xs text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
                       <img loading="lazy" id="front-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_front" name="id_front" accept="image/*" class="hidden" onchange="previewDoc(this, 'front')" required>
-                  <div id="error-id_front" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                  <div id="error-id_front" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
                 </div>
 
                 <div>
@@ -338,12 +338,12 @@
                     <div id="back-drop-zone" class="w-full border-2 border-dashed border-surface-border dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-primary/40 bg-surface-subtle/50 dark:bg-white/5">
                       <span class="material-symbols-outlined text-3xl text-text-muted mb-2" aria-hidden="true">upload_file</span>
                       <p id="back-file-name" class="text-xs font-bold text-text-muted">Click or drag to upload back image</p>
-                      <p class="text-[9px] text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
+                      <p class="text-xs text-text-muted mt-1 uppercase tracking-widest">JPG, PNG • MAX 5MB • Required</p>
                       <img loading="lazy" id="back-preview" class="mt-3 max-h-32 rounded-lg hidden shadow-lg" alt="">
                     </div>
                   </div>
                   <input type="file" id="id_back" name="id_back" accept="image/*" class="hidden" onchange="previewDoc(this, 'back')" required>
-                  <div id="error-id_back" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                  <div id="error-id_back" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
                 </div>
               </div>
             </div>
@@ -355,7 +355,7 @@
               <span class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">work</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Employment Information</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Employment Information</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
@@ -365,7 +365,7 @@
                   <input type="text" id="staff_id_display" value="Loading..." readonly
                     class="w-full pl-10 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-black text-sm text-primary-base dark:text-primary-base opacity-90 cursor-not-allowed tracking-widest">
                 </div>
-                <p class="text-[9px] text-text-muted mt-1 font-bold italic">Auto-generated identifier</p>
+                <p class="text-xs text-text-muted mt-1 font-bold italic">Auto-generated identifier</p>
               </div>
               <div>
                 <label class="ds-label mb-2">Designation *</label>
@@ -381,7 +381,7 @@
                   </div>
                   <input type="hidden" id="designation" name="designation" value="Teller" required>
                 </div>
-                <div id="error-designation" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-designation" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Branch Assignment *</label>
@@ -395,19 +395,19 @@
                   </div>
                   <input type="hidden" id="staff-branch" name="branch_id">
                 </div>
-                <div id="error-branch_id" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-branch_id" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Date of Joining</label>
                 <input type="date" id="date_of_joining" name="date_of_joining"
                   class="ds-input">
-                <p class="text-[9px] text-text-muted mt-1 font-bold">Defaults to today's date if empty</p>
+                <p class="text-xs text-text-muted mt-1 font-bold">Defaults to today's date if empty</p>
               </div>
               <div>
                 <label class="ds-label mb-2">Department</label>
                 <input type="text" value="Teller Operations" readonly
                   class="w-full px-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl font-bold text-sm opacity-60 cursor-not-allowed">
-                <p class="text-[9px] text-text-muted mt-1 font-bold">Assigned to Teller Operations department</p>
+                <p class="text-xs text-text-muted mt-1 font-bold">Assigned to Teller Operations department</p>
               </div>
             </div>
           </div>
@@ -418,7 +418,7 @@
               <span class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/30 text-danger-base flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">location_on</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Address</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Address</h4>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div class="col-span-1 sm:col-span-2">
@@ -430,19 +430,19 @@
                 <label class="ds-label mb-2">City *</label>
                 <input type="text" id="city" name="city" placeholder="Mumbai" required
                   class="ds-input">
-                <div id="error-city" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-city" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">State *</label>
                 <input type="text" id="state" name="state" placeholder="Maharashtra" required
                   class="ds-input">
-                <div id="error-state" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-state" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Pincode *</label>
                 <input type="text" id="pincode" name="pincode" placeholder="400001" required maxlength="6"
                   class="ds-input">
-                <div id="error-pincode" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+                <div id="error-pincode" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
               </div>
               <div>
                 <label class="ds-label mb-2">Country</label>
@@ -458,7 +458,7 @@
               <span class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 flex items-center justify-center">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">security</span>
               </span>
-              <h4 class="text-[11px] font-black uppercase tracking-[0.15em] text-text-muted">Login & Security</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-text-muted">Login & Security</h4>
             </div>
             
             <div class="p-4 sm:p-5 bg-surface-subtle dark:bg-white/5 rounded-2xl border border-surface-border dark:border-white/10">
@@ -476,11 +476,11 @@
                   <span>Generate</span>
                 </button>
               </div>
-              <p class="text-[9px] text-text-muted mt-3 font-bold flex items-center gap-1.5 italic">
-                <span class="material-symbols-outlined text-[12px] text-warning-base" aria-hidden="true">info</span>
+              <p class="text-xs text-text-muted mt-3 font-bold flex items-center gap-1.5 italic">
+                <span class="material-symbols-outlined text-xs text-warning-base" aria-hidden="true">info</span>
                 Share this password securely with the staff member.
               </p>
-              <div id="error-password" class="text-error text-[10px] font-bold mt-1 hidden" aria-live="polite"></div>
+              <div id="error-password" class="text-error text-xs font-bold mt-1 hidden" aria-live="polite"></div>
             </div>
           </div>
 
@@ -490,7 +490,7 @@
         <div class="p-6 border-t border-surface-border dark:border-white/5 sticky bottom-0 bg-white dark:bg-surface-container z-20 flex flex-col-reverse sm:flex-row justify-end gap-3">
           <button type="button" data-action="closeAddStaffModal()"
             class="admin-btn-secondary w-full sm:w-auto text-center justify-center">Cancel</button>
-          <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background:#002645 !important;">
+          <button type="submit" id="create-staff-submit" class="admin-btn-primary w-full sm:w-auto text-center justify-center" style="background: var(--color-primary-base) !important;">
               <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
               <span>Add Staff Member</span>
           </button>

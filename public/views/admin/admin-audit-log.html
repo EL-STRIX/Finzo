@@ -39,7 +39,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">history</span>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-text-muted">Total Events</div>
+                        <div class="text-xs font-bold uppercase tracking-widest text-text-muted">Total Events</div>
                         <div id="stat-total" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">person</span>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-text-muted">Admin Actions</div>
+                        <div class="text-xs font-bold uppercase tracking-widest text-text-muted">Admin Actions</div>
                         <div id="stat-admin" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">badge</span>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-text-muted">Staff Actions</div>
+                        <div class="text-xs font-bold uppercase tracking-widest text-text-muted">Staff Actions</div>
                         <div id="stat-staff" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
                     </div>
                     <div>
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-text-muted">User Actions</div>
+                        <div class="text-xs font-bold uppercase tracking-widest text-text-muted">User Actions</div>
                         <div id="stat-user" class="text-xl font-black mt-1">0</div>
                     </div>
                 </div>
@@ -169,16 +169,16 @@
                 <!-- PAGINATION -->
                 <div
                     class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing
+                    <div id="pagination-info" class="text-xs font-bold opacity-40 uppercase tracking-widest">Showing
                         0-0 of 0 Records</div>
                     <div class="flex items-center gap-2">
                         <button id="prev-btn"
-                            class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                            class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by audit-log.js -->
                         </div>
                         <button id="next-btn"
-                            class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                     </div>
                 </div>
             </div>
@@ -188,7 +188,7 @@
     <!-- DETAIL MODAL -->
     <div id="detail-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm transition-all detail-close"></div>
-        <div class="relative w-full max-w-2xl bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
+        <div class="relative w-full max-w-2xl bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
             <!-- Header -->
             <div
                 class="p-6 border-b border-surface-border dark:border-white/5 flex items-center justify-between bg-surface-subtle/50 dark:bg-white/5">
@@ -248,7 +248,7 @@
                     <div class="ds-label mb-2">Event Details
                         Payload</div>
                     <div id="detail-details"
-                        class="bg-surface-subtle dark:bg-[#0a1526] p-4 rounded-xl text-xs font-mono overflow-auto max-h-[200px] border border-surface-border dark:border-white/5 shadow-inner">
+                        class="bg-surface-subtle dark:bg-surface-subtle p-4 rounded-xl text-xs font-mono overflow-auto max-h-[200px] border border-surface-border dark:border-white/5 shadow-inner">
                     </div>
                 </div>
             </div>
@@ -264,7 +264,7 @@
     <!-- EXPORT MODAL -->
     <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm transition-all close-export-modal"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter">
+        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5 animate-modal-enter">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary-base bg-primary/5 dark:bg-primary/20">
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">download</span>
@@ -278,8 +278,8 @@
                 </div>
             </div>
             <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
-                <button class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all close-export-modal">Cancel</button>
-                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
+                <button class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all close-export-modal">Cancel</button>
+                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
             </div>
         </div>
     </div>

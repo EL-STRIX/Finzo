@@ -38,23 +38,23 @@
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
             
             <!-- PROFILE HEADER -->
-            <div class="ds-card p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-gradient-to-br from-white to-slate-50 dark:from-[#161b22] dark:to-[#0d1117] border-t-4 border-t-primary">
+            <div class="ds-card p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-gradient-to-br from-white to-slate-50 dark:from-surface-main dark:to-surface-subtle border-t-4 border-t-primary">
                 <div class="profile-avatar-wrapper flex-shrink-0">
                     <div class="profile-avatar" id="avatar-preview-container">
                         <span id="avatar-initials" class="uppercase">--</span>
                         <img loading="lazy" id="avatar-img-preview" src="" class="hidden w-full h-full object-cover" alt="">
                     </div>
                     <label for="photo-upload" class="avatar-upload-btn">
-                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add_a_photo</span>
+                        <span class="material-symbols-outlined text-base" aria-hidden="true">add_a_photo</span>
                     </label>
                     <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
                 </div>
                 <div class="text-center sm:text-left flex-1">
                     <h1 class="text-2xl sm:text-3xl font-black font-headline text-text-main dark:text-white tracking-tight mb-2" id="profile-name-display">Loading...</h1>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4">
-                        <span id="badge-role" class="px-3 py-1 rounded bg-primary-surface dark:bg-primary-surface/10 text-primary-base dark:text-primary-base text-[10px] font-black uppercase tracking-widest border border-blue-200 dark:border-blue-500/20 shadow-sm">—</span>
-                        <span id="badge-access" class="px-3 py-1 rounded bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-500 text-[10px] font-black uppercase tracking-widest border border-purple-200 dark:border-purple-500/20 shadow-sm">—</span>
-                        <span id="badge-status" class="px-3 py-1 rounded bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base text-[10px] font-black uppercase tracking-widest border border-success-base dark:border-success-base/20 shadow-sm">—</span>
+                        <span id="badge-role" class="px-3 py-1 rounded bg-primary-surface dark:bg-primary-surface/10 text-primary-base dark:text-primary-base text-xs font-black uppercase tracking-widest border border-blue-200 dark:border-blue-500/20 shadow-sm">—</span>
+                        <span id="badge-access" class="px-3 py-1 rounded bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-500 text-xs font-black uppercase tracking-widest border border-purple-200 dark:border-purple-500/20 shadow-sm">—</span>
+                        <span id="badge-status" class="px-3 py-1 rounded bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base text-xs font-black uppercase tracking-widest border border-success-base dark:border-success-base/20 shadow-sm">—</span>
                     </div>
                 </div>
             </div>
@@ -160,10 +160,10 @@
                             </table>
                         </div>
                         <div class="p-4 border-t border-surface-border dark:border-white/5 flex items-center justify-between bg-surface-subtle/50 dark:bg-white/2 hidden" id="activity-pagination-container">
-                            <div class="text-[10px] font-black text-text-muted uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
+                            <div class="text-xs font-black text-text-muted uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
                             <div class="flex gap-2">
-                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Prev</button>
-                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-[10px]">Next</button>
+                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-xs">Prev</button>
+                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="ds-btn-secondary !px-3 !py-1.5 !text-xs">Next</button>
                             </div>
                         </div>
                     </div>
@@ -176,8 +176,8 @@
                                 Global Admin Directory
                             </h3>
                             <div class="flex gap-3">
-                                <span id="management-count-badge" class="px-3 py-1 bg-warning-surface text-warning-base dark:bg-warning-surface/20 dark:text-warning-base text-[10px] font-black rounded uppercase tracking-widest border border-warning-base dark:border-warning-base/30">0 Admins</span>
-                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="ds-btn-primary !px-4 !py-1 !text-[10px]">Add Admin</button>
+                                <span id="management-count-badge" class="px-3 py-1 bg-warning-surface text-warning-base dark:bg-warning-surface/20 dark:text-warning-base text-xs font-black rounded uppercase tracking-widest border border-warning-base dark:border-warning-base/30">0 Admins</span>
+                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="ds-btn-primary !px-4 !py-1 !text-xs">Add Admin</button>
                             </div>
                         </div>
                         <!-- Filters -->
@@ -219,7 +219,7 @@
                                 <span class="material-symbols-outlined text-danger-base" aria-hidden="true">lock</span>
                                 Locked Admin Accounts
                             </h3>
-                            <span id="locked-count-badge" class="px-3 py-1 bg-danger-surface text-danger-base dark:bg-danger-surface/20 dark:text-danger-base text-[10px] font-black rounded uppercase tracking-widest border border-danger-base dark:border-danger-base/30">0 Locked</span>
+                            <span id="locked-count-badge" class="px-3 py-1 bg-danger-surface text-danger-base dark:bg-danger-surface/20 dark:text-danger-base text-xs font-black rounded uppercase tracking-widest border border-danger-base dark:border-danger-base/30">0 Locked</span>
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left min-w-[800px]">
@@ -263,7 +263,7 @@
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-bar" style="width:0%"></div>
                                     </div>
-                                    <div class="text-[9px] font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-text"></div>
+                                    <div class="text-xs font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-text"></div>
                                 </div>
                             </div>
                             <div>
@@ -279,17 +279,17 @@
                         <h3 class="font-headline font-bold text-lg text-text-main dark:text-white mb-4">Security Audit</h3>
                         
                         <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Last Login</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">Last Login</span>
                             <div class="text-right">
                                 <div id="sec-last-login" class="text-xs font-bold text-text-main dark:text-white">—</div>
                             </div>
                         </div>
                         <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">IP Address</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">IP Address</span>
                             <span class="text-xs font-mono font-bold text-text-main dark:text-white" id="sec-last-ip">—</span>
                         </div>
                         <div class="flex justify-between items-center py-2">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Pwd Updated</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">Pwd Updated</span>
                             <span class="text-xs font-bold text-text-main dark:text-white" id="sec-last-pwd">—</span>
                         </div>
                     </div>

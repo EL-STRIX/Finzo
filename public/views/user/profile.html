@@ -10,7 +10,7 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
+<body class="bg-surface-subtle font-body text-text-main antialiased">
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 <div id="sidebar-root"></div>
 <div class="main">
@@ -18,9 +18,9 @@
 
 <div class="page-content ds-container py-8">
   <div class="mb-8 ds-animate-fade">
-    <div class="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Identity & Security</div>
-    <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight">Your Profile</h1>
-    <p class="text-[var(--color-text-muted)] mt-1">Manage your personal information and Finzo account settings.</p>
+    <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Identity & Security</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Your Profile</h1>
+    <p class="text-text-muted mt-1">Manage your personal information and Finzo account settings.</p>
   </div>
   
   <div class="flex flex-col lg:flex-row gap-6">
@@ -32,11 +32,11 @@
             <span class="skeleton w-full h-full rounded-full"></span>
           </div>
           <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success-base border-2 border-white flex items-center justify-center text-white" title="Identity Verified">
-            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">verified</span>
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">verified</span>
           </div>
         </div>
-        <h2 class="font-display text-xl font-bold text-[var(--color-text-main)] mb-1" id="profile-name"><span class="skeleton w-32 h-6"></span></h2>
-        <div class="font-mono text-sm font-bold text-[var(--color-text-muted)] mb-4" id="info-customer-id">—</div>
+        <h2 class="font-display text-xl font-bold text-text-main mb-1" id="profile-name"><span class="skeleton w-32 h-6"></span></h2>
+        <div class="font-mono text-sm font-bold text-text-muted mb-4" id="info-customer-id">—</div>
         
         <div class="flex flex-wrap justify-center gap-2 mb-2">
           <span class="ds-badge ds-badge-success text-xs">Verified</span>
@@ -51,13 +51,13 @@
         </div>
         
         <div class="space-y-3">
-          <div class="flex justify-between items-center p-3 rounded-lg bg-[var(--color-surface-subtle)] border border-[var(--color-border-main)]">
-            <span class="text-xs font-bold text-[var(--color-text-muted)] uppercase">Account No</span>
-            <span class="font-mono text-sm font-bold text-[var(--color-text-main)]" id="info-acc-no">—</span>
+          <div class="flex justify-between items-center p-3 rounded-lg bg-surface-subtle border border-border-main">
+            <span class="text-xs font-bold text-text-muted uppercase">Account No</span>
+            <span class="font-mono text-sm font-bold text-text-main" id="info-acc-no">—</span>
           </div>
           
-          <div class="flex justify-between items-center p-3 rounded-lg bg-[var(--color-surface-subtle)] border border-[var(--color-border-main)]">
-            <span class="text-xs font-bold text-[var(--color-text-muted)] uppercase">Status</span>
+          <div class="flex justify-between items-center p-3 rounded-lg bg-surface-subtle border border-border-main">
+            <span class="text-xs font-bold text-text-muted uppercase">Status</span>
             <div id="info-status"><span class="skeleton w-16 h-5"></span></div>
           </div>
         </div>
@@ -79,46 +79,46 @@
       
       <!-- Personal Information -->
       <div class="ds-card">
-        <div class="ds-card-header border-b border-[var(--color-border-main)]">
+        <div class="ds-card-header border-b border-border-main">
           <div>
             <h3 class="font-display text-lg font-bold">Personal Information</h3>
-            <div class="text-sm text-[var(--color-text-muted)]">Update your contact details and view identity info.</div>
+            <div class="text-sm text-text-muted">Update your contact details and view identity info.</div>
           </div>
         </div>
         <div class="ds-card-body p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="form-group mb-0">
-              <label for="edit-name" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Full Legal Name</label>
+              <label for="edit-name" class="form-label text-xs uppercase tracking-wider mb-2 block text-text-muted">Full Legal Name</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-disabled)]" aria-hidden="true">person</span>
-                <input type="text" class="form-control pl-10 bg-[var(--color-surface-subtle)] text-[var(--color-text-disabled)] border-dashed cursor-not-allowed" id="edit-name" readonly tabindex="-1" placeholder="Legal full name"/>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled" aria-hidden="true">person</span>
+                <input type="text" class="form-control pl-10 bg-surface-subtle text-text-disabled border-dashed cursor-not-allowed" id="edit-name" readonly tabindex="-1" placeholder="Legal full name"/>
                 <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-success-base text-lg" title="Identity Verified" aria-hidden="true">verified</span>
               </div>
-              <div class="text-xs text-[var(--color-text-muted)] mt-2 font-medium">Verified legal name cannot be changed.</div>
+              <div class="text-xs text-text-muted mt-2 font-medium">Verified legal name cannot be changed.</div>
             </div>
             
             <div class="form-group mb-0">
-              <label for="edit-phone" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Phone Number</label>
+              <label for="edit-phone" class="form-label text-xs uppercase tracking-wider mb-2 block text-text-muted">Phone Number</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">call</span>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">call</span>
                 <input type="text" class="form-control pl-10" id="edit-phone" placeholder="+91 00000 00000"/>
               </div>
             </div>
           </div>
           
           <div class="form-group mb-6">
-            <label for="edit-email" class="form-label text-xs uppercase tracking-wider mb-2 block text-[var(--color-text-muted)]">Primary Email Address</label>
+            <label for="edit-email" class="form-label text-xs uppercase tracking-wider mb-2 block text-text-muted">Primary Email Address</label>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">mail</span>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">mail</span>
               <input type="email" class="form-control pl-10" id="edit-email" placeholder="example@finzo.com"/>
             </div>
-            <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-[var(--color-text-muted)]">
+            <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-text-muted">
               <span class="material-symbols-outlined text-success-base text-sm" aria-hidden="true">check_circle</span>
               Email is verified and linked to your ACID protection.
             </div>
           </div>
           
-          <div class="flex justify-end pt-4 border-t border-[var(--color-border-main)]">
+          <div class="flex justify-end pt-4 border-t border-border-main">
             <button class="btn btn-primary" data-action="saveProfile()">Save Changes</button>
           </div>
         </div>
@@ -132,8 +132,8 @@
               <span class="material-symbols-outlined text-primary-base-base text-2xl" aria-hidden="true">lock_open</span>
             </div>
             <div>
-              <h3 class="font-display font-bold text-[var(--color-text-main)]">Credentials Registry</h3>
-              <div class="text-sm text-[var(--color-text-muted)]">Last changed: 4 days ago</div>
+              <h3 class="font-display font-bold text-text-main">Credentials Registry</h3>
+              <div class="text-sm text-text-muted">Last changed: 4 days ago</div>
             </div>
           </div>
           <a href="change-password.html" class="btn btn-secondary shrink-0">Manage Access</a>

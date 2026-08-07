@@ -41,9 +41,9 @@
                             <div class="text-center sm:text-left flex-1">
                                 <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-main dark:text-white">---</h3>
                                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
-                                    <span id="info-admin-id" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-surface-hover text-text-muted dark:bg-white/5 dark:text-text-muted dark:text-text-muted border border-surface-border/50 dark:border-white/10 font-mono">---</span>
-                                    <span id="info-role-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">---</span>
-                                    <span id="info-access-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">---</span>
+                                    <span id="info-admin-id" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest bg-surface-hover text-text-muted dark:bg-white/5 dark:text-text-muted dark:text-text-muted border border-surface-border/50 dark:border-white/10 font-mono">---</span>
+                                    <span id="info-role-badge" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest">---</span>
+                                    <span id="info-access-badge" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest">---</span>
                                 </div>
                                 <p class="text-sm font-medium text-text-muted dark:text-text-muted dark:text-text-muted mt-4 flex items-center justify-center sm:justify-start gap-2">
                                     <span class="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span>
@@ -87,7 +87,7 @@
                             <div>
                                 <label class="ds-label mb-1.5 block">Last Login</label>
                                 <div id="sys-last-login" class="text-xs font-bold text-text-main dark:text-text-muted">---</div>
-                                <div id="sys-last-ip" class="text-[9px] font-black text-text-muted dark:text-text-muted mt-1">---</div>
+                                <div id="sys-last-ip" class="text-xs font-black text-text-muted dark:text-text-muted mt-1">---</div>
                             </div>
                             <div>
                                 <label class="ds-label mb-1.5 block">PWD Last Changed</label>
@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div id="suspend-label" class="text-sm font-black dark:text-white">Suspend Admin</div>
-                                        <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Temporarily revoke access</div>
+                                        <div class="text-xs font-medium text-text-muted dark:text-text-muted">Temporarily revoke access</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted" aria-hidden="true">chevron_right</span>
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div class="text-sm font-black dark:text-white">Reset Password</div>
-                                        <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Force new credentials</div>
+                                        <div class="text-xs font-medium text-text-muted dark:text-text-muted">Force new credentials</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted" aria-hidden="true">chevron_right</span>
@@ -152,7 +152,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div class="text-sm font-black text-danger-base">Delete Account</div>
-                                        <div class="text-[10px] font-medium text-text-muted dark:text-text-muted">Permanent removal</div>
+                                        <div class="text-xs font-medium text-text-muted dark:text-text-muted">Permanent removal</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted" aria-hidden="true">chevron_right</span>
@@ -161,9 +161,9 @@
                     </div>
 
                     <!-- Security Insights -->
-                    <div class="p-6 bg-primary-surface dark:bg-primary-surface/10 border border-indigo-100 dark:border-indigo-500/20 rounded-[20px] overflow-hidden relative shadow-sm">
+                    <div class="p-6 bg-primary-surface dark:bg-primary-surface/10 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl overflow-hidden relative shadow-sm">
                         <div class="relative z-10">
-                            <h5 class="text-[10px] font-black text-primary-base dark:text-primary-base uppercase tracking-widest mb-4">Security Note</h5>
+                            <h5 class="text-xs font-black text-primary-base dark:text-primary-base uppercase tracking-widest mb-4">Security Note</h5>
                             <p id="security-note-text" class="text-xs leading-relaxed text-primary-base dark:text-primary-base font-medium italic">
                                 "All administrative actions performed on this account are recorded in the global audit log and attributed to your session."
                             </p>
@@ -205,7 +205,7 @@
     <!-- Reset Password Modal -->
     <div id="reset-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm transition-all" data-action="window.AdminDetail.closeResetModal()"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
+        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 bg-primary-surface dark:bg-primary-surface/10 text-primary-base rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">lock_reset</span>
@@ -223,14 +223,14 @@
                     <div class="p-4 bg-success-surface dark:bg-success-surface/10 border border-success-base dark:border-success-base/20 rounded-2xl text-center">
                         <div class="ds-label mb-2 text-success-base">Temporary Password</div>
                         <div id="generated-password-display" class="text-2xl font-black tracking-widest text-text-main dark:text-white font-mono select-all cursor-pointer" title="Click to copy">--------</div>
-                        <div class="text-[10px] font-bold text-text-muted mt-2 italic">Valid until <span id="password-expiry-display">--:--</span></div>
+                        <div class="text-xs font-bold text-text-muted mt-2 italic">Valid until <span id="password-expiry-display">--:--</span></div>
                     </div>
                     <p class="text-xs text-text-muted text-center font-medium">Copy this password and provide it to the administrator. It will not be shown again.</p>
                 </div>
             </div>
             <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2" id="reset-modal-actions" role="dialog" aria-modal="true">
-                <button data-action="window.AdminDetail.closeResetModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
-                <button id="reset-submit-btn" data-action="window.AdminDetail.submitReset()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                <button data-action="window.AdminDetail.closeResetModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all">Cancel</button>
+                <button id="reset-submit-btn" data-action="window.AdminDetail.submitReset()" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                     Generate Now
                     <span class="material-symbols-outlined hidden animate-spin text-sm" aria-hidden="true">progress_activity</span>
                 </button>
@@ -241,7 +241,7 @@
     <!-- Delete Confirmation Modal -->
     <div id="delete-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm transition-all" data-action="window.AdminDetail.closeDeleteModal()"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
+        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5 animate-modal-enter !p-0">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 bg-danger-surface dark:bg-danger-surface/10 text-danger-base rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
@@ -255,8 +255,8 @@
                 </p>
             </div>
             <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
-                <button data-action="window.AdminDetail.closeDeleteModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
-                <button id="delete-submit-btn" data-action="window.AdminDetail.submitDelete()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-danger-surface shadow-rose-500/20 hover:bg-danger-surface hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                <button data-action="window.AdminDetail.closeDeleteModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all">Cancel</button>
+                <button id="delete-submit-btn" data-action="window.AdminDetail.submitDelete()" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-danger-surface shadow-rose-500/20 hover:bg-danger-surface hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                     Delete Admin
                     <span class="material-symbols-outlined hidden animate-spin text-sm" aria-hidden="true">progress_activity</span>
                 </button>

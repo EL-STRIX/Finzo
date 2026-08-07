@@ -42,22 +42,22 @@
 
                         <!-- Type Tabs -->
                         <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-type="all">
                                 All
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="deposit">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="deposit">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">south_west</span>
                                 Deposits
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="withdrawal">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="withdrawal">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">north_east</span>
                                 Withdrawals
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="transfer">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="transfer">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">sync_alt</span>
                                 Transfers
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="interest_credit">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="interest_credit">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">percent</span>
                                 Interest
                             </button>
@@ -88,13 +88,13 @@
 
                 <!-- PAGINATION -->
                 <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Records</div>
+                    <div id="pagination-info" class="text-xs font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Records</div>
                     <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by transactions.js -->
                         </div>
-                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
     <!-- EXPORT MODAL -->
     <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm close-export-modal transition-all"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5 animate-modal-enter">
+        <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5 animate-modal-enter">
             <div class="p-8 pb-4 text-center shrink-0">
                 <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-primary-base bg-primary/5 dark:bg-primary/20">
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">download</span>
@@ -118,8 +118,8 @@
                 </div>
             </div>
             <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
-                <button class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all close-export-modal">Cancel</button>
-                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
+                <button class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all close-export-modal">Cancel</button>
+                <button id="start-export" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-primary-base shadow-primary-base/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]">Generate Report</button>
             </div>
         </div>
     </div>

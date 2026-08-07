@@ -10,7 +10,7 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased">
+<body class="bg-surface-subtle font-body text-text-main antialiased">
 <script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
 <div id="sidebar-root"></div>
 <div class="main">
@@ -18,36 +18,36 @@
 
 <div class="page-content ds-container py-8">
   <div class="mb-8 ds-animate-fade">
-    <div class="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Banking</div>
-    <h1 class="font-display text-3xl font-extrabold text-[var(--color-text-main)] tracking-tight">All Transactions</h1>
-    <p class="text-[var(--color-text-muted)] mt-1">Complete history of all your account activity.</p>
+    <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">All Transactions</h1>
+    <p class="text-text-muted mt-1">Complete history of all your account activity.</p>
   </div>
 
   <!-- FILTER BAR -->
   <div class="ds-card mb-6 ds-animate-slide-up">
     <!-- Tabs -->
-    <div class="border-b border-[var(--color-border-main)] flex overflow-x-auto hide-scrollbar bg-[var(--color-surface-subtle)]">
+    <div class="border-b border-border-main flex overflow-x-auto hide-scrollbar bg-surface-subtle">
       <button class="filter-tab active px-6 py-4 text-sm font-bold border-b-2 transition-colors border-primary-base text-primary-base-base" data-action="filterTxns(&#039;all&#039;,this)">All</button>
-      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors" data-action="filterTxns(&#039;credit&#039;,this)">Credits</button>
-      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors" data-action="filterTxns(&#039;debit&#039;,this)">Debits</button>
-      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors" data-action="filterTxns(&#039;transfer&#039;,this)">Transfers</button>
+      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-text-muted hover:text-text-main transition-colors" data-action="filterTxns(&#039;credit&#039;,this)">Credits</button>
+      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-text-muted hover:text-text-main transition-colors" data-action="filterTxns(&#039;debit&#039;,this)">Debits</button>
+      <button class="filter-tab px-6 py-4 text-sm font-bold border-b-2 border-transparent text-text-muted hover:text-text-main transition-colors" data-action="filterTxns(&#039;transfer&#039;,this)">Transfers</button>
     </div>
     
     <!-- Controls -->
     <div class="p-4 sm:p-6 flex flex-col sm:flex-row gap-4 items-end">
       <div class="w-full sm:flex-1">
-        <label for="search" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Search</label>
+        <label for="search" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Search</label>
         <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true">search</span>
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
           <input type="text" id="search" class="form-control pl-10 h-11" placeholder="Search transactions..." oninput="renderTable()"/>
         </div>
       </div>
       <div class="w-full sm:w-40">
-        <label for="from-date" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">From Date</label>
+        <label for="from-date" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">From Date</label>
         <input type="date" id="from-date" class="form-control h-11" onchange="loadTransactions()"/>
       </div>
       <div class="w-full sm:w-40">
-        <label for="to-date" class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-2">To Date</label>
+        <label for="to-date" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">To Date</label>
         <input type="date" id="to-date" class="form-control h-11" onchange="loadTransactions()"/>
       </div>
       <div class="flex gap-2 w-full sm:w-auto">
@@ -61,9 +61,9 @@
 
   <!-- TABLE -->
   <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
-    <div class="ds-card-header border-b border-[var(--color-border-main)] flex justify-between items-center bg-[var(--color-surface-subtle)]">
-      <h3 class="font-display text-sm font-bold text-[var(--color-text-main)] uppercase tracking-wider">Transaction History</h3>
-      <span id="txn-count" class="text-xs font-bold text-[var(--color-text-muted)] bg-[var(--color-surface-subtle)] px-2 py-1 rounded-full border border-[var(--color-border-main)]">Loading...</span>
+    <div class="ds-card-header border-b border-border-main flex justify-between items-center bg-surface-subtle">
+      <h3 class="font-display text-sm font-bold text-text-main uppercase tracking-wider">Transaction History</h3>
+      <span id="txn-count" class="text-xs font-bold text-text-muted bg-surface-subtle px-2 py-1 rounded-full border border-border-main">Loading...</span>
     </div>
     
     <div class="overflow-x-auto">
@@ -90,8 +90,8 @@
       </table>
     </div>
     
-    <div class="p-4 sm:p-6 border-t border-[var(--color-border-main)] flex flex-col sm:flex-row gap-4 justify-between items-center bg-[var(--color-surface-subtle)]">
-      <span id="pag-info" class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider"></span>
+    <div class="p-4 sm:p-6 border-t border-border-main flex flex-col sm:flex-row gap-4 justify-between items-center bg-surface-subtle">
+      <span id="pag-info" class="text-xs font-bold text-text-muted uppercase tracking-wider"></span>
       <div class="flex items-center gap-1" id="pag-nums"></div>
     </div>
   </div>

@@ -40,26 +40,26 @@
         <main class="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full space-y-6">
             
             <!-- PROFILE HEADER -->
-            <div class="ds-card p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-gradient-to-br from-white to-slate-50 dark:from-[#161b22] dark:to-[#0d1117] border-t-4 border-t-amber-500">
+            <div class="ds-card p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-gradient-to-br from-white to-slate-50 dark:from-surface-main dark:to-surface-subtle border-t-4 border-t-amber-500">
                 <div class="profile-avatar-wrapper flex-shrink-0">
                     <div class="profile-avatar" id="profile-avatar">
                         <span id="profile-avatar-text">--</span>
                     </div>
                     <label for="photo-upload" class="avatar-upload-btn">
-                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add_a_photo</span>
+                        <span class="material-symbols-outlined text-base" aria-hidden="true">add_a_photo</span>
                     </label>
                     <input type="file" id="photo-upload" accept="image/*" class="hidden">
                 </div>
                 <div class="text-center sm:text-left flex-1">
                     <h1 class="text-2xl sm:text-3xl font-black font-headline text-text-main dark:text-white tracking-tight mb-2" id="profile-name">Loading...</h1>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
-                        <span class="px-3 py-1 rounded bg-warning-surface dark:bg-warning-surface/10 text-warning-base dark:text-warning-base text-[10px] font-black uppercase tracking-widest border border-warning-base dark:border-warning-base/20" id="profile-designation">—</span>
-                        <span class="px-3 py-1 rounded bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted text-[10px] font-black uppercase tracking-widest border border-surface-border dark:border-white/10" id="profile-department">—</span>
+                        <span class="px-3 py-1 rounded bg-warning-surface dark:bg-warning-surface/10 text-warning-base dark:text-warning-base text-xs font-black uppercase tracking-widest border border-warning-base dark:border-warning-base/20" id="profile-designation">—</span>
+                        <span class="px-3 py-1 rounded bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted text-xs font-black uppercase tracking-widest border border-surface-border dark:border-white/10" id="profile-department">—</span>
                     </div>
                     <div class="flex flex-wrap justify-center sm:justify-start gap-6 text-xs font-bold text-text-muted">
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">badge</span> ID: <span id="profile-staff-id" class="text-text-main dark:text-white font-mono">—</span></div>
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">apartment</span> <span id="profile-branch" class="text-text-main dark:text-white">—</span></div>
-                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">calendar_today</span> Joined <span id="profile-joined" class="text-text-main dark:text-white">—</span></div>
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-text-muted" aria-hidden="true">badge</span> ID: <span id="profile-staff-id" class="text-text-main dark:text-white font-mono">—</span></div>
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-text-muted" aria-hidden="true">apartment</span> <span id="profile-branch" class="text-text-main dark:text-white">—</span></div>
+                        <div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-text-muted" aria-hidden="true">calendar_today</span> Joined <span id="profile-joined" class="text-text-main dark:text-white">—</span></div>
                     </div>
                 </div>
                 <!-- Action -> might add quick edit button if needed -->
@@ -80,26 +80,26 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Full Name</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Full Name</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-name">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Date of Birth</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Date of Birth</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-dob">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Gender</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Gender</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-gender">—</div>
                                 </div>
                                 <div class="relative group">
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Phone Number</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Phone Number</div>
                                     <div class="text-sm font-mono font-bold text-text-main dark:text-white" id="info-phone">—</div>
                                     <button data-action="openEditModal(&#039;phone&#039;)" class="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-warning-base hover:bg-warning-surface dark:hover:bg-warning-surface/10 opacity-0 group-hover:opacity-100 transition-all">
-                                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                                        <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
                                     </button>
                                 </div>
                                 <div class="sm:col-span-2">
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Personal Email</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Personal Email</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-email">—</div>
                                 </div>
                             </div>
@@ -113,27 +113,27 @@
                                 <span class="material-symbols-outlined text-danger-base" aria-hidden="true">emergency</span>
                                 Emergency Contact
                             </h3>
-                            <button data-action="openEditModal(&#039;emergency&#039;)" class="px-3 py-1.5 rounded-lg bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base text-[10px] font-black uppercase tracking-widest border border-danger-base dark:border-danger-base/20 hover:bg-danger-surface transition-all flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">edit</span> Edit
+                            <button data-action="openEditModal(&#039;emergency&#039;)" class="px-3 py-1.5 rounded-lg bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base text-xs font-black uppercase tracking-widest border border-danger-base dark:border-danger-base/20 hover:bg-danger-surface transition-all flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm" aria-hidden="true">edit</span> Edit
                             </button>
                         </div>
                         <div class="p-6 bg-danger-surface/30 dark:bg-danger-surface/5">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div class="flex items-center gap-4 bg-white dark:bg-[#161b22] p-4 rounded-xl border border-danger-base dark:border-danger-base/20">
+                                <div class="flex items-center gap-4 bg-white dark:bg-surface-subtle dark:bg-surface-main p-4 rounded-xl border border-danger-base dark:border-danger-base/20">
                                     <div class="w-10 h-10 rounded-full bg-danger-surface dark:bg-danger-surface/20 text-danger-base flex items-center justify-center">
                                         <span class="material-symbols-outlined" aria-hidden="true">person</span>
                                     </div>
                                     <div>
-                                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Contact Name</div>
+                                        <div class="text-xs font-black text-text-muted uppercase tracking-widest">Contact Name</div>
                                         <div class="text-sm font-bold text-text-main dark:text-white mt-1" id="info-emergency-name">—</div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4 bg-white dark:bg-[#161b22] p-4 rounded-xl border border-danger-base dark:border-danger-base/20">
+                                <div class="flex items-center gap-4 bg-white dark:bg-surface-subtle dark:bg-surface-main p-4 rounded-xl border border-danger-base dark:border-danger-base/20">
                                     <div class="w-10 h-10 rounded-full bg-danger-surface dark:bg-danger-surface/20 text-danger-base flex items-center justify-center">
                                         <span class="material-symbols-outlined" aria-hidden="true">call</span>
                                     </div>
                                     <div>
-                                        <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Contact Phone</div>
+                                        <div class="text-xs font-black text-text-muted uppercase tracking-widest">Contact Phone</div>
                                         <div class="text-sm font-mono font-bold text-text-main dark:text-white mt-1" id="info-emergency-phone">—</div>
                                     </div>
                                 </div>
@@ -152,23 +152,23 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div class="sm:col-span-2 lg:col-span-4">
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Street Address</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Street Address</div>
                                     <div class="text-sm font-medium text-text-main dark:text-white" id="info-street">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">City</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">City</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-city">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">State</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">State</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-state">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Pincode</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Pincode</div>
                                     <div class="text-sm font-mono font-bold text-text-main dark:text-white" id="info-pincode">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Country</div>
+                                    <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Country</div>
                                     <div class="text-sm font-bold text-text-main dark:text-white" id="info-country">—</div>
                                 </div>
                             </div>
@@ -189,24 +189,24 @@
                         
                         <form id="password-form" class="space-y-4">
                             <div>
-                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
+                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
                                 <input type="password" id="pw-current" required class="w-full ds-input">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
+                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
                                 <input type="password" id="pw-new" required minlength="8" class="w-full ds-input" oninput="checkPasswordStrength()">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
                                     </div>
-                                    <div class="text-[9px] font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-strength-text"></div>
+                                    <div class="text-xs font-bold mt-1 text-text-muted uppercase tracking-widest" id="pw-strength-text"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
+                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
                                 <input type="password" id="pw-confirm" required class="w-full ds-input">
                             </div>
-                            <div id="pw-error" class="hidden text-[10px] font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
+                            <div id="pw-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
                             <button type="submit" id="pw-submit-btn" class="w-full h-10 bg-warning-surface text-white font-bold rounded-lg shadow-md shadow-amber-500/20 hover:bg-warning-surface transition-all text-xs uppercase tracking-widest mt-2">
                                 Update Password
                             </button>
@@ -229,15 +229,15 @@
                         <h3 class="font-headline font-bold text-lg text-text-main dark:text-white mb-4">Account Status</h3>
                         
                         <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Status</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">Status</span>
                             <div id="info-status">—</div>
                         </div>
                         <div class="flex justify-between items-center py-2 border-b border-surface-border dark:border-white/5">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">Last Login</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">Last Login</span>
                             <span class="text-xs font-bold text-text-main dark:text-white text-right" id="info-last-login">—</span>
                         </div>
                         <div class="flex justify-between items-center py-2">
-                            <span class="text-[10px] font-black text-text-muted uppercase tracking-widest">IP Address</span>
+                            <span class="text-xs font-black text-text-muted uppercase tracking-widest">IP Address</span>
                             <span class="text-xs font-mono font-bold text-text-main dark:text-white" id="info-last-ip">—</span>
                         </div>
                     </div>
@@ -254,7 +254,7 @@
             <h3 class="font-headline font-bold text-xl mb-6 text-text-main dark:text-white" id="edit-modal-title">Edit</h3>
             <form id="edit-form" class="space-y-4">
                 <div id="edit-fields"></div>
-                <div id="edit-error" class="hidden text-[10px] font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
+                <div id="edit-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
                 <div class="flex gap-3 pt-4 border-t border-surface-border dark:border-white/5 mt-4">
                     <button type="button" data-action="closeEditModal()" class="flex-1 py-2.5 ds-btn-secondary text-sm">Cancel</button>
                     <button type="submit" id="edit-submit-btn" class="flex-1 py-2.5 bg-warning-surface text-white font-bold rounded-xl hover:bg-warning-surface transition-all text-sm">Save</button>
@@ -265,7 +265,7 @@
 
     <!-- END SHIFT MODAL -->
     <div id="modal-overlay" class="fixed inset-0 bg-surface-dark/60 backdrop-blur-sm z-[2000] hidden items-center justify-center opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
-        <div id="logout-modal" class="bg-white dark:bg-[#161b22] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-surface-border dark:border-white/10" role="dialog" aria-modal="true">
+        <div id="logout-modal" class="bg-white dark:bg-surface-subtle dark:bg-surface-main rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 hidden border border-surface-border dark:border-white/10" role="dialog" aria-modal="true">
             <div class="w-16 h-16 rounded-2xl bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base flex items-center justify-center mb-6 mx-auto border border-danger-base dark:border-danger-base/20">
                 <span class="material-symbols-outlined text-3xl font-black" aria-hidden="true">logout</span>
             </div>

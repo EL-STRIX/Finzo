@@ -31,8 +31,8 @@
         <div class="p-4 sm:p-6 lg:px-10 lg:pt-6 lg:pb-10">
             <!-- BACK BUTTON -->
             <div class="mb-4 -ml-3">
-                <a href="admin-locked-accounts.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> Back
+                <a href="admin-locked-accounts.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
+                    <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> Back
                 </a>
             </div>
 
@@ -49,8 +49,8 @@
                                 <h1 id="d-name" class="text-xl sm:text-2xl font-black font-headline tracking-tight text-text-main dark:text-white mb-1">-</h1>
                                 <p id="d-email" class="text-xs font-bold opacity-40 mb-3">-</p>
                                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                                    <span id="d-main-badge" class="px-3 py-1 bg-danger-surface dark:bg-danger-surface/10 text-danger-base text-[10px] font-black rounded-lg uppercase tracking-widest">Locked</span>
-                                    <span id="d-acc-type-badge" class="px-3 py-1 bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
+                                    <span id="d-main-badge" class="px-3 py-1 bg-danger-surface dark:bg-danger-surface/10 text-danger-base text-xs font-black rounded-lg uppercase tracking-widest">Locked</span>
+                                    <span id="d-acc-type-badge" class="px-3 py-1 bg-surface-hover dark:bg-white/5 text-text-muted dark:text-text-muted text-xs font-black rounded-lg uppercase tracking-widest">-</span>
                                 </div>
                             </div>
                         </div>
@@ -58,26 +58,26 @@
                         <!-- Account Details Grid -->
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-surface-border dark:border-white/5">
                             <div>
-                                <p class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Account No</p>
+                                <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Account No</p>
                                 <p id="d-acc-no" class="font-bold text-xs tracking-wider">-</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Mobile</p>
+                                <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Mobile</p>
                                 <p id="d-phone" class="font-bold text-xs">-</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Account Type</p>
+                                <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Account Type</p>
                                 <p id="d-acc-type" class="font-bold text-xs">-</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-text-muted uppercase tracking-widest mb-1">Date Joined</p>
+                                <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Date Joined</p>
                                 <p id="d-opened" class="font-bold text-xs">-</p>
                             </div>
                         </div>
 
                         <!-- Balance -->
                         <div class="mt-4 pt-4 border-t border-surface-border dark:border-white/5">
-                            <p class="text-[9px] font-black text-primary-base uppercase tracking-widest mb-1">Current Balance</p>
+                            <p class="text-xs font-black text-primary-base uppercase tracking-widest mb-1">Current Balance</p>
                             <p id="d-balance" class="text-xl font-black text-primary-base dark:text-primary-base">-</p>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                             <div class="w-8 h-8 rounded-lg bg-danger-surface dark:bg-danger-surface/10 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-lg text-danger-base" aria-hidden="true">gpp_maybe</span>
                             </div>
-                            <h3 class="text-[10px] font-black text-text-muted uppercase tracking-widest">Incident Report</h3>
+                            <h3 class="text-xs font-black text-text-muted uppercase tracking-widest">Incident Report</h3>
                         </div>
                         <div class="bg-danger-surface dark:bg-danger-surface/5 p-5 rounded-xl border border-danger-base dark:border-danger-base/10">
                             <div id="d-reason" class="text-sm font-bold text-text-main dark:text-white leading-relaxed">-</div>
@@ -102,17 +102,17 @@
                                 <div class="w-8 h-8 rounded-lg bg-surface-hover dark:bg-white/5 flex items-center justify-center">
                                     <span class="material-symbols-outlined text-lg text-text-muted" aria-hidden="true">history</span>
                                 </div>
-                                <h3 class="text-[10px] font-black dark:text-white uppercase tracking-widest">Login History</h3>
+                                <h3 class="text-xs font-black dark:text-white uppercase tracking-widest">Login History</h3>
                             </div>
-                            <span id="log-count-badge" class="px-2.5 py-1 bg-surface-hover dark:bg-white/5 text-text-muted text-[9px] font-black rounded-md uppercase">0 Events</span>
+                            <span id="log-count-badge" class="px-2.5 py-1 bg-surface-hover dark:bg-white/5 text-text-muted text-xs font-black rounded-md uppercase">0 Events</span>
                         </div>
                         <div class="overflow-x-auto w-full">
                             <table class="ds-table w-full text-left min-w-[550px]">
                                 <thead scope="col">
                                     <tr>
-                                        <th class="text-[9px] pl-6" scope="col">Status</th>
-                                        <th class="text-[9px]" scope="col">IP Address</th>
-                                        <th class="text-[9px]" scope="col">Date & Time</th>
+                                        <th class="text-xs pl-6" scope="col">Status</th>
+                                        <th class="text-xs" scope="col">IP Address</th>
+                                        <th class="text-xs" scope="col">Date & Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-logs-body">
@@ -127,12 +127,12 @@
                 <div class="space-y-6">
                     <!-- ACCESS CONTROL -->
                     <div class="ds-card p-6" id="unlock-action-card">
-                        <h3 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Access Control</h3>
+                        <h3 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Access Control</h3>
                         <button data-action="openUnlockModal()" class="admin-btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">vpn_key</span> Generate & Unlock
                         </button>
                         <div class="p-3 bg-warning-surface dark:bg-warning-surface/5 rounded-xl border border-warning-base dark:border-warning-base/10 text-center">
-                            <p class="text-[9px] font-bold text-warning-base dark:text-warning-base uppercase leading-relaxed">
+                            <p class="text-xs font-bold text-warning-base dark:text-warning-base uppercase leading-relaxed">
                                 Unlocking will provide a temporary PIN valid for 24 hours only.
                             </p>
                         </div>
@@ -140,33 +140,33 @@
 
                     <!-- TEMP PASS CARD (Hidden initially) -->
                     <div id="temp-pass-card" class="ds-card p-6 hidden" style="background:rgba(16,185,129,0.05); border:2px solid #10b981;">
-                        <div class="text-[10px] font-black text-success-base uppercase tracking-widest mb-4">Account Reinstated</div>
+                        <div class="text-xs font-black text-success-base uppercase tracking-widest mb-4">Account Reinstated</div>
                         <div class="p-4 bg-white dark:bg-surface-dark border border-success-base dark:border-green-900/40 rounded-xl mb-3">
-                            <div class="text-[9px] font-black text-success-base uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
+                            <div class="text-xs font-black text-success-base uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
                             <div id="display-pass" class="text-center font-mono text-xl font-black text-success-base dark:text-success-base py-2 border-b border-success-base mb-2"></div>
-                            <button data-action="copyDisplayPass()" class="w-full text-success-base text-[9px] font-black uppercase tracking-widest py-1 hover:bg-success-surface rounded transition-all">Copy to Clipboard</button>
+                            <button data-action="copyDisplayPass()" class="w-full text-success-base text-xs font-black uppercase tracking-widest py-1 hover:bg-success-surface rounded transition-all">Copy to Clipboard</button>
                         </div>
-                        <div class="text-[9px] opacity-50 text-center uppercase font-bold">Must reset PIN on first login</div>
+                        <div class="text-xs opacity-50 text-center uppercase font-bold">Must reset PIN on first login</div>
                     </div>
 
                     <!-- LOCK CONTEXT -->
                     <div class="ds-card p-6">
-                        <h3 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Lock Details</h3>
+                        <h3 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Lock Details</h3>
                         <div class="space-y-4">
                             <div class="flex items-center justify-between py-2 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[9px] font-bold uppercase opacity-40">Locked On</span>
+                                <span class="text-xs font-bold uppercase opacity-40">Locked On</span>
                                 <span id="d-locked-date" class="text-xs font-black">-</span>
                             </div>
                             <div class="flex items-center justify-between py-2 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[9px] font-bold uppercase opacity-40">Lock Time</span>
+                                <span class="text-xs font-bold uppercase opacity-40">Lock Time</span>
                                 <span id="d-lock-time" class="text-xs font-black">-</span>
                             </div>
                             <div class="flex items-center justify-between py-2 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[9px] font-bold uppercase opacity-40">Locked By</span>
+                                <span class="text-xs font-bold uppercase opacity-40">Locked By</span>
                                 <span id="d-locked-by" class="text-xs font-black">-</span>
                             </div>
                             <div class="flex items-center justify-between py-2">
-                                <span class="text-[9px] font-bold uppercase opacity-40">IP Address</span>
+                                <span class="text-xs font-bold uppercase opacity-40">IP Address</span>
                                 <span id="d-ip" class="text-xs font-black font-mono">-</span>
                             </div>
                         </div>

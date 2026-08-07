@@ -21,7 +21,7 @@
     
     <?= $extraHead ?? '' ?>
 </head>
-<body class="<?= $bodyClass ?? 'bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased' ?>">
+<body class="<?= $bodyClass ?? 'bg-surface-subtle font-body text-text-main antialiased' ?>">
     <?= $slot ?? '' ?>
 </body>
 </html>

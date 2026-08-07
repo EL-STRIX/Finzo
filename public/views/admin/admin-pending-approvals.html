@@ -36,7 +36,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">hourglass_empty</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-text-muted">PENDING REVIEW</div>
+                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">PENDING REVIEW</div>
                         <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">rate_review</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-text-muted">UNDER REVIEW</div>
+                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">UNDER REVIEW</div>
                         <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-text-muted">APPROVED TODAY</div>
+                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">APPROVED TODAY</div>
                         <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                         <span class="material-symbols-outlined" aria-hidden="true">verified</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-[10px] font-bold uppercase tracking-widest text-text-muted">TOTAL APPROVED</div>
+                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">TOTAL APPROVED</div>
                         <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
@@ -84,14 +84,14 @@
 
                         <!-- Status Tabs -->
                         <div class="flex flex-wrap gap-2">
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-status="all">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-status="all">
                                 All
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="pending">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="pending">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">hourglass_empty</span>
                                 Pending
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="under_review">
+                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="under_review">
                                 <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">rate_review</span>
                                 Under Review
                             </button>
@@ -120,13 +120,13 @@
 
                 <!-- PAGINATION -->
                 <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div id="pagination-info" class="text-[11px] font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Items</div>
+                    <div id="pagination-info" class="text-xs font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Items</div>
                     <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <button id="prev-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
                             <!-- Page numbers injected by pending-approvals.js -->
                         </div>
-                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                        <button id="next-btn" class="admin-btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                     </div>
                 </div>
             </div>

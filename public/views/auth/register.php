@@ -44,9 +44,9 @@ ob_start();
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span class="material-symbols-outlined text-base">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container">
@@ -174,7 +174,7 @@ ob_start();
                         <!-- Submit Button Component -->
                         <button type="submit" class="btn btn-primary btn-full">
                             <span>Submit Application</span>
-                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
                         </button>
                     </form>
 

@@ -44,9 +44,9 @@ ob_start();
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span class="material-symbols-outlined text-base">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container text-center">
@@ -96,7 +96,7 @@ ob_start();
                     <!-- Actions Group Component -->
                     <div class="mt-4">
                         <a href="/Finzo/public/index.html" class="btn btn-primary btn-full">
-                            <span class="material-symbols-outlined text-[18px]">home</span>
+                            <span class="material-symbols-outlined text-lg">home</span>
                             <span>Return to Homepage</span>
                         </a>
                     </div>

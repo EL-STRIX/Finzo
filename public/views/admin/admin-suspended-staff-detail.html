@@ -16,7 +16,7 @@
   <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
       <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
-<body class="selection:bg-[#1a3c5e]/10">
+<body class="selection:bg-primary-hover/10">
 
 <!-- SIDEBAR -->
 <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -32,7 +32,7 @@
     <!-- BACK BUTTON -->
     <div style="margin-bottom:24px;">
       <a href="admin-suspended-staff.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span> Back
+        <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> Back
       </a>
     </div>
 
@@ -47,31 +47,31 @@
               -
             </div>
             <div class="flex-1">
-              <div class="text-[10px] font-black text-danger-base uppercase tracking-[0.2em] mb-2">Suspended Staff</div>
+              <div class="text-xs font-black text-danger-base uppercase tracking-widest mb-2">Suspended Staff</div>
               <h1 id="detail-name" class="text-2xl sm:text-3xl font-black font-headline tracking-tight text-text-main dark:text-white">-</h1>
               <p id="detail-email" class="text-sm font-bold opacity-40 mb-4">-</p>
               <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <span id="detail-staff-id-badge" class="px-3 py-1 bg-surface-hover dark:bg-white/5 text-[10px] font-black rounded-lg uppercase tracking-widest">-</span>
-                <span class="px-3 py-1 bg-warning-surface/10 text-warning-base text-[10px] font-black rounded-lg uppercase tracking-widest">Internal Account</span>
+                <span id="detail-staff-id-badge" class="px-3 py-1 bg-surface-hover dark:bg-white/5 text-xs font-black rounded-lg uppercase tracking-widest">-</span>
+                <span class="px-3 py-1 bg-warning-surface/10 text-warning-base text-xs font-black rounded-lg uppercase tracking-widest">Internal Account</span>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-y-6 gap-x-4">
             <div>
-              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Employee ID</p>
-              <p id="detail-staff-id" class="font-bold text-sm tracking-widest text-[#002645] dark:text-primary-base">-</p>
+              <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Employee ID</p>
+              <p id="detail-staff-id" class="font-bold text-sm tracking-widest text-primary-base dark:text-primary-base">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Mobile No</p>
+              <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Mobile No</p>
               <p id="detail-phone" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Branch</p>
+              <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Branch</p>
               <p id="detail-branch" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">Joined Date</p>
+              <p class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Joined Date</p>
               <p id="detail-onboarding" class="font-bold text-sm">-</p>
             </div>
           </div>
@@ -79,31 +79,31 @@
 
         <!-- SUSPENSION DETAILS -->
         <div class="ds-card p-6 sm:p-8">
-          <div class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-6 border-b border-surface-border dark:border-white/5 pb-4">Internal Audit Analysis</div>
+          <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-6 border-b border-surface-border dark:border-white/5 pb-4">Internal Audit Analysis</div>
           <div class="bg-danger-surface dark:bg-danger-surface/5 p-6 rounded-2xl border border-danger-base dark:border-danger-base/10 mb-8">
             <div class="flex items-start gap-4">
               <div class="w-10 h-10 rounded-xl bg-white dark:bg-danger-surface/20 shadow-sm flex items-center justify-center text-danger-base">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">policy</span>
               </div>
               <div class="flex-1">
-                <div class="text-[10px] font-black text-danger-base dark:text-danger-base uppercase tracking-widest mb-1">Suspension Reason</div>
+                <div class="text-xs font-black text-danger-base dark:text-danger-base uppercase tracking-widest mb-1">Suspension Reason</div>
                 <div class="text-sm font-bold mb-2 dark:text-white" id="detail-reason">-</div>
-                <div class="text-[12px] opacity-60 leading-relaxed font-medium" id="detail-reason-detail">-</div>
+                <div class="text-xs opacity-60 leading-relaxed font-medium" id="detail-reason-detail">-</div>
               </div>
             </div>
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
-              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">Authorized By</p>
-              <p id="detail-by" class="font-bold text-[13px]">-</p>
+              <p class="text-xs opacity-40 font-bold uppercase mb-1">Authorized By</p>
+              <p id="detail-by" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">Date</p>
-              <p id="detail-date" class="font-bold text-[13px]">-</p>
+              <p class="text-xs opacity-40 font-bold uppercase mb-1">Date</p>
+              <p id="detail-date" class="font-bold text-sm">-</p>
             </div>
             <div>
-              <p class="text-[10px] opacity-40 font-bold uppercase mb-1">Duration</p>
-              <p id="detail-duration" class="font-bold text-[13px]">-</p>
+              <p class="text-xs opacity-40 font-bold uppercase mb-1">Duration</p>
+              <p id="detail-duration" class="font-bold text-sm">-</p>
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@
         <div class="ds-card overflow-hidden">
           <div class="p-6 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
             <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Processing History</h3>
-            <a href="admin-transactions.html" class="text-[10px] font-black text-primary-base dark:text-primary-base uppercase tracking-widest hover:underline">Full Logs</a>
+            <a href="admin-transactions.html" class="text-xs font-black text-primary-base dark:text-primary-base uppercase tracking-widest hover:underline">Full Logs</a>
             <a href="admin-audit-log.html" class="admin-nav-item">
                 <span class="material-symbols-outlined" aria-hidden="true">manage_search</span> Audit Log
             </a>
@@ -146,7 +146,7 @@
               </div>
               <h3 class="text-lg font-bold mb-2 dark:text-white">Reinstate Staff</h3>
               <p class="text-xs opacity-60 leading-relaxed mb-8">This will restore system privileges and allow them to process new transactions.</p>
-              <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background:#10b981 !important;">
+              <button data-action="openReinstateModal()" class="admin-btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
                 <span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Authorize Access
               </button>
            </div>
@@ -160,7 +160,7 @@
 <!-- REINSTATE MODAL -->
 <div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-surface-dark/40 backdrop-blur-sm transition-all" id="reinstate-modal" role="dialog" aria-modal="true">
   <div class="relative w-full max-w-lg">
-    <div class="bg-white dark:bg-surface-dark rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border dark:border-white/5">
+    <div class="bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-full border border-surface-border dark:border-white/5">
       <div class="p-8 pb-4 text-center shrink-0">
         <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 text-success-base bg-success-surface dark:bg-success-surface/10">
           <span class="material-symbols-outlined text-4xl" aria-hidden="true">verified_user</span>
@@ -174,7 +174,7 @@
         </div>
         
         <div class="pt-6 border-t border-surface-border dark:border-white/5">
-          <label class="block text-[10px] font-black uppercase tracking-widest text-text-muted mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
+          <label class="block text-xs font-black uppercase tracking-widest text-text-muted mb-3 ml-1 text-left">Authorize Action (Admin Password)</label>
           <div class="relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">lock</span>
             <input type="password" id="admin-password" placeholder="••••••••" 
@@ -183,8 +183,8 @@
         </div>
       </div>
       <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5 mt-2">
-        <button data-action="closeModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
-        <button id="confirm-btn" data-action="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-success-surface shadow-emerald-500/20 hover:bg-success-surface hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
+        <button data-action="closeModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border dark:hover:bg-white/10 text-text-muted dark:text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all">Cancel</button>
+        <button id="confirm-btn" data-action="processReinstate()" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all bg-success-surface shadow-emerald-500/20 hover:bg-success-surface hover:scale-[1.02] active:scale-[0.98]">Confirm & Authorize</button>
       </div>
     </div>
   </div>

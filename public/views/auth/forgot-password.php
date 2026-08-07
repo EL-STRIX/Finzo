@@ -44,9 +44,9 @@ ob_start();
             <div class="auth-right-area">
                 <!-- Language Selector -->
                 <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span class="material-symbols-outlined text-base">language</span>
                     <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    <span class="material-symbols-outlined text-base">expand_more</span>
                 </div>
                 
                 <div class="auth-card-container">
@@ -81,11 +81,11 @@ ob_start();
                         <div class="space-y-3 mt-6">
                             <button type="submit" class="btn btn-primary btn-full">
                                 <span>Send Recovery Link</span>
-                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                <span class="material-symbols-outlined text-lg">arrow_forward</span>
                             </button>
                             
                             <a href="login.html" class="btn btn-secondary btn-full">
-                                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                                <span class="material-symbols-outlined text-lg">arrow_back</span>
                                 <span>Return to Sign In</span>
                             </a>
                         </div>

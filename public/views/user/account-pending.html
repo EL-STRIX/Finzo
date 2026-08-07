@@ -12,7 +12,7 @@
     <link href="/Finzo/public/assets/css/main.css" rel="stylesheet"/>
     <link href="/Finzo/public/assets/css/tailwind.css" rel="stylesheet" />
 </head>
-<body class="bg-[var(--color-surface-subtle)] font-body text-[var(--color-text-main)] antialiased overflow-x-hidden">
+<body class="bg-surface-subtle font-body text-text-main antialiased overflow-x-hidden">
 <script defer src="/Finzo/public/assets/js/user/user-shared.js?v=2"></script>
 <main class="auth-page-wrapper">
   <div class="auth-split-grid">
@@ -61,7 +61,7 @@
       
       <!-- Bottom: Copyright -->
       <div class="mt-8 pt-6 border-t border-white/10">
-        <p class="text-[11px] text-white/50 font-medium tracking-wide uppercase">
+        <p class="text-xs text-white/50 font-medium tracking-wide uppercase">
           &copy; 2026 Finzo Banking Group. All rights reserved.
         </p>
       </div>
@@ -71,9 +71,9 @@
     <div class="auth-right-area">
       <!-- Language Selector -->
       <div class="auth-lang-selector">
-        <span class="material-symbols-outlined text-[16px]">language</span>
+        <span class="material-symbols-outlined text-base">language</span>
         <span>EN</span>
-        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+        <span class="material-symbols-outlined text-base">expand_more</span>
       </div>
       
       <!-- Auth Card -->
@@ -90,7 +90,7 @@
               <span class="material-symbols-outlined text-3xl text-info-base">hourglass_top</span>
           </div>
           <h1 class="auth-hero-title text-2xl">Application Under Review</h1>
-          <p class="auth-subtitle text-[13px]">Thank you for registering with Finzo Banking. Your application has been successfully submitted and is currently being reviewed by our banking team.</p>
+          <p class="auth-subtitle text-sm">Thank you for registering with Finzo Banking. Your application has been successfully submitted and is currently being reviewed by our banking team.</p>
         </div>
 
         <div class="auth-form-body">
@@ -106,20 +106,20 @@
             </div>
 
             <!-- Existing Timeline Preserved exactly for JS compatibility -->
-            <div class="mb-6 p-5 border border-[var(--color-border-main)] rounded-lg bg-white">
+            <div class="mb-6 p-5 border border-border-main rounded-lg bg-white">
                 <div class="timeline flex flex-col">
                     <!-- Item 1 -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full bg-success-surface flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-success-base text-[16px]">check_circle</span>
+                                <span class="material-symbols-outlined text-success-base text-base">check_circle</span>
                             </div>
                             <div class="w-px flex-1 min-h-[1.5rem] bg-success-base my-1"></div>
                         </div>
                         <div class="pb-4 flex-1">
-                            <div class="text-[13px] font-bold text-[var(--color-text-main)]">Registered</div>
-                            <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">Account created successfully</div>
-                            <div class="text-[9px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1" id="reg-time">Today</div>
+                            <div class="text-sm font-bold text-text-main">Registered</div>
+                            <div class="text-xs text-text-muted mt-0.5">Account created successfully</div>
+                            <div class="text-xs font-bold text-text-disabled uppercase tracking-widest mt-1" id="reg-time">Today</div>
                         </div>
                     </div>
                     
@@ -127,14 +127,14 @@
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full bg-success-surface flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-success-base text-[16px]">check_circle</span>
+                                <span class="material-symbols-outlined text-success-base text-base">check_circle</span>
                             </div>
                             <div class="w-px flex-1 min-h-[1.5rem] bg-gradient-to-b from-success-base to-info-base my-1 tl-connector active"></div>
                         </div>
                         <div class="pb-4 flex-1">
-                            <div class="text-[13px] font-bold text-[var(--color-text-main)]">Profile Submitted</div>
-                            <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">All documents uploaded successfully</div>
-                            <div class="text-[9px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1">Today</div>
+                            <div class="text-sm font-bold text-text-main">Profile Submitted</div>
+                            <div class="text-xs text-text-muted mt-0.5">All documents uploaded successfully</div>
+                            <div class="text-xs font-bold text-text-disabled uppercase tracking-widest mt-1">Today</div>
                         </div>
                     </div>
                     
@@ -142,27 +142,27 @@
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
                             <div class="w-8 h-8 rounded-full bg-info-surface/40 border border-info-base/30 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-info-base text-[16px]">manage_search</span>
+                                <span class="material-symbols-outlined text-info-base text-base">manage_search</span>
                             </div>
-                            <div class="w-px flex-1 min-h-[1.5rem] bg-[var(--color-border-main)] my-1"></div>
+                            <div class="w-px flex-1 min-h-[1.5rem] bg-border-main my-1"></div>
                         </div>
                         <div class="pb-4 flex-1">
-                            <div class="text-[13px] font-bold text-info-base">Under Admin Review</div>
-                            <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">Our team is verifying your details</div>
-                            <div class="text-[9px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1">In Progress</div>
+                            <div class="text-sm font-bold text-info-base">Under Admin Review</div>
+                            <div class="text-xs text-text-muted mt-0.5">Our team is verifying your details</div>
+                            <div class="text-xs font-bold text-text-disabled uppercase tracking-widest mt-1">In Progress</div>
                         </div>
                     </div>
                     
                     <!-- Item 4 -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-[var(--color-surface-hover)] border border-[var(--color-border-main)] flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[var(--color-text-disabled)] text-[16px]">how_to_reg</span>
+                            <div class="w-8 h-8 rounded-full bg-surface-hover border border-border-main flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-text-disabled text-base">how_to_reg</span>
                             </div>
                         </div>
                         <div class="flex-1">
-                            <div class="text-[13px] font-bold text-[var(--color-text-disabled)]">Account Activated</div>
-                            <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">Waiting for approval</div>
+                            <div class="text-sm font-bold text-text-disabled">Account Activated</div>
+                            <div class="text-xs text-text-muted mt-0.5">Waiting for approval</div>
                         </div>
                     </div>
                 </div>
@@ -170,10 +170,10 @@
 
             <!-- What Happens Next -->
             <div class="p-4 bg-slate-50 border border-slate-100 rounded-lg flex items-start gap-3 mb-6">
-                <span class="material-symbols-outlined text-primary-500 text-[20px] shrink-0 mt-0.5">info</span>
+                <span class="material-symbols-outlined text-primary-500 text-xl shrink-0 mt-0.5">info</span>
                 <div>
-                    <div class="text-[12px] font-bold text-slate-800 mb-2">What happens next?</div>
-                    <ul class="text-[11px] text-slate-600 leading-relaxed space-y-1.5 list-none">
+                    <div class="text-xs font-bold text-slate-800 mb-2">What happens next?</div>
+                    <ul class="text-xs text-slate-600 leading-relaxed space-y-1.5 list-none">
                         <li class="flex items-start gap-1.5"><span class="text-primary-500 font-bold">•</span> Your submitted information will be reviewed.</li>
                         <li class="flex items-start gap-1.5"><span class="text-primary-500 font-bold">•</span> Identity verification will be completed.</li>
                         <li class="flex items-start gap-1.5"><span class="text-primary-500 font-bold">•</span> You will receive a notification at <strong id="user-email-show" class="text-slate-800 break-all">your registered email</strong> once the review is finished.</li>
@@ -191,7 +191,7 @@
         </div>
 
         <div class="auth-trust-badge mt-6 border-t border-slate-100 pt-6">
-          <span class="material-symbols-outlined text-[14px]">shield</span>
+          <span class="material-symbols-outlined text-sm">shield</span>
           <span>Enterprise Application Processing</span>
         </div>
       </div>
@@ -199,10 +199,10 @@
             <!-- Global Footer -->
       <div class="auth-global-footer">
         <ul>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">enhanced_encryption</span> 256-bit Encryption</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified_user</span> Secure Digital Banking Access</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">gpp_good</span> Privacy Protected</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">credit_card</span> PCI DSS Compliant</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">enhanced_encryption</span> 256-bit Encryption</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">verified_user</span> Secure Digital Banking Access</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">gpp_good</span> Privacy Protected</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">credit_card</span> PCI DSS Compliant</span></li>
         </ul>
       </div>
     </div>

@@ -51,9 +51,9 @@
                             <div class="text-center sm:text-left flex-1">
                                 <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-main dark:text-white mb-3">Loading...</h3>
                                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-4">
-                                    <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-surface-hover text-text-muted dark:bg-white/5 dark:text-text-muted border border-surface-border/50 dark:border-white/10 font-mono">---</span>
-                                    <span id="info-designation-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-primary-surface text-white">---</span>
-                                    <span id="info-department-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-success-surface text-success-base dark:bg-success-surface/20 dark:text-success-base">---</span>
+                                    <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest bg-surface-hover text-text-muted dark:bg-white/5 dark:text-text-muted border border-surface-border/50 dark:border-white/10 font-mono">---</span>
+                                    <span id="info-designation-badge" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest bg-primary-surface text-white">---</span>
+                                    <span id="info-department-badge" class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest bg-success-surface text-success-base dark:bg-success-surface/20 dark:text-success-base">---</span>
                                 </div>
                                 <p class="text-sm font-medium text-text-muted dark:text-text-muted flex items-center justify-center sm:justify-start gap-2">
                                     <span class="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span>
@@ -190,7 +190,7 @@
                                     <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-front-placeholder" class="text-center">
                                             <span class="material-symbols-outlined text-4xl text-text-muted dark:text-text-muted" aria-hidden="true">image</span>
-                                            <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
+                                            <p class="text-xs font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-front-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -204,7 +204,7 @@
                                     <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-surface-subtle dark:bg-white/5 border-2 border-dashed border-surface-border dark:border-white/10 flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary/30 hover:shadow-lg">
                                         <div id="doc-back-placeholder" class="text-center">
                                             <span class="material-symbols-outlined text-4xl text-text-muted dark:text-text-muted" aria-hidden="true">image</span>
-                                            <p class="text-[10px] font-bold text-text-muted mt-1">No document uploaded</p>
+                                            <p class="text-xs font-bold text-text-muted mt-1">No document uploaded</p>
                                         </div>
                                         <img loading="lazy" id="doc-back-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -225,7 +225,7 @@
                     
                     <!-- ═══ STAFF CONTROL ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Staff Control</h5>
+                        <h5 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Staff Control</h5>
                         <div class="space-y-3">
                             <button id="deactivate-staff-btn" class="w-full flex items-center justify-between p-3.5 bg-surface-subtle dark:bg-white/5 rounded-2xl group transition-all hover:bg-warning-surface dark:hover:bg-warning-surface/10 border border-transparent hover:border-warning-base">
                                 <div class="flex items-center gap-3">
@@ -234,7 +234,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div id="suspend-label" class="text-xs font-black dark:text-white">Deactivate Staff</div>
-                                        <div class="text-[9px] font-medium text-text-muted">Temporarily revoke access</div>
+                                        <div class="text-xs font-medium text-text-muted">Temporarily revoke access</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted text-lg" aria-hidden="true">chevron_right</span>
@@ -247,7 +247,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div class="text-xs font-black dark:text-white">Reset Password</div>
-                                        <div class="text-[9px] font-medium text-text-muted">Force new credentials</div>
+                                        <div class="text-xs font-medium text-text-muted">Force new credentials</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted text-lg" aria-hidden="true">chevron_right</span>
@@ -260,7 +260,7 @@
                                     </div>
                                     <div class="text-left">
                                         <div class="text-xs font-black text-danger-base">Delete Account</div>
-                                        <div class="text-[9px] font-medium text-text-muted">Permanent removal</div>
+                                        <div class="text-xs font-medium text-text-muted">Permanent removal</div>
                                     </div>
                                 </div>
                                 <span class="material-symbols-outlined text-text-muted text-lg" aria-hidden="true">chevron_right</span>
@@ -270,22 +270,22 @@
 
                     <!-- ═══ PERFORMANCE STATS ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Performance Overview</h5>
+                        <h5 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Performance Overview</h5>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Deposits</div>
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Deposits</div>
                                 <div id="stat-total-deposits" class="text-sm font-black text-primary-base dark:text-primary-base">₹0</div>
                             </div>
                             <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Withdrawals</div>
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Withdrawals</div>
                                 <div id="stat-total-withdrawals" class="text-sm font-black text-danger-base">₹0</div>
                             </div>
                             <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Transactions</div>
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Transactions</div>
                                 <div id="stat-total-txns" class="text-sm font-black text-text-main dark:text-white">0</div>
                             </div>
                             <div class="text-center p-3 bg-surface-subtle dark:bg-white/5 rounded-xl">
-                                <div class="text-[9px] font-black text-text-muted uppercase mb-1">Last Active</div>
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Last Active</div>
                                 <div id="stat-last-active" class="text-xs font-black text-text-main dark:text-white">Never</div>
                             </div>
                         </div>
@@ -293,22 +293,22 @@
 
                     <!-- ═══ TODAY'S SHIFT ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5">Today's Shift Summary</h5>
+                        <h5 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Today's Shift Summary</h5>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center pb-2.5 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[10px] font-black text-text-muted uppercase">Deposits Done</span>
+                                <span class="text-xs font-black text-text-muted uppercase">Deposits Done</span>
                                 <span id="summary-deposits" class="text-xs font-bold text-text-main dark:text-text-muted">0</span>
                             </div>
                             <div class="flex justify-between items-center pb-2.5 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[10px] font-black text-text-muted uppercase">Withdrawals Done</span>
+                                <span class="text-xs font-black text-text-muted uppercase">Withdrawals Done</span>
                                 <span id="summary-withdrawals" class="text-xs font-bold text-text-main dark:text-text-muted">0</span>
                             </div>
                             <div class="flex justify-between items-center pb-2.5 border-b border-surface-border dark:border-white/5">
-                                <span class="text-[10px] font-black text-text-muted uppercase">Total Transactions</span>
+                                <span class="text-xs font-black text-text-muted uppercase">Total Transactions</span>
                                 <span id="summary-total-txns" class="text-xs font-bold text-text-main dark:text-text-muted">0</span>
                             </div>
                             <div class="flex justify-between items-center pt-1">
-                                <span class="text-[10px] font-black text-primary-base dark:text-primary-base uppercase">Net Amount</span>
+                                <span class="text-xs font-black text-primary-base dark:text-primary-base uppercase">Net Amount</span>
                                 <span id="summary-total-amount" class="text-lg font-black text-primary-base dark:text-primary-base">₹0.00</span>
                             </div>
                         </div>
@@ -316,7 +316,7 @@
 
                     <!-- ═══ SHIFT HISTORY ═══ -->
                     <div class="ds-card p-5">
-                        <h5 class="text-[10px] font-black text-text-muted uppercase tracking-widest mb-5 flex justify-between items-center">
+                        <h5 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5 flex justify-between items-center">
                             <span>Recent Shifts</span>
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">schedule</span>
                         </h5>
@@ -326,10 +326,10 @@
                     </div>
 
                     <!-- ═══ SECURITY NOTE ═══ -->
-                    <div class="p-5 bg-primary-surface dark:bg-primary-surface/10 border border-indigo-100 dark:border-indigo-500/20 rounded-[20px] overflow-hidden relative">
+                    <div class="p-5 bg-primary-surface dark:bg-primary-surface/10 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl overflow-hidden relative">
                         <div class="relative z-10">
-                            <h5 class="text-[10px] font-black text-primary-base dark:text-primary-base uppercase tracking-widest mb-3">Security Note</h5>
-                            <p class="text-[11px] leading-relaxed text-primary-base dark:text-primary-base font-medium italic">
+                            <h5 class="text-xs font-black text-primary-base dark:text-primary-base uppercase tracking-widest mb-3">Security Note</h5>
+                            <p class="text-xs leading-relaxed text-primary-base dark:text-primary-base font-medium italic">
                                 "All staff-related actions are recorded in the global audit log. Every modification is attributed to the performing administrator's session."
                             </p>
                         </div>
@@ -344,7 +344,7 @@
                     <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 dark:text-white">
                         <span class="material-symbols-outlined text-primary-base text-lg" aria-hidden="true">history</span> Transaction History
                     </h4>
-                    <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-surface-dark border border-surface-border dark:border-white/10 rounded-xl text-[11px] font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
+                    <button data-action="window.open(&#039;../../../api/pdf/staff-statement.php?staff_id=&#039; + new URLSearchParams(window.location.search).get(&#039;id&#039;), &#039;_blank&#039;)" class="flex items-center gap-2 py-2 px-4 bg-white dark:bg-surface-dark border border-surface-border dark:border-white/10 rounded-xl text-xs font-black uppercase tracking-tighter text-text-muted hover:text-primary-base dark:hover:text-white transition-all shadow-sm">
                         <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
                         Print Statement
                     </button>
@@ -401,7 +401,7 @@
     <div id="governance-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4" role="dialog" aria-modal="true">
         <div id="modal-backdrop" class="absolute inset-0 bg-surface-dark/40 backdrop-blur-md opacity-0" role="dialog" aria-modal="true"></div>
         <div id="modal-container" class="relative w-full max-w-lg opacity-0 scale-95 transition-all duration-300" role="dialog" aria-modal="true">
-            <div class="ds-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-[90vh]">
+            <div class="ds-card !p-0 overflow-hidden shadow-2xl border-none flex flex-col max-h-full">
                 <div id="modal-header" class="p-8 pb-4 text-center shrink-0" role="dialog" aria-modal="true">
                     <div id="modal-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" role="dialog" aria-modal="true">
                         <span id="modal-icon" class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
@@ -412,27 +412,27 @@
                 <div class="px-8 py-4 space-y-6 overflow-y-auto admin-scrollbar">
                     <div id="modal-body-text" class="text-sm text-center text-text-muted dark:text-text-muted font-medium leading-relaxed px-4" role="dialog" aria-modal="true"></div>
                     <div id="reason-step" class="hidden">
-                        <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Select Deactivation Reason</label>
+                        <label class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Select Deactivation Reason</label>
                         <div id="reason-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                         <div id="custom-reason-container" class="mt-4 hidden">
-                            <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Additional Observations</label>
+                            <label class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Additional Observations</label>
                             <textarea id="custom-reason-notes" rows="2" placeholder="Elaborate..."
                                 class="w-full bg-surface-subtle dark:bg-white/5 border-none rounded-2xl text-xs font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white"></textarea>
                         </div>
                     </div>
                     <div id="auth-step" class="pt-4 border-t border-surface-border dark:border-white/5">
-                        <label class="block text-[10px] font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
+                        <label class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">admin_panel_settings</span>
                             <input type="password" id="admin-password" placeholder="••••••••"
                                 class="w-full pl-12 pr-4 py-3 bg-surface-subtle dark:bg-white/5 border-none rounded-2xl text-lg font-black tracking-widest focus:ring-4 focus:ring-primary/5 transition-all text-black dark:text-white">
                         </div>
-                        <p id="auth-error" class="text-[10px] font-black text-danger-base mt-2 ml-1 hidden">Invalid credentials.</p>
+                        <p id="auth-error" class="text-xs font-black text-danger-base mt-2 ml-1 hidden">Invalid credentials.</p>
                     </div>
                 </div>
                 <div class="p-8 pt-4 flex gap-3 shrink-0 border-t border-surface-border dark:border-white/5">
-                    <button data-action="closeGovernanceModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border text-text-muted font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all">Cancel</button>
-                    <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all">Authorize</button>
+                    <button data-action="closeGovernanceModal()" class="flex-1 py-4 bg-surface-hover dark:bg-white/5 hover:bg-surface-border text-text-muted font-black rounded-2xl text-xs uppercase tracking-widest transition-all">Cancel</button>
+                    <button id="confirm-governance-btn" class="flex-1 py-4 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg transition-all">Authorize</button>
                 </div>
             </div>
         </div>
@@ -440,11 +440,11 @@
 
     <!-- IMAGE LIGHTBOX -->
     <div id="lightbox-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm cursor-pointer" data-action="closeLightbox()" role="dialog" aria-modal="true">
-        <div class="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center">
+        <div class="relative max-w-4xl max-h-full w-full flex items-center justify-center">
             <button class="absolute top-2 right-2 text-white/80 hover:text-white z-10" data-action="closeLightbox()">
                 <span class="material-symbols-outlined text-3xl" aria-hidden="true">close</span>
             </button>
-            <img loading="lazy" id="lightbox-img" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl" alt="Document Preview" />
+            <img loading="lazy" id="lightbox-img" class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl" alt="Document Preview" />
         </div>
     </div>
     <script defer src="/Finzo/public/assets/js/core/utils.js"></script>

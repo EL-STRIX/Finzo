@@ -156,7 +156,7 @@
                 const roleBadge = document.getElementById('badge-role');
                 if (admin.admin_role === 'super_admin') {
                     roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-[#002645] text-white shadow-sm`;
+                    roleBadge.className = `${baseBadgeClass} bg-primary-base text-white shadow-sm`;
                 } else if (admin.admin_role === 'admin') {
                     roleBadge.textContent = 'Admin';
                     roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400`;
