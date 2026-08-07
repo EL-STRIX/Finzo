@@ -52,7 +52,7 @@ ob_start();
                 <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5 relative z-20">
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 items-end">
                     <div class="col-span-2">
-                        <label class="fin-label mb-2">Search
+                        <label for="filter-search" class="fin-label mb-2">Search
                             Events</label>
                         <div class="relative">
                             <span
@@ -62,7 +62,7 @@ ob_start();
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="fin-label mb-2">Action
+                        <label for="filter-action-type" class="fin-label mb-2">Action
                             Type</label>
                         <div class="finzo-dropdown" id="action-type-dropdown">
                             <input type="hidden" id="filter-action-type" value="all">
@@ -87,7 +87,7 @@ ob_start();
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="fin-label mb-2">Actor
+                        <label for="filter-actor-role" class="fin-label mb-2">Actor
                             Role</label>
                         <div class="finzo-dropdown" id="actor-role-dropdown">
                             <input type="hidden" id="filter-actor-role" value="all">
@@ -106,13 +106,13 @@ ob_start();
                         </div>
                     </div>
                     <div class="col-span-1">
-                        <label class="fin-label mb-2">From
+                        <label for="date-from" class="fin-label mb-2">From
                             Date</label>
                         <input type="date" id="date-from"
                             class="fin-input">
                     </div>
                     <div class="col-span-1">
-                        <label class="fin-label mb-2">To
+                        <label for="date-to" class="fin-label mb-2">To
                             Date</label>
                         <input type="date" id="date-to"
                             class="fin-input">

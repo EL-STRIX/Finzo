@@ -9,7 +9,7 @@ ob_start();
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
-                            <label class="fin-label mb-2">Search Transactions</label>
+                            <label for="transaction-search" class="fin-label mb-2">Search Transactions</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="fin-input pl-12">

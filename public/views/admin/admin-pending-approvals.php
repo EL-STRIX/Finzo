@@ -49,7 +49,7 @@ ob_start();
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
-                            <label class="fin-label mb-2">Search Applications</label>
+                            <label for="approval-search" class="fin-label mb-2">Search Applications</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="fin-input pl-12">

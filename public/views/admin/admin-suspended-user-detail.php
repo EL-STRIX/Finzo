@@ -148,7 +148,7 @@ ob_start();
             </div>
             <h3 class="text-lg font-bold mb-2 dark:text-white">Account Recovery</h3>
             <p class="text-xs opacity-60 leading-relaxed mb-8">Reinstating will restore original access and notify the user via registered mobile/email.</p>
-            <button data-action="openReinstateModal()" class="btn btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" style="background: var(--color-success-base) !important;">
+            <button data-action="openReinstateModal()" class="btn btn-primary w-full justify-center !py-4 shadow-xl shadow-emerald-500/20" >
               <span class="material-symbols-outlined" aria-hidden="true">power_settings_new</span> Reinstate Account
             </button>
             <button data-action="openDeleteModal()" class="btn btn-secondary w-full justify-center !py-3 mt-4 border-none text-danger-base opacity-60 hover:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
@@ -167,8 +167,8 @@ ob_start();
 <!-- REINSTATE MODAL -->
 <div class="modal-overlay hidden" id="reinstate-modal" role="dialog" aria-modal="true">
   <div class="modal-card">
-    <div class="modal-icon" style="background: var(--color-success-surface)">
-      <span class="material-symbols-outlined" style="color: var(--color-success-base);font-size:30px" aria-hidden="true">lock_open</span>
+    <div class="modal-icon" >
+      <span class="material-symbols-outlined"  aria-hidden="true">lock_open</span>
     </div>
     <div class="modal-title">Confirm Reinstatement</div>
     <div class="modal-text">You are removing the suspension from <strong id="modal-name">--</strong>'s account <strong id="modal-acc">FNZ---</strong>. Their account status will immediately return to <strong>Active</strong> and they will regain complete access to all Finzo banking features.</div>
@@ -186,14 +186,14 @@ ob_start();
 <!-- PERMANENT DELETION MODAL -->
 <div class="modal-overlay hidden" id="delete-modal" role="dialog" aria-modal="true">
   <div class="modal-card">
-    <div class="modal-icon" style="background:#ffeef0">
-      <span class="material-symbols-outlined" style="color:#ff3b30;font-size:30px" aria-hidden="true">delete_forever</span>
+    <div class="modal-icon" >
+      <span class="material-symbols-outlined"  aria-hidden="true">delete_forever</span>
     </div>
     <div class="modal-title">Confirm Permanent Deletion</div>
     <div class="modal-text">You are permanently deleting <strong id="delete-modal-name">--</strong>'s account. This action will close all bank accounts and archive their dossier permanently.</div>
     
     <div class="mt-6 w-full text-left">
-      <label class="block text-xs font-black uppercase tracking-widest text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
+      <label for="delete-admin-password" class="block text-xs font-black uppercase tracking-widest text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">lock</span>
         <input type="password" id="delete-admin-password" placeholder="••••••••" 
@@ -203,7 +203,7 @@ ob_start();
 
     <div class="modal-actions mt-8">
       <button class="btn btn-ghost" data-action="closeDeleteModal()">Cancel</button>
-      <button class="btn btn-danger" id="delete-confirm-btn" data-action="processDelete()" style="background:#ff3b30 !important; color:#fff !important;">
+      <button class="btn btn-danger" id="delete-confirm-btn" data-action="processDelete()" >
         <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">check</span>
         Confirm & Delete
       </button>

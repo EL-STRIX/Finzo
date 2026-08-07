@@ -40,14 +40,14 @@ ob_start();
                         </h3>
                         <div class="space-y-6">
                             <div>
-                                <label class="fin-label mb-3 block">New Interest Rate (%)</label>
+                                <label for="new-rate" class="fin-label mb-3 block">New Interest Rate (%)</label>
                                 <div class="relative">
                                     <input type="number" id="new-rate" step="0.01" class="w-full px-6 py-4 bg-surface-hover dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-primary/10 font-black text-2xl font-headline tracking-widest text-primary-base dark:text-text-muted [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [appearance:textfield]">
                                     <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xl font-bold opacity-30 pointer-events-none">%</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="fin-label mb-3 block">Apply From</label>
+                                <label for="lock_period_input" class="fin-label mb-3 block">Apply From</label>
                                 <div class="finzo-dropdown" id="apply-from-dropdown">
                                     <input type="hidden" id="lock_period_input" value="Immediately">
                                     <div class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-white/5 !border-none !py-4 !rounded-2xl">
@@ -62,7 +62,7 @@ ob_start();
                                 </div>
 
                                 <div id="custom-date-container" class="hidden mt-4 animate-fade-in">
-                                    <label class="fin-label mb-2 block">Effective Date</label>
+                                    <label for="custom-apply-date" class="fin-label mb-2 block">Effective Date</label>
                                     <input type="date" id="custom-apply-date" class="w-full px-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                                 </div>
                             </div>

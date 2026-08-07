@@ -195,7 +195,7 @@ ob_start();
                 <div class="font-bold text-lg"><div class="skeleton w-20 h-6"></div></div>
               </div>
               <div>
-                <label class="fin-label mb-2">Transaction PIN</label>
+                <label for="reject-reason-input" class="fin-label mb-2">Transaction PIN</label>
                 <div class="skeleton w-16 h-6"></div>
               </div>
             </div>
@@ -287,7 +287,7 @@ ob_start();
       </p>
       <div class="flex gap-3">
         <button data-action="closeApproveModal()" class="flex-1 btn btn-secondary py-4">Cancel</button>
-        <button id="confirmApprove" class="flex-1 btn btn-primary py-4" style="background:#00b894 !important; border:none !important;">Yes, Approve Now</button>
+        <button id="confirmApprove" class="flex-1 btn btn-primary py-4" >Yes, Approve Now</button>
       </div>
     </div>
   </div>
@@ -312,7 +312,7 @@ ob_start();
 
       <div class="flex gap-3">
         <button data-action="closeRejectModal()" class="flex-1 btn btn-secondary py-4">Cancel</button>
-        <button id="confirmReject" class="flex-1 btn btn-primary py-4" style="background:#ef4444 !important; border:none !important;">Yes, Reject Application</button>
+        <button id="confirmReject" class="flex-1 btn btn-primary py-4" >Yes, Reject Application</button>
       </div>
     </div>
   </div>

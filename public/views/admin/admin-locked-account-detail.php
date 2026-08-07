@@ -110,7 +110,7 @@ ob_start();
                     <!-- ACCESS CONTROL -->
                     <div class="ds-card p-6" id="unlock-action-card">
                         <h3 class="text-xs font-black text-text-muted uppercase tracking-widest mb-5">Access Control</h3>
-                        <button data-action="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" style="background:#f59e0b !important;">
+                        <button data-action="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-amber-500/20 mb-4" >
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">vpn_key</span> Generate & Unlock
                         </button>
                         <div class="p-3 bg-warning-surface dark:bg-warning-surface/5 rounded-xl border border-warning-base dark:border-warning-base/10 text-center">
@@ -121,7 +121,7 @@ ob_start();
                     </div>
 
                     <!-- TEMP PASS CARD (Hidden initially) -->
-                    <div id="temp-pass-card" class="ds-card p-6 hidden" style="background:rgba(16,185,129,0.05); border:2px solid #10b981;">
+                    <div id="temp-pass-card" class="ds-card p-6 hidden" >
                         <div class="text-xs font-black text-success-base uppercase tracking-widest mb-4">Account Reinstated</div>
                         <div class="p-4 bg-white dark:bg-surface-dark border border-success-base dark:border-green-900/40 rounded-xl mb-3">
                             <div class="text-xs font-black text-success-base uppercase tracking-widest mb-1 text-center">Temporary PIN</div>

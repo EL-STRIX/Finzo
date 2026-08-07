@@ -38,19 +38,19 @@ ob_start();
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
-                                <label class="fin-label mb-1">Admin ID (System Generated)</label>
+                                <label for="profile-admin-id-input" class="fin-label mb-1">Admin ID (System Generated)</label>
                                 <input type="text" id="profile-admin-id-input" class="fin-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed font-mono" readonly>
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Full Name *</label>
+                                <label for="profile-name-input" class="fin-label mb-1">Full Name *</label>
                                 <input type="text" id="profile-name-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Date of Birth</label>
+                                <label for="profile-dob-input" class="fin-label mb-1">Date of Birth</label>
                                 <input type="date" id="profile-dob-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Gender</label>
+                                <label for="profile-gender-input" class="fin-label mb-1">Gender</label>
                                 <select id="profile-gender-input" class="fin-input">
                                     <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
@@ -60,11 +60,11 @@ ob_start();
                                 </select>
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Phone Number</label>
+                                <label for="profile-phone-input" class="fin-label mb-1">Phone Number</label>
                                 <input type="text" id="profile-phone-input" class="fin-input">
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Email Address (Read-only)</label>
+                                <label for="profile-email-input" class="fin-label mb-1">Email Address (Read-only)</label>
                                 <input type="email" id="profile-email-input" class="fin-input opacity-70 bg-surface-hover dark:bg-white/5 cursor-not-allowed" readonly>
                             </div>
                         </div>
@@ -85,15 +85,15 @@ ob_start();
                         <p class="text-sm text-text-muted dark:text-text-muted mb-6 font-medium">Configure a security question to recover this admin account if locked out. The answer is case-insensitive.</p>
                         <form id="sq-setup-form" onsubmit="window.AdminProfile.saveSecurityQuestion(event)" class="space-y-6">
                             <div>
-                                <label class="fin-label mb-1">Security Question *</label>
+                                <label for="sq-question" class="fin-label mb-1">Security Question *</label>
                                 <input type="text" id="sq-question" class="fin-input" placeholder="e.g. In what city were you born?" minlength="10" required>
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Answer *</label>
+                                <label for="sq-answer" class="fin-label mb-1">Answer *</label>
                                 <input type="password" id="sq-answer" class="fin-input" placeholder="Your secret answer" minlength="3" required>
                             </div>
                             <div class="pt-4 border-t border-surface-border dark:border-white/5">
-                                <label class="fin-label mb-1">Current Password (to verify) *</label>
+                                <label for="sq-curr-pw" class="fin-label mb-1">Current Password (to verify) *</label>
                                 <input type="password" id="sq-curr-pw" class="fin-input" placeholder="Authenticate changes" required>
                             </div>
                             <div class="flex justify-end pt-4">
@@ -219,11 +219,11 @@ ob_start();
                         
                         <div class="space-y-4">
                             <div>
-                                <label class="fin-label mb-1">Current Password</label>
+                                <label for="curr-pw" class="fin-label mb-1">Current Password</label>
                                 <input type="password" id="curr-pw" class="fin-input">
                             </div>
                             <div>
-                                <label class="fin-label mb-1">New Password</label>
+                                <label for="new-pw" class="fin-label mb-1">New Password</label>
                                 <input type="password" id="new-pw" class="fin-input" oninput="window.AdminProfile.checkStrength(this.value)">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
@@ -233,7 +233,7 @@ ob_start();
                                 </div>
                             </div>
                             <div>
-                                <label class="fin-label mb-1">Confirm New Password</label>
+                                <label for="conf-pw" class="fin-label mb-1">Confirm New Password</label>
                                 <input type="password" id="conf-pw" class="fin-input">
                             </div>
                             <button data-action="window.AdminProfile.updatePassword()" class="w-full btn btn-primary mt-4">Change Password</button>

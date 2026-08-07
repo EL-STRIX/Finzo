@@ -20,7 +20,7 @@ ob_start();
       </div>
       <div class="flex items-center gap-3 md:gap-5 flex-shrink-0">
         <button data-action="openAddModal()" class="btn btn-primary flex whitespace-nowrap flex-shrink-0"
-          style="background: var(--color-primary-base) !important; box-shadow: 0 10px 20px -10px rgba(0,38,69,0.5) !important;">
+          >
           <span class="material-symbols-outlined" aria-hidden="true">add</span> Add New Branch
         </button>
         </div>
@@ -30,22 +30,22 @@ ob_start();
       <!-- STATS ROW -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <div class="ds-card p-5">
-          <div class="admin-stat-icon" style="background:#e0f2fe;">
-            <span class="material-symbols-outlined" style="color:#0369a1;" aria-hidden="true">store</span>
+          <div class="admin-stat-icon" >
+            <span class="material-symbols-outlined"  aria-hidden="true">store</span>
           </div>
           <div class="admin-stat-label">TOTAL BRANCHES</div>
           <div id="stat-total-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
         <div class="ds-card p-5">
-          <div class="admin-stat-icon" style="background:#e8f8f2;">
-            <span class="material-symbols-outlined" style="color:#00b894;" aria-hidden="true">check_circle</span>
+          <div class="admin-stat-icon" >
+            <span class="material-symbols-outlined"  aria-hidden="true">check_circle</span>
           </div>
           <div class="admin-stat-label">ACTIVE BRANCHES</div>
           <div id="stat-active-branches" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
         </div>
         <div class="ds-card p-5">
-          <div class="admin-stat-icon" style="background:#fff8e1;">
-            <span class="material-symbols-outlined" style="color:#f39c12;" aria-hidden="true">badge</span>
+          <div class="admin-stat-icon" >
+            <span class="material-symbols-outlined"  aria-hidden="true">badge</span>
           </div>
           <div class="admin-stat-label">TOTAL STAFF ASSIGNED</div>
           <div id="stat-total-staff" class="admin-stat-value"><div class="skeleton w-12 h-8"></div></div>
@@ -116,11 +116,11 @@ ob_start();
         <div class="p-4 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
           <div class="text-xs text-text-muted font-bold uppercase tracking-wider">Showing 1-5 of 5 branches</div>
           <div class="flex items-center gap-2">
-            <button class="btn btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">&larr; Previous</button>
+            <button class="btn btn-secondary" >&larr; Previous</button>
             <div class="flex gap-1.5">
-              <button class="btn btn-primary" style="width:32px; height:32px; padding:0 !important; border-radius:8px !important; font-size:11px !important;">1</button>
+              <button class="btn btn-primary" >1</button>
             </div>
-            <button class="btn btn-secondary" style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important; opacity:0.5; cursor:not-allowed;">Next &rarr;</button>
+            <button class="btn btn-secondary" >Next &rarr;</button>
           </div>
         </div>
       </div>
@@ -147,12 +147,12 @@ ob_start();
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 1: Branch Information</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div class="col-span-1">
-                <label class="fin-label mb-2">Branch Name *</label>
+                <label for="add-branch-name" class="fin-label mb-2">Branch Name *</label>
                 <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. West Branch" required
                   class="fin-input">
               </div>
               <div class="col-span-1">
-                <label class="fin-label mb-2">Branch Code *</label>
+                <label for="add-branch-code" class="fin-label mb-2">Branch Code *</label>
                 <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly
                   class="w-full px-4 py-3 bg-surface-hover dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary-base/60">
                 <p class="text-xs text-text-muted mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
@@ -164,7 +164,7 @@ ob_start();
               </div>
 
               <div class="col-span-1">
-                <label class="fin-label mb-2">State *</label>
+                <label for="branch-state" class="fin-label mb-2">State *</label>
                 <div class="finzo-dropdown w-full" id="branch-state-dropdown">
                   <div class="finzo-dropdown-trigger !bg-surface-subtle dark:!bg-surface-container !border-none !rounded-xl !py-3">
                     <span class="dropdown-label font-bold text-sm text-text-muted">Select State / UT</span>
@@ -225,7 +225,7 @@ ob_start();
           <div>
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 2: Branch Manager</div>
             <div class="mb-4">
-              <label class="fin-label mb-2">Assign Branch Manager *</label>
+              <label for="manager-id" class="fin-label mb-2">Assign Branch Manager *</label>
               
               <!-- Custom Styled Manager Dropdown -->
               <div class="finzo-dropdown w-full" id="manager-dropdown">
@@ -240,7 +240,7 @@ ob_start();
                 <input type="hidden" id="manager-id" name="manager_id" value="">
               </div>
 
-              <div class="info-banner-premium mt-4 !py-2 !gap-3 !mb-0" style="background:rgba(245,158,11,0.05); border-color:#f59e0b;">
+              <div class="info-banner-premium mt-4 !py-2 !gap-3 !mb-0" >
                 <span class="material-symbols-outlined text-warning-base" style="font-size:18px;" aria-hidden="true">info</span>
                 <p class="text-xs text-warning-base dark:text-warning-base font-bold">Assigning a manager will update their branch in Staff Management.</p>
               </div>
@@ -251,7 +251,7 @@ ob_start();
           <div>
             <div class="text-xs font-bold tracking-widest text-primary-base/40 uppercase mb-4 py-1 border-b border-surface-border dark:border-white/10">SECTION 3: Admin Verification</div>
             <div class="mb-2">
-              <label class="fin-label mb-2">Admin Password *</label>
+              <label for="admin-confirm-pw" class="fin-label mb-2">Admin Password *</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" style="font-size:18px;" aria-hidden="true">admin_panel_settings</span>
                 <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your admin password" required
@@ -260,7 +260,7 @@ ob_start();
                   <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                 </button>
               </div>
-              <div class="info-banner-premium mt-4 !py-3 !gap-3 !mb-0" style="background:rgba(239,68,68,0.05); border-color:#ef4444;">
+              <div class="info-banner-premium mt-4 !py-3 !gap-3 !mb-0" >
                 <span class="material-symbols-outlined text-danger-base" style="font-size:18px;" aria-hidden="true">shield</span>
                 <p class="text-xs text-danger-base dark:text-danger-base font-bold">This verification ensures branch creation is authorized and logged.</p>
               </div>
@@ -269,7 +269,7 @@ ob_start();
 
           <!-- SECTION 4 -->
           <div>
-             <label class="fin-label mb-2">Branch Description / Notes</label>
+             <label for="branch-desc" class="fin-label mb-2">Branch Description / Notes</label>
              <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
                class="fin-input"></textarea>
              <div class="char-counter" id="branch-desc-counter">0 / 500</div>
@@ -277,7 +277,7 @@ ob_start();
 
           <!-- SECTION 5 -->
           <div>
-            <label class="fin-label mb-1">Branch Registration Certificate</label>
+            <label for="branch-file-input" class="fin-label mb-1">Branch Registration Certificate</label>
             <p class="text-xs opacity-40 mb-3 font-bold uppercase tracking-tighter">Upload the official documents</p>
             
             <input type="file" id="branch-file-input" name="certificate" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
@@ -309,7 +309,7 @@ ob_start();
 
             <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
               <button type="button" data-action="$(&#039;#addBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="btn btn-secondary py-3 px-8 text-center justify-center">Cancel</button>
-              <button type="submit" id="submit-branch-btn" class="btn btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none" style="background: var(--color-primary-base) !important;">Create Branch</button>
+              <button type="submit" id="submit-branch-btn" class="btn btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none" >Create Branch</button>
             </div>
           </div>
         </form>
@@ -325,7 +325,7 @@ ob_start();
         <div>
           <h3 id="view-branch-title" class="admin-section-title">Barasat</h3>
           <div class="flex gap-2 mt-1" id="view-branch-badges">
-            <span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#dbeafe;font-size:9px;padding:2px 6px;">SYSTEM</span>
+            <span class="status-badge" >SYSTEM</span>
             <span class="status-badge badge-success" style="font-size:9px;padding:2px 6px;">ACTIVE</span>
           </div>
         </div>
@@ -406,7 +406,7 @@ ob_start();
       </div>
       <div class="p-6 border-t border-surface-border dark:border-white/5 flex gap-3 justify-end">
          <button id="view-btn-edit" class="btn btn-secondary px-6">Edit Branch Info</button>
-         <button id="view-btn-staff" class="btn btn-primary px-6" style="background:#002644 !important;">View Staff List</button>
+         <button id="view-btn-staff" class="btn btn-primary px-6" >View Staff List</button>
       </div>
     </div>
   </div>
@@ -464,17 +464,17 @@ ob_start();
         
         <div id="confirm-input-area" class="hidden space-y-5 text-left mb-8">
            <div>
-              <label class="fin-label mb-2">Confirm Branch Name *</label>
+              <label for="confirm-branch-name-input" class="fin-label mb-2">Confirm Branch Name *</label>
               <input type="text" id="confirm-branch-name-input" placeholder="Type name here" class="w-full px-4 py-3 bg-surface-hover border-none rounded-xl font-bold">
            </div>
            
            <div>
-              <label class="fin-label mb-2">Admin Security Password *</label>
+              <label for="confirm-admin-pw" class="fin-label mb-2">Admin Security Password *</label>
               <input type="password" id="confirm-admin-pw" placeholder="Enter admin password" class="w-full px-4 py-3 bg-surface-hover border-none rounded-xl font-bold">
            </div>
 
            <div>
-              <label class="fin-label mb-2">Official Closure Document *</label>
+              <label for="delete-file-input" class="fin-label mb-2">Official Closure Document *</label>
               <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-surface-border dark:border-white/10 rounded-xl hover:bg-surface-subtle dark:hover:bg-white/5 transition-all text-center">
                  <span class="material-symbols-outlined text-text-muted mb-1" aria-hidden="true">upload_file</span>
                  <div class="text-xs font-bold text-text-muted uppercase">Click to upload document</div>

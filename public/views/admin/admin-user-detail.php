@@ -273,14 +273,14 @@ ob_start();
 
           <!-- Custom Reason Area -->
           <div id="custom-reason-container" class="hidden">
-            <label class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Additional Observations (Optional)</label>
+            <label for="governance-notes" class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Additional Observations (Optional)</label>
             <textarea id="governance-notes" rows="3" placeholder="Explain the decision for internal auditing..."
               class="w-full bg-surface-hover dark:bg-white/5 border-none rounded-2xl text-sm font-bold p-4 focus:ring-4 focus:ring-primary/5 transition-all"></textarea>
           </div>
 
           <!-- Auth Step -->
           <div id="auth-step" class="pt-4 border-t border-surface-border dark:border-white/5">
-            <label class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
+            <label for="admin-password" class="block text-xs font-black uppercase text-text-muted mb-3 ml-1">Confirm Identity (Admin Password)</label>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">admin_panel_settings</span>
               <input type="password" id="admin-password" placeholder="••••••••"

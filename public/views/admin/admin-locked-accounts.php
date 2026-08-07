@@ -17,14 +17,14 @@ ob_start();
                 <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
                     <div class="col-span-2">
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Search Account</label>
+                        <label for="search-input" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Search Account</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                             <input type="text" id="search-input" placeholder="Name, email or account number..." class="w-full pl-12 pr-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Account Type</label>
+                        <label for="type-filter" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Account Type</label>
                         <div class="finzo-dropdown" id="type-dropdown">
                             <input type="hidden" id="type-filter" value="">
                             <div class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-white/5 !border-none !py-3 !rounded-xl">
@@ -39,7 +39,7 @@ ob_start();
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Status</label>
+                        <label for="status-filter" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Status</label>
                         <div class="finzo-dropdown" id="status-dropdown">
                             <input type="hidden" id="status-filter" value="">
                             <div class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-white/5 !border-none !py-3 !rounded-xl">
@@ -54,7 +54,7 @@ ob_start();
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Locked On</label>
+                        <label for="date-filter" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Locked On</label>
                         <input type="date" id="date-filter" class="w-full px-4 py-3 bg-surface-hover dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary/10 font-bold text-sm">
                     </div>
                 </div>

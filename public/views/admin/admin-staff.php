@@ -6,8 +6,8 @@ ob_start();
 <!-- STATS ROW -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
-          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#e0f2fe;">
-            <span class="material-symbols-outlined" style="color:#0369a1;" aria-hidden="true">group</span>
+          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" >
+            <span class="material-symbols-outlined"  aria-hidden="true">group</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-xs">TOTAL STAFF</div>
@@ -15,8 +15,8 @@ ob_start();
           </div>
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
-          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#e8f8f2;">
-            <span class="material-symbols-outlined" style="color:#00b894;" aria-hidden="true">badge</span>
+          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" >
+            <span class="material-symbols-outlined"  aria-hidden="true">badge</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-xs">ACTIVE STAFF</div>
@@ -24,8 +24,8 @@ ob_start();
           </div>
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
-          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#f1f3f5;">
-            <span class="material-symbols-outlined" style="color:#6c757d;" aria-hidden="true">person_off</span>
+          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" >
+            <span class="material-symbols-outlined"  aria-hidden="true">person_off</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-xs">SUSPEND STAFF</div>
@@ -33,8 +33,8 @@ ob_start();
           </div>
         </div>
         <div class="admin-stat-card !p-4 flex flex-row items-center gap-4">
-          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" style="background:#fff8e1;">
-            <span class="material-symbols-outlined" style="color:#f39c12;" aria-hidden="true">receipt</span>
+          <div class="admin-stat-icon shrink-0 !mb-0 !w-12 !h-12 flex items-center justify-center rounded-xl" >
+            <span class="material-symbols-outlined"  aria-hidden="true">receipt</span>
           </div>
           <div>
             <div class="admin-stat-label !mb-1 text-xs">TRANSACTIONS</div>
@@ -47,7 +47,7 @@ ob_start();
       <div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden">
         <div class="p-4 sm:p-6 grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 sm:gap-4 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
           <div class="col-span-1 lg:flex-1 w-full">
-            <label class="fin-label">Search Staff</label>
+            <label for="staff-search-input" class="fin-label">Search Staff</label>
             <div class="relative group">
               <span
                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted transition-colors group-focus-within:text-primary-base" aria-hidden="true">search</span>
@@ -61,7 +61,7 @@ ob_start();
           </div>
 
           <div class="w-full lg:w-64">
-            <label class="fin-label">Branch</label>
+            <label for="filter-branch" class="fin-label">Branch</label>
             <div class="finzo-dropdown w-full" id="branch-filter-dropdown">
               <div
                 class="finzo-dropdown-trigger !bg-surface-hover dark:!bg-surface-container-high !border-none !py-[11px] !rounded-xl w-full">
@@ -109,13 +109,13 @@ ob_start();
             of 8 staff</div>
           <div class="flex items-center gap-2">
             <button id="prev-page" class="btn btn-secondary"
-              style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">&larr;
+              >&larr;
               Previous</button>
             <div id="page-numbers" class="flex gap-1.5">
               <!-- Dynamically Generated -->
             </div>
             <button id="next-page" class="btn btn-secondary"
-              style="padding: 7px 14px !important; border-radius: 8px !important; font-size: 11px !important;">Next
+              >Next
               &rarr;</button>
           </div>
         </div>
