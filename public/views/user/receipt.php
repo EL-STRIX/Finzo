@@ -5,9 +5,6 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="main print:!ml-0 print:!p-0">
-
-
 <div class="page-content py-8 print:py-0" style="max-width: 600px; margin: 0 auto;">
   
   <div class="mb-8 ds-animate-fade text-center print:hidden">
@@ -120,13 +117,7 @@ ob_start();
   <div class="flex flex-col sm:flex-row gap-3 mt-6 print:hidden ds-animate-slide-up" style="animation-delay: 0.2s;">
     <a href="dashboard.php" class="btn btn-secondary flex-1 h-12">Return to Dashboard</a>
     <a href="transfer.php" class="btn btn-primary flex-1 h-12">New Transfer</a>
-  </div>
-  
-</div>
-</div>
-
-
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+  <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <?php
 $slot = ob_get_clean();

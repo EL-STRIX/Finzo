@@ -5,11 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="main">
-
-
-<div class="page-content ds-container py-8">
-  <div class="flex justify-between items-end mb-8 ds-animate-fade">
+<div class="flex justify-between items-end mb-8 ds-animate-fade">
     <div>
       <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Communication Center</div>
       <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Activity Feed</h1>

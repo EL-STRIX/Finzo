@@ -5,11 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="main">
-
-
-<div class="page-content ds-container py-8">
-  <div class="mb-8 ds-animate-fade">
+<div class="mb-8 ds-animate-fade">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Identity & Security</div>
     <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Your Profile</h1>
     <p class="text-text-muted mt-1">Manage your personal information and Finzo account settings.</p>

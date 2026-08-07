@@ -5,12 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="main print:!ml-0 print:!p-0">
-
-
-<div class="page-content ds-container py-8 print:py-0">
-  
-  <div class="mb-8 ds-animate-fade print:hidden">
+<div class="mb-8 ds-animate-fade print:hidden">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
     <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Account Statement</h1>
     <p class="text-text-muted mt-1">Generate, view, and print your transaction history.</p>
@@ -112,12 +107,7 @@ ob_start();
         <div class="text-xs font-bold text-text-muted print:text-black tracking-widest uppercase">This is a computer-generated statement. No signature required.</div>
       </div>
       
-    </div>
-  </div>
-</div>
-
-
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <?php
 $slot = ob_get_clean();

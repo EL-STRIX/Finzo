@@ -3,82 +3,16 @@ $portal = 'user';
 $pageTitle = 'Change Password';
 ob_start();
 ?>
-<div class="auth-split-grid">
-    
-    <!-- Left Information Panel -->
-    <div class="auth-left-panel">
-      <!-- Top: Branding -->
-      <div>
-        <div class="flex items-center gap-2 mb-8">
-          <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
-            <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
-          </div>
-          <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
-        </div>
-        
-        <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">
-          Password Security
-        </h2>
-        <p class="text-white/80 text-sm leading-relaxed mb-10 max-w-md">
-          Protect your account with a strong password. Regular password updates improve account security.
-        </p>
+<script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
 
-        <!-- Security Features -->
-        <div class="space-y-2">
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">enhanced_encryption</span>
-            </div>
-            <div class="auth-security-content">
-              <h4>Encrypted Credentials</h4>
-              <p>Your credentials are securely protected.</p>
-            </div>
-          </div>
-          
-          <div class="auth-security-block">
-            <div class="auth-security-icon">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">security</span>
-            </div>
-            <div class="auth-security-content">
-              <h4>Fraud Protection</h4>
-              <p>Strong authentication helps prevent fraud.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Bottom: Copyright -->
-      <div class="mt-8 pt-6 border-t border-white/10">
-        <p class="text-xs text-white/50 font-medium tracking-wide uppercase">
-          &copy; 2026 Finzo Banking Group. All rights reserved.
-        </p>
-      </div>
-    </div>
-    
-    <!-- Right Authentication Area -->
-    <div class="auth-right-area">
-      <!-- Language Selector -->
-      <div class="auth-lang-selector">
-        <span class="material-symbols-outlined text-base" aria-hidden="true">language</span>
-        <span>EN</span>
-        <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
-      </div>
-      
-      <!-- Auth Card -->
-      <div class="ds-card-wrapper w-full max-w-[480px]">
-        <!-- Brand Header (Mobile Only) -->
-        <div class="auth-brand-header lg:hidden">
-          <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.php">
-            <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
-          </div>
-        </div>
-        
-        <div class="mb-6 text-center lg:text-left">
-          <h1 class="auth-hero-title">Change Your Password</h1>
-          <p class="auth-subtitle text-sm">Update your password to keep your Finzo Banking account secure.</p>
-        </div>
+<div class="mb-8 ds-animate-fade">
+    <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Security</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Change Password</h1>
+    <p class="text-text-muted mt-1">Update your password to keep your Finzo Banking account secure.</p>
+</div>
 
-        <form class="auth-form-body" onsubmit="event.preventDefault();">
+<div class="ds-card p-6 lg:p-8 max-w-2xl ds-animate-slide-up">
+    <form class="" onsubmit="event.preventDefault();">
           
           <div class="fin-input-container !mb-0">
               <label class="form-label" for="current-pw">Current Password</label>
@@ -139,31 +73,56 @@ ob_start();
           </div>
 
         </form>
+</div>
 
-        <div class="auth-trust-badge mt-6 border-t border-surface-border pt-6">
-          <span class="material-symbols-outlined text-sm" aria-hidden="true">verified_user</span>
-          <span>Enterprise Security Level</span>
-        </div>
+<script>
+    // Include JS functions required for password strength if not in user-shared.js
+    function togglePw(id, eyeId) {
+        const input = document.getElementById(id);
+        const eye = document.getElementById(eyeId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            eye.innerText = 'visibility_off';
+        } else {
+            input.type = 'password';
+            eye.innerText = 'visibility';
+        }
+    }
+    
+    function checkStrength() {
+        const pw = document.getElementById('new-pw').value;
+        const meter = document.getElementById('pw-meter');
+        const strText = document.getElementById('pw-strength-text');
+        if (!meter || !strText) return;
+        
+        let strength = 0;
+        if (pw.length > 7) strength += 25;
+        if (pw.match(/[a-z]+/)) strength += 25;
+        if (pw.match(/[A-Z]+/)) strength += 25;
+        if (pw.match(/[0-9]+/)) strength += 25;
+        
+        meter.style.width = strength + '%';
+        
+        if (strength <= 25) {
+            meter.className = 'h-full transition-all duration-300 ease-out bg-danger-base';
+            strText.innerText = 'Weak';
+            strText.className = 'text-xs font-bold text-danger-base';
+        } else if (strength <= 50) {
+            meter.className = 'h-full transition-all duration-300 ease-out bg-warning-base';
+            strText.innerText = 'Fair';
+            strText.className = 'text-xs font-bold text-warning-base';
+        } else if (strength <= 75) {
+            meter.className = 'h-full transition-all duration-300 ease-out bg-info-base';
+            strText.innerText = 'Good';
+            strText.className = 'text-xs font-bold text-info-base';
+        } else {
+            meter.className = 'h-full transition-all duration-300 ease-out bg-success-base';
+            strText.innerText = 'Strong';
+            strText.className = 'text-xs font-bold text-success-base';
+        }
+    }
+</script>
 
-        <div class="auth-footer">
-            <a href="profile.php" class="flex items-center justify-center gap-1 font-semibold text-text-muted hover:text-primary-base-800 transition-colors">
-                <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
-                Return to Profile
-            </a>
-        </div>
-      </div>
-
-            <!-- Global Footer -->
-      <div class="auth-global-footer">
-        <ul>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" aria-hidden="true">enhanced_encryption</span> 256-bit Encryption</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" aria-hidden="true">verified_user</span> Secure Digital Banking Access</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" aria-hidden="true">gpp_good</span> Privacy Protected</span></li>
-          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" aria-hidden="true">credit_card</span> PCI DSS Compliant</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

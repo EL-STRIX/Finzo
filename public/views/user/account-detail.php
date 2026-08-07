@@ -5,11 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="main">
-
-
-<div class="page-content ds-container py-8">
-  <div class="flex items-center gap-4 mb-8 ds-animate-fade">
+<div class="flex items-center gap-4 mb-8 ds-animate-fade">
     <a href="accounts.php" class="w-10 h-10 rounded-full hover:bg-surface-hover flex items-center justify-center transition-colors text-text-main">
       <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
     </a>

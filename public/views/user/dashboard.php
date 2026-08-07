@@ -5,11 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
 
-<div class="main">
-  
-  <div class="page-content ds-container py-8">
-
-    <!-- STATUS BANNERS -->
+<!-- STATUS BANNERS -->
     <div id="banner-pending" class="ds-card p-4 border-info-base bg-info-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 rounded-full bg-info-base/20 flex items-center justify-center shrink-0">
