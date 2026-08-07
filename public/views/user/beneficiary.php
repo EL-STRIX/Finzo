@@ -1,0 +1,89 @@
+<?php
+$portal = 'user';
+$pageTitle = 'Beneficiaries';
+ob_start();
+?>
+<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
+
+<div class="main">
+
+
+<div class="page-content ds-container py-8">
+  <div class="mb-8 ds-animate-fade">
+    <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Beneficiaries</h1>
+    <p class="text-text-muted mt-1">Manage your saved transfer recipients for quick access.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 xl:gap-8">
+    
+    <!-- LIST COLUMN -->
+    <div class="ds-card ds-animate-slide-up h-fit overflow-hidden">
+      <div class="ds-card-header border-b border-border-main bg-surface-subtle">
+        <h3 class="font-display text-sm font-bold text-text-main uppercase tracking-wider">Saved Beneficiaries</h3>
+      </div>
+      <div id="beneficiary-list" class="flex flex-col">
+        <!-- Loader Skeleton -->
+        <div class="p-6 flex items-center gap-4 border-b border-border-main">
+          <div class="w-12 h-12 rounded-full skeleton shrink-0"></div>
+          <div class="flex-1">
+            <div class="skeleton w-32 h-4 mb-2"></div>
+            <div class="skeleton w-24 h-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD FORM COLUMN -->
+    <div class="ds-card ds-animate-slide-up h-fit" style="animation-delay: 0.1s;">
+      <div class="ds-card-header border-b border-border-main">
+        <h3 class="font-display text-base font-bold text-text-main">Add New Beneficiary</h3>
+        <p class="text-xs text-text-muted mt-1">Save an account for quick future transfers</p>
+      </div>
+      <div class="ds-card-body p-6 flex flex-col gap-5">
+        
+        <div>
+          <label for="new-nick" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Nick Name <span class="text-danger-base">*</span></label>
+          <div class="relative">
+             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">person</span>
+             <input type="text" class="form-control pl-10" id="new-nick" placeholder="e.g. Mom, Office Rent"/>
+          </div>
+        </div>
+        
+        <div>
+          <label for="new-acc" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Account Number <span class="text-danger-base">*</span></label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">tag</span>
+               <input type="text" class="form-control pl-10 font-mono font-bold uppercase tracking-wider" id="new-acc" placeholder="FNZ20260002" oninput="resetLookup()"/>
+            </div>
+            <button class="btn btn-secondary px-5" data-action="lookupBen()">Verify Your Identity</button>
+          </div>
+          <div id="ben-result" class="hidden mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200"></div>
+        </div>
+        
+        <div>
+          <label class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Network</label>
+          <div class="p-4 bg-primary-surface/40 border border-primary-base/20 rounded-xl flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-base-base text-xl" aria-hidden="true">account_balance</span>
+            <div class="text-sm font-bold text-primary-base-base">Finzo Internal Network</div>
+          </div>
+          <div class="text-xs font-bold text-text-muted mt-2 flex items-center gap-1">
+             <span class="material-symbols-outlined text-xs" aria-hidden="true">info</span> Cross-bank transfers are currently disabled.
+          </div>
+        </div>
+        
+        <button class="btn btn-primary w-full h-12 mt-2" data-action="addBeneficiary()">Save Beneficiary</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
+  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<?php
+$slot = ob_get_clean();
+include __DIR__ . '/../layouts/app.php';
+?>

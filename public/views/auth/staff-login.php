@@ -1,12 +1,9 @@
 <?php
-$pageTitle = "Finzo | Staff Portal";
-$pageDescription = "Finzo Enterprise Banking - Staff Portal Sign In";
-$extraHead = '<script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>';
+$portal = 'auth';
+$pageTitle = 'Finzo';
 ob_start();
 ?>
-
-    <main class="auth-page-wrapper">
-        <div class="auth-split-grid">
+<div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
                 <img loading="lazy" src="/Finzo/public/assets/images/staff_bg.png" alt="Staff Portal Illustration" class="auth-hero-img-bg" />
@@ -15,7 +12,7 @@ ob_start();
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
@@ -51,7 +48,7 @@ ob_start();
                 
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
@@ -63,9 +60,9 @@ ob_start();
 
                     <!-- Role Switcher Component -->
                     <div class="auth-role-switcher" role="tablist" aria-label="Select Authentication Role">
-                        <a href="login.html" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
-                        <a href="staff-login.html" class="auth-role-tab active" role="tab" aria-selected="true">Staff</a>
-                        <a href="admin-login.html" class="auth-role-tab" role="tab" aria-selected="false">Admin</a>
+                        <a href="login.php" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
+                        <a href="staff-login.php" class="auth-role-tab active" role="tab" aria-selected="true">Staff</a>
+                        <a href="admin-login.php" class="auth-role-tab" role="tab" aria-selected="false">Admin</a>
                     </div>
 
                     <!-- Staff Form Component -->
@@ -88,7 +85,7 @@ ob_start();
                         <div class="fin-input-container">
                             <div class="flex justify-between items-center mb-1">
                                 <label for="staff-password" class="fin-label fin-label-required">Password</label>
-                                <a href="forgot-password.html" class="btn-text">Reset Password</a>
+                                <a href="forgot-password.php" class="btn-text">Reset Password</a>
                             </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">lock</span>
@@ -125,9 +122,7 @@ ob_start();
                 </div>
             </div>
         </div>
-    </main>
-
 <?php
 $slot = ob_get_clean();
-require __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/app.php';
 ?>

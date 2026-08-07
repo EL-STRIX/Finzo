@@ -1,12 +1,9 @@
 <?php
-$pageTitle = "Finzo | Check Your Email";
-$pageDescription = "Finzo Enterprise Banking - Email Verification Sent";
-$extraHead = '<script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>';
+$portal = 'auth';
+$pageTitle = 'Finzo';
 ob_start();
 ?>
-
-    <main class="auth-page-wrapper">
-        <div class="auth-split-grid">
+<div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
                 <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-bg" />
@@ -15,7 +12,7 @@ ob_start();
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
@@ -51,7 +48,7 @@ ob_start();
                 
                 <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
@@ -76,7 +73,7 @@ ob_start();
 
                     <!-- Buttons Group Component -->
                     <div class="space-y-3 mt-6">
-                        <a href="login.html" class="btn btn-primary btn-full">
+                        <a href="login.php" class="btn btn-primary btn-full">
                             <span class="material-symbols-outlined text-lg">arrow_back</span>
                             <span>Return to Sign In</span>
                         </a>
@@ -103,9 +100,7 @@ ob_start();
                 </div>
             </div>
         </div>
-    </main>
-
 <?php
 $slot = ob_get_clean();
-require __DIR__ . '/../layouts/app.php';
+include __DIR__ . '/../layouts/app.php';
 ?>

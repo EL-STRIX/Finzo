@@ -1,0 +1,437 @@
+<?php
+$portal = 'user';
+$pageTitle = 'Finzo';
+ob_start();
+?>
+<div class="auth-split-grid">
+    
+    <!-- Left Information Panel -->
+    <div class="auth-left-panel">
+      <!-- Top: Branding -->
+      <div>
+        <div class="flex items-center gap-2 mb-8">
+          <div class="flex items-center justify-center w-10 h-10 bg-white/10 rounded-md text-white">
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
+          </div>
+          <span class="font-display font-bold text-xl text-white tracking-tight">Finzo</span>
+        </div>
+        
+        <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">
+          Secure Banking Verification
+        </h2>
+        <p class="text-white/80 text-sm leading-relaxed mb-10 max-w-md">
+          Complete your profile information to enable full access to Finzo's digital banking services.
+        </p>
+
+        <!-- Security Features -->
+        <div class="space-y-2">
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">how_to_reg</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Identity Verification</h4>
+              <p>Completing your profile helps us verify your identity securely.</p>
+            </div>
+          </div>
+          
+          <div class="auth-security-block">
+            <div class="auth-security-icon">
+              <span class="material-symbols-outlined text-lg">shield</span>
+            </div>
+            <div class="auth-security-content">
+              <h4>Privacy Protection</h4>
+              <p>Your personal information is protected using enterprise-grade security.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom: Copyright -->
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <p class="text-xs text-white/50 font-medium tracking-wide uppercase">
+          &copy; 2026 Finzo Banking Group. All rights reserved.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Right Authentication Area -->
+    <div class="auth-right-area" style="align-items: flex-start; padding-top: 3rem; padding-bottom: 3rem; overflow-y: auto;">
+      <!-- Language Selector -->
+      <div class="auth-lang-selector hidden lg:flex fixed top-8 right-12 z-50">
+        <span class="material-symbols-outlined text-base">language</span>
+        <span>EN</span>
+        <span class="material-symbols-outlined text-base">expand_more</span>
+      </div>
+      
+      <!-- Auth Card -->
+      <div class="auth-card-wrapper w-full max-w-[480px] mx-auto my-auto">
+        <!-- Brand Header (Mobile Only) -->
+        <div class="auth-brand-header lg:hidden">
+          <div class="auth-brand-logo-container cursor-pointer" data-href="/Finzo/public/index.php">
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
+          </div>
+        </div>
+        
+        <div class="mb-6 text-center lg:text-left">
+          <h1 class="auth-hero-title">Complete Your Banking Profile</h1>
+          <p class="auth-subtitle text-sm">Complete the remaining required information to activate your Finzo Banking account and access digital banking services.</p>
+        </div>
+
+        <!-- Hidden legacy step indicators to prevent JS errors -->
+        <div class="hidden">
+            <div id="sc1"></div><div id="sl1"></div><div id="line1"></div>
+            <div id="sc2"></div><div id="sl2"></div><div id="line2"></div>
+            <div id="sc3"></div><div id="sl3"></div><div id="line3"></div>
+            <div id="sc4"></div><div id="sl4"></div>
+        </div>
+
+        <div class="auth-form-body">
+            
+            <!-- Minimal Profile Completion Indicator -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Profile Completion</span>
+                    <span id="progress-text" class="text-xs font-bold text-primary-600">25% Complete</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-primary-600 transition-all duration-300 ease-out" style="width: 25%"></div>
+                </div>
+            </div>
+
+            <!-- STEP 1: PERSONAL INFO -->
+            <div class="step-content active" id="step1">
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Personal Information</h3>
+                </div>
+                
+                <div class="fin-input-container !mb-5">
+                    <label class="form-label" for="profile-input">Profile Photo (Selfie or Passport Size) <span class="text-danger-base">*</span></label>
+                    <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex items-center gap-4 cursor-pointer transition-colors mt-2" id="profile-box" data-action="document.getElementById('profile-input').click()">
+                        <input type="file" id="profile-input" accept="image/*" class="hidden" onchange="handleUpload(this,'profile-box','profile-preview')"/>
+                        <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                            <img loading="lazy" id="profile-preview" class="w-full h-full object-cover hidden" />
+                            <span id="profile-preview-wrap" class="material-symbols-outlined text-slate-400 text-xl">add_a_photo</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-700">Click to upload profile photo</div>
+                            <div class="text-xs font-semibold text-slate-500 mt-1 uppercase tracking-wider">JPG or PNG, max 5MB. Clear photo of your face.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="dob">Date of Birth <span class="text-danger-base">*</span></label>
+                        <input type="date" class="fin-input mt-2" id="dob" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="gender">Gender <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select gender</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Male">Male</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Female">Female</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Other">Other</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Prefer not to say">Prefer not to say</div>
+                            </div>
+                            <input type="hidden" id="gender" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="father-name">Father's Name <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="father-name" placeholder="Enter father's name" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="mother-name">Mother's Name <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="mother-name" placeholder="Enter mother's name" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="marital-status">Marital Status <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select status</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Single">Single</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Married">Married</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Divorced">Divorced</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Widowed">Widowed</div>
+                            </div>
+                            <input type="hidden" id="marital-status" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="nationality">Nationality <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="nationality" value="Indian" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="occupation">Occupation <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select occupation</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Employed">Employed</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Self-Employed">Self-Employed</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Student">Student</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Business">Business</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Retired">Retired</div>
+                            </div>
+                            <input type="hidden" id="occupation" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="income">Annual Income <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select range</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Below ₹1 Lakh">Below ₹1 Lakh</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="₹1L – ₹5L">₹1L – ₹5L</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="₹5L – ₹10L">₹5L – ₹10L</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Above ₹10L">Above ₹10L</div>
+                            </div>
+                            <input type="hidden" id="income" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0 md:col-span-2">
+                        <label class="form-label" for="source-of-income">Source of Income <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="source-of-income" placeholder="e.g. Salary, Business Returns" required/>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6 pt-5">
+                    <button class="btn btn-primary" onclick="window.customNextStep(1)" data-action="nextStep(1)">
+                        <span>Continue</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: ADDRESS -->
+            <div class="step-content" id="step2">
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Contact Information</h3>
+                </div>
+                
+                <div class="fin-input-container !mb-4">
+                    <label class="form-label" for="street">Street Address <span class="text-danger-base">*</span></label>
+                    <input type="text" class="fin-input mt-2" id="street" placeholder="House no., building, street" required/>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="city">City <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="city" placeholder="e.g. Kolkata" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="state">State <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select state</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Andhra Pradesh">Andhra Pradesh</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Delhi">Delhi</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Karnataka">Karnataka</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Maharashtra">Maharashtra</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Tamil Nadu">Tamil Nadu</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="West Bengal">West Bengal</div>
+                            </div>
+                            <input type="hidden" id="state" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="pincode">PIN Code <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="pincode" placeholder="6-digit PIN" maxlength="6" pattern="\d{6}" required/>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <!-- Reusing the country display input logic from original -->
+                        <label class="form-label" for="id-type-country">Country</label>
+                        <input type="text" class="fin-input mt-2 bg-slate-50 text-slate-500" value="India" readonly id="id-type-country" />
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6 pt-5">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(2)" data-action="prevStep(2)">
+                        Back
+                    </button>
+                    <button class="btn btn-primary" onclick="window.customNextStep(2)" data-action="nextStep(2)">
+                        <span>Continue</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: IDENTITY -->
+            <div class="step-content" id="step3">
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Identity Information</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label">ID Type <span class="text-danger-base">*</span></label>
+                        <div class="finzo-dropdown relative mt-2">
+                            <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                                <span class="dropdown-label text-slate-500">Select document</span>
+                                <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                            </div>
+                            <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden">
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Aadhaar">Aadhaar Card</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="PAN">PAN Card</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Passport">Passport</div>
+                                <div class="finzo-dropdown-option p-2.5 text-sm font-medium hover:bg-slate-50 cursor-pointer" data-value="Driving License">Driving License</div>
+                            </div>
+                            <input type="hidden" id="id-type" value="">
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="id-number">ID Number <span class="text-danger-base">*</span></label>
+                        <input type="text" class="fin-input mt-2" id="id-number" placeholder="Enter document number" required/>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="front-input">Front Side <span class="text-danger-base">*</span></label>
+                        <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="front-box" data-action="document.getElementById('front-input').click()">
+                            <input type="file" id="front-input" accept="image/*" class="hidden" onchange="handleUpload(this,'front-box','front-preview')"/>
+                            <div id="front-preview-wrap">
+                                <span class="material-symbols-outlined text-3xl text-slate-400 mb-1">document_scanner</span>
+                                <div class="text-xs font-bold text-slate-700">Upload Front</div>
+                            </div>
+                            <img loading="lazy" id="front-preview" class="w-full h-full object-cover rounded-md hidden"/>
+                        </div>
+                    </div>
+                    <div class="fin-input-container !mb-0">
+                        <label class="form-label" for="back-input">Back Side <span class="text-danger-base">*</span></label>
+                        <div class="border-2 border-dashed border-slate-200 hover:border-primary-500 bg-slate-50 hover:bg-primary-50 rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors text-center h-32 mt-2" id="back-box" data-action="document.getElementById('back-input').click()">
+                            <input type="file" id="back-input" accept="image/*" class="hidden" onchange="handleUpload(this,'back-box','back-preview')"/>
+                            <div id="back-preview-wrap">
+                                <span class="material-symbols-outlined text-3xl text-slate-400 mb-1">document_scanner</span>
+                                <div class="text-xs font-bold text-slate-700">Upload Back</div>
+                            </div>
+                            <img loading="lazy" id="back-preview" class="w-full h-full object-cover rounded-md hidden"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-info-surface/40 border border-info-base/20 rounded-md flex items-start gap-2">
+                    <span class="material-symbols-outlined text-info-base text-lg shrink-0">encrypted</span>
+                    <div class="text-xs text-slate-700 font-medium leading-relaxed">
+                        Your documents are strictly verified by our compliance team and never shared with unauthorized third parties.
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6 pt-5">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(3)" data-action="prevStep(3)">
+                        Back
+                    </button>
+                    <button class="btn btn-primary" onclick="window.customNextStep(3)" data-action="nextStep(3)">
+                        <span>Continue</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: ACCOUNT PREFERENCES -->
+            <div class="step-content" id="step4">
+                <div class="mb-5 border-b border-slate-100 pb-2">
+                    <h3 class="font-display text-sm font-bold text-slate-800">Banking Information</h3>
+                </div>
+                
+                <div class="mb-5">
+                    <label class="form-label mb-3 block">Select Account Tier <span class="text-danger-base">*</span></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="account-type" value="savings" class="hidden peer" checked/>
+                            <div class="p-4 rounded-md border border-slate-200 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-display text-sm font-bold text-slate-800">Standard Savings</span>
+                                        <span class="material-symbols-outlined text-primary-600 text-lg opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 leading-relaxed">Zero maintenance, 4% APY, instant transfers. Best for daily use.</div>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="account-type" value="current" class="hidden peer"/>
+                            <div class="p-4 rounded-md border border-slate-200 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-primary-300 transition-colors h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-display text-sm font-bold text-slate-800">Business Current</span>
+                                        <span class="material-symbols-outlined text-primary-600 text-lg opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 leading-relaxed">Higher daily limits, payroll ready, overdraft protection.</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="fin-input-container !mb-5">
+                    <label class="form-label">Preferred Branch <span class="text-danger-base">*</span></label>
+                    <div class="finzo-dropdown relative mt-2">
+                        <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
+                            <span class="dropdown-label text-slate-500">Select local branch</span>
+                            <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
+                        </div>
+                        <div id="branch-dropdown-menu" class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
+                            <!-- Loaded via JS -->
+                        </div>
+                        <input type="hidden" id="branch" value="">
+                    </div>
+                </div>
+
+                <div class="mb-6 p-4 bg-slate-50 rounded-md border border-slate-100">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-primary-600 border-slate-300 focus:ring-primary-500 focus:ring-offset-0"/>
+                        <span class="text-xs font-medium text-slate-700 leading-relaxed">I agree to Finzo's Terms of Service and Privacy Policy and confirm that the information provided is accurate.</span>
+                    </label>
+                </div>
+
+                <div class="flex justify-between mt-6 pt-5">
+                    <button class="btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm" onclick="window.customPrevStep(4)" data-action="prevStep(4)">
+                        Back
+                    </button>
+                    <button class="btn btn-primary" id="submit-btn" data-action="submitProfile()">
+                        <span class="material-symbols-outlined text-lg">done_all</span>
+                        <span>Submit Profile</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="auth-trust-badge mt-6 border-t border-slate-100 pt-6">
+          <span class="material-symbols-outlined text-sm">shield</span>
+          <span>Enterprise Secure Onboarding</span>
+        </div>
+      </div>
+
+            <!-- Global Footer -->
+      <div class="auth-global-footer">
+        <ul>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">enhanced_encryption</span> 256-bit Encryption</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">verified_user</span> Secure Digital Banking Access</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">gpp_good</span> Privacy Protected</span></li>
+          <li><span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">credit_card</span> PCI DSS Compliant</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<?php
+$slot = ob_get_clean();
+include __DIR__ . '/../layouts/app.php';
+?>
