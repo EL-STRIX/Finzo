@@ -48,7 +48,7 @@ ob_start();
                     
                     <div class="flex flex-col sm:flex-row gap-4">
                         <div class="flex-1">
-                            <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Account Number</label>
+                            <label for="account-lookup" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Account Number</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
                                 <input type="text" id="account-lookup" placeholder="Enter 10-digit account number" 
@@ -126,7 +126,7 @@ ob_start();
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
                         <div class="lg:col-span-3 space-y-6">
                             <div>
-                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Deposit Amount (₹)</label>
+                                <label for="dep-amount" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Deposit Amount (₹)</label>
                                 <div class="relative">
                                     <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-text-muted text-xl">₹</span>
                                     <input type="number" id="dep-amount" placeholder="0.00" min="100"
@@ -137,14 +137,14 @@ ob_start();
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Deposit Type</label>
+                                    <label for="dep-type" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Deposit Type</label>
                                     <select id="dep-type" class="w-full fin-input h-[46px]">
                                         <option value="Cash Deposit">Cash Deposit</option>
                                         <option value="Cheque Deposit">Cheque Deposit</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Reference / Note</label>
+                                    <label for="dep-ref" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-2">Reference / Note</label>
                                     <input type="text" id="dep-ref" placeholder="Optional reference" class="w-full fin-input h-[46px]">
                                 </div>
                             </div>

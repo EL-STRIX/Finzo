@@ -153,11 +153,11 @@ ob_start();
                         
                         <form id="password-form" class="space-y-4">
                             <div>
-                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
+                                <label for="pw-current" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
                                 <input type="password" id="pw-current" required class="w-full fin-input">
                             </div>
                             <div>
-                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
+                                <label for="pw-new" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
                                 <input type="password" id="pw-new" required minlength="8" class="w-full fin-input" oninput="checkPasswordStrength()">
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
@@ -167,7 +167,7 @@ ob_start();
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
+                                <label for="pw-confirm" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
                                 <input type="password" id="pw-confirm" required class="w-full fin-input">
                             </div>
                             <div id="pw-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>

@@ -14,7 +14,7 @@ ob_start();
 <div class="ds-card p-8 max-w-3xl mx-auto ds-animate-slide-up">
     <div class="text-center mb-8">
         <div class="w-20 h-20 rounded-full bg-info-surface border-4 border-white shadow-sm flex items-center justify-center mx-auto mb-4">
-            <span class="material-symbols-outlined text-4xl text-info-base">hourglass_top</span>
+            <span class="material-symbols-outlined text-4xl text-info-base" aria-hidden="true">hourglass_top</span>
         </div>
         <h2 class="font-display text-2xl font-bold text-text-main mb-2">Pending Review</h2>
         <p class="text-text-muted">Every application is reviewed to maintain banking security and ensure institutional standards are met.</p>
@@ -27,7 +27,7 @@ ob_start();
             <div class="flex gap-4">
                 <div class="flex flex-col items-center">
                     <div class="w-8 h-8 rounded-full bg-success-surface text-success-base flex items-center justify-center shrink-0 border border-success-base/20">
-                        <span class="material-symbols-outlined text-sm">check</span>
+                        <span class="material-symbols-outlined text-sm" aria-hidden="true">check</span>
                     </div>
                     <div class="w-0.5 h-full bg-success-base/20 mt-2"></div>
                 </div>
@@ -41,7 +41,7 @@ ob_start();
             <div class="flex gap-4">
                 <div class="flex flex-col items-center">
                     <div class="w-8 h-8 rounded-full bg-success-surface text-success-base flex items-center justify-center shrink-0 border border-success-base/20">
-                        <span class="material-symbols-outlined text-sm">check</span>
+                        <span class="material-symbols-outlined text-sm" aria-hidden="true">check</span>
                     </div>
                     <div class="w-0.5 h-full bg-border-main mt-2"></div>
                 </div>
@@ -57,7 +57,7 @@ ob_start();
                     <div class="relative flex h-8 w-8 items-center justify-center shrink-0">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-info-base opacity-20"></span>
                         <div class="w-8 h-8 rounded-full bg-info-base text-white flex items-center justify-center relative z-10 shadow-sm">
-                            <span class="material-symbols-outlined text-sm">hourglass_top</span>
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true">hourglass_top</span>
                         </div>
                     </div>
                     <div class="w-0.5 h-full bg-border-main mt-2"></div>
@@ -72,7 +72,7 @@ ob_start();
             <div class="flex gap-4">
                 <div class="flex flex-col items-center">
                     <div class="w-8 h-8 rounded-full bg-surface-main text-text-disabled flex items-center justify-center shrink-0 border border-border-main">
-                        <span class="material-symbols-outlined text-sm">lock_open</span>
+                        <span class="material-symbols-outlined text-sm" aria-hidden="true">lock_open</span>
                     </div>
                 </div>
                 <div class="flex-1">
@@ -85,7 +85,7 @@ ob_start();
 
     <!-- What Happens Next -->
     <div class="p-5 bg-primary-surface/40 border border-primary-base/20 rounded-xl flex items-start gap-3 mb-8">
-        <span class="material-symbols-outlined text-primary-base text-xl shrink-0 mt-0.5">info</span>
+        <span class="material-symbols-outlined text-primary-base text-xl shrink-0 mt-0.5" aria-hidden="true">info</span>
         <div>
             <div class="text-sm font-bold text-primary-base mb-2">What happens next?</div>
             <ul class="text-xs text-text-main leading-relaxed space-y-2 list-none">
@@ -99,7 +99,7 @@ ob_start();
     
     <div class="text-center">
         <a href="/Finzo/public/views/auth/login.php" class="btn btn-secondary w-full sm:w-auto">
-            <span class="material-symbols-outlined text-lg">logout</span>
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
             <span>Sign Out Temporarily</span>
         </a>
     </div>

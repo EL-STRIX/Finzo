@@ -86,11 +86,11 @@ ob_start();
                 <div id="custom-date-row" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-surface-border dark:border-white/5">
                     <div class="md:col-span-2"></div>
                     <div>
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">From</label>
+                        <label for="filter-from-date" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">From</label>
                         <input type="date" id="filter-from-date" class="w-full fin-input h-10 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">To</label>
+                        <label for="filter-to-date" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">To</label>
                         <input type="date" id="filter-to-date" class="w-full fin-input h-10 text-sm">
                     </div>
                 </div>

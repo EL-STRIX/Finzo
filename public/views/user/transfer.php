@@ -30,7 +30,7 @@ ob_start();
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-3">Finzo Account Identifier</label>
+          <label for="to-account" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-3">Finzo Account Identifier</label>
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">account_box</span>
