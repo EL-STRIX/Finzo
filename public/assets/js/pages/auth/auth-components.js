@@ -501,7 +501,7 @@ function initAuthFormSubmission() {
                     }
                 } else {
                     // Show field-level errors if present
-                    if (data.errors) {
+                    if (data.errors && Object.keys(data.errors).length > 0) {
                         displayFieldErrors(form, data.errors);
                     } else {
                         showNotificationToast(data.message || 'An error occurred.', 'error');
