@@ -505,6 +505,7 @@ ob_start();
   <script defer src="/Finzo/public/assets/js/admin/branches.js?v=13"></script>
     <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/branches.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

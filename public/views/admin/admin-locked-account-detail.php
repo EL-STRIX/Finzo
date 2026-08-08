@@ -179,6 +179,7 @@ ob_start();
     <script defer src="/Finzo/public/assets/js/admin/locked-account-detail.js"></script>
     <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/locked-account-detail.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

@@ -263,6 +263,7 @@ ob_start();
 
             </div>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/profile.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

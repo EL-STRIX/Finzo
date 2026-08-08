@@ -167,6 +167,7 @@ ob_start();
   <script defer src="/Finzo/public/assets/js/admin/suspended-staff-detail.js"></script>
     <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-staff-detail.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

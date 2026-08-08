@@ -36,7 +36,11 @@ $portal = $portal ?? 'guest'; // admin, staff, user, guest
         }
       }
     </script>
+    <script defer src="/Finzo/public/assets/js/core/api.js"></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    <?php if ($portal === 'admin'): ?>
+        <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
+    <?php endif; ?>
     <?= $extraHead ?? '' ?>
 </head>
 <body class="<?= $bodyClass ?? 'bg-surface-subtle font-body text-text-main antialiased' ?>">

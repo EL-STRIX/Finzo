@@ -105,6 +105,7 @@ ob_start();
                 </div>
             </div>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/pending-approvals.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

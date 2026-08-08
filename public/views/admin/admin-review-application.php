@@ -322,6 +322,7 @@ ob_start();
   <script defer src="/Finzo/public/assets/js/admin/review-application.js?v=5"></script>
     <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/review-application.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
