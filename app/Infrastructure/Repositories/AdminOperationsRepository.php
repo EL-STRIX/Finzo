@@ -115,7 +115,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             WHERE is_deleted = 0
             ORDER BY created_at DESC
             LIMIT 10
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     public function getMonthlyChartDataRow(string $monthDate) {
@@ -171,7 +171,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 1
-        ", \App\Domain\Models\Admin::class) ?: null;
+        ", []) ?: null;
     }
 
     public function getInterestHistory() {
@@ -182,7 +182,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 10
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void
@@ -199,7 +199,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     }
 
     public function getActiveSavingsAccounts() {
-        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", \App\Domain\Models\Admin::class);
+        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", []);
     }
 
     public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
@@ -354,7 +354,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 SUM(CASE WHEN status = 'rejected' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
                 SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
             FROM users WHERE is_deleted = 0
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     // ---------------------------------------------------------
@@ -600,7 +600,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
                 SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as soft_deleted
             FROM users
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     // ---------------------------------------------------------

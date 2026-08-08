@@ -12,4 +12,5 @@ enum AccountStatusEnum: string
     case COMPLETED = 'completed';
     case FAILED = 'failed';
     case REVERSED = 'reversed';
+    case UNDER_REVIEW = 'under_review';
 }
