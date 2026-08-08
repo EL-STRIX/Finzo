@@ -48,10 +48,12 @@ function initCsrfToken() {
 
     window.api.get(endpoint)
         .then(data => {
-            if (data && data.csrf_token) {
+            const token = data?.data?.csrf_token || data?.csrf_token;
+            if (token) {
                 csrfInputs.forEach(input => {
-                    input.value = data.csrf_token;
+                    input.value = token;
                 });
+                window.csrfToken = token;
             }
         })
         .catch(() => {
