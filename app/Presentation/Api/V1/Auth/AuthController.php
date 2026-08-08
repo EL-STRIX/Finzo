@@ -34,7 +34,7 @@ class AuthController
 
         $result = $this->service->loginUser($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -87,7 +87,7 @@ class AuthController
 
         $result = $this->service->loginAdmin($email, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -122,7 +122,7 @@ class AuthController
 
         $result = $this->service->loginStaff($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -168,7 +168,7 @@ class AuthController
 
         $this->service->resetPassword($token, $newPassword);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
 
         return [
             'success'  => true,
@@ -187,7 +187,7 @@ class AuthController
 
         $this->service->registerUser($fullName, $email, $phone, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
 
         return [
             'success'  => true,
@@ -199,7 +199,7 @@ class AuthController
     public function logout(?string $id = null, ?string $extra = null): array
     {
         $role = $_SESSION['role'] ?? '';
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 2), '/\\');
         \App\Shared\Security\SessionManager::destroy();
 
         switch ($role) {
