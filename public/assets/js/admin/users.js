@@ -44,7 +44,7 @@
         if (!tbody) return;
 
         if (!users.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center font-bold opacity-40">No users found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No users found.</div></div></td></tr>';
             return;
         }
 
@@ -57,13 +57,13 @@
             const name = u.full_name || 'User';
             const initials = name.split(' ').filter(Boolean).map(n => n ? n[0] : '').join('').toUpperCase() || 'U';
             const statusVal = u.status || 'pending';
-            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-neutral' : 'badge-warn');
+            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-neutral' : 'badge-warning');
             const statusText = statusVal.toUpperCase();
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
             const avatarHtml = u.profile_picture_url 
                 ? `<img src="${u.profile_picture_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` 
-                : (u.avatar_url ? `<img src="${u.avatar_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` : `<div class="admin-avatar" style="background:${gradient};color:#fff;">${initials}</div>`);
+                : (u.avatar_url ? `<img src="${u.avatar_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` : `<div class="admin-avatar" >${initials}</div>`);
 
             const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A';
             const lastActive = u.last_login_at ? window.FinzoUtils.formatDate(u.last_login_at) : 'Never';
@@ -84,8 +84,8 @@
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined !text-[14px]">visibility</span> View
+                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
+                        <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">visibility</span> View
                     </a>
                 </td>
             </tr>`;
@@ -110,7 +110,7 @@
         if (container) {
             let html = '';
             for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
+                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
             }
             container.innerHTML = html;
         }

@@ -48,7 +48,7 @@
         const nextBtn = document.getElementById('activity-next-btn');
 
         if (activityData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center italic opacity-40 py-8">No recent activity found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No recent activity found.</div></div></td></tr>`;
             document.getElementById('activity-pagination-container').classList.add('hidden');
             return;
         }
@@ -156,7 +156,7 @@
                 const roleBadge = document.getElementById('badge-role');
                 if (admin.admin_role === 'super_admin') {
                     roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-[#002645] text-white shadow-sm`;
+                    roleBadge.className = `${baseBadgeClass} bg-primary-base text-white shadow-sm`;
                 } else if (admin.admin_role === 'admin') {
                     roleBadge.textContent = 'Admin';
                     roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400`;
@@ -253,7 +253,7 @@
                     if (sqSet) {
                         sqContainer.innerHTML = `
                             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
-                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]" aria-hidden="true">check_circle</span>
                                 <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
                             </div>`;
                         const sqQField = document.getElementById('sq-question');
@@ -266,7 +266,7 @@
                             : '⚠️ You have not set a security question yet. If your account gets locked you will need a Super Admin to unlock it manually.';
                         sqContainer.innerHTML = `
                             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 mb-3">
-                                <span class="material-symbols-outlined text-amber-500 text-[14px]">warning</span>
+                                <span class="material-symbols-outlined text-amber-500 text-[14px]" aria-hidden="true">warning</span>
                                 <span class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Not Set — Recommended</span>
                             </div>
                             <p class="text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-relaxed bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
@@ -392,14 +392,14 @@
                             <td class="py-4 px-6 text-right">
                                 <a href="admin-detail.html?id=${a.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 shadow-sm border border-transparent hover:border-primary/20">
                                     View Profile
-                                    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
                                 </a>
                             </td>
                         </tr>
                         `;
             }).join('');
         } else {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400 text-xs font-bold">No administrators match your filters.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No administrators match your filters.</div></div></td></tr>`;
         }
     }
 
@@ -883,12 +883,12 @@
                     if (sqContainer) {
                         sqContainer.innerHTML = `
                             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
-                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]" aria-hidden="true">check_circle</span>
                                 <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
                             </div>`;
                     }
                     if (btn) {
-                        btn.dataset.originalText = `<span class="material-symbols-outlined text-[18px]">save</span> <span id="sq-btn-text">Update Security Question</span>`;
+                        btn.dataset.originalText = `<span class="material-symbols-outlined text-[18px]" aria-hidden="true">save</span> <span id="sq-btn-text">Update Security Question</span>`;
                     }
                 } else {
                     window.portal.showToast(res.message || 'Failed to save security question', 'error');
@@ -927,7 +927,7 @@
             const btn = document.getElementById('confirm-unlock-btn');
             const origHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Unlocking...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">progress_activity</span> Unlocking...';
 
             try {
                 const res = await window.api.post('/admins/unlock', {

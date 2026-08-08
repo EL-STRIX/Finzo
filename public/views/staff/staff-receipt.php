@@ -1,0 +1,113 @@
+<?php
+$portal = 'staff';
+$pageTitle = 'Finzo Staff';
+ob_start();
+?>
+<!-- SUCCESS BANNER (no-print) -->
+        <div class="no-print mb-8 bg-success-surface dark:bg-success-surface/10 border border-success-base dark:border-success-base/20 p-8 rounded-2xl text-center animate-in zoom-in duration-500">
+            <div class="w-16 h-16 rounded-full bg-success-surface text-white flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-500/30">
+                <span class="material-symbols-outlined text-4xl font-black" aria-hidden="true">check</span>
+            </div>
+            <h2 class="text-2xl font-black font-headline text-success-base dark:text-success-base">Transaction Successful!</h2>
+            <p class="text-success-base/80 dark:text-success-base/80 font-bold mt-2 text-sm">The transaction has been recorded and processed.</p>
+        </div>
+
+        <!-- RECEIPT CARD -->
+        <div class="receipt-card ds-card overflow-hidden">
+            <!-- Receipt Header -->
+            <div class="p-8 sm:p-10 flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0 border-b-4 border-slate-900 dark:border-slate-700">
+                <div>
+                    <div class="text-3xl font-black font-headline text-text-main dark:text-white mb-1 tracking-tight">Finzo</div>
+                    <div class="text-xs font-black text-warning-base uppercase tracking-widest">Enterprise Branch Operations</div>
+                </div>
+                <div class="text-left sm:text-right">
+                    <div class="text-sm font-black text-text-main dark:text-white uppercase tracking-widest">Official Receipt</div>
+                    <div class="text-xs font-bold text-text-muted uppercase mt-1">Ref: <span id="receipt-ref-id" class="font-mono text-text-main dark:text-white font-black">TXN---</span></div>
+                </div>
+            </div>
+
+            <div class="p-8 sm:p-10 space-y-8">
+                <!-- Top Info Meta -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 bg-surface-subtle dark:bg-white/5 p-6 rounded-2xl border border-surface-border dark:border-white/5">
+                    <div>
+                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Date & Time</div>
+                        <div class="text-xs font-bold text-text-main dark:text-white" id="r-date">---</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Staff Processed</div>
+                        <div class="text-xs font-bold text-text-main dark:text-white" id="r-staff">---</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Staff ID</div>
+                        <div class="text-xs font-mono font-bold text-text-main dark:text-white" id="r-staff-id">---</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Branch</div>
+                        <div class="text-xs font-bold text-text-main dark:text-white" id="r-branch">---</div>
+                    </div>
+                </div>
+
+                <!-- Customer Info -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-text-muted border-b border-surface-border dark:border-white/5 pb-2">Customer Details</h4>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <div class="text-xs font-black text-text-muted uppercase mb-1">Account Holder Name</div>
+                            <div class="text-sm font-bold text-text-main dark:text-white" id="r-cust-name">---</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-black text-text-muted uppercase mb-1">Account Number</div>
+                            <div class="text-sm font-mono font-black text-text-main dark:text-white" id="r-cust-account">---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Details -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-text-muted border-b border-surface-border dark:border-white/5 pb-2">Transaction Summary</h4>
+                    <div class="bg-warning-surface dark:bg-warning-surface/10 rounded-2xl p-6 border border-warning-base dark:border-warning-base/10">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 pb-6 border-b border-warning-base/50 dark:border-warning-base/20">
+                            <div>
+                                <div class="text-xs font-black text-warning-base dark:text-warning-base/80 uppercase mb-1">Transaction Type</div>
+                                <div class="text-lg font-black text-warning-base dark:text-warning-base uppercase tracking-tight" id="r-txn-type">---</div>
+                            </div>
+                            <div class="text-left sm:text-right">
+                                <div class="text-xs font-black text-warning-base dark:text-warning-base/80 uppercase mb-1">Amount</div>
+                                <div class="text-3xl font-black text-text-main dark:text-white font-mono tracking-tight" id="r-amount">₹0.00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Previous Balance</div>
+                                <div class="text-xs font-bold text-text-main dark:text-text-muted font-mono" id="r-prev-balance">₹0.00</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-black text-text-muted uppercase mb-1">Available Balance After</div>
+                                <div class="text-sm font-black text-text-main dark:text-white font-mono" id="r-avail-balance">₹0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="pt-8 text-center space-y-4">
+                    <div class="text-xs font-bold text-text-main dark:text-white font-headline">Thank you for banking with Finzo.</div>
+                    <div class="receipt-dotted pt-4"></div>
+                    <p class="text-xs font-bold text-text-muted uppercase tracking-widest">This is a computer generated receipt and does not require a signature.</p>
+                </div>
+            </div>
+            
+            <!-- Bottom Design Element -->
+            <div class="h-3 bg-warning-surface no-print"></div>
+        </div>
+
+        <!-- Next Actions (no-print) -->
+        <div class="no-print mt-8 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+            <a href="staff-transaction.php?type=deposit" class="flex-1 sm:flex-none text-center px-8 py-3 bg-success-surface border border-success-base text-success-base dark:bg-success-surface/10 dark:border-success-base/20 dark:text-success-base font-bold rounded-xl hover:bg-success-surface transition-all text-sm uppercase tracking-widest">New Deposit</a>
+            <a href="staff-transaction.php?type=withdraw" class="flex-1 sm:flex-none text-center px-8 py-3 bg-danger-surface border border-danger-base text-danger-base dark:bg-danger-surface/10 dark:border-danger-base/20 dark:text-danger-base font-bold rounded-xl hover:bg-danger-surface transition-all text-sm uppercase tracking-widest">New Withdrawal</a>
+        </div>
+<?php
+$slot = ob_get_clean();
+include __DIR__ . '/../layouts/app.php';
+?>

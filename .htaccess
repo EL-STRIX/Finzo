@@ -12,10 +12,6 @@
     Require all denied
 </FilesMatch>
 
-# Block access to any PHP files in the project root except index.php
-<FilesMatch "^(?!index\.php$)[^/]+\.php$">
-    Require all denied
-</FilesMatch>
 
 # Block access to log and backup files anywhere
 <FilesMatch "\.(log|sql|zip|bak|swp|DS_Store)$">
@@ -57,6 +53,9 @@ RewriteRule ^vendor/(.*)$ - [F,L,NC]
     RewriteRule ^public/api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^api/(.*)$ public/api/index.php [L,QSA]
     RewriteRule ^app/Controllers/(.*)$ public/api/index.php [L,QSA]
+
+    # Rewrite new PHP auth paths to original HTML auth paths internally
+    RewriteRule ^public/views/auth/(.*)\.php$ resources/views/auth/$1.html [L,NC]
 
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]

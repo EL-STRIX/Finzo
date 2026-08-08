@@ -14,7 +14,95 @@
     
 
 
-    <link href="/Finzo/public/assets/css/tailwind.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: 'var(--color-primary-50)',
+                100: 'var(--color-primary-100)',
+                200: 'var(--color-primary-200)',
+                300: 'var(--color-primary-300)',
+                400: 'var(--color-primary-400)',
+                500: 'var(--color-primary-500)',
+                600: 'var(--color-primary-600)',
+                700: 'var(--color-primary-700)',
+                800: 'var(--color-primary-800)',
+                900: 'var(--color-primary-900)',
+                base: 'var(--color-primary-base)',
+                hover: 'var(--color-primary-hover)',
+                surface: 'var(--color-primary-surface)',
+              },
+              surface: {
+                main: 'var(--color-surface-main)',
+                subtle: 'var(--color-surface-subtle)',
+                hover: 'var(--color-surface-hover)',
+              },
+              text: {
+                main: 'var(--color-text-main)',
+                muted: 'var(--color-text-muted)',
+                disabled: 'var(--color-text-disabled)',
+                inverse: 'var(--color-text-inverse)',
+              },
+              border: {
+                main: 'var(--color-border-main)',
+                subtle: 'var(--color-border-subtle)',
+                focus: 'var(--color-border-focus)',
+              },
+              success: {
+                base: 'var(--color-success-base)',
+                hover: 'var(--color-success-hover)',
+                surface: 'var(--color-success-surface)',
+                text: 'var(--color-success-text)',
+              },
+              warning: {
+                base: 'var(--color-warning-base)',
+                hover: 'var(--color-warning-hover)',
+                surface: 'var(--color-warning-surface)',
+                text: 'var(--color-warning-text)',
+              },
+              danger: {
+                base: 'var(--color-danger-base)',
+                hover: 'var(--color-danger-hover)',
+                surface: 'var(--color-danger-surface)',
+                text: 'var(--color-danger-text)',
+              },
+              info: {
+                base: 'var(--color-info-base)',
+                hover: 'var(--color-info-hover)',
+                surface: 'var(--color-info-surface)',
+                text: 'var(--color-info-text)',
+              }
+            },
+            fontFamily: {
+              display: 'var(--font-display)',
+              body: 'var(--font-body)',
+              mono: 'var(--font-mono)',
+            },
+            boxShadow: {
+              'xs': 'var(--shadow-xs)',
+              'sm': 'var(--shadow-sm)',
+              'md': 'var(--shadow-md)',
+              'lg': 'var(--shadow-lg)',
+              'dropdown': 'var(--shadow-dropdown)',
+              'focus': 'var(--shadow-focus)',
+              'focus-danger': 'var(--shadow-focus-danger)',
+              'focus-success': 'var(--shadow-focus-success)',
+            },
+            borderRadius: {
+              'sm': 'var(--radius-sm)',
+              'md': 'var(--radius-md)',
+              'lg': 'var(--radius-lg)',
+              'xl': 'var(--radius-xl)',
+              '2xl': 'var(--radius-2xl)',
+              'full': 'var(--radius-full)',
+            }
+          }
+        }
+      }
+    </script>
     
     
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -31,7 +119,7 @@
 <nav class="hidden md:flex items-center gap-8">
 </nav>
 <div class="flex items-center gap-4">
-<a href="/Finzo/public/views/auth/login.html" class="px-5 py-2 text-sm font-semibold text-primary-base :text-primary-base font-['Plus_Jakarta_Sans'] tracking-tight hover:bg-surface-subtle :hover:bg-surface-dark transition-colors" style="display:inline-block;text-align:center;">Log In</a>
+<a href="/Finzo/public/views/auth/login.php" class="px-5 py-2 text-sm font-semibold text-primary-base :text-primary-base font-['Plus_Jakarta_Sans'] tracking-tight hover:bg-surface-subtle :hover:bg-surface-dark transition-colors" style="display:inline-block;text-align:center;">Log In</a>
 </div>
 </header>
 <main class="min-h-screen flex flex-col items-center justify-center pt-16 px-6">
@@ -39,7 +127,7 @@
 <!-- Architectural Information Column -->
 <div class="md:col-span-6 flex flex-col space-y-6">
 <div class="space-y-2">
-<span class="text-on-tertiary-container font-mono text-sm tracking-[0.2em] font-semibold">ERROR 404</span>
+<span class="text-on-tertiary-container font-mono text-sm tracking-widest font-semibold">ERROR 404</span>
 <h1 class="text-5xl md:text-7xl font-extrabold text-primary-base tracking-tighter leading-tight font-headline">
                         Page Not Found.
                     </h1>
@@ -48,7 +136,7 @@
                     The page you are looking for does not exist or has been moved. Go back to your dashboard to continue banking.
                 </p>
 <div class="pt-4 flex flex-col sm:flex-row gap-4">
-<a href="/Finzo/public/views/auth/login.html" class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-lg shadow-lg shadow-primary-base/10 hover:opacity-90 transition-all flex items-center justify-center gap-2 group no-underline">
+<a href="/Finzo/public/views/auth/login.php" class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-lg shadow-lg shadow-primary-base/10 hover:opacity-90 transition-all flex items-center justify-center gap-2 group no-underline">
                         Return to Dashboard
                         <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform" data-icon="arrow_forward" aria-hidden="true">arrow_forward</span>
 </a>
@@ -66,7 +154,7 @@
 <div>
 <h4 class="text-xs font-bold text-on-surface-variant/50 uppercase tracking-widest mb-2">System Status</h4>
 <div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim shadow-[0_0_8px_rgba(74,225,131,0.5)]"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary-fixed-dim shadow-md"></div>
 <span class="text-sm font-semibold text-primary-base">Finzo is Operational</span>
 </div>
 </div>
@@ -90,7 +178,7 @@
 <div class="w-32 h-1.5 bg-outline-variant/20 rounded-full mx-auto"></div>
 <div class="w-24 h-1.5 bg-outline-variant/10 rounded-full mx-auto"></div>
 </div>
-<p class="mt-6 text-[11px] text-[#94a3b8] font-bold tracking-[0.1em] uppercase select-none">Error Code: 404</p>
+<p class="mt-6 text-xs text-text-disabled font-bold tracking-wide uppercase select-none">Error Code: 404</p>
 </div>
 
 </div>

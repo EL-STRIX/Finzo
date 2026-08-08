@@ -25,7 +25,7 @@
             }, 100);
         }
 
-        const tbody = document.getElementById('staff-table-body');
+        const tbody = document.getElementById('ds-table-body');
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
@@ -74,20 +74,20 @@
      * Render the staff table rows
      */
     function renderTable(staff) {
-        const tbody = document.getElementById('staff-table-body');
+        const tbody = document.getElementById('ds-table-body');
         if (!tbody) return;
 
         if (!staff.length) {
-            tbody.innerHTML = '<tr><td colspan="9" class="py-12 text-center font-bold opacity-40">No staff members found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"9\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No staff members found.</div></div></td></tr>';
             return;
         }
 
         tbody.innerHTML = staff.map((s, index) => {
-            const statusClass = s.status === 'active' ? 'badge-success' : 'badge-error';
+            const statusClass = s.status === 'active' ? 'badge-success' : 'badge-danger';
             const countStr = String((currentPage - 1) * PER_PAGE + index + 1).padStart(2, '0');
             
             // initials logic
-            const initials = s.profile_photo_url ? `<img src="${s.profile_photo_url}" class="admin-avatar sm object-cover">` : `<div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;">${s.initials}</div>`;
+            const initials = s.profile_photo_url ? `<img src="${s.profile_photo_url}" class="admin-avatar sm object-cover">` : `<div class="admin-avatar sm premium-gradient-primary uppercase" >${s.initials}</div>`;
 
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors border-b border-slate-100 dark:border-white/5 last:border-0">
@@ -109,7 +109,7 @@
                 <td class="text-right">
                     <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1 group">
                         <span class="text-[10px] font-black uppercase tracking-widest">View</span>
-                        <span class="material-symbols-outlined !text-xs transition-transform group-hover:translate-x-1">arrow_forward</span>
+                        <span class="material-symbols-outlined !text-xs transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
                     </a>
                 </td>
             </tr>`;
@@ -131,7 +131,7 @@
         if (container) {
             let html = '';
             for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
+                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
             }
             container.innerHTML = html;
         }
@@ -212,7 +212,7 @@
         
         idInput.value = 'Loading...';
         try {
-            const response = await window.api.get('/admin/get-next-staff-id.php');
+            const response = await window.api.get('/staff/next-id');
             if (response.success) {
                 idInput.value = response.next_id;
             } else {
@@ -508,7 +508,7 @@
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || '';
                     formData.append('csrf_token', csrfToken);
 
-                    const response = await window.api.upload('/admin/add-staff.php', formData);
+                    const response = await window.api.upload('/staff', formData);
 
                     if (response.success) {
                         if (window.showToast) window.showToast('Staff member added successfully!', 'success');

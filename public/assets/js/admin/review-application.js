@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetails() {
         try {
-            const response = await window.api.get(`/admin/applications/`);
+            const response = await window.api.get(`/admin/applications/${userId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data);
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusBadge = document.getElementById('top-status-badge');
         if (statusBadge) {
             statusBadge.textContent = (user.status || '').toUpperCase();
-            statusBadge.className = `status-badge ${user.status === 'pending' ? 'badge-warn' : (user.status === 'active' ? 'badge-success' : 'badge-error')} px-4 py-2 text-[11px]`;
+            statusBadge.className = `status-badge ${user.status === 'pending' ? 'badge-warning' : (user.status === 'active' ? 'badge-success' : 'badge-danger')} px-4 py-2 text-[11px]`;
         }
 
         const adminAvatar = document.getElementById('top-admin-avatar');
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (data.id_documents) {
-            const docBlocks = document.querySelectorAll('.admin-card .aspect-video');
+            const docBlocks = document.querySelectorAll('.ds-card .aspect-video');
             if (data.id_documents.front_url && docBlocks.length > 0) {
                 let url = data.id_documents.front_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
              const initDepDiv = accountBlock.children[1];
              const pinDiv = accountBlock.children[2];
              
-             if (accTypeDiv) accTypeDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label><span class="status-badge" style="background:#eef2ff; color:#4f46e5;">${account.account_type || 'Savings'} Account</span>`;
+             if (accTypeDiv) accTypeDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label><span class="status-badge" >${account.account_type || 'Savings'} Account</span>`;
              
              if (initDepDiv) {
                  initDepDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initial Deposit</label><div class="font-bold text-lg">₹${parseFloat(account.initial_deposit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>`;
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Disable buttons if already processed
         if (user.status === 'active' || user.status === 'rejected') {
-            const decisionBtns = document.querySelectorAll('.admin-card:last-child button:not(.btn-ghost)');
+            const decisionBtns = document.querySelectorAll('.ds-card:last-child button:not(.btn-ghost)');
             decisionBtns.forEach(btn => {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
               <div class="flex gap-4 relative mb-4">
                 <div class="w-6 h-6 rounded-full ${dotClass} flex items-center justify-center z-10 transition-colors shrink-0">
-                  ${icon ? `<span class="material-symbols-outlined text-[14px] leading-none">${icon}</span>` : ''}
+                  ${icon ? `<span class="material-symbols-outlined text-[14px] leading-none" aria-hidden="true">${icon}</span>` : ''}
                 </div>
                 <div class="flex-1 pb-4">
                   <div class="font-bold text-[13px] ${titleClass}">${ev.status}</div>
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnApprove.addEventListener('click', async function() {
             window.api.setButtonLoading(this, true, 'Approving...');
             try {
-                const response = await window.api.post('/admin/applications/review', {
+                const response = await window.api.post(`/admin/applications/${userId}/review`, {
                     user_id: userId,
                     action: 'approve'
                 });
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.api.setButtonLoading(this, true, 'Rejecting...');
 
             try {
-                const response = await window.api.post('/admin/applications/review', {
+                const response = await window.api.post(`/admin/applications/${userId}/review`, {
                     user_id: userId,
                     action: 'reject',
                     reason: reason

@@ -95,13 +95,13 @@
 }
 
 .form-control:hover, .fin-input:hover {
-  border-color: #a0aec0;
+  border-color: var(--color-border-main);
 }
 
 .form-control:focus, .fin-input:focus {
   border-color: var(--color-primary-base);
   box-shadow: var(--shadow-focus);
-  background-color: #ffffff;
+  background-color: var(--color-surface-main);
 }
 
 .form-control::placeholder, .fin-input::placeholder {
@@ -111,7 +111,7 @@
 /* Disabled and Readonly States */
 .form-control:disabled, .fin-input:disabled,
 .form-control[readonly], .fin-input[readonly] {
-  background-color: #f8fafc;
+  background-color: var(--color-surface-subtle);
   border-color: var(--color-border-subtle);
   color: var(--color-text-muted);
   cursor: not-allowed;
@@ -168,7 +168,7 @@
 .strength-bar-track {
   width: 100%;
   height: 4px;
-  background-color: #e2e8f0;
+  background-color: var(--color-border-subtle);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -272,7 +272,7 @@
 }
 
 .fin-otp-input:hover {
-  border-color: #a0aec0;
+  border-color: var(--color-border-main);
 }
 
 .fin-otp-input:focus {
@@ -418,7 +418,7 @@
 }
 
 .fin-select:hover {
-  border-color: #a0aec0;
+  border-color: var(--color-border-main);
 }
 
 .fin-select:focus {

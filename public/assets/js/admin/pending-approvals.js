@@ -42,14 +42,14 @@
         if (!tbody) return;
 
         if (!apps || !apps.length) {
-            tbody.innerHTML = '<tr><td colspan="8" class="py-20 text-center font-bold opacity-40">No applications found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"8\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No applications found.</div></div></td></tr>';
             return;
         }
 
         tbody.innerHTML = apps.map((app, i) => {
             const initials = app.initials || app.full_name.charAt(0);
             const dateStr = app.created_at || 'N/A';
-            const statusBadgeClass = app.status === 'pending' ? 'badge-amber' : (app.status === 'under_review' ? 'badge-blue' : 'badge-green');
+            const statusBadgeClass = app.status === 'pending' ? 'badge-warning' : (app.status === 'under_review' ? 'badge-blue' : 'badge-success');
             const statusText = (app.status_text || app.status || 'Pending').replace('_', ' ');
             const countStr = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
 
@@ -80,14 +80,14 @@
                 <td class="text-xs whitespace-nowrap opacity-60 font-semibold">${dateStr}</td>
                 <td>
                     <span class="badge ${statusBadgeClass}">
-                        <span class="material-symbols-outlined" style="font-size:10px;">${app.status === 'pending' ? 'hourglass_empty' : 'verified'}</span>
+                        <span class="material-symbols-outlined" style="font-size:10px;" aria-hidden="true">${app.status === 'pending' ? 'hourglass_empty' : 'verified'}</span>
                         ${statusText.toUpperCase()}
                     </span>
                 </td>
                 <td>
                     <div class="flex justify-end">
-                        <a href="admin-review-application.html?id=${app.id}" class="admin-btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
-                            <span class="material-symbols-outlined !text-xs">settings_accessibility</span> Manage
+                        <a href="admin-review-application.html?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
+                            <span class="material-symbols-outlined !text-xs" aria-hidden="true">settings_accessibility</span> Manage
                         </a>
                     </div>
                 </td>
@@ -120,7 +120,7 @@
                 if (i === 4) html += '<span class="px-2 opacity-50">...</span>';
                 continue;
             }
-            const activeClass = i === currentPage ? 'admin-btn-primary active' : 'admin-btn-secondary';
+            const activeClass = i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary';
             const style = i === currentPage ? 'background: #1a3c5e !important;' : '';
             html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" style="${style}" data-page="${i}">${i}</button>`;
         }

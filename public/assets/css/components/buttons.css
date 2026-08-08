@@ -77,12 +77,12 @@
 
 .btn-secondary:hover {
   background-color: var(--color-surface-hover);
-  border-color: #a0aec0;
+  border-color: var(--color-border-main);
   color: var(--color-text-main);
 }
 
 .btn-secondary:active {
-  background-color: #cbd5e1;
+  background-color: var(--color-surface-hover);
   transform: scale(0.98);
 }
 
@@ -122,7 +122,7 @@
 }
 
 .btn-danger:hover {
-  background-color: #b71c1c;
+  background-color: var(--color-danger-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -140,7 +140,7 @@
 }
 
 .btn-success:hover {
-  background-color: #0b6230;
+  background-color: var(--color-success-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -191,7 +191,7 @@
   margin-top: -10px;
   margin-left: -10px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
+  border-top-color: var(--color-surface-main);
   border-radius: 50%;
   animation: btn-spin 0.6s linear infinite;
 }

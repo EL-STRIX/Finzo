@@ -67,7 +67,7 @@
         if (!tbody) return;
 
         if (!users || !users.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center opacity-40 font-bold">No recent activity.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No recent activity.</div></div></td></tr>';
             return;
         }
 
@@ -79,12 +79,12 @@
         users.forEach(u => {
             const fallbackName = u.full_name || 'Unknown User';
             const initials = fallbackName.split(' ').map(n=>n[0]).join('').substring(0, 2).toUpperCase();
-            const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-error' : 'badge-warn');
+            const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-danger' : 'badge-warning');
             const gradient = window.FinzoUtils ? window.FinzoUtils.getAvatarGradient(initials) : '#ccc';
             
             const avatarHtml = u.profile_picture_url 
                 ? `<img src="${u.profile_picture_url}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover" onerror="this.outerHTML='<div class=\\'admin-avatar !w-10 !h-10 !rounded-xl text-[12px]\\' style=\\'background:${gradient};color:#fff;\\'>${initials}</div>'">` 
-                : `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" style="background:${gradient};color:#fff;">${initials}</div>`;
+                : `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" >${initials}</div>`;
 
             const timeDisplay = window.FinzoUtils ? window.FinzoUtils.timeAgo(u.created_at) : (u.created_at || 'N/A');
 
@@ -100,12 +100,12 @@
                     </div>
                 </td>
                 <td><span class="status-badge ${statusClass}">${(u.status || 'pending').toUpperCase()}</span></td>
-                <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warn'}" style="font-size: 10px; padding: 4px 10px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
+                <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warning'}" style="font-size: 10px; padding: 4px 10px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
                 <td class="text-xs font-semibold">Savings</td>
                 <td class="text-[11px] opacity-40 font-bold">${timeDisplay}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined !text-xs">visibility</span> View
+                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
+                        <span class="material-symbols-outlined !text-xs" aria-hidden="true">visibility</span> View
                     </a>
                 </td>
             </tr>`;

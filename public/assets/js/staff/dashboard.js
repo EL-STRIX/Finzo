@@ -73,16 +73,16 @@ function renderRecentActivity(activity) {
     if (!tbody) return;
 
     if (!activity || !activity.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center opacity-40 font-bold">No activity for this shift yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No activity for this shift yet.</div></div></td></tr>';
         return;
     }
 
     tbody.innerHTML = activity.map(txn => {
         let typeBadge = '';
         if (txn.type === 'deposit') typeBadge = '<span class="status-badge badge-success">DEPOSIT</span>';
-        else if (txn.type === 'withdrawal') typeBadge = '<span class="status-badge badge-error">WITHDRAWAL</span>';
+        else if (txn.type === 'withdrawal') typeBadge = '<span class="status-badge badge-danger">WITHDRAWAL</span>';
         else if (txn.type === 'transfer') typeBadge = '<span class="status-badge badge-info">TRANSFER</span>';
-        else typeBadge = `<span class="status-badge badge-warn">${txn.type.toUpperCase()}</span>`;
+        else typeBadge = `<span class="status-badge badge-warning">${txn.type.toUpperCase()}</span>`;
 
         const amountClass = txn.type === 'withdrawal' ? 'text-danger-base' : (txn.type === 'deposit' ? 'text-success-base' : '');
         const amountPrefix = txn.type === 'withdrawal' ? '-' : (txn.type === 'deposit' ? '+' : '');
@@ -112,7 +112,7 @@ function renderRecentActivity(activity) {
 function showErrorState() {
     const tbody = document.getElementById('txn-tbody');
     if (tbody) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-danger-base font-bold">Failed to load shift activity. Please refresh.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">Failed to load shift activity. Please refresh.</div></div></td></tr>';
     }
     
     const elements = ['stat-deposits', 'stat-withdrawals', 'stat-transactions', 'stat-netflow', 'welcome-text'];

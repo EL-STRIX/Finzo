@@ -48,10 +48,12 @@ function initCsrfToken() {
 
     window.api.get(endpoint)
         .then(data => {
-            if (data && data.csrf_token) {
+            const token = data?.data?.csrf_token || data?.csrf_token;
+            if (token) {
                 csrfInputs.forEach(input => {
-                    input.value = data.csrf_token;
+                    input.value = token;
                 });
+                window.csrfToken = token;
             }
         })
         .catch(() => {
@@ -457,10 +459,10 @@ function initResetPasswordTokenFromUrl() {
  */
 function initAuthFormSubmission() {
     const formMap = [
-        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login' },
-        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login' },
-        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login' },
-        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register' },
+        { selector: 'form[data-action="customer-login"]',    endpoint: '/auth/login' },
+        { selector: 'form[data-action="admin-login"]',       endpoint: '/auth/admin-login' },
+        { selector: 'form[data-action="staff-login"]',       endpoint: '/auth/staff-login' },
+        { selector: 'form[data-action="register"]',         endpoint: '/auth/register' },
         { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
         { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
     ];
@@ -499,7 +501,7 @@ function initAuthFormSubmission() {
                     }
                 } else {
                     // Show field-level errors if present
-                    if (data.errors) {
+                    if (data.errors && Object.keys(data.errors).length > 0) {
                         displayFieldErrors(form, data.errors);
                     } else {
                         showNotificationToast(data.message || 'An error occurred.', 'error');

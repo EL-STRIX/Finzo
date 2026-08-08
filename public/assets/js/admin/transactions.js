@@ -47,7 +47,7 @@
         if (!tbody) return;
 
         if (!transactions || !transactions.length) {
-            tbody.innerHTML = '<tr><td colspan="9" class="py-20 text-center font-bold opacity-40">No transactions found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan=\"9\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No transactions found.</div></div></td></tr>';
             return;
         }
 
@@ -68,7 +68,7 @@
                 if (r.description && (r.description.includes('Initial Deposit') || r.description.includes('Account Opening'))) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">rocket_launch</span></div>
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">rocket_launch</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">Opening Bal</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Init</div>
@@ -77,7 +77,7 @@
                 } else if (r.processed_by) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">badge</span></div>
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">OTC Cash</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -86,7 +86,7 @@
                 } else {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">account_balance_wallet</span></div>
+                        <div class="admin-avatar sm premium-gradient-primary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance_wallet</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">Direct Deposit</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Direct</div>
@@ -96,7 +96,7 @@
             } else if (typeClass === 'interest_credit') {
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm premium-gradient-primary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">percent</span></div>
+                    <div class="admin-avatar sm premium-gradient-primary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">percent</span></div>
                     <div>
                         <div class="font-bold text-slate-800 dark:text-slate-100">Interest Credit</div>
                         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Auto</div>
@@ -113,7 +113,7 @@
                 
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase" style="color:#fff; ${r.from_user_avatar ? 'background:none;' : window.FinzoUtils.getAvatarGradient(senderInitials)}">${avatarContent}</div>
+                    <div class="admin-avatar sm uppercase" >${avatarContent}</div>
                     <div>
                         <div class="font-bold text-slate-800 dark:text-slate-100">${r.from_user_name}</div>
                         <div class="text-[11px] opacity-40 font-mono font-semibold">${r.from_account_no}</div>
@@ -127,7 +127,7 @@
                 if (r.processed_by) {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">badge</span></div>
+                        <div class="admin-avatar sm premium-gradient-secondary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">OTC Cash</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -136,7 +136,7 @@
                 } else if (r.description === 'Account Restore Charge') {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm bg-rose-500 uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">settings_backup_restore</span></div>
+                        <div class="admin-avatar sm bg-rose-500 uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">settings_backup_restore</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">Restore Charge</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Admin Action</div>
@@ -145,7 +145,7 @@
                 } else {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="admin-avatar sm premium-gradient-secondary uppercase" style="color:#fff;"><span class="material-symbols-outlined text-sm">atm</span></div>
+                        <div class="admin-avatar sm premium-gradient-secondary uppercase" ><span class="material-symbols-outlined text-sm" aria-hidden="true">atm</span></div>
                         <div>
                             <div class="font-bold text-slate-800 dark:text-slate-100">Direct Withdrawal</div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ATM / Direct</div>
@@ -163,7 +163,7 @@
                 
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase" style="color:#fff; ${r.to_user_avatar ? 'background:none;' : window.FinzoUtils.getAvatarGradient(receiverInitials)}">${receiverAvatarContent}</div>
+                    <div class="admin-avatar sm uppercase" >${receiverAvatarContent}</div>
                     <div>
                         <div class="font-bold text-slate-800 dark:text-slate-100">${r.to_user_name}</div>
                         <div class="text-[11px] opacity-40 font-mono font-semibold">${r.to_account_no}</div>
@@ -180,10 +180,10 @@
                 <td><span class="badge badge-${typeClass}">${r.type.toUpperCase()}</span></td>
                 <td class="text-sm font-black ${amountClass}">${amountFormatted}</td>
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
-                <td><span class="badge ${r.status === 'completed' ? 'badge-completed' : 'badge-pending'}">${r.status.toUpperCase()}</span></td>
+                <td><span class="badge ${r.status === 'completed' ? 'badge-success' : 'badge-warning'}">${r.status.toUpperCase()}</span></td>
                 <td class="text-right">
-                    <button onclick="window.open('../../../../api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="admin-btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
-                        <span class="material-symbols-outlined !text-[14px]">receipt_long</span> Receipt
+                    <button onclick="window.open('../../../../api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                        <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">receipt_long</span> Receipt
                     </button>
                 </td>
             </tr>`;

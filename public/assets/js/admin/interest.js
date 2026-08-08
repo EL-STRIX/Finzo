@@ -37,7 +37,7 @@
                 if (totalInterestEl) totalInterestEl.textContent = info.stats.total_interest_credited;
                 if (interestDeltaEl) {
                     interestDeltaEl.innerHTML = `
-                        <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> 
+                        <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;" aria-hidden="true">trending_up</span> 
                         ${info.stats.interest_delta} from last month
                     `;
                 }
@@ -51,7 +51,7 @@
                             <td class="font-black font-headline text-lg text-primary dark:text-blue-400">${h.rate}%</td>
                             <td class="text-sm opacity-60">${h.updated_by}</td>
                             <td class="text-right">
-                                <span class="status-badge ${h.status === 'Active' ? 'badge-success' : 'badge-slate'} flex items-center gap-1.5 w-fit ml-auto text-[10px]">
+                                <span class="status-badge ${h.status === 'Active' ? 'badge-success' : 'badge-neutral'} flex items-center gap-1.5 w-fit ml-auto text-[10px]">
                                     ${h.status === 'Active' ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
                                     ${h.status}
                                 </span>

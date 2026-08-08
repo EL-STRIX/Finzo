@@ -34,12 +34,14 @@ class AuthController
 
         $result = $this->service->loginUser($identity, $password);
 
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+
         if ($result['mfa_required'] ?? false) {
             return [
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/mfa-challenge.php'
+                'redirect' => $base . '/public/views/auth/mfa-challenge.php'
             ];
         }
 
@@ -48,8 +50,7 @@ class AuthController
 
         \App\Shared\Security\SessionManager::establishUserSession($user, $account);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
-
+        // $base is already defined above
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $redirect = $base . '/public/views/user/complete-profile.php';
         } else {
@@ -86,12 +87,14 @@ class AuthController
 
         $result = $this->service->loginAdmin($email, $password);
 
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+
         if ($result['mfa_required'] ?? false) {
             return [
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/admin-mfa-challenge.php'
+                'redirect' => $base . '/public/views/auth/admin-mfa-challenge.php'
             ];
         }
 
@@ -99,8 +102,8 @@ class AuthController
 
         return [
             'success'  => true,
-            'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/admin/admin-dashboard.php'
+            'message'  => 'Admin login successful',
+            'redirect' => $base . '/public/views/admin/admin-dashboard.php'
         ];
     }
 
@@ -119,12 +122,14 @@ class AuthController
 
         $result = $this->service->loginStaff($identity, $password);
 
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+
         if ($result['mfa_required'] ?? false) {
             return [
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/public/views/auth/staff-mfa-challenge.php'
+                'redirect' => $base . '/public/views/auth/staff-mfa-challenge.php'
             ];
         }
 
@@ -133,7 +138,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/staff/staff-dashboard.php'
+            'redirect' => $base . '/public/views/staff/staff-dashboard.php'
         ];
     }
 

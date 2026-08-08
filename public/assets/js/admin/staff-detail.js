@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '        <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">' + loginTime + ' — ' + logoutTime + '</div>';
                         html += '    </div>';
                         html += '    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 flex items-center justify-center">';
-                        html += '        <span class="material-symbols-outlined text-[16px]">check_circle</span>';
+                        html += '        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">check_circle</span>';
                         html += '    </div>';
                         html += '</div>';
                     });
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     let html = '';
                     for (let i = 0; i < transactions.length; i++) {
                         let t = transactions[i];
-                        let typeClass = t.type === 'deposit' ? 'badge-success' : 'badge-error';
+                        let typeClass = t.type === 'deposit' ? 'badge-success' : 'badge-danger';
                         let amtClass = t.type === 'deposit' ? 'text-primary dark:text-blue-400' : 'text-error';
                         let dateStr = (window.FinzoUtils && window.FinzoUtils.formatDateTime) ? window.FinzoUtils.formatDateTime(t.created_at) : fmtDate(t.created_at);
                         html += '<tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">';
@@ -361,12 +361,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '<td class="font-mono text-xs opacity-60">' + t.account_no + '</td>';
                         html += '<td><span class="status-badge ' + typeClass + '">' + t.type.toUpperCase() + '</span></td>';
                         html += '<td class="font-black text-xs ' + amtClass + '">' + fmtCurrency(t.amount) + '</td>';
-                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/v1/documents/receipt?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
+                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/v1/documents/receipt?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg" aria-hidden="true">receipt_long</span></button></td>';
                         html += '</tr>';
                     }
                     tbody.innerHTML = html;
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center opacity-40 font-bold">No transactions recorded yet</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No transactions recorded yet</div></div></td></tr>';
                 }
             }
 
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     actBody.innerHTML = html;
                 } else {
-                    actBody.innerHTML = '<tr><td colspan="4" class="py-12 text-center opacity-40 font-bold">No recent activity recorded</td></tr>';
+                    actBody.innerHTML = '<tr><td colspan=\"4\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No recent activity recorded</div></div></td></tr>';
                 }
             }
 
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             this.disabled = true;
-            this.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> AUTHORIZING...';
+            this.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm" aria-hidden="true">refresh</span> AUTHORIZING...';
 
             try {
                 let notesEl = document.getElementById('custom-reason-notes');
@@ -542,10 +542,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             bodyText.innerHTML = '<div class="p-6 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl text-center"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">One-Time Password</p><div class="text-2xl font-black text-primary dark:text-amber-500 font-mono tracking-wider mb-2">' + tempPw + '</div><p class="text-[10px] font-bold text-rose-500 uppercase">Valid for 24 hours only</p></div>';
                         }
                         this.disabled = false;
-                        this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> DONE';
+                        this.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">check_circle</span> DONE';
                         this.className = 'flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20';
                     } else {
-                        this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ACTION LOGGED';
+                        this.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">check_circle</span> ACTION LOGGED';
                         this.className = 'flex-1 py-4 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg transition-all bg-emerald-500 shadow-emerald-500/20';
                         setTimeout(function() {
                             closeGovernanceModal();

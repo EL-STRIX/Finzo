@@ -23,6 +23,8 @@ class CsrfMiddleware
             }
         }
 
+
+
         $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
         
         // Handle PUT/DELETE raw input

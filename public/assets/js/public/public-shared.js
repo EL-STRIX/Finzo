@@ -100,10 +100,10 @@ $(document).ready(function() {
         const toast = document.createElement('div');
         toast.style.cssText = `display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-left:4px solid ${colors[type] || colors.info};border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1e293b;transform:translateX(120%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:380px;`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined" style="color:${colors[type] || colors.info};font-size:20px;">${icons[type] || 'info'}</span>
+            <span class="material-symbols-outlined"  aria-hidden="true">${icons[type] || 'info'}</span>
             <div style="flex:1">${message}</div>
-            <button onclick="this.parentElement.style.transform='translateX(120%)';setTimeout(()=>this.parentElement.remove(),400)" style="background:none;border:none;cursor:pointer;opacity:0.4;padding:0;">
-                <span class="material-symbols-outlined" style="font-size:16px;color:#64748b;">close</span>
+            <button onclick="this.parentElement.style.transform='translateX(120%)';setTimeout(()=>this.parentElement.remove(),400)" >
+                <span class="material-symbols-outlined" style="font-size:16px;color:#64748b;" aria-hidden="true">close</span>
             </button>
         `;
 
