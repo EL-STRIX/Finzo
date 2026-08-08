@@ -54,7 +54,7 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
 
     public function getCardRequests(array $filters = []): array
     {
-        $sql = "SELECT cr.*, u.first_name, u.last_name, cp.name as product_name, cp.type as product_type 
+        $sql = "SELECT cr.*, u.full_name, cp.name as product_name, cp.type as product_type 
                 FROM card_requests cr
                 JOIN users u ON cr.user_id = u.id
                 JOIN card_products cp ON cr.card_product_id = cp.id";

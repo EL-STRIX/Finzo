@@ -8,7 +8,7 @@ use DateTime;
 
 class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
 {
-    protected UserRepository $repository;
+    protected \App\Domain\Contracts\Repositories\UserRepositoryInterface $repository;
     /**
      *   construct.
      *
@@ -24,7 +24,7 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
      *
      * @return UserRepository
      */
-    public function getRepository(): UserRepository
+    public function getRepository(): \App\Domain\Contracts\Repositories\UserRepositoryInterface
     {
         return $this->repository;
     }

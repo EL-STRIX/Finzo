@@ -4,7 +4,7 @@ namespace App\Domain\Contracts\Services;
 
 interface UserServiceInterface
 {
-    public function getRepository(): UserRepository;
+    public function getRepository(): \App\Domain\Contracts\Repositories\UserRepositoryInterface;
     public function validateKyc(array $data, array $files);
     public function processKycUploads($files, $userId, $existing_files);
     public function fetchAccountLookup(...$args);

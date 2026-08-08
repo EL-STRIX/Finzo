@@ -3,7 +3,7 @@
 namespace App\Presentation\Validators;
 
 use App\Shared\Core\Exceptions\ValidationException;
-use App\Shared\Core\Validator;
+use App\Shared\Core\Validation\Validator;
 
 class CardValidator
 {
