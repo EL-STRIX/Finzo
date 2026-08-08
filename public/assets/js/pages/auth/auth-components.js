@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * 0. Page Entrance Animation & Smooth Reveal
  */
 function initPageAnimations() {
-    const cardContainer = document.querySelector('.auth-form-container');
+    const cardContainer = document.querySelector('.auth-card-container');
     if (cardContainer) {
         cardContainer.style.opacity = '0';
         cardContainer.style.transform = 'translateY(8px)';
@@ -44,7 +44,7 @@ function initCsrfToken() {
     const csrfInputs = document.querySelectorAll('input[name="csrf_token"]');
     if (csrfInputs.length === 0) return;
 
-    const endpoint = '/auth/csrf-token';
+    const endpoint = '/auth/get-csrf-token.php';
 
     window.api.get(endpoint)
         .then(data => {
@@ -331,7 +331,7 @@ function initFormValidation() {
                     confirmPassInput.classList.add('is-invalid');
                     confirmPassInput.setAttribute('aria-invalid', 'true');
                     if (errorText) {
-                        errorText.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">error</span> Passwords do not match.';
+                        errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Passwords do not match.';
                         errorText.classList.add('is-visible');
                     }
                 }
@@ -396,7 +396,7 @@ function showNotificationToast(message, type = 'info') {
         info:    'info'
     };
     toast.innerHTML = `
-        <span class="material-symbols-outlined fin-toast-icon" aria-hidden="true">${iconMap[type] || 'info'}</span>
+        <span class="material-symbols-outlined fin-toast-icon">${iconMap[type] || 'info'}</span>
         <span class="fin-toast-msg">${message}</span>
     `;
 
@@ -457,12 +457,12 @@ function initResetPasswordTokenFromUrl() {
  */
 function initAuthFormSubmission() {
     const formMap = [
-        { selector: 'form[data-action="customer-login"]',    endpoint: '/auth/login' },
-        { selector: 'form[data-action="admin-login"]',       endpoint: '/auth/admin-login' },
-        { selector: 'form[data-action="staff-login"]',       endpoint: '/auth/staff-login' },
-        { selector: 'form[data-action="register"]',         endpoint: '/auth/register' },
-        { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
-        { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
+        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login.php' },
+        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login.php' },
+        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login.php' },
+        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register.php' },
+        { selector: 'form[data-action="forgot-password"]',  endpoint: '/Finzo/public/api/auth/forgot-password.php' },
+        { selector: 'form[data-action="reset-password"]',   endpoint: '/Finzo/public/api/auth/reset-password.php' },
     ];
 
     formMap.forEach(({ selector, endpoint }) => {
@@ -486,7 +486,7 @@ function initAuthFormSubmission() {
                 const formData = new FormData(form);
                 // If it's a FormData object, window.api handles the fetch automatically
                 // However, since it's auth, we should map endpoint
-                const apiEndpoint = endpoint;
+                const apiEndpoint = endpoint.replace('/Finzo/public/api', '');
                 
                 const data = await window.api.post(apiEndpoint, formData, true);
 
@@ -542,7 +542,7 @@ function displayFieldErrors(form, errors) {
                 errorEl.className = 'fin-error-text';
                 container.appendChild(errorEl);
             }
-            errorEl.innerHTML = `<span class="material-symbols-outlined" aria-hidden="true">error</span> ${message}`;
+            errorEl.innerHTML = `<span class="material-symbols-outlined">error</span> ${message}`;
             errorEl.classList.add('is-visible');
         }
     });
