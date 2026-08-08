@@ -63,10 +63,9 @@ class Router
         $uri = parse_url($uri, PHP_URL_PATH);
 
         $basePaths = [
-            '/Finzo/public/api',
-            '/Finzo/public/assets/api',
-            '/Finzo/app/Controllers',
-            '/Finzo/api'
+            '/Finzo/public',
+            '/Finzo/app',
+            '/Finzo'
         ];
 
         foreach ($basePaths as $base) {
