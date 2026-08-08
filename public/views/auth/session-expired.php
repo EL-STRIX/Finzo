@@ -28,7 +28,7 @@ ob_start();
                             <span>Re-Authenticate Now</span>
                         </a>
 
-                        <a href="/Finzo/public/index.php" class="btn btn-secondary btn-full">
+                        <a href="/Finzo/public/index.html" class="btn btn-secondary btn-full">
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">home</span>
                             <span>Return to Home</span>
                         </a>

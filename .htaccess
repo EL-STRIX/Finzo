@@ -12,10 +12,6 @@
     Require all denied
 </FilesMatch>
 
-# Block access to any PHP files in the project root except index.php
-<FilesMatch "^(?!index\.php$)[^/]+\.php$">
-    Require all denied
-</FilesMatch>
 
 # Block access to log and backup files anywhere
 <FilesMatch "\.(log|sql|zip|bak|swp|DS_Store)$">

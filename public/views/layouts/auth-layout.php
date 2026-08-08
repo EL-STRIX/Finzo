@@ -18,7 +18,7 @@ ob_start();
         <img src="/Finzo/public/assets/images/<?= htmlspecialchars($authBgImage) ?>" class="absolute inset-0 w-full h-full object-cover z-0 opacity-20 mix-blend-overlay" alt="" />
         
         <div class="relative z-20">
-            <a href="/Finzo/public/index.php" class="flex items-center gap-3 text-white mb-16 hover:opacity-90 transition-opacity w-max">
+            <a href="/Finzo/public/index.html" class="flex items-center gap-3 text-white mb-16 hover:opacity-90 transition-opacity w-max">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-inner">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
                 </div>
@@ -56,7 +56,7 @@ ob_start();
         <div class="w-full max-w-[440px] auth-form-container">
             <!-- Mobile Logo -->
             <div class="lg:hidden mb-10 flex justify-center">
-                 <a href="/Finzo/public/index.php" class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-surface text-primary-base border border-primary-200 shadow-sm" aria-label="Finzo Homepage">
+                 <a href="/Finzo/public/index.html" class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-surface text-primary-base border border-primary-200 shadow-sm" aria-label="Finzo Homepage">
                      <span class="material-symbols-outlined text-3xl" aria-hidden="true">account_balance</span>
                  </a>
             </div>

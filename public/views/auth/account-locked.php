@@ -42,7 +42,7 @@ ob_start();
 
                     <!-- Actions Group Component -->
                     <div class="mt-4">
-                        <a href="/Finzo/public/index.php" class="btn btn-primary btn-full">
+                        <a href="/Finzo/public/index.html" class="btn btn-primary btn-full">
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">home</span>
                             <span>Return to Homepage</span>
                         </a>
