@@ -56,6 +56,7 @@ class AdminOperationsIntegrationTest extends TestCase
         
 
         
+        try { $this->adminOpsService->getSuspendedUserDetail(999); } catch (\Exception $e) {}
         try { $this->adminOpsService->unlockAccount(999, 1); } catch (\Exception $e) {}
         try { $this->adminOpsService->processUserAction(999, 'suspend', 'test', '', '', 1); } catch (\Exception $e) {}
         try { $this->adminOpsService->getUserDetail(999); } catch (\Exception $e) {}

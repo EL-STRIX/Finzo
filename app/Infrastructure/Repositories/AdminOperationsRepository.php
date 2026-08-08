@@ -615,6 +615,10 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         ", [$userId], \App\Domain\Models\Admin::class);
     }
 
+    public function getSuspendedUserProfile(int $userId) {
+        return $this->getSuspendedUser($userId);
+    }
+
     public function getSuspendedUserAccount(string $customerId)
     {
         $stmt = $this->db->prepare("

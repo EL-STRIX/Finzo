@@ -55,6 +55,7 @@ interface AdminOperationsRepositoryInterface
     public function getUsers(string $whereSql, array $params, int $perPage, int $offset);
     public function getUsersStats();
     public function getSuspendedUser(int $userId);
+    public function getSuspendedUserProfile(int $userId);
     public function getSuspendedUserAccount(string $customerId);
     public function getUserSuspensionAudit(string $customerId);
     public function getRecentTransactions(string $accountNo, int $limit);
