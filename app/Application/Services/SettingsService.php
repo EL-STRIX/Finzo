@@ -30,23 +30,14 @@ class SettingsService implements SettingsServiceInterface
     public function getSetting(string $key)
     {
         $cacheKey = "system_setting_{$key}";
-        $cachedValue = $this->cache->get($cacheKey);
-        
-        if ($cachedValue !== null) {
-            return $cachedValue;
-        }
 
-        $setting = $this->repository->getSettingByKey($key);
-        if (!$setting) {
-            return null;
-        }
-
-        $value = $this->castValue($setting['setting_value'], $setting['setting_type']);
-        
-        // Cache for 24 hours
-        $this->cache->set($cacheKey, $value, 86400);
-
-        return $value;
+        return $this->cache->get($cacheKey, function () use ($key) {
+            $setting = $this->repository->getSettingByKey($key);
+            if (!$setting) {
+                return null;
+            }
+            return $this->castValue($setting['setting_value'], $setting['setting_type']);
+        }, 86400);
     }
 
     public function updateSettings(array $settings, ?int $adminId = null): array
