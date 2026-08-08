@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS branches (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS admin_users (
   id                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  uuid                    VARCHAR(36) UNIQUE DEFAULT (UUID()),
   admin_id                VARCHAR(20) NOT NULL UNIQUE,
   full_name               VARCHAR(150) NOT NULL,
   date_of_birth           DATE NULL,
@@ -261,7 +262,7 @@ CREATE TABLE IF NOT EXISTS beneficiaries (
     account_no VARCHAR(20) NOT NULL,
     bank_name VARCHAR(150) NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY fk_beneficiary_user (user_id) REFERENCES users(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY fk_beneficiary_user (user_id) REFERENCES users(customer_id) ON DELETE RESTRICT,
     UNIQUE KEY uniq_user_account (user_id, account_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -692,3 +693,220 @@ DELIMITER ;
 ALTER TABLE transactions ADD CONSTRAINT fk_txn_journal FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE RESTRICT;
 
 -- =====================================================
+-- TABLE 19: loan_products
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT NULL,
+    interest_rate DECIMAL(5, 2) NOT NULL,
+    min_amount DECIMAL(15, 2) NOT NULL,
+    max_amount DECIMAL(15, 2) NOT NULL,
+    min_tenure_months INT NOT NULL,
+    max_tenure_months INT NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 20: loan_applications
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_applications (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    user_id INT UNSIGNED NOT NULL,
+    loan_product_id INT UNSIGNED NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    tenure_months INT NOT NULL,
+    purpose TEXT NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    admin_notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_loan_app_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_app_product (loan_product_id) REFERENCES loan_products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 21: loans
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loans (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) UNIQUE DEFAULT (UUID()),
+    loan_id_ref VARCHAR(50) NOT NULL UNIQUE,
+    user_id INT UNSIGNED NOT NULL,
+    loan_product_id INT UNSIGNED NOT NULL,
+    application_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    principal_amount DECIMAL(15, 2) NOT NULL,
+    interest_rate DECIMAL(5, 2) NOT NULL,
+    tenure_months INT NOT NULL,
+    total_amount_payable DECIMAL(15, 2) NOT NULL,
+    total_amount_paid DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    next_emi_date DATE NULL,
+    status ENUM('active', 'closed', 'defaulted') NOT NULL DEFAULT 'active',
+    disbursed_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_loan_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_product (loan_product_id) REFERENCES loan_products(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_application (application_id) REFERENCES loan_applications(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_loan_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    INDEX idx_loan_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 22: loan_schedules
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_schedules (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    loan_id INT UNSIGNED NOT NULL,
+    installment_no INT NOT NULL,
+    due_date DATE NOT NULL,
+    emi_amount DECIMAL(15, 2) NOT NULL,
+    principal_component DECIMAL(15, 2) NOT NULL,
+    interest_component DECIMAL(15, 2) NOT NULL,
+    outstanding_balance DECIMAL(15, 2) NOT NULL,
+    status ENUM('pending', 'paid', 'late') NOT NULL DEFAULT 'pending',
+    penalty_assessed DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_schedule_loan (loan_id) REFERENCES loans(id) ON DELETE RESTRICT,
+    INDEX idx_schedule_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 23: loan_repayments
+-- =====================================================
+CREATE TABLE IF NOT EXISTS loan_repayments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    loan_id INT UNSIGNED NOT NULL,
+    schedule_id INT UNSIGNED NULL, -- Null if advance payment
+    amount_paid DECIMAL(15, 2) NOT NULL,
+    transaction_id VARCHAR(50) NOT NULL,
+    paid_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_repayment_loan (loan_id) REFERENCES loans(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_repayment_schedule (schedule_id) REFERENCES loan_schedules(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 24: card_products
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type ENUM('debit', 'credit', 'virtual') NOT NULL,
+    network ENUM('visa', 'mastercard', 'rupay') NOT NULL,
+    daily_withdrawal_limit DECIMAL(15, 2) NOT NULL DEFAULT 50000.00,
+    daily_purchase_limit DECIMAL(15, 2) NOT NULL DEFAULT 100000.00,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 25: card_requests
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_requests (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    card_product_id INT UNSIGNED NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_request_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_request_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_request_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 26: cards
+-- =====================================================
+CREATE TABLE IF NOT EXISTS cards (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    card_number VARCHAR(16) NOT NULL UNIQUE,
+    user_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    card_product_id INT UNSIGNED NOT NULL,
+    name_on_card VARCHAR(100) NOT NULL,
+    expiry_date VARCHAR(5) NOT NULL, -- MM/YY format
+    cvv_hash VARCHAR(255) NOT NULL, -- Never store CVV in plaintext
+    pin_hash VARCHAR(255) NULL, -- Null until activated
+    failed_pin_attempts INT DEFAULT 0,
+    status ENUM('pending_activation', 'active', 'frozen', 'blocked', 'closed') NOT NULL DEFAULT 'pending_activation',
+    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activated_at TIMESTAMP NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_user (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_product (card_product_id) REFERENCES card_products(id) ON DELETE RESTRICT,
+    INDEX idx_card_number (card_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 27: card_transactions
+-- =====================================================
+CREATE TABLE IF NOT EXISTS card_transactions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    card_id INT UNSIGNED NOT NULL,
+    account_id INT UNSIGNED NOT NULL,
+    transaction_type ENUM('pos', 'atm', 'online') NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    status ENUM('completed', 'failed', 'reversed') NOT NULL DEFAULT 'completed',
+    reference_id VARCHAR(50) NOT NULL UNIQUE,
+    merchant_name VARCHAR(100) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_card_txn_card (card_id) REFERENCES cards(id) ON DELETE RESTRICT,
+    FOREIGN KEY fk_card_txn_account (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    INDEX idx_card_txn_date (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 28: roles
+-- =====================================================
+CREATE TABLE IF NOT EXISTS roles (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 29: permissions
+-- =====================================================
+CREATE TABLE IF NOT EXISTS permissions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    group_name VARCHAR(50) NULL,
+    description VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 30: role_permissions
+-- =====================================================
+CREATE TABLE IF NOT EXISTS role_permissions (
+    role_id INT UNSIGNED NOT NULL,
+    permission_id INT UNSIGNED NOT NULL,
+    PRIMARY KEY (role_id, permission_id),
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE 31: model_has_roles
+-- =====================================================
+CREATE TABLE IF NOT EXISTS model_has_roles (
+    role_id INT UNSIGNED NOT NULL,
+    model_type ENUM('admin', 'staff', 'user') NOT NULL,
+    model_id INT UNSIGNED NOT NULL,
+    PRIMARY KEY (role_id, model_type, model_id),
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+    INDEX idx_model_type_id (model_type, model_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -43,6 +43,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Other'
             ]
         },
+        reinstate: {
+            title: 'Reinstate Staff',
+            subtitle: 'Restore system access',
+            body: 'You are about to reinstate <b id="reinstate-target-name">...</b>. This will restore all system access immediately.',
+            icon: 'check_circle',
+            color: 'emerald',
+            btnText: 'Yes, Reinstate Account',
+            btnClass: 'bg-emerald-600 shadow-emerald-600/20',
+            reasons: []
+        },
         delete: {
             title: 'Delete Staff Account',
             subtitle: 'Critical security procedure',
@@ -125,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // =============================
     async function loadStaffData() {
         try {
-            let response = await window.api.get('/admin/staff-detail.php?id=' + staffId);
+            let response = await window.api.get('/staff/' + staffId);
 
             if (!response || (!response.success && response.status !== 'success')) {
                 if (window.showToast) window.showToast(response?.message || 'Error loading staff details', 'error');
@@ -313,16 +323,25 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('summary-total-amount', fmtCurrency((parseFloat(today.total_deposits) || 0) + (parseFloat(today.total_withdrawals) || 0)));
 
             // ─── BUTTON STATE ───────────────────────
-            if ((staff.status || '').toLowerCase() !== 'active') {
-                let deactivateBtn = document.getElementById('deactivate-staff-btn');
+            let deactivateBtn = document.getElementById('deactivate-staff-btn');
+            if ((staff.status || '').toLowerCase() === 'suspended') {
                 if (deactivateBtn) {
-                    deactivateBtn.disabled = true;
-                    deactivateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    deactivateBtn.dataset.action = 'reinstate';
+                    deactivateBtn.classList.remove('hover:border-warning-base', 'hover:bg-warning-surface');
+                    deactivateBtn.classList.add('hover:border-emerald-500', 'hover:bg-emerald-50');
                 }
                 let suspendLabel = document.getElementById('suspend-label');
-                if (suspendLabel) suspendLabel.textContent = 'Already Suspended';
+                if (suspendLabel) suspendLabel.textContent = 'Reinstate Staff';
                 let suspendIcon = document.getElementById('suspend-icon');
-                if (suspendIcon) suspendIcon.textContent = 'check_circle';
+                if (suspendIcon) {
+                    suspendIcon.textContent = 'check_circle';
+                    suspendIcon.parentElement.classList.replace('text-warning-base', 'text-emerald-500');
+                    suspendIcon.parentElement.classList.replace('bg-warning-surface/10', 'bg-emerald-100');
+                }
+                let suspendSubtext = deactivateBtn ? deactivateBtn.querySelector('.text-\\[9px\\]') : null;
+                if (suspendSubtext) suspendSubtext.textContent = 'Restore access';
+            } else {
+                if (deactivateBtn) deactivateBtn.dataset.action = 'deactivate';
             }
 
             // ─── TRANSACTIONS TABLE ─────────────────
@@ -342,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += '<td class="font-mono text-xs opacity-60">' + t.account_no + '</td>';
                         html += '<td><span class="status-badge ' + typeClass + '">' + t.type.toUpperCase() + '</span></td>';
                         html += '<td class="font-black text-xs ' + amtClass + '">' + fmtCurrency(t.amount) + '</td>';
-                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/pdf/receipt-pdf.php?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
+                        html += '<td class="text-right"><button onclick="window.open(\'../../../../api/v1/documents/receipt?id=' + t.txn_id + '\', \'_blank\')" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all text-slate-400" title="Print Receipt"><span class="material-symbols-outlined text-lg">receipt_long</span></button></td>';
                         html += '</tr>';
                     }
                     tbody.innerHTML = html;
@@ -472,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Button bindings
     let dBtn = document.getElementById('deactivate-staff-btn');
-    if (dBtn) dBtn.addEventListener('click', function() { if (!this.disabled) openGovernanceModal('deactivate'); });
+    if (dBtn) dBtn.addEventListener('click', function() { if (!this.disabled) openGovernanceModal(this.dataset.action || 'deactivate'); });
 
     let delBtn = document.getElementById('delete-staff-btn');
     if (delBtn) delBtn.addEventListener('click', function() { openGovernanceModal('delete'); });
@@ -496,6 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentAction === 'deactivate') apiAction = 'suspend';
             else if (currentAction === 'reset') apiAction = 'reset_password';
             else if (currentAction === 'delete') apiAction = 'delete';
+            else if (currentAction === 'reinstate') apiAction = 'reinstate';
 
             if (currentAction === 'deactivate' && !reason) {
                 alert('Please select a reason for deactivation.');
@@ -507,13 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 let notesEl = document.getElementById('custom-reason-notes');
-                let resp = await window.api.post('/admin/staff-action.php', {
-                    action: apiAction,
-                    staff_id: staffId,
-                    password: password,
-                    reason: reason,
-                    notes: notesEl ? notesEl.value : ''
-                });
+                let resp = await window.api.patch('/staff/' + staffId, { action: apiAction, password: password, reason: reason });
 
                 if (resp.status === 'success' || resp.success) {
                     if (currentAction === 'reset') {

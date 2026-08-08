@@ -37,7 +37,7 @@
         }
 
         try {
-            const response = await window.api.get('/admin/suspended-staff.php', {
+            const response = await window.api.get('/staff/suspended', {
                 search: search,
                 reason: reason,
                 start_date: startDate,
@@ -103,7 +103,7 @@
                 <td><span class="status-badge badge-secondary">${s.duration || 'Permanent'}</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <div class="flex items-center justify-center gap-2">
-                        <a href="admin-suspended-staff-detail.html?id=${s.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
+                        <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px">visibility</span>
                         </a>
                         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500" 
@@ -188,9 +188,8 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px">autorenew</span> Processing...';
             
             try {
-                const response = await window.api.post('/admin/staff-action.php', {
+                const response = await window.api.patch('/staff/' + pendingId, {
                     action: 'reinstate',
-                    staff_id: pendingId,
                     password: password
                 });
 

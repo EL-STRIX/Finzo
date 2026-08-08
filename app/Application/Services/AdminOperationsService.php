@@ -6,66 +6,40 @@ use App\Shared\Security\SecurityService;
 
 use App\Infrastructure\Repositories\AdminOperationsRepository;
 
-class AdminOperationsService
+class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOperationsServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
     protected AdminOperationsRepository $repository;
-
-    public function __construct(AdminOperationsRepository $repository, ?SecurityService $security = null)
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
+    public function __construct(\App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
-
+    /**
+     * Get Audit Log.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getAuditLog(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["1=1"];
-        $params = [];
-
-        if ($filters['action_type'] !== 'all') {
-            $where_clauses[] = "al.action_type LIKE ?";
-            $params[] = "%{$filters['action_type']}%";
-        }
-
-        if ($filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
-            if ($filters['actor_role'] === 'admin') {
-                $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
-            } elseif ($filters['actor_role'] === 'staff') {
-                $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
-            } elseif ($filters['actor_role'] === 'system') {
-                $where_clauses[] = "al.actor_role IN ('System', 'system')";
-            } elseif ($filters['actor_role'] === 'user') {
-                $where_clauses[] = "al.actor_role IN ('User', 'user')";
-            }
-        }
-
-        if (!empty($filters['from_date'])) {
-            $where_clauses[] = "DATE(al.created_at) >= ?";
-            $params[] = $filters['from_date'];
-        }
-
-        if (!empty($filters['to_date'])) {
-            $where_clauses[] = "DATE(al.created_at) <= ?";
-            $params[] = $filters['to_date'];
-        }
-
-        if (!empty($filters['search'])) {
-            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
-            $s = "%{$filters['search']}%";
-            $params[] = $s;
-            $params[] = $s;
-        }
-
-        $where_sql = implode(' AND ', $where_clauses);
-        $total = $this->repository->countAuditLogs($where_sql, $params);
+        $total = $this->repository->countAuditLogs($filters);
 
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $entries = $this->repository->getAuditLogs($where_sql, $params, $perPage, $offset);
+        $entries = $this->repository->getAuditLogs($filters, $perPage, $offset);
         $action_types = $this->repository->getAuditLogActionTypes();
-        $stats = $this->repository->getAuditLogStats($where_sql, $params);
+        $stats = $this->repository->getAuditLogStats($filters);
 
         return [
             'entries'      => $entries,
@@ -81,7 +55,12 @@ class AdminOperationsService
             ]
         ];
     }
-
+    /**
+     * Get Dashboard Data.
+     *
+     * @param int $adminId
+     * @return array
+     */
     public function getDashboardData(int $adminId): array
     {
         $stats = $this->repository->getDashboardStats();
@@ -132,7 +111,14 @@ class AdminOperationsService
             'admin' => $admin_data
         ];
     }
-
+    /**
+     * Get Deleted Users.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getDeletedUsers(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 1"];
@@ -181,7 +167,11 @@ class AdminOperationsService
             'current_page' => $page
         ];
     }
-
+    /**
+     * Get Interest Data.
+     *
+     * @return array
+     */
     public function getInterestData(): array
     {
         $current_rate_row = $this->repository->getCurrentInterestRate();
@@ -238,7 +228,15 @@ class AdminOperationsService
             'history'          => $history
         ];
     }
-
+    /**
+     * Update Interest Rate.
+     *
+     * @param float $new_rate
+     * @param string $apply_from
+     * @param string $custom_date
+     * @param int $adminId
+     * @return array
+     */
     public function updateInterestRate(float $new_rate, string $apply_from, string $custom_date, int $adminId): array
     {
         if ($new_rate < 0.01 || $new_rate > 99.99) {
@@ -274,31 +272,47 @@ class AdminOperationsService
         if ($apply_from === 'Immediately') {
             $this->repository->updateActiveSavingsInterestRate($new_rate);
             $savings_accounts = $this->repository->getActiveSavingsAccounts();
+            $pdo = \App\Shared\Core\Database::getInstance();
 
             foreach ($savings_accounts as $acc) {
-                $balance = (float)$acc['balance'];
-                $interest_amount = round($balance * ($new_rate / 100) / 12, 2);
+                try {
+                    $this->repository->beginTransaction();
+                    $lockedAcc = $this->repository->getAccountForUpdate($acc['id']);
+                    if (!$lockedAcc) {
+                        $this->repository->rollBack();
+                        continue;
+                    }
 
-                if ($interest_amount >= 0.01) {
-                    $new_balance = $balance + $interest_amount;
-                    $transactionId = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
+                    $balance = (float)$lockedAcc['balance'];
+                    $interest_amount = round($balance * ($new_rate / 100) / 12, 2);
 
-                    $this->repository->addTransaction(
-                        $transactionId,
-                        null,
-                        $acc['id'],
-                        'interest_credit',
-                        $interest_amount,
-                        $new_balance,
-                        "Savings Interest Credit",
-                        "Interest credited at " . number_format($new_rate, 2) . "% p.a.",
-                        'completed'
-                    );
+                    if ($interest_amount >= 0.01) {
+                        $new_balance = $balance + $interest_amount;
+                        $transactionId = 'TXN' . strtoupper(bin2hex(random_bytes(8)));
 
-                    $this->repository->updateAccountBalance($new_balance, $acc['id']);
+                        $this->repository->addTransaction(
+                            $transactionId,
+                            null,
+                            $lockedAcc['id'],
+                            'interest_credit',
+                            $interest_amount,
+                            $new_balance,
+                            "Savings Interest Credit",
+                            "Interest credited at " . number_format($new_rate, 2) . "% p.a.",
+                            'completed'
+                        );
 
-                    $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
-                    $this->repository->addNotification($acc['user_id'], 'transaction', 'Interest Credited', $notifMessage);
+                        $this->repository->updateAccountBalance($new_balance, $lockedAcc['id']);
+
+                        $notifMessage = "₹" . number_format($interest_amount, 2) . " interest has been credited to your savings account. New balance: ₹" . number_format($new_balance, 2);
+                        $this->repository->addNotification($lockedAcc['customer_id'] ?? $acc['user_id'], 'transaction', 'Interest Credited', $notifMessage);
+                    }
+                    $this->repository->commit();
+                } catch (\Throwable $e) {
+                    if ($this->repository->inTransaction()) {
+                        $this->repository->rollBack();
+                    }
+                    \App\Shared\Core\Logging\Logger::getInstance()->error('Interest credit error for account ' . $acc['id'], ['context' => $e->getMessage()]);
                 }
             }
         }
@@ -306,14 +320,19 @@ class AdminOperationsService
         // Global function from config/functions.php
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, 'system', $adminId, 'admin', "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
+    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, \App\Domain\Enums\RoleEnum::SYSTEM->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
 );
         
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }
-
-    public function exportUsers(array $filters): array
+    /**
+     * Export Users.
+     *
+     * @param array $filters
+     * @return array
+     */
+    public function exportUsers(array $filters): array|\Generator
     {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
         $params = [];
@@ -332,9 +351,16 @@ class AdminOperationsService
 
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->getExportUsers($where_sql, $params);
+        return $this->repository->exportUsersGenerator($where_sql, $params);
     }
-
+    /**
+     * Get Locked Accounts.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getLockedAccounts(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0"];
@@ -348,7 +374,7 @@ class AdminOperationsService
             $where_clauses[] = "(u.temp_pass_status IN ('pending', 'done') OR u.failed_attempts >= 3)";
         }
 
-        if ($filters['status'] === 'pending') {
+        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $where_clauses[] = "u.temp_pass_status = 'pending'";
         } elseif ($filters['status'] === 'done') {
             $where_clauses[] = "u.temp_pass_status = 'done'";
@@ -395,7 +421,12 @@ class AdminOperationsService
             'current_page' => $page
         ];
     }
-
+    /**
+     * Get Locked Account Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getLockedAccountDetail(int $userId): array
     {
         $user = $this->repository->getLockedAccountDetail($userId);
@@ -453,13 +484,20 @@ class AdminOperationsService
 
         return ['success' => true, 'user' => $user, 'logs' => $logs];
     }
-
+    /**
+     * Get Pending Approvals.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getPendingApprovals(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        if ($filters['status'] === 'pending') {
+        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $where_clauses[] = "u.status = 'pending'";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
@@ -509,9 +547,16 @@ class AdminOperationsService
             ]
         ];
     }
-
+    /**
+     * Recover User.
+     *
+     * @param int $userId
+* @param int $adminId
+     * @return array
+     */
     public function recoverUser(int $userId, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $user = $this->repository->getUserForRecovery($userId);
 
         if (!$user) {
@@ -525,10 +570,7 @@ class AdminOperationsService
         $this->repository->recoverUser($userId, $user['customer_id']);
 
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification(
-                $pdo,
-                $userId,
-                'system',
+            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
                 'Account Restored',
                 'Your account has been restored and is now active. You can log in and continue banking.'
             );
@@ -536,13 +578,18 @@ class AdminOperationsService
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "Recovered deleted user: {$user['full_name']}")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}")
 );
         
 
         return ['success' => true, 'message' => 'User recovered successfully'];
     }
-
+    /**
+     * Get Application Details.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getApplicationDetails(int $userId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
@@ -586,12 +633,12 @@ class AdminOperationsService
             [
                 'status' => 'Account Registered',
                 'time' => date('d M Y, h:i A', strtotime($user['created_at'])),
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ],
             [
                 'status' => 'Profile Submitted',
                 'time' => $first_submit_time,
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ]
         ];
 
@@ -618,7 +665,7 @@ class AdminOperationsService
             $timeline[] = [
                 'status' => 'Profile Resubmitted',
                 'time' => $resubmit_time,
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
         }
 
@@ -626,31 +673,31 @@ class AdminOperationsService
             $timeline[] = [
                 'status' => 'Under Admin Review',
                 'time' => 'In Progress',
-                'type' => 'active'
+                'type' => \App\Domain\Enums\AccountStatusEnum::ACTIVE->value
             ];
             $timeline[] = [
                 'status' => 'Account Activated',
                 'time' => 'Waiting for approval',
-                'type' => 'pending'
+                'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
-        } elseif ($user['status'] === 'pending') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $timeline[] = [
                 'status' => 'Pending Review',
                 'time' => 'Awaiting admin review',
-                'type' => 'active'
+                'type' => \App\Domain\Enums\AccountStatusEnum::ACTIVE->value
             ];
             $timeline[] = [
                 'status' => 'Account Activated',
                 'time' => 'Waiting for approval',
-                'type' => 'pending'
+                'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
-        } elseif ($user['status'] === 'active') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             $timeline[] = [
                 'status' => 'Approved & Activated',
                 'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
-                'type' => 'completed'
+                'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
-        } elseif ($user['status'] === 'rejected') {
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
             $timeline[] = [
                 'status' => 'Application Rejected',
                 'time' => 'KYC Rejected',
@@ -674,7 +721,16 @@ class AdminOperationsService
             'expected_acc' => $expected_acc
         ];
     }
-
+    /**
+     * Process Application.
+     *
+     * @param int $userId
+     * @param string $action
+     * @param string $reason
+     * @param string $notes
+     * @param int $adminId
+     * @return array
+     */
     public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
@@ -693,7 +749,7 @@ class AdminOperationsService
         try {
             switch ($action) {
                 case 'approve':
-                    $pdo->beginTransaction();
+                    $this->repository->beginTransaction();
                     $accountNumber = generate_account_number($pdo);
                     $this->repository->approveApplication($userId, $customer_id, $accountNumber, $admin_display_id);
 
@@ -715,17 +771,17 @@ class AdminOperationsService
                             'completed'
                         );
                     }
-                    $pdo->commit();
+                    $this->repository->commit();
 
                     if (function_exists('send_approved_email')) {
                         send_approved_email($user['email'], $user['full_name'], $accountNumber);
                     }
                     if (function_exists('send_notification')) {
-                        send_notification($pdo, $userId, 'system', 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Approved!', "Congratulations! Your account has been approved. Your account number is {$accountNumber}.");
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_approved', $userId, 'user', $adminId, 'admin', "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::KYC_APPROVED->value, $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Approved KYC for {$user['full_name']}. Account: {$accountNumber}")
 );
                     
 
@@ -735,19 +791,19 @@ class AdminOperationsService
                     if (empty($reason)) {
                         return ['success' => false, 'message' => 'Rejection reason is required', 'code' => 422];
                     }
-                    $pdo->beginTransaction();
+                    $this->repository->beginTransaction();
                     $this->repository->rejectApplication($userId, $customer_id, $reason, $admin_display_id);
-                    $pdo->commit();
+                    $this->repository->commit();
 
                     if (function_exists('send_rejected_email')) {
                         send_rejected_email($user['email'], $user['full_name'], $reason);
                     }
                     if (function_exists('send_notification')) {
-                        send_notification($pdo, $userId, 'system', 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Update', "Your application has been reviewed. Status: Rejected. Reason: {$reason}. You can update your profile and resubmit.");
                     }
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('kyc_rejected', $userId, 'user', $adminId, 'admin', "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::KYC_REJECTED->value, $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Rejected KYC for {$user['full_name']}. Reason: {$reason}")
 );
                     
 
@@ -756,7 +812,7 @@ class AdminOperationsService
                 case 'save_notes':
                     
                         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, 'user', $adminId, 'admin', "Admin notes: {$notes}")
+    new \App\Application\Events\GenericAuditAction('admin_notes_saved', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Admin notes: {$notes}")
 );
                     
                     $this->repository->saveAdminNotes($customer_id, $notes);
@@ -765,14 +821,21 @@ class AdminOperationsService
                 default:
                     return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
             }
-        } catch (\PDOException $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+        } catch (\Exception $e) {
+            if ($this->repository->inTransaction()) {
+                $this->repository->rollBack();
             }
             throw $e;
         }
     }
-
+    /**
+     * Get Suspended Users.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getSuspendedUsers(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.status = 'suspended'", "u.is_deleted = 0"];
@@ -838,8 +901,16 @@ class AdminOperationsService
             'current_page' => $page
         ];
     }
-
-    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array
+    /**
+     * Get Transactions.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @param bool $isExport
+     * @return array
+     */
+    public function getTransactions(array $filters, int $page, int $perPage, bool $isExport = false): array|\Generator
     {
         $where_clauses = ["1=1"];
         $params = [];
@@ -882,7 +953,7 @@ class AdminOperationsService
         ";
 
         if ($isExport) {
-            return $this->repository->exportTransactions($base_sql, $params);
+            return $this->repository->exportTransactionsGenerator($base_sql, $params);
         }
 
         $total = $this->repository->countTransactions($base_sql, $params);
@@ -901,7 +972,14 @@ class AdminOperationsService
             'summary'      => $summary
         ];
     }
-
+    /**
+     * Get Users List.
+     *
+     * @param array $filters
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
@@ -913,8 +991,10 @@ class AdminOperationsService
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $search_param = "%{$filters['search']}%";
+            $params[] = $search_param;
+            $params[] = $search_param;
             $params[] = $search_param;
             $params[] = $search_param;
         }
@@ -956,6 +1036,14 @@ class AdminOperationsService
             ]
         ];
     }
+
+
+    /**
+     * Get Suspended User Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getSuspendedUserDetail(int $userId): array
     {
         $user = $this->repository->getSuspendedUserProfile($userId);
@@ -989,9 +1077,9 @@ class AdminOperationsService
             $txs = $this->repository->getRecentTransactions($account['account_no'], 10);
             foreach ($txs as $tx) {
                 $is_debit = false;
-                if ($tx['type'] === 'withdrawal') {
+                if ($tx['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                     $is_debit = true;
-                } elseif ($tx['type'] === 'transfer' && $tx['description'] !== 'Deposit') {
+                } elseif ($tx['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value && $tx['description'] !== 'Deposit') {
                     $is_debit = true;
                 }
 
@@ -1038,9 +1126,16 @@ class AdminOperationsService
             'transactions' => $transactions
         ];
     }
-
+    /**
+     * Unlock Account.
+     *
+     * @param int $userId
+     * @param int $adminId
+     * @return array
+     */
     public function unlockAccount(int $userId, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
         $temp_pass = '';
         $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
@@ -1061,10 +1156,7 @@ class AdminOperationsService
         $this->repository->unlockUserAccount($password_hash, $userId);
 
         if (function_exists('send_notification') && isset($pdo)) {
-            send_notification(
-                $pdo,
-                $userId,
-                'security',
+            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                 'Account Unlocked',
                 'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.'
             );
@@ -1072,7 +1164,7 @@ class AdminOperationsService
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, 'user', $adminId, 'admin', "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
 );
         
 
@@ -1090,9 +1182,20 @@ class AdminOperationsService
             'temp_password' => $temp_pass
         ];
     }
-
+    /**
+     * Process User Action.
+     *
+     * @param int $userId
+     * @param string $action
+     * @param string $reason
+     * @param string $password
+     * @param string $balanceOption
+     * @param int $adminId
+     * @return array
+     */
     public function processUserAction(int $userId, string $action, string $reason, string $password, string $balanceOption, int $adminId): array
     {
+        $pdo = \App\Shared\Core\Database::getInstance();
         $valid_actions = ['suspend', 'reinstate', 'delete', 'recover', 'hard_delete', 'delete_account_only'];
         if (!in_array($action, $valid_actions)) {
             return ['success' => false, 'message' => 'Invalid action', 'code' => 422];
@@ -1115,24 +1218,21 @@ class AdminOperationsService
                 if (function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'suspend_user');
                 }
-                if ($user['status'] === 'suspended') {
+                if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                     return ['success' => false, 'message' => 'User is already suspended', 'code' => 409];
                 }
 
                 $this->repository->suspendUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('send_notification') && isset($pdo)) {
-                    send_notification(
-                        $pdo,
-                        $userId,
-                        'security',
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                         'Account Suspended',
                         'Your account has been suspended. Reason: ' . ($reason ?: 'No reason provided') . '. Contact support for assistance.'
                     );
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} suspended. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_suspended', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} suspended. Reason: {$reason}")
 );
                 
                 return ['success' => true, 'message' => 'User suspended successfully'];
@@ -1141,21 +1241,21 @@ class AdminOperationsService
                 if (function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'reinstate_user');
                 }
-                if ($user['status'] === 'active') {
+                if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                     return ['success' => true, 'message' => 'User is already active'];
                 }
-                if ($user['status'] !== 'suspended') {
+                if ($user['status'] !== \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
                     return ['success' => false, 'message' => 'User is not suspended', 'code' => 409];
                 }
 
                 $this->repository->reinstateUserAccount($userId, $user['customer_id']);
 
                 if (function_exists('send_notification') && isset($pdo)) {
-                    send_notification($pdo, $userId, 'security', 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value, 'Account Reinstated', 'Your account has been reinstated and is now active. You can log in and transact normally.');
                 }
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} reinstated")
+    new \App\Application\Events\GenericAuditAction('user_reinstated', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} reinstated")
 );
                 
                 return ['success' => true, 'message' => 'User reinstated successfully'];
@@ -1172,7 +1272,7 @@ class AdminOperationsService
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} soft-deleted. Reason: {$reason}")
+    new \App\Application\Events\GenericAuditAction('user_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} soft-deleted. Reason: {$reason}")
 );
                 
                 return ['success' => true, 'message' => 'User deleted successfully'];
@@ -1194,24 +1294,24 @@ class AdminOperationsService
                         $transactionId = 'TXN' . strtoupper(uniqid());
                         $this->repository->addSystemChargeTransaction($transactionId, $account['id'], $deduction_amount);
                         if (function_exists('send_notification') && isset($pdo)) {
-                            send_notification($pdo, $userId, 'system', 'Account Restored – Balance Adjusted', 'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
+                            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored – Balance Adjusted', 'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.');
                         }
                     } else {
                         if (function_exists('send_notification') && isset($pdo)) {
-                            send_notification($pdo, $userId, 'system', 'Account Restored', 'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
+                            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored', 'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.');
                         }
                     }
                     $this->repository->updateAccountBalanceLease500($user['customer_id']);
                 } else {
                     $this->repository->activateAccount($user['customer_id']);
                     if (function_exists('send_notification') && isset($pdo)) {
-                        send_notification($pdo, $userId, 'system', 'Account Restored', 'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
+                        send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Account Restored', 'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.');
                     }
                 }
 
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} recovered from soft-delete state" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
                 
                 return ['success' => true, 'message' => 'User recovered successfully'];
@@ -1223,7 +1323,7 @@ class AdminOperationsService
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, 'user', $adminId, 'admin', "User {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('user_hard_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "User {$user['full_name']} permanently deleted.")
 );
                 
                 return ['success' => true, 'message' => 'User permanently deleted'];
@@ -1235,14 +1335,19 @@ class AdminOperationsService
                 $this->repository->deleteAccountOnly($user['customer_id']);
                 
                     \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, 'user', $adminId, 'admin', "Account for user {$user['full_name']} permanently deleted.")
+    new \App\Application\Events\GenericAuditAction('account_hard_deleted', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Account for user {$user['full_name']} permanently deleted.")
 );
                 
                 return ['success' => true, 'message' => 'Account permanently deleted'];
         }
         return ['success' => false, 'message' => 'Action failed', 'code' => 500];
     }
-
+    /**
+     * Get User Detail.
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getUserDetail(int $userId): array
     {
         $user = $this->repository->getUserProfile($userId);
@@ -1272,5 +1377,111 @@ class AdminOperationsService
                 'back_url'  => $id_back_url
             ]
         ];
+    }
+    public function reverseTransaction(string $transactionId, int $adminId, string $reason): array
+    {
+        $pdo = \App\Shared\Core\Database::getInstance();
+        try {
+            $this->repository->beginTransaction();
+            $txn = $this->repository->getTransactionForReversal($transactionId);
+            if (!$txn) {
+                return ['success' => false, 'message' => 'Transaction not found or already locked', 'code' => 404];
+            }
+            if ($txn['status'] === 'reversed') {
+                return ['success' => false, 'message' => 'Transaction is already reversed', 'code' => 422];
+            }
+            if ($txn['status'] !== 'completed') {
+                return ['success' => false, 'message' => 'Only completed transactions can be reversed', 'code' => 422];
+            }
+
+            $source_id = $txn['from_account_id'];
+            $dest_id = $txn['to_account_id'];
+            $amount = (float)$txn['amount'];
+
+            // We need to reverse the flow. The receiver must have enough funds to be debited.
+            $first_id = null;
+            $second_id = null;
+            if ($source_id && $dest_id) {
+                $first_id = min($source_id, $dest_id);
+                $second_id = max($source_id, $dest_id);
+                $first = $this->repository->getAccountForUpdate($first_id);
+                $second = $this->repository->getAccountForUpdate($second_id);
+                $source = ($first['id'] == $source_id) ? $first : $second;
+                $dest = ($first['id'] == $dest_id) ? $first : $second;
+            } elseif ($source_id) {
+                $source = $this->repository->getAccountForUpdate($source_id);
+                $dest = null;
+            } elseif ($dest_id) {
+                $dest = $this->repository->getAccountForUpdate($dest_id);
+                $source = null;
+            }
+
+            $new_source_balance = $source ? $source['balance'] : null;
+            $new_dest_balance = $dest ? $dest['balance'] : null;
+
+            if ($txn['type'] === 'deposit' && $dest) {
+                if ($dest['balance'] < $amount) {
+                    return ['success' => false, 'message' => 'Account has insufficient funds to reverse this deposit', 'code' => 422];
+                }
+                $new_dest_balance = $dest['balance'] - $amount;
+                $this->repository->updateAccountBalance($new_dest_balance, $dest['id']);
+            } elseif ($txn['type'] === 'withdrawal' && $source) {
+                $new_source_balance = $source['balance'] + $amount;
+                $this->repository->updateAccountBalance($new_source_balance, $source['id']);
+            } elseif ($txn['type'] === 'transfer' && $source && $dest) {
+                if ($dest['balance'] < $amount) {
+                    return ['success' => false, 'message' => 'Destination account has insufficient funds to reverse this transfer', 'code' => 422];
+                }
+                $new_dest_balance = $dest['balance'] - $amount;
+                $this->repository->updateAccountBalance($new_dest_balance, $dest['id']);
+                
+                $new_source_balance = $source['balance'] + $amount;
+                $this->repository->updateAccountBalance($new_source_balance, $source['id']);
+            } else {
+                return ['success' => false, 'message' => 'Unsupported transaction type for reversal', 'code' => 422];
+            }
+
+            // Mark original as reversed
+            $pdo->prepare("UPDATE transactions SET status = 'reversed', updated_at = NOW() WHERE id = ?")->execute([$txn['id']]);
+
+            // Create Reversal transaction
+            $revTxnId = generate_transaction_id();
+            $this->repository->addTransaction(
+                $revTxnId,
+                $dest ? $dest['id'] : null, // Reversing flow
+                $source ? $source['id'] : null,
+                'transfer', // Store as transfer or just reversed depending on type. But we'll use original type in reference.
+                $amount,
+                $new_dest_balance ?? 0,
+                "Reversal of {$transactionId}",
+                "Admin Reason: {$reason}",
+                'completed'
+            );
+
+            // Update destination balance_after for the new transaction properly
+            $pdo->prepare("UPDATE transactions SET dest_balance_after = ? WHERE txn_id = ?")->execute([$new_source_balance, $revTxnId]);
+
+            // Write Audit
+            if ($this->security) {
+                $this->security->writeAuditLog(
+                    \App\Domain\Enums\AuditActionEnum::ADMIN_ACTION->value,
+                    $txn['id'],
+                    'transaction',
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Reversed transaction {$transactionId}. Reason: {$reason}"
+                );
+            }
+            $this->repository->addNotification($txn['to_user_id'], 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
+
+            $this->repository->commit();
+            return ['success' => true, 'message' => 'Transaction reversed successfully', 'code' => 200];
+        } catch (\Throwable $e) {
+            if ($this->repository->inTransaction()) {
+                $this->repository->rollBack();
+            }
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Reversal error: ', ['context' => $e->getMessage()]);
+            return ['success' => false, 'message' => 'An error occurred during reversal', 'code' => 500];
+        }
     }
 }

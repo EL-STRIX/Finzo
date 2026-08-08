@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class StaffRepository extends BaseRepository
+class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\StaffRepositoryInterface
 {
     public function findAccountByNo(string $accountNumber)
     {
@@ -47,30 +47,35 @@ class StaffRepository extends BaseRepository
 
     public function getStaffShiftDeposits(int $staffId)
     {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
-            WHERE processed_by_staff_id = ? AND type = 'deposit'
-                AND status = 'completed' AND DATE(created_at) = CURDATE()
+            WHERE processed_by_staff_id = ? AND type = '{$deposit}'
+                AND status = '{$completed}' AND DATE(created_at) = CURDATE()
         ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffShiftWithdrawals(int $staffId)
     {
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         return $this->fetchOne("
             SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
             FROM transactions
-            WHERE processed_by_staff_id = ? AND type = 'withdrawal'
-                AND status = 'completed' AND DATE(created_at) = CURDATE()
+            WHERE processed_by_staff_id = ? AND type = '{$withdrawal}'
+                AND status = '{$completed}' AND DATE(created_at) = CURDATE()
         ", [$staffId], \App\Domain\Models\Staff::class);
     }
 
     public function getStaffTotalTransactionsToday(int $staffId)
     {
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as count
             FROM transactions
-            WHERE processed_by_staff_id = ? AND status = 'completed'
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
                 AND DATE(created_at) = CURDATE()
         ");
         $stmt->execute([$staffId]);
@@ -167,10 +172,7 @@ class StaffRepository extends BaseRepository
         ]);
     }
 
-    public function getPDO(): PDO
-    {
-        return $this->db;
-    }
+
 
     public function countTransactionsByStaff(int $staffId, array $where_clauses, array $params)
     {
@@ -273,5 +275,25 @@ class StaffRepository extends BaseRepository
         $params[] = $staffId;
         $sql = "UPDATE staff SET " . implode(', ', $fields) . " WHERE id = ?";
         return $this->execute($sql, $params);
+    }
+
+    public function clockIn(int $staffId, string $staffIdentifier): bool
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO staff_shifts (staff_id, shift_date, clock_in, status)
+            VALUES (?, CURDATE(), NOW(), 'active')
+            ON DUPLICATE KEY UPDATE clock_in = IF(clock_in IS NULL, NOW(), clock_in)
+        ");
+        return $stmt->execute([$staffIdentifier]);
+    }
+
+    public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool
+    {
+        $stmt = $this->db->prepare("
+            UPDATE staff_shifts 
+            SET clock_out = NOW(), status = 'completed', notes = ?
+            WHERE staff_id = ? AND shift_date = CURDATE() AND status = 'active'
+        ");
+        return $stmt->execute([$notes, $staffIdentifier]);
     }
 }

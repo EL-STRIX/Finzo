@@ -25,6 +25,14 @@ class ResponseBuilder
                 $response['message'] = 'Request successful.';
             }
 
+            $rootKeys = ['redirect', 'locked', 'mfa_required', 'mfa_token'];
+            foreach ($rootKeys as $key) {
+                if (is_array($data) && isset($data[$key])) {
+                    $response[$key] = $data[$key];
+                    unset($data[$key]);
+                }
+            }
+
             if (is_array($data) && isset($data['success'])) {
                 unset($data['success']);
             }
@@ -50,16 +58,25 @@ class ResponseBuilder
             // Error formatting
             if (is_array($data) && isset($data['message'])) {
                 $response['message'] = $data['message'];
+                unset($data['message']);
             } elseif (is_string($data)) {
                 $response['message'] = $data;
             } else {
                 $response['message'] = 'An error occurred.';
             }
 
+            $rootKeys = ['redirect', 'locked', 'mfa_required', 'mfa_token'];
+            foreach ($rootKeys as $key) {
+                if (is_array($data) && isset($data[$key])) {
+                    $response[$key] = $data[$key];
+                    unset($data[$key]);
+                }
+            }
+
             // Extract validation errors if any
             if (is_array($data) && isset($data['errors'])) {
                 $response['errors'] = $data['errors'];
-            } elseif (is_array($data) && !isset($data['message']) && count($data) > 0) {
+            } elseif (is_array($data) && count($data) > 0) {
                 // If data has other keys, might be error details
                 $response['errors'] = $data;
                 unset($response['errors']['success']);
@@ -83,6 +100,11 @@ class ResponseBuilder
 
     private static function scrub($data)
     {
+        if (is_string($data)) {
+            // Globally sanitize string outputs to prevent XSS on the client-side
+            return htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
         if (is_array($data)) {
             $sensitive = ['password', 'password_hash', 'token', 'reset_token', 'temp_password_expiry'];
             foreach ($sensitive as $key) {

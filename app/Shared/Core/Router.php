@@ -122,47 +122,15 @@ class Router
             }
         }
 
-        // Legacy Strangler Fig Fallback
-        // If the route was not found in the new API mappings, check if the old procedural controller exists.
-        // The URI will look like /user/dashboard.php
-        $legacyFilePath = FINZO_ROOT . '/app/Presentation/Controllers_backup' . $uri;
-        if (!file_exists($legacyFilePath)) { $legacyFilePath = FINZO_ROOT . '/app/Presentation/Api/V1' . $uri; }
-        if (file_exists($legacyFilePath) && is_file($legacyFilePath)) {
-            require $legacyFilePath;
-            return;
-        }
+        // The legacy fallback logic has been intentionally removed to resolve a Directory Traversal (LFI) vulnerability.
 
-        json_response(['success' => false, 'message' => 'Not Found - ' . $uri], 404);
+        json_response(['success' => false, 'message' => 'The requested resource was not found.'], 404);
     }
 
     private function instantiateController(string $controllerClass)
     {
-        // Simple DI container implementation
-        $reflection = new \ReflectionClass($controllerClass);
-        $constructor = $reflection->getConstructor();
-
-        if (is_null($constructor)) {
-            return new $controllerClass();
-        }
-
-        $dependencies = [];
-        foreach ($constructor->getParameters() as $parameter) {
-            $type = $parameter->getType();
-            if ($type && !$type->isBuiltin()) {
-                $dependencyClass = $type->getName();
-
-                // If it's a Service, it might need a Repository
-                if (str_ends_with($dependencyClass, 'Service')) {
-                    $dependencies[] = $this->instantiateController($dependencyClass);
-                } elseif (str_ends_with($dependencyClass, 'Repository')) {
-                    $dependencies[] = new $dependencyClass();
-                } else {
-                    $dependencies[] = new $dependencyClass();
-                }
-            }
-        }
-
-        return $reflection->newInstanceArgs($dependencies);
+        $container = \App\Shared\Core\Container::getInstance();
+        return $container->get($controllerClass);
     }
 
     public function getRoutes(): array

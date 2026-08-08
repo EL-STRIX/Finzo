@@ -35,17 +35,17 @@ error_log
 php_errors.log
 tmp/
 temp/
-storage/
+/storage/
 
 # ------------------------------------------------------------------------------
 # User Uploads
 # ------------------------------------------------------------------------------
-/uploads/*
-!/uploads/.gitkeep
-!/uploads/index.html
-/uploads/avatars/*
-!/uploads/avatars/.gitkeep
-!/uploads/avatars/index.html
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/index.html
+/public/uploads/avatars/*
+!/public/uploads/avatars/.gitkeep
+!/public/uploads/avatars/index.html
 
 # ------------------------------------------------------------------------------
 # Environment Variables & Local Configs

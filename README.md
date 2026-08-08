@@ -172,26 +172,27 @@ Finzo follows a decoupled, API-first architecture pattern:
 - **Middleware:** A centralized authentication layer intercepts API and page requests to verify sessions, CSRF tokens, and user roles.
 - **Database Layer:** MySQL handles persistent storage using PDO (PHP Data Objects). All financial operations utilize database transactions to guarantee atomicity.
 
-## 6. Project Structure
+## 6. Project Structure (Clean Architecture)
 
 ```text
 Finzo/
-├── api/          # Backend API endpoints (JSON responses)
-│   ├── admin/    # Administrator-specific endpoints
-│   ├── auth/     # Login, registration, and session logic
-│   ├── staff/    # Branch staff operations
-│   └── user/     # Customer actions (transfers, profile)
-├── assets/       # Static frontend resources
-│   ├── css/      # Global styles and themes
-│   ├── img/      # Images and icons
-│   └── js/       # Core JavaScript and API wrappers
-├── config/       # Global configuration and database connection
-├── database/     # SQL schemas and migration scripts
-├── middleware/   # Security and role-based access checks
-├── uploads/      # User-uploaded files (avatars, KYC docs)
-└── views/        # HTML presentation layer (Admin, Staff, User)
+├── app/                  # Core application logic
+│   ├── Application/      # Application services, commands, queries
+│   ├── Domain/           # Domain models, enums, interface contracts
+│   ├── Infrastructure/   # Database repositories and external services
+│   ├── Presentation/     # Controllers and Middleware
+│   └── Shared/           # Core utilities (Router, Logging, Config)
+├── bin/                  # CLI scripts and workers
+├── bootstrap/            # Application bootstrap and DI setup
+├── config/               # Global configuration (Cache, Mail, Redis)
+├── database/             # SQL migrations and schemas
+├── docker-compose.yml    # Docker services definition
+├── Dockerfile            # Production PHP-FPM image
+├── ops/                  # CI/CD deployment scripts and Nginx config
+├── public/               # Public document root (index.php, CSS, JS, Views)
+├── routes/               # API route definitions
+└── storage/              # File uploads, logs, and cache
 ```
-
 ## 7. Authentication & Security
 
 - **Password Hashing:** Passwords are mathematically hashed using PHP's native `password_hash()` (Bcrypt).
@@ -226,25 +227,44 @@ Standardized responses follow a uniform `{ success: boolean, message: string, da
 
 ## 10. Installation & Setup
 
+### Option 1: Docker (Recommended)
+The easiest way to run Finzo locally is using Docker.
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-username/Finzo.git
+   cd Finzo
+   ```
+
+2. **Environment Setup:**
+   ```bash
+   cp .env.example .env
+   # Update DB passwords if necessary, default is 'secret' for Docker
+   ```
+
+3. **Start Services:**
+   ```bash
+   docker-compose up -d
+   ```
+   The application will be available at `http://localhost:8080`.
+
+### Option 2: Local Server (XAMPP/WAMP)
+
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/your-username/Finzo.git
    ```
 
 2. **Environment Setup:**
-   Move the `Finzo` directory into your local server's web root (e.g., `htdocs` for XAMPP or `www` for WAMP).
+   - Move the `Finzo` directory into your local server's web root (e.g., `htdocs`).
+   - Copy `.env.example` to `.env` and fill in your DB credentials.
 
 3. **Database Configuration:**
-   - Open PHPMyAdmin (or your preferred SQL client).
-   - Create a new database named `finzo_db`.
-   - Import the provided SQL schema from `database/schema.sql`.
+   - Create a database named `finzo_db`.
+   - Import the schema from `database/schema.sql` (if available, otherwise run migrations).
 
-4. **Connect the App:**
-   - Navigate to `config/config.php` and `config/db.php`.
-   - Verify the database credentials (usually `root` with no password for local environments).
-
-5. **Run the Application:**
-   Start Apache and MySQL. Access the platform via your browser at `http://localhost/Finzo`.
+4. **Run the Application:**
+   Start Apache and MySQL. Access the platform at `http://localhost/Finzo/public`.
 
 ## 11. Environment Configuration
 

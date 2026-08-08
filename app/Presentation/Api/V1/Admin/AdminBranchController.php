@@ -10,7 +10,7 @@ class AdminBranchController
     protected SecurityService $security;
     protected AdminStaffBranchService $service;
 
-    public function __construct(AdminStaffBranchService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
         $this->security = $security ?? new SecurityService();
         $this->service = $service;
@@ -21,7 +21,7 @@ class AdminBranchController
     public function deleteBranch(?string $id = null, ?string $extra = null): array
     {
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $branchId = intval($_POST['branch_id'] ?? 0);
         $admin_password = $_POST['admin_password'] ?? '';
         $confirm_name = $_POST['confirm_name'] ?? '';
@@ -41,5 +41,11 @@ class AdminBranchController
         $status = $this->security->cleanInput($_GET['status'] ?? 'all');
 
         return $this->service->getBranchesList($search, $type, $status);
+    }
+
+    public function departments(): array
+    {
+        $this->security->enforcePermission('view_branches');
+        return $this->service->getDepartmentAnalytics();
     }
 }

@@ -1,0 +1,115 @@
+<?php
+$pageTitle = "Finzo | Account Recovery";
+$pageDescription = "Finzo Enterprise Banking - Secure Account Recovery";
+$extraHead = '<script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>';
+ob_start();
+?>
+
+    <main class="auth-page-wrapper">
+        <div class="auth-split-grid">
+            <!-- Left Side: Hero Illustration & Security Banner -->
+            <div class="auth-left-panel">
+                <img loading="lazy" src="/Finzo/public/assets/images/forget-password-page-image.png" alt="Recovery Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/forget-password-page-image.png" alt="Recovery Illustration" class="auth-hero-img-secondary" />
+                <div class="auth-hero-overlay"></div>
+                
+                <div class="auth-hero-content">
+                    <div>
+                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                            <div class="auth-brand-icon-box">
+                                <span class="material-symbols-outlined text-2xl">account_balance</span>
+                            </div>
+                            <span class="auth-brand-name">Finzo</span>
+                        </a>
+                        <h2 class="auth-hero-headline">Recover access to your account.</h2>
+                        <p class="auth-hero-subtitle">We'll send a secure link to your registered email so you can reset your password and regain access.</p>
+                    </div>
+                    
+                    <div>
+                        <div class="auth-hero-security-card">
+                            <span class="material-symbols-outlined auth-hero-security-icon">lock_reset</span>
+                            <div>
+                                <h4 class="auth-hero-security-title">One-time recovery link</h4>
+                                <p class="auth-hero-security-desc">We send a single-use link to your registered email. It expires in 15 minutes to keep your account safe.</p>
+                            </div>
+                        </div>
+                        <div class="auth-hero-footer">
+                            <p class="auth-hero-copyright">&copy; 2026 Finzo Banking Group. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Auth Component Container -->
+            <div class="auth-right-area">
+                <!-- Language Selector -->
+                <div class="auth-lang-selector" aria-label="Select Language">
+                    <span class="material-symbols-outlined text-[16px]">language</span>
+                    <span>EN</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                </div>
+                
+                <div class="auth-card-container">
+                    <!-- Mobile Logo -->
+                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                        <span class="material-symbols-outlined text-2xl">account_balance</span>
+                    </a>
+                    
+                    <!-- Page Header Component -->
+                    <div class="auth-page-header">
+                        <h1 class="auth-page-title">Account Recovery</h1>
+                        <p class="auth-page-subtitle">Enter your registered email address to receive a secure recovery link.</p>
+                    </div>
+
+                    <!-- Recovery Form Component -->
+                    <form data-action="forgot-password" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="" />
+                        
+                        <!-- Email Input Component -->
+                        <div class="fin-input-container">
+                            <label for="recovery-email" class="fin-label fin-label-required">Registered Email Address</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left">mail</span>
+                                <input type="email" id="recovery-email" name="email" class="fin-input has-icon-left" placeholder="name@example.com" required autocomplete="email" />
+                            </div>
+                            <span class="fin-error-text" role="alert">
+                                <span class="material-symbols-outlined">error</span> Valid registered email address is required.
+                            </span>
+                        </div>
+
+                        <!-- Buttons Group Component -->
+                        <div class="space-y-3 mt-6">
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <span>Send Recovery Link</span>
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            </button>
+                            
+                            <a href="login.html" class="btn btn-secondary btn-full">
+                                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                                <span>Return to Sign In</span>
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Security Notice Component -->
+                    <div class="auth-security-notice">
+                        <span class="material-symbols-outlined auth-security-notice-icon">mark_email_unread</span>
+                        <div class="auth-security-notice-text">
+                            <strong>Please note:</strong> Recovery links expire in 1 hour. If you did not request a password reset, you can safely ignore this.
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges Component -->
+                    <div class="trust-badge-group">
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Identity Protected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<?php
+$slot = ob_get_clean();
+require __DIR__ . '/../layouts/app.php';
+?>

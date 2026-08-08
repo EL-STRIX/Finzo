@@ -29,7 +29,7 @@ class InputSanitizationTest extends TestCase {
         $this->assertEquals("&quot; onmouseover=&quot;alert(1)&quot;", $clean);
     }
 
-    public function testCleanInputOnlyTrimsWhitespace() {
+    public function testCleanInputStripsTags() {
         $payloads = [
             'name' => '   BoldName   ',
             'details' => [
@@ -40,8 +40,8 @@ class InputSanitizationTest extends TestCase {
         $clean = $this->security->cleanInput($payloads);
 
         $this->assertEquals("BoldName", $clean['name']);
-        // Ensures input data isn't mangled on save
-        $this->assertEquals("<iframe src=\"javascript:alert(1)\"></iframe>", $clean['details']['bio']);
+        // Ensures HTML tags are aggressively stripped
+        $this->assertEquals("", $clean['details']['bio']);
     }
 
     public function testLeavesSafeDataIntact() {

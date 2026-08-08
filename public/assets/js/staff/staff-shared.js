@@ -27,8 +27,11 @@
     const saved = localStorage.getItem(STORAGE_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(saved);
 
-    $(function () {
-        $('#toggle-theme-btn').on('click', toggleTheme);
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.querySelector('#toggle-theme-btn');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleTheme);
+        }
     });
 })();
 
@@ -44,36 +47,69 @@ function updateClock() {
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
-    $('#live-clock').text(timeStr);
-    $('#live-date, #header-date').text(dateStr);
+    const el = (selector) => document.querySelector(selector);
+    const els = (selector) => document.querySelectorAll(selector);
+
+    if (el('#live-clock')) el('#live-clock').textContent = timeStr;
+    els('#live-date, #header-date').forEach(e => e.textContent = dateStr);
 }
 setInterval(updateClock, 1000);
-$(function() { updateClock(); });
+document.addEventListener('DOMContentLoaded', updateClock);
 
 // Global Events (Sidebar, Modals)
-$(function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Mobile Sidebar Toggle
-    $('#mobile-menu-btn').on('click', function () {
-        $('#admin-sidebar').addClass('mobile-open');
-        $('#sidebar-overlay').addClass('active');
-    });
-    $('#sidebar-overlay').on('click', function () {
-        $('#admin-sidebar').removeClass('mobile-open');
-        $('#sidebar-overlay').removeClass('active');
-    });
+    const mobileBtn = el('#mobile-menu-btn');
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', function () {
+            el('#admin-sidebar').classList.add('mobile-open');
+            el('#sidebar-overlay').classList.add('active');
+        });
+    }
+
+    const sidebarOverlay = el('#sidebar-overlay');
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function () {
+            el('#admin-sidebar').classList.remove('mobile-open');
+            el('#sidebar-overlay').classList.remove('active');
+        });
+    }
 
     // End Shift Modal
-    $('.end-shift-trigger').on('click', function () {
-        $('#modal-overlay').css('display', 'flex').removeClass('hidden').addClass('opacity-100');
-        $('#logout-modal').removeClass('hidden').css('display', 'block').addClass('scale-100');
+    els('.end-shift-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function () {
+            el('#modal-overlay').style.display = 'flex';
+            el('#modal-overlay').classList.remove('hidden');
+            el('#modal-overlay').classList.add('opacity-100');
+            el('#logout-modal').classList.remove('hidden');
+            el('#logout-modal').style.display = 'block';
+            el('#logout-modal').classList.add('scale-100');
+        });
     });
 
-    $('.modal-close, #modal-overlay').on('click', function (e) {
-        if (e.target === this || $(this).hasClass('modal-close')) {
-            $('#modal-overlay').removeClass('opacity-100').addClass('hidden').css('display', 'none');
-            $('#logout-modal').removeClass('scale-100').addClass('hidden');
-        }
+    els('.modal-close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function () {
+            el('#modal-overlay').classList.remove('opacity-100');
+            el('#modal-overlay').classList.add('hidden');
+            el('#modal-overlay').style.display = 'none';
+            el('#logout-modal').classList.remove('scale-100');
+            el('#logout-modal').classList.add('hidden');
+        });
     });
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                el('#modal-overlay').classList.remove('opacity-100');
+                el('#modal-overlay').classList.add('hidden');
+                el('#modal-overlay').style.display = 'none';
+                if (el('#logout-modal')) {
+                    el('#logout-modal').classList.remove('scale-100');
+                    el('#logout-modal').classList.add('hidden');
+                }
+            }
+        });
+    }
 
     // Component Loaded Event (for active nav highlighting)
     document.addEventListener('componentsLoaded', function() {
@@ -100,25 +136,14 @@ $(function () {
         }
         
         // Re-bind sidebar toggle
-        $('#mobile-menu-btn').on('click', function () {
-            $('#admin-sidebar').addClass('mobile-open');
-            $('#sidebar-overlay').addClass('active');
-        });
-
-        // Re-bind theme toggle
-        $('#toggle-theme-btn').on('click', function() {
-            const current = localStorage.getItem('finzo-staff-theme') || 'light';
-            const html = document.documentElement;
-            const theme = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', theme);
-            html.classList.toggle('dark', theme === 'dark');
-            localStorage.setItem('finzo-staff-theme', theme);
-    
-            const icon = document.getElementById('theme-icon');
-            const label = document.getElementById('theme-label');
-            if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-            if (label) label.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
-        });
+        // Deprecated mobile button bindings left in legacy staff-shared
+        // These are now handled in the global listener above, leaving empty block for legacy compat
+        const themeBtn2 = document.querySelector('#toggle-theme-btn');
+        if (themeBtn2) {
+            themeBtn2.addEventListener('click', function() {
+                // Handled globally
+            });
+        }
 
         // Populate staff info if loaded
         if (StaffState && StaffState.loaded) {
@@ -138,9 +163,9 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const data = await window.api.get('/staff/dashboard.php');
+        const data = await window.api.get('/staff-portal/dashboard');
         if (data.status === 401 || data.status === 403) {
-            window.location.href = '/Finzo/resources/views/auth/staff-login.html';
+            window.location.href = '/Finzo/public/views/auth/staff-login.html';
             return null;
         }
         if (data.success && data.staff) {
@@ -158,15 +183,20 @@ async function fetchStaffSession() {
             }
             
             // Populate basic DOM if present
-            $('.staff-name-display').text(StaffState.name);
-            $('.staff-id-display').text(StaffState.staff_id);
-            if (data.staff.profile_photo) {
-                const src = data.staff.profile_photo.startsWith('http') ? data.staff.profile_photo : '/Finzo/public/assets/' + data.staff.profile_photo;
-                $('.staff-initials-display').html(`<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`);
+            document.querySelectorAll('.staff-name-display').forEach(el => el.textContent = StaffState.name);
+            document.querySelectorAll('.staff-id-display').forEach(el => el.textContent = StaffState.staff_id);
+
+            const src = StaffState.profile_picture ? (StaffState.profile_picture.startsWith('/') ? '/Finzo' + StaffState.profile_picture : '/Finzo/' + StaffState.profile_picture) : null;
+            if (src) {
+                document.querySelectorAll('.staff-initials-display').forEach(el => {
+                    el.innerHTML = `<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`;
+                });
             } else {
-                $('.staff-initials-display').text(StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());
+                document.querySelectorAll('.staff-initials-display').forEach(el => {
+                    el.textContent = StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+                });
             }
-            $('.staff-branch-display').text(StaffState.branch_name);
+            document.querySelectorAll('.staff-branch-display').forEach(el => el.textContent = StaffState.branch_name);
             
             return data;
         }
@@ -176,3 +206,4 @@ async function fetchStaffSession() {
     }
     return null;
 }
+

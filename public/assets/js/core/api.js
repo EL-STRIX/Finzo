@@ -11,7 +11,7 @@
     })();
     const _scriptSrc = _scriptEl ? _scriptEl.src : '';
     const _baseMatch = _scriptSrc.match(/^(https?:\/\/[^/]+)(\/.*?)\/assets\/js\/.*/);
-    const API_BASE = (_baseMatch ? _baseMatch[2] : '') + '/app/Controllers';
+    const API_BASE = (_baseMatch ? _baseMatch[2] : '') + '/api/v1';
 
     /**
      * Core API caller. Handles JSON and FormData.
@@ -93,6 +93,7 @@
             return apiCall(url, { method: 'GET' });
         },
         post: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'POST', body, isForm }),
+        patch: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'PATCH', body, isForm }),
         upload: (endpoint, formData) => apiCall(endpoint, { method: 'POST', body: formData, isForm: true }),
         
         // Utils

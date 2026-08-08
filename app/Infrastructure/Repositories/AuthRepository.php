@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repositories;
 
-class AuthRepository extends BaseRepository
+class AuthRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AuthRepositoryInterface
 {
     // =====================================================
     // USER METHODS
@@ -243,8 +243,5 @@ class AuthRepository extends BaseRepository
         return $this->db->rollBack();
     }
 
-    public function getDb(): \PDO
-    {
-        return $this->db;
-    }
+
 }

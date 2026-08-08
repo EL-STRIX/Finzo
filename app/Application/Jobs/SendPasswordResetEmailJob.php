@@ -16,6 +16,6 @@ class SendPasswordResetEmailJob implements JobInterface
     public function handle(): void
     {
         // Implement SendPasswordResetEmailJob logic
-        error_log('Handling ' . self::class . ' with data: ' . json_encode($this->data));
+        \App\Shared\Core\Logging\Logger::getInstance()->info('Handling ' . self::class . ' with data: ' . json_encode($this->data));
     }
 }

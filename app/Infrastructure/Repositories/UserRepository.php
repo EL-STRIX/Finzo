@@ -4,12 +4,9 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class UserRepository extends BaseRepository
+class UserRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\UserRepositoryInterface
 {
-    public function getDb(): PDO
-    {
-        return $this->db;
-    }
+
 
     public function fetchAccountLookup(string $accountNumber)
     {
@@ -48,6 +45,16 @@ class UserRepository extends BaseRepository
     {
         $stmt = $this->db->prepare("UPDATE accounts SET daily_limit = ? WHERE id = ?");
         return $stmt->execute([$daily_limit, $account_id]);
+    }
+
+    public function checkIdNumberExists(string $idType, string $idNumber, int $excludeUserId = 0): bool
+    {
+        $crypto = new \App\Shared\Security\EncryptionService();
+        $encryptedId = $crypto->encryptSearchable($idNumber);
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE id_type = ? AND id_number = ? AND id != ?");
+        $stmt->execute([$idType, $encryptedId, $excludeUserId]);
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     public function fetchAccountDetails(int $userId)
@@ -239,22 +246,19 @@ class UserRepository extends BaseRepository
     public function getRecentTransactions(int $account_id)
     {
         $stmt = $this->db->prepare("
-            (SELECT
+            SELECT
                 t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
-                CASE WHEN t.type = 'transfer' THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id) ELSE '' END as counterparty_name
+                CASE 
+                    WHEN t.type = ? AND t.from_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id) 
+                    WHEN t.type = ? AND t.to_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id) 
+                    ELSE '' 
+                END as counterparty_name
             FROM transactions t
-            WHERE t.from_account_id = ?
-            ORDER BY t.created_at DESC LIMIT 5)
-            UNION ALL
-            (SELECT
-                t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
-                CASE WHEN t.type = 'transfer' THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id) ELSE '' END as counterparty_name
-            FROM transactions t
-            WHERE t.to_account_id = ?
-            ORDER BY t.created_at DESC LIMIT 5)
-            ORDER BY created_at DESC LIMIT 5
+            WHERE t.from_account_id = ? OR t.to_account_id = ?
+            ORDER BY t.created_at DESC LIMIT 5
         ");
-        $stmt->execute([$account_id, $account_id]);
+        $type = \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value;
+        $stmt->execute([$type, $account_id, $type, $account_id, $account_id, $account_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -271,11 +275,11 @@ class UserRepository extends BaseRepository
             SELECT COALESCE(SUM(amount), 0) as total
             FROM transactions
             WHERE to_account_id = ?
-                AND status = 'completed'
+                AND status = ?
                 AND MONTH(created_at) = MONTH(CURDATE())
                 AND YEAR(created_at) = YEAR(CURDATE())
         ");
-        $stmt->execute([$account_id]);
+        $stmt->execute([$account_id, \App\Domain\Enums\AccountStatusEnum::COMPLETED->value]);
         return $stmt->fetchColumn();
     }
 
@@ -285,12 +289,12 @@ class UserRepository extends BaseRepository
             SELECT COALESCE(SUM(amount), 0) as total
             FROM transactions
             WHERE from_account_id = ?
-                AND status = 'completed'
+                AND status = ?
                 AND MONTH(created_at) = MONTH(CURDATE())
                 AND YEAR(created_at) = YEAR(CURDATE())
                 AND description != 'Account Restore Charge'
         ");
-        $stmt->execute([$account_id]);
+        $stmt->execute([$account_id, \App\Domain\Enums\AccountStatusEnum::COMPLETED->value]);
         return $stmt->fetchColumn();
     }
 
@@ -372,7 +376,14 @@ class UserRepository extends BaseRepository
             WHERE id = ? AND is_deleted = 0
         ");
         $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($row && !empty($row['id_number'])) {
+            $crypto = new \App\Shared\Security\EncryptionService();
+            $row['id_number'] = $crypto->decrypt($row['id_number']);
+        }
+        
+        return $row;
     }
 
     public function checkEmailExists(string $email, int $exclude_user_id)
@@ -437,10 +448,10 @@ class UserRepository extends BaseRepository
             LEFT JOIN users tu ON ta.user_id = tu.customer_id
             WHERE (t.from_account_id = ? OR t.to_account_id = ?)
                 AND t.status = 'completed'
-                AND DATE(t.created_at) BETWEEN ? AND ?
+                AND t.created_at BETWEEN ? AND ?
             ORDER BY t.created_at ASC
         ");
-        $stmt->execute([$account_id, $account_id, $fromDate, $toDate]);
+        $stmt->execute([$account_id, $account_id, $fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

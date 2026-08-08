@@ -4,7 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class AdminManagementRepository extends BaseRepository
+class AdminManagementRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface
 {
     public function getAdminByEmail(string $email)
     {

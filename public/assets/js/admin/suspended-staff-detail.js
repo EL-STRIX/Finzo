@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetail() {
         try {
-            const response = await window.api.get(`/admin/suspended-staff-detail.php?id=${staffId}`);
+            const response = await window.api.get(`/staff/${staffId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data.staff);
@@ -121,11 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true);
         
         try {
-            const response = await window.api.post('/admin/staff-action.php', {
-                staff_id: staffId,
-                action: 'reinstate',
-                password: password
-            });
+            const response = await window.api.patch('/staff/' + staffId, { action: 'reinstate', password: password });
 
             if (response.success || response.status === 'success') {
                 window.showToast('Staff account reinstated. Redirecting...', 'success');

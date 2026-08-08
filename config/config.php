@@ -38,6 +38,7 @@ date_default_timezone_set('Asia/Kolkata');
 define('APP_NAME', 'Finzo');
 define('APP_URL', getenv('APP_URL') ?: 'http://localhost/Finzo');
 define('APP_VERSION', '1.0');
+define('APP_KEY', getenv('APP_KEY') ?: ''); // Must be exactly 32 bytes base64 encoded for AES-256
 
 // =====================================================
 // DATABASE CREDENTIALS
@@ -51,6 +52,16 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 // SESSION CONFIGURATION
 // =====================================================
 define('SESSION_LIFETIME', 86400); // 24 hours
+define('SESSION_DRIVER', getenv('SESSION_DRIVER') ?: 'file');
+
+// =====================================================
+// CACHE & REDIS CONFIGURATION (Phase 7.3 Scalability)
+// =====================================================
+define('CACHE_DRIVER', getenv('CACHE_DRIVER') ?: 'file');
+define('REDIS_HOST', getenv('REDIS_HOST') ?: '127.0.0.1');
+define('REDIS_PASSWORD', getenv('REDIS_PASSWORD') ?: null);
+define('REDIS_PORT', getenv('REDIS_PORT') ?: 6379);
+define('QUEUE_CONNECTION', getenv('QUEUE_CONNECTION') ?: 'sync');
 
 if (!defined('FINZO_TESTING')) {
     \App\Shared\Security\SessionManager::start();

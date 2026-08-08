@@ -5,29 +5,34 @@ namespace App\Infrastructure\Repositories;
 use PDO;
 use PDOException;
 
-class AdminOperationsRepository extends BaseRepository
+class AdminOperationsRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AdminOperationsRepositoryInterface
 {
     // ---------------------------------------------------------
     // Audit Log Methods
     // ---------------------------------------------------------
-    public function countAuditLogs(string $whereSql, array $params): int
+    public function countAuditLogs(array $filters): int
     {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return (int)$this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getAuditLogs(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getAuditLogs(array $filters, int $perPage, int $offset) {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchAll("
             SELECT al.id, al.action_type, al.entity_id, al.entity_type,
                    al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
                    al.actor_id as actor_display_id,
                    al.actor_role as actor_specific_role,
-                   CASE 
-                       WHEN al.entity_type = 'user' THEN COALESCE((SELECT customer_id FROM users WHERE id = al.entity_id OR customer_id = al.entity_id LIMIT 1), al.entity_id)
-                       WHEN al.entity_type = 'staff' THEN COALESCE((SELECT staff_id FROM staff WHERE id = al.entity_id OR staff_id = al.entity_id LIMIT 1), al.entity_id)
-                       WHEN al.entity_type = 'admin' THEN COALESCE((SELECT admin_id FROM admin_users WHERE id = al.entity_id OR admin_id = al.entity_id LIMIT 1), al.entity_id)
-                       ELSE al.entity_id 
-                   END as entity_display_id
+                   COALESCE(
+                       CASE WHEN al.entity_type = 'user' THEN u.customer_id ELSE NULL END,
+                       CASE WHEN al.entity_type = 'staff' THEN s.staff_id ELSE NULL END,
+                       CASE WHEN al.entity_type = 'admin' THEN a.admin_id ELSE NULL END,
+                       al.entity_id
+                   ) as entity_display_id
             FROM audit_log al
+            LEFT JOIN users u ON al.entity_type = 'user' AND (u.id = al.entity_id OR u.customer_id = al.entity_id)
+            LEFT JOIN staff s ON al.entity_type = 'staff' AND (s.id = al.entity_id OR s.staff_id = al.entity_id)
+            LEFT JOIN admin_users a ON al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)
             WHERE {$whereSql}
             ORDER BY al.created_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -39,7 +44,8 @@ class AdminOperationsRepository extends BaseRepository
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getAuditLogStats(string $whereSql, array $params) {
+    public function getAuditLogStats(array $filters) {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchOne("
             SELECT 
                 SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
@@ -48,6 +54,48 @@ class AdminOperationsRepository extends BaseRepository
             FROM audit_log al
             WHERE {$whereSql}
         ", $params);
+    }
+
+    private function buildAuditLogFilters(array $filters): array
+    {
+        $where_clauses = ["1=1"];
+        $params = [];
+
+        if (isset($filters['action_type']) && $filters['action_type'] !== 'all') {
+            $where_clauses[] = "al.action_type LIKE ?";
+            $params[] = "%{$filters['action_type']}%";
+        }
+
+        if (isset($filters['actor_role']) && $filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
+            if ($filters['actor_role'] === 'admin') {
+                $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
+            } elseif ($filters['actor_role'] === 'staff') {
+                $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
+            } elseif ($filters['actor_role'] === 'system') {
+                $where_clauses[] = "al.actor_role IN ('System', 'system')";
+            } elseif ($filters['actor_role'] === 'user') {
+                $where_clauses[] = "al.actor_role IN ('User', 'user')";
+            }
+        }
+
+        if (!empty($filters['from_date'])) {
+            $where_clauses[] = "DATE(al.created_at) >= ?";
+            $params[] = $filters['from_date'];
+        }
+
+        if (!empty($filters['to_date'])) {
+            $where_clauses[] = "DATE(al.created_at) <= ?";
+            $params[] = $filters['to_date'];
+        }
+
+        if (!empty($filters['search'])) {
+            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
+            $s = "%{$filters['search']}%";
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        return [implode(' AND ', $where_clauses), $params];
     }
 
     // ---------------------------------------------------------
@@ -67,7 +115,7 @@ class AdminOperationsRepository extends BaseRepository
             WHERE is_deleted = 0
             ORDER BY created_at DESC
             LIMIT 10
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     public function getMonthlyChartDataRow(string $monthDate) {
@@ -123,7 +171,7 @@ class AdminOperationsRepository extends BaseRepository
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 1
-        ", \App\Domain\Models\Admin::class) ?: null;
+        ", []) ?: null;
     }
 
     public function getInterestHistory() {
@@ -134,7 +182,7 @@ class AdminOperationsRepository extends BaseRepository
             JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
             ORDER BY ir.created_at DESC
             LIMIT 10
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void
@@ -151,7 +199,7 @@ class AdminOperationsRepository extends BaseRepository
     }
 
     public function getActiveSavingsAccounts() {
-        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", \App\Domain\Models\Admin::class);
+        return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", []);
     }
 
     public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
@@ -175,6 +223,22 @@ class AdminOperationsRepository extends BaseRepository
         ", [$userId, $type, $title, $message]);
     }
 
+    public function getTransactionForReversal(string $txnId)
+    {
+        return $this->fetchOne("SELECT * FROM transactions WHERE txn_id = ? FOR UPDATE", [$txnId]);
+    }
+
+    public function getAccountForUpdate(int $accountId)
+    {
+        return $this->fetchOne("
+            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id
+            FROM accounts a
+            JOIN users u ON a.user_id = u.customer_id
+            WHERE a.id = ? AND a.status = 'active'
+            FOR UPDATE
+        ", [$accountId]);
+    }
+
     public function getExportUsers(string $whereSql, array $params) {
         return $this->fetchAll("
             SELECT
@@ -183,6 +247,27 @@ class AdminOperationsRepository extends BaseRepository
             WHERE {$whereSql}
             ORDER BY u.created_at DESC
         ", $params);
+    }
+
+    public function exportUsersGenerator(string $whereSql, array $params): \Generator {
+        $sql = "
+            SELECT
+                u.customer_id as 'Customer ID',
+                u.full_name as 'Full Name',
+                u.email as 'Email',
+                u.phone as 'Phone',
+                u.status as 'Status',
+                u.created_at as 'Created At',
+                u.last_login_at as 'Last Login'
+            FROM users u
+            WHERE {$whereSql}
+            ORDER BY u.created_at DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $row;
+        }
     }
 
     // ---------------------------------------------------------
@@ -269,7 +354,7 @@ class AdminOperationsRepository extends BaseRepository
                 SUM(CASE WHEN status = 'rejected' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
                 SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
             FROM users WHERE is_deleted = 0
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     // ---------------------------------------------------------
@@ -462,6 +547,30 @@ class AdminOperationsRepository extends BaseRepository
         return $this->fetchAll($sql, $params);
     }
 
+    public function exportTransactionsGenerator(string $baseSql, array $params): \Generator {
+        $sql = "
+            SELECT
+                t.txn_id as 'Transaction ID',
+                COALESCE(fa.account_no, 'N/A') as 'From Account',
+                COALESCE(fu.full_name, 'N/A') as 'From Name',
+                COALESCE(ta.account_no, 'N/A') as 'To Account',
+                COALESCE(tu.full_name, 'N/A') as 'To Name',
+                t.type as 'Type',
+                t.amount as 'Amount',
+                t.status as 'Status',
+                t.description as 'Description',
+                COALESCE(s.staff_id, 'N/A') as 'Processed By',
+                t.created_at as 'Date'
+            {$baseSql}
+            ORDER BY t.created_at DESC, t.id DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $row;
+        }
+    }
+
     // ---------------------------------------------------------
     // Users Methods
     // ---------------------------------------------------------
@@ -491,7 +600,7 @@ class AdminOperationsRepository extends BaseRepository
                 SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
                 SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as soft_deleted
             FROM users
-        ", \App\Domain\Models\Admin::class);
+        ", []);
     }
 
     // ---------------------------------------------------------
@@ -504,6 +613,10 @@ class AdminOperationsRepository extends BaseRepository
                    id_type, id_number, kyc_submitted_at, created_at, updated_at
             FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
         ", [$userId], \App\Domain\Models\Admin::class);
+    }
+
+    public function getSuspendedUserProfile(int $userId) {
+        return $this->getSuspendedUser($userId);
     }
 
     public function getSuspendedUserAccount(string $customerId)
@@ -635,15 +748,12 @@ class AdminOperationsRepository extends BaseRepository
 
     public function hardDeleteUserAccount(int $userId, string $customerId)
     {
-        $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
-        $stmt->execute([$customerId]);
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
+        throw new \App\Shared\Core\Exceptions\BusinessRuleException("Hard deletion of users and accounts is strictly prohibited by data retention policies. Use soft deletion.");
     }
 
     public function deleteAccountOnly(string $customerId)
     {
-        $stmt = $this->db->prepare("DELETE FROM accounts WHERE user_id = ?");
+        $stmt = $this->db->prepare("UPDATE accounts SET status = 'closed', updated_at = NOW() WHERE user_id = ?");
         $stmt->execute([$customerId]);
     }
 
@@ -701,11 +811,19 @@ class AdminOperationsRepository extends BaseRepository
 
     public function getDashboardStats(): array
     {
+        $active_status = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        $pending_status = \App\Domain\Enums\AccountStatusEnum::PENDING->value;
+        $under_review_status = \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value;
+        $suspended_status = \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value;
+
+        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
+
         return [
             'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
-            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'active' AND is_deleted = 0"),
-            'pending_users'      => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
-            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = 'suspended' AND is_deleted = 0"),
+            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
+            'pending_users'      => $pending_users,
+            'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
+            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$suspended_status}' AND is_deleted = 0"),
             'total_staff'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM staff"),
             'total_branches'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM branches")
         ];
@@ -713,43 +831,58 @@ class AdminOperationsRepository extends BaseRepository
 
     public function getCachedDashboardStats(): array
     {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $transfer = \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value;
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+
         return [
             'transactions_today' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
             'transactions_month' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'deposit' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'withdrawal' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'transfer' AND status = 'completed' AND DATE(created_at) = CURDATE()"),
-            'pending_approvals'  => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0"),
+            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
+            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
+            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
             'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
-            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = 'active'"),
-            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = 'active'"),
-            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'"),
+            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = '{$active}'"),
+            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = '{$active}'"),
+            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'"),
             'soft_deleted_users' => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
         ];
     }
 
     public function getTotalInterestCredited(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed'");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'");
     }
 
     public function getEarningAccountsCount(): int
     {
-        return (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = 'active'");
+        $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        return (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE account_type = 'savings' AND status = '{$active}'");
     }
 
     public function getThisMonthInterest(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
     }
 
     public function getLastMonthInterest(): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
     }
 
     public function getHistoricalMonthInterest(int $monthsAgo): float
     {
-        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = 'interest_credit' AND status = 'completed' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
+        $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+        return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
     }
 }

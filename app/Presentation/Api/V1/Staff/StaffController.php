@@ -13,9 +13,9 @@ class StaffController
 
     private StaffService $service;
 
-    public function __construct(StaffService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\StaffServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
     }
 
@@ -53,36 +53,11 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
-
         $staffId = $_SESSION['staff_id'];
-        $currentPassword  = $_POST['current_password'] ?? '';
-        $newPassword      = $_POST['new_password'] ?? '';
-        $confirmPassword  = $_POST['confirm_password'] ?? '';
-
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($currentPassword)) {
-            $errors['current_password'] = 'Current password is required';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($newPassword)) {
-            $errors['new_password'] = 'New password is required';
-        }
-        if (\App\Shared\Core\Validation\Validator::isEmpty($confirmPassword)) {
-            $errors['confirm_password'] = 'Please confirm your new password';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
-
-        $strength = validate_password_strength($newPassword);
-        if (!$strength['valid']) {
-            json_response(['success' => false, 'errors' => ['new_password' => $strength['message']]], 422);
-        }
-
-        if ($newPassword !== $confirmPassword) {
-            json_response(['success' => false, 'errors' => ['confirm_password' => 'Passwords do not match']], 422);
-        }
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validatePasswordUpdate($_POST);
+        $currentPassword = $validated['current_password'];
+        $newPassword = $validated['new_password'];
 
         try {
             $this->service->changePassword($staffId, $currentPassword, $newPassword);
@@ -90,18 +65,11 @@ class StaffController
                 'success' => true,
                 'message' => 'Password changed successfully'
             ]);
-        } catch (Exception $e) {
-            $code = $e->getCode() ?: 500;
-            if ($code === 401) {
-                json_response(['success' => false, 'errors' => ['current_password' => $e->getMessage()]], 401);
-            }
-            if ($code === 404) {
-                json_response(['success' => false, 'message' => $e->getMessage()], 404);
-            }
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff change password error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'Failed to change password. Please try again.'], 500);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
+
 
     public function dashboard()
     {
@@ -137,21 +105,12 @@ class StaffController
 
 
         $staffId = $_SESSION['staff_id'];
-        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
-        $amount         = floatval($_POST['amount'] ?? 0);
-        $reference_note = $this->security->cleanInput($_POST['reference_note'] ?? '');
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validateDeposit($_POST);
+        $accountNumber = $validated['account_no'];
+        $amount = $validated['amount'];
+        $reference_note = $validated['reference_note'];
 
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
-            $errors['account_no'] = 'Account number is required';
-        }
-        if ($amount < 100) {
-            $errors['amount'] = 'Minimum deposit amount is ₹100';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
 
         try {
             $data = $this->service->processDeposit($staffId, $accountNumber, $amount, $reference_note);
@@ -163,15 +122,10 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
             ]);
-        } catch (Exception $e) {
-            $code = $e->getCode() ?: 500;
-            if ($code === 404 || $code === 403) {
-                json_response(['success' => false, 'message' => $e->getMessage()], $code);
-            }
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff deposit error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'Failed to process deposit. Please try again.'], 500);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 
@@ -207,9 +161,8 @@ class StaffController
                 'current_page' => $filters['page'],
                 'per_page'     => $filters['per_page']
             ]);
-        } catch (Exception $e) {
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff history error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'Failed to load transaction history'], 500);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 
@@ -229,10 +182,10 @@ class StaffController
 
             $customer_name = '';
             $accountNumber    = '';
-            if ($transaction['type'] === 'deposit') {
+            if ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value) {
                 $customer_name = $transaction['to_name'];
                 $accountNumber    = $transaction['to_account_no'];
-            } elseif ($transaction['type'] === 'withdrawal') {
+            } elseif ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                 $customer_name = $transaction['from_name'];
                 $accountNumber    = $transaction['from_account_no'];
             }
@@ -259,12 +212,8 @@ class StaffController
                     'branch_name'    => $transaction['branch_name']
                 ]
             ]);
-        } catch (Exception $e) {
-            if ($e->getCode() === 404) {
-                json_response(['success' => false, 'message' => $e->getMessage()], 404);
-            }
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff receipt error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'Failed to load transaction receipt'], 500);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 
@@ -282,46 +231,22 @@ class StaffController
                     'address'   => $data['address'],
                     'documents' => $data['documents']
                 ]);
-            } catch (Exception $e) {
-                if ($e->getCode() === 404) {
-                    json_response(['success' => false, 'message' => $e->getMessage()], 404);
-                }
-                \App\Shared\Core\Logging\Logger::getInstance()->error('Staff profile fetch error: ', ['context' => $e->getMessage()]);
-                json_response(['success' => false, 'message' => 'Failed to load profile data'], 500);
+            } catch (\Exception $e) {
+                throw $e;
             }
         }
 
         if ($method === 'POST') {
 
 
-            $phone                   = $this->security->cleanInput($_POST['phone'] ?? '');
-            $emergency_contact_name  = $this->security->cleanInput($_POST['emergency_contact_name'] ?? '');
-            $emergency_contact_phone = $this->security->cleanInput($_POST['emergency_contact_phone'] ?? '');
+            $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
+            
+            $validator = new \App\Presentation\Validators\StaffValidator();
+            $validated = $validator->validateProfileUpdate($_POST, $file);
+            $phone = $validated['phone'];
+            $emergency_contact_name = $validated['emergency_contact_name'];
+            $emergency_contact_phone = $validated['emergency_contact_phone'];
 
-            $errors = [];
-            if ($phone !== '' && !validate_phone($phone)) {
-                $errors['phone'] = 'Enter a valid 10-digit mobile number';
-            }
-            if ($emergency_contact_phone !== '' && !validate_phone($emergency_contact_phone)) {
-                $errors['emergency_contact_phone'] = 'Enter a valid 10-digit emergency contact number';
-            }
-
-            $file = null;
-            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-                $file = $_FILES['profile_photo'];
-                $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                $mimeType = $finfo->file($file['tmp_name']);
-                if (!in_array($mimeType, ALLOWED_IMAGE_TYPES)) {
-                    $errors['profile_photo'] = 'Only JPEG and PNG images are allowed';
-                }
-                if ($file['size'] > MAX_UPLOAD_SIZE) {
-                    $errors['profile_photo'] = 'Profile photo must be under 5 MB';
-                }
-            }
-
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-                json_response(['success' => false, 'errors' => $errors], 422);
-            }
 
             try {
                 $updated = $this->service->updateProfile($staffId, [
@@ -335,12 +260,8 @@ class StaffController
                     'message' => 'Profile updated successfully',
                     'staff'   => $updated
                 ]);
-            } catch (Exception $e) {
-                if ($e->getCode() === 422) {
-                    json_response(['success' => false, 'message' => $e->getMessage()], 422);
-                }
-                \App\Shared\Core\Logging\Logger::getInstance()->error('Staff profile update error: ', ['context' => $e->getMessage()]);
-                json_response(['success' => false, 'message' => 'Failed to update profile'], 500);
+            } catch (\Exception $e) {
+                throw $e;
             }
         }
 
@@ -356,21 +277,12 @@ class StaffController
 
 
         $staffId = $_SESSION['staff_id'];
-        $accountNumber     = $this->security->cleanInput($_POST['account_no'] ?? '');
-        $amount         = floatval($_POST['amount'] ?? 0);
-        $identity_notes = $this->security->cleanInput($_POST['identity_notes'] ?? '');
+        $validator = new \App\Presentation\Validators\StaffValidator();
+        $validated = $validator->validateWithdrawal($_POST);
+        $accountNumber = $validated['account_no'];
+        $amount = $validated['amount'];
+        $identity_notes = $validated['identity_notes'];
 
-        $errors = [];
-        if (\App\Shared\Core\Validation\Validator::isEmpty($accountNumber)) {
-            $errors['account_no'] = 'Account number is required';
-        }
-        if ($amount <= 0) {
-            $errors['amount'] = 'Amount must be greater than zero';
-        }
-
-        if (!\App\Shared\Core\Validation\Validator::isEmpty($errors)) {
-            json_response(['success' => false, 'errors' => $errors], 422);
-        }
 
         try {
             $data = $this->service->processWithdrawal($staffId, $accountNumber, $amount, $identity_notes);
@@ -382,15 +294,42 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
             ]);
-        } catch (Exception $e) {
-            $code = $e->getCode() ?: 500;
-            if (in_array($code, [403, 404, 422])) {
-                json_response(['success' => false, 'message' => $e->getMessage()], $code);
-            }
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Staff withdrawal error: ', ['context' => $e->getMessage()]);
-            json_response(['success' => false, 'message' => 'Failed to process withdrawal. Please try again.'], 500);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function clockIn()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $staffId = $_SESSION['staff_id'];
+        try {
+            $this->service->clockIn($staffId);
+            json_response(['success' => true, 'message' => 'Successfully clocked in']);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function clockOut()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $staffId = $_SESSION['staff_id'];
+        $notes = $this->security->cleanInput($_POST['notes'] ?? '');
+        
+        try {
+            $this->service->clockOut($staffId, $notes);
+            json_response(['success' => true, 'message' => 'Successfully clocked out']);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 }

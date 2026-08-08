@@ -119,7 +119,7 @@
      */
     async function loadAdminProfile() {
         try {
-            const response = await window.api.get('/admin/get-admin-profile.php');
+            const response = await window.api.get('/admins/profile');
             if (response.success) {
                 const admin = response.profile;
                 currentAdminRole = admin.admin_role;
@@ -289,7 +289,7 @@
 
     async function loadLockedAdmins() {
         try {
-            const res = await window.api.get('/admin/get-locked-admins.php');
+            const res = await window.api.get('/admins/locked');
             if (!res.success || res.total === 0) {
                 document.getElementById('locked-admins-container').classList.add('hidden');
                 return;
@@ -436,7 +436,7 @@
     async function loadAdminList() {
 
         try {
-            const res = await window.api.get('/admin/get-admins.php');
+            const res = await window.api.get('/admins');
             if (res.success) {
                 allAdmins = res.admins || [];
                 document.getElementById('management-count-badge').textContent = `${res.total} Admins`;
@@ -475,7 +475,7 @@
                     };
                     reader.readAsDataURL(file);
 
-                    const response = await window.api.upload('/admin/upload-admin-photo.php', formData);
+                    const response = await window.api.upload('/admins/profile/photo', formData);
                     if (response.success) {
                         window.portal.showToast('Profile photo updated', 'success');
                         if (window.AdminPortal) window.AdminPortal.init();
@@ -568,7 +568,7 @@
 
             try {
                 if (btn) window.api.setButtonLoading(btn, true, 'Updating...');
-                const res = await window.api.post('/admin/update-admin-profile.php', {
+                const res = await window.api.post('/admins/profile', {
                     current_password: curr, new_password: nw, confirm_new_password: conf
                 });
                 if (res.success) {
@@ -611,7 +611,7 @@
 
             try {
                 if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
-                const res = await window.api.post('/admin/update-admin-profile.php', payload);
+                const res = await window.api.post('/admins/profile', payload);
                 if (res.success) {
                     window.portal.showToast(res.message, 'success');
                     const aField = document.getElementById('profile-seq-a-input');
@@ -629,7 +629,7 @@
 
         toggle2FA: async (enabled) => {
             try {
-                const res = await window.api.post('/admin/update-admin-profile.php', {
+                const res = await window.api.post('/admins/profile', {
                     two_fa_enabled: enabled ? 1 : 0
                 });
                 if (res.success) {
@@ -697,7 +697,7 @@
 
                 // Fetch prospective Admin ID
                 try {
-                    const res = await window.api.get('/admin/get-next-admin-id.php');
+                    const res = await window.api.get('/admins/next-id');
                     if (res.success) {
                         document.getElementById('add-admin-id').value = res.next_id;
                     }
@@ -765,7 +765,7 @@
             }
 
             try {
-                const response = await window.api.upload('/admin/add-admin.php', formData);
+                const response = await window.api.upload('/admins', formData);
                 if (response.success) {
                     window.AdminProfile.closeAddModal();
 
@@ -869,7 +869,7 @@
             if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
 
             try {
-                const res = await window.api.post('/admin/save-security-question.php', {
+                const res = await window.api.post('/admins/profile/security', {
                     security_question: question,
                     security_answer: answer,
                     current_password: currPw
@@ -930,7 +930,7 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Unlocking...';
 
             try {
-                const res = await window.api.post('/admin/unlock-admin-account.php', {
+                const res = await window.api.post('/admins/unlock', {
                     target_admin_id: pendingUnlockAdminId
                 });
                 window.AdminProfile.closeUnlockConfirm();

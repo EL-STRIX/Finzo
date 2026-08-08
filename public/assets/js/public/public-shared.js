@@ -78,9 +78,9 @@ $(document).ready(function() {
     $(document).on('click', '#terminal-link-btn', function(e) {
         e.preventDefault();
         if (window.isAuthenticated()) {
-            window.location.href = '/Finzo/resources/views/user/dashboard.html';
+            window.location.href = '/Finzo/public/views/user/dashboard.html';
         } else {
-            window.location.href = '/Finzo/resources/views/auth/login.html';
+            window.location.href = '/Finzo/public/views/auth/login.html';
         }
     });
 
@@ -223,66 +223,77 @@ $(document).ready(function() {
     }
 
     // Smooth Scroll for anchor links
-    $(document).on('click', 'a[href^="#"]', function(e) {
-        const targetId = $(this).attr('href');
-        if (targetId === '#' || targetId === '') return;
-        
-        const target = $(targetId);
-        if (target.length) {
-            e.preventDefault();
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#' || targetId === '') return;
             
-            isScrollingProgrammatically = true;
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                isScrollingProgrammatically = true;
 
-            // Remove active class from all links and add to clicked link
-            $('.nav-link').removeClass('nav-link-active');
-            $(this).addClass('nav-link-active');
+                // Remove active class from all links and add to clicked link
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('nav-link-active'));
+                this.classList.add('nav-link-active');
 
-            const navbarHeight = $('nav').outerHeight() || 80;
-            $('html, body').stop().animate({
-                scrollTop: target.offset().top - navbarHeight + 10 // Slight offset for better vision
-            }, 800, () => {
-                isScrollingProgrammatically = false;
-            });
-        }
+                const nav = document.querySelector('nav');
+                const navbarHeight = nav ? nav.offsetHeight : 80;
+                
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight + 10;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Reset flag after expected scroll time
+                setTimeout(() => {
+                    isScrollingProgrammatically = false;
+                }, 800);
+            }
+        });
     });
 
     // --- NEW: Scrollspy (Underline follows page view) ---
     let isScrollingProgrammatically = false;
 
     function initScrollspy() {
-        const navLinks = $('.nav-link');
-        const navbarHeight = $('nav').outerHeight() || 80;
+        const navLinks = document.querySelectorAll('.nav-link');
+        const nav = document.querySelector('nav');
+        const navbarHeight = nav ? nav.offsetHeight : 80;
 
         let scrollTimeout;
-        $(window).on('scroll', function() {
+        window.addEventListener('scroll', function() {
             // Do not update while we are animating via JS to prevent flickering/stuck feeling
             if (isScrollingProgrammatically) return;
 
             // Throttle to improve performance
             if (scrollTimeout) return;
             scrollTimeout = setTimeout(() => {
-                const scrollPos = $(window).scrollTop() + navbarHeight + 150;
+                const scrollPos = window.pageYOffset + navbarHeight + 150;
 
-                navLinks.each(function() {
-                    const href = $(this).attr('href');
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
                     if (!href || !href.startsWith('#') || href.length <= 1) return;
                     
-                    const section = $(href);
-                    if (section.length) {
-                        const top = section.offset().top;
-                        const bottom = top + section.outerHeight();
+                    const section = document.querySelector(href);
+                    if (section) {
+                        const top = section.getBoundingClientRect().top + window.pageYOffset;
+                        const bottom = top + section.offsetHeight;
 
                         if (scrollPos >= top && scrollPos <= bottom) {
-                            navLinks.removeClass('nav-link-active');
-                            $(this).addClass('nav-link-active');
+                            navLinks.forEach(l => l.classList.remove('nav-link-active'));
+                            link.classList.add('nav-link-active');
                         }
                     }
                 });
                 
                 // Special case: Top of page
-                if ($(window).scrollTop() < 100) {
-                    navLinks.removeClass('nav-link-active');
-                    $('.nav-link[href="#home"]').addClass('nav-link-active');
+                if (window.pageYOffset < 100) {
+                    navLinks.forEach(l => l.classList.remove('nav-link-active'));
+                    const homeLink = document.querySelector('.nav-link[href="#home"]');
+                    if (homeLink) homeLink.classList.add('nav-link-active');
                 }
                 scrollTimeout = null;
             }, 100);
@@ -296,20 +307,15 @@ $(document).ready(function() {
     function highlightActiveSidebar() {
         const fullPath = window.location.pathname.replace('.html', '').replace(/\/$/, "");
         
-        $('aside nav a').each(function() {
-            const link = $(this);
-            let href = link.attr('href');
-            if (!href) return;
+        document.querySelectorAll('aside nav a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript')) return;
             
-            // Normalize href for comparison
+            // Clean up the href for comparison (remove .html and trailing slashes)
             const cleanHref = href.replace('.html', '').replace(/\/$/, "");
             
-            if (fullPath === cleanHref || fullPath.endsWith(cleanHref)) {
-                link.addClass('sidebar-link-active').removeClass('text-slate-400 opacity-60');
-                link.find('.material-symbols-outlined').css('color', '#818cf8');
-            } else {
-                link.removeClass('sidebar-link-active').addClass('text-slate-400');
-                link.find('.material-symbols-outlined').css('color', '');
+            if (fullPath.endsWith(cleanHref)) {
+                link.classList.add('active', 'bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
             }
         });
     }

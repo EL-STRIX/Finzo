@@ -28,7 +28,7 @@
          */
         loadAdminData: async function() {
             try {
-                const response = await window.api.get(`/admin/get-admin-detail.php?id=${currentAdminId}`);
+                const response = await window.api.get(`/admins/`);
                 if (response.success) {
                     currentAdminData = response.admin;
                     this.renderUI(response.admin);
@@ -159,10 +159,7 @@
             if (!confirm(confirmMsg)) return;
 
             try {
-                const response = await window.api.post('/admin/admin-action.php', {
-                    action: 'toggle_status',
-                    admin_id: currentAdminId
-                });
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'toggle_status' });
 
                 if (response.success) {
                     window.portal.showToast(response.message, 'success');
@@ -206,10 +203,7 @@
             window.api.setButtonLoading(btn, true);
 
             try {
-                const response = await window.api.post('/admin/admin-action.php', {
-                    action: 'reset_password',
-                    admin_id: currentAdminId
-                });
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'reset_password' });
 
                 if (response.success) {
                     // Show success UI
@@ -260,10 +254,7 @@
             window.api.setButtonLoading(btn, true);
 
             try {
-                const response = await window.api.post('/admin/admin-action.php', {
-                    action: 'delete',
-                    admin_id: currentAdminId
-                });
+                const response = await window.api.patch('/admins/' + currentAdminData.id, { action: 'delete' });
 
                 if (response.success) {
                     window.portal.showToast(response.message, 'success');

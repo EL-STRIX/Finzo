@@ -5,22 +5,35 @@ namespace App\Application\Services;
 use App\Shared\Security\SecurityService;
 
 use App\Infrastructure\Repositories\StaffRepository;
+use App\Shared\Core\Exceptions\AuthenticationException;
+use App\Shared\Core\Exceptions\BusinessRuleException;
+use App\Shared\Core\Exceptions\ResourceNotFoundException;
 use Exception;
 use PDOException;
 use finfo;
 
-class StaffService
+class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
     private StaffRepository $repository;
-
-    public function __construct(StaffRepository $repository, ?SecurityService $security = null)
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\StaffRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
+    public function __construct(\App\Domain\Contracts\Repositories\StaffRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
-
+    /**
+     * Account Lookup.
+     *
+     * @param string $accountNumber
+     * @return mixed
+     */
     public function accountLookup(string $accountNumber)
     {
         $result = $this->repository->findAccountByNo($accountNumber);
@@ -43,16 +56,23 @@ class StaffService
             ]
         ];
     }
-
+    /**
+     * Change Password.
+     *
+     * @param int $staffId
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @return mixed
+     */
     public function changePassword(int $staffId, string $currentPassword, string $newPassword)
     {
         $hash = $this->repository->findStaffPasswordHash($staffId);
         if (!$hash) {
-            throw new Exception("Staff account not found", 404);
+            throw new ResourceNotFoundException("Staff account not found");
         }
 
         if (!password_verify($currentPassword, $hash)) {
-            throw new Exception("Current password is incorrect", 401);
+            throw new AuthenticationException("Current password is incorrect");
         }
 
         $new_hash = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -60,11 +80,16 @@ class StaffService
 
         // write_audit_log requires pdo
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_password_change', $staffId, 'staff', $staffId, 'staff', 'Staff changed their password')
+    new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_PASSWORD_CHANGE->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff changed their password')
 );
         return true;
     }
-
+    /**
+     * Get Dashboard Data.
+     *
+     * @param int $staffId
+     * @return mixed
+     */
     public function getDashboardData(int $staffId)
     {
         $deposits = $this->repository->getStaffShiftDeposits($staffId);
@@ -75,8 +100,8 @@ class StaffService
 
         return [
             'staff' => [
-                'staff_id'      => $staff_info['staff_id'] ?? $_SESSION['staff_display_id'],
-                'name'          => $staff_info['full_name'] ?? $_SESSION['staff_name'],
+                'staff_id'      => $staff_info['staff_id'] ?? ($_SESSION['staff_display_id'] ?? null),
+                'name'          => $staff_info['full_name'] ?? ($_SESSION['staff_name'] ?? 'Unknown Staff'),
                 'role'          => $staff_info['designation'] ?? 'Teller',
                 'profile_photo' => $staff_info['profile_photo'] ?? null,
                 'branch_name'   => $staff_info['branch_name'] ?? 'Unassigned'
@@ -92,132 +117,136 @@ class StaffService
             'recent_activity' => $recent_activity
         ];
     }
+    private function validateAccountForTransaction(string $accountNumber): array
+    {
+        $account = $this->repository->findAccountForUpdate($accountNumber);
+        if (!$account) {
+            throw new ResourceNotFoundException("Account not found");
+        }
+        if ($account['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+            throw new BusinessRuleException("Account is not active. Status: " . $account['status']);
+        }
+        return $account;
+    }
+    private function executeTransactionCore(array $account, float $amount, string $type, string $note, int $staffId): array
+    {
+        $transactionId = generate_transaction_id();
+        $isDeposit = $type === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $new_balance = $isDeposit ? ((float)$account['balance'] + $amount) : ((float)$account['balance'] - $amount);
+        
+        if ($isDeposit) {
+            $this->repository->creditAccount($account['id'], $amount);
+        } else {
+            $this->repository->debitAccount($account['id'], $amount);
+        }
 
+        $this->repository->recordTransaction([
+            'txn_id' => $transactionId,
+            'from_account_id' => $isDeposit ? null : $account['id'],
+            'to_account_id' => $isDeposit ? $account['id'] : null,
+            'type' => $type,
+            'amount' => $amount,
+            'balance_after' => $new_balance,
+            'description' => $isDeposit ? 'Cash Deposit' : 'Cash Withdrawal',
+            'reference_note' => $note,
+            'status' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value,
+            'processed_by_staff_id' => $staffId
+        ]);
+
+        $notifTitle = $isDeposit ? 'Cash Deposit Received' : 'Cash Withdrawal Processed';
+        $notifBody = $isDeposit 
+            ? 'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId
+            : 'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $account['account_no'] . '. Transaction ID: ' . $transactionId;
+
+        send_notification($this->repository->getPDO(), $account['owner_user_id'], \App\Domain\Enums\NotificationTypeEnum::TRANSACTION->value, $notifTitle, $notifBody);
+
+        $auditAction = $isDeposit ? \App\Domain\Enums\AuditActionEnum::STAFF_DEPOSIT->value : \App\Domain\Enums\AuditActionEnum::STAFF_WITHDRAWAL->value;
+        $auditBody = $isDeposit 
+            ? "Deposit of " . format_currency($amount) . " to account {$account['account_no']}"
+            : "Withdrawal of " . format_currency($amount) . " from account {$account['account_no']}. Identity notes: {$note}";
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction($auditAction, $transactionId, 'transaction', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $auditBody)
+        );
+
+        return [
+            'transaction_id' => $transactionId,
+            'customer_name'  => $account['full_name'],
+            'account_no'     => $account['account_no'],
+            'amount'         => $amount,
+            'new_balance'    => $new_balance,
+        ];
+    }
+
+    /**
+     * Process Deposit.
+     *
+     * @param int $staffId
+     * @param string $accountNumber
+     * @param float $amount
+     * @param string $reference_note
+     * @return mixed
+     */
     public function processDeposit(int $staffId, string $accountNumber, float $amount, string $reference_note)
     {
         try {
             $this->repository->beginTransaction();
-
-            $account = $this->repository->findAccountForUpdate($accountNumber);
-            if (!$account) {
-                throw new Exception("Account not found", 404);
-            }
-            if ($account['status'] !== 'active') {
-                throw new Exception("Account is not active. Status: " . $account['status'], 403);
+            $account = $this->validateAccountForTransaction($accountNumber);
+            
+            $max_deposit = get_setting($this->repository->getPDO(), 'max_deposit_amount', 100000);
+            if ($amount > $max_deposit) {
+                throw new BusinessRuleException("Maximum deposit amount is " . format_currency($max_deposit) . ". Strict AML proof of funds required.");
             }
 
-            $new_balance = (float)$account['balance'] + $amount;
-            $this->repository->creditAccount($account['id'], $amount);
-
-            $transactionId = generate_transaction_id();
-
-            $this->repository->recordTransaction([
-                'txn_id' => $transactionId,
-                'from_account_id' => null,
-                'to_account_id' => $account['id'],
-                'type' => 'deposit',
-                'amount' => $amount,
-                'balance_after' => $new_balance,
-                'description' => 'Cash Deposit',
-                'reference_note' => $reference_note,
-                'status' => 'completed',
-                'processed_by_staff_id' => $staffId
-            ]);
-
-            send_notification(
-                $this->repository->getPDO(),
-                $account['customer_id'],
-                'transaction',
-                'Cash Deposit Received',
-                'Cash deposit of ' . format_currency($amount) . ' credited to your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
-            );
-
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_deposit', $transactionId, 'transaction', $staffId, 'staff', "Deposit of " . format_currency($amount) . " to account {$accountNumber}")
-);
+            $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value, $reference_note, $staffId);
 
             $this->repository->commit();
-
-            return [
-                'transaction_id' => $transactionId,
-                'customer_name'  => $account['full_name'],
-                'account_no'     => $accountNumber,
-                'amount'         => $amount,
-                'new_balance'    => $new_balance,
-            ];
+            return $result;
         } catch (Exception $e) {
             $this->repository->rollBack();
             throw $e;
         }
     }
-
+    /**
+     * Process Withdrawal.
+     *
+     * @param int $staffId
+     * @param string $accountNumber
+     * @param float $amount
+     * @param string $identity_notes
+     * @return mixed
+     */
     public function processWithdrawal(int $staffId, string $accountNumber, float $amount, string $identity_notes)
     {
         try {
             $this->repository->beginTransaction();
-
-            $account = $this->repository->findAccountForUpdate($accountNumber);
-            if (!$account) {
-                throw new Exception("Account not found", 404);
-            }
-            if ($account['status'] !== 'active') {
-                throw new Exception("Account is not active. Status: " . $account['status'], 403);
-            }
+            $account = $this->validateAccountForTransaction($accountNumber);
 
             if ((float)$account['balance'] < $amount) {
-                throw new Exception("Insufficient balance. Available: " . format_currency($account['balance']), 422);
+                throw new BusinessRuleException("Insufficient balance. Available: " . format_currency($account['balance']));
             }
 
             $max_withdrawal = get_setting($this->repository->getPDO(), 'max_withdrawal_amount', 50000);
             if ($amount > $max_withdrawal) {
-                throw new Exception("Maximum withdrawal amount is " . format_currency($max_withdrawal), 422);
+                throw new BusinessRuleException("Maximum withdrawal amount is " . format_currency($max_withdrawal));
             }
 
-            $new_balance = (float)$account['balance'] - $amount;
-            $this->repository->debitAccount($account['id'], $amount);
-
-            $transactionId = generate_transaction_id();
-
-            $this->repository->recordTransaction([
-                'txn_id' => $transactionId,
-                'from_account_id' => $account['id'],
-                'to_account_id' => null,
-                'type' => 'withdrawal',
-                'amount' => $amount,
-                'balance_after' => $new_balance,
-                'description' => 'Cash Withdrawal',
-                'reference_note' => $identity_notes,
-                'status' => 'completed',
-                'processed_by_staff_id' => $staffId
-            ]);
-
-            send_notification(
-                $this->repository->getPDO(),
-                $account['customer_id'],
-                'transaction',
-                'Cash Withdrawal Processed',
-                'Cash withdrawal of ' . format_currency($amount) . ' debited from your account ' . $accountNumber . '. Transaction ID: ' . $transactionId
-            );
-
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_withdrawal', $transactionId, 'transaction', $staffId, 'staff', "Withdrawal of " . format_currency($amount) . " from account {$accountNumber}. Identity notes: {$identity_notes}")
-);
+            $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value, $identity_notes, $staffId);
 
             $this->repository->commit();
-
-            return [
-                'transaction_id' => $transactionId,
-                'customer_name'  => $account['full_name'],
-                'account_no'     => $accountNumber,
-                'amount'         => $amount,
-                'new_balance'    => $new_balance,
-            ];
+            return $result;
         } catch (Exception $e) {
             $this->repository->rollBack();
             throw $e;
         }
     }
-
+    /**
+     * Get History.
+     *
+     * @param int $staffId
+     * @param array $filters
+     * @return mixed
+     */
     public function getHistory(int $staffId, array $filters)
     {
         $where_clauses = ["t.processed_by_staff_id = ?"];
@@ -257,21 +286,31 @@ class StaffService
             'pages'        => $pages
         ];
     }
-
+    /**
+     * Get Receipt.
+     *
+     * @param string $transactionId
+     * @return mixed
+     */
     public function getReceipt(string $transactionId)
     {
         $transaction = $this->repository->getTransactionReceipt($transactionId);
         if (!$transaction) {
-            throw new Exception("Transaction not found", 404);
+            throw new ResourceNotFoundException("Transaction not found");
         }
         return $transaction;
     }
-
+    /**
+     * Get Full Profile.
+     *
+     * @param int $staffId
+     * @return mixed
+     */
     public function getFullProfile(int $staffId)
     {
         $staff = $this->repository->getFullStaffProfile($staffId);
         if (!$staff) {
-            throw new Exception("Staff profile not found", 404);
+            throw new ResourceNotFoundException("Staff profile not found");
         }
 
         $address = [
@@ -300,7 +339,14 @@ class StaffService
             'documents' => $documents
         ];
     }
-
+    /**
+     * Update Profile.
+     *
+     * @param int $staffId
+     * @param array $data
+     * @param mixed $file
+     * @return mixed
+     */
     public function updateProfile(int $staffId, array $data, $file = null)
     {
         $fields = [];
@@ -325,7 +371,7 @@ class StaffService
             $dest_path = UPLOAD_STAFF_PHOTOS_PATH . $filename;
 
             if (!move_uploaded_file($file['tmp_name'], $dest_path)) {
-                throw new Exception("Failed to save profile photo", 500);
+                throw new \RuntimeException("Failed to save profile photo");
             }
 
             $new_photo_path = 'uploads/staff-photos/' . $filename;
@@ -345,14 +391,50 @@ class StaffService
         }
 
         if (empty($fields)) {
-            throw new Exception("No fields provided to update", 422);
+            throw new BusinessRuleException("No fields provided to update");
         }
 
-        $this->repository->updateStaffProfile($staffId, $fields, $params);
-        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_profile_update', $staffId, 'staff', $staffId, 'staff', 'Staff updated their profile')
-);
+        try {
+            $this->repository->updateStaffProfile($staffId, $fields, $params);
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_PROFILE_UPDATE->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff updated their profile')
+            );
+        } catch (\PDOException $e) {
+            // Clean up the newly uploaded photo if database update fails
+            if (isset($dest_path) && file_exists($dest_path)) {
+                @unlink($dest_path);
+            }
+            throw $e;
+        }
 
         return $this->repository->getFullStaffProfile($staffId);
+    }
+
+    public function clockIn(int $staffId): void
+    {
+        $staff = $this->repository->findStaffById($staffId);
+        if (!$staff) {
+            throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Staff not found');
+        }
+        if (!$this->repository->clockIn($staffId, $staff['staff_id'])) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Failed to clock in');
+        }
+        $this->dispatcher->dispatch(
+            new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_IN->value ?? 'STAFF_CLOCK_IN', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked in for shift')
+        );
+    }
+
+    public function clockOut(int $staffId, string $notes): void
+    {
+        $staff = $this->repository->findStaffById($staffId);
+        if (!$staff) {
+            throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Staff not found');
+        }
+        if (!$this->repository->clockOut($staffId, $staff['staff_id'], $notes)) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Failed to clock out. Ensure you are clocked in first.');
+        }
+        $this->dispatcher->dispatch(
+            new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_OUT->value ?? 'STAFF_CLOCK_OUT', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked out of shift')
+        );
     }
 }

@@ -1,4 +1,8 @@
 <?php
+
+putenv('APP_ENV=testing');
+$_ENV['APP_ENV'] = 'testing';
+
 /**
  * Test Bootstrap File — Finzo Testing Suite
  *
@@ -27,6 +31,7 @@ if (file_exists($envFile)) {
 
 // Mock SCRIPT_NAME to prevent warnings in routing logic
 $_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
 // ── 2. Auto-provision the test database ─────────────────────────────────────
 class TestPDO extends PDO {

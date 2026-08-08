@@ -4,7 +4,7 @@ namespace App\Shared\Security;
 
 use PDO;
 
-class SecurityService
+class SecurityService implements \App\Domain\Contracts\Security\SecurityServiceInterface
 {
     public function cleanInput($data)
     {
@@ -27,6 +27,15 @@ class SecurityService
     public function checkAdminPermission(int $adminId, string $permission): void
     {
         $this->checkPermission('admin', $adminId, $permission);
+    }
+
+    public function enforcePermission(string $permission): void
+    {
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+        if (!$adminId) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Unauthorized access', 401);
+        }
+        $this->checkAdminPermission($adminId, $permission);
     }
 
     public function writeAuditLog(string $actionType, string|int|null $targetId, string $targetType, string|int|null $actorId, string $actorRole, string $details = '', ?string $ipAddress = null): void

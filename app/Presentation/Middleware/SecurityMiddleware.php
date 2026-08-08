@@ -14,7 +14,7 @@ class SecurityMiddleware
         // X-XSS-Protection is deprecated in modern browsers, but we keep it for legacy client support
         header('X-XSS-Protection: 1; mode=block');
         // Hardened CSP
-        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
+        header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none';");
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()');
 

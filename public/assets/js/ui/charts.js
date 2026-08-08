@@ -2,33 +2,44 @@
  * Finzo Chart.js Configurations
  */
 
-$(document).ready(function() {
-    $('.finzo-chart').each(function() {
-        const ctx = this.getContext('2d');
-        const type = $(this).attr('data-type') || 'line';
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.finzo-chart').forEach(function(el) {
+        const ctx = el.getContext('2d');
+        const type = el.getAttribute('data-type') || 'line';
         
         // --- Grouped Bar Chart (Institutional Ledger) ---
         if (type === 'grouped-bar') {
-            $.ajax({
-                url: '../../../../api/public/chart-stats.php',
-                method: 'GET',
-                success: function(response) {
+            fetch('../../../../api/v1/public/stats')
+                .then(res => res.json())
+                .then(response => {
                     if (!response.success) return;
 
                     // Update DOM stats if they exist
                     const updateStat = (idPrefix, val) => {
-                        const iconEl = $('#stat-' + idPrefix + '-icon');
-                        const valEl = $('#stat-' + idPrefix + '-val');
-                        if (iconEl.length && valEl.length) {
+                        const iconEl = document.querySelector('#stat-' + idPrefix + '-icon');
+                        const valEl = document.querySelector('#stat-' + idPrefix + '-val');
+                        if (iconEl && valEl) {
                             if (val > 0) {
-                                iconEl.text('↑').removeClass('text-rose-400 text-blue-500').addClass('text-emerald-500');
-                                valEl.text('+' + val + '%').removeClass('text-rose-400 text-blue-500').addClass('text-emerald-500');
+                                iconEl.textContent = '↑';
+                                iconEl.classList.remove('text-rose-400', 'text-blue-500');
+                                iconEl.classList.add('text-emerald-500');
+                                valEl.textContent = '+' + val + '%';
+                                valEl.classList.remove('text-rose-400', 'text-blue-500');
+                                valEl.classList.add('text-emerald-500');
                             } else if (val < 0) {
-                                iconEl.text('↓').removeClass('text-emerald-500 text-blue-500').addClass('text-rose-400');
-                                valEl.text(val + '%').removeClass('text-emerald-500 text-blue-500').addClass('text-rose-400');
+                                iconEl.textContent = '↓';
+                                iconEl.classList.remove('text-emerald-500', 'text-blue-500');
+                                iconEl.classList.add('text-rose-400');
+                                valEl.textContent = val + '%';
+                                valEl.classList.remove('text-emerald-500', 'text-blue-500');
+                                valEl.classList.add('text-rose-400');
                             } else {
-                                iconEl.text('→').removeClass('text-emerald-500 text-rose-400').addClass('text-blue-500');
-                                valEl.text('0%').removeClass('text-emerald-500 text-rose-400').addClass('text-blue-500');
+                                iconEl.textContent = '→';
+                                iconEl.classList.remove('text-emerald-500', 'text-rose-400');
+                                iconEl.classList.add('text-blue-500');
+                                valEl.textContent = '0%';
+                                valEl.classList.remove('text-emerald-500', 'text-rose-400');
+                                valEl.classList.add('text-blue-500');
                             }
                         }
                     };
@@ -108,8 +119,8 @@ $(document).ready(function() {
                             }
                         }
                     });
-                }
-            });
+                })
+                .catch(err => console.error('Error loading chart data:', err));
             return;
         }
 

@@ -8,23 +8,42 @@ use App\Infrastructure\Repositories\AdminStaffBranchRepository;
 use Exception;
 use DateTime;
 
-class AdminStaffBranchService
+class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminStaffBranchServiceInterface
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security;
 
-    protected AdminStaffBranchRepository $repo;
-
-    public function __construct(AdminStaffBranchRepository $repo, ?SecurityService $security = null)
+    protected \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface $repo;
+    /**
+     *   construct.
+     *
+     * @param AdminStaffBranchRepository $repo
+     * @param ?SecurityService $security
+     */
+    public function __construct(\App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface $repo, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repo = $repo;
     }
-
-    public function getRepo(): AdminStaffBranchRepository
+    /**
+     * Get Repo.
+     *
+     * @return AdminStaffBranchRepository
+     */
+    public function getRepo(): \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface
     {
         return $this->repo;
     }
-
+    /**
+     * Handle Staff Upload.
+     *
+     * @param mixed $file
+     * @param mixed $prefix
+     * @param mixed $dir
+     * @param mixed $errors
+     * @param mixed $field
+     * @param mixed $required
+     * @return mixed
+     */
     public function handleStaffUpload($file, $prefix, $dir, &$errors, $field, $required = false)
     {
         if ($required && (!$file || $file['error'] !== UPLOAD_ERR_OK)) {
@@ -61,7 +80,12 @@ class AdminStaffBranchService
         $errors[] = "Failed to upload $field.";
         return '';
     }
-
+    /**
+     * Validate Staff Data.
+     *
+     * @param array $data
+     * @return mixed
+     */
     public function validateStaffData(array $data)
     {
         $errors = [];
@@ -120,7 +144,12 @@ class AdminStaffBranchService
         }
         return $errors;
     }
-
+    /**
+     * Generate Branch Code.
+     *
+     * @param mixed $state
+     * @return mixed
+     */
     public function generateBranchCode($state)
     {
         $state_clean = trim(preg_replace('/[^a-zA-Z\s]/', '', $state));
@@ -140,7 +169,11 @@ class AdminStaffBranchService
         }
         return $branch_code;
     }
-
+    /**
+     * Generate Staff Id.
+     *
+     * @return string
+     */
     public function generateStaffId(): string
     {
         $last_id = $this->repo->getLastStaffId();
@@ -150,7 +183,14 @@ class AdminStaffBranchService
         $num = intval(substr($last_id, 3)) + 1;
         return 'EMP' . str_pad((string)$num, 4, '0', STR_PAD_LEFT);
     }
-
+    /**
+     * Create Staff.
+     *
+     * @param array $data
+     * @param array $files
+     * @param int $adminId
+     * @return array
+     */
     public function createStaff(array $data, array $files, int $adminId): array
     {
         $this->security->checkAdminPermission($adminId, 'add_staff');
@@ -174,6 +214,12 @@ class AdminStaffBranchService
             $this->repo->beginTransaction();
             $data['staff_id'] = $this->generateStaffId();
             $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
+            
+            // Encrypt highly sensitive PII before saving to the database
+            if (!empty($data['id_number'])) {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $data['id_number'] = $crypto->encryptSearchable($data['id_number']);
+            }
 
             $admin = $this->repo->findAdminById($adminId);
             $data['created_by'] = $admin['admin_id'] ?? null;
@@ -185,7 +231,7 @@ class AdminStaffBranchService
             $this->repo->commit();
 
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('staff_created', $data['staff_id'], 'staff', $adminId, 'admin', "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'))
+    new \App\Application\Events\GenericAuditAction('staff_created', $data['staff_id'], \App\Domain\Enums\RoleEnum::STAFF->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Staff created: {$data['full_name']} | ID: {$data['staff_id']} | Branch: " . ($data['branch_id'] ?? 'None'))
 );
 
             return ['staff_id' => $data['staff_id'], 'staff_name' => $data['full_name']];
@@ -205,13 +251,24 @@ class AdminStaffBranchService
             throw $e;
         }
     }
-
+    /**
+     * Verify Admin Password.
+     *
+     * @param int $adminId
+     * @param string $password
+     * @return mixed
+     */
     public function verifyAdminPassword(int $adminId, string $password)
     {
         $admin = $this->repo->findAdminById($adminId);
         return ($admin && password_verify($password, $admin['password_hash']));
     }
-
+    /**
+     * Generate Strong Password.
+     *
+     * @param mixed $length
+     * @return mixed
+     */
     public function generateStrongPassword($length = 12)
     {
         $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
@@ -225,16 +282,36 @@ class AdminStaffBranchService
         }
         return str_shuffle($pass);
     }
-
+    /**
+     * Get Staff Detail.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getStaffDetail(...$args)
     {
         return $this->repo->getStaffDetail(...$args);
     }
-
+    /**
+     * Get Staff Performance.
+     *
+     * @param mixed $args
+     * @return mixed
+     */
     public function getStaffPerformance(...$args)
     {
         return $this->repo->getStaffPerformance(...$args);
     }
+    /**
+     * Delete Branch.
+     *
+     * @param int $branchId
+     * @param int $adminId
+     * @param string $admin_password
+     * @param string $confirm_name
+     * @param ?array $closure_doc
+     * @return array
+     */
     public function deleteBranch(int $branchId, int $adminId, string $admin_password, string $confirm_name, ?array $closure_doc): array
     {
         $hash = $this->repo->getAdminPasswordHash($adminId);
@@ -269,7 +346,14 @@ class AdminStaffBranchService
 
         return ['success' => true, 'message' => 'Branch deleted successfully'];
     }
-
+    /**
+     * Get Branches List.
+     *
+     * @param string $search
+     * @param string $type
+     * @param string $status
+     * @return array
+     */
     public function getBranchesList(string $search, string $type, string $status): array
     {
         $data = $this->repo->getBranchesWithStats($search, $type, $status);
@@ -289,6 +373,14 @@ class AdminStaffBranchService
             'success' => true,
             'branches' => $branches,
             'stats' => ['total' => (int)$stats['total'], 'active' => (int)$stats['active'], 'total_staff' => (int)$stats['total_staff']]
+        ];
+    }
+
+    public function getDepartmentAnalytics(): array
+    {
+        return [
+            'success' => true,
+            'data' => $this->repo->getDepartmentAnalytics()
         ];
     }
 }

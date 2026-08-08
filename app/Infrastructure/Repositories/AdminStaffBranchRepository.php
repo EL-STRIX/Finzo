@@ -4,11 +4,11 @@ namespace App\Infrastructure\Repositories;
 
 use PDO;
 
-class AdminStaffBranchRepository extends BaseRepository
+class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\Contracts\Repositories\AdminStaffBranchRepositoryInterface
 {
-    public function getPDO(): PDO
+    public function getActiveBranches()
     {
-        return $this->db;
+        return $this->fetchAll("SELECT id, name, branch_code FROM branches WHERE status = 'active'", [], \App\Domain\Models\Branch::class);
     }
 
     public function findStaffByEmail(string $email)
@@ -72,7 +72,7 @@ class AdminStaffBranchRepository extends BaseRepository
 
     public function deleteBranch(int $branchId)
     {
-        $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
         return $stmt->execute([$branchId]);
     }
 
@@ -84,7 +84,7 @@ class AdminStaffBranchRepository extends BaseRepository
 
     public function getStaffDetail(int $staffId)
     {
-        return $this->fetchOne("
+        $staff = $this->fetchOne("
             SELECT s.id, s.staff_id, s.full_name, s.personal_email as email, s.phone,
                    s.designation, s.department, s.status, s.profile_photo, s.created_at,
                    s.last_login_at, s.last_login_ip, s.street, s.city, s.state, s.pincode, s.country,
@@ -93,6 +93,13 @@ class AdminStaffBranchRepository extends BaseRepository
             LEFT JOIN branches b ON b.id = s.branch_id
             WHERE s.id = ?
         ", [$staffId], \App\Domain\Models\Staff::class);
+        
+        if ($staff && !empty($staff->id_number)) {
+            $crypto = new \App\Shared\Security\EncryptionService();
+            $staff->id_number = $crypto->decrypt($staff->id_number);
+        }
+        
+        return $staff;
     }
 
     public function getStaffPerformance(int $staffId)
@@ -131,7 +138,7 @@ class AdminStaffBranchRepository extends BaseRepository
 
     public function deleteStaff(int $staffId)
     {
-        $stmt = $this->db->prepare("DELETE FROM staff WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE staff SET is_deleted = 1, status = 'suspended', deleted_at = NOW() WHERE id = ?");
         return $stmt->execute([$staffId]);
     }
 
@@ -178,7 +185,7 @@ class AdminStaffBranchRepository extends BaseRepository
             $stmt = $this->db->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
             $stmt->execute([$branchId]);
 
-            $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
+            $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
             $stmt->execute([$branchId]);
             $this->db->commit();
         } catch (\PDOException $e) {
@@ -210,7 +217,7 @@ class AdminStaffBranchRepository extends BaseRepository
 
         $where_sql = implode(' AND ', $where_clauses);
         $stmt = $this->db->prepare("
-            SELECT b.id, b.name, b.branch_code, b.state, b.city, b.address, b.description, b.type, b.status, b.cert_path, b.created_at,
+            SELECT b.*,
                 s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
                 (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id) as staff_count,
                 (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id) as txn_count
@@ -227,5 +234,38 @@ class AdminStaffBranchRepository extends BaseRepository
         $stats = $stmt_stats->fetch();
 
         return ['branches' => $branches, 'stats' => $stats];
+    }
+
+    public function getDepartmentAnalytics()
+    {
+        $stmt = $this->db->query("
+            SELECT department, COUNT(id) as staff_count, SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_staff
+            FROM staff
+            GROUP BY department
+            ORDER BY staff_count DESC
+        ");
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function updateStaff(int $id, array $data)
+    {
+        if (empty($data)) return false;
+        
+        $fields = [];
+        $values = [];
+        foreach ($data as $key => $value) {
+            $fields[] = "$key = ?";
+            $values[] = $value;
+        }
+        $values[] = $id;
+        
+        $sql = "UPDATE staff SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public function getBranchesList(string $search, string $type, string $status)
+    {
+        return $this->getBranchesWithStats($search, $type, $status)['branches'];
     }
 }

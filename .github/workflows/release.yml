@@ -8,9 +8,9 @@ on:
 jobs:
   release:
     name: GitHub Release Generation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           

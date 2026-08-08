@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Dashboard Handler
- * Version 1.1 — Integrated Chart.js updates and Premium UX
+ * Version 1.2 — Integrated Chart.js updates, Theme Reactivity, and Premium UX
  */
 
 (function() {
@@ -11,7 +11,7 @@
      */
     async function loadDashboard() {
         try {
-            const response = await window.api.get('/admin/dashboard.php');
+            const response = await window.api.get('/admin/dashboard');
             if (response.success) {
                 const data = response.data || response;
                 updateStats(data.stats);
@@ -55,7 +55,7 @@
             else if (label.includes('ACTIVE BRANCHES')) { value = stats.total_branches || 0; }
 
             valEl.classList.remove('skeleton');
-            valEl.textContent = isPrice ? window.FinzoUtils.formatINR(value) : value.toLocaleString();
+            valEl.textContent = isPrice ? (window.FinzoUtils ? window.FinzoUtils.formatINR(value) : value) : value.toLocaleString();
         });
     }
 
@@ -71,37 +71,48 @@
             return;
         }
 
-        tbody.innerHTML = users.map(u => {
-            const initials = u.full_name.split(' ').map(n=>n[0]).join('').toUpperCase();
+        // Clear existing skeletons efficiently
+        tbody.innerHTML = '';
+
+        // Build the fragment string and insert efficiently
+        let rowsHtml = '';
+        users.forEach(u => {
+            const fallbackName = u.full_name || 'Unknown User';
+            const initials = fallbackName.split(' ').map(n=>n[0]).join('').substring(0, 2).toUpperCase();
             const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-error' : 'badge-warn');
-            const gradient = window.FinzoUtils.getAvatarGradient(initials);
+            const gradient = window.FinzoUtils ? window.FinzoUtils.getAvatarGradient(initials) : '#ccc';
             
             const avatarHtml = u.profile_picture_url 
                 ? `<img src="${u.profile_picture_url}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover" onerror="this.outerHTML='<div class=\\'admin-avatar !w-10 !h-10 !rounded-xl text-[12px]\\' style=\\'background:${gradient};color:#fff;\\'>${initials}</div>'">` 
                 : `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" style="background:${gradient};color:#fff;">${initials}</div>`;
 
-            return `
+            const timeDisplay = window.FinzoUtils ? window.FinzoUtils.timeAgo(u.created_at) : (u.created_at || 'N/A');
+
+            rowsHtml += `
             <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                 <td>
                     <div class="flex items-center gap-3">
                         ${avatarHtml}
                         <div class="min-w-0">
-                            <div class="font-bold text-sm truncate">${u.full_name}</div>
-                            <div class="text-[10px] opacity-40 truncate">${u.email}</div>
+                            <div class="font-bold text-sm truncate">${fallbackName}</div>
+                            <div class="text-[10px] opacity-40 truncate">${u.email || 'No Email'}</div>
                         </div>
                     </div>
                 </td>
-                <td><span class="status-badge ${statusClass}">${u.status.toUpperCase()}</span></td>
+                <td><span class="status-badge ${statusClass}">${(u.status || 'pending').toUpperCase()}</span></td>
                 <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warn'}" style="font-size: 10px; padding: 4px 10px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
                 <td class="text-xs font-semibold">Savings</td>
-                <td class="text-[11px] opacity-40 font-bold">${window.FinzoUtils.timeAgo(u.created_at)}</td>
+                <td class="text-[11px] opacity-40 font-bold">${timeDisplay}</td>
                 <td class="text-right">
                     <a href="admin-user-detail.html?id=${u.id}" class="admin-btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-xs">visibility</span> View
                     </a>
                 </td>
             </tr>`;
-        }).join('');
+        });
+        
+        // Inject single large string at once (avoids thrashing existing DOM logic during map)
+        tbody.insertAdjacentHTML('beforeend', rowsHtml);
     }
 
     /**
@@ -111,14 +122,19 @@
         const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
         const textColor = isDark ? '#8b949e' : '#64748b';
 
+        // Check if chart data exists
+        const hasChartData = data.monthly_chart_data && data.monthly_chart_data.length > 0;
+
         // 1. Transaction Volume (Line Chart)
         const txCanvas = document.getElementById('chart-transactions');
-        if (txCanvas && data.monthly_chart_data) {
-            const labels = data.monthly_chart_data.map(d => d.month);
-            const deposits = data.monthly_chart_data.map(d => d.deposits);
-            const withdrawals = data.monthly_chart_data.map(d => d.withdrawals);
+        if (txCanvas) {
+            if (!hasChartData) {
+                txCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+            } else if (charts.transactions) {
+                const labels = data.monthly_chart_data.map(d => d.month);
+                const deposits = data.monthly_chart_data.map(d => d.deposits);
+                const withdrawals = data.monthly_chart_data.map(d => d.withdrawals);
 
-            if (charts.transactions) {
                 charts.transactions.data.labels = labels;
                 charts.transactions.data.datasets[0].data = deposits;
                 charts.transactions.data.datasets[1].data = withdrawals;
@@ -147,15 +163,22 @@
             document.querySelectorAll('#donut-legend .skeleton').forEach(el => el.classList.remove('skeleton'));
 
             if (charts.accounts) {
-                charts.accounts.data.datasets[0].data = values;
-                charts.accounts.update();
+                const allZero = values.every(v => v === 0);
+                if (allZero) {
+                     acCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+                } else {
+                    charts.accounts.data.datasets[0].data = values;
+                    charts.accounts.update();
+                }
             }
         }
 
         // 3. Monthly Revenue (Bar Chart)
         const rvCanvas = document.getElementById('chart-revenue');
-        if (rvCanvas && data.monthly_chart_data) {
-            if (charts.revenue) {
+        if (rvCanvas) {
+            if (!hasChartData) {
+                 rvCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+            } else if (charts.revenue) {
                 charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
                 charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => d.deposits);
                 charts.revenue.data.datasets[1].data = data.monthly_chart_data.map(d => d.withdrawals);
@@ -163,6 +186,22 @@
             }
         }
     }
+
+    /**
+     * Tooltip formatter for currency
+     */
+    const currencyTooltipCallback = {
+        label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+                label += ': ';
+            }
+            if (context.parsed.y !== null) {
+                label += window.FinzoUtils ? window.FinzoUtils.formatINR(context.parsed.y) : context.parsed.y;
+            }
+            return label;
+        }
+    };
 
     /**
      * Initialize Chart instances with minimal placeholder/null config
@@ -186,7 +225,10 @@
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { callbacks: currencyTooltipCallback }
+                    },
                     scales: {
                         y: { grid: { color: gridColor, drawBorder: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } },
                         x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } }
@@ -235,7 +277,8 @@
                         legend: { 
                             position: 'top', 
                             labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11, weight: 600 }, color: textColor } 
-                        } 
+                        },
+                        tooltip: { callbacks: currencyTooltipCallback }
                     },
                     scales: {
                         y: { grid: { color: gridColor, drawBorder: false }, ticks: { color: textColor, font: { size: 10, weight: 600 } } },
@@ -246,14 +289,48 @@
         }
     }
 
+    /**
+     * Theme Observer to dynamically update chart colors
+     */
+    function setupThemeObserver() {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
+                    const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+                    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+                    const textColor = isDark ? '#8b949e' : '#64748b';
+
+                    ['transactions', 'revenue'].forEach(chartKey => {
+                        if (charts[chartKey]) {
+                            if (charts[chartKey].options.scales.x) {
+                                charts[chartKey].options.scales.x.ticks.color = textColor;
+                            }
+                            if (charts[chartKey].options.scales.y) {
+                                charts[chartKey].options.scales.y.ticks.color = textColor;
+                                charts[chartKey].options.scales.y.grid.color = gridColor;
+                            }
+                            if (charts[chartKey].options.plugins.legend && charts[chartKey].options.plugins.legend.labels) {
+                                charts[chartKey].options.plugins.legend.labels.color = textColor;
+                            }
+                            charts[chartKey].update();
+                        }
+                    });
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+    }
+
     // Initialization
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            setupThemeObserver();
             loadDashboard();
         });
     } else {
         initCharts();
+        setupThemeObserver();
         loadDashboard();
     }
 })();

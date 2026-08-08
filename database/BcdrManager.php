@@ -58,7 +58,7 @@ class BcdrManager
         if ($zip->open($zipFile, ZipArchive::CREATE) === TRUE) {
             $zip->addFile($filePath, $filename);
             // Encryption is required by enterprise standards
-            $zip->setEncryptionName($filename, ZipArchive::EM_AES_256, DB_PASS ?: 'finzo_default_secret');
+            $zip->setEncryptionName($filename, ZipArchive::EM_AES_256, DB_PASS ?: APP_KEY);
             $zip->close();
             unlink($filePath); // Delete raw SQL
             echo "Backup completed successfully and encrypted at: {$zipFile}\n";
@@ -84,8 +84,8 @@ class BcdrManager
         if (pathinfo($filePath, PATHINFO_EXTENSION) === 'zip') {
             $zip = new ZipArchive();
             if ($zip->open($filePath) === TRUE) {
-                // We assume DB_PASS is the password used
-                $zip->setPassword(DB_PASS ?: 'finzo_default_secret');
+                // We assume DB_PASS or APP_KEY is the password used
+                $zip->setPassword(DB_PASS ?: APP_KEY);
                 $extractPath = $this->backupPath . 'temp_restore/';
                 if (!is_dir($extractPath)) mkdir($extractPath);
                 

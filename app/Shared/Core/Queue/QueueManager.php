@@ -19,14 +19,29 @@ class QueueManager
         return self::$instance;
     }
 
-    public function dispatch(JobInterface $job): void
+    public function dispatch(JobInterface $job, string $queue = 'default'): void
     {
-        // For standard environment without a daemon worker, we execute synchronously to guarantee execution.
-        // In an enterprise environment, this would serialize the job and push to Redis/DB.
-        $this->processJob($job);
+        try {
+            $pdo = \App\Shared\Core\Database::getInstance();
+            $stmt = $pdo->prepare("INSERT INTO jobs (queue, payload, attempts, available_at, created_at) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([
+                $queue,
+                serialize($job),
+                0,
+                time(),
+                time()
+            ]);
+        } catch (\PDOException $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Failed to dispatch job: ', ['context' => $e->getMessage()]);
+            // Fallback to synchronous if DB fails to queue
+            $this->processJobSync($job);
+        }
     }
 
-    private function processJob(JobInterface $job): void
+    /**
+     * Used by the queue worker daemon
+     */
+    public function processJobSync(JobInterface $job): void
     {
         $maxAttempts = $job->getRetryAttempts();
         
@@ -38,12 +53,10 @@ class QueueManager
             } catch (\Exception $e) {
                 if ($job->getAttempts() >= $maxAttempts) {
                     $this->failJob($job, $e);
-                    // Do not bubble up to crash the main thread if it's a background queue
                     \App\Shared\Core\Logging\Logger::getInstance()->error('Job failed permanently: ', ['context' => get_class($job) . " - " . $e->getMessage()]);
                     return;
                 }
                 
-                // Sleep for retry delay
                 if ($job->getRetryDelay() > 0) {
                     sleep($job->getRetryDelay());
                 }
@@ -51,23 +64,14 @@ class QueueManager
         }
     }
 
-    private function failJob(JobInterface $job, \Exception $e): void
+    public function failJob(JobInterface $job, \Exception $e): void
     {
-        $this->failedJobs[] = [
-            'job' => get_class($job),
-            'exception' => $e->getMessage(),
-            'timestamp' => date('Y-m-d H:i:s'),
-            'attempts' => $job->getAttempts()
-        ];
-        
-        // Write to failed_jobs DB table (placeholder for architecture)
-        // $pdo = \App\Shared\Core\Database::getInstance();
-        // $stmt = $pdo->prepare("INSERT INTO failed_jobs (payload, exception, failed_at) VALUES (?, ?, NOW())");
-        // $stmt->execute([serialize($job), $e->getMessage()]);
-    }
-
-    public function getFailedJobs(): array
-    {
-        return $this->failedJobs;
+        try {
+            $pdo = \App\Shared\Core\Database::getInstance();
+            $stmt = $pdo->prepare("INSERT INTO failed_jobs (payload, exception) VALUES (?, ?)");
+            $stmt->execute([serialize($job), $e->getMessage()]);
+        } catch (\PDOException $dbException) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Failed to persist failed job to database: ', ['context' => $dbException->getMessage()]);
+        }
     }
 }

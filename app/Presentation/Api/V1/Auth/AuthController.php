@@ -13,19 +13,24 @@ class AuthController
 
     private AuthService $service;
 
-    public function __construct(AuthService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\AuthServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
     }
 
+    /**
+     * Authenticate a standard banking user.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string, user?: array{full_name: string, email: string, status: string, account_no: string, account_type: string, balance: string}}
+     */
     public function login(?string $id = null, ?string $extra = null): array
     {
-        $identity = $this->security->cleanInput($_POST['identity'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateCustomerLogin($identity, $password, $csrfToken, $this->security);
+        $request = new \App\Application\Requests\LoginRequest();
+        $identity = $request->get('identity');
+        $password = $request->get('password');
 
         $result = $this->service->loginUser($identity, $password);
 
@@ -34,7 +39,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/views/auth/mfa-challenge.html'
+                'redirect' => '/public/views/auth/mfa-challenge.php'
             ];
         }
 
@@ -45,10 +50,10 @@ class AuthController
 
         $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
 
-        if ($user['status'] === 'pending') {
-            $redirect = $base . '/views/user/complete-profile.html';
+        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
+            $redirect = $base . '/public/views/user/complete-profile.php';
         } else {
-            $redirect = $base . '/views/user/dashboard.html';
+            $redirect = $base . '/public/views/user/dashboard.php';
         }
 
         return [
@@ -66,13 +71,18 @@ class AuthController
         ];
     }
 
+    /**
+     * Authenticate a system administrator.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string}
+     */
     public function adminLogin(?string $id = null, ?string $extra = null): array
     {
-        $email    = $this->security->cleanInput($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateLogin($email, $password, $csrfToken);
+        $request = new \App\Application\Requests\LoginRequest();
+        $email = $request->get('email') ?? $request->get('identity');
+        $password = $request->get('password');
 
         $result = $this->service->loginAdmin($email, $password);
 
@@ -81,7 +91,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/views/auth/admin-mfa-challenge.html'
+                'redirect' => '/public/views/auth/admin-mfa-challenge.php'
             ];
         }
 
@@ -90,17 +100,22 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/views/admin/admin-dashboard.html'
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/admin/admin-dashboard.php'
         ];
     }
 
+    /**
+     * Authenticate a branch staff member.
+     *
+     * @param string|null $id Optional identity override
+     * @param string|null $extra Optional extra parameter
+     * @return array{success: bool, mfa_required?: bool, mfa_token?: string, redirect: string, message?: string}
+     */
     public function staffLogin(?string $id = null, ?string $extra = null): array
     {
-        $identity = $this->security->cleanInput($_POST['identity'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateLogin($identity, $password, $csrfToken);
+        $request = new \App\Application\Requests\LoginRequest();
+        $identity = $request->get('identity');
+        $password = $request->get('password');
 
         $result = $this->service->loginStaff($identity, $password);
 
@@ -109,7 +124,7 @@ class AuthController
                 'success' => true,
                 'mfa_required' => true,
                 'mfa_token' => $result['mfa_token'] ?? '',
-                'redirect' => '/views/auth/staff-mfa-challenge.html'
+                'redirect' => '/public/views/auth/staff-mfa-challenge.php'
             ];
         }
 
@@ -118,7 +133,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Login successful',
-            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/views/staff/staff-dashboard.html'
+            'redirect' => rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/\\') . '/public/views/staff/staff-dashboard.php'
         ];
     }
 
@@ -153,20 +168,17 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Password has been reset successfully. You can now log in with your new password.',
-            'redirect' => $base . '/views/auth/login.html'
+            'redirect' => $base . '/public/views/auth/login.php'
         ];
     }
 
     public function register()
     {
-        $fullName        = $this->security->cleanInput($_POST['full_name'] ?? '');
-        $email            = trim($_POST['email'] ?? '');
-        $phone            = $this->security->cleanInput($_POST['phone'] ?? '');
-        $password         = $_POST['password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateRegistration($fullName, $email, $phone, $password, $confirmPassword, $csrfToken, $this->security);
+        $request = new \App\Application\Requests\RegisterRequest();
+        $fullName = $request->get('full_name');
+        $email = $request->get('email');
+        $phone = $request->get('phone');
+        $password = $request->get('password');
 
         $this->service->registerUser($fullName, $email, $phone, $password);
 
@@ -175,7 +187,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
-            'redirect' => $base . '/views/auth/login.html'
+            'redirect' => $base . '/public/views/auth/login.php'
         ];
     }
 
@@ -187,14 +199,14 @@ class AuthController
 
         switch ($role) {
             case 'staff':
-                $redirect = $base . '/views/auth/staff-login.html';
+                $redirect = $base . '/public/views/auth/staff-login.php';
                 break;
             case 'admin':
-                $redirect = $base . '/views/auth/admin-login.html';
+                $redirect = $base . '/public/views/auth/admin-login.php';
                 break;
             case 'customer':
             default:
-                $redirect = $base . '/views/auth/login.html';
+                $redirect = $base . '/public/views/auth/login.php';
                 break;
         }
 

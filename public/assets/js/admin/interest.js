@@ -24,7 +24,7 @@
      */
     async function loadInterestData() {
         try {
-            const response = await window.api.get('/admin/interest.php');
+            const response = await window.api.get('/admin/interest');
             if (response.status === 'success' || response.success) {
                 const info = response.data || response;
                 
@@ -151,7 +151,7 @@
             const customDate = customApplyDateInput ? customApplyDateInput.value : '';
             
             try {
-                const response = await window.api.post('/admin/interest.php', {
+                const response = await window.api.post('/admin/interest', {
                     action: 'update_rate',
                     new_rate: newRate,
                     apply_from: applyType,

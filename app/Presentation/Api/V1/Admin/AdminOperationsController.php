@@ -14,9 +14,9 @@ class AdminOperationsController
 
     protected AdminOperationsService $service;
 
-    public function __construct(AdminOperationsService $service, ?SecurityService $security = null)
+    public function __construct(\App\Domain\Contracts\Services\AdminOperationsServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->service = $service;
     }
 
@@ -40,7 +40,7 @@ class AdminOperationsController
 
     public function dashboard(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $data = $this->service->getDashboardData($adminId);
 
         if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
@@ -79,48 +79,11 @@ class AdminOperationsController
         return $data;
     }
 
-    public function exportUsers()
-    {
-        $filters = [
-            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
-        ];
 
-        $users = $this->service->exportUsers($filters);
-
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=Finzo_Users_Export_' . date('Y-m-d') . '.csv');
-
-        $output = fopen('php://output', 'w');
-        fputcsv($output, ['Customer ID', 'Full Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Last Active']);
-
-        foreach ($users as $row) {
-            $safe_name = $row['full_name'];
-            if (\App\Shared\Core\Validation\Validator::pregMatch('/^[=\-+@\t\r]/', $safe_name)) {
-                $safe_name = "'" . $safe_name;
-            }
-
-            fputcsv($output, [
-                $row['customer_id'] ?: 'Pending',
-                $safe_name,
-                $row['email'],
-                $row['phone'],
-                ucfirst($row['status']),
-                $row['created_at'],
-                $row['last_login_at'] ?: 'Never'
-            ]);
-        }
-
-        fclose($output);
-        if (defined('FINZO_TESTING') && FINZO_TESTING) {
-            throw new \Exception('Exit called after export');
-        }
-        exit();
-    }
 
     public function interest(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data = $this->service->getInterestData();
@@ -201,7 +164,7 @@ class AdminOperationsController
             throw new ApiException('User ID is required', 422);
         }
 
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         $result = $this->service->recoverUser($userId, $adminId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
@@ -211,7 +174,7 @@ class AdminOperationsController
 
     public function reviewApplication(?string $id = null, ?string $extra = null): array
     {
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
@@ -248,7 +211,7 @@ class AdminOperationsController
 
     public function viewKycDocument(?string $id = null, ?string $extra = null): void
     {
-        $adminId = $_SESSION['admin_id'] ?? null;
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? null;
         if (!$adminId) {
             http_response_code(401);
             echo "Unauthorized";
@@ -317,17 +280,36 @@ class AdminOperationsController
         $export   = $this->security->cleanInput($_GET['export'] ?? '');
 
         if ($export === 'csv') {
-            $rows = $this->service->getTransactions($filters, $page, $per_page, true);
+            $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($isAsync) {
+                $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+                \App\Shared\Core\Queue\QueueManager::getInstance()->dispatch(
+                    new \App\Application\Jobs\ExportCsvJob([
+                        'admin_id' => $adminId,
+                        'type' => 'transactions',
+                        'filters' => $filters
+                    ])
+                );
+                http_response_code(202);
+                echo json_encode(['success' => true, 'message' => 'Export job started asynchronously. You will be notified when it is ready.']);
+                exit;
+            }
 
+            $generator = $this->service->getTransactions($filters, $page, $per_page, true);
+
+            header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename="finzo_transactions_' . date('Y-m-d') . '.csv"');
+            header('X-Accel-Buffering: no');
 
             $output = fopen('php://output', 'w');
-            if (!\App\Shared\Core\Validation\Validator::isEmpty($rows)) {
-                fputcsv($output, array_keys($rows[0]));
-                foreach ($rows as $row) {
-                    fputcsv($output, $row);
+            $headerWritten = false;
+            foreach ($generator as $row) {
+                if (!$headerWritten) {
+                    fputcsv($output, array_keys($row));
+                    $headerWritten = true;
                 }
+                fputcsv($output, $row);
             }
             fclose($output);
             if (defined('FINZO_TESTING') && FINZO_TESTING) {
@@ -355,24 +337,91 @@ class AdminOperationsController
         return $data;
     }
 
-    public function suspendedUserDetail(?string $id = null, ?string $extra = null): array
+    public function exportUsers(): void
     {
-        $userId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
-        if (!$userId) {
-            throw new ApiException('User ID is required', 422);
+        $filters = [
+            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
+        ];
+
+        $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        if ($isAsync) {
+            $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+            \App\Shared\Core\Queue\QueueManager::getInstance()->dispatch(
+                new \App\Application\Jobs\ExportCsvJob([
+                    'admin_id' => $adminId,
+                    'type' => 'users',
+                    'filters' => $filters
+                ])
+            );
+            http_response_code(202);
+            echo json_encode(['success' => true, 'message' => 'Export job started asynchronously. You will be notified when it is ready.']);
+            exit;
         }
 
-        $data = $this->service->getSuspendedUserDetail($userId);
-        if (!$data['success']) {
-            throw new ApiException($data['message'], 404);
+        $generator = $this->service->exportUsers($filters);
+
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="finzo_users_' . date('Y-m-d') . '.csv"');
+        header('X-Accel-Buffering: no');
+
+        $output = fopen('php://output', 'w');
+        $headerWritten = false;
+        foreach ($generator as $row) {
+            if (!$headerWritten) {
+                fputcsv($output, array_keys($row));
+                $headerWritten = true;
+            }
+            fputcsv($output, $row);
         }
-        return $data;
+        fclose($output);
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            throw new \Exception('Exit called after export');
+        }
+        exit;
+    }
+
+    public function downloadExport(?string $id = null, ?string $extra = null): void
+    {
+        $filename = $this->security->cleanInput($_GET['file'] ?? '');
+        
+        // Strict path traversal prevention
+        if (empty($filename) || basename($filename) !== $filename || strpos($filename, 'finzo_') !== 0 || pathinfo($filename, PATHINFO_EXTENSION) !== 'csv') {
+            throw new ApiException('Invalid file requested', 400);
+        }
+
+        $exportDir = defined('FINZO_ROOT') ? FINZO_ROOT . '/storage/exports' : dirname(__DIR__, 4) . '/storage/exports';
+        $filePath = $exportDir . '/' . $filename;
+
+        if (!file_exists($filePath)) {
+            throw new ApiException('File not found', 404);
+        }
+
+        // Output file securely
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Length: ' . filesize($filePath));
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $handle = fopen($filePath, 'rb');
+        if ($handle) {
+            while (!feof($handle)) {
+                echo fread($handle, 8192);
+                ob_flush();
+                flush();
+            }
+            fclose($handle);
+        }
+        exit;
     }
 
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
         $userId  = intval($_POST['user_id'] ?? 0);
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
@@ -391,7 +440,7 @@ class AdminOperationsController
         $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
         $password = $_POST['password'] ?? '';
         $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
-        $adminId = $_SESSION['admin_id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
@@ -417,4 +466,41 @@ class AdminOperationsController
         }
         return $data;
     }
+
+    public function suspendedUserDetail(?string $id = null, ?string $extra = null): array
+    {
+        $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
+        if (!$userId) {
+            throw new ApiException('User ID is required', 422);
+        }
+
+        $data = $this->service->getSuspendedUserDetail($userId);
+        if (!$data['success']) {
+            throw new ApiException($data['message'], 404);
+        }
+        return $data;
+    }
+    public function reverseTransaction(?string $id = null, ?string $extra = null): array
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new ApiException('Method Not Allowed', 405);
+        }
+
+        $transactionId = $id ?? $_POST['transaction_id'] ?? '';
+        $reason = $this->security->cleanInput($_POST['reason'] ?? '');
+        $adminId = $_SESSION['admin_id'] ?? 0;
+
+        if (empty($transactionId) || empty($reason)) {
+            throw new ApiException('Transaction ID and reason are required', 422);
+        }
+
+        $result = $this->service->reverseTransaction($transactionId, $adminId, $reason);
+
+        if (!$result['success']) {
+            throw new ApiException($result['message'], $result['code'] ?? 422);
+        }
+
+        return $result;
+    }
 }
+

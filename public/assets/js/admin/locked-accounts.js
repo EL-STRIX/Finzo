@@ -45,7 +45,7 @@
             const statusFilter = document.getElementById('status-filter')?.value || '';
             const dateFilter = document.getElementById('date-filter')?.value || '';
 
-            let url = `/admin/locked-accounts.php?page=${currentPage}&per_page=${ROWS_PP}`;
+            let url = `/users/locked?page=${currentPage}&per_page=${ROWS_PP}`;
             if (search) url += `&search=${encodeURIComponent(search)}`;
             if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
             if (statusFilter) url += `&status=${encodeURIComponent(statusFilter)}`;
@@ -265,9 +265,7 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px; vertical-align:middle;">autorenew</span> Generating...';
 
             try {
-                const response = await window.api.post('/admin/unlock-account.php', {
-                    user_id: pendingId
-                });
+                const response = await window.api.post(/users/locked/{}/unlock, );
 
                 if (response.status === 'success' || response.success) {
                     generatedPass = response.temp_password || (response.data && response.data.temp_password) || 'N/A';

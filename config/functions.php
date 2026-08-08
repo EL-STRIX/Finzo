@@ -23,7 +23,10 @@ function clean_input($data)
     if (is_array($data)) {
         return array_map('clean_input', $data);
     }
-    return trim((string)$data);
+    if (is_string($data)) {
+        return strip_tags(trim($data));
+    }
+    return $data;
 }
 
 /**

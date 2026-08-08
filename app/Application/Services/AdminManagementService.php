@@ -8,33 +8,42 @@ use App\Infrastructure\Repositories\AdminManagementRepository;
 use App\Shared\Core\Exceptions\ApiException;
 use PDO;
 
-class AdminManagementService
+class AdminManagementService implements \App\Domain\Contracts\Services\AdminManagementServiceInterface
 {
     protected SecurityService $security;
 
     private AdminManagementRepository $repository;
 
-    public function __construct(AdminManagementRepository $repository, ?SecurityService $security = null)
+    /**
+     *   construct.
+     *
+     * @param \App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface $repository
+     * @param ?\App\Domain\Contracts\Security\SecurityServiceInterface $security
+     */
+    public function __construct(\App\Domain\Contracts\Repositories\AdminManagementRepositoryInterface $repository, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security ?? new \App\Shared\Security\SecurityService();
+        $this->security = $security;
         $this->repository = $repository;
     }
 
 
-
-    public function requireSuperAdmin(): void
-    {
-        if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
-            throw new ApiException('Forbidden: Only Super Administrator can perform this action.', 403);
-        }
-    }
-
+    /**
+     * Get Next Admin Id.
+     *
+     * @return string
+     */
     public function getNextAdminId(): string
     {
         $max_id = $this->repository->getMaxAdminIdNumber();
         return 'ADM' . str_pad((string)($max_id + 1), 3, '0', STR_PAD_LEFT);
     }
-
+    /**
+     * Add Admin.
+     *
+     * @param array $data
+     * @param ?array $file
+     * @return array
+     */
     public function addAdmin(array $data, ?array $file): array
     {
         $fullName = $this->security->cleanInput($data['full_name'] ?? '');
@@ -72,8 +81,9 @@ class AdminManagementService
             throw new ApiException('Passwords do not match', 422, ['field' => 'confirm_password']);
         }
 
-        if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[^a-zA-Z0-9]/', $password)) {
-            throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'password']);
+        $pw_check = \validate_password_strength($password);
+        if (!$pw_check['valid']) {
+            throw new ApiException($pw_check['message'], 422, ['field' => 'password']);
         }
 
         if (!in_array($admin_role, ['admin', 'moderator'])) {
@@ -136,7 +146,7 @@ class AdminManagementService
         $this->repository->createAdmin($insertData);
 
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "New admin created: {$fullName} | Role: {$admin_role}")
+    new \App\Application\Events\GenericAuditAction('admin_created', $next_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "New admin created: {$fullName} | Role: {$admin_role}")
 );
 
         return [
@@ -147,7 +157,13 @@ class AdminManagementService
             'code' => 201
         ];
     }
-
+    /**
+     * Handle Admin Action.
+     *
+     * @param string $action
+     * @param int $target_numeric_id
+     * @return array
+     */
     public function handleAdminAction(string $action, int $target_numeric_id): array
     {
         if ($target_numeric_id <= 0) {
@@ -169,21 +185,21 @@ class AdminManagementService
 
         switch ($action) {
             case 'toggle_status':
-                $new_status = ($target['status'] === 'active') ? 'suspended' : 'active';
+                $new_status = ($target['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) ? 'suspended' : 'active';
                 $this->repository->updateStatus($target_numeric_id, $new_status);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_status_change', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Changed status of {$target['full_name']} to {$new_status}")
+    new \App\Application\Events\GenericAuditAction('admin_status_change', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Changed status of {$target['full_name']} to {$new_status}")
 );
 
                 return [
                     'success' => true,
-                    'message' => "Admin account has been " . ($new_status === 'active' ? 'activated' : 'suspended') . " successfully.",
+                    'message' => "Admin account has been " . ($new_status === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value ? 'activated' : 'suspended') . " successfully.",
                     'new_status' => $new_status
                 ];
 
             case 'delete':
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_deleted', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Permanently deleted admin account: {$target['full_name']}")
+    new \App\Application\Events\GenericAuditAction('admin_deleted', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Permanently deleted admin account: {$target['full_name']}")
 );
                 $this->repository->deleteAdmin($target_numeric_id);
                 return ['success' => true, 'message' => "Admin account has been permanently removed from the system."];
@@ -195,7 +211,7 @@ class AdminManagementService
 
                 $this->repository->resetPassword($target_numeric_id, $hash);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_reset', $target_admin_id, 'admin', $_SESSION['admin_id'], 'admin', "Forced auto-generated password reset for {$target['full_name']}")
+    new \App\Application\Events\GenericAuditAction('admin_password_reset', $target_admin_id, \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Forced auto-generated password reset for {$target['full_name']}")
 );
 
                 return [
@@ -209,7 +225,12 @@ class AdminManagementService
                 throw new ApiException('Invalid action', 400);
         }
     }
-
+    /**
+     * Get Admin Detail.
+     *
+     * @param int $target_id
+     * @return array
+     */
     public function getAdminDetail(int $target_id): array
     {
         if ($target_id <= 0) {
@@ -232,7 +253,12 @@ class AdminManagementService
             'activity' => $activity
         ];
     }
-
+    /**
+     * Get Admin Profile For User.
+     *
+     * @param int $adminId
+     * @return array
+     */
     public function getAdminProfileForUser(int $adminId): array
     {
         $profile = $this->repository->getAdminProfile($adminId);
@@ -246,7 +272,11 @@ class AdminManagementService
             'activity' => $activity
         ];
     }
-
+    /**
+     * Get Admins.
+     *
+     * @return array
+     */
     public function getAdmins(): array
     {
         $admins = $this->repository->getAllAdmins();
@@ -256,7 +286,11 @@ class AdminManagementService
             'total' => count($admins)
         ];
     }
-
+    /**
+     * Get Locked Admins.
+     *
+     * @return array
+     */
     public function getLockedAdmins(): array
     {
         $locked = $this->repository->getLockedAdmins();
@@ -270,63 +304,17 @@ class AdminManagementService
         ];
     }
 
-    public function getProfileData(int $adminId): array
-    {
-        $admin = $this->repository->getAdminById($adminId);
-        if (!$admin) {
-            throw new ApiException('Admin not found', 404);
-        }
-        $recent_activity = $this->repository->getAdminActivity($admin['admin_id'], 10);
-        $total_actions = $this->repository->getActivityCount($admin['admin_id']);
 
-        return [
-            'success' => true,
-            'admin'   => [
-                'id' => $admin['id'], 'admin_id' => $admin['admin_id'], 'full_name' => $admin['full_name'],
-                'email' => $admin['email'], 'phone' => $admin['phone'], 'profile_photo' => $admin['profile_photo'],
-                'status' => $admin['status'], 'last_login_at' => $admin['last_login_at'], 'last_login_ip' => $admin['last_login_ip'], 'created_at' => $admin['created_at']
-            ],
-            'recent_activity' => $recent_activity,
-            'security' => [
-                'total_actions' => $total_actions,
-                'last_login_at' => $admin['last_login_at'],
-                'last_login_ip' => $admin['last_login_ip']
-            ]
-        ];
-    }
 
-    public function changePassword(int $adminId, array $data): array
-    {
-        $current = $data['current_password'] ?? '';
-        $new_pwd = $data['new_password'] ?? '';
-        $confirm = $data['confirm_password'] ?? '';
 
-        if (empty($current) || empty($new_pwd)) {
-            throw new ApiException('All password fields are required', 422);
-        }
-        if ($new_pwd !== $confirm) {
-            throw new ApiException('Passwords do not match', 422);
-        }
-        $strength = validate_password_strength($new_pwd);
-        if (!$strength['valid']) {
-            throw new ApiException($strength['message'], 422);
-        }
-
-        $admin = $this->repository->getAdminById($adminId);
-        if (!password_verify($current, $admin['password_hash'])) {
-            throw new ApiException('Current password is incorrect', 401);
-        }
-
-        $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
-        $this->repository->updateAdminPassword($adminId, $new_hash);
-
-        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_changed', $adminId, 'admin', $adminId, 'admin', 'Admin password changed')
-);
-
-        return ['success' => true, 'message' => 'Password changed successfully'];
-    }
-
+    /**
+     * Upload Avatar.
+     *
+     * @param int $adminId
+     * @param ?array $file
+     * @param bool $isProfileEndpoint
+     * @return array
+     */
     public function uploadAvatar(int $adminId, ?array $file, bool $isProfileEndpoint = false): array
     {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -384,39 +372,26 @@ class AdminManagementService
         throw new ApiException('Failed to move uploaded file', 500);
     }
 
-    public function updateProfile(int $adminId, array $data): array
-    {
-        $fullName = $this->security->cleanInput($data['full_name'] ?? $data['name'] ?? '');
-        $email     = $this->security->cleanInput($data['email'] ?? '');
-        $phone     = $this->security->cleanInput($data['phone'] ?? '');
-        $password  = $data['password'] ?? '';
 
-        if (empty($fullName)) {
-            throw new ApiException('Full name is required', 422);
-        }
-        if (empty($password)) {
-            throw new ApiException('Admin password is required for verification', 422);
-        }
-
-        $admin = $this->repository->getAdminById($adminId);
-        if (!$admin || !password_verify($password, $admin['password_hash'])) {
-            throw new ApiException('Verification failed: Incorrect password', 401);
-        }
-
-        $this->repository->updateProfileFields($adminId, ["full_name = ?", "email = ?", "phone = ?", "updated_at = NOW()"], [$fullName, $email, $phone]);
-
-        $_SESSION['admin_name']  = $fullName;
-        $_SESSION['admin_email'] = $email;
-
-        return ['success' => true, 'message' => 'Profile updated successfully'];
-    }
-
+    /**
+     * Update Two Fa Settings.
+     *
+     * @param int $adminId
+     * @param int $enabled
+     * @return array
+     */
     public function updateTwoFaSettings(int $adminId, int $enabled): array
     {
         $this->repository->updateTwoFa($adminId, $enabled);
         return ['success' => true, 'message' => '2FA settings updated'];
     }
-
+    /**
+     * Update Admin Profile.
+     *
+     * @param int $adminId
+     * @param array $data
+     * @return array
+     */
     public function updateAdminProfile(int $adminId, array $data): array
     {
         if (!empty($data['new_password'])) {
@@ -435,14 +410,15 @@ class AdminManagementService
             if ($new_pwd === $current_pwd) {
                 throw new ApiException('New password cannot be the same as current', 422, ['field' => 'new_password']);
             }
-            if (strlen($new_pwd) < 8 || !preg_match('/[A-Z]/', $new_pwd) || !preg_match('/[0-9]/', $new_pwd) || !preg_match('/[^a-zA-Z0-9]/', $new_pwd)) {
-                throw new ApiException('Password must be min 8 chars with uppercase, number, and special character', 422, ['field' => 'new_password']);
+            $pw_check = \validate_password_strength($new_pwd);
+            if (!$pw_check['valid']) {
+                throw new ApiException($pw_check['message'], 422, ['field' => 'new_password']);
             }
 
             $new_hash = password_hash($new_pwd, PASSWORD_BCRYPT);
             $this->repository->updateAdminPassword($adminId, $new_hash);
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_password_updated', $adminId, 'admin', $adminId, 'admin', 'Password updated successfully')
+    new \App\Application\Events\GenericAuditAction('admin_password_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Password updated successfully')
 );
 
             return ['success' => true, 'message' => 'Password updated successfully'];
@@ -480,7 +456,7 @@ class AdminManagementService
 
         $this->repository->updateProfileFields($adminId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, 'admin', $adminId, 'admin', 'Profile information updated')
+    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
 );
 
         return ['success' => true, 'message' => 'Profile updated successfully'];

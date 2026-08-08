@@ -16,7 +16,7 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const response = await window.api.get('/admin/branches.php');
+            const response = await window.api.get('/branches');
             if (response.success || response.status === 'success') {
                 const data = response.data || response;
                 currentBranches = data.branches || [];
@@ -101,7 +101,7 @@
      */
     async function loadUnassignedStaff() {
         try {
-            const response = await window.api.get('/admin/staff.php', { filter: 'unassigned' });
+            const response = await window.api.get('/staff', { filter: 'unassigned' });
             if (response.success) {
                 unassignedStaff = response.staff || [];
                 renderManagerDropdown(unassignedStaff);
@@ -167,7 +167,7 @@
                 confirmBtn.setAttribute('disabled', 'true');
                 
                 try {
-                    const res = await window.api.upload('/admin/delete-branch.php', formData);
+                    const res = await window.api.upload('/branches', formData);
                     if (res.success) {
                         window.showToast('Branch deleted successfully');
                         document.getElementById('confirmModal').classList.add('hidden');
@@ -498,7 +498,7 @@
         if (noStaff) noStaff.classList.add('hidden');
         
         try {
-            const response = await window.api.get('/admin/staff.php?branch_id=' + branchId);
+            const response = await window.api.get('/staff?branch_id=' + branchId);
             if (response.success) {
                 const staff = response.staff || [];
                 document.getElementById('staff-modal-subtitle').textContent = staff.length + ' STAFF MEMBER(S) FOUND';

@@ -50,49 +50,17 @@ if (file_exists($envFile)) {
     }
 }
 
+// Populate $_POST for PUT/PATCH requests
+if (in_array($_SERVER['REQUEST_METHOD'] ?? '', ['PUT', 'PATCH'])) {
+    parse_str(file_get_contents('php://input'), $_POST);
+}
+
 // Register global error/exception handlers only if we are not running tests
-if (getenv('APP_ENV') !== 'testing') {
-    // Global Exception Handler for API standard
+if (getenv('APP_ENV') !== 'testing' && !defined('FINZO_TESTING')) {
+    // Global Exception Handler — delegates to the centralized ExceptionHandler
+    // for a single, consistent JSON response format across the entire application.
     set_exception_handler(function (\Throwable $e) {
-        $debug = getenv('APP_DEBUG') === 'true';
-        $statusCode = 500;
-
-        // Check if it's our custom ApiException to inherit status codes
-        if (method_exists($e, 'getStatusCode')) {
-            $statusCode = $e->getStatusCode();
-        }
-
-        $message = $debug ? $e->getMessage() : 'A server error occurred. Please try again later.';
-
-        // Expose Database Business Validation Errors (Phase 10)
-        if ($e instanceof \PDOException && isset($e->errorInfo[0]) && $e->errorInfo[0] === '45000') {
-            // Error format is often: SQLSTATE[45000]: ... : 1644 Duplicate transaction detected...
-            $message = preg_replace('/SQLSTATE\[45000\].*?: \d+ /', '', $e->getMessage());
-            $statusCode = 422; // Unprocessable Entity
-        }
-
-        if (!headers_sent()) {
-            http_response_code($statusCode);
-            header('Content-Type: application/json; charset=utf-8');
-        }
-
-        $response = [
-            'success' => false,
-            'message' => $message
-        ];
-
-        if (method_exists($e, 'getPayload') && !empty($e->getPayload())) {
-            $response = array_merge($response, $e->getPayload());
-        }
-
-        if ($debug) {
-            $response['file'] = $e->getFile();
-            $response['line'] = $e->getLine();
-        }
-
-        error_log("Uncaught Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
-        echo json_encode($response);
-        exit;
+        \App\Shared\Core\Exceptions\ExceptionHandler::handle($e);
     });
 
     // Global Error Handler for API standard
@@ -108,5 +76,41 @@ if (getenv('APP_ENV') !== 'testing') {
 require_once FINZO_ROOT . '/config/config.php';
 require_once FINZO_ROOT . '/config/db.php';
 require_once FINZO_ROOT . '/config/functions.php';
+
+// Enforce APP_KEY for security
+if (empty(APP_KEY) && php_sapi_name() !== 'cli' && getenv('APP_ENV') !== 'testing') {
+    http_response_code(500);
+    die(json_encode(['success' => false, 'message' => 'Critical Error: APP_KEY is not set.']));
+}
+
+// Load Event Listeners
+require_once FINZO_ROOT . '/config/events.php';
+
+// Initialize IoC Container and register bindings
+$container = \App\Shared\Core\Container::getInstance();
+\App\Shared\Core\AppServiceProvider::register($container);
+
+// Maintenance Mode Interception
+$isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false;
+$isAdminRoute = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/v1/admin/') !== false || strpos($_SERVER['REQUEST_URI'] ?? '', '/api/v1/auth/admin-login') !== false;
+
+if ($isApi && !$isAdminRoute) {
+    try {
+        $settingsService = $container->get(\App\Domain\Contracts\Services\SettingsServiceInterface::class);
+        $maintenanceMode = $settingsService->getSetting('maintenance_mode');
+        
+        if ($maintenanceMode === true) {
+            header('Content-Type: application/json');
+            http_response_code(503);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Service Unavailable. The system is currently undergoing scheduled maintenance.'
+            ]);
+            exit;
+        }
+    } catch (\Throwable $e) {
+        // Fail open if settings cannot be loaded during boot (e.g., database not ready)
+    }
+}
 
 // If middleware files exist, load them or they will be called manually

@@ -16,8 +16,6 @@
 
 # --- Frontend & UI ---
 /public/                @finzo/frontend-engineering
-/resources/             @finzo/frontend-engineering
-
 # --- Security & Auth ---
 /app/Shared/Security/   @finzo/security-team
 /app/Presentation/Middleware/SecurityMiddleware.php @finzo/security-team
@@ -28,8 +26,6 @@ phpunit.xml             @finzo/qa-engineering
 
 # --- Infrastructure & DevOps ---
 /.github/               @finzo/devops-engineering
-/ops/                   @finzo/devops-engineering
-docker-compose.yml      @finzo/devops-engineering
 
 # --- Documentation ---
 /docs/                  @finzo/technical-writers @finzo/architecture-board

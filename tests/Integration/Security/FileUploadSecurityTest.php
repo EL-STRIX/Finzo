@@ -35,7 +35,7 @@ class FileUploadSecurityTest extends TestCase {
         ];
         
         try {
-            RequestHelper::postJson('api/uploads/branch-cert', $postData, $session, $fileData);
+            RequestHelper::postJson('api/v1/uploads/branch-cert', $postData, $session, $fileData);
             $this->fail("File upload succeeded despite malicious payload");
         } catch (\App\Shared\Core\Exceptions\TestResponseException $e) {
             $response = json_decode($e->getMessage(), true);
