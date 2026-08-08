@@ -457,10 +457,10 @@ function initResetPasswordTokenFromUrl() {
  */
 function initAuthFormSubmission() {
     const formMap = [
-        { selector: 'form[data-action="customer-login"]',    endpoint: '/Finzo/public/api/auth/login' },
-        { selector: 'form[data-action="admin-login"]',       endpoint: '/Finzo/public/api/auth/admin-login' },
-        { selector: 'form[data-action="staff-login"]',       endpoint: '/Finzo/public/api/auth/staff-login' },
-        { selector: 'form[data-action="register"]',         endpoint: '/Finzo/public/api/auth/register' },
+        { selector: 'form[data-action="customer-login"]',    endpoint: '/auth/login' },
+        { selector: 'form[data-action="admin-login"]',       endpoint: '/auth/admin-login' },
+        { selector: 'form[data-action="staff-login"]',       endpoint: '/auth/staff-login' },
+        { selector: 'form[data-action="register"]',         endpoint: '/auth/register' },
         { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
         { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
     ];
@@ -486,7 +486,7 @@ function initAuthFormSubmission() {
                 const formData = new FormData(form);
                 // If it's a FormData object, window.api handles the fetch automatically
                 // However, since it's auth, we should map endpoint
-                const apiEndpoint = endpoint.replace('/Finzo/public/api', '');
+                const apiEndpoint = endpoint;
                 
                 const data = await window.api.post(apiEndpoint, formData, true);
 

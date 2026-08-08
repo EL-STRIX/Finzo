@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDetails() {
         try {
-            const response = await window.api.get(`/admin/applications/`);
+            const response = await window.api.get(`/admin/applications/${userId}`);
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
                 populateUI(data);
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnApprove.addEventListener('click', async function() {
             window.api.setButtonLoading(this, true, 'Approving...');
             try {
-                const response = await window.api.post('/admin/applications/review', {
+                const response = await window.api.post(`/admin/applications/${userId}/review`, {
                     user_id: userId,
                     action: 'approve'
                 });
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.api.setButtonLoading(this, true, 'Rejecting...');
 
             try {
-                const response = await window.api.post('/admin/applications/review', {
+                const response = await window.api.post(`/admin/applications/${userId}/review`, {
                     user_id: userId,
                     action: 'reject',
                     reason: reason

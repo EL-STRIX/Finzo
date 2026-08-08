@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Load Detail ──
     async function loadDetail() {
         try {
-            const response = await window.api.get(`/users/locked/`);
+            const response = await window.api.get(`/users/locked/${userId}`);
             if (response.success) {
                 const user = response.user;
                 const logs = response.logs || [];
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true);
 
         try {
-            const response = await window.api.post(/users/locked/{}/unlock, );
+            const response = await window.api.post(`/users/locked/${userId}/unlock`, {});
             if (response.success || response.status === 'success') {
                 const pass = response.temp_password || response.data?.temp_password || 'N/A';
 

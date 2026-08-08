@@ -212,7 +212,7 @@
         
         idInput.value = 'Loading...';
         try {
-            const response = await window.api.get('/admin/get-next-staff-id.php');
+            const response = await window.api.get('/staff/next-id');
             if (response.success) {
                 idInput.value = response.next_id;
             } else {
@@ -508,7 +508,7 @@
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || '';
                     formData.append('csrf_token', csrfToken);
 
-                    const response = await window.api.upload('/admin/add-staff.php', formData);
+                    const response = await window.api.upload('/staff', formData);
 
                     if (response.success) {
                         if (window.showToast) window.showToast('Staff member added successfully!', 'success');
