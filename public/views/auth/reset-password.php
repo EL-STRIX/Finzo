@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,7 +52,7 @@
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
@@ -88,7 +88,7 @@
                 
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     

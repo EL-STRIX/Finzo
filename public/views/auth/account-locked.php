@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Secure Account Recovery" />
-    <title>Finzo | Account Recovery</title>
+    <meta name="description" content="Finzo Enterprise Banking - Security Account Lockout Notice" />
+    <title>Finzo | Account Locked</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,28 +46,28 @@
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/forget-password-page-image.png" alt="Recovery Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/forget-password-page-image.png" alt="Recovery Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Recover access to your account.</h2>
-                        <p class="auth-hero-subtitle">We'll send a secure link to your registered email so you can reset your password and regain access.</p>
+                        <h2 class="auth-hero-headline">Your account has been locked.</h2>
+                        <p class="auth-hero-subtitle">Too many failed login attempts were detected. Your account has been temporarily suspended to prevent unauthorized access.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">lock_reset</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">gpp_maybe</span>
                             <div>
-                                <h4 class="auth-hero-security-title">One-time recovery link</h4>
-                                <p class="auth-hero-security-desc">We send a single-use link to your registered email. It expires in 15 minutes to keep your account safe.</p>
+                                <h4 class="auth-hero-security-title">Too many failed login attempts</h4>
+                                <p class="auth-hero-security-desc">Accounts are automatically locked after multiple incorrect password attempts to protect against unauthorized access.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -86,60 +86,70 @@
                     <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
-                <div class="auth-card-container">
+                <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Account Recovery</h1>
-                        <p class="auth-page-subtitle">Enter your registered email address to receive a secure recovery link.</p>
+                    <!-- Emblem Component -->
+                    <div class="w-16 h-16 bg-red-50 border border-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-3xl">lock_person</span>
                     </div>
 
-                    <!-- Recovery Form Component -->
-                    <form data-action="forgot-password" method="POST" novalidate>
-                        <input type="hidden" name="csrf_token" value="" />
-                        
-                        <!-- Email Input Component -->
-                        <div class="fin-input-container">
-                            <label for="recovery-email" class="fin-label fin-label-required">Registered Email Address</label>
-                            <div class="fin-input-wrapper">
-                                <span class="material-symbols-outlined input-icon-left">mail</span>
-                                <input type="email" id="recovery-email" name="email" class="fin-input has-icon-left" placeholder="name@example.com" required autocomplete="email" />
-                            </div>
-                            <span class="fin-error-text" role="alert">
-                                <span class="material-symbols-outlined">error</span> Valid registered email address is required.
-                            </span>
-                        </div>
+                    <!-- Page Header Component -->
+                    <div class="auth-page-header">
+                        <h1 class="auth-page-title">Account Locked</h1>
+                        <p class="auth-page-subtitle">Access temporarily suspended for security reasons.</p>
+                    </div>
 
-                        <!-- Buttons Group Component -->
-                        <div class="space-y-3 mt-6">
-                            <button type="submit" class="btn btn-primary btn-full">
-                                <span>Send Recovery Link</span>
-                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                            </button>
-                            
-                            <a href="login.html" class="btn btn-secondary btn-full">
-                                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                                <span>Return to Sign In</span>
+                    <!-- Alert Danger Component -->
+                    <div class="alert alert-danger text-left" role="alert">
+                        <span class="material-symbols-outlined alert-icon">error</span>
+                        <div>
+                            Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
+                        </div>
+                    </div>
+
+                    <!-- Contact Support Block -->
+                    <div class="auth-contact-widget">
+                        <p class="auth-contact-title">Need immediate assistance?</p>
+                        <div class="auth-contact-list">
+                            <a href="tel:+18005550199" class="auth-contact-item">
+                                <span class="auth-contact-icon">
+                                    <span class="material-symbols-outlined">phone</span>
+                                </span>
+                                <span>24/7 Fraud &amp; Security Hotline: +1-800-555-0199</span>
+                            </a>
+                            <a href="mailto:support@finzo.com" class="auth-contact-item">
+                                <span class="auth-contact-icon">
+                                    <span class="material-symbols-outlined">mail</span>
+                                </span>
+                                <span>Email Support: support@finzo.com</span>
                             </a>
                         </div>
-                    </form>
+                    </div>
+
+                    <!-- Actions Group Component -->
+                    <div class="mt-4">
+                        <a href="/Finzo/public/index.php" class="btn btn-primary btn-full">
+                            <span class="material-symbols-outlined text-[18px]">home</span>
+                            <span>Return to Homepage</span>
+                        </a>
+                    </div>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice">
-                        <span class="material-symbols-outlined auth-security-notice-icon">mark_email_unread</span>
+                    <div class="auth-security-notice text-left mt-6">
+                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
-                            <strong>Please note:</strong> Recovery links expire in 1 hour. If you did not request a password reset, you can safely ignore this.
+                            <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Identity Protected</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,7 +52,7 @@
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
@@ -88,7 +88,7 @@
                 
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
@@ -100,9 +100,9 @@
 
                     <!-- Role Switcher Component -->
                     <div class="auth-role-switcher" role="tablist" aria-label="Select Authentication Role">
-                        <a href="login.html" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
-                        <a href="staff-login.html" class="auth-role-tab" role="tab" aria-selected="false">Staff</a>
-                        <a href="admin-login.html" class="auth-role-tab active" role="tab" aria-selected="true">Admin</a>
+                        <a href="login.php" class="auth-role-tab" role="tab" aria-selected="false">Customer</a>
+                        <a href="staff-login.php" class="auth-role-tab" role="tab" aria-selected="false">Staff</a>
+                        <a href="admin-login.php" class="auth-role-tab active" role="tab" aria-selected="true">Admin</a>
                     </div>
 
                     <!-- Alert Warning Component -->

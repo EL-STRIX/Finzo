@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Security Account Lockout Notice" />
-    <title>Finzo | Account Locked</title>
+    <meta name="description" content="Finzo Enterprise Banking - Device Verification Multi-Factor Authentication" />
+    <title>Finzo | Device Verification</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,28 +46,28 @@
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Automated Security Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Your account has been locked.</h2>
-                        <p class="auth-hero-subtitle">Too many failed login attempts were detected. Your account has been temporarily suspended to prevent unauthorized access.</p>
+                        <h2 class="auth-hero-headline">Two-step verification.</h2>
+                        <p class="auth-hero-subtitle">We sent a one-time code to your registered phone number. Enter it to confirm your identity and sign in.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">gpp_maybe</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">smartphone</span>
                             <div>
-                                <h4 class="auth-hero-security-title">Too many failed login attempts</h4>
-                                <p class="auth-hero-security-desc">Accounts are automatically locked after multiple incorrect password attempts to protect against unauthorized access.</p>
+                                <h4 class="auth-hero-security-title">New device detected</h4>
+                                <p class="auth-hero-security-desc">When you sign in from a new or unrecognized device, we require a verification code to confirm it's you.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -86,70 +86,57 @@
                     <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
-                <div class="auth-card-container text-center">
+                <div class="auth-card-container">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
-                    <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-red-50 border border-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-3xl">lock_person</span>
-                    </div>
-
                     <!-- Page Header Component -->
                     <div class="auth-page-header">
-                        <h1 class="auth-page-title">Account Locked</h1>
-                        <p class="auth-page-subtitle">Access temporarily suspended for security reasons.</p>
+                        <h1 class="auth-page-title">Device Verification</h1>
+                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
                     </div>
 
-                    <!-- Alert Danger Component -->
-                    <div class="alert alert-danger text-left" role="alert">
-                        <span class="material-symbols-outlined alert-icon">error</span>
-                        <div>
-                            Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
+                    <!-- OTP Form Component -->
+                    <form action="#" method="POST" class="text-center" novalidate>
+                        <!-- 6-Digit OTP Grid Component -->
+                        <div class="fin-otp-container mb-8">
+                            <div class="fin-otp-grid">
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 1" required autofocus />
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 2" required />
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 3" required />
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 4" required />
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 5" required />
+                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 6" required />
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Contact Support Block -->
-                    <div class="auth-contact-widget">
-                        <p class="auth-contact-title">Need immediate assistance?</p>
-                        <div class="auth-contact-list">
-                            <a href="tel:+18005550199" class="auth-contact-item">
-                                <span class="auth-contact-icon">
-                                    <span class="material-symbols-outlined">phone</span>
-                                </span>
-                                <span>24/7 Fraud &amp; Security Hotline: +1-800-555-0199</span>
-                            </a>
-                            <a href="mailto:support@finzo.com" class="auth-contact-item">
-                                <span class="auth-contact-icon">
-                                    <span class="material-symbols-outlined">mail</span>
-                                </span>
-                                <span>Email Support: support@finzo.com</span>
-                            </a>
-                        </div>
-                    </div>
+                        <!-- Primary Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-full mb-4">
+                            <span>Verify Identity</span>
+                            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                        </button>
 
-                    <!-- Actions Group Component -->
-                    <div class="mt-4">
-                        <a href="/Finzo/public/index.html" class="btn btn-primary btn-full">
-                            <span class="material-symbols-outlined text-[18px]">home</span>
-                            <span>Return to Homepage</span>
-                        </a>
-                    </div>
+                        <!-- Resend Component with Countdown -->
+                        <p class="text-xs text-gray-500 font-medium">
+                            Didn't receive the code? 
+                            <button type="button" class="btn-text" data-action="resend-otp">Resend Code in 00:45</button>
+                        </p>
+                    </form>
 
                     <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-6">
-                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
+                    <div class="auth-security-notice text-left mt-8">
+                        <span class="material-symbols-outlined auth-security-notice-icon">phonelink_lock</span>
                         <div class="auth-security-notice-text">
-                            <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
+                            <strong>Important:</strong> OTP codes expire in 5 minutes. Never share this code with anyone, including Finzo staff.
                         </div>
                     </div>
 
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Automated Defense</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>
                     </div>
                 </div>
             </div>

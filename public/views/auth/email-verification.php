@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Device Verification Multi-Factor Authentication" />
-    <title>Finzo | Device Verification</title>
+    <meta name="description" content="Finzo Enterprise Banking - Email Verification Sent" />
+    <title>Finzo | Check Your Email</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,28 +46,28 @@
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Two-step verification.</h2>
-                        <p class="auth-hero-subtitle">We sent a one-time code to your registered phone number. Enter it to confirm your identity and sign in.</p>
+                        <h2 class="auth-hero-headline">Verify your email address.</h2>
+                        <p class="auth-hero-subtitle">We need to confirm your email before activating your account. Check your inbox for the verification link we sent.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">smartphone</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">mark_email_read</span>
                             <div>
-                                <h4 class="auth-hero-security-title">New device detected</h4>
-                                <p class="auth-hero-security-desc">When you sign in from a new or unrecognized device, we require a verification code to confirm it's you.</p>
+                                <h4 class="auth-hero-security-title">Secure verification link</h4>
+                                <p class="auth-hero-security-desc">The link in your email is valid for 30 minutes and can only be used once. After it expires, you can request a new one.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -86,50 +86,49 @@
                     <span class="material-symbols-outlined text-[16px]">expand_more</span>
                 </div>
                 
-                <div class="auth-card-container">
+                <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
-                    <!-- Page Header Component -->
-                    <div class="auth-page-header">
-                        <h1 class="auth-page-title">Device Verification</h1>
-                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
+                    <!-- Emblem Component -->
+                    <div class="w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
                     </div>
 
-                    <!-- OTP Form Component -->
-                    <form action="#" method="POST" class="text-center" novalidate>
-                        <!-- 6-Digit OTP Grid Component -->
-                        <div class="fin-otp-container mb-8">
-                            <div class="fin-otp-grid">
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 1" required autofocus />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 2" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 3" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 4" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 5" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 6" required />
-                            </div>
+                    <!-- Page Header Component -->
+                    <div class="auth-page-header">
+                        <h1 class="auth-page-title">Check Your Email</h1>
+                        <p class="auth-page-subtitle">We sent a secure verification link to your registered email address.</p>
+                    </div>
+
+                    <!-- Alert Info Component -->
+                    <div class="alert alert-info text-left" role="status">
+                        <span class="material-symbols-outlined alert-icon">info</span>
+                        <div>
+                            Click the secure link inside the email to complete your registration. The link will expire in 30 minutes.
                         </div>
+                    </div>
 
-                        <!-- Primary Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-full mb-4">
-                            <span>Verify Identity</span>
-                            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                    <!-- Buttons Group Component -->
+                    <div class="space-y-3 mt-6">
+                        <a href="login.php" class="btn btn-primary btn-full">
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            <span>Return to Sign In</span>
+                        </a>
+
+                        <button type="button" class="btn btn-secondary btn-full" data-action="resend-email-verification">
+                            <span class="material-symbols-outlined text-[18px]">refresh</span>
+                            <span>Resend Verification Email</span>
                         </button>
-
-                        <!-- Resend Component with Countdown -->
-                        <p class="text-xs text-gray-500 font-medium">
-                            Didn't receive the code? 
-                            <button type="button" class="btn-text" data-action="resend-otp">Resend Code in 00:45</button>
-                        </p>
-                    </form>
+                    </div>
 
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">phonelink_lock</span>
+                        <span class="material-symbols-outlined auth-security-notice-icon">forward_to_inbox</span>
                         <div class="auth-security-notice-text">
-                            <strong>Important:</strong> OTP codes expire in 5 minutes. Never share this code with anyone, including Finzo staff.
+                            <strong>Tip:</strong> If you don't see the email within a few minutes, please check your spam or junk folder.
                         </div>
                     </div>
 

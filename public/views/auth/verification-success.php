@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Email Verification Sent" />
-    <title>Finzo | Check Your Email</title>
+    <meta name="description" content="Finzo Enterprise Banking - Identity Verification Success Confirmation" />
+    <title>Finzo | Identity Verified</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,28 +46,28 @@
         <div class="auth-split-grid">
             <!-- Left Side: Hero Illustration & Security Banner -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Identity Verified Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/landing-dashboard.jpg" alt="Identity Verified Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
                     <div>
-                        <a href="/Finzo/public/index.html" class="auth-brand-logo">
+                        <a href="/Finzo/public/index.php" class="auth-brand-logo">
                             <div class="auth-brand-icon-box">
                                 <span class="material-symbols-outlined text-2xl">account_balance</span>
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Verify your email address.</h2>
-                        <p class="auth-hero-subtitle">We need to confirm your email before activating your account. Check your inbox for the verification link we sent.</p>
+                        <h2 class="auth-hero-headline">Your account is ready.</h2>
+                        <p class="auth-hero-subtitle">Your email has been verified and your Finzo account is now active. You can sign in and start managing your finances.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">mark_email_read</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">verified</span>
                             <div>
-                                <h4 class="auth-hero-security-title">Secure verification link</h4>
-                                <p class="auth-hero-security-desc">The link in your email is valid for 30 minutes and can only be used once. After it expires, you can request a new one.</p>
+                                <h4 class="auth-hero-security-title">Verification complete</h4>
+                                <p class="auth-hero-security-desc">Your email has been confirmed and your account is secured. You can now sign in and manage your account.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -88,47 +88,42 @@
                 
                 <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
-                    <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
+                    <a href="/Finzo/public/index.php" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
                     <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
+                    <div class="w-16 h-16 bg-green-50 border border-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-3xl">check_circle</span>
                     </div>
 
                     <!-- Page Header Component -->
                     <div class="auth-page-header">
-                        <h1 class="auth-page-title">Check Your Email</h1>
-                        <p class="auth-page-subtitle">We sent a secure verification link to your registered email address.</p>
+                        <h1 class="auth-page-title">Identity Verified</h1>
+                        <p class="auth-page-subtitle">Your profile is now active and fully secured.</p>
                     </div>
 
-                    <!-- Alert Info Component -->
-                    <div class="alert alert-info text-left" role="status">
-                        <span class="material-symbols-outlined alert-icon">info</span>
+                    <!-- Alert Success Component -->
+                    <div class="alert alert-success text-left" role="status">
+                        <span class="material-symbols-outlined alert-icon">task_alt</span>
                         <div>
-                            Click the secure link inside the email to complete your registration. The link will expire in 30 minutes.
+                            Your Finzo credentials have been verified. You can now log in to access your digital banking workspace.
                         </div>
                     </div>
 
-                    <!-- Buttons Group Component -->
-                    <div class="space-y-3 mt-6">
-                        <a href="login.html" class="btn btn-primary btn-full">
-                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                            <span>Return to Sign In</span>
+                    <!-- Button Component -->
+                    <div class="mt-6">
+                        <a href="login.php" class="btn btn-primary btn-full">
+                            <span>Proceed to Login</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </a>
-
-                        <button type="button" class="btn btn-secondary btn-full" data-action="resend-email-verification">
-                            <span class="material-symbols-outlined text-[18px]">refresh</span>
-                            <span>Resend Verification Email</span>
-                        </button>
                     </div>
 
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">forward_to_inbox</span>
+                        <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
-                            <strong>Tip:</strong> If you don't see the email within a few minutes, please check your spam or junk folder.
+                            <strong>Security tip:</strong> We recommend enabling two-step verification after your first login for added account protection.
                         </div>
                     </div>
 
