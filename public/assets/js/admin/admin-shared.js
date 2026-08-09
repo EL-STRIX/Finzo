@@ -36,11 +36,17 @@ window.AdminPortal = {
     syncHeader: function(admin, stats) {
         if (!admin) return;
         
-        const name = admin.full_name;
-        const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase();
+        const name = admin.full_name || 'Admin';
+        const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
-        // Update only the topbar admin avatar to prevent overwriting avatars in data tables
-        document.querySelectorAll('header.admin-topbar .admin-avatar').forEach(el => {
+        // Update header name and ID spans
+        const nameEl = document.getElementById('header-admin-name');
+        const idEl = document.getElementById('header-admin-id');
+        if (nameEl) nameEl.textContent = name;
+        if (idEl) idEl.textContent = 'ID: #' + (admin.id || admin.customer_id || '---');
+
+        // Update topbar admin avatar
+        document.querySelectorAll('header .admin-avatar').forEach(el => {
             if (admin.profile_photo) {
                 const cacheBuster = '?v=' + new Date().getTime();
                 const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `/Finzo/public/assets/${admin.profile_photo}`) + cacheBuster;
@@ -48,7 +54,7 @@ window.AdminPortal = {
                 el.style.background = 'none';
             } else {
                 el.textContent = initials;
-                el.style.background = window.FinzoUtils.getAvatarGradient(initials);
+                if (window.FinzoUtils) el.style.background = window.FinzoUtils.getAvatarGradient(initials);
             }
         });
     },
@@ -81,9 +87,9 @@ window.AdminPortal = {
                     e.preventDefault();
                     try {
                         await window.api.post('/auth/logout');
-                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
                     } catch (error) {
-                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
                     }
                 });
             }
@@ -218,9 +224,9 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
                 e.preventDefault();
                 try {
                     await window.api.post('/auth/logout');
-                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.php';
                 } catch (error) {
-                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.php';
                 }
             });
         }

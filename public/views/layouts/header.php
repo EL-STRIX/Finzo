@@ -3,7 +3,7 @@ $portal = $portal ?? 'guest';
 $pageTitle = $pageTitle ?? 'Dashboard';
 ?>
 <!-- Global Header -->
-<header class="h-16 bg-white dark:bg-surface-dark border-b border-border-subtle fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors duration-300">
+<header class="admin-topbar h-16 bg-white dark:bg-surface-dark border-b border-border-subtle fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors duration-300">
     <div class="flex items-center gap-4 lg:gap-6">
         <!-- Mobile Menu Toggle -->
         <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 rounded-xl text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-primary-base" aria-label="Toggle Navigation Menu">
@@ -49,10 +49,10 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         <!-- User Profile Menu -->
         <div class="relative ml-2 flex items-center gap-3 cursor-pointer group">
             <div class="text-right hidden sm:block">
-                <div class="text-sm font-bold text-text-main dark:text-white leading-tight">Admin User</div>
-                <div class="text-xs text-text-muted">ID: #99321</div>
+                <div class="text-sm font-bold text-text-main dark:text-white leading-tight" id="header-admin-name">Admin</div>
+                <div class="text-xs text-text-muted" id="header-admin-id">Loading...</div>
             </div>
-            <div class="w-10 h-10 rounded-full bg-primary-surface text-primary-base border border-primary-base/20 flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
+            <div class="admin-avatar w-10 h-10 rounded-full bg-primary-surface text-primary-base border border-primary-base/20 flex items-center justify-center font-bold text-sm shadow-sm transition-transform group-hover:scale-105">
                 <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
             </div>
         </div>

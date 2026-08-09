@@ -28,6 +28,10 @@
   --color-border-main: #b0b8c1;
   --color-border-focus: #0A2540;
   
+  /* Surface aliases used throughout the app */
+  --color-surface-dark: #161b22;
+  --color-surface-border: var(--color-border-subtle);
+  
   --color-success-base: #0E793C;
   --color-success-hover: #0B6331;
   --color-success-surface: #E8F5E9;
@@ -93,6 +97,8 @@
   --color-surface-main: #1e293b;
   --color-surface-subtle: #0f172a;
   --color-surface-hover: #334155;
+  --color-surface-dark: #0f172a;
+  --color-surface-border: #334155;
   
   --color-text-main: #ffffff;
   --color-text-muted: #A0AAB4;
@@ -106,3 +112,67 @@
   --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.5);
   --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }
+
+/* ─── Skeleton Loading State ─── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e8edf2 25%, #f4f7f9 50%, #e8edf2 75%) !important;
+  background-size: 800px 100% !important;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite !important;
+  color: transparent !important;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .skeleton,
+.dark .skeleton {
+  background: linear-gradient(90deg, #1c2128 25%, #22272e 50%, #1c2128 75%) !important;
+  background-size: 800px 100% !important;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite !important;
+}
+
+/* ─── Status Badge Utility ─── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.badge-success { background-color: var(--color-success-surface); color: var(--color-success-text); }
+.badge-warning { background-color: var(--color-warning-surface); color: var(--color-warning-text); }
+.badge-danger  { background-color: var(--color-danger-surface);  color: var(--color-danger-text);  }
+.badge-info    { background-color: var(--color-info-surface);    color: var(--color-info-text);    }
+.badge-neutral { background-color: #f1f5f9; color: #475569; }
+
+/* Dark mode dropdown overrides */
+[data-theme="dark"] .finzo-dropdown-trigger,
+.dark .finzo-dropdown-trigger {
+  background: var(--color-surface-main);
+  border-color: var(--color-border-main);
+  color: var(--color-text-main);
+}
+[data-theme="dark"] .finzo-dropdown-menu,
+.dark .finzo-dropdown-menu {
+  background: var(--color-surface-main);
+  border-color: var(--color-border-main);
+}
+[data-theme="dark"] .finzo-dropdown-option,
+.dark .finzo-dropdown-option {
+  color: var(--color-text-main);
+}
+[data-theme="dark"] .finzo-dropdown-option:hover,
+.dark .finzo-dropdown-option:hover {
+  background: var(--color-surface-hover);
+}
+

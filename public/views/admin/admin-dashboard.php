@@ -1,75 +1,70 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin';
+$pageTitle = 'Finzo Admin — Dashboard';
+$useCharts = true;
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Dashboard</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">System Overview &amp; Real-Time Analytics</p>
+    </div>
+    <div class="flex items-center gap-3 text-xs font-bold text-text-muted uppercase tracking-widest">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
+        <span id="header-live-clock"></span>
+        <script>setInterval(function(){ var d=new Date(); document.getElementById("header-live-clock").textContent = d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}); },1000);</script>
+    </div>
+</div>
+';
 ob_start();
-?>
-<!-- KEY PERFORMANCE INDICATORS GRID -->
-            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+?><!-- KEY PERFORMANCE INDICATORS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
                 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-warning-base dark:lg:hover:border-warning-base/30 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-warning-surface/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-warning-surface dark:bg-warning-surface/10 text-warning-base dark:text-warning-base flex items-center justify-center mb-4 border border-warning-base dark:border-warning-base/20 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">account_balance_wallet</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Total Assets</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton" id="stat-total-assets">₹0.00</div>
+                <div class="admin-stat-card group hover:border-warning-base/40 dark:hover:border-warning-base/30">
+                    <div class="admin-stat-icon bg-warning-surface dark:bg-warning-surface/10 text-warning-base border border-warning-base/20">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">account_balance_wallet</span>
                     </div>
+                    <div class="admin-stat-label">Total Assets</div>
+                    <div class="admin-stat-value skeleton" id="stat-total-assets">&#8377;0</div>
                 </div>
                 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-success-base dark:lg:hover:border-success-base/30 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-success-surface/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base flex items-center justify-center mb-4 border border-success-base dark:border-success-base/20 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">download_for_offline</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Today's Deposits</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton">0</div>
+                <div class="admin-stat-card group hover:border-success-base/40 dark:hover:border-success-base/30">
+                    <div class="admin-stat-icon bg-success-surface dark:bg-success-surface/10 text-success-base border border-success-base/20">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">download_for_offline</span>
                     </div>
+                    <div class="admin-stat-label">Today's Deposits</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
                 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-blue-200 dark:lg:hover:border-blue-500/30 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-primary-surface/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-primary-surface dark:bg-primary-surface/10 text-info-base dark:text-primary-base flex items-center justify-center mb-4 border border-blue-100 dark:border-blue-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">upload_file</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Today's Withdrawals</div>
-                        <div class="text-xl font-black font-mono tracking-tight text-text-main dark:text-white skeleton">0</div>
+                <div class="admin-stat-card group hover:border-blue-200 dark:hover:border-blue-500/30">
+                    <div class="admin-stat-icon bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">upload_file</span>
                     </div>
+                    <div class="admin-stat-label">Today's Withdrawals</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-purple-200 dark:lg:hover:border-purple-500/30 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-purple-500/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 flex items-center justify-center mb-4 border border-purple-100 dark:border-purple-500/20 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">group</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Total Users</div>
-                        <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
+                <div class="admin-stat-card group hover:border-purple-200 dark:hover:border-purple-500/30">
+                    <div class="admin-stat-icon bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-500/20">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">group</span>
                     </div>
+                    <div class="admin-stat-label">Total Users</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-primary/20 dark:lg:hover:border-primary/50 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-primary/5 text-primary-base flex items-center justify-center mb-4 border border-primary/10 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">badge</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Active Staff</div>
-                        <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
+                <div class="admin-stat-card group hover:border-primary-base/20 dark:hover:border-primary-base/50">
+                    <div class="admin-stat-icon bg-primary-surface dark:bg-primary-surface/10 text-primary-base border border-primary-base/10">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">badge</span>
                     </div>
+                    <div class="admin-stat-label">Active Staff</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-5 relative overflow-hidden group lg:hover:border-danger-base dark:lg:hover:border-danger-base/30 transition-colors">
-                    <div class="absolute right-0 top-0 w-16 h-16 bg-danger-surface/5 rounded-bl-full -z-0"></div>
-                    <div class="relative z-10">
-                        <div class="w-10 h-10 rounded-xl bg-danger-surface dark:bg-danger-surface/10 text-danger-base dark:text-danger-base flex items-center justify-center mb-4 border border-danger-base dark:border-danger-base/20 shadow-sm">
-                            <span class="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
-                        </div>
-                        <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-1">Locked Accounts</div>
-                        <div class="text-xl font-black tracking-tight text-text-main dark:text-white skeleton">0</div>
+                <div class="admin-stat-card group hover:border-danger-base/40 dark:hover:border-danger-base/30">
+                    <div class="admin-stat-icon bg-danger-surface dark:bg-danger-surface/10 text-danger-base border border-danger-base/20">
+                        <span class="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
                     </div>
+                    <div class="admin-stat-label">Locked Accounts</div>
+                    <div class="admin-stat-value skeleton">0</div>
                 </div>
             </div>
 
@@ -162,7 +157,7 @@ ob_start();
                 </div>
             </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>';
+$extraScripts = '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script><script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
