@@ -208,6 +208,7 @@ ob_start();
                 </div>
 
             </div>
+<script defer src="/Finzo/public/assets/js/staff/staff-profile.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

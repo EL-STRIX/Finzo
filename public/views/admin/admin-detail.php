@@ -174,6 +174,7 @@ ob_start();
                     </table>
                 </div>
             </div>
+<script defer src="/Finzo/public/assets/js/admin/admin-detail.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

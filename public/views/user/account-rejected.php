@@ -100,6 +100,7 @@ ob_start();
     </div>
 </div>
 
+<script defer src="/Finzo/public/assets/js/user/account-rejected.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
