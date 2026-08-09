@@ -64,7 +64,7 @@ async function fetchUserSession() {
   try {
     const res = await window.api.get('/user/dashboard');
     if (res.status === 401 || res.status === 403) {   // Not logged in — redirect to login
-      window.location.href = '/Finzo/public/views/auth/login.html';
+      window.location.href = '/Finzo/public/views/auth/login.php';
       return;
     }
     if (res.success) {
@@ -341,23 +341,23 @@ function buildSidebar(activePage) {
   const lockedWhenInactive = ['accounts', 'transfer', 'transactions', 'statement', 'beneficiary'];
   
   const mainLinks = [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.html' },
-    { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.html', lockedWhenInactive: true },
-    { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.html', lockedWhenInactive: true },
-    { id: 'transactions', icon: 'receipt_long', label: 'Transactions', href: 'transactions.html', lockedWhenInactive: true },
-    { id: 'beneficiary', icon: 'group', label: 'Beneficiaries', href: 'beneficiary.html', lockedWhenInactive: true },
-    { id: 'statement', icon: 'description', label: 'Statement', href: 'statement.html', lockedWhenInactive: true },
-    { id: 'notifications', icon: 'notifications', label: 'Notifications', href: 'notifications.html', badge: UserState.notifCount > 0 ? UserState.notifCount : null },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
+    { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
+    { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
+    { id: 'transactions', icon: 'receipt_long', label: 'Transactions', href: 'transactions.php', lockedWhenInactive: true },
+    { id: 'beneficiary', icon: 'group', label: 'Beneficiaries', href: 'beneficiary.php', lockedWhenInactive: true },
+    { id: 'statement', icon: 'description', label: 'Statement', href: 'statement.php', lockedWhenInactive: true },
+    { id: 'notifications', icon: 'notifications', label: 'Notifications', href: 'notifications.php', badge: UserState.notifCount > 0 ? UserState.notifCount : null },
   ];
 
   const settingsLinks = [
-    { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.html' },
-    { id: 'change-password', icon: 'lock', label: 'Change Password', href: 'change-password.html' },
+    { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.php' },
+    { id: 'change-password', icon: 'lock', label: 'Change Password', href: 'change-password.php' },
   ];
 
   // Add complete-profile for pending/rejected
   if (isPending || isRejected) {
-    settingsLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: isPending ? 'Complete Profile' : 'Resubmit Profile', href: 'complete-profile.html', highlight: true });
+    settingsLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: isPending ? 'Complete Profile' : 'Resubmit Profile', href: 'complete-profile.php', highlight: true });
   }
 
   const html = `
@@ -475,7 +475,7 @@ function buildNavbar(eyebrow, title) {
               <div style="padding:20px;text-align:center;font-size:12px;color:var(--text-placeholder)">Loading...</div>
             </div>
             <div style="padding:12px;text-align:center;border-top:1px solid var(--border)">
-              <a href="notifications.html" style="font-size:12px;font-weight:700;color:var(--primary)">View all notifications →</a>
+              <a href="notifications.php" style="font-size:12px;font-weight:700;color:var(--primary)">View all notifications →</a>
             </div>
           </div>
         </div>
@@ -635,11 +635,11 @@ function requireLogin() {
   // Session validation is handled server-side by middleware.
   // This provides a client-side fallback.
   const status = UserState.status;
-  if (!status) { window.location.href = '/Finzo/public/views/auth/login.html'; return false; }
+  if (!status) { window.location.href = '/Finzo/public/views/auth/login.php'; return false; }
   return true;
 }
 
-function requireActive(redirectTo = 'dashboard.html') {
+function requireActive(redirectTo = 'dashboard.php') {
   if (!UserState.isActive) { window.location.href = redirectTo; return false; }
   return true;
 }
@@ -656,34 +656,34 @@ function handleStatusRedirect(currentPage) {
   // Inactive users cannot access active-only pages
   if (activeOnlyPages.includes(currentPage) && status !== 'active') {
     if (status === 'under_review') {
-      window.location.href = 'account-pending.html';
+      window.location.href = 'account-pending.php';
     } else {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'dashboard.php';
     }
     return;
   }
 
   // Active users cannot access KYC onboarding pages
   if (pendingOnlyPages.includes(currentPage) && status === 'active') {
-    window.location.href = 'dashboard.html';
+    window.location.href = 'dashboard.php';
     return;
   }
 
   // Pending users (KYC not submitted) cannot access review or rejected pages
   if (status === 'pending' && (currentPage === 'account-pending' || currentPage === 'account-rejected')) {
-    window.location.href = 'complete-profile.html';
+    window.location.href = 'complete-profile.php';
     return;
   }
 
   // Under review users cannot access KYC form or rejected page
   if (status === 'under_review' && (currentPage === 'complete-profile' || currentPage === 'account-rejected')) {
-    window.location.href = 'account-pending.html';
+    window.location.href = 'account-pending.php';
     return;
   }
 
   // Rejected users cannot access the under review page
   if (status === 'rejected' && currentPage === 'account-pending') {
-    window.location.href = 'account-rejected.html';
+    window.location.href = 'account-rejected.php';
     return;
   }
 }
@@ -705,9 +705,9 @@ window.FinzoSession = {
       await window.api.post('/auth/logout', {});
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
-      window.location.href = '/Finzo/public/index.html';
+      window.location.href = '/Finzo/public/index.php';
     } catch (e) {
-      window.location.href = '/Finzo/public/views/auth/login.html';
+      window.location.href = '/Finzo/public/views/auth/login.php';
     }
   }
 };
