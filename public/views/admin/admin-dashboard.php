@@ -11,9 +11,9 @@ $pageHeader = '
     <div class="flex items-center gap-3 text-xs font-bold text-text-muted uppercase tracking-widest">
         <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
         <span id="header-live-clock"></span>
-        <script>setInterval(function(){ var d=new Date(); document.getElementById("header-live-clock").textContent = d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}); },1000);</script>
     </div>
 </div>
+<script defer src="/Finzo/public/assets/js/admin/admin-dashboard.js"></script>
 ';
 ob_start();
 ?><!-- KEY PERFORMANCE INDICATORS GRID -->
@@ -138,7 +138,7 @@ ob_start();
                     </h3>
                     <a href="admin-users.php" class="text-xs font-black text-primary-base hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
-                <div class="overflow-x-auto w-full" style="-webkit-overflow-scrolling: touch;">
+                <div class="overflow-x-auto w-full touch-pan-x">
                     <table class="ds-table w-full text-left min-w-[800px]">
                         <thead scope="col">
                             <tr>
