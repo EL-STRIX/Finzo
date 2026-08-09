@@ -55,7 +55,7 @@ RewriteRule ^vendor/(.*)$ - [F,L,NC]
     RewriteRule ^app/Controllers/(.*)$ public/api/index.php [L,QSA]
 
     # Rewrite new PHP auth paths to original HTML auth paths internally
-    RewriteRule ^public/views/auth/(.*)\.php$ resources/views/auth/$1.html [L,NC]
+#     RewriteRule ^public/views/auth/(.*)\.php$ resources/views/auth/$1.html [L,NC]
 
     # Bridge uploads to the public/uploads folder
     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L,QSA]
