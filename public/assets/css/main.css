@@ -5,7 +5,6 @@
 @import 'base/typography.css';
 @import 'base/reset.css';
 @import 'base/animations.css';
-@import 'base/dark-mode.css';
 @import 'base/custom.css';
 
 /* 2. Components */
@@ -14,6 +13,8 @@
 @import 'components/cards.css';
 @import 'components/tables.css';
 @import 'components/badges.css';
+@import 'components/alerts.css';
+@import 'components/pagination.css';
 @import 'components/dropdowns.css';
 @import 'components/modals.css';
 @import 'components/toasts.css';

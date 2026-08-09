@@ -1,0 +1,77 @@
+/* Finzo Enterprise Pagination Component System */
+
+.finzo-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: var(--space-lg);
+  font-family: var(--font-body);
+}
+
+.pagination-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 4px;
+}
+
+.pagination-item {
+  display: inline-block;
+}
+
+.pagination-link, .pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pagination-link:hover, .pagination-btn:hover {
+  background-color: var(--color-background);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.pagination-link:focus-visible, .pagination-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-color: var(--color-primary);
+}
+
+/* Active State */
+.pagination-item.active .pagination-link {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  pointer-events: none;
+}
+
+/* Disabled State */
+.pagination-item.disabled .pagination-link,
+.pagination-btn:disabled {
+  background-color: var(--color-disabled-bg);
+  border-color: var(--color-border-subtle);
+  color: var(--color-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Pagination Info (e.g., "Showing 1 to 10 of 50") */
+.pagination-info {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-right: auto;
+}

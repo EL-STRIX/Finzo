@@ -2,9 +2,10 @@
 .ds-table-wrapper {
   width: 100%;
   overflow-x: auto;
-  border: 1px solid var(--color-border-main);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface-main);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .ds-table {
@@ -14,24 +15,48 @@
 }
 
 .ds-table th {
-  background-color: var(--color-surface-subtle);
-  padding: var(--space-xs) var(--space-md);
+  background-color: var(--color-background);
+  padding: var(--space-sm) var(--space-md);
   font-family: var(--font-display);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  border-bottom: 1px solid var(--color-border-main);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .ds-table td {
-  padding: var(--space-xs) var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   font-size: 14px;
-  color: var(--color-text-main);
-  border-bottom: 1px solid var(--color-border-main);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
   vertical-align: middle;
 }
 
 .ds-table tr:last-child td { border-bottom: none; }
-.ds-table tbody tr:hover { background-color: var(--color-surface-hover); }
+.ds-table tbody tr { transition: background-color var(--transition-fast); }
+.ds-table tbody tr:hover { background-color: var(--color-background); }
+
+/* Table Actions (e.g., small icon buttons in rows) */
+.ds-table-action {
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ds-table-action:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+/* Empty State / Loading State for Table */
+.ds-table-empty {
+  padding: var(--space-2xl) var(--space-md);
+  text-align: center;
+  color: var(--color-text-muted);
+}

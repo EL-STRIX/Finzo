@@ -1,6 +1,7 @@
 /* Finzo Enterprise Banking Design Tokens */
 :root {
-  /* 1. COLOR SYSTEM (Light Mode) */
+  /* 1. COLOR PALETTES (Raw Colors) */
+  /* Primary (Blue) */
   --color-primary-50: #f4f7f9;
   --color-primary-100: #e1e5e9;
   --color-primary-200: #d1d9e0;
@@ -11,53 +12,88 @@
   --color-primary-700: #061A2D;
   --color-primary-800: #03101C;
   --color-primary-900: #01080e;
-  --color-primary-base: #0A2540;
-  --color-primary-hover: #061A2D;
-  --color-primary-surface: #f4f7f9;
+
+  /* Secondary (Slate) */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+
+  /* Status Colors */
+  --color-green-50: #E8F5E9;
+  --color-green-500: #0E793C;
+  --color-green-600: #0B6331;
+  --color-green-700: #084823;
   
-  --color-surface-main: #ffffff;
-  --color-surface-subtle: #F4F7F9;
-  --color-surface-hover: #E6E9EC;
+  --color-amber-50: #FFF8E1;
+  --color-amber-500: #B97200;
+  --color-amber-600: #975D00;
+  --color-amber-700: #754800;
+
+  --color-red-50: #FFEBEE;
+  --color-red-500: #C62828;
+  --color-red-600: #A32121;
+  --color-red-700: #7E1919;
+
+  --color-blue-50: #E3F2FD;
+  --color-blue-500: #185ABB;
+  --color-blue-600: #134A99;
+  --color-blue-700: #0E3773;
+
+  /* 2. SEMANTIC TOKENS (Light Mode Default) */
   
-  --color-text-main: #111820;
+  /* Backgrounds & Surfaces */
+  --color-background: #f4f7f9;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  
+  /* Primary */
+  --color-primary: var(--color-primary-600);
+  --color-primary-hover: var(--color-primary-700);
+  --color-primary-active: var(--color-primary-800);
+  
+  /* Secondary */
+  --color-secondary: var(--color-secondary-600);
+  --color-secondary-hover: var(--color-secondary-700);
+
+  /* Text */
+  --color-text-primary: #111820;
+  --color-text-secondary: #4a5560;
   --color-text-muted: #6E7A87;
-  --color-text-disabled: #A0AAB4;
   --color-text-inverse: #ffffff;
   
-  --color-border-subtle: #D1D9E0;
-  --color-border-main: #b0b8c1;
-  --color-border-focus: #0A2540;
-  
-  /* Surface aliases used throughout the app */
-  --color-surface-dark: #161b22;
-  --color-surface-border: var(--color-border-subtle);
-  
-  --color-success-base: #0E793C;
-  --color-success-hover: #0B6331;
-  --color-success-surface: #E8F5E9;
-  --color-success-text: #084823;
-  
-  --color-warning-base: #B97200;
-  --color-warning-hover: #975D00;
-  --color-warning-surface: #FFF8E1;
-  --color-warning-text: #754800;
-  
-  --color-danger-base: #C62828;
-  --color-danger-hover: #A32121;
-  --color-danger-surface: #FFEBEE;
-  --color-danger-text: #7E1919;
-  
-  --color-info-base: #185ABB;
-  --color-info-hover: #134A99;
-  --color-info-surface: #E3F2FD;
-  --color-info-text: #0E3773;
+  /* Borders */
+  --color-border-subtle: #e1e5e9;
+  --color-border: #d1d9e0;
+  --color-border-strong: #b0b8c1;
 
-  /* 2. TYPOGRAPHY SYSTEM */
+  /* Semantic Statuses */
+  --color-success: var(--color-green-500);
+  --color-success-bg: var(--color-green-50);
+  
+  --color-warning: var(--color-amber-500);
+  --color-warning-bg: var(--color-amber-50);
+  
+  --color-error: var(--color-red-500);
+  --color-error-bg: var(--color-red-50);
+  
+  --color-info: var(--color-blue-500);
+  --color-info-bg: var(--color-blue-50);
+
+  /* States */
+  --color-focus: var(--color-primary-600);
+  --color-disabled: #A0AAB4;
+  --color-disabled-bg: #e1e5e9;
+  --color-overlay: rgba(3, 16, 28, 0.4);
+
+  /* 3. TYPOGRAPHY SYSTEM */
   --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
-  /* 3. SPACING SYSTEM */
+  /* 4. SPACING SYSTEM */
   --space-4xs: 4px;
   --space-3xs: 8px;
   --space-2xs: 12px;
@@ -75,8 +111,9 @@
   --shadow-md: 0 10px 20px rgba(10, 37, 64, 0.08), 0 4px 6px rgba(10, 37, 64, 0.04);
   --shadow-lg: 0 20px 30px rgba(10, 37, 64, 0.1);
   --shadow-dropdown: 0 10px 25px -5px rgba(10, 37, 64, 0.1), 0 8px 10px -6px rgba(10, 37, 64, 0.1);
+  
   --shadow-focus: 0 0 0 3px rgba(10, 37, 64, 0.2);
-  --shadow-focus-danger: 0 0 0 3px rgba(198, 40, 40, 0.2);
+  --shadow-focus-error: 0 0 0 3px rgba(198, 40, 40, 0.2);
   --shadow-focus-success: 0 0 0 3px rgba(14, 121, 60, 0.2);
   
   /* 6. BORDER RADIUS */
@@ -87,30 +124,69 @@
   --radius-2xl: 24px;
   --radius-full: 9999px;
   
-  /* 13. ANIMATION SYSTEM */
+  /* 7. ANIMATION SYSTEM */
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dark {
-  --color-surface-main: #1e293b;
-  --color-surface-subtle: #0f172a;
-  --color-surface-hover: #334155;
-  --color-surface-dark: #0f172a;
-  --color-surface-border: #334155;
+/* =======================================================================
+   DARK MODE OVERRIDES
+======================================================================= */
+[data-theme="dark"], .dark {
+  /* Backgrounds & Surfaces */
+  --color-background: #000000;
+  --color-surface: #161b22;
+  --color-surface-elevated: #1c2128;
   
-  --color-text-main: #ffffff;
-  --color-text-muted: #A0AAB4;
-  --color-text-disabled: #6E7A87;
+  /* Primary */
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79c0ff;
+  --color-primary-active: #a5d6ff;
   
-  --color-border-subtle: #334155;
-  --color-border-main: #4a5560;
-  --color-border-focus: #38bdf8;
+  /* Secondary */
+  --color-secondary: #8b949e;
+  --color-secondary-hover: #c9d1d9;
+
+  /* Text */
+  --color-text-primary: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #484f58;
+  --color-text-inverse: #000000;
   
-  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.5);
-  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  /* Borders */
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-strong: rgba(255, 255, 255, 0.2);
+
+  /* Semantic Statuses */
+  --color-success: #2ea043;
+  --color-success-bg: rgba(46, 160, 67, 0.15);
+  
+  --color-warning: #d29922;
+  --color-warning-bg: rgba(210, 153, 34, 0.12);
+  
+  --color-error: #f85149;
+  --color-error-bg: rgba(248, 81, 73, 0.12);
+  
+  --color-info: #58a6ff;
+  --color-info-bg: rgba(88, 166, 255, 0.12);
+
+  /* States */
+  --color-focus: #58a6ff;
+  --color-disabled: #484f58;
+  --color-disabled-bg: #161b22;
+  --color-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Shadows (Dark Mode) */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.6), 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.8);
+  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  
+  --shadow-focus: 0 0 0 3px rgba(88, 166, 255, 0.3);
+  --shadow-focus-error: 0 0 0 3px rgba(248, 81, 73, 0.3);
+  --shadow-focus-success: 0 0 0 3px rgba(46, 160, 67, 0.3);
 }
 
 /* ─── Skeleton Loading State ─── */
@@ -120,59 +196,12 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #e8edf2 25%, #f4f7f9 50%, #e8edf2 75%) !important;
+  background: linear-gradient(90deg, var(--color-background) 25%, var(--color-surface) 50%, var(--color-background) 75%) !important;
   background-size: 800px 100% !important;
   animation: skeleton-shimmer 1.4s ease-in-out infinite !important;
   color: transparent !important;
+  border-color: transparent !important;
   border-radius: var(--radius-sm);
   user-select: none;
   pointer-events: none;
 }
-
-[data-theme="dark"] .skeleton,
-.dark .skeleton {
-  background: linear-gradient(90deg, #1c2128 25%, #22272e 50%, #1c2128 75%) !important;
-  background-size: 800px 100% !important;
-  animation: skeleton-shimmer 1.4s ease-in-out infinite !important;
-}
-
-/* ─── Status Badge Utility ─── */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-
-.badge-success { background-color: var(--color-success-surface); color: var(--color-success-text); }
-.badge-warning { background-color: var(--color-warning-surface); color: var(--color-warning-text); }
-.badge-danger  { background-color: var(--color-danger-surface);  color: var(--color-danger-text);  }
-.badge-info    { background-color: var(--color-info-surface);    color: var(--color-info-text);    }
-.badge-neutral { background-color: #f1f5f9; color: #475569; }
-
-/* Dark mode dropdown overrides */
-[data-theme="dark"] .finzo-dropdown-trigger,
-.dark .finzo-dropdown-trigger {
-  background: var(--color-surface-main);
-  border-color: var(--color-border-main);
-  color: var(--color-text-main);
-}
-[data-theme="dark"] .finzo-dropdown-menu,
-.dark .finzo-dropdown-menu {
-  background: var(--color-surface-main);
-  border-color: var(--color-border-main);
-}
-[data-theme="dark"] .finzo-dropdown-option,
-.dark .finzo-dropdown-option {
-  color: var(--color-text-main);
-}
-[data-theme="dark"] .finzo-dropdown-option:hover,
-.dark .finzo-dropdown-option:hover {
-  background: var(--color-surface-hover);
-}
-
