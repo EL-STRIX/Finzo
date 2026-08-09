@@ -44,3 +44,18 @@ a:focus-visible {
 .btn-primary, .btn-secondary, button {
     min-height: 44px !important;
 }
+
+/* Animation Delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Custom Backgrounds */
+.bg-radial-dots { background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px; }
+
+/* Utilities */
+.icon-filled { font-variation-settings: 'FILL' 1; }
+.icon-light { font-variation-settings: 'wght' 300; }
+.custom-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
