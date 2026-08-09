@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         document.getElementById('detail-name').textContent = user.full_name || 'N/A';
+        const topbarTitle = document.querySelector('.admin-topbar-title');
+        if (topbarTitle) topbarTitle.textContent = user.full_name || 'N/A';
         document.getElementById('detail-email').textContent = user.email || 'N/A';
         
         document.getElementById('detail-acc-no').textContent = user.account_no || 'N/A';

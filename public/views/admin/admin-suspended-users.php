@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Suspended Users';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Suspended Users</h1>
-        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Review and manage suspended customer accounts</p>
+        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Suspended Users</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Review and manage suspended customer accounts</p>
     </div>
 </div>
 ';
@@ -13,36 +13,38 @@ ob_start();
 ?>
 <!-- TABLE CARD -->
       <div class="ds-card overflow-hidden">
-        <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-text-muted">Suspended Users Audit</h3>
-            <a href="admin-users.php" class="text-xs font-black text-primary-base hover:underline uppercase tracking-widest">Full Users Audit</a>
+        <div class="p-4 sm:p-6 border-b border-border-subtle flex justify-between items-center bg-background">
+            <h3 class="font-bold text-xs uppercase tracking-widest text-text-secondary">Suspended Users Audit</h3>
+            <a href="admin-users.php" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">Full Users Audit</a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-surface-subtle/20 dark:bg-white/[0.02]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-end gap-4 p-4 sm:p-6 bg-background border-b border-border-subtle">
           <div>
-            <div class="text-xs font-black tracking-wider text-text-muted uppercase mb-2 ml-1">Search User</div>
+            <div class="text-[10px] font-black tracking-wider text-text-secondary uppercase mb-2 ml-1">Search User</div>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
-              <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold" placeholder="Name, email or account number...">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-lg" aria-hidden="true">search</span>
+              <input type="text" id="search-input" class="fin-input !pl-10" placeholder="Name, email or account number...">
             </div>
           </div>
           <div>
-            <div class="text-xs font-black tracking-wider text-text-muted uppercase mb-2 ml-1">Start Date</div>
-            <input type="date" id="start-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+            <div class="text-[10px] font-black tracking-wider text-text-secondary uppercase mb-2 ml-1">Start Date</div>
+            <input type="date" id="start-date" class="fin-input">
           </div>
           <div>
-            <div class="text-xs font-black tracking-wider text-text-muted uppercase mb-2 ml-1">End Date</div>
-            <input type="date" id="end-date" class="w-full px-4 py-2 bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 transition-all font-semibold">
+            <div class="text-[10px] font-black tracking-wider text-text-secondary uppercase mb-2 ml-1">End Date</div>
+            <input type="date" id="end-date" class="fin-input">
           </div>
           <div>
-            <div class="text-xs font-black tracking-wider text-text-muted uppercase mb-2 ml-1">Reason</div>
+            <div class="text-[10px] font-black tracking-wider text-text-secondary uppercase mb-2 ml-1">Reason</div>
             <div class="finzo-dropdown w-full" id="reason-dropdown">
               <input type="hidden" id="reason-filter" value="">
-              <div class="finzo-dropdown-trigger cursor-pointer hover:border-primary/40 transition-all !bg-white dark:!bg-white/5 !border-surface-border dark:!border-white/10 !rounded-xl !py-2 !px-4">
-                <span class="material-symbols-outlined text-lg opacity-60" aria-hidden="true">filter_alt</span>
-                <span class="dropdown-label font-bold text-sm text-text-muted">All Reasons</span>
+              <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-lg opacity-60" aria-hidden="true">filter_alt</span>
+                  <span class="dropdown-label font-bold text-sm text-text-secondary">All Reasons</span>
+                </div>
                 <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
               </div>
-              <div class="finzo-dropdown-menu !rounded-xl !border-none !shadow-2xl !z-[2000]">
+              <div class="finzo-dropdown-menu z-50">
                 <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
                 <div class="finzo-dropdown-option" data-value="KYC Documentation Expired/Invalid">KYC Documentation Expired/Invalid</div>
                 <div class="finzo-dropdown-option" data-value="Suspicious UPI Transaction Patterns">Suspicious UPI Transaction Patterns</div>
@@ -56,19 +58,19 @@ ob_start();
           </div>
         </div>
 
-        <div class="w-full overflow-x-auto selection:bg-primary-base/10">
+        <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
           <table class="ds-table w-full text-left min-w-[1300px]">
             <thead scope="col">
-              <tr class="bg-surface-subtle/50 dark:bg-white/[0.02]">
-                <th class="py-4 px-6 text-left" scope="col">#</th>
-                <th class="py-4 px-6 text-left" scope="col">Customer</th>
-                <th class="py-4 px-6 text-left" scope="col">Account No</th>
-                <th class="py-4 px-6 text-left" scope="col">Account Type</th>
-                <th class="py-4 px-6 text-left" scope="col">Suspension Reason</th>
-                <th class="py-4 px-6 text-left" scope="col">Suspended On</th>
-                <th class="py-4 px-6 text-left" scope="col">Suspended By</th>
-                <th class="py-4 px-6 text-left" scope="col">Duration</th>
-                <th class="py-4 px-6 text-center min-w-[100px] w-28" scope="col">Actions</th>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Account No</th>
+                <th scope="col">Account Type</th>
+                <th scope="col">Suspension Reason</th>
+                <th scope="col">Suspended On</th>
+                <th scope="col">Suspended By</th>
+                <th scope="col">Duration</th>
+                <th class="text-center" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="table-body">
@@ -81,8 +83,8 @@ ob_start();
           </table>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 p-6 bg-surface-subtle/50 dark:bg-white/[0.02]">
-          <span class="text-xs sm:text-xs font-bold tracking-widest text-text-muted uppercase text-center sm:text-left w-full sm:w-auto" id="pag-info">Loading...</span>
+        <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 p-4 sm:p-6 bg-background border-t border-border-subtle">
+          <span class="text-xs font-bold tracking-widest text-text-secondary uppercase text-center sm:text-left w-full sm:w-auto" id="pag-info">Loading...</span>
           <div class="flex items-center justify-center" id="pag-controls"></div>
         </div>
       </div>

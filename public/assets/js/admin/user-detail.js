@@ -27,7 +27,7 @@ async function loadUserData() {
             
             // Update Header & Avatar
             document.getElementById('user-name-title').textContent = fullName;
-            const topbarTitle = document.querySelector('.admin-topbar .force-black.tracking-tight');
+            const topbarTitle = document.querySelector('.admin-topbar-title');
             if (topbarTitle) topbarTitle.textContent = fullName;
             
             const adminAvatar = document.getElementById('admin-user-avatar');
