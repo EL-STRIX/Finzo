@@ -207,9 +207,8 @@
      * Initialize Chart instances with minimal placeholder/null config
      */
     function initCharts() {
-        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-        const textColor = isDark ? '#8b949e' : '#64748b';
+        const gridColor = 'var(--color-border-subtle)';
+        const textColor = 'var(--color-text-secondary)';
 
         // Transactions Line Chart
         const txCtx = document.getElementById('chart-transactions');
@@ -219,8 +218,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Withdrawals', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                        { label: 'Deposits', data: [], borderColor: 'var(--color-success)', backgroundColor: 'var(--color-success-bg)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Withdrawals', data: [], borderColor: 'var(--color-info)', backgroundColor: 'var(--color-info-bg)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
                     ]
                 },
                 options: {
@@ -247,7 +246,7 @@
                     labels: ['Active', 'Pending', 'Suspended', 'Locked'],
                     datasets: [{
                         data: [],
-                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
+                        backgroundColor: ['var(--color-success)', 'var(--color-warning)', 'var(--color-error)', 'var(--color-border-strong)'],
                         borderWidth: 0, hoverOffset: 8
                     }]
                 },
@@ -267,8 +266,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 8, barPercentage: 0.6 },
-                        { label: 'Withdrawals', data: [], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 8, barPercentage: 0.6 }
+                        { label: 'Deposits', data: [], backgroundColor: 'var(--color-success)', borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Withdrawals', data: [], backgroundColor: 'var(--color-info)', borderRadius: 8, barPercentage: 0.6 }
                     ]
                 },
                 options: {
@@ -297,8 +296,8 @@
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
                     const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-                    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-                    const textColor = isDark ? '#8b949e' : '#64748b';
+                    const gridColor = 'var(--color-border-subtle)';
+                    const textColor = 'var(--color-text-secondary)';
 
                     ['transactions', 'revenue'].forEach(chartKey => {
                         if (charts[chartKey]) {
