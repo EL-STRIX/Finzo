@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,23 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
     <script defer src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#002645",
-                        "surface": "#ffffff",
-                        "on-surface": "#1a1c1e"
-                    },
-                    fontFamily: {
-                        "headline": ["Plus Jakarta Sans", "sans-serif"],
-                        "body": ["Inter", "sans-serif"]
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
     
     <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/forms.css" />
@@ -95,7 +79,7 @@
                     <!-- Page Header Component -->
                     <div class="auth-page-header">
                         <h1 class="auth-page-title">Device Verification</h1>
-                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>â€¢â€¢45</strong>.</p>
+                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
                     </div>
 
                     <!-- OTP Form Component -->

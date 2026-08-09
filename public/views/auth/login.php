@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,23 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
     <script defer src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#002645",
-                        "surface": "#ffffff",
-                        "on-surface": "#1a1c1e"
-                    },
-                    fontFamily: {
-                        "headline": ["Plus Jakarta Sans", "sans-serif"],
-                        "body": ["Inter", "sans-serif"]
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
     
     <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/forms.css" />
@@ -59,7 +43,7 @@
                             <span class="auth-brand-name">Finzo</span>
                         </a>
                         <h2 class="auth-hero-headline">Secure online banking, built for you.</h2>
-                        <p class="auth-hero-subtitle">Sign in to access your accounts, manage transactions, and stay in control of your finances — securely and reliably.</p>
+                        <p class="auth-hero-subtitle">Sign in to access your accounts, manage transactions, and stay in control of your finances � securely and reliably.</p>
                     </div>
                     
                     <div>
