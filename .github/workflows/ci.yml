@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main", "develop" ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-22.04
@@ -32,17 +35,21 @@ jobs:
         coverage: pcov
 
     - name: Install Dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: Prepare Test Environment
       run: |
-        if [ ! -f .env.testing ]; then cp .env.example .env.testing; fi
+        if [ ! -f .env.testing ]; then
+          cp .env.example .env.testing
+          sed -i 's/DB_NAME=.*/DB_NAME=finzo_test_db/g' .env.testing
+        fi
         sed -i 's/DB_PASS=.*/DB_PASS=root/g' .env.testing
         sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/g' .env.testing
 
     - name: Execute Enterprise API Test Suite
       env:
         DB_HOST: 127.0.0.1
+        DB_NAME: finzo_test_db
         DB_USER: root
         DB_PASS: root
       run: vendor/bin/phpunit --coverage-clover=coverage.xml
