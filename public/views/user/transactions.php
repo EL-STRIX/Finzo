@@ -48,7 +48,7 @@ ob_start();
   </div>
 
   <!-- TABLE -->
-  <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
+  <div class="ds-card ds-animate-slide-up delay-100">
     <div class="ds-card-header border-b border-border-main flex justify-between items-center bg-surface-subtle">
       <h3 class="font-display text-sm font-bold text-text-main uppercase tracking-wider">Transaction History</h3>
       <span id="txn-count" class="text-xs font-bold text-text-muted bg-surface-subtle px-2 py-1 rounded-full border border-border-main">Loading...</span>

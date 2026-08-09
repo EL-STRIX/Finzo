@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Interest Rates';
 $pageHeader = '
@@ -86,7 +86,7 @@ ob_start();
                     <div class="grid grid-cols-2 gap-4">
                         <div class="ds-card p-6">
                             <div class="text-xs font-black text-text-muted uppercase tracking-widest mb-4">Total Interest Credited</div>
-                            <div id="stat-total-interest" class="text-3xl font-black font-headline text-primary-base dark:text-text-muted mb-2">₹0.00</div>
+                            <div id="stat-total-interest" class="text-3xl font-black font-headline text-primary-base dark:text-text-muted mb-2">?0.00</div>
                             <div id="stat-interest-delta" class="text-xs font-bold text-success-base flex items-center gap-1.5 uppercase">
                                 <span class="material-symbols-outlined text-sm" aria-hidden="true">trending_up</span>
                                 0% from last month
@@ -121,7 +121,7 @@ ob_start();
                             <h3 class="text-sm font-bold dark:text-white uppercase tracking-widest">Rate Change History</h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="ds-table w-full text-left" style="min-width: auto;">
+                            <table class="ds-table w-full text-left min-w-auto">
                                 <thead scope="col">
                                     <tr>
                                         <th scope="col">Date</th>

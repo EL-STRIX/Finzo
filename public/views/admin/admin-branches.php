@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Branch Management';
 $pageHeader = '
@@ -62,7 +62,7 @@ ob_start();
 
       <!-- INFO BANNER -->
       <div class="info-banner-premium animate-in">
-        <span class="material-symbols-outlined text-primary-base" style="font-size:24px;" aria-hidden="true">info</span>
+        <span class="material-symbols-outlined text-primary-base text-2xl" aria-hidden="true">info</span>
         <div>
           <div class="text-sm font-bold text-text-main dark:text-primary-base">Main Branch Note</div>
           <div class="text-xs opacity-70 mt-0.5">Finzo's main branch is <b>Barasat</b>. This is the primary hub and cannot be deleted. All other branches can be managed or removed as needed.</div>
@@ -83,15 +83,15 @@ ob_start();
           <table class="ds-table w-full min-w-[1000px] text-left">
             <thead scope="col">
               <tr>
-                <th style="width: 5%;" scope="col">#</th>
-                <th style="width: 20%;" scope="col">BRANCH</th>
-                <th style="width: 12%;" scope="col">BRANCH ID</th>
-                <th style="width: 12%;" scope="col">STATE</th>
-                <th style="width: 16%;" scope="col">MANAGER</th>
-                <th style="width: 8%;" class="text-center" scope="col">STAFF</th>
-                <th style="width: 10%;" scope="col">TYPE</th>
-                <th style="width: 8%;" scope="col">STATUS</th>
-                <th style="width: 9%;" class="text-right" scope="col">ACTIONS</th>
+                <th class="w-[5%]" scope="col">#</th>
+                <th class="w-[20%]" scope="col">BRANCH</th>
+                <th class="w-[12%]" scope="col">BRANCH ID</th>
+                <th class="w-[12%]" scope="col">STATE</th>
+                <th class="w-[16%]" scope="col">MANAGER</th>
+                <th class="w-[8%] text-center" scope="col">STAFF</th>
+                <th class="w-[10%]" scope="col">TYPE</th>
+                <th class="w-[8%]" scope="col">STATUS</th>
+                <th class="w-[9%] text-right" scope="col">ACTIONS</th>
               </tr>
             </thead>
             <tbody id="branches-table-body">
@@ -163,7 +163,7 @@ ob_start();
                 <label for="add-branch-code" class="fin-label mb-2">Branch Code *</label>
                 <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly
                   class="w-full px-4 py-3 bg-surface-hover dark:bg-surface-container-high border-none rounded-xl font-bold cursor-not-allowed text-primary-base/60">
-                <p class="text-xs text-text-muted mt-1 font-bold">System Generated â€” Cannot be manualy edited.</p>
+                <p class="text-xs text-text-muted mt-1 font-bold">System Generated — Cannot be manualy edited.</p>
               </div>
               <div class="col-span-1">
                 <label class="fin-label mb-2">City *</label>
@@ -249,7 +249,7 @@ ob_start();
               </div>
 
               <div class="info-banner-premium mt-4 !py-2 !gap-3 !mb-0" >
-                <span class="material-symbols-outlined text-warning-base" style="font-size:18px;" aria-hidden="true">info</span>
+                <span class="material-symbols-outlined text-warning-base text-lg" aria-hidden="true">info</span>
                 <p class="text-xs text-warning-base dark:text-warning-base font-bold">Assigning a manager will update their branch in Staff Management.</p>
               </div>
             </div>
@@ -261,15 +261,15 @@ ob_start();
             <div class="mb-2">
               <label for="admin-confirm-pw" class="fin-label mb-2">Admin Password *</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" style="font-size:18px;" aria-hidden="true">admin_panel_settings</span>
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">admin_panel_settings</span>
                 <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your admin password" required
                   class="w-full pl-12 pr-12 py-3 bg-surface-subtle dark:bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all font-medium">
                 <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary-base transition-colors">
-                  <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">visibility</span>
                 </button>
               </div>
               <div class="info-banner-premium mt-4 !py-3 !gap-3 !mb-0" >
-                <span class="material-symbols-outlined text-danger-base" style="font-size:18px;" aria-hidden="true">shield</span>
+                <span class="material-symbols-outlined text-danger-base text-lg" aria-hidden="true">shield</span>
                 <p class="text-xs text-danger-base dark:text-danger-base font-bold">This verification ensures branch creation is authorized and logged.</p>
               </div>
             </div>
@@ -278,7 +278,7 @@ ob_start();
           <!-- SECTION 4 -->
           <div>
              <label for="branch-desc" class="fin-label mb-2">Branch Description / Notes</label>
-             <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch â€” services offered, operating hours, etc."
+             <textarea id="branch-desc" name="description" rows="4" maxlength="500" placeholder="Describe this branch — services offered, operating hours, etc."
                class="fin-input"></textarea>
              <div class="char-counter" id="branch-desc-counter">0 / 500</div>
           </div>
@@ -293,7 +293,7 @@ ob_start();
               <span class="material-symbols-outlined text-4xl text-primary-base/20" id="upload-icon" aria-hidden="true">upload_file</span>
               <div>
                 <div class="text-sm font-bold text-primary-base">Upload Registration Certificate</div>
-                <div class="text-xs opacity-40 font-bold mt-1">PDF, JPG or PNG â€” Max 10MB</div>
+                <div class="text-xs opacity-40 font-bold mt-1">PDF, JPG or PNG — Max 10MB</div>
               </div>
               <button type="button" class="btn btn-secondary px-6 !py-2 mt-2 !rounded-lg !text-xs !border-primary/20">Browse Files</button>
             </div>
@@ -334,7 +334,7 @@ ob_start();
           <h3 id="view-branch-title" class="admin-section-title">Barasat</h3>
           <div class="flex gap-2 mt-1" id="view-branch-badges">
             <span class="status-badge" >SYSTEM</span>
-            <span class="status-badge badge-success" style="font-size:9px;padding:2px 6px;">ACTIVE</span>
+            <span class="status-badge badge-success text-[9px] px-1.5 py-0.5">ACTIVE</span>
           </div>
         </div>
         <button data-action="$(&#039;#viewBranchModal&#039;).addClass(&#039;hidden&#039;).removeClass(&#039;flex&#039;)" class="p-2 hover:bg-surface-hover dark:hover:bg-white/5 rounded-full transition-colors">
@@ -517,3 +517,4 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/branches.js"><
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

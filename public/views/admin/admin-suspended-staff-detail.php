@@ -7,7 +7,7 @@ ob_start();
 
 
     <!-- BACK BUTTON -->
-    <div style="margin-bottom:24px;">
+    <div class="mb-6">
       <a href="admin-suspended-staff.php" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
         <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> Back
       </a>

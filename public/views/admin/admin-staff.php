@@ -91,21 +91,21 @@ ob_start();
           <table class="ds-table w-full table-fixed min-w-[1000px] text-left">
             <thead scope="col">
             <tr>
-              <th style="width: 4%;" scope="col">#</th>
-              <th style="width: 25%;" scope="col">Staff</th>
-              <th style="width: 10%;" class="text-center" scope="col">ID</th>
-              <th style="width: 15%;" scope="col">Branch</th>
-              <th style="width: 10%;" class="text-center" scope="col">Trans</th>
-              <th style="width: 12%;" class="text-right" scope="col">Amount</th>
-              <th style="width: 14%;" scope="col">Last Login</th>
-              <th style="width: 10%;" class="text-right" scope="col">ACTIONS</th>
+              <th class="w-[4%]" scope="col">#</th>
+              <th class="w-[25%]" scope="col">Staff</th>
+              <th class="w-[10%] text-center" scope="col">ID</th>
+              <th class="w-[15%]" scope="col">Branch</th>
+              <th class="w-[10%] text-center" scope="col">Trans</th>
+              <th class="w-[12%] text-right" scope="col">Amount</th>
+              <th class="w-[14%]" scope="col">Last Login</th>
+              <th class="w-[10%] text-right" scope="col">ACTIONS</th>
             </tr>
           </thead>
           <tbody id="ds-table-body">
               <!-- Rows will be injected by api.js -->
-              <tr><td colspan="8" style="padding:0;"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8" style="padding:0;"><div class="skeleton-row"></div></td></tr>
-              <tr><td colspan="8" style="padding:0;"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8" class="p-0"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8" class="p-0"><div class="skeleton-row"></div></td></tr>
+              <tr><td colspan="8" class="p-0"><div class="skeleton-row"></div></td></tr>
           </tbody>
         </table>
         </div>
@@ -133,3 +133,4 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/staff.js"></sc
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

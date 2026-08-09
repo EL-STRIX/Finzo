@@ -19,9 +19,9 @@ ob_start();
     
     <!-- ASSET IDENTITY (LEFT COLUMN) -->
     <div class="w-full lg:w-1/3 ds-animate-slide-up">
-      <div class="ds-card bg-primary-600 text-white p-6 relative overflow-hidden shadow-lg border-none" style="min-height: 400px; box-shadow: var(--shadow-lg);">
+      <div class="ds-card bg-primary-600 text-white p-6 relative overflow-hidden shadow-lg border-none min-h-[400px] shadow-lg">
         <!-- Decorative Grid -->
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+        <div class="absolute inset-0 opacity-[0.03] bg-radial-dots"></div>
         
         <div class="relative z-10 flex flex-col h-full justify-between">
           <div>
@@ -59,7 +59,7 @@ ob_start();
     </div>
 
     <!-- ANALYTICS & LEDGER (RIGHT COLUMN) -->
-    <div class="w-full lg:w-2/3 flex flex-col gap-6 lg:gap-8 ds-animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="w-full lg:w-2/3 flex flex-col gap-6 lg:gap-8 ds-animate-slide-up delay-100">
       
       <!-- Daily Limit Management -->
       <div class="ds-card">
@@ -129,3 +129,5 @@ ob_start();
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+
+

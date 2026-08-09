@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Review Application';
 $pageHeader = '
@@ -60,7 +60,7 @@ ob_start();
                 <div class="text-xs font-mono font-bold tracking-widest text-primary-base dark:text-primary-base uppercase bg-primary/5 dark:bg-primary-surface/10 px-2 py-1 rounded inline-block" id="header-customer-id"><div class="skeleton w-24 h-3"></div></div>
               </div>
               <div class="hidden sm:block">
-                 <span class="material-symbols-outlined text-primary-base dark:text-primary-base opacity-20" style="font-size: 64px;" aria-hidden="true">badge</span>
+                 <span class="material-symbols-outlined text-primary-base dark:text-primary-base opacity-20 text-[64px]" aria-hidden="true">badge</span>
               </div>
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6" id="personal-fields">
@@ -123,7 +123,7 @@ ob_start();
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary-base dark:text-primary-base" aria-hidden="true">home</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Address Information</h3>
+              <h3 class="admin-section-title text-base">Address Information</h3>
             </div>
             <div class="p-5 sm:p-8 space-y-6" id="address-fields">
               <div>
@@ -155,7 +155,7 @@ ob_start();
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary-base dark:text-primary-base" aria-hidden="true">verified_user</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Identity Verification</h3>
+              <h3 class="admin-section-title text-base">Identity Verification</h3>
             </div>
             <div class="p-5 sm:p-8">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-6 sm:mb-8" id="identity-fields">
@@ -191,7 +191,7 @@ ob_start();
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary-base dark:text-primary-base" aria-hidden="true">account_balance_wallet</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Account Details</h3>
+              <h3 class="admin-section-title text-base">Account Details</h3>
             </div>
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4" id="account-fields">
               <div>
@@ -216,9 +216,9 @@ ob_start();
           <div class="ds-card">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary-base dark:text-primary-base" aria-hidden="true">timeline</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Application Status</h3>
+              <h3 class="admin-section-title text-base">Application Status</h3>
             </div>
-            <div class="p-5 sm:p-8 overflow-y-auto max-h-[400px]" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
+            <div class="p-5 sm:p-8 overflow-y-auto max-h-[400px] custom-scrollbar">
               <div class="space-y-8 relative" id="timeline-body">
                 <div class="skeleton w-full h-8 mb-4"></div>
                 <div class="skeleton w-full h-8 mb-4"></div>
@@ -231,7 +231,7 @@ ob_start();
           <div class="ds-card overflow-visible">
             <div class="p-5 sm:p-6 border-b border-surface-border dark:border-white/5 flex items-center gap-3">
               <span class="material-symbols-outlined text-primary-base dark:text-primary-base" aria-hidden="true">gavel</span>
-              <h3 class="admin-section-title" style="font-size:16px;">Make Decision</h3>
+              <h3 class="admin-section-title text-base">Make Decision</h3>
             </div>
             <div class="p-5 sm:p-8 space-y-6 sm:space-y-8">
               <!-- Approve Section -->
@@ -334,3 +334,4 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/review-applica
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

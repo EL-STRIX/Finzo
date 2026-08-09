@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Transaction Monitor';
 $pageHeader = '
@@ -30,19 +30,19 @@ ob_start();
                                 All
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="deposit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">south_west</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">south_west</span>
                                 Deposits
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="withdrawal">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">north_east</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">north_east</span>
                                 Withdrawals
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="transfer">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">sync_alt</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">sync_alt</span>
                                 Transfers
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-type="interest_credit">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">percent</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">percent</span>
                                 Interest
                             </button>
                         </div>

@@ -12,7 +12,7 @@ ob_start();
   <div class="page-content">
 
     <!-- BACK BUTTON -->
-    <div style="margin-bottom:20px;">
+    <div class="mb-5">
       <a href="admin-suspended-users.php" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-text-muted hover:text-text-main hover:bg-surface-hover dark:text-text-muted dark:hover:text-white dark:hover:bg-white/5 transition-colors">
         <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> Back
       </a>
@@ -176,7 +176,7 @@ ob_start();
     <div class="modal-actions">
       <button class="btn btn-ghost" data-action="closeModal()">Cancel</button>
       <button class="btn btn-success" id="confirm-btn" data-action="processReinstate()">
-        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">check</span>
+        <span class="material-symbols-outlined text-base" aria-hidden="true">check</span>
         Confirm & Reinstate
       </button>
     </div>
@@ -204,7 +204,7 @@ ob_start();
     <div class="modal-actions mt-8">
       <button class="btn btn-ghost" data-action="closeDeleteModal()">Cancel</button>
       <button class="btn btn-danger" id="delete-confirm-btn" data-action="processDelete()" >
-        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">check</span>
+        <span class="material-symbols-outlined text-base" aria-hidden="true">check</span>
         Confirm & Delete
       </button>
     </div>

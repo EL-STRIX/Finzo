@@ -63,7 +63,7 @@ ob_start();
     </div>
     
     <!-- RIGHT PANE: Settings Forms -->
-    <div class="w-full lg:w-2/3 flex flex-col gap-6 ds-animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="w-full lg:w-2/3 flex flex-col gap-6 ds-animate-slide-up delay-100">
       
       <!-- Personal Information -->
       <div class="ds-card">

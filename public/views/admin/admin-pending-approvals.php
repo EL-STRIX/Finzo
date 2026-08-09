@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Pending Approvals';
 $pageHeader = '
@@ -19,7 +19,7 @@ ob_start();
                     </div>
                     <div>
                         <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">PENDING REVIEW</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">â€”</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
@@ -28,7 +28,7 @@ ob_start();
                     </div>
                     <div>
                         <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">UNDER REVIEW</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">â€”</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
@@ -37,7 +37,7 @@ ob_start();
                     </div>
                     <div>
                         <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">APPROVED TODAY</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">â€”</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
@@ -46,7 +46,7 @@ ob_start();
                     </div>
                     <div>
                         <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">TOTAL APPROVED</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">â€”</div>
+                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
             </div>
@@ -70,11 +70,11 @@ ob_start();
                                 All
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="pending">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">hourglass_empty</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">hourglass_empty</span>
                                 Pending
                             </button>
                             <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="under_review">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">rate_review</span>
+                                <span class="material-symbols-outlined text-[13px] align-[-2px]" aria-hidden="true">rate_review</span>
                                 Under Review
                             </button>
                         </div>

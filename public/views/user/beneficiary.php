@@ -31,7 +31,7 @@ ob_start();
     </div>
 
     <!-- ADD FORM COLUMN -->
-    <div class="ds-card ds-animate-slide-up h-fit" style="animation-delay: 0.1s;">
+    <div class="ds-card ds-animate-slide-up h-fit delay-100">
       <div class="ds-card-header border-b border-border-main">
         <h3 class="font-display text-base font-bold text-text-main">Add New Beneficiary</h3>
         <p class="text-xs text-text-muted mt-1">Save an account for quick future transfers</p>
