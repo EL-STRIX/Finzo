@@ -1,6 +1,14 @@
-<?php
+﻿<?php
 $portal = 'admin';
 $pageTitle = 'Deleted Users';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Deleted Users</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">View and restore soft-deleted user accounts</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <!-- FILTERS & TABLE -->

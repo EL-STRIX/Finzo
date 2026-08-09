@@ -1,6 +1,14 @@
-<?php
+﻿<?php
 $portal = 'admin';
 $pageTitle = 'Interest Rates';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Interest Rates</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Configure system-wide interest rates and policies</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">

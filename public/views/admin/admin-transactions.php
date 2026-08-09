@@ -1,6 +1,14 @@
-<?php
+﻿<?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin';
+$pageTitle = 'Finzo Admin - Transaction Monitor';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Transaction Monitor</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">View and audit all system-wide transactions</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <!-- FILTERS & TABLE -->

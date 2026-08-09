@@ -1,6 +1,14 @@
-<?php
+﻿<?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin';
+$pageTitle = 'Finzo Admin - Review Application';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Review Application</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Review KYC documents and approve or reject account application</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 

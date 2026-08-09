@@ -1,6 +1,20 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin â€” User Management';
+$pageTitle = 'Finzo Admin — User Management';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">User Management</h1>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Manage all registered users, accounts, and verification status</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <button onclick="exportUsers()" class="btn btn-secondary btn-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
+            Export CSV
+        </button>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <!-- STAT CARDS -->
