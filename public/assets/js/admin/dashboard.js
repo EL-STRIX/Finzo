@@ -207,8 +207,9 @@
      * Initialize Chart instances with minimal placeholder/null config
      */
     function initCharts() {
-        const gridColor = 'var(--color-border-subtle)';
-        const textColor = 'var(--color-text-secondary)';
+        const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || name;
+        const gridColor = getCssVar('--color-border-subtle');
+        const textColor = getCssVar('--color-text-secondary');
 
         // Transactions Line Chart
         const txCtx = document.getElementById('chart-transactions');
@@ -218,8 +219,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], borderColor: 'var(--color-success)', backgroundColor: 'var(--color-success-bg)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Withdrawals', data: [], borderColor: 'var(--color-info)', backgroundColor: 'var(--color-info-bg)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                        { label: 'Deposits', data: [], borderColor: getCssVar('--color-success'), backgroundColor: getCssVar('--color-success-bg'), fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Withdrawals', data: [], borderColor: getCssVar('--color-info'), backgroundColor: getCssVar('--color-info-bg'), fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
                     ]
                 },
                 options: {
@@ -246,7 +247,7 @@
                     labels: ['Active', 'Pending', 'Suspended', 'Locked'],
                     datasets: [{
                         data: [],
-                        backgroundColor: ['var(--color-success)', 'var(--color-warning)', 'var(--color-error)', 'var(--color-border-strong)'],
+                        backgroundColor: [getCssVar('--color-success'), getCssVar('--color-warning'), getCssVar('--color-error'), getCssVar('--color-border-strong')],
                         borderWidth: 0, hoverOffset: 8
                     }]
                 },
@@ -266,8 +267,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], backgroundColor: 'var(--color-success)', borderRadius: 8, barPercentage: 0.6 },
-                        { label: 'Withdrawals', data: [], backgroundColor: 'var(--color-info)', borderRadius: 8, barPercentage: 0.6 }
+                        { label: 'Deposits', data: [], backgroundColor: getCssVar('--color-success'), borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Withdrawals', data: [], backgroundColor: getCssVar('--color-info'), borderRadius: 8, barPercentage: 0.6 }
                     ]
                 },
                 options: {
@@ -295,11 +296,25 @@
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
-                    const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-                    const gridColor = 'var(--color-border-subtle)';
-                    const textColor = 'var(--color-text-secondary)';
+                    const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || name;
+                    const gridColor = getCssVar('--color-border-subtle');
+                    const textColor = getCssVar('--color-text-secondary');
 
-                    ['transactions', 'revenue'].forEach(chartKey => {
+                    if (charts.transactions) {
+                        charts.transactions.data.datasets[0].borderColor = getCssVar('--color-success');
+                        charts.transactions.data.datasets[0].backgroundColor = getCssVar('--color-success-bg');
+                        charts.transactions.data.datasets[1].borderColor = getCssVar('--color-info');
+                        charts.transactions.data.datasets[1].backgroundColor = getCssVar('--color-info-bg');
+                    }
+                    if (charts.accounts) {
+                        charts.accounts.data.datasets[0].backgroundColor = [getCssVar('--color-success'), getCssVar('--color-warning'), getCssVar('--color-error'), getCssVar('--color-border-strong')];
+                    }
+                    if (charts.revenue) {
+                        charts.revenue.data.datasets[0].backgroundColor = getCssVar('--color-success');
+                        charts.revenue.data.datasets[1].backgroundColor = getCssVar('--color-info');
+                    }
+
+                    ['transactions', 'revenue', 'accounts'].forEach(chartKey => {
                         if (charts[chartKey]) {
                             if (charts[chartKey].options.scales.x) {
                                 charts[chartKey].options.scales.x.ticks.color = textColor;
