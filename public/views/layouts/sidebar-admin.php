@@ -73,6 +73,63 @@ function isActive($path, $current) {
         </ul>
 
         <div class="px-6 mb-2 mt-6">
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Core Banking</div>
+        </div>
+        
+        <ul class="space-y-1 px-3">
+            <li>
+                <a href="admin-loan-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-product', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
+                    <span class="text-sm">Loan Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-loans.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loans', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">payments</span>
+                    <span class="text-sm">Loan Applications</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-card-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-product', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
+                    <span class="text-sm">Card Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-cards.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('cards', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">credit_card</span>
+                    <span class="text-sm">Card Issuance</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="px-6 mb-2 mt-6">
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Finance & Accounting</div>
+        </div>
+        
+        <ul class="space-y-1 px-3">
+            <li>
+                <a href="admin-ledger.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('ledger', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">account_balance_wallet</span>
+                    <span class="text-sm">General Ledger</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="px-6 mb-2 mt-6">
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Reporting & Analytics</div>
+        </div>
+        
+        <ul class="space-y-1 px-3">
+            <li>
+                <a href="admin-reports.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('report', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">query_stats</span>
+                    <span class="text-sm">Advanced Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="px-6 mb-2 mt-6">
             <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">System & Security</div>
         </div>
         
@@ -105,6 +162,18 @@ function isActive($path, $current) {
                 <a href="admin-interest.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('interest', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">percent</span>
                     <span class="text-sm">Interest Engine</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-roles.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('role', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">policy</span>
+                    <span class="text-sm">Roles & Permissions</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-settings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('settings', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span>
+                    <span class="text-sm">System Settings</span>
                 </a>
             </li>
         </ul>
