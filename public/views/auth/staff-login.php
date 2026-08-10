@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/Finzo/public/assets/css/layouts/auth.css" />
 
     <script src="/Finzo/public/assets/js/core/api.js"></script>
-    <script src="/Finzo/public/assets/js/pages/auth/auth-components.js" defer></script>
+    <script src="/Finzo/public/assets/js/auth/auth-components.js" defer></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 <script defer src="/Finzo/public/assets/js/auth/staff-login.js"></script>
 </head>
