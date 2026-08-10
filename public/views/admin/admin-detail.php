@@ -1,6 +1,17 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Admin Dossier';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <div class="flex items-center gap-3">
+            <h1 id="header-admin-name" class="text-xl font-headline font-black text-text-main dark:text-white tracking-tight">Loading...</h1>
+            <span id="header-status-badge" class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest hidden"></span>
+        </div>
+        <p class="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Admin Profile & Access Control</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8">
@@ -174,6 +185,57 @@ ob_start();
                     </table>
                 </div>
             </div>
+
+<!-- Reset Password Modal -->
+<div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+    <div id="reset-modal-content" class="bg-surface-base dark:bg-surface-dark rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-surface-border dark:border-white/10 relative">
+        <div class="p-8">
+            <div class="w-16 h-16 rounded-2xl bg-primary-surface/10 text-primary-base flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-3xl" aria-hidden="true">lock_reset</span>
+            </div>
+            <h3 class="text-2xl font-black text-text-main dark:text-white mb-2">Reset Password</h3>
+            <p class="text-sm font-medium text-text-muted dark:text-text-muted mb-6 leading-relaxed">
+                A secure temporary password will be generated. The admin will be forced to change it upon next login.
+            </p>
+            
+            <div id="reset-success-state" class="hidden mt-6 p-4 bg-success-surface/10 border border-success-base/30 rounded-xl">
+                <div class="text-xs font-black uppercase tracking-widest text-success-base mb-2">Temporary Password</div>
+                <div id="generated-password-display" class="font-mono text-xl font-black text-text-main dark:text-white tracking-widest select-all mb-2"></div>
+                <div class="text-xs text-text-muted dark:text-text-muted font-bold">Expires: <span id="password-expiry-display"></span></div>
+            </div>
+
+            <div id="reset-modal-actions" class="flex items-center gap-3 mt-8">
+                <button onclick="window.AdminDetail.hideResetModal()" class="btn btn-secondary flex-1 py-3 !rounded-xl !font-black !text-sm">Cancel</button>
+                <button id="reset-submit-btn" onclick="window.AdminDetail.submitReset()" class="btn btn-primary flex-1 py-3 !rounded-xl !font-black !text-sm flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">autorenew</span> Generate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Admin Modal -->
+<div id="delete-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-md px-4">
+    <div class="bg-surface-base dark:bg-surface-dark rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-danger-base/30 relative">
+        <div class="p-8 text-center flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-danger-surface/10 text-danger-base flex items-center justify-center mb-6 ring-8 ring-danger-surface/5 animate-pulse">
+                <span class="material-symbols-outlined text-4xl" aria-hidden="true">warning</span>
+            </div>
+            <h3 class="text-2xl font-black text-text-main dark:text-white mb-2">Delete <span id="delete-admin-name" class="text-danger-base">Admin</span>?</h3>
+            <p class="text-sm font-medium text-text-muted dark:text-text-muted mb-8 leading-relaxed">
+                This action is <strong>irreversible</strong>. The account will be permanently removed and access revoked immediately.
+            </p>
+            
+            <div class="flex items-center gap-3 w-full">
+                <button onclick="window.AdminDetail.hideDeleteModal()" class="btn btn-secondary flex-1 py-3 !rounded-xl !font-black !text-sm">Cancel</button>
+                <button id="delete-submit-btn" onclick="window.AdminDetail.submitDelete()" class="btn flex-1 py-3 !rounded-xl !font-black !text-sm bg-danger-base text-white hover:bg-danger-hover transition-colors shadow-lg shadow-danger-base/20 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">delete_forever</span> Confirm Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script defer src="/Finzo/public/assets/js/admin/admin-detail.js"></script>
 <?php
 $slot = ob_get_clean();

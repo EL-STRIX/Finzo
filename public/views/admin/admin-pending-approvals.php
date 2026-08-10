@@ -51,16 +51,22 @@ ob_start();
                 </div>
             </div>
 
+            <!-- Empty State -->
+            <div id="pending-empty" class="hidden ds-card p-12 flex flex-col items-center justify-center text-center mb-6">
+                <span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inbox</span>
+                <div class="text-sm font-bold text-text-muted uppercase tracking-widest">No pending applications at the moment.</div>
+            </div>
+
             <!-- FILTERS + TABS + TABLE -->
             <div class="ds-card overflow-hidden">
                 <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface-subtle">
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
-                            <label for="approval-search" class="fin-label mb-2 text-[10px] uppercase text-text-secondary font-black tracking-widest">Search Applications</label>
+                            <label for="search-pending" class="fin-label mb-2 text-[10px] uppercase text-text-secondary font-black tracking-widest">Search Applications</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
-                                <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="fin-input pl-12 w-full">
+                                <input type="text" id="search-pending" placeholder="Search by name or user ID..." class="fin-input pl-12 w-full">
                             </div>
                         </div>
 
@@ -94,7 +100,7 @@ ob_start();
                                 <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="applications-table-body">
+                        <tbody id="pending-tbody">
                             <!-- Data injected by pending-approvals.js -->
                         </tbody>
                     </table>
@@ -102,13 +108,9 @@ ob_start();
 
                 <!-- PAGINATION -->
                 <div class="p-4 sm:p-6 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div id="pagination-info" class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Showing 0-0 of 0 Items</div>
-                    <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                        <div id="page-numbers" class="flex gap-1.5">
-                            <!-- Page numbers injected by pending-approvals.js -->
-                        </div>
-                        <button id="next-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                    <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Total Pending: <span id="pending-count">0</span></div>
+                    <div id="pending-pagination" class="flex items-center gap-2">
+                        <!-- Pagination injected by JS -->
                     </div>
                 </div>
             </div>

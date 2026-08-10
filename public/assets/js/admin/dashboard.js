@@ -44,7 +44,7 @@
             if (label.includes('WITHDRAWALS')) { value = stats.withdrawals_today || 0; isPrice = true; }
             else if (label.includes('DEPOSITS')) { value = stats.deposits_today || 0; isPrice = true; }
             else if (label.includes('TRANSFERS')) { value = stats.transfers_today || 0; isPrice = true; }
-            else if (label.includes('TOTAL ACCOUNTS')) { value = stats.total_accounts || 0; }
+            else if (label.includes('TOTAL ASSETS')) { value = stats.total_balance || 0; isPrice = true; }
             else if (label.includes('TOTAL USERS')) { value = stats.total_users || 0; }
             else if (label.includes('INTEREST')) { value = stats.interest_credited || 0; isPrice = true; }
             else if (label.includes('PENDING APPROVALS')) { value = stats.pending_approvals || 0; }
