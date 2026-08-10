@@ -19,52 +19,52 @@ ob_start();
 ?><!-- KEY PERFORMANCE INDICATORS GRID -->
             <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
                 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-warning hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-warning hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-warning-bg text-warning border border-warning-bg flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">account_balance_wallet</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Assets</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton" id="stat-total-assets">&#8377;0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Assets</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton" id="stat-total-assets">&#8377;0</div>
                 </div>
                 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-success hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-success hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-success-bg text-success border border-success-bg flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">download_for_offline</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Deposits</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Deposits</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
                 </div>
                 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-info hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-info hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-info-bg text-info border border-info-bg flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">upload_file</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Withdrawals</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Withdrawals</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-primary-50 text-primary border border-primary-100 flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">group</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Users</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Users</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary-hover hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary-hover hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-primary-100 text-primary-700 border border-primary-200 flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">badge</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Active Staff</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Active Staff</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
                 </div>
 
-                <div class="ds-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-error hover:shadow-md transition-all">
+                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-error hover:shadow-md transition-all">
                     <div class="w-10 h-10 rounded-md bg-error-bg text-error border border-error-bg flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
                     </div>
-                    <div class="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Locked Accounts</div>
-                    <div class="text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Locked Accounts</div>
+                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
                 </div>
             </div>
 

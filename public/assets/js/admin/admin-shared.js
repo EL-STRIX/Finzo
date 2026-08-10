@@ -16,12 +16,16 @@ window.AdminPortal = {
         try {
             const data = await window.api.get('/admin/dashboard');
             if (data.success) {
-                this.state.admin = data.admin;
-                window.csrfToken = data.csrf_token;
+                const payload = data.data || data;
+                const admin = payload.admin || data.admin;
+                const stats = payload.stats || data.stats;
+                const csrf = payload.csrf_token || data.csrf_token;
+                this.state.admin = admin;
+                window.csrfToken = csrf;
                 const meta = document.querySelector('meta[name="csrf-token"]');
-                if (meta) meta.content = data.csrf_token;
+                if (meta) meta.content = csrf;
                 this.state.isLoaded = true;
-                this.syncHeader(data.admin, data.stats);
+                this.syncHeader(admin, stats);
             }
         } catch (error) {
             console.error('Admin initialization failed:', error);

@@ -24,7 +24,6 @@
     <script src="/Finzo/public/assets/js/core/api.js"></script>
     <script src="/Finzo/public/assets/js/auth/auth-components.js" defer></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
-<script defer src="/Finzo/public/assets/js/auth/admin-login.js"></script>
 </head>
 <body class="bg-gray-50 font-body text-on-surface">
     <main class="auth-page-wrapper">
