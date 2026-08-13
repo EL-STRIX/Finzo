@@ -1,21 +1,22 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
 function isActive($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-primary-50 text-primary border-r-4 border-primary' : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
+    return (strpos($current, $path) !== false) ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]' : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
 }
 ?>
 <!-- Admin Sidebar -->
 <aside class="admin-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-surface border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="admin-sidebar">
     
     <!-- Brand / Role Indicator -->
-    <div class="px-6 py-5 border-b border-border-subtle bg-background">
-        <div class="flex items-center gap-3 mb-1">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-                <span class="material-symbols-outlined text-white text-[18px]" aria-hidden="true">admin_panel_settings</span>
+    <div class="px-6 py-6 border-b border-border-subtle bg-background/80 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-50"></div>
+        <div class="flex items-center gap-3 mb-1 relative z-10">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg border border-white/20">
+                <span class="material-symbols-outlined text-white text-[20px]" aria-hidden="true">account_balance</span>
             </div>
-            <div class="font-headline font-black text-xl tracking-tight text-text-primary">Finzo</div>
+            <div class="font-display font-bold text-2xl tracking-tight text-text-primary">Finzo</div>
         </div>
-        <div class="text-[10px] font-black text-primary uppercase tracking-widest pl-11">Enterprise Admin</div>
+        <div class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] pl-[48px] relative z-10">Enterprise Admin</div>
     </div>
 
     <!-- Navigation -->
