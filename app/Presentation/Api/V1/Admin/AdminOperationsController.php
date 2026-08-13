@@ -47,9 +47,7 @@ class AdminOperationsController
         $stmt->execute([$adminId]);
         $admin = $stmt->fetch();
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
+
 
         return [
             'success' => true,
@@ -63,9 +61,7 @@ class AdminOperationsController
         $adminId = \App\Shared\Security\Auth::user()['id'];
         $data = $this->service->getDashboardData($adminId);
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
+
 
         return [
             'success' => true,
@@ -171,10 +167,8 @@ class AdminOperationsController
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 10)));
 
         $data = $this->service->getPendingApprovals($filters, $page, $per_page);
-        return [
-            'success' => true,
-            'data'    => $data
-        ];
+        $data['success'] = true;
+        return $data;
     }
 
     public function recoverUser(?string $id = null, ?string $extra = null): array

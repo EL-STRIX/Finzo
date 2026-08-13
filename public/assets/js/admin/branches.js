@@ -15,8 +15,12 @@
         const tbody = document.getElementById('branches-table-body');
         if (tbody) tbody.style.opacity = '0.5';
 
+        const searchInput = document.getElementById('admin-branch-finder');
+        const query = searchInput ? searchInput.value.trim() : '';
+
         try {
-            const response = await window.api.get('/branches');
+            const url = query ? `/branches?search=${encodeURIComponent(query)}` : '/branches';
+            const response = await window.api.get(url);
             if (response.success || response.status === 'success') {
                 const data = response.data || response;
                 currentBranches = data.branches || [];
@@ -138,13 +142,10 @@
         // Search
         const searchInput = document.getElementById('admin-branch-finder');
         if (searchInput) {
+            let timeout = null;
             searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-                const rows = document.querySelectorAll('#branches-table-body tr');
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(query) ? '' : 'none';
-                });
+                clearTimeout(timeout);
+                timeout = setTimeout(loadBranches, 500);
             });
         }
 
@@ -208,9 +209,8 @@
         });
 
         // Add Branch Modal
-        const addBtn = document.querySelector('button[onclick="openAddModal()"]');
+        const addBtn = document.querySelector('button[data-action="openAddModal()"]') || document.querySelector('button[onclick="openAddModal()"]');
         if (addBtn) {
-            addBtn.removeAttribute('onclick');
             addBtn.addEventListener('click', () => {
                 isEditMode = false;
                 currentEditId = null;

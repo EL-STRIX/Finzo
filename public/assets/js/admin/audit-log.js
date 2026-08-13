@@ -232,8 +232,7 @@
             action_type: actionInput ? actionInput.value : 'all',
             actor_role: roleInput ? roleInput.value : 'all',
             from_date: dateFrom ? dateFrom.value : '',
-            to_date: dateTo ? dateTo.value : '',
-            export: 'xlsx'
+            to_date: dateTo ? dateTo.value : ''
         };
         
         window.location.href = window.api.buildUrl('/admin/audit-logs', filters);

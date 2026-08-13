@@ -93,9 +93,9 @@
                         </div>
                     </div>
                 </td>
-                <td><span class="status-badge ${statusClass}">${(u.status || 'pending').toUpperCase()}</span></td>
-                <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warning'}" style="font-size: 10px; padding: 4px 10px;">${u.status === 'active' ? 'APPROVED' : 'PENDING'}</span></td>
-                <td class="text-xs font-semibold">Savings</td>
+                <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warning'}">${(u.status || 'pending').toUpperCase()}</span></td>
+                <td><span class="status-badge ${(u.kyc_status === 'approved' || u.kyc_status === 'verified') ? 'badge-success' : (u.kyc_status === 'under_review' ? 'badge-warning' : 'badge-neutral')}" style="font-size: 10px; padding: 4px 10px;">${(u.kyc_status || 'UNVERIFIED').toUpperCase().replace('_', ' ')}</span></td>
+                <td class="text-xs font-semibold capitalize">${u.account_type || 'Savings'}</td>
                 <td class="text-[11px] opacity-40 font-bold">${timeDisplay}</td>
                 <td class="text-right">
                     <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
@@ -123,7 +123,9 @@
         const txCanvas = document.getElementById('chart-transactions');
         if (txCanvas) {
             if (!hasChartData) {
-                txCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+                if (!txCanvas.parentElement.querySelector('.no-data-overlay')) {
+                    txCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
+                }
             } else if (charts.transactions) {
                 const labels = data.monthly_chart_data.map(d => d.month);
                 const deposits = data.monthly_chart_data.map(d => d.deposits);
@@ -159,7 +161,9 @@
             if (charts.accounts) {
                 const allZero = values.every(v => v === 0);
                 if (allZero) {
-                     acCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+                    if (!acCanvas.parentElement.querySelector('.no-data-overlay')) {
+                         acCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
+                    }
                 } else {
                     charts.accounts.data.datasets[0].data = values;
                     charts.accounts.update();
@@ -171,7 +175,9 @@
         const rvCanvas = document.getElementById('chart-revenue');
         if (rvCanvas) {
             if (!hasChartData) {
-                 rvCanvas.parentElement.innerHTML += '<div class="absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>';
+                 if (!rvCanvas.parentElement.querySelector('.no-data-overlay')) {
+                     rvCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
+                 }
             } else if (charts.revenue) {
                 charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
                 charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => d.deposits);
@@ -360,4 +366,5 @@
         initCharts();
         setupThemeObserver();
         loadDashboard();
+    });
 })();

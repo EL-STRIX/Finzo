@@ -24,8 +24,8 @@
             });
 
             if (response.success) {
-                renderTable(response.data.applications, response.data.total, response.data.pages);
-                updateStats(response.data.stats || {});
+                renderTable(response.applications, response.total, response.pages);
+                updateStats(response.stats || {});
             }
         } catch (error) {
             console.error('Failed to load applications:', error);

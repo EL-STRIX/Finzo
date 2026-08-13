@@ -143,6 +143,10 @@
         modal.classList.remove('hidden');
     }
 
+    function closeReviewModal() {
+        document.getElementById('review-modal').classList.add('hidden');
+    }
+
     async function handleReviewAction(action) {
         const id = document.getElementById('review-request-id').value;
         const notes = document.getElementById('review-notes').value;
@@ -183,6 +187,7 @@
 
         document.getElementById('btn-approve-card')?.addEventListener('click', () => handleReviewAction('approve'));
         document.getElementById('btn-reject-card')?.addEventListener('click', () => handleReviewAction('reject'));
+        document.querySelector('#review-modal .close-modal, #review-modal .btn-cancel, #review-modal [data-dismiss="modal"]')?.addEventListener('click', () => document.getElementById('review-modal')?.classList.add('hidden'));
     }
 
     if (document.readyState === 'loading') {

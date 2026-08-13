@@ -11,29 +11,32 @@
         const formData = new FormData(form);
         const queryParams = new URLSearchParams(formData).toString();
         
-        let endpoint = `/admin/reports/${type === 'financial' ? 'financial-summary' : 'demographics'}?${queryParams}`;
-        if (isAsync) {
-            endpoint += '&async=true';
-        }
+        const baseEndpoint = `/admin/reports/${type === 'financial' ? 'financial' : 'demographics'}`;
+        let res;
 
         const submitBtn = form.querySelector('button[type="submit"]');
         const asyncBtn = form.querySelector('.btn-generate-async');
         
-        const originalSubmitHtml = submitBtn.innerHTML;
-        const originalAsyncHtml = asyncBtn.innerHTML;
+        const originalSubmitHtml = submitBtn ? submitBtn.innerHTML : '';
+        const originalAsyncHtml = asyncBtn ? asyncBtn.innerHTML : '';
 
-        if (isAsync) {
+        if (isAsync && asyncBtn && submitBtn) {
             asyncBtn.innerHTML = '<span class="loader border-info border-b-transparent"></span>...';
             asyncBtn.disabled = true;
             submitBtn.disabled = true;
-        } else {
+        } else if (!isAsync && submitBtn) {
             submitBtn.innerHTML = '<span class="loader"></span>...';
             submitBtn.disabled = true;
-            asyncBtn.disabled = true;
+            if (asyncBtn) asyncBtn.disabled = true;
         }
 
         try {
-            const res = await window.api.get(endpoint);
+            if (isAsync) {
+                // Async jobs should use POST
+                res = await window.api.post(baseEndpoint + '/async', Object.fromEntries(formData.entries()));
+            } else {
+                res = await window.api.get(baseEndpoint + '?' + queryParams);
+            }
             
             if (isAsync) {
                 if (res.success || res.status === 202) {
