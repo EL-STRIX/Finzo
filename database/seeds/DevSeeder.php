@@ -10,13 +10,13 @@ class DevSeeder
         ");
         
         $db->exec("
-            INSERT IGNORE INTO accounts (account_no, user_id, branch_id, account_type, balance, daily_limit, status) VALUES 
-            ('FNZ0000001001', 'FNZ-USR-000001', 1, 'savings', 50000.00, 10000.00, 'active');
+            INSERT IGNORE INTO accounts (account_no, user_id, account_type, balance, txn_pin_hash, daily_limit, status) VALUES 
+            ('FNZ0000001001', 'FNZ-USR-000001', 'savings', 50000.00, '" . password_hash('1234', PASSWORD_BCRYPT) . "', 10000.00, 'active');
         ");
         
         $db->exec("
-            INSERT IGNORE INTO staff (staff_id, full_name, email, phone, branch_id, role, password_hash, status) VALUES 
-            ('STF001', 'Jane Smith', 'jane@finzo.com', '9876543211', 1, 'manager', '" . password_hash('Staff@123', PASSWORD_BCRYPT) . "', 'active');
+            INSERT IGNORE INTO staff (staff_id, full_name, personal_email, phone, branch_id, designation, department, password_hash, status) VALUES 
+            ('STF001', 'Jane Smith', 'jane@finzo.com', '9876543211', 1, 'Manager', 'Teller Operations', '" . password_hash('Staff@123', PASSWORD_BCRYPT) . "', 'active');
         ");
 
         echo "Development seeds injected successfully.\n";
