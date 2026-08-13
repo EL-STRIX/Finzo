@@ -121,8 +121,7 @@
                 continue;
             }
             const activeClass = i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary';
-            const style = i === currentPage ? 'background: #1a3c5e !important;' : '';
-            html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" style="${style}" data-page="${i}">${i}</button>`;
+            html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" data-page="${i}">${i}</button>`;
         }
         
         if (parent) parent.innerHTML = html;

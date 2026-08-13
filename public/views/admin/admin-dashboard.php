@@ -13,7 +13,6 @@ $pageHeader = '
         <span id="header-live-clock"></span>
     </div>
 </div>
-<script defer src="/Finzo/public/assets/js/admin/admin-dashboard.js"></script>
 ';
 ob_start();
 ?><!-- KEY PERFORMANCE INDICATORS GRID -->

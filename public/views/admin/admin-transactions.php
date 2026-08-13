@@ -16,11 +16,45 @@ ob_start();
                 <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface-subtle">
                     <div class="flex flex-col xl:flex-row gap-4 items-start xl:items-center justify-between">
                         <!-- Search -->
-                        <div class="w-full xl:w-96 shrink-0">
-                            <label for="transaction-search" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search Transactions</label>
+                        <div class="w-full xl:w-80 shrink-0">
+                            <label for="transaction-search" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
-                                <input type="text" id="transaction-search" placeholder="Search by TXN ID, Name or Note..." class="fin-input pl-12 w-full">
+                                <input type="text" id="transaction-search" placeholder="Search ID, Name..." class="fin-input pl-12 w-full">
+                            </div>
+                        </div>
+
+                        <!-- Date From -->
+                        <div class="w-full xl:w-40 shrink-0">
+                            <label for="filter-date-from" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Date From</label>
+                            <input type="date" id="filter-date-from" class="fin-input w-full">
+                        </div>
+
+                        <!-- Date To -->
+                        <div class="w-full xl:w-40 shrink-0">
+                            <label for="filter-date-to" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Date To</label>
+                            <input type="date" id="filter-date-to" class="fin-input w-full">
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="w-full xl:w-48 shrink-0">
+                            <label for="filter-status" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Status</label>
+                            <div class="finzo-dropdown w-full" id="status-dropdown">
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg text-text-secondary" aria-hidden="true">filter_list</span>
+                                        <span class="dropdown-label font-bold text-sm text-text-primary">All Status</span>
+                                    </div>
+                                    <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                </div>
+                                <div class="finzo-dropdown-menu !z-[3000] !w-full">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
+                                    <div class="finzo-dropdown-option" data-value="pending">Pending</div>
+                                    <div class="finzo-dropdown-option" data-value="completed">Completed</div>
+                                    <div class="finzo-dropdown-option" data-value="failed">Failed</div>
+                                    <div class="finzo-dropdown-option" data-value="reversed">Reversed</div>
+                                </div>
+                                <input type="hidden" id="filter-status" value="all">
                             </div>
                         </div>
 

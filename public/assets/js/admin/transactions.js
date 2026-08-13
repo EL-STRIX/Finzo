@@ -16,14 +16,17 @@
 
         try {
             const searchInput = document.getElementById('transaction-search');
+            const statusFilter = document.getElementById('filter-status');
+            const dateFrom = document.getElementById('filter-date-from');
+            const dateTo = document.getElementById('filter-date-to');
 
             const response = await window.api.get('/transactions', {
                 type: currentType,
-                status: 'all',
+                status: statusFilter ? statusFilter.value : 'all',
                 account_type: 'all',
                 search: searchInput ? searchInput.value : '',
-                date_from: '',
-                date_to: '',
+                from_date: dateFrom ? dateFrom.value : '',
+                to_date: dateTo ? dateTo.value : '',
                 page: currentPage,
                 per_page: rowsPerPage
             });
@@ -182,9 +185,12 @@
                 <td class="text-[11px] font-bold opacity-60">${r.created_at}</td>
                 <td><span class="badge ${r.status === 'completed' ? 'badge-success' : 'badge-warning'}">${r.status.toUpperCase()}</span></td>
                 <td class="text-right">
-                    <button onclick="window.open('../../../../api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
+                    <button onclick="window.open('/Finzo/api/v1/documents/receipt?id=${r.txn_id}', '_blank')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-primary hover:text-white dark:hover:bg-blue-600 transition-all border-slate-200 dark:border-white/10">
                         <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">receipt_long</span> Receipt
                     </button>
+                    ${r.status === 'completed' ? `<button onclick="window.reverseTransaction('${r.txn_id}')" class="btn btn-secondary px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg inline-flex items-center gap-1.5 hover:bg-danger hover:text-white dark:hover:bg-red-600 transition-all border-slate-200 dark:border-white/10 ml-2">
+                        <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">undo</span> Reverse
+                    </button>` : ''}
                 </td>
             </tr>`;
         }).join('');
@@ -278,6 +284,30 @@
             });
         }
 
+        // Date Filters
+        const dateFrom = document.getElementById('filter-date-from');
+        if (dateFrom) {
+            dateFrom.addEventListener('change', () => { currentPage = 1; loadTransactions(); });
+        }
+        const dateTo = document.getElementById('filter-date-to');
+        if (dateTo) {
+            dateTo.addEventListener('change', () => { currentPage = 1; loadTransactions(); });
+        }
+
+        // Status Filter
+        const statusMenu = document.querySelector('#status-dropdown .finzo-dropdown-menu');
+        if (statusMenu) {
+            statusMenu.addEventListener('click', (e) => {
+                if (e.target.classList.contains('finzo-dropdown-option')) {
+                    // Small delay to allow global dropdown handler to update hidden input
+                    setTimeout(() => {
+                        currentPage = 1;
+                        loadTransactions();
+                    }, 50);
+                }
+            });
+        }
+
         // Pagination Click Events
         document.addEventListener('click', (e) => {
             const span = e.target.closest('span[data-page]');
@@ -299,4 +329,30 @@
         loadTransactions();
         bindEvents();
     });
+
+    // Global action for reverse
+    window.reverseTransaction = async function(txnId) {
+        const reason = prompt('Enter reason for reversal (required):');
+        if (!reason || reason.trim() === '') {
+            if (reason !== null) window.showToast('Reversal reason is required', 'error');
+            return;
+        }
+
+        if (confirm('Are you sure you want to reverse transaction ' + txnId + '?')) {
+            try {
+                const response = await window.api.post('/transactions/' + txnId + '/reverse', {
+                    reason: reason.trim()
+                });
+                if (response.success) {
+                    window.showToast('Transaction reversed successfully', 'success');
+                    loadTransactions();
+                } else {
+                    window.showToast(response.message || 'Failed to reverse transaction', 'error');
+                }
+            } catch (error) {
+                console.error('Reversal error:', error);
+                window.showToast('Failed to process reversal', 'error');
+            }
+        }
+    };
 })();

@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateUI(user);
                 renderAuditLogs(logs);
             } else {
-                window.FinzoUtils?.showToast(response.message || 'Failed to load details', 'error');
+                window.showToast(response.message || 'Failed to load details', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            window.FinzoUtils?.showToast('Network error loading details', 'error');
+            window.showToast('Network error loading details', 'error');
         }
     }
 

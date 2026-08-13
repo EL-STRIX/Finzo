@@ -110,6 +110,7 @@ ob_start();
                                 <th scope="col">User Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
+                                <th scope="col">Balance</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Last Active</th>
                                 <th class="text-right" scope="col">Action</th>

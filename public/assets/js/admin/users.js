@@ -57,7 +57,7 @@
             const name = u.full_name || 'User';
             const initials = name.split(' ').filter(Boolean).map(n => n ? n[0] : '').join('').toUpperCase() || 'U';
             const statusVal = u.status || 'pending';
-            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-neutral' : 'badge-warning');
+            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-danger' : 'badge-warning');
             const statusText = statusVal.toUpperCase();
             const gradient = window.FinzoUtils.getAvatarGradient(initials);
             
@@ -81,6 +81,7 @@
                 </td>
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
+                <td class="text-xs font-mono font-bold">${balanceStr}</td>
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">

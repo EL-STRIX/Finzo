@@ -152,7 +152,6 @@
             
             try {
                 const response = await window.api.post('/admin/interest', {
-                    action: 'update_rate',
                     new_rate: newRate,
                     apply_from: applyType,
                     custom_date: customDate

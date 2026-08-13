@@ -83,7 +83,7 @@
         }
 
         tbody.innerHTML = staff.map((s, index) => {
-            const statusClass = s.status === 'active' ? 'badge-success' : 'badge-danger';
+            const statusClass = s.status === 'active' ? 'badge-success' : (s.status === 'suspended' ? 'badge-danger' : 'badge-warning');
             const countStr = String((currentPage - 1) * PER_PAGE + index + 1).padStart(2, '0');
             
             // initials logic

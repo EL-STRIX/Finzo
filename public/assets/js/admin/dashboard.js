@@ -43,16 +43,10 @@
 
             if (label.includes('WITHDRAWALS')) { value = stats.withdrawals_today || 0; isPrice = true; }
             else if (label.includes('DEPOSITS')) { value = stats.deposits_today || 0; isPrice = true; }
-            else if (label.includes('TRANSFERS')) { value = stats.transfers_today || 0; isPrice = true; }
             else if (label.includes('TOTAL ASSETS')) { value = stats.total_balance || 0; isPrice = true; }
             else if (label.includes('TOTAL USERS')) { value = stats.total_users || 0; }
-            else if (label.includes('INTEREST')) { value = stats.interest_credited || 0; isPrice = true; }
-            else if (label.includes('PENDING APPROVALS')) { value = stats.pending_approvals || 0; }
             else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts || 0; }
-            else if (label.includes('SUSPENDED USERS')) { value = stats.suspended_users || 0; }
-            else if (label.includes('SOFT DELETED')) { value = stats.soft_deleted_users || 0; }
             else if (label.includes('ACTIVE STAFF')) { value = stats.total_staff || 0; }
-            else if (label.includes('ACTIVE BRANCHES')) { value = stats.total_branches || 0; }
 
             valEl.classList.remove('skeleton');
             valEl.textContent = isPrice ? (window.FinzoUtils ? window.FinzoUtils.formatINR(value) : value) : value.toLocaleString();
@@ -336,15 +330,34 @@
     }
 
     // Initialization
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initCharts();
-            setupThemeObserver();
-            loadDashboard();
-        });
-    } else {
+    function initClock() {
+        const clockElement = document.getElementById("header-live-clock");
+        if (clockElement) {
+            setInterval(function() {
+                var d = new Date();
+                clockElement.textContent = d.toLocaleTimeString("en-IN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: true
+                });
+            }, 1000);
+            
+            // Initial call
+            var initialD = new Date();
+            clockElement.textContent = initialD.toLocaleTimeString("en-IN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            });
+        }
+    }
+
+    // Initialize Dashboard
+    document.addEventListener('DOMContentLoaded', () => {
+        initClock();
         initCharts();
         setupThemeObserver();
         loadDashboard();
-    }
 })();

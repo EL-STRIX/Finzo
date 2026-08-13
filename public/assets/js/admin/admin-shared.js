@@ -238,18 +238,5 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
         // Apply theme to newly loaded components
         applyTheme();
         
-        // Re-bind sidebar toggle
-        const menuBtn = document.getElementById('mobile-menu-btn');
-        const overlay = document.getElementById('sidebar-overlay');
-        if (menuBtn && sidebar && overlay) {
-            menuBtn.addEventListener('click', () => {
-                sidebar.classList.add('mobile-open', 'active');
-                overlay.classList.add('active');
-            });
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('mobile-open', 'active');
-                overlay.classList.remove('active');
-            });
-        }
     });
 })();
