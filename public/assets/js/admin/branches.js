@@ -167,7 +167,7 @@
                 confirmBtn.setAttribute('disabled', 'true');
                 
                 try {
-                    const res = await window.api.upload('/branches', formData);
+                    const res = await window.api.upload('/branches/' + window.branchToDelete + '/delete', formData);
                     if (res.success) {
                         window.showToast('Branch deleted successfully');
                         document.getElementById('confirmModal').classList.add('hidden');
@@ -234,7 +234,7 @@
                 const formData = new FormData(addBranchForm);
                 
                 try {
-                    const endpoint = isEditMode ? '/admin/edit-branch.php' : '/admin/add-branch.php';
+                    const endpoint = isEditMode ? `/branches/${currentEditId}` : `/branches`;
                     if (isEditMode) formData.append('branch_id', currentEditId);
 
                     const response = await window.api.upload(endpoint, formData);

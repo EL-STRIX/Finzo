@@ -537,7 +537,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('search');
         if (searchQuery) {
-            const searchInput = document.getElementById('admin-staff-finder');
+            const searchInput = document.getElementById('staff-search-input');
             if (searchInput) searchInput.value = searchQuery;
             loadStaff(); // the fetch reads from the input
         } else {

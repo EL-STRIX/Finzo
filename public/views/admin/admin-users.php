@@ -8,7 +8,7 @@ $pageHeader = '
         <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Manage all registered users, accounts, and verification status</p>
     </div>
     <div class="flex items-center gap-3">
-        <button onclick="exportUsers()" class="btn btn-secondary btn-sm flex items-center gap-2">
+        <button id="open-export-modal" class="btn btn-secondary btn-sm flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
             Export CSV
         </button>
