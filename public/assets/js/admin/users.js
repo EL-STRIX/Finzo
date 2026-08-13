@@ -164,13 +164,7 @@
                     loadUsers();
                 }, 300);
             });
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    clearTimeout(searchTimeout);
-                    currentPage = 1;
-                    loadUsers();
-                }
-            });
+
         }
 
         const statusInput = document.getElementById('filter-status');

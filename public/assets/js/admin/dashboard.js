@@ -316,10 +316,10 @@
 
                     ['transactions', 'revenue', 'accounts'].forEach(chartKey => {
                         if (charts[chartKey]) {
-                            if (charts[chartKey].options.scales.x) {
+                            if (charts[chartKey].options.scales && charts[chartKey].options.scales.x) {
                                 charts[chartKey].options.scales.x.ticks.color = textColor;
                             }
-                            if (charts[chartKey].options.scales.y) {
+                            if (charts[chartKey].options.scales && charts[chartKey].options.scales.y) {
                                 charts[chartKey].options.scales.y.ticks.color = textColor;
                                 charts[chartKey].options.scales.y.grid.color = gridColor;
                             }

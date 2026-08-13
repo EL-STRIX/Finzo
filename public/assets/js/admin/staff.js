@@ -78,7 +78,7 @@
         if (!tbody) return;
 
         if (!staff.length) {
-            tbody.innerHTML = '<tr><td colspan=\"9\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No staff members found.</div></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">badge</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No staff members found.</div></div></td></tr>';
             return;
         }
 

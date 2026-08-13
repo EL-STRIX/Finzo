@@ -173,12 +173,12 @@ class AdminOperationsController
 
     public function recoverUser(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_POST['user_id'] ?? 0);
+        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $userId = intval($id);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $adminId = \App\Shared\Security\Auth::user()['id'];
         $result = $this->service->recoverUser($userId, $adminId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
@@ -449,12 +449,12 @@ class AdminOperationsController
 
     public function userAction(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_POST['user_id'] ?? 0);
+        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $userId = intval($id);
         $action  = $this->security->cleanInput($_POST['action'] ?? '');
         $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
         $password = $_POST['password'] ?? '';
         $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
-        $adminId = \App\Shared\Security\Auth::user()['id'];
 
         if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);

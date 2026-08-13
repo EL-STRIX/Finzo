@@ -96,6 +96,7 @@ ob_start();
                                     <div class="finzo-dropdown-option" data-value="active">Active</div>
                                     <div class="finzo-dropdown-option" data-value="pending">Pending</div>
                                     <div class="finzo-dropdown-option" data-value="under_review">Under Review</div>
+                                    <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
                                 </div>
                             </div>
                         </div>

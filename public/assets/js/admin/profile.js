@@ -11,35 +11,7 @@
     let currentActivityPage = 1;
     const ACTIVITY_PER_PAGE = 10;
 
-    // Helper: Formats relative time
-    const timeAgo = (dateStr) => {
-        if (!dateStr) return 'Never';
-        const ts = new Date(dateStr).getTime();
-        const seconds = Math.floor((new Date().getTime() - ts) / 1000);
 
-        let interval = seconds / 31536000;
-        if (interval > 1) return Math.floor(interval) + " years ago";
-        interval = seconds / 2592000;
-        if (interval > 1) return Math.floor(interval) + " months ago";
-        interval = seconds / 86400;
-        if (interval > 1) {
-            const days = Math.floor(interval);
-            return days === 1 ? "Yesterday" : days + " days ago";
-        }
-        interval = seconds / 3600;
-        if (interval > 1) return Math.floor(interval) + " hours ago";
-        interval = seconds / 60;
-        if (interval > 1) return Math.floor(interval) + " minutes ago";
-        return Math.floor(seconds) + " seconds ago";
-    };
-
-    // Helper: Formats absolute date and time
-    const formatDateTime = (dateStr) => {
-        if (!dateStr) return '-';
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
-            d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    };
 
     function renderActivityPage() {
         const tbody = document.getElementById('activity-table-body');
@@ -105,7 +77,7 @@
                 <td class="py-4"><span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${badgeClass}">${a.action_type.replace(/_/g, ' ')}</span></td>
                 <td class="py-4 text-[13px] font-medium text-slate-600 dark:text-slate-300">${cleanDetails}</td>
                 <td class="py-4 text-xs font-mono text-slate-500 dark:text-slate-400">${a.ip_address}</td>
-                <td class="py-4 text-[11px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap uppercase tracking-wide">${formatDateTime(a.created_at)}</td>
+                <td class="py-4 text-[11px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap uppercase tracking-wide">${window.FinzoUtils.formatDate(a.created_at)}</td>
             </tr>
         `}).join('');
 
@@ -194,9 +166,9 @@
                 }
 
                 // Security Card bindings
-                document.getElementById('sec-last-login').textContent = timeAgo(admin.last_login_at);
+                document.getElementById('sec-last-login').textContent = window.FinzoUtils.timeAgo(admin.last_login_at);
                 document.getElementById('sec-last-ip').textContent = admin.last_login_ip || '-';
-                document.getElementById('sec-last-pwd').textContent = timeAgo(admin.last_password_changed);
+                document.getElementById('sec-last-pwd').textContent = window.FinzoUtils.timeAgo(admin.last_password_changed);
 
                 // Recovery Status handling
                 const recoveryCard = document.getElementById('sec-recovery-card');
@@ -383,7 +355,7 @@
                             </td>
                             <td class="py-4 px-6">${statHtml}</td>
                             <td class="py-4 px-6">
-                                <div class="text-[10px] font-bold dark:text-slate-300">${a.last_login_at ? timeAgo(a.last_login_at) : 'Never'}</div>
+                                <div class="text-[10px] font-bold dark:text-slate-300">${a.last_login_at ? window.FinzoUtils.timeAgo(a.last_login_at) : 'Never'}</div>
                             </td>
                             <td class="py-4 px-6">
                                 <div class="text-[10px] font-bold dark:text-slate-300">${a.created_by_name || 'System'}</div>

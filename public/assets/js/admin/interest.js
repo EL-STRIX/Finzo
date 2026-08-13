@@ -159,14 +159,14 @@
 
                 if (response.status === 'success' || response.success) {
                     window.InterestManagement.closeModal();
-                    window.portal.showToast(response.message || 'Interest rate update scheduled successfully', 'success');
+                    window.showToast(response.message || 'Interest rate update scheduled successfully', 'success');
                     loadInterestData();
                 } else {
-                    window.portal.showToast(response.message || 'Error updating rate', 'error');
+                    window.showToast(response.message || 'Error updating rate', 'error');
                 }
             } catch (error) {
                 console.error('Update rate error:', error);
-                window.portal.showToast('Failed to update rate. Please try again.', 'error');
+                window.showToast('Network error updating rate', 'error');
             }
         }
     };

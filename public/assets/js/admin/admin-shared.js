@@ -138,7 +138,6 @@ window.AdminPortal = {
 };
 
 // Aliases for broader compatibility across admin scripts
-window.portal = window.AdminPortal;
 window.showToast = window.AdminPortal.showToast;
 
 // Auto-init on load
