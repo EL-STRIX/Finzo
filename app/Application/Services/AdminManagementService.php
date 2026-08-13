@@ -26,6 +26,14 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $this->repository = $repository;
     }
 
+    public function requireSuperAdmin(): void
+    {
+        if ($this->security) {
+            $this->security->enforceSuperAdmin();
+        }
+    }
+
+
 
     /**
      * Get Next Admin Id.
