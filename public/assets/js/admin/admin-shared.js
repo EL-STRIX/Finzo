@@ -14,7 +14,7 @@ window.AdminPortal = {
      */
     init: async function() {
         try {
-            const data = await window.api.get('/admin/dashboard');
+            const data = await window.api.get('/admin/auth/session');
             if (data.success) {
                 const payload = data.data || data;
                 const admin = payload.admin || data.admin;

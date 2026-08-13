@@ -38,6 +38,26 @@ class AdminOperationsController
         return $data;
     }
 
+    public function session(?string $id = null, ?string $extra = null): array
+    {
+        $adminId = \App\Shared\Security\Auth::user()['id'];
+        
+        // Fetch minimal admin data without heavy stats
+        $stmt = $this->service->getRepo()->getPDO()->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_41dbf0d1')); // q_41dbf0d1 is admin by id, let's just use a hardcoded query or assume Auth::user() has what we need
+        $stmt->execute([$adminId]);
+        $admin = $stmt->fetch();
+
+        if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        return [
+            'success' => true,
+            'csrf_token' => $_SESSION['csrf_token'],
+            'admin' => $admin ?: \App\Shared\Security\Auth::user()
+        ];
+    }
+
     public function dashboard(?string $id = null, ?string $extra = null): array
     {
         $adminId = \App\Shared\Security\Auth::user()['id'];
@@ -488,7 +508,7 @@ class AdminOperationsController
 
         $transactionId = $id ?? $_POST['transaction_id'] ?? '';
         $reason = $this->security->cleanInput($_POST['reason'] ?? '');
-        $adminId = $_SESSION['admin_id'] ?? 0;
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
 
         if (empty($transactionId) || empty($reason)) {
             throw new ApiException('Transaction ID and reason are required', 422);

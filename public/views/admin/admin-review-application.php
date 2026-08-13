@@ -49,55 +49,55 @@ ob_start();
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 sm:gap-x-10 sm:gap-y-6 text-text-primary" id="personal-fields">
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Date of Birth</label>
-                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                <div class="font-bold" id="val-dob"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Gender</label>
-                <div class="font-bold"><div class="skeleton w-16 h-4"></div></div>
+                <div class="font-bold" id="val-gender"><div class="skeleton w-16 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Marital Status</label>
-                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+                <div class="font-bold" id="val-marital-status"><div class="skeleton w-20 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Nationality</label>
-                <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+                <div class="font-bold" id="val-nationality"><div class="skeleton w-20 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Father's Name</label>
-                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+                <div class="font-bold" id="val-father-name"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Mother's Name</label>
-                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+                <div class="font-bold" id="val-mother-name"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Occupation</label>
-                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                <div class="font-bold" id="val-occupation"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Source of Income</label>
-                <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                <div class="font-bold" id="val-source-of-income"><div class="skeleton w-24 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Annual Income</label>
-                <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
+                <div class="font-bold" id="val-annual-income"><div class="skeleton w-28 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Phone</label>
-                <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+                <div class="font-bold" id="val-phone"><div class="skeleton w-32 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Email</label>
-                <div class="font-bold"><div class="skeleton w-40 h-4"></div></div>
+                <div class="font-bold" id="val-email"><div class="skeleton w-40 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">SUBMITTED ON</label>
-                <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
+                <div class="font-bold" id="val-kyc-submitted-at"><div class="skeleton w-36 h-4"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">REGISTERED ON</label>
-                <div class="font-bold"><div class="skeleton w-36 h-4"></div></div>
+                <div class="font-bold" id="val-created-at"><div class="skeleton w-36 h-4"></div></div>
               </div>
             </div>
           </div>
@@ -111,24 +111,24 @@ ob_start();
             <div class="p-5 sm:p-8 space-y-6 text-text-primary" id="address-fields">
               <div>
                 <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Street Address</label>
-                <div class="font-bold"><div class="skeleton w-full max-w-sm h-4"></div></div>
+                <div class="font-bold" id="val-street"><div class="skeleton w-full max-w-sm h-4"></div></div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="fin-label mb-1 block text-[10px] font-black (text-text-secondary uppercase">City</label>
-                  <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                  <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">City</label>
+                  <div class="font-bold" id="val-city"><div class="skeleton w-24 h-4"></div></div>
                 </div>
                 <div>
                   <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">State</label>
-                  <div class="font-bold"><div class="skeleton w-32 h-4"></div></div>
+                  <div class="font-bold" id="val-state"><div class="skeleton w-32 h-4"></div></div>
                 </div>
                 <div>
                   <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">PIN Code</label>
-                  <div class="font-bold"><div class="skeleton w-20 h-4"></div></div>
+                  <div class="font-bold" id="val-pincode"><div class="skeleton w-20 h-4"></div></div>
                 </div>
                 <div>
                   <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">Country</label>
-                  <div class="font-bold"><div class="skeleton w-24 h-4"></div></div>
+                  <div class="font-bold" id="val-country"><div class="skeleton w-24 h-4"></div></div>
                 </div>
               </div>
             </div>
@@ -144,11 +144,11 @@ ob_start();
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-6 sm:mb-8 text-text-primary" id="identity-fields">
                 <div>
                   <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">ID Type</label>
-                  <div class="font-bold"><div class="skeleton w-28 h-4"></div></div>
+                  <div class="font-bold" id="val-id-type"><div class="skeleton w-28 h-4"></div></div>
                 </div>
                 <div>
                   <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase">ID Number</label>
-                  <div class="font-bold tracking-widest"><div class="skeleton w-36 h-4"></div></div>
+                  <div class="font-bold tracking-widest" id="val-id-number"><div class="skeleton w-36 h-4"></div></div>
                 </div>
               </div>
               <div class="flex flex-col sm:flex-row gap-6">
@@ -179,15 +179,15 @@ ob_start();
             <div class="p-5 sm:p-8 grid grid-cols-2 gap-4 text-text-primary" id="account-fields">
               <div>
                 <label class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase">Account Type</label>
-                <div class="skeleton w-24 h-6 rounded-full"></div>
+                <div id="val-account-type"><div class="skeleton w-24 h-6 rounded-full"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase">Initial Deposit</label>
-                <div class="font-bold text-lg"><div class="skeleton w-20 h-6"></div></div>
+                <div class="font-bold text-lg" id="val-initial-deposit"><div class="skeleton w-20 h-6"></div></div>
               </div>
               <div>
                 <label class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase">Transaction PIN</label>
-                <div class="skeleton w-16 h-6"></div>
+                <div id="val-transaction-pin"><div class="skeleton w-16 h-6"></div></div>
               </div>
             </div>
           </div>
