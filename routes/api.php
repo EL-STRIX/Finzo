@@ -7,6 +7,11 @@ use App\Presentation\Api\V1\Admin\AdminStaffController;
 use App\Presentation\Api\V1\Admin\AdminBranchController;
 use App\Presentation\Api\V1\Auth\AuthController;
 use App\Presentation\Api\V1\Uploads\UploadController;
+use App\Presentation\Api\V1\User\UserController;
+use App\Presentation\Api\V1\User\UserLoanController;
+use App\Presentation\Api\V1\User\UserCardController;
+use App\Presentation\Api\V1\Public\PublicController;
+use App\Presentation\Api\V1\Pdf\PdfController;
 
 $router = new Router();
 
@@ -131,15 +136,14 @@ $router->post('/api/v1/user/transactions/transfer', [UserController::class, 'tra
 $router->post('/api/v1/user/security/change-password', [UserController::class, 'changePassword'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
 
-use App\Presentation\Api\V1\User\UserLoanController;
-use App\Presentation\Api\V1\User\UserController;
+
 $router->get('/api/v1/loan-products', [UserLoanController::class, 'products']);
 $router->post('/api/v1/loans/apply', [UserLoanController::class, 'apply'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/loans/{id}/schedules', [UserLoanController::class, 'schedules'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/loans/{id}/repay', [UserLoanController::class, 'repay'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/loans/{id}/repayments', [UserLoanController::class, 'repayments'], [UserAuthMiddleware::class]);
 
-use App\Presentation\Api\V1\User\UserCardController;
+
 $router->get('/api/v1/card-products', [UserCardController::class, 'products']);
 $router->post('/api/v1/cards/request', [UserCardController::class, 'requestCard'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/{id}/activate', [UserCardController::class, 'activate'], [UserAuthMiddleware::class]);
