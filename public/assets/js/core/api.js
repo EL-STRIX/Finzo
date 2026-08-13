@@ -66,8 +66,21 @@
             const data = await res.json();
             
             if (!res.ok) {
-                if (res.status === 401 && data.redirect) {
-                    window.location.href = data.redirect;
+                if (res.status === 401) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return data;
+                    }
+                    
+                    // Fallback to manual redirect based on path
+                    const path = window.location.pathname;
+                    if (path.includes('admin')) {
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
+                    } else if (path.includes('staff')) {
+                        window.location.href = '/Finzo/public/views/auth/staff-login.php';
+                    } else {
+                        window.location.href = '/Finzo/public/views/auth/login.php';
+                    }
                     return data;
                 }
                 // Return full server response so field-level errors (data.errors) reach the caller
