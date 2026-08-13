@@ -9,7 +9,7 @@
                 products = response.data || [];
                 renderProducts();
             } else if (response.status === 404) {
-                 window.ui.showToast('Backend endpoint for listing products not fully implemented yet.', 'warning');
+                 window.showToast('Backend endpoint for listing products not fully implemented yet.', 'warning');
                  renderProducts();
             }
         } catch (error) {
@@ -80,15 +80,15 @@
                 const res = await window.api.post('/admin/loan-products', payload);
                 
                 if (res.success) {
-                    window.ui.showToast('Loan product created successfully', 'success');
+                    window.showToast('Loan product created successfully', 'success');
                     document.getElementById('product-modal').classList.add('hidden');
                     loadProducts();
                 } else {
-                    window.ui.showToast(res.message || 'Validation failed', 'error');
+                    window.showToast(res.message || 'Validation failed', 'error');
                 }
             } catch (err) {
                 console.error(err);
-                window.ui.showToast('Error saving loan product. Ensure backend route is active.', 'error');
+                window.showToast('Error saving loan product. Ensure backend route is active.', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;

@@ -11,7 +11,7 @@
                 updateStats(applications);
                 renderApplications();
             } else if (response.status === 404) {
-                 window.ui.showToast('Backend endpoint for listing applications not fully implemented yet.', 'warning');
+                 window.showToast('Backend endpoint for listing applications not fully implemented yet.', 'warning');
                  updateStats([]);
                  renderApplications();
             }
@@ -69,7 +69,7 @@
                 <td class="font-mono text-xs opacity-60">#${app.id}</td>
                 <td class="font-bold">${app.user_name || 'User ' + app.user_id}</td>
                 <td class="text-sm">${app.product_name || 'Loan'}</td>
-                <td class="text-sm font-bold text-primary">₹${window.utils.formatCurrency(app.amount)}</td>
+                <td class="text-sm font-bold text-primary">₹${window.FinzoUtils.formatINR(app.amount)}</td>
                 <td class="text-sm">${app.tenure_months} mo</td>
                 <td class="text-sm opacity-80">${date}</td>
                 <td><span class="status-badge ${statusClass} uppercase">${app.status}</span></td>
@@ -104,7 +104,7 @@
         document.getElementById('review-loan-id').value = id;
         document.getElementById('review-user').textContent = app.user_name || `User ID: ${app.user_id}`;
         document.getElementById('review-product').textContent = app.product_name || 'N/A';
-        document.getElementById('review-amount').textContent = `₹${window.utils.formatCurrency(app.amount)}`;
+        document.getElementById('review-amount').textContent = `₹${window.FinzoUtils.formatINR(app.amount)}`;
         document.getElementById('review-tenure').textContent = `${app.tenure_months} Months`;
         document.getElementById('review-notes').value = '';
 
@@ -139,15 +139,15 @@
             const res = await window.api.post(endpoint, { id: id, notes: notes });
             
             if (res.success) {
-                window.ui.showToast(`Application ${action}d successfully`, 'success');
+                window.showToast(`Application ${action}d successfully`, 'success');
                 document.getElementById('review-modal').classList.add('hidden');
                 loadApplications();
             } else {
-                window.ui.showToast(res.message || `Failed to ${action} application`, 'error');
+                window.showToast(res.message || `Failed to ${action} application`, 'error');
             }
         } catch (err) {
             console.error(err);
-            window.ui.showToast(`Error processing application. Ensure backend route is active.`, 'error');
+            window.showToast(`Error processing application. Ensure backend route is active.`, 'error');
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;

@@ -11,7 +11,7 @@
             }
         } catch (error) {
             console.error('Failed to load roles:', error);
-            window.ui.showToast('Failed to load roles', 'error');
+            window.showToast('Failed to load roles', 'error');
         }
     }
 
@@ -104,13 +104,13 @@
                     try {
                         const res = await window.api.delete(`/admin/roles/${id}`);
                         if(res.success) {
-                            window.ui.showToast('Role deleted successfully');
+                            window.showToast('Role deleted successfully');
                             loadRoles();
                         } else {
-                            window.ui.showToast(res.message || 'Failed to delete', 'error');
+                            window.showToast(res.message || 'Failed to delete', 'error');
                         }
                     } catch(err) {
-                        window.ui.showToast('Failed to delete role', 'error');
+                        window.showToast('Failed to delete role', 'error');
                     }
                 }
             });
@@ -196,15 +196,15 @@
                 }
 
                 if (res.success) {
-                    window.ui.showToast(id ? 'Role updated' : 'Role created', 'success');
+                    window.showToast(id ? 'Role updated' : 'Role created', 'success');
                     document.getElementById('role-modal').classList.add('hidden');
                     loadRoles();
                 } else {
-                    window.ui.showToast(res.message || 'Validation failed', 'error');
+                    window.showToast(res.message || 'Validation failed', 'error');
                 }
             } catch (err) {
                 console.error(err);
-                window.ui.showToast('Error saving role', 'error');
+                window.showToast('Error saving role', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;

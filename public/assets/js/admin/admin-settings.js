@@ -10,7 +10,7 @@
             }
         } catch (error) {
             console.error('Failed to load settings:', error);
-            window.ui.showToast('Failed to load settings', 'error');
+            window.showToast('Failed to load settings', 'error');
         }
     }
 
@@ -134,13 +134,13 @@
             try {
                 const res = await window.api.put('/admin/settings', payload);
                 if (res.success) {
-                    window.ui.showToast('Settings saved successfully', 'success');
+                    window.showToast('Settings saved successfully', 'success');
                 } else {
-                    window.ui.showToast(res.message || 'Failed to save settings', 'error');
+                    window.showToast(res.message || 'Failed to save settings', 'error');
                 }
             } catch (error) {
                 console.error(error);
-                window.ui.showToast('Error saving settings', 'error');
+                window.showToast('Error saving settings', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -161,12 +161,12 @@
                 try {
                     const res = await window.api.post('/admin/settings/backup', { type: type });
                     if(res.success) {
-                        window.ui.showToast(res.message, 'success');
+                        window.showToast(res.message, 'success');
                     } else {
-                        window.ui.showToast(res.message || 'Backup failed', 'error');
+                        window.showToast(res.message || 'Backup failed', 'error');
                     }
                 } catch (error) {
-                    window.ui.showToast('Error triggering backup', 'error');
+                    window.showToast('Error triggering backup', 'error');
                 } finally {
                     btn.innerHTML = originalText;
                     btn.disabled = false;

@@ -37,24 +37,24 @@
             
             if (isAsync) {
                 if (res.success || res.status === 202) {
-                    window.ui.showToast(res.message || 'Report generation queued. You will be notified when ready.', 'success');
+                    window.showToast(res.message || 'Report generation queued. You will be notified when ready.', 'success');
                 } else {
-                    window.ui.showToast('Failed to queue report', 'error');
+                    window.showToast('Failed to queue report', 'error');
                 }
             } else {
                 if (res.success) {
                     renderResults(type, res.data || res.report || res);
                 } else {
-                    window.ui.showToast(res.message || 'Failed to generate report', 'error');
+                    window.showToast(res.message || 'Failed to generate report', 'error');
                 }
             }
         } catch (error) {
             console.error('Report error:', error);
             // Ignore 404s gracefully for UI dev
             if (error.message && error.message.includes('404')) {
-                window.ui.showToast('Backend endpoint for this report is not fully implemented yet.', 'warning');
+                window.showToast('Backend endpoint for this report is not fully implemented yet.', 'warning');
             } else {
-                window.ui.showToast('Error generating report', 'error');
+                window.showToast('Error generating report', 'error');
             }
         } finally {
             submitBtn.innerHTML = originalSubmitHtml;
@@ -77,7 +77,7 @@
                 if (typeof value !== 'object') {
                     const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     const displayVal = (typeof value === 'number' && key.includes('amount')) 
-                        ? `₹${window.utils.formatCurrency(value)}` 
+                        ? `₹${window.FinzoUtils.formatINR(value)}` 
                         : value;
                         
                     html += `

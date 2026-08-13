@@ -3,7 +3,7 @@
 
     async function loadActivePeriod() {
         try {
-            const res = await window.api.get('/admin/ledger/period');
+            const res = await window.api.get('/admin/ledger/periods/active');
             if (res.success && res.has_active) {
                 activePeriodId = res.period.id;
                 document.getElementById('active-period-name').textContent = `${res.period.name} (${res.period.start_date} to ${res.period.end_date})`;
@@ -22,7 +22,7 @@
 
     async function loadChartOfAccounts() {
         try {
-            const res = await window.api.get('/admin/ledger/coa');
+            const res = await window.api.get('/admin/ledger/accounts');
             const container = document.getElementById('coa-tree');
             if (res.success && res.accounts) {
                 renderCOA(res.accounts, container);
@@ -61,7 +61,7 @@
                 html += `
                 <div class="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-sm">
                     <div class="font-bold">${acc.code} - ${acc.name}</div>
-                    <div class="font-mono text-text-muted opacity-80">₹${window.utils.formatCurrency(acc.balance || 0)}</div>
+                    <div class="font-mono text-text-muted opacity-80">₹${window.FinzoUtils.formatINR(acc.balance || 0)}</div>
                 </div>
                 `;
             });
@@ -99,8 +99,8 @@
         let html = '';
         entries.forEach(entry => {
             const date = new Date(entry.created_at).toLocaleString();
-            const dr = entry.type === 'debit' ? `₹${window.utils.formatCurrency(entry.amount)}` : '-';
-            const cr = entry.type === 'credit' ? `₹${window.utils.formatCurrency(entry.amount)}` : '-';
+            const dr = entry.type === 'debit' ? `₹${window.FinzoUtils.formatINR(entry.amount)}` : '-';
+            const cr = entry.type === 'credit' ? `₹${window.FinzoUtils.formatINR(entry.amount)}` : '-';
             
             html += `
             <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
@@ -125,7 +125,7 @@
 
         document.getElementById('btn-close-period')?.addEventListener('click', async () => {
             if (!activePeriodId) {
-                window.ui.showToast('No active period to close', 'warning');
+                window.showToast('No active period to close', 'warning');
                 return;
             }
 
@@ -139,15 +139,15 @@
             btn.disabled = true;
 
             try {
-                const res = await window.api.post('/admin/ledger/close-period', { period_id: activePeriodId });
+                const res = await window.api.post('/admin/ledger/periods/close', { period_id: activePeriodId });
                 if (res.success) {
-                    window.ui.showToast(res.message, 'success');
+                    window.showToast(res.message, 'success');
                     loadActivePeriod();
                 } else {
-                    window.ui.showToast(res.message || 'Failed to close period', 'error');
+                    window.showToast(res.message || 'Failed to close period', 'error');
                 }
             } catch (err) {
-                window.ui.showToast('Error closing accounting period', 'error');
+                window.showToast('Error closing accounting period', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;

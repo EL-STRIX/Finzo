@@ -10,7 +10,7 @@
                 updateStats(requests);
                 renderRequests();
             } else if (response.status === 404) {
-                 window.ui.showToast('Backend endpoint for card requests not fully implemented yet.', 'warning');
+                 window.showToast('Backend endpoint for card requests not fully implemented yet.', 'warning');
                  updateStats([]);
                  renderRequests();
             }
@@ -106,13 +106,13 @@
                 try {
                     const res = await window.api.post('/admin/cards/force-close', { card_id: id, reason: reason });
                     if (res.success) {
-                        window.ui.showToast('Card blocked successfully', 'success');
+                        window.showToast('Card blocked successfully', 'success');
                         loadRequests();
                     } else {
-                        window.ui.showToast(res.message || 'Failed to block card', 'error');
+                        window.showToast(res.message || 'Failed to block card', 'error');
                     }
                 } catch (err) {
-                    window.ui.showToast('Error communicating with backend API', 'error');
+                    window.showToast('Error communicating with backend API', 'error');
                 }
             });
         });
@@ -160,15 +160,15 @@
             const res = await window.api.post(endpoint, { id: id, notes: notes });
             
             if (res.success) {
-                window.ui.showToast(`Card request ${action}d successfully`, 'success');
+                window.showToast(`Card request ${action}d successfully`, 'success');
                 document.getElementById('review-modal').classList.add('hidden');
                 loadRequests();
             } else {
-                window.ui.showToast(res.message || `Failed to ${action} request`, 'error');
+                window.showToast(res.message || `Failed to ${action} request`, 'error');
             }
         } catch (err) {
             console.error(err);
-            window.ui.showToast(`Error processing request. Ensure backend route is active.`, 'error');
+            window.showToast(`Error processing request. Ensure backend route is active.`, 'error');
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
