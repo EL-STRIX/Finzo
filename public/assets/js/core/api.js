@@ -93,7 +93,9 @@
             return apiCall(url, { method: 'GET' });
         },
         post: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'POST', body, isForm }),
+        put: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'PUT', body, isForm }),
         patch: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'PATCH', body, isForm }),
+        delete: (endpoint, body = null) => apiCall(endpoint, { method: 'DELETE', body }),
         upload: (endpoint, formData) => apiCall(endpoint, { method: 'POST', body: formData, isForm: true }),
         
         // Utils
