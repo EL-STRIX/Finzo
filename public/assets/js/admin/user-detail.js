@@ -15,7 +15,7 @@ async function loadUserData() {
     }
 
     try {
-        const response = await window.api.get(`/users/`);
+        const response = await window.api.get(`/users/${userId}`);
         if (response.status === 'success' || response.success) {
             const data = response;
             const user = data.user;
