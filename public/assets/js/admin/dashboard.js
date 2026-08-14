@@ -46,7 +46,9 @@
             else if (label.includes('TOTAL ASSETS')) { value = stats.total_balance || 0; isPrice = true; }
             else if (label.includes('TOTAL USERS')) { value = stats.total_users || 0; }
             else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts || 0; }
-            else if (label.includes('ACTIVE STAFF')) { value = stats.total_staff || 0; }
+            else if (label.includes('ACTIVE ACCOUNTS')) { value = stats.total_accounts || 0; }
+            else if (label.includes('PENDING KYC')) { value = stats.pending_approvals || 0; }
+            else if (label.includes('TRANSACTIONS')) { value = stats.transactions_today || 0; }
 
             valEl.classList.remove('skeleton');
             valEl.textContent = isPrice ? (window.FinzoUtils ? window.FinzoUtils.formatINR(value) : value) : value.toLocaleString();
