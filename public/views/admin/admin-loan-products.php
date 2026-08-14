@@ -20,9 +20,11 @@ ob_start();
 ?>
 
 <!-- TABLE WRAPPER -->
-<div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden">
+<div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden shadow-2xl transition-all duration-300">
+    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
     <!-- TABLE HEADER -->
-    <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-border-subtle bg-background">
+    <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
         <div class="text-sm font-bold text-text-primary uppercase tracking-widest flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-[20px]">real_estate_agent</span> Active Products
         </div>

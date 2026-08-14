@@ -124,7 +124,7 @@ ob_start();
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-background border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="p-4 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div id="pagination-info" class="text-xs font-bold text-text-secondary uppercase tracking-widest">Showing 0-0 of 0 Users</div>
                     <div class="flex items-center gap-2">
                         <button id="prev-btn" class="px-4 py-2 bg-surface border border-border-subtle rounded-lg text-xs font-bold uppercase tracking-widest text-text-secondary hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-all">Previous</button>

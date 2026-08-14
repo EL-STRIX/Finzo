@@ -96,8 +96,10 @@ ob_start();
         </div>
 
         <!-- RECENT TXNS -->
-        <div class="ds-card overflow-hidden">
-          <div class="p-6 border-b border-border-subtle flex items-center justify-between bg-background">
+        <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+          <div class="p-6 border-b border-border-subtle flex items-center justify-between bg-background/40 backdrop-blur-xl relative z-10">
             <div>
               <h3 class="text-sm font-black text-text-primary uppercase tracking-widest">Activity History</h3>
               <p class="text-[10px] font-black text-text-secondary uppercase mt-1">Last 3 Pre-suspension trans</p>
@@ -214,9 +216,6 @@ ob_start();
 </div>
 
 <div class="toast-wrap" id="toast-wrap"></div>
-
-<script defer src="/Finzo/public/assets/js/admin/suspended-user-detail.js"></script>
-<script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-user-detail.js"></script>';
 $slot = ob_get_clean();

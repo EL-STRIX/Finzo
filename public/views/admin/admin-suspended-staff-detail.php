@@ -97,8 +97,10 @@ ob_start();
         </div>
 
         <!-- HISTORY -->
-        <div class="ds-card overflow-hidden">
-          <div class="p-6 border-b border-border-subtle flex items-center justify-between bg-background">
+        <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+          <div class="p-6 border-b border-border-subtle flex items-center justify-between bg-background/40 backdrop-blur-xl relative z-10">
             <h3 class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Processing History</h3>
             <div class="flex gap-4 items-center">
                 <a href="admin-transactions.php" class="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">Full Logs</a>

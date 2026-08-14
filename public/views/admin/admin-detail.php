@@ -163,8 +163,10 @@ ob_start();
             </div>
 
             <!-- Activity Table -->
-            <div class="ds-card overflow-hidden">
-                <div class="p-6 border-b border-surface-border dark:border-white/5 flex justify-between items-center bg-surface-subtle/50 dark:bg-white/5">
+            <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="p-6 border-b border-surface-border flex justify-between items-center bg-background/40 backdrop-blur-xl relative z-10">
                     <h4 class="font-bold text-sm uppercase tracking-widest flex items-center gap-2 dark:text-white">
                         <span class="material-symbols-outlined text-primary-base" aria-hidden="true">history</span> Activity Timeline
                     </h4>
@@ -236,8 +238,8 @@ ob_start();
     </div>
 </div>
 
-<script defer src="/Finzo/public/assets/js/admin/admin-detail.js"></script>
 <?php
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-detail.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

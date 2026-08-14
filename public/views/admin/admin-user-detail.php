@@ -187,8 +187,10 @@ ob_start();
       </section>
 
       <!-- TRANSACTION HISTORY SECTION -->
-      <section class="ds-card overflow-hidden mt-6">
-        <div class="p-5 sm:p-8 border-b border-border-subtle flex justify-between items-center bg-background">
+      <section class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/40 backdrop-blur-xl relative z-10">
           <div>
             <h3 class="font-headline text-lg font-black text-text-primary">Transaction History</h3>
             <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
@@ -292,8 +294,6 @@ ob_start();
       </div>
     </div>
   </div>
-  <script defer src="/Finzo/public/assets/js/admin/user-detail.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/user-detail.js"></script>';
 $slot = ob_get_clean();

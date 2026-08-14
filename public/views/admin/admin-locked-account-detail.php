@@ -82,8 +82,10 @@ ob_start();
                 </div>
 
                 <!-- LOGIN HISTORY -->
-                <div class="ds-card overflow-hidden">
-                    <div class="px-6 py-4 border-b border-border-subtle flex items-center justify-between">
+                <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                    <div class="px-6 py-4 border-b border-border-subtle flex items-center justify-between bg-background/40 backdrop-blur-xl relative z-10">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center">
                                 <span class="material-symbols-outlined text-lg text-text-secondary" aria-hidden="true">history</span>

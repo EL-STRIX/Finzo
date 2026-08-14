@@ -21,8 +21,10 @@ ob_start();
             </div>
 
             <!-- FILTERS & TABLE -->
-            <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface-subtle">
+            <div class="ds-card overflow-hidden relative z-10 shadow-2xl transition-all duration-300">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="p-4 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
                     <div class="col-span-2">
                         <label for="search-input" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search Account</label>

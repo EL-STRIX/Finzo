@@ -12,45 +12,45 @@ $pageHeader = '
 ob_start();
 ?>
 <!-- STATS ROW -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div class="ds-card p-5 relative overflow-hidden group hover:border-info hover:shadow-md transition-all">
-          <div class="absolute right-0 top-0 w-16 h-16 bg-info-bg/50 rounded-bl-full -z-0"></div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 relative z-10">
+        <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div class="absolute -right-6 -top-6 w-24 h-24 bg-info/10 rounded-full blur-2xl group-hover:bg-info/20 transition-all"></div>
           <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-info-bg text-info flex items-center justify-center mb-4 border border-info-bg shadow-sm" >
-              <span class="material-symbols-outlined text-xl" aria-hidden="true">group</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info flex items-center justify-center mb-4 border border-info/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">group</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">TOTAL STAFF</div>
-            <div id="stat-total-staff" class="text-xl font-black font-mono tracking-tight text-text-primary skeleton min-w-[40px]">—</div>
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TOTAL STAFF</div>
+            <div id="stat-total-staff" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
           </div>
         </div>
-        <div class="ds-card p-5 relative overflow-hidden group hover:border-success hover:shadow-md transition-all">
-          <div class="absolute right-0 top-0 w-16 h-16 bg-success-bg/50 rounded-bl-full -z-0"></div>
+        <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div class="absolute -right-6 -top-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-all"></div>
           <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-success-bg text-success flex items-center justify-center mb-4 border border-success-bg shadow-sm" >
-              <span class="material-symbols-outlined text-xl" aria-hidden="true">badge</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success flex items-center justify-center mb-4 border border-success/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">badge</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">ACTIVE STAFF</div>
-            <div id="stat-active-staff" class="text-xl font-black font-mono tracking-tight text-text-primary skeleton min-w-[40px]">—</div>
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">ACTIVE STAFF</div>
+            <div id="stat-active-staff" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
           </div>
         </div>
-        <div class="ds-card p-5 relative overflow-hidden group hover:border-error hover:shadow-md transition-all">
-          <div class="absolute right-0 top-0 w-16 h-16 bg-error-bg/50 rounded-bl-full -z-0"></div>
+        <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div class="absolute -right-6 -top-6 w-24 h-24 bg-error/10 rounded-full blur-2xl group-hover:bg-error/20 transition-all"></div>
           <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-error-bg text-error flex items-center justify-center mb-4 border border-error-bg shadow-sm" >
-              <span class="material-symbols-outlined text-xl" aria-hidden="true">person_off</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-error/20 to-error/5 text-error flex items-center justify-center mb-4 border border-error/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">person_off</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">SUSPEND STAFF</div>
-            <div id="stat-suspend-staff" class="text-xl font-black font-mono tracking-tight text-text-primary skeleton min-w-[40px]">—</div>
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">SUSPEND STAFF</div>
+            <div id="stat-suspend-staff" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
           </div>
         </div>
-        <div class="ds-card p-5 relative overflow-hidden group hover:border-primary hover:shadow-md transition-all">
-          <div class="absolute right-0 top-0 w-16 h-16 bg-primary-50/50 rounded-bl-full -z-0"></div>
+        <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
           <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-primary-50 text-primary flex items-center justify-center mb-4 border border-primary-100 shadow-sm" >
-              <span class="material-symbols-outlined text-xl" aria-hidden="true">receipt</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-4 border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">TRANSACTIONS</div>
-            <div id="stat-transactions-today" class="text-xl font-black font-mono tracking-tight text-text-primary skeleton min-w-[40px]">—</div>
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TRANSACTIONS</div>
+            <div id="stat-transactions-today" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
           </div>
         </div>
       </div>

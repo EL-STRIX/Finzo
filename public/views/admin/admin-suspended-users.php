@@ -12,8 +12,10 @@ $pageHeader = '
 ob_start();
 ?>
 <!-- TABLE CARD -->
-      <div class="ds-card overflow-hidden">
-        <div class="p-4 sm:p-6 border-b border-border-subtle flex justify-between items-center bg-background">
+      <div class="ds-card overflow-hidden relative z-10 shadow-2xl transition-all duration-300">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="p-4 sm:p-6 border-b border-border-subtle flex justify-between items-center bg-background/40 backdrop-blur-xl relative z-10">
             <h3 class="font-bold text-xs uppercase tracking-widest text-text-secondary">Suspended Users Audit</h3>
             <a href="admin-users.php" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">Full Users Audit</a>
         </div>

@@ -328,8 +328,10 @@ ob_start();
     </div>
 
     <!-- TRANSACTION HISTORY -->
-    <div class="ds-card overflow-hidden mt-6">
-        <div class="p-5 sm:p-8 border-b border-border-subtle flex justify-between items-center bg-background">
+    <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="p-5 sm:p-8 border-b border-border-subtle flex justify-between items-center bg-background/40 backdrop-blur-xl relative z-10">
             <div>
                 <h4 class="font-black text-lg text-text-primary tracking-tight">Transaction History</h4>
                 <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-1">Full Ledger Audit for Current Portfolio</p>
@@ -360,8 +362,10 @@ ob_start();
     </div>
 
     <!-- RECENT ACTIVITY -->
-    <div class="ds-card overflow-hidden mt-6">
-        <div class="p-5 sm:p-8 border-b border-border-subtle flex justify-between items-center bg-background">
+    <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-2xl transition-all duration-300">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="p-5 sm:p-8 border-b border-border-subtle flex justify-between items-center bg-background/40 backdrop-blur-xl relative z-10">
             <div>
                 <h4 class="font-black text-lg text-text-primary tracking-tight">Recent Activity</h4>
                 <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-1">System activity logs</p>
@@ -444,9 +448,6 @@ ob_start();
     </button>
     <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl" alt="Document View">
 </div>
-
-<script defer src="/Finzo/public/assets/js/admin/staff-detail.js"></script>
-<script defer src="/Finzo/public/assets/js/core/component-loader.js"></script>
 <?php
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/staff-detail.js"></script>';
 $slot = ob_get_clean();
