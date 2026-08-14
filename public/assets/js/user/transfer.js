@@ -151,7 +151,7 @@
       const data = await res.json();
       
       if (data.success) {
-        window.location.href = `receipt.html?id=${data.txn_id}&success=1`;
+        window.location.href = `receipt.php?id=${data.txn_id}&success=1`;
       } else {
         showToast(data.message || 'Transfer failed', 'error');
         btn.disabled = false;

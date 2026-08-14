@@ -1,9 +1,9 @@
 (async function() {
   await fetchUserSession();
   const s = UserState.status;
-  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
-  if (s === 'pending') { window.location.href = 'complete-profile.html'; return; }
-  if (s === 'rejected') { window.location.href = 'account-rejected.html'; return; }
+  if (s === 'active') { window.location.href = 'dashboard.php'; return; }
+  if (s === 'pending') { window.location.href = 'complete-profile.php'; return; }
+  if (s === 'rejected') { window.location.href = 'account-rejected.php'; return; }
   
   // Status is under_review — reveal the page
   const emailEl = document.getElementById('user-email-show');

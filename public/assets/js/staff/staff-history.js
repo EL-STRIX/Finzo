@@ -35,7 +35,7 @@ $(document).ready(async function() {
 
         async function renderTransactions() {
             const tbody = $('#transaction-table-body');
-            tbody.html('<tr><td colspan="8" class="text-center py-10 font-bold text-slate-400 text-sm">Loading transactions...</td></tr>');
+            tbody.php('<tr><td colspan="8" class="text-center py-10 font-bold text-slate-400 text-sm">Loading transactions...</td></tr>');
 
             try {
                 let from_date = currentFilters.from_date;
@@ -117,7 +117,7 @@ $(document).ready(async function() {
                                 </span>
                             </td>
                             <td class="p-3 text-right">
-                                <a href="staff-receipt.html?id=${item.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="Print Receipt">
+                                <a href="staff-receipt.php?id=${item.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="Print Receipt">
                                     <span class="material-symbols-outlined text-[18px]">print</span>
                                 </a>
                             </td>
@@ -128,7 +128,7 @@ $(document).ready(async function() {
                 renderPagination(res.current_page, res.pages, res.total);
 
             } catch (err) {
-                tbody.html('<tr><td colspan="8" class="text-center py-10 text-red-500 font-bold text-sm">Error loading data. Please refresh.</td></tr>');
+                tbody.php('<tr><td colspan="8" class="text-center py-10 text-red-500 font-bold text-sm">Error loading data. Please refresh.</td></tr>');
             }
         }
 
@@ -220,8 +220,8 @@ $(document).ready(async function() {
 
         async function printAllTransactions() {
             const btn = $('#print-all-btn');
-            const originalHtml = btn.html();
-            btn.prop('disabled', true).html('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
+            const originalHtml = btn.php();
+            btn.prop('disabled', true).php('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
 
             try {
                 let from_date = currentFilters.from_date;
@@ -253,7 +253,7 @@ $(document).ready(async function() {
                 });
 
                 const res = await api.get('/staff/history.php?' + query.toString());
-                btn.prop('disabled', false).html(originalHtml);
+                btn.prop('disabled', false).php(originalHtml);
 
                 if (!res.success || !res.transactions || res.transactions.length === 0) {
                     alert('No transactions to print with the current filters.');
@@ -326,6 +326,6 @@ $(document).ready(async function() {
 
             } catch (err) {
                 alert('Error generating report.');
-                btn.prop('disabled', false).html(originalHtml);
+                btn.prop('disabled', false).php(originalHtml);
             }
         }

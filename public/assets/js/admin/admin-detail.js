@@ -16,7 +16,7 @@
             currentAdminId = urlParams.get('id');
 
             if (!currentAdminId) {
-                window.location.href = 'admin-profile.html';
+                window.location.href = 'admin-profile.php';
                 return;
             }
 
@@ -35,7 +35,7 @@
                     this.renderActivity(response.activity);
                 } else {
                     window.portal.showToast(response.message || 'Error loading admin data', 'error');
-                    setTimeout(() => window.location.href = 'admin-profile.html', 2000);
+                    setTimeout(() => window.location.href = 'admin-profile.php', 2000);
                 }
             } catch (error) {
                 console.error('Failed to load admin detail:', error);
@@ -258,7 +258,7 @@
 
                 if (response.success) {
                     window.portal.showToast(response.message, 'success');
-                    setTimeout(() => window.location.href = 'admin-profile.html', 1500);
+                    setTimeout(() => window.location.href = 'admin-profile.php', 1500);
                 } else {
                     window.portal.showToast(response.message, 'error');
                     window.api.setButtonLoading(btn, false);

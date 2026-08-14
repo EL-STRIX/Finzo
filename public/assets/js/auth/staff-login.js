@@ -25,8 +25,8 @@ $(function() {
         return;
       }
 
-      const original = $btn.html();
-      $btn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
+      const original = $btn.php();
+      $btn.php('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Signing in...</span>');
       $btn.prop('disabled', true);
 
       // Real API authentication
@@ -42,18 +42,18 @@ $(function() {
       })
       .then(data => {
         if (data.success) {
-          window.location.href = data.redirect || '/Finzo/views/staff/staff-dashboard.html';
+          window.location.href = data.redirect || '/Finzo/views/staff/staff-dashboard.php';
         } else {
           $form.addClass('error-state');
           $error.text(data.message || "Invalid staff credentials").show();
-          $btn.html(original).prop('disabled', false);
+          $btn.php(original).prop('disabled', false);
         }
       })
       .catch(err => {
         console.error('Staff login error:', err);
         $form.addClass('error-state');
         $error.text("Connection error. Please try again.").show();
-        $btn.html(original).prop('disabled', false);
+        $btn.php(original).prop('disabled', false);
       });
     });
 

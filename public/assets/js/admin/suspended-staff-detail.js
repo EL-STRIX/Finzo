@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!staffId) {
         alert('Staff ID missing');
-        window.location.href = 'admin-suspended-staff.html';
+        window.location.href = 'admin-suspended-staff.php';
         return;
     }
 
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // The global window.AdminPortal handles the rest
             } else {
                 window.showToast(response.message || 'Record not found', 'error');
-                setTimeout(() => window.location.href = 'admin-suspended-staff.html', 2000);
+                setTimeout(() => window.location.href = 'admin-suspended-staff.php', 2000);
             }
         } catch (error) {
             console.error('Error loading detail:', error);
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.success || response.status === 'success') {
                 window.showToast('Staff account reinstated. Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'admin-suspended-staff.html', 1500);
+                setTimeout(() => window.location.href = 'admin-suspended-staff.php', 1500);
             } else {
                 window.showToast(response.message || 'Action failed', 'error');
                 window.api.setButtonLoading(btn, false, 'Confirm & Authorize');

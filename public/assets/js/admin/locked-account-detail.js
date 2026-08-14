@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID missing');
-        window.location.href = 'admin-locked-accounts.html';
+        window.location.href = 'admin-locked-accounts.php';
         return;
     }
 

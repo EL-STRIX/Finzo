@@ -103,7 +103,7 @@
                 <td><span class="status-badge badge-secondary">${s.duration || 'Permanent'}</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                     <div class="flex items-center justify-center gap-2">
-                        <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
+                        <a href="admin-staff-detail.php?id=${s.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">visibility</span>
                         </a>
                         <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500" 

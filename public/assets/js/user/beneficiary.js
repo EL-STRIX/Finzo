@@ -129,7 +129,7 @@ function renderList() {
         <button class="btn btn-secondary !p-0 w-10 h-10 rounded-full flex items-center justify-center text-danger-base hover:bg-danger-surface hover:text-danger-base hover:border-danger-base/20 transition-all" onclick="deleteBen(${b.id})" title="Remove Beneficiary">
           <span class="material-symbols-outlined text-[18px]">delete</span>
         </button>
-        <a href="transfer.html?to=${b.account}" class="btn btn-primary px-5 h-10 text-xs">
+        <a href="transfer.php?to=${b.account}" class="btn btn-primary px-5 h-10 text-xs">
           Send Money
         </a>
       </div>

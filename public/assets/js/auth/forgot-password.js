@@ -9,8 +9,8 @@ $(function() {
             return;
         }
 
-        const original = $btn.html();
-        $btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> <span>Sending...</span>');
+        const original = $btn.php();
+        $btn.prop('disabled', true).php('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> <span>Sending...</span>');
         $('#error-box').hide();
 
         fetch('/Finzo/api/auth/forgot-password.php', {
@@ -21,13 +21,13 @@ $(function() {
         })
         .then(res => res.json())
         .then(data => {
-            $btn.prop('disabled', false).html(original);
+            $btn.prop('disabled', false).php(original);
             // Always show success message (security: don't reveal if email exists)
-            const btn2 = $btn.html('<span class="material-symbols-outlined">check_circle</span> <span>Sent Successfully</span>').addClass('bg-green-600').removeClass('bg-primary-600');
-            setTimeout(() => window.location.href = 'login.html', 3000);
+            const btn2 = $btn.php('<span class="material-symbols-outlined">check_circle</span> <span>Sent Successfully</span>').addClass('bg-green-600').removeClass('bg-primary-600');
+            setTimeout(() => window.location.href = 'login.php', 3000);
         })
         .catch(err => {
-            $btn.prop('disabled', false).html(original);
+            $btn.prop('disabled', false).php(original);
             $('#error-box').text('Network error. Please try again.').show();
         });
     });

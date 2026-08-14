@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID is missing');
-        // window.location.href = 'admin-pending-approvals.html';
+        // window.location.href = 'admin-pending-approvals.php';
         return;
     }
 
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.status === 'success' || response.success) {
                     window.showToast('Application Approved! Account Number: ' + (response.account_no || response.data?.account_no), 'success');
                     setTimeout(() => {
-                         window.location.href = 'admin-pending-approvals.html';
+                         window.location.href = 'admin-pending-approvals.php';
                     }, 1500);
                 } else {
                     window.showToast(response.message || 'Action failed', 'error');
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.status === 'success' || response.success) {
                     window.showToast('Application Rejected.', 'success');
                     setTimeout(() => {
-                        window.location.href = 'admin-pending-approvals.html';
+                        window.location.href = 'admin-pending-approvals.php';
                     }, 1500);
                 } else {
                     window.showToast(response.message || 'Action failed', 'error');

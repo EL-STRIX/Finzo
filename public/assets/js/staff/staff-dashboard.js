@@ -28,7 +28,7 @@ $(document).ready(async function () {
             tbody.empty();
 
             if (!txns || txns.length === 0) {
-                tbody.html(`<tr><td colspan="6" class="text-center py-10 font-bold text-slate-400 text-sm">No transactions processed today.</td></tr>`);
+                tbody.php(`<tr><td colspan="6" class="text-center py-10 font-bold text-slate-400 text-sm">No transactions processed today.</td></tr>`);
                 return;
             }
 
@@ -67,7 +67,7 @@ $(document).ready(async function () {
                         </td>
                         <td class="p-3 font-mono font-bold text-sm ${amtColor}">${sign}${am}</td>
                         <td class="p-3 text-right">
-                            <a href="staff-receipt.html?id=${txn.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="View Receipt">
+                            <a href="staff-receipt.php?id=${txn.txn_id}" class="inline-flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-500 transition-colors" title="View Receipt">
                                 <span class="material-symbols-outlined text-[18px]">print</span>
                             </a>
                         </td>

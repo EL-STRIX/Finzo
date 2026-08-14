@@ -1,9 +1,9 @@
 (async function() {
   await fetchUserSession();
   const s = UserState.status;
-  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
-  if (s === 'pending') { window.location.href = 'complete-profile.html'; return; }
-  if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
+  if (s === 'active') { window.location.href = 'dashboard.php'; return; }
+  if (s === 'pending') { window.location.href = 'complete-profile.php'; return; }
+  if (s === 'under_review') { window.location.href = 'account-pending.php'; return; }
   
   const reason = UserState.rejectionReason;
   if (reason) {

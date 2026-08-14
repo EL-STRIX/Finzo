@@ -5,8 +5,8 @@ const formValues = {};
 (async function() {
   await fetchUserSession();
   const s = UserState.status;
-  if (s === 'active') { window.location.href = 'dashboard.html'; return; }
-  if (s === 'under_review') { window.location.href = 'account-pending.html'; return; }
+  if (s === 'active') { window.location.href = 'dashboard.php'; return; }
+  if (s === 'under_review') { window.location.href = 'account-pending.php'; return; }
   
   if (s === 'rejected') {
     if (UserState.rejectionReason) {
@@ -199,7 +199,7 @@ async function submitProfile() {
     
     const data = await res.json();
     if (data.success) {
-      window.location.href = 'account-pending.html';
+      window.location.href = 'account-pending.php';
     } else {
       showToast(data.message || 'Submission failed', 'error');
       btn.disabled = false;

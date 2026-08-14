@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Staff Detail (Dossier View)
- * v2.0 — Redesigned to match admin-detail.html
+ * v2.0 — Redesigned to match admin-detail.php
  */
 document.addEventListener('DOMContentLoaded', function() {
 

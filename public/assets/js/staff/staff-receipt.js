@@ -4,7 +4,7 @@ $(document).ready(async function() {
 
             if (!txnId) {
                 alert('Transaction ID not found.');
-                window.location.href = 'staff-dashboard.html';
+                window.location.href = 'staff-dashboard.php';
                 return;
             }
 

@@ -178,7 +178,7 @@
         // Listen for internal dropdown changes
         if (applyFromDropdownInput) {
             // We'll use a MutationObserver or better, event delegation in dropdowns.js
-            // But since the current dropdown logic in admin.html was tied to a global handleApplyFromChange,
+            // But since the current dropdown logic in admin.php was tied to a global handleApplyFromChange,
             // we'll hook into that.
             
             // Temporary strategy for custom date toggle

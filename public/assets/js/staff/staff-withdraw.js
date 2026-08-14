@@ -23,12 +23,12 @@ $(document).ready(async function() {
             const acc = $('#account-lookup').val().trim();
             if (!acc) return;
             const btn = $(this);
-            const originalText = btn.html();
-            btn.html('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> <span>Searching</span>');
+            const originalText = btn.php();
+            btn.php('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> <span>Searching</span>');
             
             try {
                 const res = await api.get('/staff/account-lookup.php?account_no=' + encodeURIComponent(acc));
-                btn.html(originalText);
+                btn.php(originalText);
                 
                 if(res.success && res.found && res.account) {
                     $('#account-success').removeClass('hidden');
@@ -54,7 +54,7 @@ $(document).ready(async function() {
                     $('#account-success').addClass('hidden');
                 }
             } catch (err) {
-                btn.html(originalText);
+                btn.php(originalText);
                 $('#account-error').removeClass('hidden');
                 $('#account-success').addClass('hidden');
             }
@@ -125,8 +125,8 @@ $(document).ready(async function() {
 
         $('#final-withdraw-btn').on('click', async function() {
             const btn = $(this);
-            const originalText = btn.html();
-            btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Processing...');
+            const originalText = btn.php();
+            btn.prop('disabled', true).php('<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Processing...');
             
             const reqData = {
                 account_no: verifiedAccountNo,
@@ -137,13 +137,13 @@ $(document).ready(async function() {
             try {
                 const res = await api.post('/staff/withdrawal.php', reqData);
                 if (res.success) {
-                    window.location.href = 'staff-receipt.html?id=' + res.transaction_id;
+                    window.location.href = 'staff-receipt.php?id=' + res.transaction_id;
                 } else {
                     alert('Error: ' + res.message);
-                    btn.prop('disabled', false).html(originalText);
+                    btn.prop('disabled', false).php(originalText);
                 }
             } catch (err) {
                 alert('Connection error. Please try again.');
-                btn.prop('disabled', false).html(originalText);
+                btn.prop('disabled', false).php(originalText);
             }
         });

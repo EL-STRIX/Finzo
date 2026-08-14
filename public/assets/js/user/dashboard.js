@@ -166,8 +166,8 @@ buildNavbar('Account Overview', 'Dashboard');
     const cta = document.getElementById('empty-cta');
     if (cta) {
       cta.textContent = status === 'under_review' ? 'View Status' : status === 'rejected' ? 'Resubmit Profile' : 'Complete Profile';
-      if (status === 'under_review') cta.href = 'account-pending.html';
-      if (status === 'rejected') cta.href = 'account-rejected.html';
+      if (status === 'under_review') cta.href = 'account-pending.php';
+      if (status === 'rejected') cta.href = 'account-rejected.php';
     }
   }
 })();

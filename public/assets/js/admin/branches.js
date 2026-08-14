@@ -397,7 +397,7 @@
             nameEl.textContent = branch.manager_name;
             emailEl.textContent = branch.manager_email || 'N/A';
             linkEl.classList.remove('hidden');
-            linkEl.href = 'admin-staff-detail.html?id=' + encodeURIComponent(branch.manager_id);
+            linkEl.href = 'admin-staff-detail.php?id=' + encodeURIComponent(branch.manager_id);
         } else {
             avatarEl.innerHTML = '';
             avatarEl.textContent = '??';
@@ -536,7 +536,7 @@
                                 <span class="status-badge ${statusStyle} !text-[9px] !px-2">${(s.status || '').toUpperCase()}</span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="admin-staff-detail.html?id=${s.id}" class="btn btn-secondary !px-4 !py-1.5 !text-[10px]" target="_blank">View Profile</a>
+                                <a href="admin-staff-detail.php?id=${s.id}" class="btn btn-secondary !px-4 !py-1.5 !text-[10px]" target="_blank">View Profile</a>
                             </td>
                         </tr>
                         `;

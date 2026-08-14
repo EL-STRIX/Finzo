@@ -86,7 +86,7 @@
                 </td>
                 <td>
                     <div class="flex justify-end">
-                        <a href="admin-review-application.html?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
+                        <a href="admin-review-application.php?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
                             <span class="material-symbols-outlined !text-xs" aria-hidden="true">settings_accessibility</span> Manage
                         </a>
                     </div>

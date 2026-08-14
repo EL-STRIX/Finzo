@@ -362,7 +362,7 @@
                                 <div class="text-[9px] font-bold text-slate-400 mt-0.5">${formatDateLocal(a.created_at)}</div>
                             </td>
                             <td class="py-4 px-6 text-right">
-                                <a href="admin-detail.html?id=${a.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 shadow-sm border border-transparent hover:border-primary/20">
+                                <a href="admin-detail.php?id=${a.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 shadow-sm border border-transparent hover:border-primary/20">
                                     View Profile
                                     <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
                                 </a>

@@ -81,7 +81,7 @@ async function updatePassword() {
     const data = await res.json();
     if (data.success) {
       showToast('Password updated successfully! Redirecting...', 'success');
-      setTimeout(() => { window.location.href = '/Finzo/views/auth/login.html'; }, 2000);
+      setTimeout(() => { window.location.href = '/Finzo/views/auth/login.php'; }, 2000);
     } else {
       showToast(data.message || 'Update failed', 'error');
       if (data.errors) {

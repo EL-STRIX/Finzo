@@ -107,7 +107,7 @@
                 <td class="text-right font-black text-xs text-primary dark:text-blue-400">${window.FinzoUtils.formatINR(s.txn_amount || 0)}</td>
                 <td class="text-[10px] font-bold opacity-40">${s.last_login_at ? window.FinzoUtils.formatDate(s.last_login_at) : 'Never'}</td>
                 <td class="text-right">
-                    <a href="admin-staff-detail.html?id=${s.id}" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1 group">
+                    <a href="admin-staff-detail.php?id=${s.id}" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1 group">
                         <span class="text-[10px] font-black uppercase tracking-widest">View</span>
                         <span class="material-symbols-outlined !text-xs transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
                     </a>

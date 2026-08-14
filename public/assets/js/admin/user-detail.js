@@ -321,9 +321,9 @@ window.executeGovernanceAction = async () => {
             document.getElementById('confirm-governance-btn').textContent = 'SUCCESS! AUDIT LOGGED';
             setTimeout(() => {
                 if (mappedAction === 'suspend') {
-                    window.location.href = 'admin-suspended-users.html';
+                    window.location.href = 'admin-suspended-users.php';
                 } else if (mappedAction === 'delete') {
-                    window.location.href = 'admin-deleted-users.html';
+                    window.location.href = 'admin-deleted-users.php';
                 } else {
                     location.reload();
                 }

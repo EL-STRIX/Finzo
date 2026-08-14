@@ -106,7 +106,7 @@ function renderTable() {
         <td class="p-4 align-middle"><div class="text-sm font-bold text-[var(--color-text-main)]">${t.desc}</div><div class="font-mono text-[10px] font-bold text-[var(--color-text-muted)] tracking-widest mt-1">${t.id}</div></td>
         <td class="p-4 align-middle text-right"><div class="text-sm font-black ${amtClass}">${amtSign}${formatINR(t.amount)}</div></td>
         <td class="p-4 align-middle text-right text-xs font-bold tracking-wide">${formatINR(t.balanceAfter)}</td>
-        <td class="p-4 align-middle text-center"><button class="btn btn-secondary w-8 h-8 !p-0 rounded-full inline-flex items-center justify-center" onclick="window.location.href='receipt.html?id=${t.id}'" title="Download Receipt"><span class="material-symbols-outlined text-[16px]">download</span></button></td>
+        <td class="p-4 align-middle text-center"><button class="btn btn-secondary w-8 h-8 !p-0 rounded-full inline-flex items-center justify-center" onclick="window.location.href='receipt.php?id=${t.id}'" title="Download Receipt"><span class="material-symbols-outlined text-[16px]">download</span></button></td>
       </tr>`;
     }).join('');
   }
@@ -128,7 +128,7 @@ function goPage(dir) { page = Math.max(1, Math.min(Math.ceil(filtered.length/ROW
 function printStatement() {
   const f = document.getElementById('from-date').value;
   const t = document.getElementById('to-date').value;
-  let url = 'statement.html?print=true';
+  let url = 'statement.php?print=true';
   if(f) url += '&from=' + f;
   if(t) url += '&to=' + t;
   window.location.href = url;

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID missing');
-        window.location.href = 'admin-suspended-users.html';
+        window.location.href = 'admin-suspended-users.php';
         return;
     }
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await window.api.patch('/users/' + userId, { action: 'delete', password: password });
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account archived successfully', 'success');
-                setTimeout(() => window.location.href = 'admin-deleted-users.html', 1500);
+                setTimeout(() => window.location.href = 'admin-deleted-users.php', 1500);
             } else {
                 alert(response.message || 'Action failed.');
                 window.api.setButtonLoading(btn, false);
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account reinstated. Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'admin-suspended-users.html', 1500);
+                setTimeout(() => window.location.href = 'admin-suspended-users.php', 1500);
             } else {
                 alert(response.message);
                 window.api.setButtonLoading(btn, false);

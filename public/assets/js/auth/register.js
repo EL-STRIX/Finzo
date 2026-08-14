@@ -70,8 +70,8 @@ $(document).ready(function () {
                 // Show loading state
                 // Real API registration
                 const btn = registerForm.find('button[type="submit"]');
-                const originalContent = btn.html();
-                btn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin">refresh</span> Establishing Ledger...');
+                const originalContent = btn.php();
+                btn.prop('disabled', true).php('<span class="material-symbols-outlined animate-spin">refresh</span> Establishing Ledger...');
                 
                 fetch('/Finzo/api/auth/register.php', {
                     method: 'POST',
@@ -91,7 +91,7 @@ $(document).ready(function () {
                         localStorage.setItem('finzo_status', 'pending');
                         localStorage.setItem('finzo_user_name', nameInput.val().trim());
                         localStorage.setItem('finzo_user_email', emailInput.val().trim());
-                        window.location.href = data.redirect || '/Finzo/views/user/dashboard.html';
+                        window.location.href = data.redirect || '/Finzo/views/user/dashboard.php';
                     } else {
                         if (data.errors) {
                             const firstError = Object.values(data.errors)[0];
@@ -100,14 +100,14 @@ $(document).ready(function () {
                             errorText.text(data.message || 'Registration failed. Please try again.');
                         }
                         errorBanner.addClass('active');
-                        btn.prop('disabled', false).html(originalContent);
+                        btn.prop('disabled', false).php(originalContent);
                     }
                 })
                 .catch(err => {
                     console.error('Registration error:', err);
                     errorText.text('Connection error. Please try again.');
                     errorBanner.addClass('active');
-                    btn.prop('disabled', false).html(originalContent);
+                    btn.prop('disabled', false).php(originalContent);
                 });
             });
 

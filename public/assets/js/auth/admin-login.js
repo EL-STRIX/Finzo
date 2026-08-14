@@ -136,7 +136,7 @@ let CSRF_TOKEN = '';
             goToState(2);
             setupLockedCard(data);
           } else {
-            $msg.html("To reset your password, your account must be locked first.<br>Contact your Super Admin for assistance.").show();
+            $msg.php("To reset your password, your account must be locked first.<br>Contact your Super Admin for assistance.").show();
           }
         })
         .catch(() => {
@@ -159,8 +159,8 @@ let CSRF_TOKEN = '';
       }
 
       CURRENT_EMAIL = id;
-      const original = $loginBtn.html();
-      $loginBtn.html('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Authenticating...</span>').prop('disabled', true);
+      const original = $loginBtn.php();
+      $loginBtn.php('<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Authenticating...</span>').prop('disabled', true);
 
       fetch('/Finzo/api/auth/admin-login.php', {
         method: 'POST',
@@ -170,16 +170,16 @@ let CSRF_TOKEN = '';
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          window.location.href = data.redirect || '/Finzo/views/admin/admin-dashboard.html';
+          window.location.href = data.redirect || '/Finzo/views/admin/admin-dashboard.php';
         } else if (data.locked) {
           $('#locked-email-display').text(id);
           setupLockedCard(data);
           goToState(2);
-          $loginBtn.html(original).prop('disabled', false);
+          $loginBtn.php(original).prop('disabled', false);
         } else {
           $loginForm.addClass('error-state');
           $loginError.text(data.message || "Invalid credentials").show();
-          $loginBtn.html(original).prop('disabled', false);
+          $loginBtn.php(original).prop('disabled', false);
 
           // If CSRF error, automatically refresh token for next try
           if (data.message && data.message.includes('CSRF')) {
@@ -191,7 +191,7 @@ let CSRF_TOKEN = '';
         console.error('Admin login error:', err);
         $loginForm.addClass('error-state');
         $loginError.text("Connection error. Please try again.").show();
-        $loginBtn.html(original).prop('disabled', false);
+        $loginBtn.php(original).prop('disabled', false);
       });
     });
 
@@ -228,7 +228,7 @@ let CSRF_TOKEN = '';
         if (remaining <= 0) {
           $timerCard.removeClass('border-amber-100 bg-amber-50/30').addClass('border-teal-100 bg-teal-50/30');
           $countdownDisplay.text("00:00").removeClass('text-primary-600-600').addClass('text-teal-600');
-          $countdownFooter.html('<span class="text-teal-600">✓ Account Restored Automatically</span>').addClass('text-teal-600');
+          $countdownFooter.php('<span class="text-teal-600">✓ Account Restored Automatically</span>').addClass('text-teal-600');
           $recoveryOptions.hide();
         } else {
           $timerCard.removeClass('border-teal-100 bg-teal-50/30').addClass('border-amber-100 bg-amber-50/30');
@@ -273,7 +273,7 @@ let CSRF_TOKEN = '';
           clearInterval(autoUnlockInterval);
           $card.removeClass('border-amber-100 bg-amber-50/30').addClass('border-teal-100 bg-teal-50/30');
           $display.text("00:00").removeClass('text-primary-600-600').addClass('text-teal-600');
-          $footer.html('<span class="text-teal-600 font-black uppercase tracking-widest">✓ Account Unlocked</span>').addClass('text-teal-600');
+          $footer.php('<span class="text-teal-600 font-black uppercase tracking-widest">✓ Account Unlocked</span>').addClass('text-teal-600');
           $options.fadeOut();
           return;
         }
@@ -341,8 +341,8 @@ let CSRF_TOKEN = '';
       
       if (!ans) return;
 
-      const original = $btn.html();
-      $btn.html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
+      const original = $btn.php();
+      $btn.php('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
 
       fetch('/Finzo/api/admin/verify-security-answer.php', {
         method: 'POST',
@@ -351,7 +351,7 @@ let CSRF_TOKEN = '';
       })
       .then(res => res.json())
       .then(data => {
-        $btn.html(original).prop('disabled', false);
+        $btn.php(original).prop('disabled', false);
         if (data.success) {
           RESET_TOKEN = data.reset_token;
           showSubStep('step-password');
@@ -416,8 +416,8 @@ let CSRF_TOKEN = '';
       const $btn = $('#btn-update-pw');
       const $error = $('#npw-error-box');
 
-      const original = $btn.html();
-      $btn.html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
+      const original = $btn.php();
+      $btn.php('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
 
       fetch('/Finzo/api/admin/reset-password-unlock.php', {
         method: 'POST',
@@ -428,9 +428,9 @@ let CSRF_TOKEN = '';
       .then(data => {
         if (data.success) {
           showToast("Account Unlocked Successfully!", "success");
-          setTimeout(() => window.location.href = 'admin-login.html?unlocked=1', 1500);
+          setTimeout(() => window.location.href = 'admin-login.php?unlocked=1', 1500);
         } else {
-          $btn.html(original).prop('disabled', false);
+          $btn.php(original).prop('disabled', false);
           $error.text(data.message).show();
         }
       });

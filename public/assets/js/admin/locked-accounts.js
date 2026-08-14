@@ -140,7 +140,7 @@
                 <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
                 <td>
                     <div class="flex items-center justify-center gap-2">
-                        <a href="admin-locked-account-detail.html?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary">
+                        <a href="admin-locked-account-detail.php?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </a>
                         ${!r.tempSent ? `
