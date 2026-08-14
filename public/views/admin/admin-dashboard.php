@@ -162,7 +162,7 @@ ob_start();
                 </div>
             </div>
 <?php
-$extraScripts = '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script><script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
