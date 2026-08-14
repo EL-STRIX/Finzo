@@ -43,9 +43,9 @@ class AdminOperationsController
         $adminId = \App\Shared\Security\Auth::user()['id'];
         
         // Fetch minimal admin data without heavy stats
-        $stmt = $this->service->getRepo()->getPDO()->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_41dbf0d1')); // q_41dbf0d1 is admin by id, let's just use a hardcoded query or assume Auth::user() has what we need
+        $stmt = $this->service->getRepo()->getPDO()->prepare("SELECT id, admin_id as customer_id, full_name, profile_photo FROM admin_users WHERE id = ?");
         $stmt->execute([$adminId]);
-        $admin = $stmt->fetch();
+        $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 
 
