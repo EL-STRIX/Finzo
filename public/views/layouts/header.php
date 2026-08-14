@@ -30,11 +30,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 
     <!-- Right Side Actions -->
     <div class="flex items-center gap-2 sm:gap-4">
-        <!-- Theme Toggle -->
-        <button id="theme-toggle-btn" class="relative p-2 rounded-full text-text-secondary hover:bg-background transition-all focus:outline-none focus:ring-2 focus:ring-primary" aria-label="Toggle Theme">
-            <span class="material-symbols-outlined" id="theme-icon" aria-hidden="true">light_mode</span>
-        </button>
-
+        
         <div class="h-6 w-px bg-border-subtle hidden sm:block"></div>
 
         <!-- User Profile Menu -->
