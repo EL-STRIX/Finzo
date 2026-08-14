@@ -85,7 +85,7 @@
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
+                    <a href="admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">visibility</span> View
                     </a>
                 </td>

@@ -105,8 +105,12 @@ class DevSeeder
                     $toSql = ($type === 'withdrawal') ? "NULL" : $to;
                     $status = ($i % 10 === 0) ? 'failed' : 'completed';
                     
-                    $db->exec("INSERT IGNORE INTO transactions (txn_id, from_account_id, to_account_id, type, amount, status, description) VALUES 
-                        ('$txnId', $fromSql, $toSql, '$type', $amount, '$status', 'Demo $type')");
+                    // Random date within the last 6 months, but guarantee some for today
+                    $random_days = ($i < 10) ? 0 : rand(0, 180);
+                    $created_at = date('Y-m-d H:i:s', strtotime("-$random_days days"));
+                    
+                    $db->exec("INSERT IGNORE INTO transactions (txn_id, from_account_id, to_account_id, type, amount, status, description, created_at) VALUES 
+                        ('$txnId', $fromSql, $toSql, '$type', $amount, '$status', 'Demo $type', '$created_at')");
                 }
             }
 
