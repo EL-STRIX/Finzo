@@ -1484,12 +1484,4 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'An error occurred during reversal', 'code' => 500];
         }
     }
-
-    public function performGlobalSearch(string $query): array
-    {
-        if (empty(trim($query))) {
-            return ['users' => [], 'transactions' => []];
-        }
-        return $this->repository->globalSearch(trim($query));
-    }
 }

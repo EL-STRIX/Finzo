@@ -30,14 +30,6 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 
     <!-- Right Side Actions -->
     <div class="flex items-center gap-2 sm:gap-4">
-        <!-- Search -->
-        <div class="hidden md:flex relative group">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-text-secondary text-[18px]" aria-hidden="true">search</span>
-            </div>
-            <input type="text" id="global-search" placeholder="Search tables..." class="w-64 pl-10 pr-4 py-2 border border-border-subtle rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background/50 text-text-primary transition-all group-hover:border-primary placeholder:text-text-muted">
-        </div>
-
         <!-- Theme Toggle -->
         <button id="theme-toggle-btn" class="relative p-2 rounded-full text-text-secondary hover:bg-background transition-all focus:outline-none focus:ring-2 focus:ring-primary" aria-label="Toggle Theme">
             <span class="material-symbols-outlined" id="theme-icon" aria-hidden="true">light_mode</span>

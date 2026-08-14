@@ -885,34 +885,4 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         return (float)$this->getSingleStat("SELECT SUM(amount) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}' AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL {$monthsAgo} MONTH)");
     }
-
-    public function globalSearch(string $query): array
-    {
-        $q = '%' . $query . '%';
-        
-        $usersStmt = $this->db->prepare("
-            SELECT id, full_name, email, customer_id, profile_photo 
-            FROM users 
-            WHERE role = 'user' AND is_deleted = 0 
-            AND (full_name LIKE :q1 OR email LIKE :q2 OR customer_id LIKE :q3 OR phone_number LIKE :q4)
-            LIMIT 5
-        ");
-        $usersStmt->execute(['q1' => $q, 'q2' => $q, 'q3' => $q, 'q4' => $q]);
-        $users = $usersStmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $txnStmt = $this->db->prepare("
-            SELECT id, reference_id, amount, type, status, created_at
-            FROM transactions 
-            WHERE reference_id LIKE :q1
-            ORDER BY created_at DESC
-            LIMIT 5
-        ");
-        $txnStmt->execute(['q1' => $q]);
-        $transactions = $txnStmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return [
-            'users' => $users,
-            'transactions' => $transactions
-        ];
-    }
 }

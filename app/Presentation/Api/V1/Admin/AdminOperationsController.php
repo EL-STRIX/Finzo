@@ -516,11 +516,5 @@ class AdminOperationsController
 
         return $result;
     }
-
-    public function globalSearch(): array
-    {
-        $query = $_GET['q'] ?? '';
-        return $this->service->performGlobalSearch($query);
-    }
 }
 

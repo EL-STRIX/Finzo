@@ -46,7 +46,6 @@ $router->get('/api/v1/admins/{id}', [AdminManagementController::class, 'getAdmin
 $router->patch('/api/v1/admins/{id}', [AdminManagementController::class, 'adminAction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/auth/session', [AdminOperationsController::class, 'session'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/dashboard', [AdminOperationsController::class, 'dashboard'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
-$router->get('/api/v1/admin/search', [AdminOperationsController::class, 'globalSearch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/audit-logs', [AdminOperationsController::class, 'auditLog'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/interest', [AdminOperationsController::class, 'interest'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/interest', [AdminOperationsController::class, 'interest'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
