@@ -44,13 +44,13 @@ window.AdminPortal = {
         const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
         // Update header name and ID spans
-        const nameEl = document.getElementById('header-admin-name');
-        const idEl = document.getElementById('header-admin-id');
+        const nameEl = document.getElementById('header-profile-name');
+        const idEl = document.getElementById('header-profile-id');
         if (nameEl) nameEl.textContent = name;
         if (idEl) idEl.textContent = 'ID: #' + (admin.id || admin.customer_id || '---');
 
         // Update topbar admin avatar
-        document.querySelectorAll('header .admin-avatar').forEach(el => {
+        document.querySelectorAll('header .header-avatar').forEach(el => {
             if (admin.profile_photo) {
                 const cacheBuster = '?v=' + new Date().getTime();
                 const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `/Finzo/public/assets/${admin.profile_photo}`) + cacheBuster;

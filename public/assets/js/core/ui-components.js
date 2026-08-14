@@ -11,6 +11,8 @@
             this.bindModals();
             this.bindTabs();
             this.initARIA();
+            this.bindThemeToggle();
+            this.bindGlobalSearch();
         },
 
         initARIA: function() {
@@ -314,6 +316,54 @@
                 tab.setAttribute('aria-selected', 'true');
                 content.classList.remove('hidden');
             }
+        },
+
+        bindThemeToggle: function() {
+            const toggleBtn = document.getElementById('theme-toggle-btn');
+            const icon = document.getElementById('theme-icon');
+            if (!toggleBtn || !icon) return;
+
+            // Sync icon on load based on what theme-init.js did
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            icon.textContent = currentTheme === 'dark' ? 'dark_mode' : 'light_mode';
+
+            toggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                if (isDark) {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('finzo-theme', 'light');
+                    icon.textContent = 'light_mode';
+                } else {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('finzo-theme', 'dark');
+                    icon.textContent = 'dark_mode';
+                }
+            });
+        },
+
+        bindGlobalSearch: function() {
+            const searchInput = document.getElementById('global-search');
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                // Find all active data tables on the current page
+                const tables = document.querySelectorAll('table tbody');
+                
+                tables.forEach(tbody => {
+                    const rows = tbody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        if (text.includes(term)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
         }
     };
 
