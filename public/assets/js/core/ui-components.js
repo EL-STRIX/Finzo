@@ -347,22 +347,94 @@
             const searchInput = document.getElementById('global-search');
             if (!searchInput) return;
 
+            // Create dropdown container
+            const resultsContainer = document.createElement('div');
+            resultsContainer.className = 'absolute top-full left-0 mt-2 w-80 bg-surface border border-border-subtle rounded-xl shadow-xl z-50 hidden max-h-96 overflow-y-auto overflow-x-hidden flex flex-col';
+            searchInput.parentNode.appendChild(resultsContainer);
+
+            let timeoutId;
+
             searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                // Find all active data tables on the current page
-                const tables = document.querySelectorAll('table tbody');
+                const term = e.target.value.trim();
                 
-                tables.forEach(tbody => {
-                    const rows = tbody.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        if (text.includes(term)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
+                clearTimeout(timeoutId);
+
+                if (term.length < 2) {
+                    resultsContainer.classList.add('hidden');
+                    return;
+                }
+
+                // Debounce the API call
+                timeoutId = setTimeout(() => {
+                    const isAdmin = window.location.pathname.includes('/admin');
+                    if (!isAdmin) {
+                        // Fallback to table search if not admin
+                        const termLower = term.toLowerCase();
+                        document.querySelectorAll('table tbody').forEach(tbody => {
+                            tbody.querySelectorAll('tr').forEach(row => {
+                                row.style.display = row.textContent.toLowerCase().includes(termLower) ? '' : 'none';
+                            });
+                        });
+                        return;
+                    }
+
+                    // Perform backend search
+                    fetch(`/Finzo/api/v1/admin/search?q=${encodeURIComponent(term)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+                            if ((!data.users || data.users.length === 0) && (!data.transactions || data.transactions.length === 0)) {
+                                resultsContainer.innerHTML = '<div class="p-4 text-sm text-text-secondary text-center">No results found</div>';
+                            } else {
+                                if (data.users && data.users.length > 0) {
+                                    let html = '<div class="px-4 py-2 text-xs font-bold text-text-secondary uppercase bg-background border-b border-border-subtle">Users</div>';
+                                    data.users.forEach(u => {
+                                        html += `
+                                            <a href="/Finzo/admin/users?search=${encodeURIComponent(u.customer_id)}" class="flex items-center gap-3 p-3 hover:bg-background border-b border-border-subtle transition-colors">
+                                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">${u.full_name.charAt(0)}</div>
+                                                <div>
+                                                    <div class="text-sm font-bold text-text-primary">${u.full_name}</div>
+                                                    <div class="text-xs text-text-secondary">${u.customer_id}</div>
+                                                </div>
+                                            </a>
+                                        `;
+                                    });
+                                    resultsContainer.innerHTML += html;
+                                }
+
+                                if (data.transactions && data.transactions.length > 0) {
+                                    let html = '<div class="px-4 py-2 text-xs font-bold text-text-secondary uppercase bg-background border-b border-border-subtle">Transactions</div>';
+                                    data.transactions.forEach(t => {
+                                        html += `
+                                            <a href="/Finzo/admin/transactions?search=${encodeURIComponent(t.reference_id)}" class="flex flex-col p-3 hover:bg-background border-b border-border-subtle transition-colors">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-sm font-bold text-text-primary">${t.reference_id}</span>
+                                                    <span class="text-xs font-bold ${t.type === 'deposit' ? 'text-success' : 'text-text-primary'}">₹${t.amount}</span>
+                                                </div>
+                                                <div class="text-xs text-text-secondary mt-1 capitalize">${t.type} • ${t.status}</div>
+                                            </a>
+                                        `;
+                                    });
+                                    resultsContainer.innerHTML += html;
+                                }
+                            }
+                            resultsContainer.classList.remove('hidden');
+                        })
+                        .catch(err => console.error('Search error:', err));
+                }, 300);
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                    resultsContainer.classList.add('hidden');
+                }
+            });
+            
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim().length >= 2) {
+                    resultsContainer.classList.remove('hidden');
+                }
             });
         }
     };
