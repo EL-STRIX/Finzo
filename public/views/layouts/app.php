@@ -44,9 +44,9 @@ $portal = $portal ?? 'guest'; // admin, staff, user, guest
     
     <?php if ($portal !== 'guest' && $portal !== 'auth'): ?>
         <!-- Global Header -->
-        <?php if ($portal !== 'admin') include __DIR__ . '/header.php'; ?>
+        <?php include __DIR__ . '/header.php'; ?>
 
-        <div class="flex h-screen overflow-hidden <?= $portal !== 'admin' ? 'pt-16' : '' ?>">
+        <div class="flex h-screen overflow-hidden pt-16">
             
             <!-- Mobile Sidebar Overlay -->
             <div class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden transition-opacity opacity-0" id="sidebar-overlay"></div>

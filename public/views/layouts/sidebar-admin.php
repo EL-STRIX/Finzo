@@ -5,7 +5,7 @@ function isActive($path, $current) {
 }
 ?>
 <!-- Admin Sidebar -->
-<aside class="admin-sidebar fixed top-0 left-0 h-screen w-72 bg-surface border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="admin-sidebar">
+<aside class="admin-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-surface border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="admin-sidebar">
     
     <!-- Brand / Role Indicator -->
     <div class="px-6 py-6 border-b border-border-subtle bg-background/80 backdrop-blur-md relative overflow-hidden">
