@@ -15,55 +15,61 @@ $pageHeader = '
 </div>
 ';
 ob_start();
-?><!-- KEY PERFORMANCE INDICATORS GRID -->
-            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
+?>            <!-- KEY PERFORMANCE INDICATORS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 relative z-10">
                 
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-warning hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-warning-bg text-warning border border-warning-bg flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">account_balance_wallet</span>
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-warning/10 rounded-full blur-2xl group-hover:bg-warning/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning border border-warning/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance_wallet</span>
                     </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Assets</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton" id="stat-total-assets">&#8377;0</div>
-                </div>
-                
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-success hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-success-bg text-success border border-success-bg flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">download_for_offline</span>
-                    </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Deposits</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Total Assets</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-total-assets">&#8377;0</div>
                 </div>
                 
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-info hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-info-bg text-info border border-info-bg flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">upload_file</span>
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success border border-success/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">download_for_offline</span>
                     </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Today's Withdrawals</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Deposits</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                </div>
+                
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-info/10 rounded-full blur-2xl group-hover:bg-info/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info border border-info/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">upload_file</span>
+                    </div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Withdrawals</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
                 </div>
 
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-primary-50 text-primary border border-primary-100 flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">group</span>
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-accent/10 rounded-full blur-2xl group-hover:bg-accent/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 text-accent border border-accent/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">group</span>
                     </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Total Users</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Total Users</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
                 </div>
 
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-primary-hover hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-primary-100 text-primary-700 border border-primary-200 flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">badge</span>
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">badge</span>
                     </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Active Staff</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Staff</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
                 </div>
 
-                <div class="ds-card admin-stat-card p-4 sm:p-5 flex flex-col items-start justify-center group hover:border-error hover:shadow-md transition-all">
-                    <div class="w-10 h-10 rounded-md bg-error-bg text-error border border-error-bg flex items-center justify-center mb-3">
-                        <span class="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
+                <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-error/10 rounded-full blur-2xl group-hover:bg-error/20 transition-all"></div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-error/20 to-error/5 text-error border border-error/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">lock</span>
                     </div>
-                    <div class="admin-stat-label text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-1">Locked Accounts</div>
-                    <div class="admin-stat-value text-2xl font-black font-display text-text-primary leading-tight tracking-tight skeleton">0</div>
+                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Locked Accounts</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
                 </div>
             </div>
 

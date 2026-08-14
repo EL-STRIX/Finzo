@@ -17,9 +17,9 @@ $portal = $portal ?? 'guest'; // admin, staff, user, guest
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
 
     <!-- CSS -->
-    <link href="/Finzo/public/assets/css/main.css" rel="stylesheet" />
+    <link href="/Finzo/public/assets/css/main.css?v=<?= time() ?>" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
+    <script src="/Finzo/public/assets/js/core/tailwind-config.js?v=<?= time() ?>"></script>
     <!-- Core JS: order matters — utils must load before api and ui-components -->
     <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
     <script defer src="/Finzo/public/assets/js/core/api.js"></script>
@@ -34,7 +34,13 @@ $portal = $portal ?? 'guest'; // admin, staff, user, guest
     <?php endif; ?>
     <?= $extraHead ?? '' ?>
 </head>
-<body class="<?= $bodyClass ?? 'bg-surface-subtle font-body text-text-main antialiased' ?>">
+<body class="<?= $bodyClass ?? 'bg-background font-body text-text-primary antialiased relative' ?>">
+    <!-- Liquid Glass Background Element -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none bg-background">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/10 via-background to-background"></div>
+        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl opacity-50 dark:opacity-20 animate-pulse delay-1000"></div>
+        <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl opacity-50 dark:opacity-20 animate-pulse"></div>
+    </div>
     
     <?php if ($portal !== 'guest' && $portal !== 'auth'): ?>
         <!-- Global Header -->

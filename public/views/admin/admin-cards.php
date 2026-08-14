@@ -14,35 +14,35 @@ ob_start();
 ?>
 
 <!-- STATS ROW -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
-    <div class="ds-card p-5 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-16 h-16 bg-warning-bg/50 rounded-bl-full -z-0"></div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 relative z-10">
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-warning/10 rounded-full blur-2xl group-hover:bg-warning/20 transition-all"></div>
         <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-warning-bg text-warning flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-xl">hourglass_empty</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning flex items-center justify-center mb-4 border border-warning/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <span class="material-symbols-outlined text-2xl">hourglass_empty</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Pending Requests</div>
-            <div id="stat-pending" class="text-xl font-black font-mono tracking-tight skeleton min-w-[40px]">—</div>
+            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Pending Requests</div>
+            <div id="stat-pending" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
         </div>
     </div>
-    <div class="ds-card p-5 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-16 h-16 bg-success-bg/50 rounded-bl-full -z-0"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-all"></div>
         <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-success-bg text-success flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-xl">credit_card</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success flex items-center justify-center mb-4 border border-success/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <span class="material-symbols-outlined text-2xl">credit_card</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Active Cards</div>
-            <div id="stat-active" class="text-xl font-black font-mono tracking-tight skeleton min-w-[40px]">—</div>
+            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Cards</div>
+            <div id="stat-active" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
         </div>
     </div>
-    <div class="ds-card p-5 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-16 h-16 bg-error-bg/50 rounded-bl-full -z-0"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-error/10 rounded-full blur-2xl group-hover:bg-error/20 transition-all"></div>
         <div class="relative z-10">
-            <div class="w-10 h-10 rounded-xl bg-error-bg text-error flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-xl">block</span>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-error/20 to-error/5 text-error flex items-center justify-center mb-4 border border-error/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <span class="material-symbols-outlined text-2xl">block</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Blocked / Closed</div>
-            <div id="stat-blocked" class="text-xl font-black font-mono tracking-tight skeleton min-w-[40px]">—</div>
+            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Blocked / Closed</div>
+            <div id="stat-blocked" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
         </div>
     </div>
 </div>

@@ -12,15 +12,18 @@ $pageHeader = '
 ob_start();
 ?>
 <!-- FILTERS & TABLE -->
-            <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface-subtle">
-                    <div class="flex flex-col xl:flex-row gap-4 items-start xl:items-center justify-between">
+            <div class="ds-card overflow-hidden relative z-10 shadow-2xl transition-all duration-300">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                
+                <div class="p-5 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
+                    <div class="flex flex-col xl:flex-row gap-5 items-start xl:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full xl:w-80 shrink-0">
-                            <label for="transaction-search" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
-                                <input type="text" id="transaction-search" placeholder="Search ID, Name..." class="fin-input pl-12 w-full">
+                            <label for="transaction-search" class="fin-label mb-2 block text-xs font-bold text-text-secondary uppercase tracking-[0.15em]">Search</label>
+                            <div class="relative group">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors" aria-hidden="true">search</span>
+                                <input type="text" id="transaction-search" placeholder="Search ID, Name..." class="fin-input pl-12 w-full transition-all focus:ring-2 focus:ring-primary/20">
                             </div>
                         </div>
 
