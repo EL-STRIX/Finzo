@@ -38,7 +38,7 @@ function isActive($path, $current) {
                         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">rule</span>
                         <span class="text-sm">Approvals</span>
                     </div>
-                    <span class="px-2 py-0.5 rounded-full bg-warning-bg text-warning text-[10px] font-black tracking-widest uppercase shadow-sm">...</span>
+                    <span id="pending-badge-count" class="px-2 py-0.5 rounded-full bg-warning-bg text-warning text-[10px] font-black tracking-widest uppercase shadow-sm">...</span>
                 </a>
             </li>
             <li>

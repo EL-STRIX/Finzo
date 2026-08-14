@@ -11,11 +11,11 @@
      * Load applications with current filters
      */
     async function loadApplications() {
-        const tbody = document.getElementById('applications-table-body');
+        const tbody = document.getElementById('pending-tbody');
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const searchInput = document.getElementById('approval-search');
+            const searchInput = document.getElementById('search-pending');
             const response = await window.api.get('/users/pending', {
                 status: currentStatus,
                 search: searchInput ? searchInput.value : '',
@@ -38,7 +38,7 @@
      * Render applications table
      */
     function renderTable(apps, total, pages) {
-        const tbody = document.getElementById('applications-table-body');
+        const tbody = document.getElementById('pending-tbody');
         if (!tbody) return;
 
         if (!apps || !apps.length) {
@@ -116,10 +116,6 @@
 
         let html = '';
         for (let i = 1; i <= pages; i++) {
-            if (pages > 5 && i > 3 && i < pages) {
-                if (i === 4) html += '<span class="px-2 opacity-50">...</span>';
-                continue;
-            }
             const activeClass = i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary';
             html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" data-page="${i}">${i}</button>`;
         }
@@ -198,7 +194,7 @@
         });
 
         // Filter Apply/Reset
-        const searchInput = document.getElementById('approval-search');
+        const searchInput = document.getElementById('search-pending');
         if (searchInput) {
             searchInput.addEventListener('input', () => {
                 clearTimeout(searchTimeout);

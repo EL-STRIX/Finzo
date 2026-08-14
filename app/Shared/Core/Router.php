@@ -69,7 +69,7 @@ class Router
         ];
 
         foreach ($basePaths as $base) {
-            if (strpos($uri, $base) === 0) {
+            if (stripos($uri, $base) === 0) {
                 $uri = substr($uri, strlen($base));
                 break;
             }

@@ -111,8 +111,12 @@ ob_start();
                 <!-- PAGINATION -->
                 <div class="p-4 sm:p-6 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Total Pending: <span id="pending-count">0</span></div>
-                    <div id="pending-pagination" class="flex items-center gap-2">
-                        <!-- Pagination injected by JS -->
+                    <div class="flex items-center gap-2">
+                        <button id="prev-btn" class="px-4 py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-all">Previous</button>
+                        <div id="page-numbers" class="flex gap-1.5">
+                            <!-- Pagination injected by JS -->
+                        </div>
+                        <button id="next-btn" class="px-4 py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-all">Next</button>
                     </div>
                 </div>
             </div>
