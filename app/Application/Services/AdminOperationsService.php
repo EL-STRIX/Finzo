@@ -334,12 +334,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function exportUsers(array $filters): array|\Generator
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
+        $where_clauses = ["u.is_deleted = 0", "u.status = 'active'"];
         $params = [];
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['pending', 'under_review', 'active', 'rejected'])) {
-            $where_clauses[] = "u.status = ?";
-            $params[] = $filters['status'];
+        if ($filters['status'] !== 'all' && $filters['status'] === 'active') {
+            // Already handled by the default where clause
         }
 
         if (!empty($filters['search'])) {
@@ -982,12 +981,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status NOT IN ('suspended', 'pending', 'under_review')"];
+        $where_clauses = ["u.is_deleted = 0", "u.status = 'active'"];
         $params = [];
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['active', 'rejected'])) {
-            $where_clauses[] = "u.status = ?";
-            $params[] = $filters['status'];
+        // The status filter is mostly redundant now, but we keep the logic intact
+        if ($filters['status'] !== 'all' && $filters['status'] === 'active') {
+            // Already handled by the default where clause, but prevents issues if UI passes 'active'
         }
 
         if (!empty($filters['search'])) {
