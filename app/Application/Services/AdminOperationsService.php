@@ -982,10 +982,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
+        $where_clauses = ["u.is_deleted = 0", "u.status NOT IN ('suspended', 'pending', 'under_review')"];
         $params = [];
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['pending', 'under_review', 'active', 'rejected'])) {
+        if ($filters['status'] !== 'all' && in_array($filters['status'], ['active', 'rejected'])) {
             $where_clauses[] = "u.status = ?";
             $params[] = $filters['status'];
         }

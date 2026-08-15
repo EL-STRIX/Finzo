@@ -94,9 +94,6 @@ ob_start();
                                 <div class="finzo-dropdown-menu z-50">
                                     <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
                                     <div class="finzo-dropdown-option" data-value="active">Active</div>
-                                    <div class="finzo-dropdown-option" data-value="pending">Pending</div>
-                                    <div class="finzo-dropdown-option" data-value="under_review">Under Review</div>
-                                    <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
                                 </div>
                             </div>
                         </div>
@@ -135,6 +132,27 @@ ob_start();
                     </div>
                 </div>
             </div>
+            </div>
+
+            <!-- Export Modal -->
+            <div id="export-modal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+                    <div class="p-6 border-b border-border-subtle flex justify-between items-center">
+                        <h2 id="export-modal-title" class="text-lg font-bold font-headline text-text-primary">Export Users</h2>
+                        <button type="button" class="close-export-modal w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background text-text-secondary transition-colors" aria-label="Close modal">
+                            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-text-secondary mb-6">You are about to export the user list based on the current search and status filters. Do you want to proceed?</p>
+                        <div class="flex items-center justify-end gap-3">
+                            <button type="button" class="close-export-modal btn btn-secondary">Cancel</button>
+                            <button type="button" id="start-export" class="btn btn-primary">Export CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 <?php
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/users.js"></script>';
 $slot = ob_get_clean();

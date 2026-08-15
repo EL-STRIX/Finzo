@@ -94,8 +94,15 @@
                 dropdown.querySelector('.finzo-dropdown-trigger').setAttribute('aria-expanded', 'false');
                 dropdown.querySelector('.finzo-dropdown-trigger').focus();
 
+                const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+                const newValue = option.dataset.value || option.textContent.trim();
+                if (hiddenInput) {
+                    hiddenInput.value = newValue;
+                    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
                 dropdown.dispatchEvent(new CustomEvent('change', { 
-                    detail: { value: option.dataset.value || option.textContent.trim(), text: option.textContent.trim() } 
+                    detail: { value: newValue, text: option.textContent.trim() } 
                 }));
             };
 
