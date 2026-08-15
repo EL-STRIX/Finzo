@@ -34,7 +34,7 @@ class SecurityMiddleware
         }
 
         // Global API Rate Limiting (60 requests per minute per IP)
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $ip = get_client_ip();
         RateLimiter::check("global_api_{$ip}", 60, 1);
         
         // Stricter Rate Limiting for Auth Endpoints
