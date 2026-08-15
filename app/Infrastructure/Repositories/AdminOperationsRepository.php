@@ -594,7 +594,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getUsersStats() {
         return $this->fetchOne("
             SELECT
-                SUM(CASE WHEN is_deleted = 0 THEN 1 ELSE 0 END) as total_users,
+                SUM(CASE WHEN (is_deleted = 0 AND status IN ('active', 'suspended')) OR is_deleted = 1 THEN 1 ELSE 0 END) as total_users,
                 SUM(CASE WHEN is_deleted = 0 AND status = 'active' THEN 1 ELSE 0 END) as active_users,
                 SUM(CASE WHEN is_deleted = 0 AND status = 'suspended' THEN 1 ELSE 0 END) as suspended_users,
                 SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
@@ -819,7 +819,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
 
         return [
-            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
+            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (is_deleted = 0 AND status IN ('{$active_status}', '{$suspended_status}')) OR is_deleted = 1"),
             'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
             'pending_users'      => $pending_users,
             'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
