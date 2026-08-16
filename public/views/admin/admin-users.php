@@ -1,22 +1,22 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Management';
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">User Management</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Manage all registered users, accounts, and verification status</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <button id="open-export-modal" class="btn btn-secondary btn-sm flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
-            Export CSV
-        </button>
-    </div>
-</div>
-';
 ob_start();
 ?>
+            <!-- TOP PAGE HEADER & ACTION BAR -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+                <div>
+                    <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">User Management</h1>
+                    <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Manage all registered users, accounts, and verification status</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="open-export-modal" class="btn btn-secondary px-4 py-2.5 rounded-xl border border-border-subtle bg-surface/80 hover:bg-surface hover:border-primary/40 text-text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all hover:shadow-md active:scale-95 group">
+                        <span class="material-symbols-outlined text-[18px] text-primary transition-transform group-hover:-translate-y-0.5" aria-hidden="true">download</span>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- STAT CARDS -->
             <div class="grid grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 relative z-10">
                 <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">

@@ -61,14 +61,16 @@
             const statusVal = u.status || 'pending';
             const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-danger' : 'badge-warning');
             const statusText = statusVal.toUpperCase();
-            const gradient = window.FinzoUtils.getAvatarGradient(initials);
+            const gradient = window.FinzoUtils && window.FinzoUtils.getAvatarGradient ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
             
-            const avatarHtml = u.profile_picture_url 
-                ? `<img src="${u.profile_picture_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` 
-                : (u.avatar_url ? `<img src="${u.avatar_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` : `<div class="admin-avatar" >${initials}</div>`);
+            const fallbackAvatar = `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px] font-bold text-white flex items-center justify-center shadow-inner" style="background: ${gradient}">${initials}</div>`;
+            const avatarUrl = u.profile_picture_url || u.avatar_url;
+            const avatarHtml = avatarUrl 
+                ? `<img src="${avatarUrl}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover border border-border-subtle" alt="${name}" onerror="this.outerHTML='${fallbackAvatar.replace(/"/g, '&quot;')}'">` 
+                : fallbackAvatar;
 
-            const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A';
-            const lastActive = u.last_login_at ? window.FinzoUtils.formatDate(u.last_login_at) : 'Never';
+            const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '₹0.00';
+            const lastActive = u.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.last_login_at) : u.last_login_at) : 'Never';
             
             rowsHtml += `
             <tr>
@@ -201,10 +203,12 @@
                 document.querySelectorAll('.dropdown-label').forEach(label => {
                     const dropdown = label.closest('.finzo-dropdown');
                     if (dropdown) {
-                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"]');
-                        if (defaultOpt) label.textContent = defaultOpt.textContent.trim();
-                        dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
-                        if (defaultOpt) defaultOpt.classList.add('is-selected');
+                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"], .finzo-dropdown-option[data-value="newest"]') || dropdown.querySelector('.finzo-dropdown-option');
+                        if (defaultOpt) {
+                            label.textContent = defaultOpt.textContent.trim();
+                            dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
+                            defaultOpt.classList.add('is-selected');
+                        }
                     }
                 });
 
@@ -240,53 +244,42 @@
             });
         }
 
-        // Export Modal Logic
+        // Export CSV Action
         const exportBtn = document.getElementById('open-export-modal');
-        const modal = document.getElementById('export-modal');
-        if (exportBtn && modal) {
-            exportBtn.addEventListener('click', (e) => {
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.classList.add('overflow-hidden');
-            });
-        }
-
-        document.querySelectorAll('.close-export-modal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
-            });
-        });
-
-        const startExport = document.getElementById('start-export');
-        if (startExport) {
-            startExport.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.api.setButtonLoading(this, true, 'Generating...');
+                const originalHtml = this.innerHTML;
+                this.disabled = true;
+                this.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]" aria-hidden="true">autorenew</span> <span>Exporting...</span>';
                 
-                const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
-                const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                const sort = document.getElementById('filter-sort') ? document.getElementById('filter-sort').value : 'newest';
-                const activity = document.getElementById('filter-activity') ? document.getElementById('filter-activity').value : 'all';
-                const balance = document.getElementById('filter-balance') ? document.getElementById('filter-balance').value : 'all';
-                
-                const queryParams = new URLSearchParams({ search, status, sort, activity, balance }).toString();
-                const exportUrl = `${window.api.baseUrl}/users/export?${queryParams}`;
-                
-                // Trigger download
-                window.location.href = exportUrl;
-                
-                setTimeout(() => {
-                    this.textContent = 'Export Started!';
+                try {
+                    const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
+                    const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+                    const sort = document.getElementById('filter-sort') ? document.getElementById('filter-sort').value : 'newest';
+                    const activity = document.getElementById('filter-activity') ? document.getElementById('filter-activity').value : 'all';
+                    const balance = document.getElementById('filter-balance') ? document.getElementById('filter-balance').value : 'all';
+                    
+                    const params = { search, status, sort, activity, balance };
+                    const exportUrl = window.api && typeof window.api.buildUrl === 'function'
+                        ? window.api.buildUrl('/users/export', params)
+                        : `/Finzo/api/v1/users/export?${new URLSearchParams(params).toString()}`;
+                    
+                    // Trigger direct browser download
+                    window.location.href = exportUrl;
+                    
                     setTimeout(() => {
-                        window.api.setButtonLoading(this, false);
-                        modal.classList.add('hidden');
-                        document.body.classList.remove('overflow-hidden');
-                    }, 1000);
-                }, 1000);
+                        this.innerHTML = '<span class="material-symbols-outlined text-[18px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';
+                        setTimeout(() => {
+                            this.disabled = false;
+                            this.innerHTML = originalHtml;
+                        }, 1500);
+                    }, 800);
+                } catch (err) {
+                    console.error('Export failed:', err);
+                    this.disabled = false;
+                    this.innerHTML = originalHtml;
+                }
             });
         }
     }

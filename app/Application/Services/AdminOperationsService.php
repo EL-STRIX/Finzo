@@ -342,8 +342,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $search_param = "%{$filters['search']}%";
+            $params[] = $search_param;
+            $params[] = $search_param;
             $params[] = $search_param;
             $params[] = $search_param;
         }
