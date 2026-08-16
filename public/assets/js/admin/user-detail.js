@@ -557,6 +557,353 @@
     }
 
     /**
+     * Dedicated Clean Bank Passbook Printing via Isolated Frame
+     */
+    function printPassbookDocument() {
+        if (!currentUserData) return;
+
+        const user = currentUserData;
+        const accounts = currentUserAccounts;
+        const transactions = currentUserTransactions;
+        const primaryAcc = accounts[0] || {};
+
+        const fullName = user.full_name || 'Account Holder';
+        const customerId = user.customer_id || 'FNZ-USR';
+        const phone = user.phone || 'N/A';
+        const email = user.email || 'N/A';
+        const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(Boolean);
+        const address = addressParts.length > 0 ? addressParts.join(', ') : 'Not on file';
+
+        const rawType = (primaryAcc.account_type || user.account_type || 'savings').toLowerCase();
+        const accountTypeFormatted = rawType.includes('current') ? 'Current Account' : (rawType.includes('fixed') ? 'Fixed Deposit' : 'Savings Account');
+        const accountNo = primaryAcc.account_no || 'FNZ-PENDING';
+        const currentBalance = parseFloat(primaryAcc.balance || 0);
+
+        const accountNos = accounts.map(a => a.account_no);
+        let totalCredits = 0;
+        let totalDebits = 0;
+
+        let rowsHtml = '';
+        if (transactions && transactions.length > 0) {
+            transactions.forEach((t, i) => {
+                const type = (t.type || 'transfer').toLowerCase();
+                let isCredit = (type === 'deposit' || type === 'interest_credit');
+                if (type === 'transfer') {
+                    isCredit = accountNos.includes(t.to_account);
+                }
+
+                const amt = parseFloat(t.amount || 0);
+                if (isCredit) {
+                    totalCredits += amt;
+                } else {
+                    totalDebits += amt;
+                }
+
+                const dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
+                const debitDisplay = !isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const creditDisplay = isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+
+                rowsHtml += `
+                    <tr>
+                        <td style="text-align: center; color: #64748b;">${i + 1}</td>
+                        <td style="white-space: nowrap; font-weight: 600;">${dateStr}</td>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;">${t.description || type.toUpperCase()}</div>
+                            <div style="font-size: 8.5px; color: #64748b; font-family: monospace;">Ref: ${t.txn_id || ('TXN-' + t.id)}</div>
+                        </td>
+                        <td style="text-align: right; color: #dc2626; font-weight: 700;">${debitDisplay}</td>
+                        <td style="text-align: right; color: #16a34a; font-weight: 700;">${creditDisplay}</td>
+                        <td style="text-align: center; font-size: 9px; font-weight: 700; text-transform: uppercase;">${t.status || 'COMPLETED'}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            rowsHtml = '<tr><td colspan="6" style="text-align:center; padding: 20px; color: #64748b;">No transactions recorded.</td></tr>';
+        }
+
+        const nowFormatted = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '');
+        const auditRef = 'FINZ-PB-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        const printHtml = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Passbook - ${fullName} - ${accountNo}</title>
+                <style>
+                    @page {
+                        size: A4 portrait;
+                        margin: 12mm;
+                    }
+                    * {
+                        box-sizing: border-box;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+                        color: #0f172a;
+                        background: #ffffff;
+                        padding: 0;
+                        font-size: 11px;
+                        line-height: 1.35;
+                    }
+                    .passbook-paper {
+                        width: 100%;
+                        max-width: 100%;
+                    }
+                    .header-table {
+                        width: 100%;
+                        border-bottom: 2.5px solid #002645;
+                        padding-bottom: 8px;
+                        margin-bottom: 12px;
+                    }
+                    .bank-title {
+                        font-size: 20px;
+                        font-weight: 900;
+                        color: #002645;
+                        letter-spacing: -0.5px;
+                    }
+                    .bank-subtitle {
+                        font-size: 9px;
+                        font-weight: 700;
+                        color: #475569;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                    .branch-info {
+                        text-align: right;
+                        font-size: 10px;
+                        color: #334155;
+                        font-family: monospace;
+                        line-height: 1.3;
+                    }
+                    .doc-banner {
+                        background: #f1f5f9;
+                        border: 1px solid #cbd5e1;
+                        padding: 5px 10px;
+                        margin-bottom: 12px;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        font-size: 11px;
+                        color: #002645;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .info-grid {
+                        width: 100%;
+                        margin-bottom: 12px;
+                        border-collapse: separate;
+                        border-spacing: 10px 0;
+                    }
+                    .info-box {
+                        width: 50%;
+                        border: 1px solid #cbd5e1;
+                        border-radius: 6px;
+                        padding: 8px 10px;
+                        vertical-align: top;
+                    }
+                    .info-title {
+                        font-size: 9px;
+                        font-weight: 800;
+                        color: #64748b;
+                        text-transform: uppercase;
+                        border-bottom: 1px dashed #cbd5e1;
+                        padding-bottom: 3px;
+                        margin-bottom: 5px;
+                    }
+                    .info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 3px;
+                        font-size: 10.5px;
+                    }
+                    .info-label {
+                        color: #64748b;
+                        font-weight: 600;
+                    }
+                    .info-val {
+                        color: #0f172a;
+                        font-weight: 700;
+                        text-align: right;
+                    }
+                    .summary-grid {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 14px;
+                    }
+                    .summary-grid th {
+                        background: #f8fafc;
+                        border: 1px solid #cbd5e1;
+                        padding: 5px 8px;
+                        font-size: 9px;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        color: #475569;
+                    }
+                    .summary-grid td {
+                        border: 1px solid #cbd5e1;
+                        padding: 6px 8px;
+                        text-align: center;
+                        font-size: 11.5px;
+                        font-weight: 800;
+                        font-family: monospace;
+                    }
+                    .ledger-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 14px;
+                    }
+                    .ledger-table th {
+                        background: #002645;
+                        color: #ffffff;
+                        border: 1px solid #002645;
+                        padding: 6px 8px;
+                        font-size: 9.5px;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                    .ledger-table td {
+                        border: 1px solid #cbd5e1;
+                        padding: 5px 8px;
+                        font-size: 10px;
+                    }
+                    .ledger-table tr:nth-child(even) {
+                        background: #f8fafc;
+                    }
+                    .footer-table {
+                        width: 100%;
+                        border-top: 1.5px solid #0f172a;
+                        padding-top: 8px;
+                        margin-top: 12px;
+                    }
+                    .seal-box {
+                        border: 1.5px dashed #64748b;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        text-align: center;
+                        display: inline-block;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="passbook-paper">
+                    <table class="header-table">
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <div class="bank-title">FINZO GLOBAL DIGITAL BANK</div>
+                                <div class="bank-subtitle">Core Banking Institution &bull; ISO 9001:2015 Certified</div>
+                            </td>
+                            <td class="branch-info" style="vertical-align: middle;">
+                                <div><strong>IFSC:</strong> FINZ0002026 | <strong>MICR:</strong> 400026002</div>
+                                <div>Branch: Central HQ, Mumbai 400051</div>
+                                <div>CIN: L65110MH2026PLC123456</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="doc-banner">
+                        <span>OFFICIAL BANK STATEMENT / PASSBOOK</span>
+                        <span style="font-family: monospace; font-size: 10px;">GENERATED: ${nowFormatted}</span>
+                    </div>
+
+                    <table class="info-grid">
+                        <tr>
+                            <td class="info-box">
+                                <div class="info-title">Account Holder Details</div>
+                                <div class="info-row"><span class="info-label">Name:</span><span class="info-val" style="font-size: 12px; color: #002645;">${fullName}</span></div>
+                                <div class="info-row"><span class="info-label">Customer ID (CIF):</span><span class="info-val" style="font-family: monospace;">${customerId}</span></div>
+                                <div class="info-row"><span class="info-label">Mobile:</span><span class="info-val">${phone}</span></div>
+                                <div class="info-row"><span class="info-label">Email:</span><span class="info-val">${email}</span></div>
+                                <div class="info-row"><span class="info-label">Address:</span><span class="info-val" style="font-size: 9.5px; max-width: 220px;">${address}</span></div>
+                            </td>
+                            <td class="info-box">
+                                <div class="info-title">Account Particulars</div>
+                                <div class="info-row"><span class="info-label">Account No:</span><span class="info-val" style="font-family: monospace; font-size: 12px; color: #002645;">${accountNo}</span></div>
+                                <div class="info-row"><span class="info-label">Account Type:</span><span class="info-val" style="text-transform: uppercase;">${accountTypeFormatted}</span></div>
+                                <div class="info-row"><span class="info-label">Currency:</span><span class="info-val">INR (₹ Indian Rupee)</span></div>
+                                <div class="info-row"><span class="info-label">Interest Rate:</span><span class="info-val">${primaryAcc.interest_rate || '3.50'}% p.a.</span></div>
+                                <div class="info-row"><span class="info-label">Status:</span><span class="info-val" style="color: #16a34a; font-weight: 800;">ACTIVE</span></div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="summary-grid">
+                        <tr>
+                            <th style="color: #16a34a;">Total Deposits (Credit +)</th>
+                            <th style="color: #dc2626;">Total Withdrawals (Debit -)</th>
+                            <th style="color: #002645;">Current Available Balance</th>
+                        </tr>
+                        <tr>
+                            <td style="color: #16a34a;">+ ₹${totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                            <td style="color: #dc2626;">- ₹${totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                            <td style="color: #002645; font-size: 13px;">₹${currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                    </table>
+
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 28px; text-align: center;">#</th>
+                                <th style="width: 75px; text-align: left;">Date</th>
+                                <th style="text-align: left;">Particulars / Transaction Ref</th>
+                                <th style="width: 90px; text-align: right;">Debit (Dr) ₹</th>
+                                <th style="width: 90px; text-align: right;">Credit (Cr) ₹</th>
+                                <th style="width: 75px; text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+
+                    <table class="footer-table">
+                        <tr>
+                            <td style="font-size: 9px; color: #64748b; line-height: 1.35;">
+                                <div><strong>IMPORTANT NOTICE:</strong> This is an official computer-generated passbook statement issued by Finzo Bank.</div>
+                                <div>Does not require physical signature &bull; Audit Ref: <strong style="font-family: monospace; color: #0f172a;">${auditRef}</strong></div>
+                            </td>
+                            <td style="text-align: right; vertical-align: middle;">
+                                <div class="seal-box">
+                                    <div style="font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase;">FINZO SYSTEM SEAL</div>
+                                    <div style="font-size: 10px; font-weight: 900; color: #16a34a;">DIGITALLY VERIFIED</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+            </html>
+        `;
+
+        // Create isolated invisible print frame
+        let printFrame = document.getElementById('finzo-print-iframe');
+        if (!printFrame) {
+            printFrame = document.createElement('iframe');
+            printFrame.id = 'finzo-print-iframe';
+            printFrame.style.position = 'fixed';
+            printFrame.style.right = '0';
+            printFrame.style.bottom = '0';
+            printFrame.style.width = '0';
+            printFrame.style.height = '0';
+            printFrame.style.border = 'none';
+            document.body.appendChild(printFrame);
+        }
+
+        const doc = printFrame.contentWindow.document;
+        doc.open();
+        doc.write(printHtml);
+        doc.close();
+
+        setTimeout(() => {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+        }, 300);
+    }
+
+    /**
      * Bind Governance & Action Buttons
      */
     function bindActionButtons(user) {
@@ -608,7 +955,7 @@
         if (printPbAction) {
             printPbAction.onclick = function(e) {
                 e.preventDefault();
-                window.print();
+                printPassbookDocument();
             };
         }
 
