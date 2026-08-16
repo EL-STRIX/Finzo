@@ -1,46 +1,44 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Dossier';
-if (!defined('FINZO_ROOT')) {
-    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
-}
-\App\Shared\Security\SessionManager::start();
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrfToken = $_SESSION['csrf_token'];
 
-$staffId = intval($_GET['id'] ?? 0);
+// SSR data loading — only when bootstrapped via the router (FINZO_ROOT is defined).
+// When accessed directly the page will load data client-side via JavaScript.
 $staffData = null;
-if ($staffId > 0) {
-    try {
-        $container = \App\Shared\Core\Container::getInstance();
-        $service = $container->get(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class);
-        $staffData = $service->getStaffDetailComprehensive($staffId);
-    } catch (\Throwable $e) {
-        $staffData = null;
+if (defined('FINZO_ROOT')) {
+    $staffId = intval($_GET['id'] ?? 0);
+    if ($staffId > 0) {
+        try {
+            $container = \App\Shared\Core\Container::getInstance();
+            $service = $container->get(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class);
+            $staffData = $service->getStaffDetailComprehensive($staffId);
+        } catch (\Throwable $e) {
+            $staffData = null;
+        }
     }
 }
 
-$staff = $staffData['staff'] ?? [];
-$address = $staffData['address'] ?? [];
-$performance = $staffData['performance'] ?? [];
-$today = $staffData['today_performance'] ?? [];
-$shifts = $staffData['shifts'] ?? [];
-$transactions = $staffData['transactions'] ?? [];
-$activities = $staffData['activities'] ?? [];
-$documents = $staffData['documents'] ?? [];
+$staff        = $staffData['staff']            ?? [];
+$address      = $staffData['address']          ?? [];
+$performance  = $staffData['performance']      ?? [];
+$today        = $staffData['today_performance'] ?? [];
+$shifts       = $staffData['shifts']           ?? [];
+$transactions = $staffData['transactions']     ?? [];
+$activities   = $staffData['activities']       ?? [];
+$documents    = $staffData['documents']        ?? [];
 
-$fullName = htmlspecialchars($staff['full_name'] ?? 'Loading Profile...', ENT_QUOTES, 'UTF-8');
-$staffCode = htmlspecialchars($staff['staff_id'] ?? 'STF---', ENT_QUOTES, 'UTF-8');
-$designation = htmlspecialchars($staff['designation'] ?? 'Staff', ENT_QUOTES, 'UTF-8');
-$status = $staff['status'] ?? 'active';
-$isActive = ($status === 'active');
-$initials = !empty($staff['full_name']) ? strtoupper(substr(implode('', array_map(fn($n) => $n[0] ?? '', explode(' ', $staff['full_name']))), 0, 2)) : 'ST';
+$fullName    = htmlspecialchars($staff['full_name']   ?? 'Loading Profile...', ENT_QUOTES, 'UTF-8');
+$staffCode   = htmlspecialchars($staff['staff_id']    ?? 'STF---',             ENT_QUOTES, 'UTF-8');
+$designation = htmlspecialchars($staff['designation'] ?? 'Staff',              ENT_QUOTES, 'UTF-8');
+$status      = $staff['status'] ?? 'active';
+$isActive    = ($status === 'active');
+$initials    = !empty($staff['full_name'])
+    ? strtoupper(substr(implode('', array_map(fn($n) => $n[0] ?? '', explode(' ', $staff['full_name']))), 0, 2))
+    : 'ST';
 $profilePhoto = !empty($staff['profile_photo_url']) ? $staff['profile_photo_url'] : null;
 
 // Age calculation
-$dobStr = !empty($staff['date_of_birth']) ? date('d M Y', strtotime($staff['date_of_birth'])) : '—';
+$dobStr    = !empty($staff['date_of_birth']) ? date('d M Y', strtotime($staff['date_of_birth'])) : '—';
 $genderStr = htmlspecialchars($staff['gender'] ?? 'Not specified', ENT_QUOTES, 'UTF-8');
 if (!empty($staff['date_of_birth'])) {
     $age = (new \DateTime($staff['date_of_birth']))->diff(new \DateTime('today'))->y;
@@ -48,8 +46,12 @@ if (!empty($staff['date_of_birth'])) {
         $genderStr .= " ({$age} yrs)";
     }
 }
-$joinedDate = !empty($staff['date_of_joining']) ? date('d M Y', strtotime($staff['date_of_joining'])) : (!empty($staff['created_at']) ? date('d M Y', strtotime($staff['created_at'])) : '—');
-$branchName = !empty($staff['branch_name']) ? htmlspecialchars($staff['branch_name'] . (!empty($staff['branch_code']) ? " ({$staff['branch_code']})" : ''), ENT_QUOTES, 'UTF-8') : 'Unassigned';
+$joinedDate = !empty($staff['date_of_joining'])
+    ? date('d M Y', strtotime($staff['date_of_joining']))
+    : (!empty($staff['created_at']) ? date('d M Y', strtotime($staff['created_at'])) : '—');
+$branchName = !empty($staff['branch_name'])
+    ? htmlspecialchars($staff['branch_name'] . (!empty($staff['branch_code']) ? " ({$staff['branch_code']})" : ''), ENT_QUOTES, 'UTF-8')
+    : 'Unassigned';
 
 ob_start();
 ?>
