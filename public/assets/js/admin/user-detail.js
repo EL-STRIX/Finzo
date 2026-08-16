@@ -448,16 +448,37 @@
         tbody.innerHTML = html;
     }
 
+    let passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+
+    function getFilteredPassbookTransactions() {
+        if (!currentUserTransactions || currentUserTransactions.length === 0) return [];
+        if (!passbookFilter.from && !passbookFilter.to) return [...currentUserTransactions];
+
+        return currentUserTransactions.filter(t => {
+            if (!t.created_at) return true;
+            const tDate = new Date(t.created_at);
+            if (passbookFilter.from) {
+                const fromDate = new Date(passbookFilter.from + 'T00:00:00');
+                if (tDate < fromDate) return false;
+            }
+            if (passbookFilter.to) {
+                const toDate = new Date(passbookFilter.to + 'T23:59:59.999');
+                if (tDate > toDate) return false;
+            }
+            return true;
+        });
+    }
+
     /**
-     * Populate and open Classic Monochrome Bank Passbook & Statement Modal
+     * Render Monochrome Bank Passbook Content (Ledger & Summary)
      */
-    function openPassbookModal() {
+    function renderPassbookContent() {
         if (!currentUserData) return;
 
         const user = currentUserData;
         const accounts = currentUserAccounts;
-        const transactions = currentUserTransactions;
         const primaryAcc = accounts[0] || {};
+        const transactions = getFilteredPassbookTransactions();
 
         // Populate Passbook Header Fields
         setText('pb-full-name', (user.full_name || 'Account Holder').toUpperCase());
@@ -472,6 +493,23 @@
         
         setText('pb-account-no', primaryAcc.account_no || 'FNZ0000000000');
         setText('pb-account-type', accountTypeFormatted);
+
+        // Statement Period label
+        let periodLabel = '';
+        if (passbookFilter.from && passbookFilter.to) {
+            const f = new Date(passbookFilter.from + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const t = new Date(passbookFilter.to + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            periodLabel = `${f} TO ${t}`;
+        } else if (passbookFilter.from) {
+            const f = new Date(passbookFilter.from + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            periodLabel = `FROM ${f}`;
+        } else if (passbookFilter.to) {
+            const t = new Date(passbookFilter.to + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            periodLabel = `UP TO ${t}`;
+        } else {
+            periodLabel = `ALL TIME (UP TO ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })})`;
+        }
+        setText('pb-generated-date', periodLabel);
 
         // Calculate running ledger and totals
         const accountNos = accounts.map(a => a.account_no);
@@ -523,7 +561,7 @@
                 `;
             });
         } else {
-            tableRows = '<tr><td colspan="7" class="p-4 text-center text-black">No transactions recorded.</td></tr>';
+            tableRows = '<tr><td colspan="7" class="p-4 text-center text-black font-bold">No transactions found for the selected date range.</td></tr>';
         }
 
         const currentBalance = parseFloat(primaryAcc.balance || 0);
@@ -533,8 +571,57 @@
 
         const tbody = document.getElementById('pb-transactions-body');
         if (tbody) tbody.innerHTML = tableRows;
+    }
 
-        // Open Modal
+    /**
+     * Preset range button selector
+     */
+    function setPassbookPreset(preset) {
+        const today = new Date();
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        const fromInput = document.getElementById('pb-filter-from');
+        const toInput = document.getElementById('pb-filter-to');
+
+        if (preset === 'all') {
+            passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+        } else if (preset === 'month') {
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            passbookFilter = { from: formatDate(firstDay), to: formatDate(today), label: 'THIS MONTH' };
+            if (fromInput) fromInput.value = passbookFilter.from;
+            if (toInput) toInput.value = passbookFilter.to;
+        } else if (preset === '30') {
+            const d = new Date();
+            d.setDate(d.getDate() - 30);
+            passbookFilter = { from: formatDate(d), to: formatDate(today), label: 'LAST 30 DAYS' };
+            if (fromInput) fromInput.value = passbookFilter.from;
+            if (toInput) toInput.value = passbookFilter.to;
+        } else if (preset === '90') {
+            const d = new Date();
+            d.setDate(d.getDate() - 90);
+            passbookFilter = { from: formatDate(d), to: formatDate(today), label: 'LAST 90 DAYS' };
+            if (fromInput) fromInput.value = passbookFilter.from;
+            if (toInput) toInput.value = passbookFilter.to;
+        }
+        renderPassbookContent();
+    }
+
+    /**
+     * Populate and open Classic Monochrome Bank Passbook & Statement Modal
+     */
+    function openPassbookModal() {
+        if (!currentUserData) return;
+
+        // Reset inputs & filter
+        passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+        const fromInput = document.getElementById('pb-filter-from');
+        const toInput = document.getElementById('pb-filter-to');
+        if (fromInput) fromInput.value = '';
+        if (toInput) toInput.value = '';
+
+        renderPassbookContent();
+
         const modal = document.getElementById('passbook-modal');
         if (modal) {
             modal.classList.remove('hidden');
@@ -560,7 +647,7 @@
 
         const user = currentUserData;
         const accounts = currentUserAccounts;
-        const transactions = currentUserTransactions;
+        const transactions = getFilteredPassbookTransactions();
         const primaryAcc = accounts[0] || {};
 
         const fullName = (user.full_name || 'Account Holder').toUpperCase();
@@ -621,10 +708,10 @@
                 `;
             });
         } else {
-            rowsHtml = '<tr><td colspan="7" style="text-align: center; padding: 15px;">No transactions recorded.</td></tr>';
+            rowsHtml = '<tr><td colspan="7" style="text-align: center; padding: 15px;">No transactions recorded for this period.</td></tr>';
         }
 
-        const todayFormatted = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const periodFormatted = document.getElementById('pb-generated-date')?.textContent || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const printHtml = `
             <!DOCTYPE html>
@@ -767,8 +854,8 @@
                         <tr>
                             <td class="lbl">MOBILE NUMBER</td>
                             <td class="val">${phone}</td>
-                            <td class="lbl">DATE ISSUED</td>
-                            <td class="val">${todayFormatted}</td>
+                            <td class="lbl">STATEMENT PERIOD</td>
+                            <td class="val">${periodFormatted}</td>
                         </tr>
                         <tr>
                             <td class="lbl">ADDRESS</td>
@@ -906,6 +993,32 @@
         if (closePbBtn) {
             closePbBtn.onclick = closePassbookModal;
         }
+
+        // Date range filter buttons
+        const applyFilterBtn = document.getElementById('pb-apply-filter');
+        if (applyFilterBtn) {
+            applyFilterBtn.onclick = function(e) {
+                e.preventDefault();
+                const fromInput = document.getElementById('pb-filter-from');
+                const toInput = document.getElementById('pb-filter-to');
+                const fromVal = fromInput ? fromInput.value : '';
+                const toVal = toInput ? toInput.value : '';
+                passbookFilter = { from: fromVal || null, to: toVal || null, label: 'CUSTOM' };
+                renderPassbookContent();
+            };
+        }
+
+        const presetAll = document.getElementById('pb-preset-all');
+        if (presetAll) presetAll.onclick = function(e) { e.preventDefault(); setPassbookPreset('all'); };
+
+        const presetMonth = document.getElementById('pb-preset-month');
+        if (presetMonth) presetMonth.onclick = function(e) { e.preventDefault(); setPassbookPreset('month'); };
+
+        const preset30 = document.getElementById('pb-preset-30');
+        if (preset30) preset30.onclick = function(e) { e.preventDefault(); setPassbookPreset('30'); };
+
+        const preset90 = document.getElementById('pb-preset-90');
+        if (preset90) preset90.onclick = function(e) { e.preventDefault(); setPassbookPreset('90'); };
     }
 
     /**

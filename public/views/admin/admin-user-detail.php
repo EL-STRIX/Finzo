@@ -342,6 +342,35 @@ ob_start();
         </div>
       </div>
 
+      <!-- Date Range Filter Bar (No Print) -->
+      <div class="px-4 py-3 sm:px-6 bg-surface-subtle border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="font-bold text-text-secondary uppercase tracking-wider text-[10px] mr-1">Statement Period:</span>
+          
+          <div class="flex items-center gap-1.5 bg-surface px-2.5 py-1 rounded-lg border border-border-subtle">
+            <span class="text-[10px] font-bold text-text-secondary uppercase">From:</span>
+            <input type="date" id="pb-filter-from" class="bg-transparent text-xs text-text-primary focus:outline-none cursor-pointer">
+          </div>
+
+          <div class="flex items-center gap-1.5 bg-surface px-2.5 py-1 rounded-lg border border-border-subtle">
+            <span class="text-[10px] font-bold text-text-secondary uppercase">To:</span>
+            <input type="date" id="pb-filter-to" class="bg-transparent text-xs text-text-primary focus:outline-none cursor-pointer">
+          </div>
+
+          <button id="pb-apply-filter" type="button" class="btn btn-secondary px-3 py-1 text-xs font-bold rounded-lg inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all">
+            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">filter_alt</span>
+            <span>Filter</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5 text-[11px]">
+          <button id="pb-preset-all" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">All Time</button>
+          <button id="pb-preset-month" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">This Month</button>
+          <button id="pb-preset-30" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">Last 30 Days</button>
+          <button id="pb-preset-90" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">Last 90 Days</button>
+        </div>
+      </div>
+
       <!-- Printable Passbook Paper Area -->
       <div class="p-4 sm:p-8 overflow-y-auto bg-slate-100 dark:bg-black/40">
         <div id="passbook-print-area" class="bg-white text-black p-6 sm:p-8 max-w-4xl mx-auto border-2 border-black font-mono shadow-sm">
@@ -375,7 +404,7 @@ ob_start();
               <tr class="border-b border-black">
                 <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">MOBILE NUMBER</td>
                 <td class="p-2 border-r border-black font-bold text-black" id="pb-phone">N/A</td>
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">DATE ISSUED</td>
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">STATEMENT PERIOD</td>
                 <td class="p-2 font-bold text-black" id="pb-generated-date"><?= date('d-m-Y') ?></td>
               </tr>
               <tr>
