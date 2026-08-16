@@ -25,8 +25,13 @@ class AdminStaffController
 
     public function addStaff()
     {
+        $admin = \App\Shared\Security\Auth::user();
+        $adminId = $admin['id'] ?? ($_SESSION['admin_id'] ?? 1);
 
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $branchId = null;
+        if (!empty($_POST['branch_id']) && $_POST['branch_id'] !== 'null' && $_POST['branch_id'] !== '0') {
+            $branchId = intval($_POST['branch_id']);
+        }
 
         $data = [
             'full_name' => $this->security->cleanInput($_POST['full_name'] ?? ''),
@@ -37,7 +42,7 @@ class AdminStaffController
             'emergency_contact_name' => $this->security->cleanInput($_POST['emergency_contact_name'] ?? ''),
             'emergency_contact_phone' => $this->security->cleanInput($_POST['emergency_contact_phone'] ?? ''),
             'designation' => $this->security->cleanInput($_POST['designation'] ?? 'Teller'),
-            'branch_id' => ($_POST['branch_id'] ?? '' !== '' && $_POST['branch_id'] ?? '' !== 'null') ? intval($_POST['branch_id'] ?? '') : null,
+            'branch_id' => $branchId,
             'date_of_joining' => $this->security->cleanInput($_POST['date_of_joining'] ?? date('Y-m-d')),
             'street' => $this->security->cleanInput($_POST['street'] ?? ''),
             'city' => $this->security->cleanInput($_POST['city'] ?? ''),
@@ -49,13 +54,20 @@ class AdminStaffController
         ];
 
         try {
-            $result = $this->service->createStaff($data, $_FILES, $adminId);
-            json_response(['success' => true, 'message' => 'Staff member added successfully', 'staff_id' => $result['staff_id'], 'staff_name' => $result['staff_name']], 201);
+            $result = $this->service->createStaff($data, $_FILES ?? [], $adminId);
+            return [
+                'success' => true,
+                'message' => 'Staff member added successfully',
+                'staff_id' => $result['staff_id'],
+                'staff_name' => $result['staff_name']
+            ];
         } catch (\App\Domain\Exceptions\ValidationException $e) {
-            json_response(['success' => false, 'message' => 'Validation failed', 'errors' => json_decode($e->getMessage(), true)], 422);
+            $errors = json_decode($e->getMessage(), true) ?: ['error' => $e->getMessage()];
+            $errorMsg = is_array($errors) ? implode('; ', array_values($errors)) : $e->getMessage();
+            throw new ApiException($errorMsg, 422);
         } catch (ApiException $e) {
             throw $e;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException('An error occurred while creating staff account: ' . $e->getMessage(), 500);
         }
     }

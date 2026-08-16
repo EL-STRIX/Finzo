@@ -176,12 +176,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function generateStaffId(): string
     {
-        $last_id = $this->repo->getLastStaffId();
-        if (!$last_id) {
-            return 'EMP1000';
-        }
-        $num = intval(substr($last_id, 3)) + 1;
-        return 'EMP' . str_pad((string)$num, 4, '0', STR_PAD_LEFT);
+        $max_id = (int)$this->repo->getMaxStaffId();
+        $num = max(1, $max_id + 1);
+        return 'STF' . str_pad((string)$num, 3, '0', STR_PAD_LEFT);
     }
     /**
      * Create Staff.
@@ -202,9 +199,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
 
         $errors = $this->validateStaffData($data);
 
-        $id_front_path = $this->handleStaffUpload($files['id_front'] ?? null, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', true);
-        $id_back_path = $this->handleStaffUpload($files['id_back'] ?? null, 'staff_doc_back_', 'staff-documents', $errors, 'id_back', true);
-        $profile_photo_path = $this->handleStaffUpload($files['profile_photo'] ?? null, 'staff_photo_', 'staff-photos', $errors, 'profile_photo');
+        $id_front_path = $this->handleStaffUpload($files['id_front'] ?? null, 'staff_doc_front_', 'staff-documents', $errors, 'id_front', false);
+        $id_back_path = $this->handleStaffUpload($files['id_back'] ?? null, 'staff_doc_back_', 'staff-documents', $errors, 'id_back', false);
+        $profile_photo_path = $this->handleStaffUpload($files['profile_photo'] ?? null, 'staff_photo_', 'staff-photos', $errors, 'profile_photo', false);
 
         if (!empty($errors)) {
             throw new \App\Domain\Exceptions\ValidationException(json_encode($errors));

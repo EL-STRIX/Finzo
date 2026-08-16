@@ -79,7 +79,12 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
     public function getMaxStaffId()
     {
         $stmt = $this->db->query("SELECT MAX(CAST(SUBSTRING(staff_id, 4) AS UNSIGNED)) as max_id FROM staff WHERE staff_id LIKE 'STF%'");
-        return $stmt->fetchColumn() ?: 0;
+        return (int)($stmt->fetchColumn() ?: 0);
+    }
+
+    public function getLastStaffId()
+    {
+        return $this->getMaxStaffId();
     }
 
     public function getStaffDetail(int $staffId)

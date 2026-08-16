@@ -14,10 +14,10 @@ ob_start();
                   <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">file_download</span>
                   <span>Export CSV</span>
               </button>
-              <a id="add-staff-btn" href="/Finzo/admin/staff/add" class="btn btn-primary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
+              <button id="open-add-staff-modal" type="button" class="btn btn-primary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
                   <span class="material-symbols-outlined text-base" aria-hidden="true">person_add</span>
                   <span>Add Staff</span>
-              </a>
+              </button>
           </div>
       </div>
 
@@ -98,23 +98,23 @@ ob_start();
             </div>
           </div>
 
-          <!-- Filter 2: Role / Designation Dropdown -->
+          <!-- Filter 2: Role Dropdown -->
           <div class="w-full relative z-20">
-            <label for="filter-role" class="fin-label">Staff Role / Designation</label>
+            <label for="filter-role" class="fin-label">Role / Designation</label>
             <div class="finzo-dropdown w-full" id="role-filter-dropdown">
               <input type="hidden" id="filter-role" value="all">
               <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full cursor-pointer">
                 <div class="flex items-center gap-2 truncate">
-                    <span class="material-symbols-outlined text-lg text-text-secondary" aria-hidden="true">badge</span>
+                    <span class="material-symbols-outlined text-lg text-text-secondary" aria-hidden="true">work</span>
                     <span class="dropdown-label font-bold text-sm text-text-primary">All Roles</span>
                 </div>
                 <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
               </div>
               <div id="filter-role-menu" class="finzo-dropdown-menu !z-[3000] !w-full">
                 <div class="finzo-dropdown-option is-selected" data-value="all">All Roles</div>
-                <div class="finzo-dropdown-option" data-value="Manager">Branch Manager</div>
+                <div class="finzo-dropdown-option" data-value="Manager">Manager</div>
                 <div class="finzo-dropdown-option" data-value="Supervisor">Supervisor</div>
-                <div class="finzo-dropdown-option" data-value="Teller">Teller / Cashier</div>
+                <div class="finzo-dropdown-option" data-value="Teller">Teller</div>
               </div>
             </div>
           </div>
@@ -180,6 +180,192 @@ ob_start();
         </div>
       </div>
 
+      <!-- ADD NEW STAFF MODAL -->
+      <div id="add-staff-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="add-staff-modal-title">
+          <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-3xl my-8 overflow-hidden animate-in fade-in zoom-in duration-200" role="document">
+              <!-- Modal Header -->
+              <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/60 backdrop-blur-md">
+                  <div class="flex items-center gap-3">
+                      <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-sm">
+                          <span class="material-symbols-outlined text-2xl" aria-hidden="true">person_add</span>
+                      </div>
+                      <div>
+                          <h2 id="add-staff-modal-title" class="text-lg font-black font-headline text-text-primary">Add New Staff Member</h2>
+                          <p class="text-xs font-bold text-text-secondary uppercase tracking-wider">Create employee profile, credentials & branch assignment</p>
+                      </div>
+                  </div>
+                  <button type="button" class="close-add-staff-modal w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-hover text-text-secondary transition-colors" aria-label="Close modal">
+                      <span class="material-symbols-outlined text-xl" aria-hidden="true">close</span>
+                  </button>
+              </div>
+
+              <!-- Modal Form -->
+              <form id="add-staff-form" class="p-6 sm:p-8 space-y-6 max-h-[75vh] overflow-y-auto" enctype="multipart/form-data">
+                  <div id="add-staff-alert" class="hidden p-4 rounded-xl border text-xs font-bold leading-relaxed"></div>
+
+                  <!-- SECTION 1: Personal Profile -->
+                  <div>
+                      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border-subtle">
+                          <span class="material-symbols-outlined text-primary text-lg" aria-hidden="true">badge</span>
+                          <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">Personal Details</h3>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div class="sm:col-span-2">
+                              <label for="new-staff-name" class="fin-label">Full Legal Name <span class="text-error">*</span></label>
+                              <input type="text" id="new-staff-name" name="full_name" required placeholder="e.g. Aditi Sharma" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-dob" class="fin-label">Date of Birth <span class="text-error">*</span></label>
+                              <input type="date" id="new-staff-dob" name="date_of_birth" required class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-gender" class="fin-label">Gender <span class="text-error">*</span></label>
+                              <select id="new-staff-gender" name="gender" required class="fin-input">
+                                  <option value="Male">Male</option>
+                                  <option value="Female" selected>Female</option>
+                                  <option value="Other">Other</option>
+                                  <option value="Prefer not to say">Prefer not to say</option>
+                              </select>
+                          </div>
+                          <div>
+                              <label for="new-staff-email" class="fin-label">Personal / Work Email <span class="text-error">*</span></label>
+                              <input type="email" id="new-staff-email" name="personal_email" required placeholder="staff@finzobank.com" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-phone" class="fin-label">Mobile Number (10 Digits) <span class="text-error">*</span></label>
+                              <input type="tel" id="new-staff-phone" name="phone" required placeholder="9876543210" maxlength="10" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-em-name" class="fin-label">Emergency Contact Name</label>
+                              <input type="text" id="new-staff-em-name" name="emergency_contact_name" placeholder="Contact person name" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-em-phone" class="fin-label">Emergency Contact Phone</label>
+                              <input type="tel" id="new-staff-em-phone" name="emergency_contact_phone" placeholder="Emergency phone" maxlength="10" class="fin-input">
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- SECTION 2: Role & Branch Assignment -->
+                  <div>
+                      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border-subtle">
+                          <span class="material-symbols-outlined text-primary text-lg" aria-hidden="true">corporate_fare</span>
+                          <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">Branch &amp; Role Assignment</h3>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div>
+                              <label for="new-staff-designation" class="fin-label">Role / Designation <span class="text-error">*</span></label>
+                              <select id="new-staff-designation" name="designation" required class="fin-input">
+                                  <option value="Teller" selected>Teller / Operations</option>
+                                  <option value="Supervisor">Supervisor</option>
+                                  <option value="Manager">Branch Manager</option>
+                              </select>
+                          </div>
+                          <div>
+                              <label for="new-staff-branch" class="fin-label">Assigned Branch</label>
+                              <select id="new-staff-branch" name="branch_id" class="fin-input">
+                                  <option value="">Head Office / Unassigned</option>
+                                  <!-- Dynamically populated -->
+                              </select>
+                          </div>
+                          <div>
+                              <label for="new-staff-joining" class="fin-label">Date of Joining</label>
+                              <input type="date" id="new-staff-joining" name="date_of_joining" value="<?= date('Y-m-d') ?>" class="fin-input">
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- SECTION 3: Residential Address -->
+                  <div>
+                      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border-subtle">
+                          <span class="material-symbols-outlined text-primary text-lg" aria-hidden="true">home_pin</span>
+                          <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">Residential Address</h3>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                          <div class="sm:col-span-2 lg:col-span-4">
+                              <label for="new-staff-street" class="fin-label">Street Address</label>
+                              <input type="text" id="new-staff-street" name="street" placeholder="Flat / House No, Street name" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-city" class="fin-label">City <span class="text-error">*</span></label>
+                              <input type="text" id="new-staff-city" name="city" required placeholder="City" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-state" class="fin-label">State <span class="text-error">*</span></label>
+                              <input type="text" id="new-staff-state" name="state" required placeholder="State" class="fin-input">
+                          </div>
+                          <div class="sm:col-span-2 lg:col-span-2">
+                              <label for="new-staff-pincode" class="fin-label">Postal Pincode <span class="text-error">*</span></label>
+                              <input type="text" id="new-staff-pincode" name="pincode" required placeholder="6-digit Pincode" maxlength="6" class="fin-input">
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- SECTION 4: KYC & Identification -->
+                  <div>
+                      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border-subtle">
+                          <span class="material-symbols-outlined text-primary text-lg" aria-hidden="true">verified</span>
+                          <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">KYC Documents &amp; ID Proof</h3>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                              <label for="new-staff-id-type" class="fin-label">ID Document Type <span class="text-error">*</span></label>
+                              <select id="new-staff-id-type" name="id_type" required class="fin-input">
+                                  <option value="Aadhaar" selected>Aadhaar Card</option>
+                                  <option value="PAN">PAN Card</option>
+                                  <option value="Passport">Passport</option>
+                              </select>
+                          </div>
+                          <div>
+                              <label for="new-staff-id-num" class="fin-label">ID Document Number <span class="text-error">*</span></label>
+                              <input type="text" id="new-staff-id-num" name="id_number" required placeholder="Enter ID number" class="fin-input">
+                          </div>
+                          <div>
+                              <label for="new-staff-id-front" class="fin-label">Front ID Document</label>
+                              <input type="file" id="new-staff-id-front" name="id_front" accept="image/*,application/pdf" class="fin-input file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
+                          </div>
+                          <div>
+                              <label for="new-staff-id-back" class="fin-label">Back ID Document</label>
+                              <input type="file" id="new-staff-id-back" name="id_back" accept="image/*,application/pdf" class="fin-input file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="new-staff-photo" class="fin-label">Staff Profile Photo</label>
+                              <input type="file" id="new-staff-photo" name="profile_photo" accept="image/*" class="fin-input file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- SECTION 5: Initial Password & Access -->
+                  <div>
+                      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border-subtle">
+                          <span class="material-symbols-outlined text-primary text-lg" aria-hidden="true">lock</span>
+                          <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">Account Security &amp; Password</h3>
+                      </div>
+                      <div>
+                          <label for="new-staff-password" class="fin-label">Initial Password <span class="text-error">*</span></label>
+                          <div class="flex gap-2">
+                              <input type="text" id="new-staff-password" name="password" required minlength="8" placeholder="Enter or generate a strong password" class="fin-input font-mono flex-1">
+                              <button type="button" id="generate-staff-pwd-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shrink-0">
+                                  <span class="material-symbols-outlined text-sm" aria-hidden="true">autorenew</span>
+                                  <span>Generate</span>
+                              </button>
+                          </div>
+                          <p class="text-[11px] text-text-secondary mt-1">Minimum 8 characters. Provide this initial credential to the staff member upon onboarding.</p>
+                      </div>
+                  </div>
+
+                  <!-- Modal Footer Buttons -->
+                  <div class="pt-6 border-t border-border-subtle flex items-center justify-end gap-3 sticky bottom-0 bg-surface">
+                      <button type="button" class="close-add-staff-modal btn btn-secondary px-5 py-2.5 text-xs font-bold uppercase tracking-wider">Cancel</button>
+                      <button type="submit" id="submit-add-staff-btn" class="btn btn-primary px-6 py-2.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm">
+                          <span class="material-symbols-outlined text-base" aria-hidden="true">person_add</span>
+                          <span id="submit-btn-text">Create Staff Member</span>
+                      </button>
+                  </div>
+              </form>
+          </div>
+      </div>
+
       <!-- EXPORT STAFF CSV MODAL -->
       <div id="export-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
           <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-visible" role="document">
@@ -190,7 +376,7 @@ ob_start();
                       </div>
                       <div>
                           <h2 id="export-modal-title" class="text-base font-bold font-headline text-text-primary">Export Staff (CSV)</h2>
-                          <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Configure export filters & full columns</p>
+                          <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Configure export filters &amp; full columns</p>
                       </div>
                   </div>
                   <button type="button" class="close-export-modal w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background text-text-secondary transition-colors" aria-label="Close modal">

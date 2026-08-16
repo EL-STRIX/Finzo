@@ -16,6 +16,7 @@ interface AdminStaffBranchRepositoryInterface
     public function unassignStaffFromBranch(int $branchId);
     public function deleteBranch(int $branchId);
     public function getMaxStaffId();
+    public function getLastStaffId();
     public function getStaffDetail(int $staffId);
     public function getStaffPerformance(int $staffId);
     public function findStaffRecord(int $staffId);
