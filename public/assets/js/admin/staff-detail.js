@@ -3,24 +3,34 @@
  * Comprehensive Staff Portfolio, Classic Monochrome Passbook & Statement Printing, and Governance Actions
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const staffId = urlParams.get('id');
-    
-    if (!staffId) {
-        if (window.showToast) window.showToast('Staff ID parameter is required', 'error');
-        return;
-    }
-
+(function() {
+    let staffId = null;
     let currentStaff = {};
     let currentStaffTransactions = [];
     let currentStaffAddress = {};
     let currentAction = '';
-
-    // ==========================================
-    //  PASSBOOK & STATEMENT STATE
-    // ==========================================
     let passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+
+    function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        staffId = urlParams.get('id');
+        
+        if (!staffId) {
+            const pathParts = window.location.pathname.split('/');
+            const lastPart = pathParts[pathParts.length - 1];
+            if (/^\d+$/.test(lastPart)) {
+                staffId = lastPart;
+            }
+        }
+
+        if (!staffId) {
+            if (window.showToast) window.showToast('Staff ID parameter is required', 'error');
+            return;
+        }
+
+        loadStaffData();
+        bindEvents();
+    }
 
     function getFilteredPassbookTransactions() {
         if (!passbookFilter.from && !passbookFilter.to) {
@@ -406,17 +416,17 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('info-name', staff.full_name);
             setText('info-staff-id-badge', staff.staff_id || 'STF---');
 
-            // Designation Badge
-            const desigBadge = document.getElementById('info-designation-badge');
-            const designation = staff.designation || 'Staff';
-            if (desigBadge) {
-                desigBadge.textContent = designation;
-                if (designation.toLowerCase().includes('manager')) {
-                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm';
-                } else if (designation.toLowerCase().includes('supervisor')) {
-                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 shadow-sm';
+            // Role Badge (Positioned prominently next to Staff ID)
+            const roleBadge = document.getElementById('info-role-badge') || document.getElementById('info-designation-badge');
+            const roleName = staff.designation || staff.role || 'Teller';
+            if (roleBadge) {
+                roleBadge.textContent = roleName;
+                if (roleName.toLowerCase().includes('manager')) {
+                    roleBadge.className = 'px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm';
+                } else if (roleName.toLowerCase().includes('supervisor')) {
+                    roleBadge.className = 'px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 shadow-sm';
                 } else {
-                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm';
+                    roleBadge.className = 'px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm';
                 }
             }
 
@@ -434,7 +444,19 @@ document.addEventListener('DOMContentLoaded', function() {
             setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
             setText('info-email', staff.email || 'N/A');
             setText('info-phone', staff.phone || 'N/A');
-            setText('info-gender', staff.gender || 'Not specified');
+
+            // Gender & Age
+            let genderStr = staff.gender || 'Not specified';
+            if (staff.date_of_birth) {
+                const birthDate = new Date(staff.date_of_birth);
+                const ageDiff = Date.now() - birthDate.getTime();
+                const ageDate = new Date(ageDiff);
+                const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+                if (!isNaN(age) && age > 0) {
+                    genderStr += ` (${age} yrs)`;
+                }
+            }
+            setText('info-gender', genderStr);
             setText('info-dob', fmtDate(staff.date_of_birth));
             
             let emergencyStr = 'Not provided';
@@ -905,7 +927,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Initialize
-    loadStaffData();
-    bindEvents();
-});
+    // Initialize safely
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

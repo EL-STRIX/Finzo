@@ -71,8 +71,8 @@ ob_start();
                       <div class="flex-1 min-w-0">
                           <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-primary mb-3 truncate">Loading...</h3>
                           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-4">
-                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary font-mono shadow-sm">STF---</span>
-                              <span id="info-designation-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm">Designation</span>
+                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary shadow-sm">STF---</span>
+                              <span id="info-role-badge" class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm">Staff Role</span>
                               <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 bg-success-bg text-success border border-success/20 shadow-sm">
                                   <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
                                   <span id="info-status-text">Active</span>
@@ -92,7 +92,7 @@ ob_start();
                           <div id="info-email" class="text-sm font-bold text-text-primary break-all">---</div>
                       </div>
                       <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Gender</label>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Gender &amp; Age</label>
                           <div id="info-gender" class="text-sm font-bold text-text-primary">---</div>
                       </div>
                       <div>
