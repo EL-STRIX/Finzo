@@ -369,30 +369,39 @@
     /**
      * Generate Strong Password for New Staff
      */
-    async function generateStaffPassword() {
+    function generateStaffPassword() {
         const pwdInput = document.getElementById('new-staff-password');
         if (!pwdInput) return;
 
-        try {
-            const res = await window.api.post('/staff/password/generate', {});
-            if (res && res.password) {
-                pwdInput.value = res.password;
-                return;
-            }
-        } catch (e) {
-            // fallback client side generation
+        const lower = 'abcdefghjkmnpqrstuvwxyz';
+        const upper = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+        const digits = '23456789';
+        const special = '@#$%!&*';
+        const allChars = lower + upper + digits + special;
+
+        let pass = '';
+        const getRandomChar = (str) => {
+            const arr = new Uint32Array(1);
+            window.crypto.getRandomValues(arr);
+            return str[arr[0] % str.length];
+        };
+
+        // Guarantee at least one of each character category
+        pass += getRandomChar(lower);
+        pass += getRandomChar(upper);
+        pass += getRandomChar(digits);
+        pass += getRandomChar(special);
+
+        for (let i = 4; i < 12; i++) {
+            pass += getRandomChar(allChars);
         }
 
-        const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
-        let pass = '';
-        pass += 'abcdefghjkmnpqrstuvwxyz'[Math.floor(Math.random() * 23)];
-        pass += 'ABCDEFGHJKMNPQRSTUVWXYZ'[Math.floor(Math.random() * 23)];
-        pass += '23456789'[Math.floor(Math.random() * 8)];
-        pass += '@#$%!'[Math.floor(Math.random() * 5)];
-        for (let i = 4; i < 12; i++) {
-            pass += chars[Math.floor(Math.random() * chars.length)];
-        }
-        pwdInput.value = pass.split('').sort(() => 0.5 - Math.random()).join('');
+        // Shuffle
+        pwdInput.value = pass.split('').sort(() => {
+            const arr = new Uint32Array(1);
+            window.crypto.getRandomValues(arr);
+            return (arr[0] % 3) - 1;
+        }).join('');
     }
 
     /**
@@ -440,8 +449,11 @@
             const csrfToken = window.csrfToken || 
                 document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
                 document.getElementById('add-staff-csrf-token')?.value || '';
-            if (csrfToken && !formData.has('csrf_token')) {
-                formData.append('csrf_token', csrfToken);
+            
+            if (csrfToken) {
+                formData.set('csrf_token', csrfToken);
+                const hiddenCsrf = document.getElementById('add-staff-csrf-token');
+                if (hiddenCsrf) hiddenCsrf.value = csrfToken;
             }
 
             const response = await window.api.upload('/staff', formData);
