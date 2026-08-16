@@ -116,7 +116,7 @@ ob_start();
                       <div class="relative shrink-0">
                           <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-surface border border-border-subtle flex items-center justify-center">
                               <?php if ($profilePhoto): ?>
-                                  <img src="<?= htmlspecialchars($profilePhoto, ENT_QUOTES, 'UTF-8') ?>" class="w-full h-full object-cover" alt="<?= $fullName ?>">
+                                  <img src="<?= htmlspecialchars($profilePhoto, ENT_QUOTES, 'UTF-8') ?>" class="w-full h-full object-cover" alt="<?= $fullName ?>" onerror="this.parentElement.innerHTML='<span class=\'text-3xl sm:text-4xl font-black text-primary font-headline\'><?= $initials ?></span>'">
                               <?php else: ?>
                                   <span id="photo-initials" class="text-3xl sm:text-4xl font-black text-primary font-headline"><?= $initials ?></span>
                               <?php endif; ?>
@@ -284,13 +284,13 @@ ob_start();
                           <!-- Front Document -->
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Front of Document</label>
-                              <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm">
+                              <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $frontUrl ? "onclick=\"openLightbox('" . htmlspecialchars($frontUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
                                   <?php $frontUrl = $staff['front_image_url'] ?? null; ?>
                                   <div id="doc-front-placeholder" class="text-center <?= $frontUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
                                   </div>
-                                  <img loading="lazy" id="doc-front-img" src="<?= htmlspecialchars($frontUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $frontUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
+                                  <img loading="lazy" id="doc-front-img" src="<?= htmlspecialchars($frontUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $frontUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" onerror="this.classList.add('hidden'); document.getElementById('doc-front-placeholder').classList.remove('hidden');" />
                                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                                       <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                   </div>
@@ -299,13 +299,13 @@ ob_start();
                           <!-- Back Document -->
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Back of Document</label>
-                              <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm">
+                              <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $backUrl ? "onclick=\"openLightbox('" . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
                                   <?php $backUrl = $staff['back_image_url'] ?? null; ?>
                                   <div id="doc-back-placeholder" class="text-center <?= $backUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
                                   </div>
-                                  <img loading="lazy" id="doc-back-img" src="<?= htmlspecialchars($backUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $backUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
+                                  <img loading="lazy" id="doc-back-img" src="<?= htmlspecialchars($backUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $backUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" onerror="this.classList.add('hidden'); document.getElementById('doc-back-placeholder').classList.remove('hidden');" />
                                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                                       <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                   </div>

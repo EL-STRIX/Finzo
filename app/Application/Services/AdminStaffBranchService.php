@@ -66,14 +66,19 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = $prefix . uniqid() . '.' . $ext;
-        $upload_dir = FINZO_ROOT . '/uploads/' . $dir . '/';
+        $upload_dir = FINZO_ROOT . '/public/uploads/' . $dir . '/';
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
 
         $dest = $upload_dir . $filename;
         if (move_uploaded_file($file['tmp_name'], $dest)) {
+            $root_dir = FINZO_ROOT . '/uploads/' . $dir . '/';
+            if (!is_dir($root_dir)) {
+                @mkdir($root_dir, 0777, true);
+            }
+            @copy($dest, $root_dir . $filename);
+
             return 'uploads/' . $dir . '/' . $filename;
         }
 

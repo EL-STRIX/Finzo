@@ -356,16 +356,19 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $suspendedStaff = (int)$this->db->query("SELECT COUNT(*) FROM staff WHERE status = 'suspended' AND is_deleted = 0")->fetchColumn();
         $txnsToday = (int)$this->db->query("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()")->fetchColumn();
 
-        $baseUrl = defined('APP_URL') ? rtrim(APP_URL, '/') . '/' : '/Finzo/';
-        $resolveStaffUrl = function(?string $path, string $subDir) use ($baseUrl) {
+        $resolveStaffUrl = function(?string $path, string $subDir) {
             if (empty($path)) return null;
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/Finzo/')) {
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                 return $path;
             }
-            if (str_starts_with($path, 'uploads/')) {
-                return $baseUrl . ltrim($path, '/');
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
             }
-            return $baseUrl . 'uploads/' . $subDir . '/' . ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
         };
 
         foreach ($staffList as &$s) {
@@ -545,16 +548,19 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             }
         }
 
-        $baseUrl = defined('APP_URL') ? rtrim(APP_URL, '/') . '/' : '/Finzo/';
-        $resolveStaffUrl = function(?string $path, string $subDir) use ($baseUrl) {
+        $resolveStaffUrl = function(?string $path, string $subDir) {
             if (empty($path)) return null;
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/Finzo/')) {
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                 return $path;
             }
-            if (str_starts_with($path, 'uploads/')) {
-                return $baseUrl . ltrim($path, '/');
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
             }
-            return $baseUrl . 'uploads/' . $subDir . '/' . ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
         };
 
         $staff['profile_photo_url'] = $resolveStaffUrl($staff['profile_photo'] ?? null, 'staff-photos');
