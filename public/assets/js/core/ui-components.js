@@ -36,7 +36,7 @@
         },
 
         closeAllDropdowns: function() {
-            document.querySelectorAll('.finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+            document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
                 el.classList.remove('is-open');
                 if (el.classList.contains('finzo-dropdown-trigger')) {
                     el.setAttribute('aria-expanded', 'false');
@@ -54,8 +54,8 @@
                 const isOpen = menu.classList.contains('is-open') || trigger.classList.contains('is-open');
                 
                 // Close all others
-                document.querySelectorAll('.finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
-                    if (el !== menu && el !== trigger) {
+                document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+                    if (el !== menu && el !== trigger && el !== dropdown) {
                         el.classList.remove('is-open');
                         if (el.classList.contains('finzo-dropdown-trigger')) {
                             el.setAttribute('aria-expanded', 'false');
@@ -65,11 +65,13 @@
 
                 // Toggle current
                 if (isOpen) {
+                    dropdown.classList.remove('is-open');
                     menu.classList.remove('is-open');
                     trigger.classList.remove('is-open');
                     trigger.setAttribute('aria-expanded', 'false');
                     trigger.focus();
                 } else {
+                    dropdown.classList.add('is-open');
                     menu.classList.add('is-open');
                     trigger.classList.add('is-open');
                     trigger.setAttribute('aria-expanded', 'true');
@@ -106,6 +108,7 @@
                 // Close
                 const menu = dropdown.querySelector('.finzo-dropdown-menu');
                 if (menu) menu.classList.remove('is-open');
+                dropdown.classList.remove('is-open');
                 if (trigger) {
                     trigger.classList.remove('is-open');
                     trigger.setAttribute('aria-expanded', 'false');
@@ -128,7 +131,7 @@
             document.addEventListener('click', (e) => {
                 // Click outside
                 if (!e.target.closest('.finzo-dropdown')) {
-                    document.querySelectorAll('.finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+                    document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
                         el.classList.remove('is-open');
                         if (el.classList.contains('finzo-dropdown-trigger')) {
                             el.setAttribute('aria-expanded', 'false');

@@ -169,8 +169,8 @@ ob_start();
 
             <!-- Export Modal -->
             <div id="export-modal" class="fixed inset-0 z-[1000] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
-                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" role="document">
-                    <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/50">
+                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-visible" role="document">
+                    <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/50 rounded-t-2xl">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                                 <span class="material-symbols-outlined text-xl" aria-hidden="true">file_download</span>
@@ -188,9 +188,9 @@ ob_start();
                     <div class="p-6 space-y-4">
                         <p class="text-xs text-text-secondary">Select export criteria to generate the CSV download:</p>
 
-                        <!-- 3 Filter Dropdowns in Modal -->
+                        <!-- 3 Filter Dropdowns in Modal with Stacking Context -->
                         <div class="space-y-3.5">
-                            <div>
+                            <div class="relative z-30">
                                 <label for="export-filter-sort" class="fin-label">Sort Order</label>
                                 <div class="finzo-dropdown w-full" id="export-sort-dropdown">
                                     <input type="hidden" id="export-filter-sort" value="newest">
@@ -207,7 +207,7 @@ ob_start();
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="relative z-20">
                                 <label for="export-filter-activity" class="fin-label">Activity Level</label>
                                 <div class="finzo-dropdown w-full" id="export-activity-dropdown">
                                     <input type="hidden" id="export-filter-activity" value="all">
@@ -224,7 +224,7 @@ ob_start();
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="relative z-10">
                                 <label for="export-filter-balance" class="fin-label">Account Balance</label>
                                 <div class="finzo-dropdown w-full" id="export-balance-dropdown">
                                     <input type="hidden" id="export-filter-balance" value="all">
@@ -242,7 +242,7 @@ ob_start();
                             </div>
                         </div>
 
-                        <div class="pt-4 border-t border-border-subtle flex items-center justify-end gap-3">
+                        <div class="pt-4 border-t border-border-subtle flex items-center justify-end gap-3 relative z-0">
                             <button type="button" class="close-export-modal btn btn-secondary px-4 py-2 text-xs">Cancel</button>
                             <button type="button" id="start-export" class="btn btn-primary px-5 py-2 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm">
                                 <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
