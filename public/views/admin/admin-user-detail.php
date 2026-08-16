@@ -64,9 +64,6 @@ ob_start();
                   <span id="user-status-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-surface border border-border-subtle text-text-secondary">
                     <div class="skeleton w-24 h-4"></div>
                   </span>
-                  <span id="user-account-type-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">
-                    Savings Account
-                  </span>
                 </div>
               </div>
             </div>

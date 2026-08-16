@@ -155,17 +155,6 @@
             statusBadge.textContent = cfg.text;
         }
 
-        // Account Type Badge: "Savings Account" or "Current Account"
-        const primaryAcc = accounts[0] || {};
-        const rawType = (primaryAcc.account_type || user.account_type || 'savings').toLowerCase();
-        const accountTypeFormatted = rawType.includes('current') ? 'Current Account' : (rawType.includes('fixed') ? 'Fixed Deposit' : 'Savings Account');
-        
-        const accTypeBadge = document.getElementById('user-account-type-badge');
-        if (accTypeBadge) {
-            accTypeBadge.textContent = accountTypeFormatted;
-            accTypeBadge.className = 'text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-primary/10 text-primary border border-primary/20';
-        }
-
         // Basic Info
         setText('info-customer-id', user.customer_id || 'FNZ-USR-PENDING');
         setText('info-full-name', fullName);
@@ -1084,24 +1073,43 @@
             e.preventDefault();
             const pass = document.getElementById('admin-password') ? document.getElementById('admin-password').value : '';
             const checkedReason = document.querySelector('input[name="reason"]:checked');
-            const reason = checkedReason ? checkedReason.value : null;
+            let reason = checkedReason ? checkedReason.value : null;
 
             if (!reason) {
                 alert('Please select a primary reason for this action.');
                 return;
             }
 
+            if (reason === 'Other') {
+                const customNotes = document.getElementById('governance-notes') ? document.getElementById('governance-notes').value.trim() : '';
+                if (customNotes) {
+                    reason = 'Other: ' + customNotes;
+                }
+            }
+
+            if (!pass) {
+                const errorEl = document.getElementById('auth-error');
+                if (errorEl) {
+                    errorEl.textContent = 'Please enter your admin password.';
+                    errorEl.classList.remove('hidden');
+                }
+                return;
+            }
+
             const mappedAction = currentMode === 'block' ? 'suspend' : 'delete';
+            const csrf = window.csrfToken || (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
 
             try {
                 const response = await window.api.patch('/users/' + currentUserId, {
                     action: mappedAction,
                     reason: reason,
-                    password: pass
+                    password: pass,
+                    csrf_token: csrf
                 });
 
                 if (response && (response.success || response.status === 'success')) {
                     this.textContent = 'SUCCESS!';
+                    if (window.showToast) window.showToast(`User account ${mappedAction === 'suspend' ? 'suspended' : 'deleted'} successfully`, 'success');
                     setTimeout(() => {
                         if (mappedAction === 'suspend') {
                             window.location.href = 'admin-suspended-users.php';
@@ -1119,14 +1127,24 @@
                     }
                 }
             } catch (error) {
-                alert('Action failed. Please try again.');
+                const errorEl = document.getElementById('auth-error');
+                if (errorEl) {
+                    errorEl.textContent = (error && error.message) ? error.message : 'Action failed. Please try again.';
+                    errorEl.classList.remove('hidden');
+                } else {
+                    alert('Action failed. Please try again.');
+                }
             }
         });
     }
 
     async function executeReinstatement() {
+        const csrf = window.csrfToken || (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
         try {
-            const response = await window.api.patch('/users/' + currentUserId, { action: 'reinstate' });
+            const response = await window.api.patch('/users/' + currentUserId, { 
+                action: 'reinstate',
+                csrf_token: csrf
+            });
             if (response && (response.success || response.status === 'success')) {
                 if (window.showToast) window.showToast('User account reactivated successfully', 'success');
                 setTimeout(() => location.reload(), 1200);
