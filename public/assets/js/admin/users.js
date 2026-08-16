@@ -16,7 +16,9 @@
         try {
             const response = await window.api.get('/users', {
                 search: document.getElementById('user-search').value,
-                status: document.getElementById('filter-status').value,
+                sort: document.getElementById('filter-sort').value,
+                activity: document.getElementById('filter-activity').value,
+                balance: document.getElementById('filter-balance').value,
                 page: currentPage,
                 per_page: 10
             });
@@ -175,12 +177,25 @@
             });
         }
 
+        ['filter-sort', 'filter-activity', 'filter-balance'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    currentPage = 1;
+                    loadUsers();
+                });
+            }
+        });
+
         const clearBtn = document.getElementById('clear-filters');
         if (clearBtn) {
             clearBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 document.getElementById('user-search').value = '';
-                document.getElementById('filter-status').value = 'all';
+                if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
+                if(document.getElementById('filter-sort')) document.getElementById('filter-sort').value = 'newest';
+                if(document.getElementById('filter-activity')) document.getElementById('filter-activity').value = 'all';
+                if(document.getElementById('filter-balance')) document.getElementById('filter-balance').value = 'all';
                 
                 // Reset custom dropdown labels
                 document.querySelectorAll('.dropdown-label').forEach(label => {
@@ -252,11 +267,13 @@
                 e.preventDefault();
                 window.api.setButtonLoading(this, true, 'Generating...');
                 
-                // Build the URL with current filters
                 const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
                 const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+                const sort = document.getElementById('filter-sort') ? document.getElementById('filter-sort').value : 'newest';
+                const activity = document.getElementById('filter-activity') ? document.getElementById('filter-activity').value : 'all';
+                const balance = document.getElementById('filter-balance') ? document.getElementById('filter-balance').value : 'all';
                 
-                const queryParams = new URLSearchParams({ search, status }).toString();
+                const queryParams = new URLSearchParams({ search, status, sort, activity, balance }).toString();
                 const exportUrl = `${window.api.baseUrl}/users/export?${queryParams}`;
                 
                 // Trigger download

@@ -348,9 +348,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $params[] = $search_param;
         }
 
+        $orderSql = "u.created_at DESC";
+        $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->exportUsersGenerator($where_sql, $params);
+        return $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
     }
     /**
      * Get Locked Accounts.
@@ -979,6 +982,44 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * @param int $perPage
      * @return array
      */
+    private function applyUserFiltersAndSort(array $filters, array &$where_clauses, string &$orderSql): void
+    {
+        // Activity Filter
+        if (!empty($filters['activity']) && $filters['activity'] !== 'all') {
+            if ($filters['activity'] === 'recent') {
+                $where_clauses[] = "u.last_login_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            } elseif ($filters['activity'] === 'inactive_30') {
+                $where_clauses[] = "(u.last_login_at < DATE_SUB(NOW(), INTERVAL 30 DAY) OR u.last_login_at IS NULL)";
+            } elseif ($filters['activity'] === 'dormant') {
+                $where_clauses[] = "(u.last_login_at < DATE_SUB(NOW(), INTERVAL 90 DAY) OR u.last_login_at IS NULL)";
+            }
+        }
+
+        // Balance Filter
+        if (!empty($filters['balance']) && $filters['balance'] !== 'all') {
+            if ($filters['balance'] === 'premium') {
+                $where_clauses[] = "a.balance >= 100000";
+            } elseif ($filters['balance'] === 'standard') {
+                $where_clauses[] = "a.balance > 0 AND a.balance < 100000";
+            } elseif ($filters['balance'] === 'zero') {
+                $where_clauses[] = "(a.balance = 0 OR a.balance IS NULL)";
+            }
+        }
+
+        // Sorting
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] === 'newest') {
+                $orderSql = "u.created_at DESC";
+            } elseif ($filters['sort'] === 'balance_high') {
+                $orderSql = "a.balance DESC";
+            } elseif ($filters['sort'] === 'balance_low') {
+                $orderSql = "a.balance ASC";
+            } elseif ($filters['sort'] === 'recently_active') {
+                $orderSql = "u.last_login_at DESC";
+            }
+        }
+    }
+
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
         $where_clauses = ["u.is_deleted = 0", "u.status = 'active'"];
@@ -998,13 +1039,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $params[] = $search_param;
         }
 
+        $orderSql = "u.created_at DESC";
+        $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
         $where_sql = implode(' AND ', $where_clauses);
         $total = $this->repository->countUsers($where_sql, $params);
 
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $users = $this->repository->getUsers($where_sql, $params, $perPage, $offset);
+        $users = $this->repository->getUsers($where_sql, $params, $perPage, $offset, $orderSql);
 
         foreach ($users as &$u) {
             $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;

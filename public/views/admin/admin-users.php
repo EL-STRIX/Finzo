@@ -75,25 +75,59 @@ ob_start();
             <div class="ds-card overflow-hidden mt-6">
                 <!-- Header / Filters -->
                 <div class="p-6 border-b border-border-subtle bg-background">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="filtersContainer">
                         <div>
                             <label for="user-search" class="fin-label">Search User</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
-                                <input type="text" id="user-search" placeholder="Search by name, email or customer ID..." class="fin-input pl-11">
+                                <input type="text" id="user-search" placeholder="Search by name, email or ID..." class="fin-input pl-11">
                             </div>
                         </div>
                         <div>
-                            <label for="filter-status" class="fin-label">Account Status</label>
-                            <div class="finzo-dropdown w-full" id="status-dropdown">
-                                <input type="hidden" id="filter-status" value="all">
+                            <label for="filter-sort" class="fin-label">Sort By</label>
+                            <div class="finzo-dropdown w-full" id="sort-dropdown">
+                                <input type="hidden" id="filter-sort" value="newest">
                                 <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                    <span class="dropdown-label">All Status</span>
+                                    <span class="dropdown-label">Newest Registered</span>
                                     <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>
                                 <div class="finzo-dropdown-menu z-50">
-                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Status</div>
-                                    <div class="finzo-dropdown-option" data-value="active">Active</div>
+                                    <div class="finzo-dropdown-option is-selected" data-value="newest">Newest Registered</div>
+                                    <div class="finzo-dropdown-option" data-value="balance_high">Highest Balance</div>
+                                    <div class="finzo-dropdown-option" data-value="balance_low">Lowest Balance</div>
+                                    <div class="finzo-dropdown-option" data-value="recently_active">Recently Active</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="filter-activity" class="fin-label">Activity Level</label>
+                            <div class="finzo-dropdown w-full" id="activity-dropdown">
+                                <input type="hidden" id="filter-activity" value="all">
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                    <span class="dropdown-label">All Active Users</span>
+                                    <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                </div>
+                                <div class="finzo-dropdown-menu z-50">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Active Users</div>
+                                    <div class="finzo-dropdown-option" data-value="recent">Recently Online (7 Days)</div>
+                                    <div class="finzo-dropdown-option" data-value="inactive_30">Inactive (30+ Days)</div>
+                                    <div class="finzo-dropdown-option" data-value="dormant">Dormant (90+ Days)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="filter-balance" class="fin-label">Account Balance</label>
+                            <div class="finzo-dropdown w-full" id="balance-dropdown">
+                                <input type="hidden" id="filter-balance" value="all">
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                    <span class="dropdown-label">All Balances</span>
+                                    <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                </div>
+                                <div class="finzo-dropdown-menu z-50">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Balances</div>
+                                    <div class="finzo-dropdown-option" data-value="premium">Premium (> ₹1L)</div>
+                                    <div class="finzo-dropdown-option" data-value="standard">Standard (> ₹0)</div>
+                                    <div class="finzo-dropdown-option" data-value="zero">Zero Balance</div>
                                 </div>
                             </div>
                         </div>

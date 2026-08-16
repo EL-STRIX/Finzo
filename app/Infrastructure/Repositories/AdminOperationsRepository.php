@@ -249,7 +249,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         ", $params);
     }
 
-    public function exportUsersGenerator(string $whereSql, array $params): \Generator {
+    public function exportUsersGenerator(string $whereSql, array $params, string $orderSql = 'u.created_at DESC'): \Generator {
         $sql = "
             SELECT
                 u.customer_id as 'Customer ID',
@@ -257,11 +257,13 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 u.email as 'Email',
                 u.phone as 'Phone',
                 u.status as 'Status',
+                a.balance as 'Balance',
                 u.created_at as 'Created At',
                 u.last_login_at as 'Last Login'
             FROM users u
+            LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active'
             WHERE {$whereSql}
-            ORDER BY u.created_at DESC
+            ORDER BY {$orderSql}
         ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -576,16 +578,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countUsers(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(u.id) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)$this->fetchOne("SELECT COUNT(DISTINCT u.id) as count FROM users u LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active' WHERE {$whereSql}", $params)['count'] ?? 0;
     }
 
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC') {
         $sql = "
             SELECT
-                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
+                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
+                a.balance, a.account_no
             FROM users u
+            LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active'
             WHERE {$whereSql}
-            ORDER BY u.created_at DESC
+            ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
         ";
         return $this->fetchAll($sql, $params);

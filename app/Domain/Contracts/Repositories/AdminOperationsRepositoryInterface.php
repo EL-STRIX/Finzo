@@ -52,7 +52,7 @@ interface AdminOperationsRepositoryInterface
     public function exportTransactions(string $baseSql, array $params);
     public function exportTransactionsGenerator(string $baseSql, array $params): \Generator;
     public function countUsers(string $whereSql, array $params): int;
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset);
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC');
     public function getUsersStats();
     public function getSuspendedUser(int $userId);
     public function getSuspendedUserProfile(int $userId);
