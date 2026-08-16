@@ -15,10 +15,10 @@
 
         try {
             const response = await window.api.get('/users', {
-                search: document.getElementById('user-search').value,
-                sort: document.getElementById('filter-sort').value,
-                activity: document.getElementById('filter-activity').value,
-                balance: document.getElementById('filter-balance').value,
+                search: document.getElementById('user-search')?.value?.trim() || '',
+                status: document.getElementById('filter-status')?.value || 'all',
+                activity: document.getElementById('filter-activity')?.value || 'all',
+                balance: document.getElementById('filter-balance')?.value || 'all',
                 page: currentPage,
                 per_page: 10
             });
