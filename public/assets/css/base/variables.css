@@ -143,6 +143,7 @@
    DARK MODE OVERRIDES
 ======================================================================= */
 [data-theme="dark"], .dark {
+  color-scheme: dark;
   /* Backgrounds & Surfaces */
   --color-background: #0C0A09;
   --color-surface: #1C1917;

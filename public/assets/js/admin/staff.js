@@ -224,15 +224,16 @@
                     });
                 }
 
-                // Populate Add Staff Modal Branch Select
-                const addStaffBranchSelect = document.getElementById('new-staff-branch');
-                if (addStaffBranchSelect) {
-                    addStaffBranchSelect.innerHTML = '<option value="">Head Office / Unassigned</option>';
+                // Populate Add Staff Modal Branch Dropdown
+                const addStaffBranchMenu = document.getElementById('new-staff-branch-menu');
+                if (addStaffBranchMenu) {
+                    addStaffBranchMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="">Head Office / Unassigned</div>';
                     branches.forEach(b => {
-                        const opt = document.createElement('option');
-                        opt.value = b.id;
+                        const opt = document.createElement('div');
+                        opt.className = 'finzo-dropdown-option';
+                        opt.setAttribute('data-value', b.id);
                         opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
-                        addStaffBranchSelect.appendChild(opt);
+                        addStaffBranchMenu.appendChild(opt);
                     });
                 }
             }
@@ -334,6 +335,12 @@
             alertEl.classList.add('hidden');
             alertEl.innerHTML = '';
         }
+
+        // Reset dropdown initial labels if needed
+        setModalDropdownValue('staff-gender-dropdown', 'new-staff-gender', 'Female');
+        setModalDropdownValue('staff-designation-dropdown', 'new-staff-designation', 'Teller');
+        setModalDropdownValue('staff-branch-dropdown', 'new-staff-branch', '');
+        setModalDropdownValue('staff-id-type-dropdown', 'new-staff-id-type', 'Aadhaar');
 
         // Auto-generate strong default password
         generateStaffPassword();

@@ -56,7 +56,7 @@ ob_start();
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
           <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
           <div class="relative z-10">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-4 border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
               <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt</span>
             </div>
             <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TRANSACTIONS TODAY</div>
@@ -182,16 +182,16 @@ ob_start();
 
       <!-- ADD NEW STAFF MODAL -->
       <div id="add-staff-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="add-staff-modal-title">
-          <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-3xl my-8 overflow-hidden animate-in fade-in zoom-in duration-200" role="document">
+          <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-3xl my-8 overflow-visible animate-in fade-in zoom-in duration-200" role="document">
               <!-- Modal Header -->
-              <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/60 backdrop-blur-md">
+              <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/60 backdrop-blur-md rounded-t-2xl">
                   <div class="flex items-center gap-3">
                       <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-sm">
                           <span class="material-symbols-outlined text-2xl" aria-hidden="true">person_add</span>
                       </div>
                       <div>
                           <h2 id="add-staff-modal-title" class="text-lg font-black font-headline text-text-primary">Add New Staff Member</h2>
-                          <p class="text-xs font-bold text-text-secondary uppercase tracking-wider">Create employee profile, credentials & branch assignment</p>
+                          <p class="text-xs font-bold text-text-secondary uppercase tracking-wider">Create employee profile, credentials &amp; branch assignment</p>
                       </div>
                   </div>
                   <button type="button" class="close-add-staff-modal w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-hover text-text-secondary transition-colors" aria-label="Close modal">
@@ -219,14 +219,21 @@ ob_start();
                               <label for="new-staff-dob" class="fin-label">Date of Birth <span class="text-error">*</span></label>
                               <input type="date" id="new-staff-dob" name="date_of_birth" required class="fin-input">
                           </div>
-                          <div>
+                          <div class="relative z-50">
                               <label for="new-staff-gender" class="fin-label">Gender <span class="text-error">*</span></label>
-                              <select id="new-staff-gender" name="gender" required class="fin-input">
-                                  <option value="Male">Male</option>
-                                  <option value="Female" selected>Female</option>
-                                  <option value="Other">Other</option>
-                                  <option value="Prefer not to say">Prefer not to say</option>
-                              </select>
+                              <div class="finzo-dropdown w-full" id="staff-gender-dropdown">
+                                  <input type="hidden" id="new-staff-gender" name="gender" value="Female">
+                                  <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer">
+                                      <span class="dropdown-label font-bold text-sm text-text-primary">Female</span>
+                                      <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                                  </div>
+                                  <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                                      <div class="finzo-dropdown-option" data-value="Male">Male</div>
+                                      <div class="finzo-dropdown-option is-selected" data-value="Female">Female</div>
+                                      <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                                      <div class="finzo-dropdown-option" data-value="Prefer not to say">Prefer not to say</div>
+                                  </div>
+                              </div>
                           </div>
                           <div>
                               <label for="new-staff-email" class="fin-label">Personal / Work Email <span class="text-error">*</span></label>
@@ -254,20 +261,34 @@ ob_start();
                           <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">Branch &amp; Role Assignment</h3>
                       </div>
                       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                          <div>
+                          <div class="relative z-40">
                               <label for="new-staff-designation" class="fin-label">Role / Designation <span class="text-error">*</span></label>
-                              <select id="new-staff-designation" name="designation" required class="fin-input">
-                                  <option value="Teller" selected>Teller / Operations</option>
-                                  <option value="Supervisor">Supervisor</option>
-                                  <option value="Manager">Branch Manager</option>
-                              </select>
+                              <div class="finzo-dropdown w-full" id="staff-designation-dropdown">
+                                  <input type="hidden" id="new-staff-designation" name="designation" value="Teller">
+                                  <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer">
+                                      <span class="dropdown-label font-bold text-sm text-text-primary">Teller / Operations</span>
+                                      <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                                  </div>
+                                  <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                                      <div class="finzo-dropdown-option is-selected" data-value="Teller">Teller / Operations</div>
+                                      <div class="finzo-dropdown-option" data-value="Supervisor">Supervisor</div>
+                                      <div class="finzo-dropdown-option" data-value="Manager">Branch Manager</div>
+                                  </div>
+                              </div>
                           </div>
-                          <div>
+                          <div class="relative z-40">
                               <label for="new-staff-branch" class="fin-label">Assigned Branch</label>
-                              <select id="new-staff-branch" name="branch_id" class="fin-input">
-                                  <option value="">Head Office / Unassigned</option>
-                                  <!-- Dynamically populated -->
-                              </select>
+                              <div class="finzo-dropdown w-full" id="staff-branch-dropdown">
+                                  <input type="hidden" id="new-staff-branch" name="branch_id" value="">
+                                  <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer">
+                                      <span class="dropdown-label font-bold text-sm text-text-primary">Head Office / Unassigned</span>
+                                      <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                                  </div>
+                                  <div id="new-staff-branch-menu" class="finzo-dropdown-menu !z-[3500] !w-full">
+                                      <div class="finzo-dropdown-option is-selected" data-value="">Head Office / Unassigned</div>
+                                      <!-- Dynamically populated -->
+                                  </div>
+                              </div>
                           </div>
                           <div>
                               <label for="new-staff-joining" class="fin-label">Date of Joining</label>
@@ -309,13 +330,20 @@ ob_start();
                           <h3 class="text-xs font-black uppercase tracking-widest text-text-primary">KYC Documents &amp; ID Proof</h3>
                       </div>
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
+                          <div class="relative z-30">
                               <label for="new-staff-id-type" class="fin-label">ID Document Type <span class="text-error">*</span></label>
-                              <select id="new-staff-id-type" name="id_type" required class="fin-input">
-                                  <option value="Aadhaar" selected>Aadhaar Card</option>
-                                  <option value="PAN">PAN Card</option>
-                                  <option value="Passport">Passport</option>
-                              </select>
+                              <div class="finzo-dropdown w-full" id="staff-id-type-dropdown">
+                                  <input type="hidden" id="new-staff-id-type" name="id_type" value="Aadhaar">
+                                  <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer">
+                                      <span class="dropdown-label font-bold text-sm text-text-primary">Aadhaar Card</span>
+                                      <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                                  </div>
+                                  <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                                      <div class="finzo-dropdown-option is-selected" data-value="Aadhaar">Aadhaar Card</div>
+                                      <div class="finzo-dropdown-option" data-value="PAN">PAN Card</div>
+                                      <div class="finzo-dropdown-option" data-value="Passport">Passport</div>
+                                  </div>
+                              </div>
                           </div>
                           <div>
                               <label for="new-staff-id-num" class="fin-label">ID Document Number <span class="text-error">*</span></label>
