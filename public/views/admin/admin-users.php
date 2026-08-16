@@ -84,18 +84,18 @@ ob_start();
                             </div>
                         </div>
                         <div>
-                            <label for="filter-sort" class="fin-label">Sort By</label>
-                            <div class="finzo-dropdown w-full" id="sort-dropdown">
-                                <input type="hidden" id="filter-sort" value="newest">
+                            <label for="filter-status" class="fin-label">Account Status</label>
+                            <div class="finzo-dropdown w-full" id="status-dropdown">
+                                <input type="hidden" id="filter-status" value="all">
                                 <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                    <span class="dropdown-label">Newest Registered</span>
+                                    <span class="dropdown-label">All Accounts</span>
                                     <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>
                                 <div class="finzo-dropdown-menu z-50">
-                                    <div class="finzo-dropdown-option is-selected" data-value="newest">Newest Registered</div>
-                                    <div class="finzo-dropdown-option" data-value="balance_high">Highest Balance</div>
-                                    <div class="finzo-dropdown-option" data-value="balance_low">Lowest Balance</div>
-                                    <div class="finzo-dropdown-option" data-value="recently_active">Recently Active</div>
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
+                                    <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
+                                    <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
+                                    <div class="finzo-dropdown-option" data-value="soft_deleted">Soft Deleted</div>
                                 </div>
                             </div>
                         </div>
@@ -104,11 +104,11 @@ ob_start();
                             <div class="finzo-dropdown w-full" id="activity-dropdown">
                                 <input type="hidden" id="filter-activity" value="all">
                                 <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                    <span class="dropdown-label">All Active Users</span>
+                                    <span class="dropdown-label">All Activity Levels</span>
                                     <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>
                                 <div class="finzo-dropdown-menu z-50">
-                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Active Users</div>
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Activity Levels</div>
                                     <div class="finzo-dropdown-option" data-value="recent">Recently Online (7 Days)</div>
                                     <div class="finzo-dropdown-option" data-value="inactive_30">Inactive (30+ Days)</div>
                                     <div class="finzo-dropdown-option" data-value="dormant">Dormant (90+ Days)</div>
@@ -191,18 +191,18 @@ ob_start();
                         <!-- 3 Filter Dropdowns in Modal with Stacking Context -->
                         <div class="space-y-3.5">
                             <div class="relative z-30">
-                                <label for="export-filter-sort" class="fin-label">Sort Order</label>
-                                <div class="finzo-dropdown w-full" id="export-sort-dropdown">
-                                    <input type="hidden" id="export-filter-sort" value="newest">
+                                <label for="export-filter-status" class="fin-label">Account Status</label>
+                                <div class="finzo-dropdown w-full" id="export-status-dropdown">
+                                    <input type="hidden" id="export-filter-status" value="all">
                                     <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                        <span class="dropdown-label">Newest Registered</span>
+                                        <span class="dropdown-label">All Accounts</span>
                                         <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                     </div>
                                     <div class="finzo-dropdown-menu z-50">
-                                        <div class="finzo-dropdown-option is-selected" data-value="newest">Newest Registered</div>
-                                        <div class="finzo-dropdown-option" data-value="balance_high">Highest Balance</div>
-                                        <div class="finzo-dropdown-option" data-value="balance_low">Lowest Balance</div>
-                                        <div class="finzo-dropdown-option" data-value="recently_active">Recently Active</div>
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
+                                        <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
+                                        <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
+                                        <div class="finzo-dropdown-option" data-value="soft_deleted">Soft Deleted</div>
                                     </div>
                                 </div>
                             </div>
@@ -212,11 +212,11 @@ ob_start();
                                 <div class="finzo-dropdown w-full" id="export-activity-dropdown">
                                     <input type="hidden" id="export-filter-activity" value="all">
                                     <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                        <span class="dropdown-label">All Active Users</span>
+                                        <span class="dropdown-label">All Activity Levels</span>
                                         <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                     </div>
                                     <div class="finzo-dropdown-menu z-50">
-                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Active Users</div>
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Activity Levels</div>
                                         <div class="finzo-dropdown-option" data-value="recent">Recently Online (7 Days)</div>
                                         <div class="finzo-dropdown-option" data-value="inactive_30">Inactive (30+ Days)</div>
                                         <div class="finzo-dropdown-option" data-value="dormant">Dormant (90+ Days)</div>

@@ -179,7 +179,7 @@
             });
         }
 
-        ['filter-sort', 'filter-activity', 'filter-balance'].forEach(id => {
+        ['filter-status', 'filter-activity', 'filter-balance'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('change', () => {
@@ -193,9 +193,8 @@
         if (clearBtn) {
             clearBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('user-search').value = '';
+                if(document.getElementById('user-search')) document.getElementById('user-search').value = '';
                 if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
-                if(document.getElementById('filter-sort')) document.getElementById('filter-sort').value = 'newest';
                 if(document.getElementById('filter-activity')) document.getElementById('filter-activity').value = 'all';
                 if(document.getElementById('filter-balance')) document.getElementById('filter-balance').value = 'all';
                 
@@ -203,7 +202,7 @@
                 document.querySelectorAll('.dropdown-label').forEach(label => {
                     const dropdown = label.closest('.finzo-dropdown');
                     if (dropdown) {
-                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"], .finzo-dropdown-option[data-value="newest"]') || dropdown.querySelector('.finzo-dropdown-option');
+                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"]') || dropdown.querySelector('.finzo-dropdown-option');
                         if (defaultOpt) {
                             label.textContent = defaultOpt.textContent.trim();
                             dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
@@ -251,11 +250,11 @@
             if (!exportModal) return;
 
             // Sync modal dropdowns with current page filter values
-            const curSort = document.getElementById('filter-sort')?.value || 'newest';
+            const curStatus = document.getElementById('filter-status')?.value || 'all';
             const curActivity = document.getElementById('filter-activity')?.value || 'all';
             const curBalance = document.getElementById('filter-balance')?.value || 'all';
 
-            setModalDropdownValue('export-sort-dropdown', 'export-filter-sort', curSort);
+            setModalDropdownValue('export-status-dropdown', 'export-filter-status', curStatus);
             setModalDropdownValue('export-activity-dropdown', 'export-filter-activity', curActivity);
             setModalDropdownValue('export-balance-dropdown', 'export-filter-balance', curBalance);
 
@@ -325,10 +324,10 @@
                 
                 try {
                     const search = document.getElementById('user-search') ? document.getElementById('user-search').value.trim() : '';
-                    const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                    const sort = document.getElementById('export-filter-sort') ? document.getElementById('export-filter-sort').value : 'newest';
+                    const status = document.getElementById('export-filter-status') ? document.getElementById('export-filter-status').value : 'all';
                     const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
                     const balance = document.getElementById('export-filter-balance') ? document.getElementById('export-filter-balance').value : 'all';
+                    const sort = 'newest';
                     
                     const params = { search, status, sort, activity, balance };
                     const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';

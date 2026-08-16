@@ -334,12 +334,8 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function exportUsers(array $filters): array|\Generator
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status = 'active'"];
+        $where_clauses = [];
         $params = [];
-
-        if ($filters['status'] !== 'all' && $filters['status'] === 'active') {
-            // Already handled by the default where clause
-        }
 
         if (!empty($filters['search'])) {
             $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
@@ -352,6 +348,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $orderSql = "u.created_at DESC";
         $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
+        if (empty($where_clauses)) {
+            $where_clauses[] = "1=1";
+        }
 
         $where_sql = implode(' AND ', $where_clauses);
 
@@ -986,6 +986,18 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     private function applyUserFiltersAndSort(array $filters, array &$where_clauses, string &$orderSql): void
     {
+        // Status Filter
+        $status = $filters['status'] ?? 'all';
+        if ($status === 'active') {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status = 'active'";
+        } elseif ($status === 'suspended') {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status = 'suspended'";
+        } elseif ($status === 'soft_deleted' || $status === 'deleted') {
+            $where_clauses[] = "u.is_deleted = 1";
+        } elseif ($status === 'all') {
+            $where_clauses[] = "u.is_deleted = 0";
+        }
+
         // Activity Filter
         if (!empty($filters['activity']) && $filters['activity'] !== 'all') {
             if ($filters['activity'] === 'recent') {
@@ -1024,13 +1036,8 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status = 'active'"];
+        $where_clauses = [];
         $params = [];
-
-        // The status filter is mostly redundant now, but we keep the logic intact
-        if ($filters['status'] !== 'all' && $filters['status'] === 'active') {
-            // Already handled by the default where clause, but prevents issues if UI passes 'active'
-        }
 
         if (!empty($filters['search'])) {
             $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
@@ -1043,6 +1050,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $orderSql = "u.created_at DESC";
         $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
+        if (empty($where_clauses)) {
+            $where_clauses[] = "1=1";
+        }
 
         $where_sql = implode(' AND ', $where_clauses);
         $total = $this->repository->countUsers($where_sql, $params);
