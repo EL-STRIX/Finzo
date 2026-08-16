@@ -67,7 +67,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
             return $this->repository->getCachedDashboardStats();
-        }, 300); // 5 minutes cache
+        }, 15); // 15 seconds cache
 
         $stats = array_merge($stats, $stats_cache);
 
@@ -93,14 +93,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
                 $data[] = [
                     'month'       => $month_label,
-                    'deposits'    => (float)$month_data['deposits'],
-                    'withdrawals' => (float)$month_data['withdrawals'],
-                    'transfers'   => (float)$month_data['transfers'],
-                    'count'       => (int)$month_data['count']
+                    'deposits'    => (float)($month_data['deposits'] ?? 0),
+                    'withdrawals' => (float)($month_data['withdrawals'] ?? 0),
+                    'transfers'   => (float)($month_data['transfers'] ?? 0),
+                    'count'       => (int)($month_data['count'] ?? 0)
                 ];
             }
             return $data;
-        }, 3600); // 1 hour cache
+        }, 30); // 30 seconds cache
 
         $admin_data = $this->repository->getAdminById($adminId);
 

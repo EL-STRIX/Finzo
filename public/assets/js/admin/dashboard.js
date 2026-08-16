@@ -1,10 +1,15 @@
 /**
  * Finzo Admin — Dashboard Handler
- * Version 1.2 — Integrated Chart.js updates, Theme Reactivity, and Premium UX
+ * Version 1.3 — Dynamic KPI Sync, Real-time Charts, Responsive Theme Styling, and Streamlined Rendering
  */
 
 (function() {
     let charts = {};
+
+    function fmtINR(val) {
+        const num = parseFloat(val) || 0;
+        return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
     /**
      * Load dashboard high-level stats, charts and recent users
@@ -12,15 +17,14 @@
     async function loadDashboard() {
         try {
             const response = await window.api.get('/admin/dashboard');
-            if (response.success) {
+            if (response && (response.success || response.status === 200 || response.data)) {
                 const data = response.data || response;
-                updateStats(data.stats);
-                renderRecentUsers(data.recent_users);
+                updateStats(data.stats || {});
+                renderRecentUsers(data.recent_users || []);
                 updateCharts(data);
             }
         } catch (error) {
             console.error('Dashboard load failed:', error);
-            // Handle error UI if needed
         }
     }
 
@@ -29,13 +33,37 @@
      */
     function updateStats(stats) {
         if (!stats) return;
+
+        // ID based mapping
+        const statMappings = {
+            'stat-total-assets': { val: stats.total_balance ?? 0, isCurrency: true },
+            'stat-deposits-today': { val: stats.deposits_today ?? 0, isCurrency: true },
+            'stat-withdrawals-today': { val: stats.withdrawals_today ?? 0, isCurrency: true },
+            'stat-active-accounts': { val: stats.total_accounts ?? 0, isCurrency: false },
+            'stat-pending-kyc': { val: stats.pending_approvals ?? stats.pending_users ?? 0, isCurrency: false },
+            'stat-locked-accounts': { val: stats.locked_accounts ?? 0, isCurrency: false },
+            'stat-today-txns': { val: stats.transactions_today ?? 0, isCurrency: false },
+            'stat-total-users': { val: stats.total_users ?? 0, isCurrency: false },
+            'stat-monthly-txns': { val: stats.transactions_month ?? 0, isCurrency: false },
+            'stat-interest-credited': { val: stats.interest_credited ?? 0, isCurrency: true },
+            'stat-suspended-users': { val: stats.suspended_users ?? 0, isCurrency: false },
+            'stat-total-branches': { val: stats.total_branches ?? 0, isCurrency: false }
+        };
+
+        for (const [id, item] of Object.entries(statMappings)) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('skeleton');
+                el.textContent = item.isCurrency ? fmtINR(item.val) : Number(item.val).toLocaleString();
+            }
+        }
+
+        // Fallback for querySelector on cards if IDs differ
         const cards = document.querySelectorAll('.admin-stat-card');
-        
-        // Define mapping based on card labels (flexible matching)
         cards.forEach(card => {
             const labelEl = card.querySelector('.admin-stat-label');
             const valEl = card.querySelector('.admin-stat-value');
-            if (!labelEl || !valEl) return;
+            if (!labelEl || !valEl || valEl.id) return; // already updated by ID
 
             const label = labelEl.textContent.trim().toUpperCase();
             let value = 0;
@@ -48,14 +76,14 @@
             else if (label.includes('LOCKED ACCOUNTS')) { value = stats.locked_accounts || 0; }
             else if (label.includes('ACTIVE ACCOUNTS')) { value = stats.total_accounts || 0; }
             else if (label.includes('PENDING KYC')) { value = stats.pending_approvals || 0; }
-            else if (label.includes('TODAY\'S TRANSACTIONS') || label === 'TRANSACTIONS') { value = stats.transactions_today || 0; }
+            else if (label.includes('TODAY\'S TRANSACTIONS')) { value = stats.transactions_today || 0; }
             else if (label.includes('MONTHLY TRANSACTIONS')) { value = stats.transactions_month || 0; }
             else if (label.includes('INTEREST CREDITED')) { value = stats.interest_credited || 0; isPrice = true; }
             else if (label.includes('SUSPENDED USERS')) { value = stats.suspended_users || 0; }
             else if (label.includes('TOTAL BRANCHES')) { value = stats.total_branches || 0; }
 
             valEl.classList.remove('skeleton');
-            valEl.textContent = isPrice ? (window.FinzoUtils ? window.FinzoUtils.formatINR(value) : value) : value.toLocaleString();
+            valEl.textContent = isPrice ? fmtINR(value) : Number(value).toLocaleString();
         });
     }
 
@@ -67,88 +95,87 @@
         if (!tbody) return;
 
         if (!users || !users.length) {
-            tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No recent activity.</div></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">No recent users registered.</td></tr>';
             return;
         }
 
-        // Clear existing skeletons efficiently
-        tbody.innerHTML = '';
-
-        // Build the fragment string and insert efficiently
-        let rowsHtml = '';
-        users.forEach(u => {
+        tbody.innerHTML = users.map(u => {
             const fallbackName = u.full_name || 'Unknown User';
             const initials = fallbackName.split(' ').map(n=>n[0]).join('').substring(0, 2).toUpperCase();
-            const statusClass = u.status === 'active' ? 'badge-success' : (u.status === 'suspended' ? 'badge-danger' : 'badge-warning');
-            const gradient = window.FinzoUtils ? window.FinzoUtils.getAvatarGradient(initials) : '#ccc';
             
+            const isActive = (u.status === 'active');
+            const isSuspended = (u.status === 'suspended');
+            const statusBadge = isActive 
+                ? '<span class="badge-tag bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Active</span>'
+                : (isSuspended 
+                    ? '<span class="badge-tag bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Suspended</span>'
+                    : '<span class="badge-tag bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Under Review</span>');
+
+            const isVerified = (u.kyc_status === 'approved' || u.kyc_status === 'verified' || u.status === 'active');
+            const kycBadge = isVerified
+                ? '<span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold uppercase">VERIFIED</span>'
+                : '<span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-md text-[10px] font-bold uppercase">PENDING</span>';
+
             const avatarHtml = u.profile_picture_url 
-                ? `<img src="${u.profile_picture_url}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover" onerror="this.outerHTML='<div class=\\'admin-avatar !w-10 !h-10 !rounded-xl text-[12px]\\' style=\\'background:${gradient};color:#fff;\\'>${initials}</div>'">` 
-                : `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px]" >${initials}</div>`;
+                ? `<img src="${u.profile_picture_url}" class="w-10 h-10 rounded-xl object-cover border border-border-subtle" alt="${fallbackName}">` 
+                : `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 font-black text-xs flex items-center justify-center uppercase shrink-0">${initials}</div>`;
 
-            const timeDisplay = window.FinzoUtils ? window.FinzoUtils.timeAgo(u.created_at) : (u.created_at || 'N/A');
+            const timeDisplay = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 
-            rowsHtml += `
-            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                <td>
+            return `
+            <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0 group">
+                <td class="py-3">
                     <div class="flex items-center gap-3">
                         ${avatarHtml}
                         <div class="min-w-0">
-                            <div class="font-bold text-sm truncate">${fallbackName}</div>
-                            <div class="text-[10px] opacity-40 truncate">${u.email || 'No Email'}</div>
+                            <div class="font-bold text-sm text-text-primary group-hover:text-primary transition-colors truncate">${fallbackName}</div>
+                            <div class="text-[10px] text-text-secondary truncate font-mono">${u.email || 'No Email'}</div>
                         </div>
                     </div>
                 </td>
-                <td><span class="status-badge ${u.status === 'active' ? 'badge-success' : 'badge-warning'}">${(u.status || 'pending').toUpperCase()}</span></td>
-                <td><span class="status-badge ${(u.kyc_status === 'approved' || u.kyc_status === 'verified') ? 'badge-success' : (u.kyc_status === 'under_review' ? 'badge-warning' : 'badge-neutral')}" style="font-size: 10px; padding: 4px 10px;">${(u.kyc_status || 'UNVERIFIED').toUpperCase().replace('_', ' ')}</span></td>
-                <td class="text-xs font-semibold capitalize">${u.account_type || 'Savings'}</td>
-                <td class="text-[11px] opacity-40 font-bold">${timeDisplay}</td>
+                <td>${statusBadge}</td>
+                <td>${kycBadge}</td>
+                <td class="text-xs font-bold text-text-secondary capitalize">${u.account_type || 'Savings'}</td>
+                <td class="text-[11px] text-text-secondary font-bold whitespace-nowrap">${timeDisplay}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.php?id=${u.id}" class="btn btn-secondary !px-4 !py-2 !text-[10px] !rounded-xl inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined !text-xs" aria-hidden="true">visibility</span> View
+                    <a href="/Finzo/public/views/admin/admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                        <span>View</span>
+                        <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>
                 </td>
             </tr>`;
-        });
-        
-        // Inject single large string at once (avoids thrashing existing DOM logic during map)
-        tbody.insertAdjacentHTML('beforeend', rowsHtml);
+        }).join('');
     }
 
     /**
      * Update Global Charts with real data
      */
     function updateCharts(data) {
-        const isDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-        const textColor = isDark ? '#8b949e' : '#64748b';
-
-        // Check if chart data exists
-        const hasChartData = data.monthly_chart_data && data.monthly_chart_data.length > 0;
+        const hasChartData = Array.isArray(data.monthly_chart_data) && data.monthly_chart_data.length > 0;
 
         // 1. Transaction Volume (Line Chart)
         const txCanvas = document.getElementById('chart-transactions');
-        if (txCanvas) {
-            if (!hasChartData) {
-                if (!txCanvas.parentElement.querySelector('.no-data-overlay')) {
-                    txCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
-                }
-            } else if (charts.transactions) {
-                const labels = data.monthly_chart_data.map(d => d.month);
-                const deposits = data.monthly_chart_data.map(d => d.deposits);
-                const withdrawals = data.monthly_chart_data.map(d => d.withdrawals);
+        if (txCanvas && charts.transactions && hasChartData) {
+            const labels = data.monthly_chart_data.map(d => d.month);
+            const deposits = data.monthly_chart_data.map(d => Number(d.deposits || 0));
+            const withdrawals = data.monthly_chart_data.map(d => Number(d.withdrawals || 0));
 
-                charts.transactions.data.labels = labels;
-                charts.transactions.data.datasets[0].data = deposits;
-                charts.transactions.data.datasets[1].data = withdrawals;
-                charts.transactions.update();
-            }
+            charts.transactions.data.labels = labels;
+            charts.transactions.data.datasets[0].data = deposits;
+            charts.transactions.data.datasets[1].data = withdrawals;
+            charts.transactions.update();
         }
 
         // 2. Account Distribution (Donut)
         const acCanvas = document.getElementById('chart-accounts');
         if (acCanvas && data.stats) {
             const stats = data.stats;
-            const values = [stats.active_users, stats.pending_users, stats.suspended_users, stats.locked_accounts];
+            const values = [
+                Number(stats.active_users || 0),
+                Number(stats.pending_approvals ?? stats.pending_users ?? 0),
+                Number(stats.suspended_users || 0),
+                Number(stats.locked_accounts || 0)
+            ];
             
             // Update Legend numbers
             const activeEl = document.getElementById('legend-active');
@@ -156,40 +183,26 @@
             const suspendedEl = document.getElementById('legend-suspended');
             const lockedEl = document.getElementById('legend-locked');
 
-            if (activeEl) activeEl.textContent = stats.active_users || 0;
-            if (pendingEl) pendingEl.textContent = stats.pending_users || 0;
-            if (suspendedEl) suspendedEl.textContent = stats.suspended_users || 0;
-            if (lockedEl) lockedEl.textContent = stats.locked_accounts || 0;
+            if (activeEl) activeEl.textContent = String(stats.active_users || 0);
+            if (pendingEl) pendingEl.textContent = String(stats.pending_approvals ?? stats.pending_users ?? 0);
+            if (suspendedEl) suspendedEl.textContent = String(stats.suspended_users || 0);
+            if (lockedEl) lockedEl.textContent = String(stats.locked_accounts || 0);
             
-            // Remove skeleton from legend
             document.querySelectorAll('#donut-legend .skeleton').forEach(el => el.classList.remove('skeleton'));
 
             if (charts.accounts) {
-                const allZero = values.every(v => v === 0);
-                if (allZero) {
-                    if (!acCanvas.parentElement.querySelector('.no-data-overlay')) {
-                         acCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
-                    }
-                } else {
-                    charts.accounts.data.datasets[0].data = values;
-                    charts.accounts.update();
-                }
+                charts.accounts.data.datasets[0].data = values;
+                charts.accounts.update();
             }
         }
 
         // 3. Monthly Revenue (Bar Chart)
         const rvCanvas = document.getElementById('chart-revenue');
-        if (rvCanvas) {
-            if (!hasChartData) {
-                 if (!rvCanvas.parentElement.querySelector('.no-data-overlay')) {
-                     rvCanvas.parentElement.insertAdjacentHTML('beforeend', '<div class="no-data-overlay absolute inset-0 flex items-center justify-center bg-surface-base/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10"><span class="font-bold text-text-muted">No data available</span></div>');
-                 }
-            } else if (charts.revenue) {
-                charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
-                charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => d.deposits);
-                charts.revenue.data.datasets[1].data = data.monthly_chart_data.map(d => d.withdrawals);
-                charts.revenue.update();
-            }
+        if (rvCanvas && charts.revenue && hasChartData) {
+            charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
+            charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => Number(d.deposits || 0));
+            charts.revenue.data.datasets[1].data = data.monthly_chart_data.map(d => Number(d.withdrawals || 0));
+            charts.revenue.update();
         }
     }
 
@@ -203,19 +216,19 @@
                 label += ': ';
             }
             if (context.parsed.y !== null) {
-                label += window.FinzoUtils ? window.FinzoUtils.formatINR(context.parsed.y) : context.parsed.y;
+                label += fmtINR(context.parsed.y);
             }
             return label;
         }
     };
 
     /**
-     * Initialize Chart instances with minimal placeholder/null config
+     * Initialize Chart instances
      */
     function initCharts() {
         const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || name;
-        const gridColor = getCssVar('--color-border-subtle');
-        const textColor = getCssVar('--color-text-secondary');
+        const gridColor = getCssVar('--color-border-subtle') || 'rgba(255,255,255,0.05)';
+        const textColor = getCssVar('--color-text-secondary') || '#8b949e';
 
         // Transactions Line Chart
         const txCtx = document.getElementById('chart-transactions');
@@ -225,8 +238,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], borderColor: getCssVar('--color-success'), backgroundColor: getCssVar('--color-success-bg'), fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Withdrawals', data: [], borderColor: getCssVar('--color-info'), backgroundColor: getCssVar('--color-info-bg'), fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                        { label: 'Deposits', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Withdrawals', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
                     ]
                 },
                 options: {
@@ -252,8 +265,8 @@
                 data: {
                     labels: ['Active', 'Pending', 'Suspended', 'Locked'],
                     datasets: [{
-                        data: [],
-                        backgroundColor: [getCssVar('--color-success'), getCssVar('--color-warning'), getCssVar('--color-error'), getCssVar('--color-border-strong')],
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#64748b'],
                         borderWidth: 0, hoverOffset: 8
                     }]
                 },
@@ -273,8 +286,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], backgroundColor: getCssVar('--color-success'), borderRadius: 8, barPercentage: 0.6 },
-                        { label: 'Withdrawals', data: [], backgroundColor: getCssVar('--color-info'), borderRadius: 8, barPercentage: 0.6 }
+                        { label: 'Deposits', data: [], backgroundColor: '#10b981', borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Withdrawals', data: [], backgroundColor: '#3b82f6', borderRadius: 8, barPercentage: 0.6 }
                     ]
                 },
                 options: {
@@ -295,82 +308,28 @@
         }
     }
 
-    /**
-     * Theme Observer to dynamically update chart colors
-     */
-    function setupThemeObserver() {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
-                    const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || name;
-                    const gridColor = getCssVar('--color-border-subtle');
-                    const textColor = getCssVar('--color-text-secondary');
-
-                    if (charts.transactions) {
-                        charts.transactions.data.datasets[0].borderColor = getCssVar('--color-success');
-                        charts.transactions.data.datasets[0].backgroundColor = getCssVar('--color-success-bg');
-                        charts.transactions.data.datasets[1].borderColor = getCssVar('--color-info');
-                        charts.transactions.data.datasets[1].backgroundColor = getCssVar('--color-info-bg');
-                    }
-                    if (charts.accounts) {
-                        charts.accounts.data.datasets[0].backgroundColor = [getCssVar('--color-success'), getCssVar('--color-warning'), getCssVar('--color-error'), getCssVar('--color-border-strong')];
-                    }
-                    if (charts.revenue) {
-                        charts.revenue.data.datasets[0].backgroundColor = getCssVar('--color-success');
-                        charts.revenue.data.datasets[1].backgroundColor = getCssVar('--color-info');
-                    }
-
-                    ['transactions', 'revenue', 'accounts'].forEach(chartKey => {
-                        if (charts[chartKey]) {
-                            if (charts[chartKey].options.scales && charts[chartKey].options.scales.x) {
-                                charts[chartKey].options.scales.x.ticks.color = textColor;
-                            }
-                            if (charts[chartKey].options.scales && charts[chartKey].options.scales.y) {
-                                charts[chartKey].options.scales.y.ticks.color = textColor;
-                                charts[chartKey].options.scales.y.grid.color = gridColor;
-                            }
-                            if (charts[chartKey].options.plugins.legend && charts[chartKey].options.plugins.legend.labels) {
-                                charts[chartKey].options.plugins.legend.labels.color = textColor;
-                            }
-                            charts[chartKey].update();
-                        }
-                    });
-                }
-            });
-        });
-        observer.observe(document.documentElement, { attributes: true });
-    }
-
     // Initialization
     function initClock() {
         const clockElement = document.getElementById("header-live-clock");
         if (clockElement) {
-            setInterval(function() {
-                var d = new Date();
+            const updateTime = () => {
+                const d = new Date();
                 clockElement.textContent = d.toLocaleTimeString("en-IN", {
                     hour: "2-digit",
                     minute: "2-digit",
                     second: "2-digit",
                     hour12: true
                 });
-            }, 1000);
-            
-            // Initial call
-            var initialD = new Date();
-            clockElement.textContent = initialD.toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true
-            });
+            };
+            setInterval(updateTime, 1000);
+            updateTime();
         }
     }
 
-    // Initialize Dashboard
+    // Initialize Dashboard on DOM ready
     document.addEventListener('DOMContentLoaded', () => {
         initClock();
         initCharts();
-        setupThemeObserver();
         loadDashboard();
     });
 })();

@@ -2,21 +2,22 @@
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Dashboard';
 $useCharts = true;
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Dashboard</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">System Overview &amp; Real-Time Analytics</p>
-    </div>
-    <div class="flex items-center gap-3 text-xs font-bold text-text-secondary uppercase tracking-widest">
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
-        <span id="header-live-clock"></span>
-    </div>
-</div>
-';
 ob_start();
-?>            <!-- KEY PERFORMANCE INDICATORS GRID -->
-            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6 relative z-10">
+?>
+            <!-- TOP PAGE HEADER -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+                <div>
+                    <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Dashboard</h1>
+                    <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">System Overview &amp; Real-Time Analytics</p>
+                </div>
+                <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border-subtle bg-surface/80 shadow-sm text-xs font-bold text-text-secondary uppercase tracking-widest">
+                    <span class="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">schedule</span>
+                    <span id="header-live-clock">--:--:--</span>
+                </div>
+            </div>
+
+            <!-- KEY PERFORMANCE INDICATORS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6 relative z-10 mb-6 sm:mb-8">
                 
                 <!-- Card 1: Total Assets -->
                 <div class="ds-card admin-stat-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
@@ -24,8 +25,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning border border-warning/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance_wallet</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Total Assets</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-total-assets">&#8377;0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Total Assets</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-total-assets">&#8377;0.00</div>
                 </div>
                 
                 <!-- Card 2: Today's Deposits -->
@@ -34,8 +35,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success border border-success/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">download_for_offline</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Deposits</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Deposits</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-deposits-today">&#8377;0.00</div>
                 </div>
                 
                 <!-- Card 3: Today's Withdrawals -->
@@ -44,8 +45,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info border border-info/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">upload_file</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Withdrawals</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Withdrawals</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-withdrawals-today">&#8377;0.00</div>
                 </div>
 
                 <!-- Card 4: Active Accounts -->
@@ -54,8 +55,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Accounts</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Active Accounts</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-active-accounts">0</div>
                 </div>
 
                 <!-- Card 5: Pending KYC -->
@@ -64,8 +65,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 text-accent border border-accent/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">rule</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Pending KYC</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Pending KYC</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-pending-kyc">0</div>
                 </div>
 
                 <!-- Card 6: Locked Accounts -->
@@ -74,8 +75,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-error/20 to-error/5 text-error border border-error/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">lock</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Locked Accounts</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Locked Accounts</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-locked-accounts">0</div>
                 </div>
 
                 <!-- Card 7: Today's Transactions -->
@@ -84,8 +85,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary/20 to-secondary/5 text-secondary border border-secondary/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt_long</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Transactions</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Today's Transactions</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-today-txns">0</div>
                 </div>
 
                 <!-- Card 8: Total Users -->
@@ -94,8 +95,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-text-muted/20 to-text-muted/5 text-text-muted border border-text-muted/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">group</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Total Users</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Total Users</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-total-users">0</div>
                 </div>
 
                 <!-- Card 9: Monthly Transactions -->
@@ -104,8 +105,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info border border-info/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">query_stats</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Monthly Transactions</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Monthly Transactions</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-monthly-txns">0</div>
                 </div>
 
                 <!-- Card 10: Interest Credited -->
@@ -114,8 +115,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success border border-success/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">price_check</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Interest Credited</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Interest Credited</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-interest-credited">&#8377;0.00</div>
                 </div>
 
                 <!-- Card 11: Suspended Users -->
@@ -124,8 +125,8 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning border border-warning/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">person_off</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Suspended Users</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Suspended Users</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-suspended-users">0</div>
                 </div>
 
                 <!-- Card 12: Total Branches -->
@@ -134,14 +135,14 @@ ob_start();
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 flex items-center justify-center mb-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                         <span class="material-symbols-outlined text-2xl" aria-hidden="true">storefront</span>
                     </div>
-                    <div class="admin-stat-label text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Total Branches</div>
-                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton">0</div>
+                    <div class="admin-stat-label text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">Total Branches</div>
+                    <div class="admin-stat-value text-3xl font-black font-display text-text-primary leading-none tracking-tighter skeleton" id="stat-total-branches">0</div>
                 </div>
 
             </div>
 
             <!-- CHARTS ROW -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 sm:mb-8">
                 <!-- Transaction Volume Chart -->
                 <div class="lg:col-span-2 ds-card p-6 sm:p-8">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-border-subtle pb-6">
@@ -190,7 +191,7 @@ ob_start();
             </div>
 
             <!-- REVENUE CHART -->
-            <div class="ds-card p-6 sm:p-8">
+            <div class="ds-card p-6 sm:p-8 mb-6 sm:mb-8">
                 <div class="border-b border-border-subtle pb-6 mb-8 flex justify-between items-center">
                     <div>
                         <h3 class="font-headline font-black text-lg text-text-primary">Revenue Performance</h3>
@@ -208,9 +209,9 @@ ob_start();
                     <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-text-primary">
                         <span class="material-symbols-outlined text-primary" aria-hidden="true">history</span> Recent Onboarding
                     </h3>
-                    <a href="admin-users.php" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">View All Users</a>
+                    <a href="/Finzo/admin/users" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
-                <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
+                <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent overflow-x-auto">
                     <table class="ds-table w-full text-left min-w-[800px]">
                         <thead scope="col">
                             <tr>

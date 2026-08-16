@@ -128,7 +128,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM transactions
             WHERE status = 'completed'
                 AND DATE_FORMAT(created_at, '%Y-%m') = ?
-        ", [$monthDate], \App\Domain\Models\Admin::class);
+        ", [$monthDate]);
     }
 
     public function getAdminById(int $adminId) {
