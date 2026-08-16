@@ -328,8 +328,13 @@
                         ? window.api.buildUrl('/users/export', params)
                         : `/Finzo/api/v1/users/export?${new URLSearchParams(params).toString()}`;
                     
-                    // Trigger direct browser download
-                    window.location.href = exportUrl;
+                    // Trigger direct browser download via hidden link
+                    const dlLink = document.createElement('a');
+                    dlLink.href = exportUrl;
+                    dlLink.setAttribute('download', 'finzo_users_' + new Date().toISOString().slice(0, 10) + '.csv');
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    document.body.removeChild(dlLink);
                     
                     setTimeout(() => {
                         this.innerHTML = '<span class="material-symbols-outlined text-[16px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';

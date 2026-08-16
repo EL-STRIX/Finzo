@@ -309,6 +309,10 @@ class AdminOperationsController
 
             $generator = $this->service->getTransactions($filters, $page, $per_page, true);
 
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
             header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename="finzo_transactions_' . date('Y-m-d') . '.csv"');
@@ -318,10 +322,10 @@ class AdminOperationsController
             $headerWritten = false;
             foreach ($generator as $row) {
                 if (!$headerWritten) {
-                    fputcsv($output, array_keys($row));
+                    fputcsv($output, array_keys($row), ',', '"', "\\");
                     $headerWritten = true;
                 }
-                fputcsv($output, $row);
+                fputcsv($output, $row, ',', '"', "\\");
             }
             fclose($output);
             if (defined('FINZO_TESTING') && FINZO_TESTING) {
@@ -379,6 +383,10 @@ class AdminOperationsController
 
         $generator = $this->service->exportUsers($filters);
 
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="finzo_users_' . date('Y-m-d') . '.csv"');
@@ -388,10 +396,10 @@ class AdminOperationsController
         $headerWritten = false;
         foreach ($generator as $row) {
             if (!$headerWritten) {
-                fputcsv($output, array_keys($row));
+                fputcsv($output, array_keys($row), ',', '"', "\\");
                 $headerWritten = true;
             }
-            fputcsv($output, $row);
+            fputcsv($output, $row, ',', '"', "\\");
         }
         fclose($output);
         if (defined('FINZO_TESTING') && FINZO_TESTING) {
