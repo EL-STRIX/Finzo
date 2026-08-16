@@ -430,18 +430,17 @@
         if (submitText) submitText.textContent = 'Creating Staff...';
 
         try {
-            const res = await fetch('/Finzo/api/v1/staff', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
+            const csrfToken = window.csrfToken || 
+                document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                document.getElementById('add-staff-csrf-token')?.value || '';
+            if (csrfToken && !formData.has('csrf_token')) {
+                formData.append('csrf_token', csrfToken);
+            }
 
-            const result = await res.json();
-            const payload = result.data || result;
+            const response = await window.api.upload('/staff', formData);
+            const payload = response.data || response;
 
-            if (res.ok && (result.success || result.status === 201 || result.status === 200 || payload.staff_id)) {
+            if (response.success || response.status === 201 || response.status === 200 || payload.staff_id) {
                 const staffId = payload.staff_id || 'New Staff';
                 const staffName = payload.staff_name || fullName;
 
@@ -456,7 +455,7 @@
                 currentPage = 1;
                 loadStaff();
             } else {
-                const msg = result.message || payload.error || result.error || 'Failed to create staff member. Please verify the form.';
+                const msg = response.message || payload.error || response.error || 'Failed to create staff member. Please verify the form.';
                 if (alertEl) {
                     alertEl.className = 'p-4 rounded-xl border bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 text-xs font-bold leading-relaxed';
                     alertEl.innerHTML = `<div class="flex items-center gap-2"><span class="material-symbols-outlined text-base">error</span><span>${msg}</span></div>`;

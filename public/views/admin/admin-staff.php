@@ -201,6 +201,7 @@ ob_start();
 
               <!-- Modal Form -->
               <form id="add-staff-form" class="p-6 sm:p-8 space-y-6 max-h-[75vh] overflow-y-auto" enctype="multipart/form-data">
+                  <input type="hidden" name="csrf_token" id="add-staff-csrf-token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
                   <div id="add-staff-alert" class="hidden p-4 rounded-xl border text-xs font-bold leading-relaxed"></div>
 
                   <!-- SECTION 1: Personal Profile -->
