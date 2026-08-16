@@ -494,7 +494,7 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if ($_SESSION['user_status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+        if (($_SESSION['user_status'] ?? '') !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }
 

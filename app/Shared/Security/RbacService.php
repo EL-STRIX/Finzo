@@ -47,7 +47,17 @@ class RbacService
      */
     public function can(string $modelType, int $modelId, string $permissionName): bool
     {
-        // 1. Direct permission through role
+        // 1. Direct super_admin check on model table (admin_users table admin_role = 'super_admin')
+        if ($modelType === 'admin') {
+            $stmt = $this->db->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
+            $stmt->execute([$modelId]);
+            $adminRole = $stmt->fetchColumn();
+            if ($adminRole === 'super_admin') {
+                return true;
+            }
+        }
+
+        // 2. Direct permission through role mapping
         $stmt = $this->db->prepare("
             SELECT 1 
             FROM permissions p
@@ -63,7 +73,7 @@ class RbacService
             return true;
         }
         
-        // 2. Super admin bypass check
+        // 3. Super admin bypass check in model_has_roles
         $stmt = $this->db->prepare("
             SELECT 1 
             FROM roles r
@@ -72,7 +82,27 @@ class RbacService
             LIMIT 1
         ");
         $stmt->execute([$modelType, $modelId]);
-        return (bool)$stmt->fetchColumn();
+        if ((bool)$stmt->fetchColumn()) {
+            return true;
+        }
+
+        // 4. Standard admin role fallback on admin_users table
+        if ($modelType === 'admin' && isset($adminRole) && $adminRole === 'admin') {
+            $stmt = $this->db->prepare("
+                SELECT 1 
+                FROM permissions p
+                JOIN role_permissions rp ON p.id = rp.permission_id
+                JOIN roles r ON rp.role_id = r.id
+                WHERE r.name = 'admin' AND p.name = ?
+                LIMIT 1
+            ");
+            $stmt->execute([$permissionName]);
+            if ((bool)$stmt->fetchColumn()) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     /**
@@ -80,6 +110,15 @@ class RbacService
      */
     public function hasRole(string $modelType, int $modelId, string $roleName): bool
     {
+        if ($modelType === 'admin') {
+            $stmt = $this->db->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
+            $stmt->execute([$modelId]);
+            $adminRole = $stmt->fetchColumn();
+            if ($adminRole === $roleName) {
+                return true;
+            }
+        }
+
         $stmt = $this->db->prepare("
             SELECT 1 
             FROM roles r

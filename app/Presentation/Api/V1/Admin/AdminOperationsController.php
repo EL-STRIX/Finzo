@@ -40,18 +40,16 @@ class AdminOperationsController
 
     public function session(?string $id = null, ?string $extra = null): array
     {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
         
-        // Fetch minimal admin data without heavy stats
-        $stmt = $this->service->getRepo()->getPDO()->prepare("SELECT id, admin_id as customer_id, full_name, profile_photo FROM admin_users WHERE id = ?");
+        $pdo = \App\Shared\Core\Database::getInstance();
+        $stmt = $pdo->prepare("SELECT id, admin_id as customer_id, full_name, profile_photo, admin_role FROM admin_users WHERE id = ?");
         $stmt->execute([$adminId]);
         $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-
-
         return [
             'success' => true,
-            'csrf_token' => $_SESSION['csrf_token'],
+            'csrf_token' => $_SESSION['csrf_token'] ?? '',
             'admin' => $admin ?: \App\Shared\Security\Auth::user()
         ];
     }
@@ -457,10 +455,22 @@ class AdminOperationsController
     {
         $adminId = \App\Shared\Security\Auth::user()['id'];
         $userId = intval($id);
-        $action  = $this->security->cleanInput($_POST['action'] ?? '');
-        $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
+
+        $input = $_POST;
+        if (empty($input)) {
+            $raw = file_get_contents('php://input');
+            $json = json_decode($raw, true);
+            if (is_array($json)) {
+                $input = $json;
+            } else {
+                parse_str($raw, $input);
+            }
+        }
+
+        $action  = $this->security->cleanInput($input['action'] ?? '');
+        $reason  = $this->security->cleanInput($input['reason'] ?? '');
+        $password = $input['password'] ?? '';
+        $balance_option = $this->security->cleanInput($input['balance_option'] ?? 'full');
 
         if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
