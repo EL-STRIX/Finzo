@@ -2,7 +2,7 @@
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Management';
 if (!defined('FINZO_ROOT')) {
-    require_once dirname(__DIR__, 2) . '/bootstrap/app.php';
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 }
 \App\Shared\Security\SessionManager::start();
 if (empty($_SESSION['csrf_token'])) {
