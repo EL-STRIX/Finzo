@@ -246,7 +246,6 @@
 
         // Export Modal Open / Close & Dropdown Synchronization
         const exportModal = document.getElementById('export-modal');
-        const openExportBtn = document.getElementById('open-export-modal');
 
         function openExportModal() {
             if (!exportModal) return;
@@ -261,14 +260,14 @@
             setModalDropdownValue('export-balance-dropdown', 'export-filter-balance', curBalance);
 
             exportModal.classList.remove('hidden');
-            exportModal.classList.add('flex');
+            exportModal.style.display = 'flex';
             document.body.classList.add('overflow-hidden');
         }
 
         function closeExportModal() {
             if (!exportModal) return;
             exportModal.classList.add('hidden');
-            exportModal.classList.remove('flex');
+            exportModal.style.display = 'none';
             document.body.classList.remove('overflow-hidden');
         }
 
@@ -287,25 +286,33 @@
             }
         }
 
-        if (openExportBtn) {
-            openExportBtn.addEventListener('click', (e) => {
+        // Global delegation for modal open, close, and outside clicks
+        document.addEventListener('click', (e) => {
+            const exportTrigger = e.target.closest('#open-export-modal');
+            if (exportTrigger) {
                 e.preventDefault();
                 openExportModal();
-            });
-        }
+                return;
+            }
 
-        document.querySelectorAll('.close-export-modal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            const closeTrigger = e.target.closest('.close-export-modal');
+            if (closeTrigger) {
                 e.preventDefault();
                 closeExportModal();
-            });
+                return;
+            }
+
+            if (exportModal && e.target === exportModal) {
+                closeExportModal();
+            }
         });
 
-        if (exportModal) {
-            exportModal.addEventListener('click', (e) => {
-                if (e.target === exportModal) closeExportModal();
-            });
-        }
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && exportModal && !exportModal.classList.contains('hidden')) {
+                closeExportModal();
+            }
+        });
 
         // Export Confirmation & Trigger
         const startExportBtn = document.getElementById('start-export');
@@ -317,16 +324,17 @@
                 this.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">autorenew</span> <span>Exporting...</span>';
                 
                 try {
-                    const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
+                    const search = document.getElementById('user-search') ? document.getElementById('user-search').value.trim() : '';
                     const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
                     const sort = document.getElementById('export-filter-sort') ? document.getElementById('export-filter-sort').value : 'newest';
                     const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
                     const balance = document.getElementById('export-filter-balance') ? document.getElementById('export-filter-balance').value : 'all';
                     
                     const params = { search, status, sort, activity, balance };
+                    const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
                     const exportUrl = window.api && typeof window.api.buildUrl === 'function'
                         ? window.api.buildUrl('/users/export', params)
-                        : `/Finzo/api/v1/users/export?${new URLSearchParams(params).toString()}`;
+                        : `${basePath}/api/v1/users/export?${new URLSearchParams(params).toString()}`;
                     
                     // Trigger direct browser download via hidden link
                     const dlLink = document.createElement('a');
@@ -334,7 +342,9 @@
                     dlLink.setAttribute('download', 'finzo_users_' + new Date().toISOString().slice(0, 10) + '.csv');
                     document.body.appendChild(dlLink);
                     dlLink.click();
-                    document.body.removeChild(dlLink);
+                    setTimeout(() => {
+                        if (document.body.contains(dlLink)) document.body.removeChild(dlLink);
+                    }, 200);
                     
                     setTimeout(() => {
                         this.innerHTML = '<span class="material-symbols-outlined text-[16px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';

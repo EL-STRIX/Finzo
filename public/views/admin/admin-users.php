@@ -166,11 +166,10 @@ ob_start();
                     </div>
                 </div>
             </div>
-            </div>
 
             <!-- Export Modal -->
-            <div id="export-modal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm items-center justify-center p-4">
-                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+            <div id="export-modal" class="fixed inset-0 z-[1000] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" role="document">
                     <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/50">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
