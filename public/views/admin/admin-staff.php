@@ -140,19 +140,19 @@ ob_start();
 
         </div>
 
-        <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
-          <table class="ds-table w-full text-left">
+        <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent !overflow-x-hidden w-full">
+          <table class="ds-table w-full text-left table-auto">
             <thead scope="col">
               <tr>
-                <th class="w-10 text-center pl-4" scope="col">#</th>
-                <th scope="col">Staff Member</th>
-                <th class="text-center" scope="col">Staff ID</th>
-                <th scope="col">Branch</th>
-                <th class="text-center" scope="col">Status</th>
-                <th class="text-center" scope="col">Trans</th>
-                <th class="text-right" scope="col">Volume (₹)</th>
-                <th class="text-center" scope="col">Joined</th>
-                <th class="text-right pr-4" scope="col">Actions</th>
+                <th class="w-8 text-center !px-2" scope="col">#</th>
+                <th class="!px-3" scope="col">Staff Member</th>
+                <th class="text-center !px-2" scope="col">Staff ID</th>
+                <th class="!px-3" scope="col">Branch</th>
+                <th class="text-center !px-2" scope="col">Status</th>
+                <th class="text-center !px-2" scope="col">Trans</th>
+                <th class="text-right !px-3" scope="col">Volume (₹)</th>
+                <th class="text-center !px-2" scope="col">Joined</th>
+                <th class="text-right !px-3" scope="col">Action</th>
               </tr>
             </thead>
             <tbody id="ds-table-body">

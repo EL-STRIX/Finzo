@@ -119,9 +119,9 @@
 
             return `
             <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0 group">
-                <td class="font-bold opacity-40 text-[11px] tracking-widest pl-4 text-center">${countStr}</td>
-                <td>
-                    <div class="flex items-center gap-3 py-1 min-w-0">
+                <td class="font-bold opacity-40 text-[11px] tracking-widest text-center !px-2">${countStr}</td>
+                <td class="!px-3 py-2.5">
+                    <div class="flex items-center gap-2.5 min-w-0">
                         ${initials}
                         <div class="min-w-0">
                             <div class="font-bold text-sm text-text-primary group-hover:text-primary transition-colors truncate">${s.full_name || 'Unknown'}</div>
@@ -129,27 +129,27 @@
                         </div>
                     </div>
                 </td>
-                <td class="text-center whitespace-nowrap">
-                    <span class="px-2 py-0.5 bg-surface-subtle border border-border-subtle rounded-md text-[11px] font-mono font-bold text-text-secondary">${s.staff_id || '—'}</span>
+                <td class="text-center !px-2">
+                    <span class="px-2 py-0.5 bg-surface-subtle border border-border-subtle rounded-md text-[10px] font-mono font-bold text-text-secondary">${s.staff_id || '—'}</span>
                 </td>
-                <td>
+                <td class="!px-3">
                     <div class="text-xs font-bold text-text-primary flex items-center gap-1 min-w-0">
                         <span class="material-symbols-outlined text-sm text-text-secondary shrink-0" aria-hidden="true">store</span>
                         <span class="truncate">${branchName}</span>
                     </div>
                 </td>
-                <td class="text-center whitespace-nowrap">
+                <td class="text-center !px-2">
                     ${statusBadge}
                 </td>
-                <td class="text-center font-mono font-bold text-xs text-text-secondary whitespace-nowrap">${txnCount.toLocaleString()}</td>
-                <td class="text-right font-mono font-bold text-xs text-text-primary whitespace-nowrap">
+                <td class="text-center font-mono font-bold text-xs text-text-secondary !px-2">${txnCount.toLocaleString()}</td>
+                <td class="text-right font-mono font-bold text-xs text-text-primary !px-3">
                     ₹${txnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td class="text-center text-[11px] font-bold text-text-secondary whitespace-nowrap">${joinedDate}</td>
-                <td class="text-right pr-4 whitespace-nowrap">
-                    <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                <td class="text-center text-[11px] font-bold text-text-secondary !px-2 whitespace-nowrap">${joinedDate}</td>
+                <td class="text-right !px-3">
+                    <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary !px-3 !py-1 text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
                         <span>View</span>
-                        <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
+                        <span class="material-symbols-outlined text-[13px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>
                 </td>
             </tr>`;
