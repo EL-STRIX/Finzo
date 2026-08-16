@@ -119,34 +119,34 @@
 
             return `
             <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0 group">
-                <td class="font-bold opacity-40 text-[11px] tracking-widest pl-4">${countStr}</td>
+                <td class="font-bold opacity-40 text-[11px] tracking-widest pl-4 text-center">${countStr}</td>
                 <td>
-                    <div class="flex items-center gap-3 py-1">
+                    <div class="flex items-center gap-3 py-1 min-w-0">
                         ${initials}
-                        <div class="truncate">
+                        <div class="min-w-0">
                             <div class="font-bold text-sm text-text-primary group-hover:text-primary transition-colors truncate">${s.full_name || 'Unknown'}</div>
                             <div class="text-[10px] text-text-secondary uppercase font-bold tracking-tight truncate">${s.designation || 'Staff'} • ${s.department || 'Operations'}</div>
                         </div>
                     </div>
                 </td>
-                <td class="text-center">
+                <td class="text-center whitespace-nowrap">
                     <span class="px-2 py-0.5 bg-surface-subtle border border-border-subtle rounded-md text-[11px] font-mono font-bold text-text-secondary">${s.staff_id || '—'}</span>
                 </td>
                 <td>
-                    <div class="text-xs font-bold text-text-primary flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm text-text-secondary" aria-hidden="true">store</span>
+                    <div class="text-xs font-bold text-text-primary flex items-center gap-1 min-w-0">
+                        <span class="material-symbols-outlined text-sm text-text-secondary shrink-0" aria-hidden="true">store</span>
                         <span class="truncate">${branchName}</span>
                     </div>
                 </td>
-                <td class="text-center">
+                <td class="text-center whitespace-nowrap">
                     ${statusBadge}
                 </td>
-                <td class="text-center font-mono font-bold text-xs text-text-secondary">${txnCount.toLocaleString()}</td>
-                <td class="text-right font-mono font-bold text-xs text-text-primary">
+                <td class="text-center font-mono font-bold text-xs text-text-secondary whitespace-nowrap">${txnCount.toLocaleString()}</td>
+                <td class="text-right font-mono font-bold text-xs text-text-primary whitespace-nowrap">
                     ₹${txnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td class="text-center text-[11px] font-bold text-text-secondary">${joinedDate}</td>
-                <td class="text-right pr-4">
+                <td class="text-center text-[11px] font-bold text-text-secondary whitespace-nowrap">${joinedDate}</td>
+                <td class="text-right pr-4 whitespace-nowrap">
                     <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
                         <span>View</span>
                         <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>

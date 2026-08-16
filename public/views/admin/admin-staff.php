@@ -140,19 +140,19 @@ ob_start();
 
         </div>
 
-        <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent overflow-x-auto">
-          <table class="ds-table w-full table-fixed min-w-[1050px] text-left">
+        <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
+          <table class="ds-table w-full text-left">
             <thead scope="col">
               <tr>
-                <th class="w-[4%]" scope="col">#</th>
-                <th class="w-[24%]" scope="col">Staff Member</th>
-                <th class="w-[10%] text-center" scope="col">Staff ID</th>
-                <th class="w-[14%]" scope="col">Branch</th>
-                <th class="w-[10%] text-center" scope="col">Status</th>
-                <th class="w-[8%] text-center" scope="col">Trans</th>
-                <th class="w-[12%] text-right" scope="col">Volume (₹)</th>
-                <th class="w-[10%] text-center" scope="col">Joined</th>
-                <th class="w-[8%] text-right" scope="col">Actions</th>
+                <th class="w-10 text-center pl-4" scope="col">#</th>
+                <th scope="col">Staff Member</th>
+                <th class="text-center" scope="col">Staff ID</th>
+                <th scope="col">Branch</th>
+                <th class="text-center" scope="col">Status</th>
+                <th class="text-center" scope="col">Trans</th>
+                <th class="text-right" scope="col">Volume (₹)</th>
+                <th class="text-center" scope="col">Joined</th>
+                <th class="text-right pr-4" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="ds-table-body">
