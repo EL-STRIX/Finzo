@@ -343,102 +343,94 @@ ob_start();
       </div>
 
       <!-- Printable Passbook Paper Area -->
-      <div class="p-4 sm:p-8 overflow-y-auto bg-slate-100 dark:bg-black/30">
-        <div id="passbook-print-area" class="bg-white text-slate-900 rounded-2xl shadow-lg p-6 sm:p-10 max-w-3xl mx-auto border border-slate-200">
+      <div class="p-4 sm:p-8 overflow-y-auto bg-slate-100 dark:bg-black/40">
+        <div id="passbook-print-area" class="bg-white text-black p-6 sm:p-8 max-w-4xl mx-auto border-2 border-black font-mono shadow-sm">
           
-          <!-- Bank Branding Header -->
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b-2 border-slate-900 gap-4">
-            <div class="flex items-center gap-3.5">
-              <div class="w-12 h-12 bg-[#002645] text-white rounded-xl flex items-center justify-center font-black text-2xl tracking-tighter shadow-md">
-                F
-              </div>
-              <div>
-                <h1 class="text-2xl font-black tracking-tight text-[#002645] font-headline">FINZO GLOBAL DIGITAL BANK</h1>
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Licensed Core Banking Institution | ISO 9001:2015 Certified</p>
-              </div>
-            </div>
-            <div class="text-left sm:text-right text-[11px] text-slate-600 font-mono">
-              <div class="font-bold text-slate-900">IFSC: <span class="text-[#002645]">FINZ0002026</span></div>
-              <div>MICR: 400026002 | Branch: Central HQ</div>
-              <div class="text-[10px] text-slate-400">CIN: L65110MH2026PLC123456</div>
+          <!-- Bank Header -->
+          <div class="border-b-2 border-black pb-3 mb-4 text-center">
+            <h1 class="text-2xl font-black tracking-wider uppercase text-black font-serif">FINZO BANK</h1>
+            <div class="text-xs font-bold uppercase tracking-widest text-black mt-0.5">SAVINGS / CURRENT ACCOUNT PASSBOOK</div>
+            <div class="flex justify-between items-center text-[11px] font-bold text-black border-t border-black pt-2 mt-2.5">
+              <div>BRANCH: MAIN BRANCH, MUMBAI</div>
+              <div>IFSC: FINZ0002026</div>
+              <div>MICR: 400026002</div>
             </div>
           </div>
 
-          <!-- Passbook Account & Holder Dossier -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-b border-slate-200 text-xs">
-            <div class="space-y-1.5">
-              <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Account Holder Particulars</div>
-              <div class="font-bold text-base text-slate-900 font-headline" id="pb-full-name">Account Holder</div>
-              <div class="text-slate-600 font-mono">Customer ID (CIF): <strong class="text-slate-900" id="pb-customer-id">FNZ-USR</strong></div>
-              <div class="text-slate-600">Mobile: <strong class="text-slate-900" id="pb-phone">N/A</strong> | Email: <strong class="text-slate-900" id="pb-email">N/A</strong></div>
-              <div class="text-slate-600 leading-tight">Address: <span id="pb-address" class="text-slate-800">N/A</span></div>
-            </div>
-
-            <div class="space-y-1.5 sm:text-right bg-slate-50 p-4 rounded-xl border border-slate-200/80">
-              <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">Account Credentials</div>
-              <div class="font-mono text-base font-black text-[#002645]" id="pb-account-no">FNZ0000000000</div>
-              <div class="text-slate-600">Account Type: <strong class="text-slate-900 uppercase" id="pb-account-type">Savings Account</strong></div>
-              <div class="text-slate-600">Statement Date: <strong class="text-slate-900" id="pb-generated-date"><?= date('d M Y, h:i A') ?></strong></div>
-              <div class="text-slate-600">Currency: <strong class="text-slate-900">INR (₹ Indian Rupee)</strong></div>
-            </div>
-          </div>
-
-          <!-- Financial Snapshot Summary Box -->
-          <div class="grid grid-cols-3 gap-3 my-6 text-center">
-            <div class="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200">
-              <div class="text-[10px] font-black text-emerald-800 uppercase tracking-widest">Total Credits (Deposits)</div>
-              <div id="pb-total-credits" class="text-sm sm:text-base font-black text-emerald-600 font-mono mt-0.5">+ ₹0.00</div>
-            </div>
-            <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
-              <div class="text-[10px] font-black text-rose-800 uppercase tracking-widest">Total Debits (Withdrawals)</div>
-              <div id="pb-total-debits" class="text-sm sm:text-base font-black text-rose-600 font-mono mt-0.5">- ₹0.00</div>
-            </div>
-            <div class="p-3.5 bg-blue-50 rounded-xl border border-blue-200">
-              <div class="text-[10px] font-black text-blue-800 uppercase tracking-widest">Net Available Balance</div>
-              <div id="pb-net-balance" class="text-sm sm:text-base font-black text-[#002645] font-mono mt-0.5">₹0.00</div>
-            </div>
-          </div>
+          <!-- Account Particulars Box -->
+          <table class="w-full border-collapse border border-black text-xs mb-4">
+            <tbody>
+              <tr class="border-b border-black">
+                <td class="p-2 border-r border-black font-bold w-1/4 bg-slate-100 text-black">A/C HOLDER NAME</td>
+                <td class="p-2 border-r border-black font-black w-1/4 text-black text-sm uppercase" id="pb-full-name">Account Holder</td>
+                <td class="p-2 border-r border-black font-bold w-1/4 bg-slate-100 text-black">ACCOUNT NO.</td>
+                <td class="p-2 font-black w-1/4 text-black text-sm" id="pb-account-no">FNZ0000000000</td>
+              </tr>
+              <tr class="border-b border-black">
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">CUSTOMER ID (CIF)</td>
+                <td class="p-2 border-r border-black font-bold text-black" id="pb-customer-id">FNZ-USR</td>
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">ACCOUNT TYPE</td>
+                <td class="p-2 font-bold text-black uppercase" id="pb-account-type">SAVINGS ACCOUNT</td>
+              </tr>
+              <tr class="border-b border-black">
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">MOBILE NUMBER</td>
+                <td class="p-2 border-r border-black font-bold text-black" id="pb-phone">N/A</td>
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">DATE ISSUED</td>
+                <td class="p-2 font-bold text-black" id="pb-generated-date"><?= date('d-m-Y') ?></td>
+              </tr>
+              <tr>
+                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">ADDRESS</td>
+                <td class="p-2 text-black font-bold" colspan="3" id="pb-address">N/A</td>
+              </tr>
+            </tbody>
+          </table>
 
           <!-- Official Passbook Ledger -->
-          <div class="mt-4">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-black uppercase tracking-wider text-slate-800">Passbook Ledger Entries</h4>
-              <span id="pb-txn-count" class="text-[10px] font-mono text-slate-500 font-bold">0 records</span>
-            </div>
-
-            <div class="overflow-x-auto border border-slate-200 rounded-xl">
-              <table class="w-full text-left text-xs border-collapse font-sans">
-                <thead>
-                  <tr class="bg-slate-100 border-b border-slate-200 text-[10px] font-black uppercase tracking-wider text-slate-600">
-                    <th class="py-2.5 px-3 w-10 text-center">#</th>
-                    <th class="py-2.5 px-3">Date</th>
-                    <th class="py-2.5 px-3">Transaction ID / Particulars</th>
-                    <th class="py-2.5 px-3 text-right text-rose-600">Debit (Dr)</th>
-                    <th class="py-2.5 px-3 text-right text-emerald-600">Credit (Cr)</th>
-                    <th class="py-2.5 px-3 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="pb-transactions-body" class="divide-y divide-slate-200 font-mono text-[11px]">
-                  <tr><td colspan="6" class="py-6 text-center text-slate-400 font-sans">No transactions recorded.</td></tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="mb-4 overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse border border-black font-mono">
+              <thead>
+                <tr class="border-b-2 border-black bg-slate-100 text-black font-black text-[11px] uppercase">
+                  <th class="p-2 border-r border-black w-10 text-center">LINE</th>
+                  <th class="p-2 border-r border-black w-24 text-center">DATE</th>
+                  <th class="p-2 border-r border-black">PARTICULARS / DETAILS</th>
+                  <th class="p-2 border-r border-black w-28 text-right">WITHDRAWAL (DR) ₹</th>
+                  <th class="p-2 border-r border-black w-28 text-right">DEPOSIT (CR) ₹</th>
+                  <th class="p-2 border-r border-black w-28 text-right">BALANCE ₹</th>
+                  <th class="p-2 w-14 text-center">INIT</th>
+                </tr>
+              </thead>
+              <tbody id="pb-transactions-body" class="divide-y divide-black text-[11px] text-black">
+                <tr><td colspan="7" class="p-4 text-center text-black">No transaction entries found.</td></tr>
+              </tbody>
+            </table>
           </div>
 
-          <!-- Banking Verification Footer & Seal -->
-          <div class="mt-8 pt-6 border-t-2 border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-6">
-            <div class="text-[10px] text-slate-500 leading-relaxed text-center sm:text-left">
-              <p class="font-bold text-slate-700 uppercase tracking-wider">Official Banking Seal & Record</p>
-              <p>This is a certified computer-generated passbook statement.</p>
-              <p>Core Banking Ledger Ref: <span class="font-mono font-bold text-slate-900" id="pb-audit-ref">FINZ-AUD-<?= strtoupper(substr(md5(uniqid()), 0, 10)) ?></span></p>
-            </div>
+          <!-- Bottom Totals & Closing Balance Summary Box -->
+          <table class="w-full border-collapse border-2 border-black text-xs mb-4 text-black font-mono">
+            <tbody>
+              <tr class="font-bold">
+                <td class="p-2.5 border-r border-black w-1/3 text-center">
+                  <div class="text-[10px] uppercase">TOTAL WITHDRAWALS (DR)</div>
+                  <div class="text-sm font-black mt-0.5" id="pb-total-debits">₹ 0.00</div>
+                </td>
+                <td class="p-2.5 border-r border-black w-1/3 text-center">
+                  <div class="text-[10px] uppercase">TOTAL DEPOSITS (CR)</div>
+                  <div class="text-sm font-black mt-0.5" id="pb-total-credits">₹ 0.00</div>
+                </td>
+                <td class="p-2.5 w-1/3 text-center bg-slate-100 font-black">
+                  <div class="text-[10px] uppercase">CLOSING AVAILABLE BALANCE</div>
+                  <div class="text-base font-black mt-0.5" id="pb-net-balance">₹ 0.00</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-            <div class="flex items-center gap-4">
-              <div class="border-2 border-dashed border-slate-300 rounded-xl p-3 text-center w-36">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Bank Verification</div>
-                <div class="text-[11px] font-black text-emerald-600 font-sans mt-0.5">DIGITALLY SEALED</div>
-                <div class="text-[8px] font-mono text-slate-400 mt-0.5">Finzo Core Engine</div>
-              </div>
+          <!-- Footer Rules & Notice -->
+          <div class="text-[10px] text-black leading-tight border-t border-black pt-3 font-mono">
+            <p class="font-bold">* Please examine this passbook immediately. Discrepancies, if any, should be reported within 15 days.</p>
+            <div class="flex justify-between items-center mt-2 text-[9px] font-bold">
+              <span>* COMPUTER GENERATED PASSBOOK — NO PHYSICAL SIGNATURE REQUIRED</span>
+              <span>PAGE 1 OF 1</span>
             </div>
           </div>
 

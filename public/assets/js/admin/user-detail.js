@@ -449,7 +449,7 @@
     }
 
     /**
-     * Populate and open Bank Passbook & Statement Modal
+     * Populate and open Classic Monochrome Bank Passbook & Statement Modal
      */
     function openPassbookModal() {
         if (!currentUserData) return;
@@ -460,21 +460,20 @@
         const primaryAcc = accounts[0] || {};
 
         // Populate Passbook Header Fields
-        setText('pb-full-name', user.full_name || 'Account Holder');
+        setText('pb-full-name', (user.full_name || 'Account Holder').toUpperCase());
         setText('pb-customer-id', user.customer_id || 'FNZ-USR');
         setText('pb-phone', user.phone || 'N/A');
-        setText('pb-email', user.email || 'N/A');
         
         const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(Boolean);
         setText('pb-address', addressParts.length > 0 ? addressParts.join(', ') : 'Not on file');
 
         const rawType = (primaryAcc.account_type || user.account_type || 'savings').toLowerCase();
-        const accountTypeFormatted = rawType.includes('current') ? 'Current Account' : (rawType.includes('fixed') ? 'Fixed Deposit' : 'Savings Account');
+        const accountTypeFormatted = rawType.includes('current') ? 'CURRENT ACCOUNT' : (rawType.includes('fixed') ? 'FIXED DEPOSIT' : 'SAVINGS ACCOUNT');
         
-        setText('pb-account-no', primaryAcc.account_no || 'FNZ-PENDING');
+        setText('pb-account-no', primaryAcc.account_no || 'FNZ0000000000');
         setText('pb-account-type', accountTypeFormatted);
 
-        // Calculate Totals for Credits and Debits
+        // Calculate running ledger and totals
         const accountNos = accounts.map(a => a.account_no);
         let totalCredits = 0;
         let totalDebits = 0;
@@ -482,47 +481,55 @@
         let tableRows = '';
 
         if (transactions && transactions.length > 0) {
-            transactions.forEach((t, index) => {
+            const chronological = [...transactions].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+            chronological.forEach(t => {
                 const type = (t.type || 'transfer').toLowerCase();
                 let isCredit = (type === 'deposit' || type === 'interest_credit');
-                if (type === 'transfer') {
-                    isCredit = accountNos.includes(t.to_account);
-                }
-
+                if (type === 'transfer') isCredit = accountNos.includes(t.to_account);
                 const amt = parseFloat(t.amount || 0);
-                if (isCredit) {
-                    totalCredits += amt;
-                } else {
-                    totalDebits += amt;
-                }
+                if (isCredit) totalCredits += amt;
+                else totalDebits += amt;
+            });
 
-                const dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
-                const debitDisplay = !isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
-                const creditDisplay = isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+            const currentBalance = parseFloat(primaryAcc.balance || 0);
+            let runningBalance = currentBalance - (totalCredits - totalDebits);
+
+            chronological.forEach((t, index) => {
+                const type = (t.type || 'transfer').toLowerCase();
+                let isCredit = (type === 'deposit' || type === 'interest_credit');
+                if (type === 'transfer') isCredit = accountNos.includes(t.to_account);
+                const amt = parseFloat(t.amount || 0);
+
+                if (isCredit) runningBalance += amt;
+                else runningBalance -= amt;
+
+                const dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A';
+                const debitDisplay = !isCredit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const creditDisplay = isCredit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const balanceDisplay = runningBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                const particulars = (t.description || type.toUpperCase()) + (t.txn_id ? ' / ' + t.txn_id : '');
 
                 tableRows += `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
-                        <td class="py-2.5 px-3 text-center text-slate-400 font-sans text-[10px]">${index + 1}</td>
-                        <td class="py-2.5 px-3 whitespace-nowrap">${dateStr}</td>
-                        <td class="py-2.5 px-3">
-                            <div class="font-bold text-slate-900">${t.description || type.toUpperCase()}</div>
-                            <div class="text-[9px] text-slate-400 font-mono">${t.txn_id || ('TXN-' + t.id)}</div>
-                        </td>
-                        <td class="py-2.5 px-3 text-right text-rose-600 font-bold">${debitDisplay}</td>
-                        <td class="py-2.5 px-3 text-right text-emerald-600 font-bold">${creditDisplay}</td>
-                        <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[9px] font-sans font-bold uppercase ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">${t.status || 'COMPLETED'}</span></td>
+                    <tr class="border-b border-black text-black">
+                        <td class="p-2 border-r border-black text-center">${index + 1}</td>
+                        <td class="p-2 border-r border-black text-center whitespace-nowrap">${dateStr}</td>
+                        <td class="p-2 border-r border-black uppercase text-[10.5px]">${particulars}</td>
+                        <td class="p-2 border-r border-black text-right">${debitDisplay}</td>
+                        <td class="p-2 border-r border-black text-right">${creditDisplay}</td>
+                        <td class="p-2 border-r border-black text-right font-bold">${balanceDisplay}</td>
+                        <td class="p-2 text-center text-[10px]">SYS</td>
                     </tr>
                 `;
             });
         } else {
-            tableRows = '<tr><td colspan="6" class="py-8 text-center text-slate-400 font-sans">No transaction entries found in passbook period.</td></tr>';
+            tableRows = '<tr><td colspan="7" class="p-4 text-center text-black">No transactions recorded.</td></tr>';
         }
 
         const currentBalance = parseFloat(primaryAcc.balance || 0);
-        setText('pb-total-credits', '+ ₹' + totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
-        setText('pb-total-debits', '- ₹' + totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
-        setText('pb-net-balance', '₹' + currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
-        setText('pb-txn-count', `${transactions.length} record${transactions.length === 1 ? '' : 's'}`);
+        setText('pb-total-credits', '₹ ' + totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+        setText('pb-total-debits', '₹ ' + totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+        setText('pb-net-balance', '₹ ' + currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
 
         const tbody = document.getElementById('pb-transactions-body');
         if (tbody) tbody.innerHTML = tableRows;
@@ -546,7 +553,7 @@
     }
 
     /**
-     * Dedicated Clean Bank Passbook Printing via Isolated Frame
+     * Dedicated Pure Black & White Vintage Bank Passbook Printing via Isolated Frame
      */
     function printPassbookDocument() {
         if (!currentUserData) return;
@@ -556,16 +563,15 @@
         const transactions = currentUserTransactions;
         const primaryAcc = accounts[0] || {};
 
-        const fullName = user.full_name || 'Account Holder';
+        const fullName = (user.full_name || 'Account Holder').toUpperCase();
         const customerId = user.customer_id || 'FNZ-USR';
         const phone = user.phone || 'N/A';
-        const email = user.email || 'N/A';
         const addressParts = [user.street, user.city, user.state, user.pincode, user.country].filter(Boolean);
         const address = addressParts.length > 0 ? addressParts.join(', ') : 'Not on file';
 
         const rawType = (primaryAcc.account_type || user.account_type || 'savings').toLowerCase();
-        const accountTypeFormatted = rawType.includes('current') ? 'Current Account' : (rawType.includes('fixed') ? 'Fixed Deposit' : 'Savings Account');
-        const accountNo = primaryAcc.account_no || 'FNZ-PENDING';
+        const accountTypeFormatted = rawType.includes('current') ? 'CURRENT ACCOUNT' : (rawType.includes('fixed') ? 'FIXED DEPOSIT' : 'SAVINGS ACCOUNT');
+        const accountNo = primaryAcc.account_no || 'FNZ0000000000';
         const currentBalance = parseFloat(primaryAcc.balance || 0);
 
         const accountNos = accounts.map(a => a.account_no);
@@ -574,44 +580,51 @@
 
         let rowsHtml = '';
         if (transactions && transactions.length > 0) {
-            transactions.forEach((t, i) => {
+            const chronological = [...transactions].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+            chronological.forEach(t => {
                 const type = (t.type || 'transfer').toLowerCase();
                 let isCredit = (type === 'deposit' || type === 'interest_credit');
-                if (type === 'transfer') {
-                    isCredit = accountNos.includes(t.to_account);
-                }
-
+                if (type === 'transfer') isCredit = accountNos.includes(t.to_account);
                 const amt = parseFloat(t.amount || 0);
-                if (isCredit) {
-                    totalCredits += amt;
-                } else {
-                    totalDebits += amt;
-                }
+                if (isCredit) totalCredits += amt;
+                else totalDebits += amt;
+            });
 
-                const dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
-                const debitDisplay = !isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
-                const creditDisplay = isCredit ? '₹' + amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+            let runningBalance = currentBalance - (totalCredits - totalDebits);
+
+            chronological.forEach((t, i) => {
+                const type = (t.type || 'transfer').toLowerCase();
+                let isCredit = (type === 'deposit' || type === 'interest_credit');
+                if (type === 'transfer') isCredit = accountNos.includes(t.to_account);
+                const amt = parseFloat(t.amount || 0);
+
+                if (isCredit) runningBalance += amt;
+                else runningBalance -= amt;
+
+                const dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A';
+                const debitDisplay = !isCredit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const creditDisplay = isCredit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const balanceDisplay = runningBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                const particulars = (t.description || type.toUpperCase()) + (t.txn_id ? ' / ' + t.txn_id : '');
 
                 rowsHtml += `
                     <tr>
-                        <td style="text-align: center; color: #64748b;">${i + 1}</td>
-                        <td style="white-space: nowrap; font-weight: 600;">${dateStr}</td>
-                        <td>
-                            <div style="font-weight: 700; color: #0f172a;">${t.description || type.toUpperCase()}</div>
-                            <div style="font-size: 8.5px; color: #64748b; font-family: monospace;">Ref: ${t.txn_id || ('TXN-' + t.id)}</div>
-                        </td>
-                        <td style="text-align: right; color: #dc2626; font-weight: 700;">${debitDisplay}</td>
-                        <td style="text-align: right; color: #16a34a; font-weight: 700;">${creditDisplay}</td>
-                        <td style="text-align: center; font-size: 9px; font-weight: 700; text-transform: uppercase;">${t.status || 'COMPLETED'}</td>
+                        <td style="text-align: center;">${i + 1}</td>
+                        <td style="text-align: center; white-space: nowrap;">${dateStr}</td>
+                        <td style="text-transform: uppercase;">${particulars}</td>
+                        <td style="text-align: right;">${debitDisplay}</td>
+                        <td style="text-align: right;">${creditDisplay}</td>
+                        <td style="text-align: right; font-weight: bold;">${balanceDisplay}</td>
+                        <td style="text-align: center;">SYS</td>
                     </tr>
                 `;
             });
         } else {
-            rowsHtml = '<tr><td colspan="6" style="text-align:center; padding: 20px; color: #64748b;">No transactions recorded.</td></tr>';
+            rowsHtml = '<tr><td colspan="7" style="text-align: center; padding: 15px;">No transactions recorded.</td></tr>';
         }
 
-        const nowFormatted = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', '');
-        const auditRef = 'FINZ-PB-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        const todayFormatted = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const printHtml = `
             <!DOCTYPE html>
@@ -630,217 +643,149 @@
                         padding: 0;
                     }
                     body {
-                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                        color: #0f172a;
+                        font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
+                        color: #000000;
                         background: #ffffff;
                         padding: 0;
                         font-size: 11px;
-                        line-height: 1.35;
+                        line-height: 1.3;
                     }
-                    .passbook-paper {
+                    .passbook-container {
                         width: 100%;
-                        max-width: 100%;
+                        border: 2px solid #000000;
+                        padding: 14px 16px;
                     }
-                    .header-table {
-                        width: 100%;
-                        border-bottom: 2.5px solid #002645;
+                    .bank-header {
+                        text-align: center;
+                        border-bottom: 2px solid #000000;
                         padding-bottom: 8px;
-                        margin-bottom: 12px;
+                        margin-bottom: 10px;
                     }
                     .bank-title {
                         font-size: 20px;
                         font-weight: 900;
-                        color: #002645;
-                        letter-spacing: -0.5px;
-                    }
-                    .bank-subtitle {
-                        font-size: 9px;
-                        font-weight: 700;
-                        color: #475569;
+                        letter-spacing: 2px;
                         text-transform: uppercase;
-                        letter-spacing: 0.5px;
+                        font-family: Georgia, serif;
                     }
-                    .branch-info {
-                        text-align: right;
-                        font-size: 10px;
-                        color: #334155;
-                        font-family: monospace;
-                        line-height: 1.3;
-                    }
-                    .doc-banner {
-                        background: #f1f5f9;
-                        border: 1px solid #cbd5e1;
-                        padding: 5px 10px;
-                        margin-bottom: 12px;
-                        font-weight: 800;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
+                    .bank-sub {
                         font-size: 11px;
-                        color: #002645;
+                        font-weight: bold;
+                        letter-spacing: 1px;
+                        margin-top: 2px;
+                    }
+                    .bank-meta {
                         display: flex;
                         justify-content: space-between;
+                        font-size: 10px;
+                        font-weight: bold;
+                        border-top: 1px solid #000000;
+                        padding-top: 6px;
+                        margin-top: 6px;
                     }
-                    .info-grid {
+                    .table-grid {
                         width: 100%;
-                        margin-bottom: 12px;
-                        border-collapse: separate;
-                        border-spacing: 10px 0;
-                    }
-                    .info-box {
-                        width: 50%;
-                        border: 1px solid #cbd5e1;
-                        border-radius: 6px;
-                        padding: 8px 10px;
-                        vertical-align: top;
-                    }
-                    .info-title {
-                        font-size: 9px;
-                        font-weight: 800;
-                        color: #64748b;
-                        text-transform: uppercase;
-                        border-bottom: 1px dashed #cbd5e1;
-                        padding-bottom: 3px;
-                        margin-bottom: 5px;
-                    }
-                    .info-row {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 3px;
+                        border-collapse: collapse;
+                        border: 1px solid #000000;
+                        margin-bottom: 10px;
                         font-size: 10.5px;
                     }
-                    .info-label {
-                        color: #64748b;
-                        font-weight: 600;
+                    .table-grid td, .table-grid th {
+                        border: 1px solid #000000;
+                        padding: 4px 6px;
                     }
-                    .info-val {
-                        color: #0f172a;
-                        font-weight: 700;
-                        text-align: right;
-                    }
-                    .summary-grid {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 14px;
-                    }
-                    .summary-grid th {
-                        background: #f8fafc;
-                        border: 1px solid #cbd5e1;
-                        padding: 5px 8px;
-                        font-size: 9px;
-                        font-weight: 800;
+                    .table-grid th {
+                        background-color: #f2f2f2;
+                        font-weight: 900;
                         text-transform: uppercase;
-                        color: #475569;
-                    }
-                    .summary-grid td {
-                        border: 1px solid #cbd5e1;
-                        padding: 6px 8px;
-                        text-align: center;
-                        font-size: 11.5px;
-                        font-weight: 800;
-                        font-family: monospace;
-                    }
-                    .ledger-table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 14px;
-                    }
-                    .ledger-table th {
-                        background: #002645;
-                        color: #ffffff;
-                        border: 1px solid #002645;
-                        padding: 6px 8px;
-                        font-size: 9.5px;
-                        font-weight: 800;
-                        text-transform: uppercase;
-                        letter-spacing: 0.5px;
-                    }
-                    .ledger-table td {
-                        border: 1px solid #cbd5e1;
-                        padding: 5px 8px;
                         font-size: 10px;
                     }
-                    .ledger-table tr:nth-child(even) {
-                        background: #f8fafc;
+                    .lbl {
+                        font-weight: bold;
+                        background-color: #f8f8f8;
+                        width: 25%;
                     }
-                    .footer-table {
+                    .val {
+                        font-weight: bold;
+                        width: 25%;
+                    }
+                    .summary-box {
                         width: 100%;
-                        border-top: 1.5px solid #0f172a;
-                        padding-top: 8px;
-                        margin-top: 12px;
-                    }
-                    .seal-box {
-                        border: 1.5px dashed #64748b;
-                        border-radius: 6px;
-                        padding: 4px 10px;
+                        border-collapse: collapse;
+                        border: 2px solid #000000;
+                        margin-bottom: 10px;
+                        font-size: 10.5px;
                         text-align: center;
-                        display: inline-block;
+                    }
+                    .summary-box td {
+                        border: 1px solid #000000;
+                        padding: 6px 8px;
+                    }
+                    .summary-title {
+                        font-size: 9.5px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+                    .summary-amt {
+                        font-size: 13px;
+                        font-weight: 900;
+                        margin-top: 2px;
+                    }
+                    .footer-notice {
+                        border-top: 1px solid #000000;
+                        padding-top: 6px;
+                        font-size: 9.5px;
+                        line-height: 1.35;
                     }
                 </style>
             </head>
             <body>
-                <div class="passbook-paper">
-                    <table class="header-table">
-                        <tr>
-                            <td style="vertical-align: middle;">
-                                <div class="bank-title">FINZO GLOBAL DIGITAL BANK</div>
-                                <div class="bank-subtitle">Core Banking Institution &bull; ISO 9001:2015 Certified</div>
-                            </td>
-                            <td class="branch-info" style="vertical-align: middle;">
-                                <div><strong>IFSC:</strong> FINZ0002026 | <strong>MICR:</strong> 400026002</div>
-                                <div>Branch: Central HQ, Mumbai 400051</div>
-                                <div>CIN: L65110MH2026PLC123456</div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div class="doc-banner">
-                        <span>OFFICIAL BANK STATEMENT / PASSBOOK</span>
-                        <span style="font-family: monospace; font-size: 10px;">GENERATED: ${nowFormatted}</span>
+                <div class="passbook-container">
+                    <div class="bank-header">
+                        <div class="bank-title">FINZO BANK</div>
+                        <div class="bank-sub">SAVINGS / CURRENT ACCOUNT PASSBOOK</div>
+                        <div class="bank-meta">
+                            <span>BRANCH: MAIN BRANCH, MUMBAI</span>
+                            <span>IFSC: FINZ0002026</span>
+                            <span>MICR: 400026002</span>
+                        </div>
                     </div>
 
-                    <table class="info-grid">
+                    <table class="table-grid">
                         <tr>
-                            <td class="info-box">
-                                <div class="info-title">Account Holder Details</div>
-                                <div class="info-row"><span class="info-label">Name:</span><span class="info-val" style="font-size: 12px; color: #002645;">${fullName}</span></div>
-                                <div class="info-row"><span class="info-label">Customer ID (CIF):</span><span class="info-val" style="font-family: monospace;">${customerId}</span></div>
-                                <div class="info-row"><span class="info-label">Mobile:</span><span class="info-val">${phone}</span></div>
-                                <div class="info-row"><span class="info-label">Email:</span><span class="info-val">${email}</span></div>
-                                <div class="info-row"><span class="info-label">Address:</span><span class="info-val" style="font-size: 9.5px; max-width: 220px;">${address}</span></div>
-                            </td>
-                            <td class="info-box">
-                                <div class="info-title">Account Particulars</div>
-                                <div class="info-row"><span class="info-label">Account No:</span><span class="info-val" style="font-family: monospace; font-size: 12px; color: #002645;">${accountNo}</span></div>
-                                <div class="info-row"><span class="info-label">Account Type:</span><span class="info-val" style="text-transform: uppercase;">${accountTypeFormatted}</span></div>
-                                <div class="info-row"><span class="info-label">Currency:</span><span class="info-val">INR (₹ Indian Rupee)</span></div>
-                                <div class="info-row"><span class="info-label">Interest Rate:</span><span class="info-val">${primaryAcc.interest_rate || '3.50'}% p.a.</span></div>
-                                <div class="info-row"><span class="info-label">Status:</span><span class="info-val" style="color: #16a34a; font-weight: 800;">ACTIVE</span></div>
-                            </td>
+                            <td class="lbl">A/C HOLDER NAME</td>
+                            <td class="val" style="font-size: 12px;">${fullName}</td>
+                            <td class="lbl">ACCOUNT NO.</td>
+                            <td class="val" style="font-size: 12px;">${accountNo}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">CUSTOMER ID (CIF)</td>
+                            <td class="val">${customerId}</td>
+                            <td class="lbl">ACCOUNT TYPE</td>
+                            <td class="val">${accountTypeFormatted}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">MOBILE NUMBER</td>
+                            <td class="val">${phone}</td>
+                            <td class="lbl">DATE ISSUED</td>
+                            <td class="val">${todayFormatted}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">ADDRESS</td>
+                            <td class="val" colspan="3">${address}</td>
                         </tr>
                     </table>
 
-                    <table class="summary-grid">
-                        <tr>
-                            <th style="color: #16a34a;">Total Deposits (Credit +)</th>
-                            <th style="color: #dc2626;">Total Withdrawals (Debit -)</th>
-                            <th style="color: #002645;">Current Available Balance</th>
-                        </tr>
-                        <tr>
-                            <td style="color: #16a34a;">+ ₹${totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                            <td style="color: #dc2626;">- ₹${totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                            <td style="color: #002645; font-size: 13px;">₹${currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                        </tr>
-                    </table>
-
-                    <table class="ledger-table">
+                    <table class="table-grid">
                         <thead>
                             <tr>
-                                <th style="width: 28px; text-align: center;">#</th>
-                                <th style="width: 75px; text-align: left;">Date</th>
-                                <th style="text-align: left;">Particulars / Transaction Ref</th>
-                                <th style="width: 90px; text-align: right;">Debit (Dr) ₹</th>
-                                <th style="width: 90px; text-align: right;">Credit (Cr) ₹</th>
-                                <th style="width: 75px; text-align: center;">Status</th>
+                                <th style="width: 32px; text-align: center;">LINE</th>
+                                <th style="width: 75px; text-align: center;">DATE</th>
+                                <th style="text-align: left;">PARTICULARS / DETAILS</th>
+                                <th style="width: 95px; text-align: right;">WITHDRAWAL (DR) ₹</th>
+                                <th style="width: 95px; text-align: right;">DEPOSIT (CR) ₹</th>
+                                <th style="width: 100px; text-align: right;">BALANCE ₹</th>
+                                <th style="width: 35px; text-align: center;">INIT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -848,26 +793,35 @@
                         </tbody>
                     </table>
 
-                    <table class="footer-table">
+                    <table class="summary-box">
                         <tr>
-                            <td style="font-size: 9px; color: #64748b; line-height: 1.35;">
-                                <div><strong>IMPORTANT NOTICE:</strong> This is an official computer-generated passbook statement issued by Finzo Bank.</div>
-                                <div>Does not require physical signature &bull; Audit Ref: <strong style="font-family: monospace; color: #0f172a;">${auditRef}</strong></div>
+                            <td style="width: 33.33%;">
+                                <div class="summary-title">TOTAL WITHDRAWALS (DR)</div>
+                                <div class="summary-amt">₹ ${totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                             </td>
-                            <td style="text-align: right; vertical-align: middle;">
-                                <div class="seal-box">
-                                    <div style="font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase;">FINZO SYSTEM SEAL</div>
-                                    <div style="font-size: 10px; font-weight: 900; color: #16a34a;">DIGITALLY VERIFIED</div>
-                                </div>
+                            <td style="width: 33.33%;">
+                                <div class="summary-title">TOTAL DEPOSITS (CR)</div>
+                                <div class="summary-amt">₹ ${totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </td>
+                            <td style="width: 33.34%; background-color: #f2f2f2;">
+                                <div class="summary-title">CLOSING AVAILABLE BALANCE</div>
+                                <div class="summary-amt">₹ ${currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                             </td>
                         </tr>
                     </table>
+
+                    <div class="footer-notice">
+                        <div>* Please examine this passbook immediately. Discrepancies, if any, should be reported within 15 days.</div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 4px; font-weight: bold;">
+                            <span>* COMPUTER GENERATED PASSBOOK — NO PHYSICAL SIGNATURE REQUIRED</span>
+                            <span>PAGE 1 OF 1</span>
+                        </div>
+                    </div>
                 </div>
             </body>
             </html>
         `;
 
-        // Create isolated invisible print frame
         let printFrame = document.getElementById('finzo-print-iframe');
         if (!printFrame) {
             printFrame = document.createElement('iframe');
@@ -889,7 +843,7 @@
         setTimeout(() => {
             printFrame.contentWindow.focus();
             printFrame.contentWindow.print();
-        }, 300);
+        }, 250);
     }
 
     /**
