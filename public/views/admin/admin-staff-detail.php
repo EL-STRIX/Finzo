@@ -1,6 +1,56 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Dossier';
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
+$staffId = intval($_GET['id'] ?? 0);
+$staffData = null;
+if ($staffId > 0) {
+    try {
+        $container = \App\Shared\Core\Container::getInstance();
+        $service = $container->get(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class);
+        $staffData = $service->getStaffDetailComprehensive($staffId);
+    } catch (\Throwable $e) {
+        $staffData = null;
+    }
+}
+
+$staff = $staffData['staff'] ?? [];
+$address = $staffData['address'] ?? [];
+$performance = $staffData['performance'] ?? [];
+$today = $staffData['today_performance'] ?? [];
+$shifts = $staffData['shifts'] ?? [];
+$transactions = $staffData['transactions'] ?? [];
+$activities = $staffData['activities'] ?? [];
+$documents = $staffData['documents'] ?? [];
+
+$fullName = htmlspecialchars($staff['full_name'] ?? 'Loading Profile...', ENT_QUOTES, 'UTF-8');
+$staffCode = htmlspecialchars($staff['staff_id'] ?? 'STF---', ENT_QUOTES, 'UTF-8');
+$designation = htmlspecialchars($staff['designation'] ?? 'Staff', ENT_QUOTES, 'UTF-8');
+$status = $staff['status'] ?? 'active';
+$isActive = ($status === 'active');
+$initials = !empty($staff['full_name']) ? strtoupper(substr(implode('', array_map(fn($n) => $n[0] ?? '', explode(' ', $staff['full_name']))), 0, 2)) : 'ST';
+$profilePhoto = !empty($staff['profile_photo_url']) ? $staff['profile_photo_url'] : null;
+
+// Age calculation
+$dobStr = !empty($staff['date_of_birth']) ? date('d M Y', strtotime($staff['date_of_birth'])) : '—';
+$genderStr = htmlspecialchars($staff['gender'] ?? 'Not specified', ENT_QUOTES, 'UTF-8');
+if (!empty($staff['date_of_birth'])) {
+    $age = (new \DateTime($staff['date_of_birth']))->diff(new \DateTime('today'))->y;
+    if ($age > 0) {
+        $genderStr .= " ({$age} yrs)";
+    }
+}
+$joinedDate = !empty($staff['date_of_joining']) ? date('d M Y', strtotime($staff['date_of_joining'])) : (!empty($staff['created_at']) ? date('d M Y', strtotime($staff['created_at'])) : '—');
+$branchName = !empty($staff['branch_name']) ? htmlspecialchars($staff['branch_name'] . (!empty($staff['branch_code']) ? " ({$staff['branch_code']})" : ''), ENT_QUOTES, 'UTF-8') : 'Unassigned';
+
 ob_start();
 ?>
   <style>
@@ -40,17 +90,17 @@ ob_start();
           </a>
           <div>
             <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">STAFF PROFILE &amp; DOSSIER</div>
-            <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name">Loading Profile...</div>
+            <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name"><?= $fullName ?></div>
           </div>
         </div>
       </div>
 
       <!-- ALERT BANNER FOR SUSPENSION OR LOCK -->
-      <div id="security-alert-banner" class="hidden rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm">
-          <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-0.5" aria-hidden="true">warning</span>
+      <div id="security-alert-banner" class="<?= !$isActive ? '' : 'hidden' ?> rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm <?= !$isActive ? 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300' : '' ?>">
+          <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-0.5" aria-hidden="true">gavel</span>
           <div>
-              <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase">Security Notice</h4>
-              <p id="security-alert-message" class="text-xs sm:text-sm font-bold leading-relaxed"></p>
+              <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase"><?= !$isActive ? 'Account Suspended' : 'Security Notice' ?></h4>
+              <p id="security-alert-message" class="text-xs sm:text-sm font-bold leading-relaxed"><?= !$isActive ? 'Staff privileges have been revoked under administrative review.' : '' ?></p>
           </div>
       </div>
 
@@ -65,22 +115,35 @@ ob_start();
                   <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-border-subtle text-center sm:text-left">
                       <div class="relative shrink-0">
                           <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-surface border border-border-subtle flex items-center justify-center">
-                              <span id="photo-initials" class="text-3xl sm:text-4xl font-black text-primary font-headline">ST</span>
+                              <?php if ($profilePhoto): ?>
+                                  <img src="<?= htmlspecialchars($profilePhoto, ENT_QUOTES, 'UTF-8') ?>" class="w-full h-full object-cover" alt="<?= $fullName ?>">
+                              <?php else: ?>
+                                  <span id="photo-initials" class="text-3xl sm:text-4xl font-black text-primary font-headline"><?= $initials ?></span>
+                              <?php endif; ?>
                           </div>
                       </div>
                       <div class="flex-1 min-w-0">
-                          <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-primary mb-3 truncate">Loading...</h3>
+                          <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-primary mb-3 truncate"><?= $fullName ?></h3>
                           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-4">
-                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary shadow-sm">STF---</span>
-                              <span id="info-role-badge" class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm">Staff Role</span>
-                              <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 bg-success-bg text-success border border-success/20 shadow-sm">
-                                  <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                                  <span id="info-status-text">Active</span>
+                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary shadow-sm"><?= $staffCode ?></span>
+                              <?php
+                                  $roleLower = strtolower($designation);
+                                  $roleBadgeClass = 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30';
+                                  if (strpos($roleLower, 'manager') !== false) {
+                                      $roleBadgeClass = 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30';
+                                  } elseif (strpos($roleLower, 'supervisor') !== false) {
+                                      $roleBadgeClass = 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30';
+                                  }
+                              ?>
+                              <span id="info-role-badge" class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider <?= $roleBadgeClass ?> shadow-sm"><?= $designation ?></span>
+                              <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 <?= $isActive ? 'bg-success-bg text-success border border-success/20' : 'bg-error-bg text-error border border-error/20' ?> shadow-sm">
+                                  <span class="w-2 h-2 rounded-full <?= $isActive ? 'bg-success animate-pulse' : 'bg-error' ?>"></span>
+                                  <span id="info-status-text"><?= $isActive ? 'Active Account' : 'Suspended' ?></span>
                               </span>
                           </div>
                           <p class="text-xs font-bold text-text-secondary flex items-center justify-center sm:justify-start gap-2">
                               <span class="material-symbols-outlined text-base" aria-hidden="true">calendar_today</span>
-                              <span>Staff Member Since <strong id="info-joined-date" class="text-text-primary font-black">---</strong></span>
+                              <span>Staff Member Since <strong id="info-joined-date" class="text-text-primary font-black"><?= $joinedDate ?></strong></span>
                           </p>
                       </div>
                   </div>
@@ -89,27 +152,35 @@ ob_start();
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Email Address</label>
-                          <div id="info-email" class="text-sm font-bold text-text-primary break-all">---</div>
+                          <div id="info-email" class="text-sm font-bold text-text-primary break-all"><?= htmlspecialchars($staff['email'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Gender &amp; Age</label>
-                          <div id="info-gender" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="info-gender" class="text-sm font-bold text-text-primary"><?= $genderStr ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Phone Number</label>
-                          <div id="info-phone" class="text-sm font-bold text-text-primary font-mono">---</div>
+                          <div id="info-phone" class="text-sm font-bold text-text-primary font-mono"><?= htmlspecialchars($staff['phone'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Date of Birth</label>
-                          <div id="info-dob" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="info-dob" class="text-sm font-bold text-text-primary"><?= $dobStr ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Emergency Contact</label>
-                          <div id="info-emergency" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="info-emergency" class="text-sm font-bold text-text-primary">
+                              <?php
+                                  $emStr = 'Not provided';
+                                  if (!empty($staff['emergency_contact_name'])) {
+                                      $emStr = htmlspecialchars($staff['emergency_contact_name'] . (!empty($staff['emergency_contact_phone']) ? " ({$staff['emergency_contact_phone']})" : ''), ENT_QUOTES, 'UTF-8');
+                                  }
+                                  echo $emStr;
+                              ?>
+                          </div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Branch Assignment</label>
-                          <div id="info-branch" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="info-branch" class="text-sm font-bold text-text-primary"><?= $branchName ?></div>
                       </div>
                   </div>
               </div>
@@ -125,23 +196,23 @@ ob_start();
                   <div class="p-5 grid grid-cols-2 sm:grid-cols-5 gap-5">
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Street</label>
-                          <div id="addr-street" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="addr-street" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($address['street'] ?? $staff['street'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">City</label>
-                          <div id="addr-city" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="addr-city" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($address['city'] ?? $staff['city'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">State</label>
-                          <div id="addr-state" class="text-sm font-bold text-text-primary">---</div>
+                          <div id="addr-state" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($address['state'] ?? $staff['state'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Pincode</label>
-                          <div id="addr-pincode" class="text-sm font-bold text-text-primary font-mono">---</div>
+                          <div id="addr-pincode" class="text-sm font-bold text-text-primary font-mono"><?= htmlspecialchars($address['pincode'] ?? $staff['pincode'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Country</label>
-                          <div id="addr-country" class="text-sm font-bold text-text-primary">India</div>
+                          <div id="addr-country" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($address['country'] ?? $staff['country'] ?? 'India', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                   </div>
               </div>
@@ -151,41 +222,41 @@ ob_start();
                   <div class="p-5 border-b border-border-subtle bg-background/50">
                       <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
                           <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">security</span>
-                          <span>System & Security Audit</span>
+                          <span>System &amp; Security Audit</span>
                       </h4>
                   </div>
                   <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Last Login</label>
-                          <div id="sys-last-login" class="text-xs font-bold text-text-primary">---</div>
+                          <div id="sys-last-login" class="text-xs font-bold text-text-primary"><?= !empty($staff['last_login_at']) ? date('d M Y, h:i A', strtotime($staff['last_login_at'])) : 'Never' ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Login IP</label>
-                          <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-secondary">---</div>
+                          <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-secondary"><?= htmlspecialchars($staff['last_login_ip'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Date of Joining</label>
-                          <div id="sys-joining-date" class="text-xs font-bold text-text-primary">---</div>
+                          <div id="sys-joining-date" class="text-xs font-bold text-text-primary"><?= $joinedDate ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Created By</label>
-                          <div id="sys-created-by" class="text-xs font-bold text-text-primary">---</div>
+                          <div id="sys-created-by" class="text-xs font-bold text-text-primary"><?= htmlspecialchars($staff['created_by_name'] ?? 'System', ENT_QUOTES, 'UTF-8') ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Staff ID</label>
-                          <div id="sys-staff-id" class="text-xs font-mono font-bold text-text-secondary">---</div>
+                          <div id="sys-staff-id" class="text-xs font-mono font-bold text-text-secondary"><?= $staffCode ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Total Shifts</label>
-                          <div id="sys-total-shifts" class="text-xs font-bold text-text-primary">0</div>
+                          <div id="sys-total-shifts" class="text-xs font-bold text-text-primary"><?= (int)($staffData['total_shifts'] ?? count($shifts)) ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Failed Logins</label>
-                          <div id="sys-failed-logins" class="text-xs font-bold text-text-primary">0</div>
+                          <div id="sys-failed-logins" class="text-xs font-bold text-text-primary"><?= (int)($staff['failed_attempts'] ?? 0) ?></div>
                       </div>
                       <div>
                           <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Lock Status</label>
-                          <div id="sys-lock-status" class="text-xs font-bold text-text-primary">Unlocked</div>
+                          <div id="sys-lock-status" class="text-xs font-bold <?= !empty($staff['locked_until']) ? 'text-error' : 'text-success' ?>"><?= !empty($staff['locked_until']) ? 'Locked' : 'Unlocked' ?></div>
                       </div>
                   </div>
               </div>
@@ -202,11 +273,11 @@ ob_start();
                       <div class="grid grid-cols-2 gap-5 mb-5">
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Document Type</label>
-                              <div id="doc-id-type" class="text-sm font-bold text-text-primary">---</div>
+                              <div id="doc-id-type" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($staff['id_type'] ?? 'Identity Proof', ENT_QUOTES, 'UTF-8') ?></div>
                           </div>
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Document Number</label>
-                              <div id="doc-id-number" class="text-sm font-bold font-mono text-text-primary">---</div>
+                              <div id="doc-id-number" class="text-sm font-bold font-mono text-text-primary"><?= htmlspecialchars($staff['id_number'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                           </div>
                       </div>
                       <div id="doc-images-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -214,11 +285,12 @@ ob_start();
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Front of Document</label>
                               <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm">
-                                  <div id="doc-front-placeholder" class="text-center">
+                                  <?php $frontUrl = $staff['front_image_url'] ?? null; ?>
+                                  <div id="doc-front-placeholder" class="text-center <?= $frontUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
                                   </div>
-                                  <img loading="lazy" id="doc-front-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
+                                  <img loading="lazy" id="doc-front-img" src="<?= htmlspecialchars($frontUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $frontUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Front" />
                                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                                       <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                   </div>
@@ -228,11 +300,12 @@ ob_start();
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Back of Document</label>
                               <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm">
-                                  <div id="doc-back-placeholder" class="text-center">
+                                  <?php $backUrl = $staff['back_image_url'] ?? null; ?>
+                                  <div id="doc-back-placeholder" class="text-center <?= $backUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
                                   </div>
-                                  <img loading="lazy" id="doc-back-img" class="hidden absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
+                                  <img loading="lazy" id="doc-back-img" src="<?= htmlspecialchars($backUrl ?? '', ENT_QUOTES, 'UTF-8') ?>" class="<?= $backUrl ? '' : 'hidden' ?> absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" alt="ID Back" />
                                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                                       <span class="material-symbols-outlined text-white text-3xl drop-shadow-lg" aria-hidden="true">zoom_in</span>
                                   </div>
@@ -292,19 +365,19 @@ ob_start();
                   <div class="grid grid-cols-2 gap-3">
                       <div class="text-center p-3 bg-background rounded-xl border border-border-subtle">
                           <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Deposits</div>
-                          <div id="stat-total-deposits" class="text-sm font-black text-success">₹0.00</div>
+                          <div id="stat-total-deposits" class="text-sm font-black text-success">₹<?= number_format((float)($performance['total_deposits'] ?? 0), 2) ?></div>
                       </div>
                       <div class="text-center p-3 bg-background rounded-xl border border-border-subtle">
                           <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Withdrawals</div>
-                          <div id="stat-total-withdrawals" class="text-sm font-black text-error">₹0.00</div>
+                          <div id="stat-total-withdrawals" class="text-sm font-black text-error">₹<?= number_format((float)($performance['total_withdrawals'] ?? 0), 2) ?></div>
                       </div>
                       <div class="text-center p-3 bg-background rounded-xl border border-border-subtle">
                           <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Transactions</div>
-                          <div id="stat-total-txns" class="text-sm font-black text-text-primary">0</div>
+                          <div id="stat-total-txns" class="text-sm font-black text-text-primary"><?= number_format((int)($performance['total_transactions'] ?? 0)) ?></div>
                       </div>
                       <div class="text-center p-3 bg-background rounded-xl border border-border-subtle">
                           <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Last Active</div>
-                          <div id="stat-last-active" class="text-xs font-black text-text-primary mt-0.5">Never</div>
+                          <div id="stat-last-active" class="text-xs font-black text-text-primary mt-0.5"><?= !empty($staff['last_login_at']) ? date('d M Y', strtotime($staff['last_login_at'])) : 'Never' ?></div>
                       </div>
                   </div>
               </div>
@@ -315,19 +388,20 @@ ob_start();
                   <div class="space-y-3">
                       <div class="flex justify-between items-center pb-2.5 border-b border-border-subtle">
                           <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Deposits Processed</span>
-                          <span id="summary-deposits" class="text-sm font-bold text-text-primary">0 (₹0.00)</span>
+                          <span id="summary-deposits" class="text-sm font-bold text-text-primary"><?= (int)($today['deposit_count'] ?? 0) ?> (₹<?= number_format((float)($today['total_deposits'] ?? 0), 2) ?>)</span>
                       </div>
                       <div class="flex justify-between items-center pb-2.5 border-b border-border-subtle">
                           <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Withdrawals Processed</span>
-                          <span id="summary-withdrawals" class="text-sm font-bold text-text-primary">0 (₹0.00)</span>
+                          <span id="summary-withdrawals" class="text-sm font-bold text-text-primary"><?= (int)($today['withdrawal_count'] ?? 0) ?> (₹<?= number_format((float)($today['total_withdrawals'] ?? 0), 2) ?>)</span>
                       </div>
                       <div class="flex justify-between items-center pb-2.5 border-b border-border-subtle">
                           <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Total Txn Count</span>
-                          <span id="summary-total-txns" class="text-sm font-bold text-text-primary">0</span>
+                          <span id="summary-total-txns" class="text-sm font-bold text-text-primary"><?= (int)($today['total_transactions'] ?? 0) ?></span>
                       </div>
                       <div class="flex justify-between items-center pt-1">
                           <span class="text-[10px] font-black text-primary uppercase tracking-widest">Net Volume Today</span>
-                          <span id="summary-total-amount" class="text-base font-black text-primary">₹0.00</span>
+                          <?php $todayNet = (float)($today['total_deposits'] ?? 0) + (float)($today['total_withdrawals'] ?? 0); ?>
+                          <span id="summary-total-amount" class="text-base font-black text-primary">₹<?= number_format($todayNet, 2) ?></span>
                       </div>
                   </div>
               </div>
@@ -339,7 +413,21 @@ ob_start();
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">schedule</span>
                   </h5>
                   <div id="staff-shift-history" class="space-y-2.5">
-                      <div class="text-[10px] font-black text-text-secondary text-center py-4 uppercase tracking-widest">Loading shifts...</div>
+                      <?php if (empty($shifts)): ?>
+                          <div class="text-xs text-text-secondary text-center py-4">No recent shift logs recorded.</div>
+                      <?php else: ?>
+                          <?php foreach ($shifts as $s): ?>
+                              <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-border-subtle">
+                                  <div>
+                                      <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest"><?= date('d M Y', strtotime($s['shift_date'])) ?></div>
+                                      <div class="text-xs font-bold text-text-primary mt-0.5"><?= !empty($s['login_time']) ? date('h:i A', strtotime($s['login_time'])) : '—' ?> — <?= !empty($s['logout_time']) ? date('h:i A', strtotime($s['logout_time'])) : 'Active' ?></div>
+                                  </div>
+                                  <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                      <span class="material-symbols-outlined text-base" aria-hidden="true">check</span>
+                                  </div>
+                              </div>
+                          <?php endforeach; ?>
+                      <?php endif; ?>
                   </div>
               </div>
 
@@ -381,7 +469,27 @@ ob_start();
                       </tr>
                   </thead>
                   <tbody id="staff-transactions-body">
-                      <tr><td colspan="6" class="text-center py-12 text-text-secondary text-xs font-bold">Loading transactions...</td></tr>
+                      <?php if (empty($transactions)): ?>
+                          <tr><td colspan="6" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No transactions processed yet</td></tr>
+                      <?php else: ?>
+                          <?php foreach ($transactions as $t): ?>
+                              <?php
+                                  $isDep = ($t['type'] === 'deposit');
+                                  $badgeHtml = $isDep
+                                      ? '<span class="badge-tag bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1">DEPOSIT</span>'
+                                      : '<span class="badge-tag bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1">WITHDRAWAL</span>';
+                                  $amtCls = $isDep ? 'text-success font-black' : 'text-error font-black';
+                              ?>
+                              <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0">
+                                  <td class="font-mono text-xs font-bold text-text-secondary"><?= htmlspecialchars($t['txn_id'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
+                                  <td class="text-xs font-bold text-text-primary whitespace-nowrap"><?= !empty($t['created_at']) ? date('d M Y, h:i A', strtotime($t['created_at'])) : '—' ?></td>
+                                  <td class="text-xs font-bold text-text-primary truncate max-w-[180px]"><?= htmlspecialchars($t['customer_name'] ?? 'Customer', ENT_QUOTES, 'UTF-8') ?></td>
+                                  <td class="font-mono text-xs text-text-secondary"><?= htmlspecialchars($t['account_no'] ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></td>
+                                  <td class="text-center"><?= $badgeHtml ?></td>
+                                  <td class="text-right text-xs font-mono <?= $amtCls ?>">₹<?= number_format((float)($t['amount'] ?? 0), 2) ?></td>
+                              </tr>
+                          <?php endforeach; ?>
+                      <?php endif; ?>
                   </tbody>
               </table>
           </div>
@@ -406,7 +514,22 @@ ob_start();
                       </tr>
                   </thead>
                   <tbody id="staff-activities-body">
-                      <tr><td colspan="4" class="text-center py-12 text-text-secondary text-xs font-bold">Loading activity logs...</td></tr>
+                      <?php if (empty($activities)): ?>
+                          <tr><td colspan="4" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No audit activities logged</td></tr>
+                      <?php else: ?>
+                          <?php foreach ($activities as $a): ?>
+                              <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0">
+                                  <td class="text-xs font-bold text-text-primary whitespace-nowrap"><?= !empty($a['created_at']) ? date('d M Y, h:i A', strtotime($a['created_at'])) : '—' ?></td>
+                                  <td>
+                                      <span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary">
+                                          <?= htmlspecialchars($a['action'] ?? 'ACTIVITY', ENT_QUOTES, 'UTF-8') ?>
+                                      </span>
+                                  </td>
+                                  <td class="text-xs text-text-secondary font-medium"><?= htmlspecialchars($a['details'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
+                                  <td class="text-right text-xs font-mono font-bold text-text-secondary"><?= htmlspecialchars($a['ip_address'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
+                              </tr>
+                          <?php endforeach; ?>
+                      <?php endif; ?>
                   </tbody>
               </table>
           </div>
