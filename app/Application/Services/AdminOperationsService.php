@@ -1190,12 +1190,17 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     public function unlockAccount(int $userId, int $adminId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
-        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
+        $lower = 'abcdefghjkmnpqrstuvwxyz';
+        $upper = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+        $digits = '23456789';
+        $symbols = '@#$%!';
+        $chars = $lower . $upper . $digits . $symbols;
+        
         $temp_pass = '';
-        $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
-        $temp_pass .= 'ABCDEFGHJKMNPQRSTUVWXYZ'[rand(0, 23)];
-        $temp_pass .= '23456789'[rand(0, 7)];
-        $temp_pass .= '@#$%!'[rand(0, 4)];
+        $temp_pass .= $lower[rand(0, strlen($lower) - 1)];
+        $temp_pass .= $upper[rand(0, strlen($upper) - 1)];
+        $temp_pass .= $digits[rand(0, strlen($digits) - 1)];
+        $temp_pass .= $symbols[rand(0, strlen($symbols) - 1)];
         for ($i = 4; $i < 12; $i++) {
             $temp_pass .= $chars[rand(0, strlen($chars) - 1)];
         }
