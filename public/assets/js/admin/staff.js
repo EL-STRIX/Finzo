@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Staff Management Page Handler
- * Version 2.0 — April 2026
+ * Enterprise Staff Operations, 3-Tier Filter Architecture, CSV Streaming, and Dynamic Pagination
  */
 
 (function() {
@@ -8,32 +8,25 @@
     const PER_PAGE = 20;
 
     /**
-     * Load staff members with current filters
+     * Load staff members with current filters and pagination
      */
     async function loadStaff() {
-        // Role check for Add Button
-        const addBtn = document.getElementById('add-staff-btn');
-        if (addBtn) {
-            // Check role from AdminPortal (which initializes globally)
-            const checkRole = setInterval(() => {
-                if (window.AdminPortal && window.AdminPortal.state.isLoaded) {
-                    clearInterval(checkRole);
-                    if (window.AdminPortal.state.admin.role !== 'super_admin') {
-                        addBtn.remove();
-                    }
-                }
-            }, 100);
-        }
-
         const tbody = document.getElementById('ds-table-body');
         if (tbody) tbody.style.opacity = '0.5';
 
+        const searchVal = document.getElementById('staff-search-input')?.value?.trim() || '';
+        const statusVal = document.getElementById('filter-status')?.value || 'all';
+        const roleVal = document.getElementById('filter-role')?.value || 'all';
+        const branchVal = document.getElementById('filter-branch')?.value || 'all';
+
         try {
             const response = await window.api.get('/staff', {
-                search: document.getElementById('staff-search-input').value,
-                status: document.getElementById('filter-status').value,
-                branch_id: document.getElementById('filter-branch').value,
-                page: currentPage
+                search: searchVal,
+                status: statusVal,
+                role: roleVal,
+                branch_id: branchVal === 'all' ? 0 : branchVal,
+                page: currentPage,
+                per_page: PER_PAGE
             });
 
             if (response.success) {
@@ -42,9 +35,15 @@
                 if (response.stats) {
                     updateStats(response.stats);
                 }
+            } else {
+                renderTable([]);
+                updatePagination(0, 1);
             }
         } catch (error) {
             console.error('Failed to load staff:', error);
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="9" class="py-12 text-center text-error font-bold text-xs uppercase tracking-wider">Failed to load staff records. Please check your connection.</td></tr>';
+            }
         } finally {
             if (tbody) tbody.style.opacity = '1';
         }
@@ -55,17 +54,17 @@
      */
     function updateStats(stats) {
         const elements = {
-            'stat-total-staff': stats.total_staff,
-            'stat-active-staff': stats.active_staff,
-            'stat-suspend-staff': stats.suspended_staff,
-            'stat-transactions-today': stats.transactions_today
+            'stat-total-staff': stats.total_staff ?? 0,
+            'stat-active-staff': stats.active_staff ?? 0,
+            'stat-suspend-staff': stats.suspended_staff ?? 0,
+            'stat-transactions-today': stats.transactions_today ?? 0
         };
 
         for (const [id, value] of Object.entries(elements)) {
             const el = document.getElementById(id);
             if (el) {
-                el.classList.remove('skeleton', 'w-16', 'w-20', 'h-8');
-                el.textContent = value.toLocaleString();
+                el.classList.remove('skeleton', 'min-w-[40px]');
+                el.textContent = Number(value).toLocaleString();
             }
         }
     }
@@ -77,39 +76,73 @@
         const tbody = document.getElementById('ds-table-body');
         if (!tbody) return;
 
-        if (!staff.length) {
-            tbody.innerHTML = '<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">badge</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No staff members found.</div></div></td></tr>';
+        if (!staff || !staff.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="py-16 text-center">
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="w-14 h-14 rounded-2xl bg-surface-subtle border border-border-subtle flex items-center justify-center text-text-secondary mb-3">
+                                <span class="material-symbols-outlined text-3xl" aria-hidden="true">group_off</span>
+                            </div>
+                            <div class="text-sm font-bold text-text-primary uppercase tracking-wider">No Staff Found</div>
+                            <p class="text-xs text-text-secondary mt-1">Try adjusting your filters or search query.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
             return;
         }
 
         tbody.innerHTML = staff.map((s, index) => {
-            const statusClass = s.status === 'active' ? 'badge-success' : (s.status === 'suspended' ? 'badge-danger' : 'badge-warning');
             const countStr = String((currentPage - 1) * PER_PAGE + index + 1).padStart(2, '0');
+            const isActive = (s.status === 'active');
             
-            // initials logic
-            const initials = s.profile_photo_url ? `<img src="${s.profile_photo_url}" class="admin-avatar sm object-cover">` : `<div class="admin-avatar sm premium-gradient-primary uppercase" >${s.initials}</div>`;
+            const statusBadge = isActive
+                ? `<span class="badge-tag bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Active</span>`
+                : `<span class="badge-tag bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Suspended</span>`;
+
+            const initials = s.profile_photo_url 
+                ? `<img src="${s.profile_photo_url}" alt="${s.full_name}" class="w-10 h-10 rounded-xl object-cover border border-border-subtle shrink-0">` 
+                : `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/20 font-black text-xs flex items-center justify-center uppercase shrink-0">${s.initials || 'ST'}</div>`;
+
+            const branchName = s.branch_name || 'Unassigned';
+            const joinedDate = s.date_of_joining ? new Date(s.date_of_joining).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+            const txnCount = Number(s.txn_count || 0);
+            const txnAmount = Number(s.txn_amount || 0);
 
             return `
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors border-b border-slate-100 dark:border-white/5 last:border-0">
-                <td class="font-bold opacity-30 text-[10px] tracking-widest">${countStr}</td>
+            <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0 group">
+                <td class="font-bold opacity-40 text-[11px] tracking-widest pl-4">${countStr}</td>
                 <td>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 py-1">
                         ${initials}
-                        <div>
-                            <div class="font-bold text-sm text-slate-800 dark:text-slate-100">${s.full_name}</div>
-                            <div class="text-[9px] opacity-60 uppercase font-black tracking-tighter">${s.designation} • ${s.department}</div>
+                        <div class="truncate">
+                            <div class="font-bold text-sm text-text-primary group-hover:text-primary transition-colors truncate">${s.full_name || 'Unknown'}</div>
+                            <div class="text-[10px] text-text-secondary uppercase font-bold tracking-tight truncate">${s.designation || 'Staff'} • ${s.department || 'Operations'}</div>
                         </div>
                     </div>
                 </td>
-                <td class="text-center text-[10px] font-bold font-mono opacity-50">${s.staff_id}</td>
-                <td><div class="text-[11px] font-bold">${s.branch_name || 'Unassigned'}</div></td>
-                <td class="text-center font-bold text-xs opacity-60">${s.txn_count || 0}</td>
-                <td class="text-right font-black text-xs text-primary dark:text-blue-400">${window.FinzoUtils.formatINR(s.txn_amount || 0)}</td>
-                <td class="text-[10px] font-bold opacity-40">${s.last_login_at ? window.FinzoUtils.formatDate(s.last_login_at) : 'Never'}</td>
-                <td class="text-right">
-                    <a href="admin-staff-detail.php?id=${s.id}" class="p-2 hover:bg-primary/5 rounded-lg transition-colors text-primary inline-flex items-center gap-1 group">
-                        <span class="text-[10px] font-black uppercase tracking-widest">View</span>
-                        <span class="material-symbols-outlined !text-xs transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
+                <td class="text-center">
+                    <span class="px-2 py-0.5 bg-surface-subtle border border-border-subtle rounded-md text-[11px] font-mono font-bold text-text-secondary">${s.staff_id || '—'}</span>
+                </td>
+                <td>
+                    <div class="text-xs font-bold text-text-primary flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm text-text-secondary" aria-hidden="true">store</span>
+                        <span class="truncate">${branchName}</span>
+                    </div>
+                </td>
+                <td class="text-center">
+                    ${statusBadge}
+                </td>
+                <td class="text-center font-mono font-bold text-xs text-text-secondary">${txnCount.toLocaleString()}</td>
+                <td class="text-right font-mono font-bold text-xs text-text-primary">
+                    ₹${txnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </td>
+                <td class="text-center text-[11px] font-bold text-text-secondary">${joinedDate}</td>
+                <td class="text-right pr-4">
+                    <a href="/Finzo/admin/staff/view?id=${s.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                        <span>View</span>
+                        <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>
                 </td>
             </tr>`;
@@ -131,7 +164,14 @@
         if (container) {
             let html = '';
             for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
+                if (pages > 7 && Math.abs(i - currentPage) > 2 && i !== 1 && i !== pages) {
+                    if (i === 2 || i === pages - 1) {
+                        html += `<span class="w-8 h-8 flex items-center justify-center text-xs text-text-secondary">...</span>`;
+                    }
+                    continue;
+                }
+                const isActive = (i === currentPage);
+                html += `<button type="button" class="page-num w-8 h-8 rounded-lg text-xs font-bold transition-all ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-surface border border-border-subtle text-text-secondary hover:bg-surface-hover hover:text-text-primary'}" data-page="${i}">${i}</button>`;
             }
             container.innerHTML = html;
         }
@@ -139,12 +179,10 @@
         const prevBtn = document.getElementById('prev-page');
         const nextBtn = document.getElementById('next-page');
         if (prevBtn) {
-            prevBtn.disabled = (currentPage === 1);
-            prevBtn.style.opacity = (currentPage === 1 ? '0.5' : '1');
+            prevBtn.disabled = (currentPage <= 1);
         }
         if (nextBtn) {
-            nextBtn.disabled = (currentPage === pages || pages === 0);
-            nextBtn.style.opacity = (currentPage === pages || pages === 0 ? '0.5' : '1');
+            nextBtn.disabled = (currentPage >= pages || pages === 0);
         }
     }
 
@@ -154,20 +192,7 @@
     async function loadBranches() {
         try {
             const response = await window.api.get('/branches');
-            if (response.success) {
-                // Populate Modal Dropdown
-                const modalMenu = document.getElementById('staff-branch-menu');
-                if (modalMenu) {
-                    modalMenu.innerHTML = '';
-                    response.branches.forEach(b => {
-                        const opt = document.createElement('div');
-                        opt.className = 'finzo-dropdown-option';
-                        opt.setAttribute('data-value', b.id);
-                        opt.textContent = b.name;
-                        modalMenu.appendChild(opt);
-                    });
-                }
-
+            if (response.success && Array.isArray(response.branches)) {
                 // Populate Filter Dropdown
                 const filterMenu = document.getElementById('filter-branch-menu');
                 if (filterMenu) {
@@ -176,8 +201,21 @@
                         const opt = document.createElement('div');
                         opt.className = 'finzo-dropdown-option';
                         opt.setAttribute('data-value', b.id);
-                        opt.textContent = b.name;
+                        opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
                         filterMenu.appendChild(opt);
+                    });
+                }
+
+                // Populate Export Modal Dropdown
+                const exportMenu = document.getElementById('export-branch-menu');
+                if (exportMenu) {
+                    exportMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
+                    response.branches.forEach(b => {
+                        const opt = document.createElement('div');
+                        opt.className = 'finzo-dropdown-option';
+                        opt.setAttribute('data-value', b.id);
+                        opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
+                        exportMenu.appendChild(opt);
                     });
                 }
             }
@@ -187,363 +225,192 @@
     }
 
     /**
-     * Global Functions for Modal and Form
+     * Set Modal Dropdown Value and synchronized UI label
      */
-    window.openAddStaffModal = function() {
-        // Double check permission on open
-        if (window.AdminPortal && window.AdminPortal.state.admin.role !== 'super_admin') {
-            if (window.showToast) window.showToast('Access Denied: Only Super Admins can add staff.', 'error');
-            return;
-        }
-
-        const modal = document.getElementById('addStaffModal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-            generateStaffPassword(); // Auto-generate on open
-            loadNextStaffId(); // Fetch next sequential ID
-        }
-    };
-
-    async function loadNextStaffId() {
-        const idInput = document.getElementById('staff_id_display');
-        if (!idInput) return;
-        
-        idInput.value = 'Loading...';
-        try {
-            const response = await window.api.get('/staff/next-id');
-            if (response.success) {
-                idInput.value = response.next_id;
-            } else {
-                idInput.value = 'ERROR';
+    function setModalDropdownValue(dropdownId, inputId, val) {
+        const dropdown = document.getElementById(dropdownId);
+        const input = document.getElementById(inputId);
+        if (input) input.value = val;
+        if (dropdown) {
+            const opt = dropdown.querySelector(`.finzo-dropdown-option[data-value="${val}"]`) || dropdown.querySelector('.finzo-dropdown-option');
+            const label = dropdown.querySelector('.dropdown-label');
+            if (opt && label) {
+                label.textContent = opt.textContent.trim();
+                dropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                opt.classList.add('is-selected');
             }
-        } catch (error) {
-            console.error('Failed to load next staff ID');
-            idInput.value = 'ERROR';
         }
-    }
-
-    window.closeAddStaffModal = function() {
-        const modal = document.getElementById('addStaffModal');
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
-            document.getElementById('addStaffForm').reset();
-            resetPreviews();
-            clearErrors();
-        }
-    };
-
-    window.generateStaffPassword = async function() {
-        const passInput = document.getElementById('staff-password');
-        const icon = document.getElementById('gen-pass-icon');
-        
-        if (icon) icon.classList.add('animate-spin');
-        
-        try {
-            const response = await window.api.post('/staff/password/generate', {});
-            if (response.success && passInput) {
-                passInput.value = response.password;
-            }
-        } catch (error) {
-            console.error('Failed to generate password');
-        } finally {
-            if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 500);
-        }
-    };
-
-    window.copyPasswordToClipboard = function() {
-        const pass = document.getElementById('staff-password').value;
-        if (!pass) return;
-        
-        navigator.clipboard.writeText(pass).then(() => {
-            const icon = document.getElementById('pass-copy-icon');
-            if (icon) {
-                icon.textContent = 'check';
-                setTimeout(() => icon.textContent = 'content_copy', 2000);
-            }
-            if (window.showToast) window.showToast('Password copied to clipboard', 'success');
-        });
-    };
-
-    window.previewProfilePhoto = function(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('profile-preview-img');
-                const container = document.getElementById('photo-preview-container');
-                img.src = e.target.result;
-                img.classList.remove('hidden');
-                container.querySelectorAll('span').forEach(s => s.classList.add('hidden'));
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
-    window.previewDoc = function(input, type) {
-        if (input.files && input.files[0]) {
-            const fileName = input.files[0].name;
-            document.getElementById(`${type}-file-name`).textContent = fileName;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById(`${type}-preview`);
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                document.getElementById(`${type}-drop-zone`).querySelector('span').classList.add('hidden');
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
-    function resetPreviews() {
-        document.getElementById('profile-preview-img').classList.add('hidden');
-        document.getElementById('photo-preview-container').querySelectorAll('span').forEach(s => s.classList.remove('hidden'));
-        document.getElementById('front-preview').classList.add('hidden');
-        document.getElementById('back-preview').classList.add('hidden');
-        document.getElementById('front-file-name').textContent = 'Click or drag to upload front image';
-        document.getElementById('back-file-name').textContent = 'Click or drag to upload back image';
-        document.getElementById('front-drop-zone').querySelector('span').classList.remove('hidden');
-        document.getElementById('back-drop-zone').querySelector('span').classList.remove('hidden');
-    }
-
-    function clearErrors() {
-        document.querySelectorAll('[id^="error-"]').forEach(el => {
-            el.textContent = '';
-            el.classList.add('hidden');
-        });
-    }
-
-    function displayErrors(errors) {
-        clearErrors();
-        Object.keys(errors).forEach(key => {
-            const errorEl = document.getElementById(`error-${key}`);
-            if (errorEl) {
-                errorEl.textContent = errors[key];
-                errorEl.classList.remove('hidden');
-            }
-        });
     }
 
     /**
-     * Initialize Drag and Drop for file uploads
+     * Open CSV Export Modal
      */
-    function initDragAndDrop() {
-        // ID Documents
-        ['front', 'back'].forEach(type => {
-            const dropZone = document.getElementById(`${type}-drop-zone`);
-            const input = document.getElementById(`id_${type}`);
-            
-            if (!dropZone || !input) return;
+    function openExportModal() {
+        const exportModal = document.getElementById('export-modal');
+        if (!exportModal) return;
 
-            ['dragover', 'dragleave', 'drop'].forEach(evt => {
-                dropZone.addEventListener(evt, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
+        // Sync with active filter values
+        const curStatus = document.getElementById('filter-status')?.value || 'all';
+        const curRole = document.getElementById('filter-role')?.value || 'all';
+        const curBranch = document.getElementById('filter-branch')?.value || 'all';
 
-            dropZone.addEventListener('dragover', () => {
-                dropZone.classList.add('border-primary/60', 'bg-primary/5', 'scale-[1.01]');
-            });
+        setModalDropdownValue('export-status-dropdown', 'export-filter-status', curStatus);
+        setModalDropdownValue('export-role-dropdown', 'export-filter-role', curRole);
+        setModalDropdownValue('export-branch-dropdown', 'export-filter-branch', curBranch);
 
-            ['dragleave', 'drop'].forEach(evt => {
-                dropZone.addEventListener(evt, () => {
-                    dropZone.classList.remove('border-primary/60', 'bg-primary/5', 'scale-[1.01]');
-                });
-            });
+        exportModal.classList.remove('hidden');
+        exportModal.style.display = 'flex';
+        document.body.classList.add('overflow-hidden');
+    }
 
-            dropZone.addEventListener('drop', (e) => {
-                const files = e.dataTransfer.files;
-                if (files.length) {
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(files[0]);
-                    input.files = dataTransfer.files;
-                    window.previewDoc(input, type);
-                }
-            });
+    /**
+     * Close CSV Export Modal
+     */
+    function closeExportModal() {
+        const exportModal = document.getElementById('export-modal');
+        if (!exportModal) return;
+        exportModal.classList.add('hidden');
+        exportModal.style.display = 'none';
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    /**
+     * Start Staff CSV Download
+     */
+    function startStaffExport() {
+        const status = document.getElementById('export-filter-status')?.value || 'all';
+        const role = document.getElementById('export-filter-role')?.value || 'all';
+        const branchId = document.getElementById('export-filter-branch')?.value || 'all';
+        const search = document.getElementById('staff-search-input')?.value?.trim() || '';
+
+        const params = new URLSearchParams({
+            search: search,
+            status: status,
+            role: role,
+            branch_id: branchId === 'all' ? '0' : branchId
         });
 
-        // Profile Photo
-        const photoZone = document.getElementById('photo-preview-container');
-        const photoInput = document.getElementById('profile_photo');
-        if (photoZone && photoInput) {
-            ['dragover', 'dragleave', 'drop'].forEach(evt => {
-                photoZone.addEventListener(evt, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
+        const exportUrl = `/Finzo/api/v1/staff/export?${params.toString()}`;
+        
+        // Trigger direct browser download
+        const downloadLink = document.createElement('a');
+        downloadLink.href = exportUrl;
+        downloadLink.setAttribute('download', `finzo_staff_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
 
-            photoZone.addEventListener('dragover', () => {
-                photoZone.classList.add('border-primary', 'scale-110');
-            });
-
-            ['dragleave', 'drop'].forEach(evt => {
-                photoZone.addEventListener(evt, () => {
-                    photoZone.classList.remove('border-primary', 'scale-110');
-                });
-            });
-
-            photoZone.addEventListener('drop', (e) => {
-                const files = e.dataTransfer.files;
-                if (files.length) {
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(files[0]);
-                    photoInput.files = dataTransfer.files;
-                    window.previewProfilePhoto(photoInput);
-                }
-            });
+        if (window.showToast) {
+            window.showToast('Staff CSV export download started!', 'success');
         }
+
+        closeExportModal();
     }
 
     /**
      * Bind page events
      */
     function bindEvents() {
-        initDragAndDrop();
-        // Search with debounce
+        // Search input with debounce
         const searchInput = document.getElementById('staff-search-input');
         if (searchInput) {
             searchInput.addEventListener('input', window.FinzoUtils.debounce(() => {
                 currentPage = 1;
                 loadStaff();
-            }, 400));
+            }, 350));
         }
 
-        // Dropdown filters
-        const statusVal = document.getElementById('filter-status');
-        const branchVal = document.getElementById('filter-branch');
-        
-        if (statusVal) statusVal.addEventListener('change', () => { currentPage = 1; loadStaff(); });
-        if (branchVal) branchVal.addEventListener('change', () => { currentPage = 1; loadStaff(); });
-
-        // Pagination
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('.page-num');
-            if (btn) {
-                currentPage = parseInt(btn.getAttribute('data-page'));
-                loadStaff();
+        // Filter change listeners
+        ['filter-status', 'filter-role', 'filter-branch'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    currentPage = 1;
+                    loadStaff();
+                });
             }
         });
 
-        const prevBtn = document.getElementById('prev-page');
-        if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadStaff(); } });
+        // Pagination buttons
+        document.addEventListener('click', (e) => {
+            const pageBtn = e.target.closest('.page-num');
+            if (pageBtn) {
+                currentPage = parseInt(pageBtn.getAttribute('data-page'), 10);
+                loadStaff();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
 
-        const nextBtn = document.getElementById('next-page');
-        if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; loadStaff(); });
+            const prevBtn = e.target.closest('#prev-page');
+            if (prevBtn && currentPage > 1) {
+                currentPage--;
+                loadStaff();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
 
-        // Add Staff Form Submit
-        const addForm = document.getElementById('addStaffForm');
-        if (addForm) {
-        addForm.addEventListener('submit', async function(e) {
+            const nextBtn = e.target.closest('#next-page');
+            if (nextBtn) {
+                currentPage++;
+                loadStaff();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            // Export Modal Trigger
+            const exportOpen = e.target.closest('#open-export-modal');
+            if (exportOpen) {
                 e.preventDefault();
-                const submitBtn = document.getElementById('create-staff-submit');
-                
-                clearErrors();
+                openExportModal();
+                return;
+            }
 
-                // --- Client-side pre-validation for custom dropdown hidden inputs ---
-                let clientErrors = false;
-                const requiredFields = [
-                    { id: 'full_name',       label: 'Full Name' },
-                    { id: 'date_of_birth',   label: 'Date of Birth' },
-                    { id: 'gender',          label: 'Gender' },
-                    { id: 'personal_email',  label: 'Personal Email' },
-                    { id: 'phone',           label: 'Phone Number' },
-                    { id: 'id_type',         label: 'ID Type' },
-                    { id: 'id_number',       label: 'ID Number' },
-                    { id: 'city',            label: 'City' },
-                    { id: 'state',           label: 'State' },
-                    { id: 'pincode',         label: 'Pincode' },
-                    { id: 'staff-password',  label: 'Password', name: 'password' },
-                ];
-                requiredFields.forEach(({ id, label, name }) => {
-                    const el = document.getElementById(id);
-                    if (!el) return;
-                    const val = el.value ? el.value.trim() : '';
-                    if (!val) {
-                        const errorKey = name || id;
-                        const errorEl = document.getElementById(`error-${errorKey}`);
-                        if (errorEl) {
-                            errorEl.textContent = `${label} is required`;
-                            errorEl.classList.remove('hidden');
-                        }
-                        clientErrors = true;
-                    }
-                });
+            // Export Modal Close
+            const exportClose = e.target.closest('.close-export-modal');
+            if (exportClose) {
+                e.preventDefault();
+                closeExportModal();
+                return;
+            }
 
-                // Enforce ID front and back uploads
-                const idFront = document.getElementById('id_front');
-                if (!idFront || !idFront.files || idFront.files.length === 0) {
-                    const errorEl = document.getElementById('error-id_front');
-                    if (errorEl) {
-                        errorEl.textContent = 'Front image of identity document is required';
-                        errorEl.classList.remove('hidden');
-                    }
-                    clientErrors = true;
-                }
-                const idBack = document.getElementById('id_back');
-                if (!idBack || !idBack.files || idBack.files.length === 0) {
-                    const errorEl = document.getElementById('error-id_back');
-                    if (errorEl) {
-                        errorEl.textContent = 'Back image of identity document is required';
-                        errorEl.classList.remove('hidden');
-                    }
-                    clientErrors = true;
-                }
+            // Start Export Action
+            const exportAction = e.target.closest('#start-export');
+            if (exportAction) {
+                e.preventDefault();
+                startStaffExport();
+                return;
+            }
+        });
 
-                if (clientErrors) {
-                    if (window.showToast) window.showToast('Please fill in all required fields.', 'error');
-                    return;
-                }
-                // --- End client-side validation ---
-
-                window.api.setButtonLoading(submitBtn, true, 'Processing...');
-                
-                try {
-                    const formData = new FormData(addForm);
-                    // CSRF token from session (handled by api.js if set up, or add manually)
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || '';
-                    formData.append('csrf_token', csrfToken);
-
-                    const response = await window.api.upload('/staff', formData);
-
-                    if (response.success) {
-                        if (window.showToast) window.showToast('Staff member added successfully!', 'success');
-                        closeAddStaffModal();
-                        loadStaff();
-                    } else {
-                        if (response.errors) {
-                            displayErrors(response.errors);
-                            if (window.showToast) window.showToast('Please correct the highlighted errors.', 'error');
-                        } else {
-                            if (window.showToast) window.showToast(response.message || 'Failed to add staff', 'error');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Staff creation error:', error);
-                    if (window.showToast) window.showToast('A network error occurred.', 'error');
-                } finally {
-                    window.api.setButtonLoading(submitBtn, false);
+        // Backdrop click to close export modal
+        const exportModal = document.getElementById('export-modal');
+        if (exportModal) {
+            exportModal.addEventListener('click', (e) => {
+                if (e.target === exportModal) {
+                    closeExportModal();
                 }
             });
         }
+
+        // Escape key to close export modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && exportModal && !exportModal.classList.contains('hidden')) {
+                closeExportModal();
+            }
+        });
     }
 
-    // Initial Load
+    // Initialize on DOM ready
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('search');
         if (searchQuery) {
             const searchInput = document.getElementById('staff-search-input');
             if (searchInput) searchInput.value = searchQuery;
-            loadStaff(); // the fetch reads from the input
-        } else {
-            loadStaff();
         }
+
         loadBranches();
+        loadStaff();
         bindEvents();
     });
 })();
