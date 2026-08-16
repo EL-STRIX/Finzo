@@ -1,26 +1,26 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Management';
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Staff Management</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Manage staff accounts, roles, assignments, and permissions</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <button id="open-export-modal" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
-            <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">file_download</span>
-            <span>Export CSV</span>
-        </button>
-        <a id="add-staff-btn" href="/Finzo/admin/staff/add" class="btn btn-primary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">person_add</span>
-            <span>Add Staff</span>
-        </a>
-    </div>
-</div>
-';
 ob_start();
 ?>
+      <!-- TOP PAGE HEADER & ACTION BAR -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+          <div>
+              <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Staff Management</h1>
+              <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Manage staff accounts, roles, assignments, and permissions</p>
+          </div>
+          <div class="flex items-center gap-3">
+              <button id="open-export-modal" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                  <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">file_download</span>
+                  <span>Export CSV</span>
+              </button>
+              <a id="add-staff-btn" href="/Finzo/admin/staff/add" class="btn btn-primary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">person_add</span>
+                  <span>Add Staff</span>
+              </a>
+          </div>
+      </div>
+
       <!-- STATS ROW -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 relative z-10">
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">

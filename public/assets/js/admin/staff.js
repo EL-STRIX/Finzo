@@ -29,11 +29,18 @@
                 per_page: PER_PAGE
             });
 
-            if (response.success) {
-                renderTable(response.staff || []);
-                updatePagination(response.total || 0, response.pages || 1);
-                if (response.stats) {
-                    updateStats(response.stats);
+            if (response && (response.success || response.status === 200 || response.data)) {
+                const payload = response.data || response;
+                const staffList = payload.staff || response.staff || [];
+                const totalCount = payload.total ?? response.total ?? staffList.length;
+                const totalPages = payload.pages ?? response.pages ?? 1;
+
+                renderTable(staffList);
+                updatePagination(totalCount, totalPages);
+
+                const stats = payload.stats || response.stats;
+                if (stats) {
+                    updateStats(stats);
                 }
             } else {
                 renderTable([]);
@@ -140,7 +147,7 @@
                 </td>
                 <td class="text-center text-[11px] font-bold text-text-secondary">${joinedDate}</td>
                 <td class="text-right pr-4">
-                    <a href="/Finzo/admin/staff/view?id=${s.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                    <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
                         <span>View</span>
                         <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>
@@ -192,12 +199,15 @@
     async function loadBranches() {
         try {
             const response = await window.api.get('/branches');
-            if (response.success && Array.isArray(response.branches)) {
+            const payload = response?.data || response;
+            const branches = payload?.branches || response?.branches || [];
+
+            if (Array.isArray(branches) && branches.length > 0) {
                 // Populate Filter Dropdown
                 const filterMenu = document.getElementById('filter-branch-menu');
                 if (filterMenu) {
                     filterMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
-                    response.branches.forEach(b => {
+                    branches.forEach(b => {
                         const opt = document.createElement('div');
                         opt.className = 'finzo-dropdown-option';
                         opt.setAttribute('data-value', b.id);
@@ -210,7 +220,7 @@
                 const exportMenu = document.getElementById('export-branch-menu');
                 if (exportMenu) {
                     exportMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
-                    response.branches.forEach(b => {
+                    branches.forEach(b => {
                         const opt = document.createElement('div');
                         opt.className = 'finzo-dropdown-option';
                         opt.setAttribute('data-value', b.id);

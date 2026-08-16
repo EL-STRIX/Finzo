@@ -318,20 +318,21 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await window.api.get('/staff/' + staffId);
 
-            if (!response || !response.success) {
+            if (!response || (!response.success && response.status !== 200 && !response.data)) {
                 if (window.showToast) window.showToast(response?.message || 'Error loading staff dossier', 'error');
                 return;
             }
 
-            const staff = response.staff || {};
-            const performance = response.performance || {};
-            const today = response.today_performance || {};
-            const transactions = response.transactions || [];
-            const shifts = response.shifts || [];
-            const activities = response.activities || [];
-            const documents = response.documents || [];
-            const address = response.address || {};
-            const totalShifts = response.total_shifts || 0;
+            const payload = response.data || response;
+            const staff = payload.staff || response.staff || {};
+            const performance = payload.performance || response.performance || {};
+            const today = payload.today_performance || payload.today || response.today_performance || {};
+            const transactions = payload.transactions || response.transactions || [];
+            const shifts = payload.shifts || response.shifts || [];
+            const activities = payload.activities || response.activities || [];
+            const documents = payload.documents || response.documents || [];
+            const address = payload.address || response.address || {};
+            const totalShifts = payload.total_shifts ?? response.total_shifts ?? 0;
 
             currentStaff = staff;
             currentStaffTransactions = transactions;
@@ -698,9 +699,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 reason: reason
             });
 
-            if (resp.success) {
+            const respPayload = resp.data || resp;
+
+            if (resp.success || resp.status === 200 || respPayload.success) {
                 if (currentAction === 'reset') {
-                    const tempPass = resp.temp_password || '—';
+                    const tempPass = respPayload.temp_password || resp.temp_password || '—';
                     const bodyText = document.getElementById('modal-body-text');
                     if (bodyText) {
                         bodyText.innerHTML = `
@@ -731,13 +734,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = '/Finzo/admin/staff';
                     }, 1000);
                 } else {
-                    if (window.showToast) window.showToast(resp.message || 'Action executed successfully', 'success');
+                    if (window.showToast) window.showToast(respPayload.message || resp.message || 'Action executed successfully', 'success');
                     closeGovernanceModal();
                     loadStaffData();
                 }
             } else {
                 if (authErr) {
-                    authErr.textContent = resp.message || 'Authorization failed. Please verify credentials.';
+                    authErr.textContent = respPayload.message || resp.message || 'Authorization failed. Please verify credentials.';
                     authErr.classList.remove('hidden');
                 }
                 if (confirmBtn) {
