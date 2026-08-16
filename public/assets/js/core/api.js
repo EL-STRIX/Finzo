@@ -28,18 +28,26 @@
             },
         };
 
-        if (body && method !== 'GET') {
+        if (method !== 'GET') {
             const csrf = window.csrfToken || (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
             
-            if (isForm || body instanceof FormData) {
-                fetchOpts.body = body instanceof FormData ? body : objectToFormData(body);
-                if (csrf && !fetchOpts.body.has('csrf_token')) {
-                    fetchOpts.body.append('csrf_token', csrf);
+            if (csrf) {
+                fetchOpts.headers['X-CSRF-Token'] = csrf;
+            }
+
+            if (body) {
+                if (isForm || body instanceof FormData) {
+                    fetchOpts.body = body instanceof FormData ? body : objectToFormData(body);
+                    if (csrf && !fetchOpts.body.has('csrf_token')) {
+                        fetchOpts.body.append('csrf_token', csrf);
+                    }
+                } else {
+                    if (csrf && typeof body === 'object' && body !== null) {
+                        body.csrf_token = csrf;
+                    }
+                    fetchOpts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    fetchOpts.body = objectToURLParams(body);
                 }
-            } else {
-                if (csrf) body.csrf_token = csrf;
-                fetchOpts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                fetchOpts.body = objectToURLParams(body);
             }
         }
 

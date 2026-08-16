@@ -1,12 +1,21 @@
 <?php
 $portal = $portal ?? 'guest'; // admin, staff, user, guest
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="csrf-token" content="" />
+    <meta name="csrf-token" content="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>" />
+    <script>window.csrfToken = "<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>";</script>
     <title><?= $pageTitle ?? 'Finzo Banking' ?></title>
     
     <!-- Anti-FOUC: Apply saved theme before first paint -->

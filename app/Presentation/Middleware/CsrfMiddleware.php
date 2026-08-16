@@ -25,15 +25,18 @@ class CsrfMiddleware
 
 
 
-        $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        $headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
+        $headerToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $headers['X-Csrf-Token'] ?? '';
+        $token = $_POST['csrf_token'] ?? $headerToken;
         
-        // Handle PUT/DELETE raw input
+        // Handle PUT/DELETE/PATCH raw input
         if (empty($token) && in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
-            $input = json_decode(file_get_contents('php://input'), true);
+            $raw = file_get_contents('php://input');
+            $input = json_decode($raw, true);
             if (is_array($input) && isset($input['csrf_token'])) {
                 $token = $input['csrf_token'];
             } else {
-                parse_str(file_get_contents('php://input'), $parsed);
+                parse_str($raw, $parsed);
                 $token = $parsed['csrf_token'] ?? '';
             }
         }
