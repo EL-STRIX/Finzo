@@ -382,23 +382,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // 3. Profile Card
+            // 3. Profile Card Photo & Badges
             const photoContainer = document.getElementById('staff-photo-container');
             const initials = staff.full_name ? staff.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'ST';
             if (photoContainer) {
                 if (staff.profile_photo_url) {
-                    photoContainer.innerHTML = `<img src="${staff.profile_photo_url}" class="w-full h-full object-cover" alt="${staff.full_name}">`;
+                    const img = new Image();
+                    img.src = staff.profile_photo_url;
+                    img.className = 'w-full h-full object-cover';
+                    img.alt = staff.full_name || 'Staff Profile';
+                    img.onload = () => {
+                        photoContainer.innerHTML = '';
+                        photoContainer.appendChild(img);
+                    };
+                    img.onerror = () => {
+                        photoContainer.innerHTML = `<span class="text-3xl sm:text-4xl font-black text-primary font-headline">${initials}</span>`;
+                    };
                 } else {
-                    photoContainer.innerHTML = `<span class="text-4xl font-black text-primary">${initials}</span>`;
+                    photoContainer.innerHTML = `<span class="text-3xl sm:text-4xl font-black text-primary font-headline">${initials}</span>`;
                 }
             }
 
             setText('info-name', staff.full_name);
             setText('info-staff-id-badge', staff.staff_id || 'STF---');
-            setText('info-designation-badge', staff.designation || 'Staff');
-            setText('info-department-badge', staff.department || 'Operations');
-            setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
 
+            // Designation Badge
+            const desigBadge = document.getElementById('info-designation-badge');
+            const designation = staff.designation || 'Staff';
+            if (desigBadge) {
+                desigBadge.textContent = designation;
+                if (designation.toLowerCase().includes('manager')) {
+                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm';
+                } else if (designation.toLowerCase().includes('supervisor')) {
+                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 shadow-sm';
+                } else {
+                    desigBadge.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm';
+                }
+            }
+
+            // Status Badge on Profile Card
+            const statusBadge = document.getElementById('info-status-badge');
+            const statusText = document.getElementById('info-status-text');
+            const isActive = (staff.status === 'active');
+            if (statusBadge && statusText) {
+                statusBadge.className = isActive 
+                    ? 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-success-bg text-success border border-success/20 shadow-sm'
+                    : 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-error-bg text-error border border-error/20 shadow-sm';
+                statusText.textContent = isActive ? 'Active Account' : 'Suspended';
+            }
+
+            setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
             setText('info-email', staff.email || 'N/A');
             setText('info-phone', staff.phone || 'N/A');
             setText('info-gender', staff.gender || 'Not specified');
@@ -436,8 +469,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 6. Documents
             const doc = (documents && documents.length > 0) ? documents[0] : null;
-            setText('doc-id-type', doc?.id_type || staff.id_type || 'Not uploaded');
-            setText('doc-id-number', doc?.id_number || staff.id_number || '—');
+            setText('doc-id-type', staff.id_type || doc?.id_type || 'Identity Proof');
+            setText('doc-id-number', staff.id_number || doc?.id_number || '—');
 
             const frontSrc = staff.front_image_url || (doc?.front_image ? `/Finzo/${doc.front_image.replace(/^\//, '')}` : null);
             const frontImg = document.getElementById('doc-front-img');
@@ -448,6 +481,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 frontImg.classList.remove('hidden');
                 if (frontPlaceholder) frontPlaceholder.classList.add('hidden');
                 frontWrapper.onclick = () => openLightbox(frontSrc);
+            } else if (frontPlaceholder && frontImg) {
+                frontImg.classList.add('hidden');
+                frontPlaceholder.classList.remove('hidden');
             }
 
             const backSrc = staff.back_image_url || (doc?.back_image ? `/Finzo/${doc.back_image.replace(/^\//, '')}` : null);
@@ -459,6 +495,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 backImg.classList.remove('hidden');
                 if (backPlaceholder) backPlaceholder.classList.add('hidden');
                 backWrapper.onclick = () => openLightbox(backSrc);
+            } else if (backPlaceholder && backImg) {
+                backImg.classList.add('hidden');
+                backPlaceholder.classList.remove('hidden');
             }
 
             // 7. Performance Overview

@@ -74,7 +74,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
 
         $dest = $upload_dir . $filename;
         if (move_uploaded_file($file['tmp_name'], $dest)) {
-            return $filename;
+            return 'uploads/' . $dir . '/' . $filename;
         }
 
         $errors[] = "Failed to upload $field.";

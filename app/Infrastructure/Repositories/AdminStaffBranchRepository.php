@@ -357,12 +357,19 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $txnsToday = (int)$this->db->query("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()")->fetchColumn();
 
         $baseUrl = defined('APP_URL') ? rtrim(APP_URL, '/') . '/' : '/Finzo/';
-        foreach ($staffList as &$s) {
-            if (!empty($s['profile_photo'])) {
-                $s['profile_photo_url'] = $baseUrl . ltrim($s['profile_photo'], '/');
-            } else {
-                $s['profile_photo_url'] = null;
+        $resolveStaffUrl = function(?string $path, string $subDir) use ($baseUrl) {
+            if (empty($path)) return null;
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/Finzo/')) {
+                return $path;
             }
+            if (str_starts_with($path, 'uploads/')) {
+                return $baseUrl . ltrim($path, '/');
+            }
+            return $baseUrl . 'uploads/' . $subDir . '/' . ltrim($path, '/');
+        };
+
+        foreach ($staffList as &$s) {
+            $s['profile_photo_url'] = $resolveStaffUrl($s['profile_photo'] ?? null, 'staff-photos');
             $nameParts = explode(' ', trim($s['full_name'] ?? ''));
             $s['initials'] = strtoupper(substr($nameParts[0] ?? '', 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
         }
@@ -539,15 +546,20 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         }
 
         $baseUrl = defined('APP_URL') ? rtrim(APP_URL, '/') . '/' : '/Finzo/';
-        if (!empty($staff['profile_photo'])) {
-            $staff['profile_photo_url'] = $baseUrl . ltrim($staff['profile_photo'], '/');
-        }
-        if (!empty($staff['front_image'])) {
-            $staff['front_image_url'] = $baseUrl . ltrim($staff['front_image'], '/');
-        }
-        if (!empty($staff['back_image'])) {
-            $staff['back_image_url'] = $baseUrl . ltrim($staff['back_image'], '/');
-        }
+        $resolveStaffUrl = function(?string $path, string $subDir) use ($baseUrl) {
+            if (empty($path)) return null;
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/Finzo/')) {
+                return $path;
+            }
+            if (str_starts_with($path, 'uploads/')) {
+                return $baseUrl . ltrim($path, '/');
+            }
+            return $baseUrl . 'uploads/' . $subDir . '/' . ltrim($path, '/');
+        };
+
+        $staff['profile_photo_url'] = $resolveStaffUrl($staff['profile_photo'] ?? null, 'staff-photos');
+        $staff['front_image_url'] = $resolveStaffUrl($staff['front_image'] ?? null, 'staff-documents');
+        $staff['back_image_url'] = $resolveStaffUrl($staff['back_image'] ?? null, 'staff-documents');
 
         // Overall Performance
         $perfStmt = $this->db->prepare("

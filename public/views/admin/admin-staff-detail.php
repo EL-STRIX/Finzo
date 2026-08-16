@@ -33,27 +33,15 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION & HEADER -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+      <div class="flex items-center justify-between gap-4 relative z-10">
         <div class="flex items-center gap-4">
-          <a href="/Finzo/admin/staff" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Staff List">
+          <a href="/Finzo/admin/staff" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Staff List">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
-            <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">STAFF PROFILE & DOSSIER</div>
+            <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">STAFF PROFILE &amp; DOSSIER</div>
             <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name">Loading Profile...</div>
           </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div id="header-status-badge" class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border-subtle bg-surface shadow-sm">
-            <div class="status-dot w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span class="status-label text-[10px] font-black uppercase tracking-widest text-text-primary">Loading</span>
-          </div>
-
-          <button id="open-passbook-modal-btn" type="button" class="btn btn-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
-            <span>Passbook & Statement</span>
-          </button>
         </div>
       </div>
 
@@ -75,17 +63,20 @@ ob_start();
               <!-- PROFILE CARD -->
               <div class="ds-card p-6 sm:p-8">
                   <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-border-subtle text-center sm:text-left">
-                      <div class="relative">
-                          <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-primary/10 flex items-center justify-center border border-border-subtle">
-                              <span id="photo-initials" class="text-4xl font-black text-primary">ST</span>
+                      <div class="relative shrink-0">
+                          <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-surface border border-border-subtle flex items-center justify-center">
+                              <span id="photo-initials" class="text-3xl sm:text-4xl font-black text-primary font-headline">ST</span>
                           </div>
                       </div>
                       <div class="flex-1 min-w-0">
                           <h3 id="info-name" class="text-2xl sm:text-3xl font-black tracking-tight text-text-primary mb-3 truncate">Loading...</h3>
-                          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-4">
-                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-background border border-border-subtle text-text-secondary font-mono">STF---</span>
-                              <span id="info-designation-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-primary text-white">Designation</span>
-                              <span id="info-department-badge" class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-success-bg text-success border border-success-bg">Department</span>
+                          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-4">
+                              <span id="info-staff-id-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary font-mono shadow-sm">STF---</span>
+                              <span id="info-designation-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 shadow-sm">Designation</span>
+                              <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 bg-success-bg text-success border border-success/20 shadow-sm">
+                                  <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+                                  <span id="info-status-text">Active</span>
+                              </span>
                           </div>
                           <p class="text-xs font-bold text-text-secondary flex items-center justify-center sm:justify-start gap-2">
                               <span class="material-symbols-outlined text-base" aria-hidden="true">calendar_today</span>
