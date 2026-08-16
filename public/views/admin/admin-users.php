@@ -95,7 +95,6 @@ ob_start();
                                     <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
                                     <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
                                     <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
-                                    <div class="finzo-dropdown-option" data-value="soft_deleted">Soft Deleted</div>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +201,6 @@ ob_start();
                                         <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
                                         <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
                                         <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
-                                        <div class="finzo-dropdown-option" data-value="soft_deleted">Soft Deleted</div>
                                     </div>
                                 </div>
                             </div>

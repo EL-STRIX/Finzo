@@ -986,16 +986,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     private function applyUserFiltersAndSort(array $filters, array &$where_clauses, string &$orderSql): void
     {
-        // Status Filter
+        // Status Filter - only active and suspended non-deleted users belong in User Management
         $status = $filters['status'] ?? 'all';
         if ($status === 'active') {
             $where_clauses[] = "u.is_deleted = 0 AND u.status = 'active'";
         } elseif ($status === 'suspended') {
             $where_clauses[] = "u.is_deleted = 0 AND u.status = 'suspended'";
-        } elseif ($status === 'soft_deleted' || $status === 'deleted') {
-            $where_clauses[] = "u.is_deleted = 1";
-        } elseif ($status === 'all') {
-            $where_clauses[] = "u.is_deleted = 0";
+        } else {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status IN ('active', 'suspended')";
         }
 
         // Activity Filter
