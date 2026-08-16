@@ -244,21 +244,84 @@
             });
         }
 
-        // Export CSV Action
-        const exportBtn = document.getElementById('open-export-modal');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', function(e) {
+        // Export Modal Open / Close & Dropdown Synchronization
+        const exportModal = document.getElementById('export-modal');
+        const openExportBtn = document.getElementById('open-export-modal');
+
+        function openExportModal() {
+            if (!exportModal) return;
+
+            // Sync modal dropdowns with current page filter values
+            const curSort = document.getElementById('filter-sort')?.value || 'newest';
+            const curActivity = document.getElementById('filter-activity')?.value || 'all';
+            const curBalance = document.getElementById('filter-balance')?.value || 'all';
+
+            setModalDropdownValue('export-sort-dropdown', 'export-filter-sort', curSort);
+            setModalDropdownValue('export-activity-dropdown', 'export-filter-activity', curActivity);
+            setModalDropdownValue('export-balance-dropdown', 'export-filter-balance', curBalance);
+
+            exportModal.classList.remove('hidden');
+            exportModal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeExportModal() {
+            if (!exportModal) return;
+            exportModal.classList.add('hidden');
+            exportModal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        function setModalDropdownValue(dropdownId, inputId, val) {
+            const dropdown = document.getElementById(dropdownId);
+            const input = document.getElementById(inputId);
+            if (input) input.value = val;
+            if (dropdown) {
+                const opt = dropdown.querySelector(`.finzo-dropdown-option[data-value="${val}"]`);
+                const label = dropdown.querySelector('.dropdown-label');
+                if (opt && label) {
+                    label.textContent = opt.textContent.trim();
+                    dropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                    opt.classList.add('is-selected');
+                }
+            }
+        }
+
+        if (openExportBtn) {
+            openExportBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openExportModal();
+            });
+        }
+
+        document.querySelectorAll('.close-export-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeExportModal();
+            });
+        });
+
+        if (exportModal) {
+            exportModal.addEventListener('click', (e) => {
+                if (e.target === exportModal) closeExportModal();
+            });
+        }
+
+        // Export Confirmation & Trigger
+        const startExportBtn = document.getElementById('start-export');
+        if (startExportBtn) {
+            startExportBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const originalHtml = this.innerHTML;
                 this.disabled = true;
-                this.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]" aria-hidden="true">autorenew</span> <span>Exporting...</span>';
+                this.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">autorenew</span> <span>Exporting...</span>';
                 
                 try {
                     const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
                     const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                    const sort = document.getElementById('filter-sort') ? document.getElementById('filter-sort').value : 'newest';
-                    const activity = document.getElementById('filter-activity') ? document.getElementById('filter-activity').value : 'all';
-                    const balance = document.getElementById('filter-balance') ? document.getElementById('filter-balance').value : 'all';
+                    const sort = document.getElementById('export-filter-sort') ? document.getElementById('export-filter-sort').value : 'newest';
+                    const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
+                    const balance = document.getElementById('export-filter-balance') ? document.getElementById('export-filter-balance').value : 'all';
                     
                     const params = { search, status, sort, activity, balance };
                     const exportUrl = window.api && typeof window.api.buildUrl === 'function'
@@ -269,11 +332,12 @@
                     window.location.href = exportUrl;
                     
                     setTimeout(() => {
-                        this.innerHTML = '<span class="material-symbols-outlined text-[18px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';
+                        this.innerHTML = '<span class="material-symbols-outlined text-[16px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';
                         setTimeout(() => {
                             this.disabled = false;
                             this.innerHTML = originalHtml;
-                        }, 1500);
+                            closeExportModal();
+                        }, 1200);
                     }, 800);
                 } catch (err) {
                     console.error('Export failed:', err);

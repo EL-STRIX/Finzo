@@ -78,9 +78,9 @@ ob_start();
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="filtersContainer">
                         <div>
                             <label for="user-search" class="fin-label">Search User</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
-                                <input type="text" id="user-search" placeholder="Search by name, email or ID..." class="fin-input pl-11">
+                            <div class="fin-input-wrapper relative">
+                                <span class="material-symbols-outlined input-icon-left text-text-secondary pointer-events-none z-10 text-[20px]" aria-hidden="true">search</span>
+                                <input type="text" id="user-search" placeholder="Search by name, email or ID..." class="fin-input has-icon-left w-full !pl-11">
                             </div>
                         </div>
                         <div>
@@ -170,18 +170,85 @@ ob_start();
 
             <!-- Export Modal -->
             <div id="export-modal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm items-center justify-center p-4">
-                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
-                    <div class="p-6 border-b border-border-subtle flex justify-between items-center">
-                        <h2 id="export-modal-title" class="text-lg font-bold font-headline text-text-primary">Export Users</h2>
+                <div class="modal-content bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+                    <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                                <span class="material-symbols-outlined text-xl" aria-hidden="true">file_download</span>
+                            </div>
+                            <div>
+                                <h2 id="export-modal-title" class="text-base font-bold font-headline text-text-primary">Export Users (CSV)</h2>
+                                <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Configure export filters</p>
+                            </div>
+                        </div>
                         <button type="button" class="close-export-modal w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background text-text-secondary transition-colors" aria-label="Close modal">
-                            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                         </button>
                     </div>
-                    <div class="p-6">
-                        <p class="text-sm text-text-secondary mb-6">You are about to export the user list based on the current search and status filters. Do you want to proceed?</p>
-                        <div class="flex items-center justify-end gap-3">
-                            <button type="button" class="close-export-modal btn btn-secondary">Cancel</button>
-                            <button type="button" id="start-export" class="btn btn-primary">Export CSV</button>
+
+                    <div class="p-6 space-y-4">
+                        <p class="text-xs text-text-secondary">Select export criteria to generate the CSV download:</p>
+
+                        <!-- 3 Filter Dropdowns in Modal -->
+                        <div class="space-y-3.5">
+                            <div>
+                                <label for="export-filter-sort" class="fin-label">Sort Order</label>
+                                <div class="finzo-dropdown w-full" id="export-sort-dropdown">
+                                    <input type="hidden" id="export-filter-sort" value="newest">
+                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                        <span class="dropdown-label">Newest Registered</span>
+                                        <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                    </div>
+                                    <div class="finzo-dropdown-menu z-50">
+                                        <div class="finzo-dropdown-option is-selected" data-value="newest">Newest Registered</div>
+                                        <div class="finzo-dropdown-option" data-value="balance_high">Highest Balance</div>
+                                        <div class="finzo-dropdown-option" data-value="balance_low">Lowest Balance</div>
+                                        <div class="finzo-dropdown-option" data-value="recently_active">Recently Active</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="export-filter-activity" class="fin-label">Activity Level</label>
+                                <div class="finzo-dropdown w-full" id="export-activity-dropdown">
+                                    <input type="hidden" id="export-filter-activity" value="all">
+                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                        <span class="dropdown-label">All Active Users</span>
+                                        <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                    </div>
+                                    <div class="finzo-dropdown-menu z-50">
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Active Users</div>
+                                        <div class="finzo-dropdown-option" data-value="recent">Recently Online (7 Days)</div>
+                                        <div class="finzo-dropdown-option" data-value="inactive_30">Inactive (30+ Days)</div>
+                                        <div class="finzo-dropdown-option" data-value="dormant">Dormant (90+ Days)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="export-filter-balance" class="fin-label">Account Balance</label>
+                                <div class="finzo-dropdown w-full" id="export-balance-dropdown">
+                                    <input type="hidden" id="export-filter-balance" value="all">
+                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                        <span class="dropdown-label">All Balances</span>
+                                        <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                    </div>
+                                    <div class="finzo-dropdown-menu z-50">
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Balances</div>
+                                        <div class="finzo-dropdown-option" data-value="premium">Premium (> ₹1L)</div>
+                                        <div class="finzo-dropdown-option" data-value="standard">Standard (> ₹0)</div>
+                                        <div class="finzo-dropdown-option" data-value="zero">Zero Balance</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-border-subtle flex items-center justify-end gap-3">
+                            <button type="button" class="close-export-modal btn btn-secondary px-4 py-2 text-xs">Cancel</button>
+                            <button type="button" id="start-export" class="btn btn-primary px-5 py-2 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm">
+                                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
+                                <span>Export CSV</span>
+                            </button>
                         </div>
                     </div>
                 </div>
