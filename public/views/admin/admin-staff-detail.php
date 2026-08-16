@@ -372,7 +372,7 @@ ob_start();
                   <h4 class="font-black text-lg text-text-primary tracking-tight">Staff Transaction Ledger</h4>
                   <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Transactions processed across customer accounts</p>
               </div>
-              <button id="open-passbook-modal-table-btn" type="button" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm hover:bg-primary hover:text-white transition-all">
+              <button id="open-passbook-modal-table-btn" type="button" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-all">
                   <span class="material-symbols-outlined text-[16px]" aria-hidden="true">receipt_long</span>
                   <span>Passbook & Statement</span>
               </button>
@@ -466,7 +466,7 @@ ob_start();
             <input type="date" id="pb-filter-to" class="bg-transparent text-xs text-text-primary focus:outline-none cursor-pointer">
           </div>
 
-          <button id="pb-apply-filter" type="button" class="btn btn-secondary px-3 py-1 text-xs font-bold rounded-lg inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all">
+          <button id="pb-apply-filter" type="button" class="btn btn-secondary px-3 py-1 text-xs font-bold rounded-lg inline-flex items-center gap-1 shadow-sm transition-all">
             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">filter_alt</span>
             <span>Filter</span>
           </button>

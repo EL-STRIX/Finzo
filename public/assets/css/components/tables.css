@@ -38,6 +38,11 @@
 .ds-table tbody tr { transition: background-color var(--transition-fast); }
 .ds-table tbody tr:hover { background-color: var(--color-background); }
 
+[data-theme="dark"] .ds-table tbody tr:hover,
+.dark .ds-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
 /* Table Actions (e.g., small icon buttons in rows) */
 .ds-table-action {
   color: var(--color-text-muted);

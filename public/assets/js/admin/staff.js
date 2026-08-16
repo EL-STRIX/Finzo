@@ -147,7 +147,7 @@
                 </td>
                 <td class="text-center text-[11px] font-bold text-text-secondary !px-2 whitespace-nowrap">${joinedDate}</td>
                 <td class="text-right !px-3">
-                    <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary !px-3 !py-1 text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                    <a href="/Finzo/public/views/admin/admin-staff-detail.php?id=${s.id}" class="btn btn-secondary !px-3 !py-1 text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm transition-all group/btn">
                         <span>View</span>
                         <span class="material-symbols-outlined text-[13px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>

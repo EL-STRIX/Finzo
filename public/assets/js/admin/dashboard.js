@@ -138,7 +138,7 @@
                 <td class="text-xs font-bold text-text-secondary capitalize">${u.account_type || 'Savings'}</td>
                 <td class="text-[11px] text-text-secondary font-bold whitespace-nowrap">${timeDisplay}</td>
                 <td class="text-right">
-                    <a href="/Finzo/public/views/admin/admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm hover:bg-primary hover:text-white transition-all group/btn">
+                    <a href="/Finzo/public/views/admin/admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-3 py-1.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-sm transition-all group/btn">
                         <span>View</span>
                         <span class="material-symbols-outlined text-[14px] transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true">arrow_forward</span>
                     </a>
