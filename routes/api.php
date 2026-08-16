@@ -69,6 +69,7 @@ $router->get('/api/v1/transactions', [AdminOperationsController::class, 'transac
 $router->post('/api/v1/transactions/{id}/reverse', [AdminOperationsController::class, 'reverseTransaction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff', [AdminStaffController::class, 'getStaffList'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff', [AdminStaffController::class, 'addStaff'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/staff/export', [AdminStaffController::class, 'exportStaff'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff/suspended', [AdminStaffController::class, 'getSuspendedStaff'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff/next-id', [AdminStaffController::class, 'getNextStaffId'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/staff/{id}', [AdminStaffController::class, 'getStaffDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

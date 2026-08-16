@@ -17,4 +17,9 @@ interface AdminStaffBranchServiceInterface
     public function deleteBranch(int $branchId, int $adminId, string $admin_password, string $confirm_name, ?array $closure_doc): array;
     public function getBranchesList(string $search, string $type, string $status): array;
     public function getDepartmentAnalytics(): array;
+    public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array;
+    public function exportStaff(array $filters): \Generator;
+    public function getStaffDetailComprehensive(int $staffId): ?array;
+    public function executeStaffAction(int $staffId, string $action, ?string $reason, int $adminId, string $adminPassword): array;
 }
+

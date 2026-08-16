@@ -383,4 +383,138 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             'data' => $this->repo->getDepartmentAnalytics()
         ];
     }
-}
+
+    public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array
+    {
+        $result = $this->repo->getStaffList($filters, $page, $perPage);
+        return [
+            'success'      => true,
+            'staff'        => $result['staff'],
+            'total'        => $result['total'],
+            'pages'        => $result['pages'],
+            'current_page' => $result['current_page'],
+            'stats'        => $result['stats']
+        ];
+    }
+
+    public function exportStaff(array $filters): \Generator
+    {
+        return $this->repo->exportStaffGenerator($filters);
+    }
+
+    public function getStaffDetailComprehensive(int $staffId): ?array
+    {
+        return $this->repo->getStaffDetailComprehensive($staffId);
+    }
+
+    public function executeStaffAction(int $staffId, string $action, ?string $reason, int $adminId, string $adminPassword): array
+    {
+        if (!$staffId || empty($action)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Staff ID and action are required', 422);
+        }
+
+        if (!in_array($action, ['suspend', 'reinstate', 'reset_password', 'delete'])) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid governance action', 422);
+        }
+
+        if (empty($adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Admin password is required for this action', 422);
+        }
+
+        if (!$this->verifyAdminPassword($adminId, $adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrative password. Access denied.', 403);
+        }
+
+        if ($this->security) {
+            $this->security->checkAdminPermission($adminId, 'suspend_staff');
+        }
+
+        $staff = $this->repo->findStaffRecord($staffId);
+        if (!$staff) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Staff member not found', 404);
+        }
+
+        $staffIdFormatted = is_object($staff) ? $staff->staff_id : ($staff['staff_id'] ?? "STF-{$staffId}");
+        $staffName = is_object($staff) ? $staff->full_name : ($staff['full_name'] ?? 'Staff Member');
+        $staffEmail = is_object($staff) ? $staff->email : ($staff['email'] ?? '');
+        $currentStatus = is_object($staff) ? $staff->status : ($staff['status'] ?? 'active');
+
+        if ($action === 'suspend') {
+            if ($currentStatus === 'suspended') {
+                throw new \App\Shared\Core\Exceptions\ApiException('Staff is already suspended', 409);
+            }
+            $suspendedBy = $_SESSION['admin_name'] ?? 'Administrator';
+            $suspendReason = !empty($reason) ? $reason : 'Administrative Review';
+            $this->repo->suspendStaff($staffId, $suspendReason, $suspendedBy);
+
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction(
+                    'staff_suspended',
+                    $staffIdFormatted,
+                    \App\Domain\Enums\RoleEnum::STAFF->value,
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Suspended staff: {$staffName} ({$staffIdFormatted}). Reason: {$suspendReason}"
+                )
+            );
+
+            return ['success' => true, 'message' => 'Staff member suspended successfully'];
+        } elseif ($action === 'reinstate') {
+            if ($currentStatus !== 'suspended') {
+                throw new \App\Shared\Core\Exceptions\ApiException('Staff is not suspended', 409);
+            }
+            $this->repo->reinstateStaff($staffId);
+
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction(
+                    'staff_reinstated',
+                    $staffIdFormatted,
+                    \App\Domain\Enums\RoleEnum::STAFF->value,
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Reinstated staff: {$staffName} ({$staffIdFormatted})"
+                )
+            );
+
+            return ['success' => true, 'message' => 'Staff member reinstated successfully'];
+        } elseif ($action === 'reset_password') {
+            $tempPass = $this->generateStrongPassword(12);
+            $passwordHash = password_hash($tempPass, PASSWORD_BCRYPT);
+            $this->repo->updateStaffPassword($staffId, $passwordHash);
+
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction(
+                    'staff_password_reset',
+                    $staffIdFormatted,
+                    \App\Domain\Enums\RoleEnum::STAFF->value,
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Reset password for staff: {$staffName} ({$staffEmail})"
+                )
+            );
+
+            return [
+                'success'       => true,
+                'message'       => 'Temporary password generated successfully',
+                'temp_password' => $tempPass
+            ];
+        } elseif ($action === 'delete') {
+            $this->repo->deleteStaff($staffId);
+
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction(
+                    'staff_deleted',
+                    $staffIdFormatted,
+                    \App\Domain\Enums\RoleEnum::STAFF->value,
+                    $adminId,
+                    \App\Domain\Enums\RoleEnum::ADMIN->value,
+                    "Permanently soft-deleted staff: {$staffName} ({$staffEmail})"
+                )
+            );
+
+            return ['success' => true, 'message' => 'Staff member deleted permanently'];
+        }
+
+        return ['success' => false, 'message' => 'Invalid action'];
+    }
+}
