@@ -716,16 +716,28 @@
             setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
 
             // Tenure Calculation
-            if (staff.date_of_joining) {
-                const joinDate = new Date(staff.date_of_joining);
+            const rawJoin = staff.date_of_joining || staff.created_at;
+            if (rawJoin) {
+                const joinDate = new Date(rawJoin);
                 const now = new Date();
                 let yrs = now.getFullYear() - joinDate.getFullYear();
                 let mos = now.getMonth() - joinDate.getMonth();
-                if (mos < 0) { yrs--; mos += 12; }
+                let days = now.getDate() - joinDate.getDate();
+                if (days < 0) {
+                    mos--;
+                    const prevMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                    days += prevMonthLastDay;
+                }
+                if (mos < 0) {
+                    yrs--;
+                    mos += 12;
+                }
                 const tenureParts = [];
                 if (yrs > 0) tenureParts.push(`${yrs} ${yrs === 1 ? 'yr' : 'yrs'}`);
                 if (mos > 0) tenureParts.push(`${mos} ${mos === 1 ? 'mo' : 'mos'}`);
-                if (tenureParts.length === 0) tenureParts.push('Just joined');
+                if (tenureParts.length === 0) {
+                    tenureParts.push(days > 0 ? `${days} ${days === 1 ? 'day' : 'days'}` : 'Joined Today');
+                }
                 setText('info-tenure', tenureParts.join(', '));
             } else {
                 setText('info-tenure', '—');

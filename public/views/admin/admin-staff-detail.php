@@ -65,13 +65,16 @@ $joinedDate = !empty($staff['date_of_joining'])
     : (!empty($staff['created_at']) ? date('d M Y', strtotime($staff['created_at'])) : '—');
 
 $tenureStr = '—';
-if (!empty($staff['date_of_joining'])) {
-    $joinDateObj = new \DateTime($staff['date_of_joining']);
+$rawJoining = !empty($staff['date_of_joining']) ? $staff['date_of_joining'] : ($staff['created_at'] ?? null);
+if (!empty($rawJoining)) {
+    $joinDateObj = new \DateTime($rawJoining);
     $diffObj = $joinDateObj->diff(new \DateTime('today'));
     $tenureParts = [];
     if ($diffObj->y > 0) $tenureParts[] = $diffObj->y . ' ' . ($diffObj->y === 1 ? 'yr' : 'yrs');
     if ($diffObj->m > 0) $tenureParts[] = $diffObj->m . ' ' . ($diffObj->m === 1 ? 'mo' : 'mos');
-    if (empty($tenureParts)) $tenureParts[] = $diffObj->d . ' ' . ($diffObj->d === 1 ? 'day' : 'days');
+    if (empty($tenureParts)) {
+        $tenureParts[] = ($diffObj->d > 0) ? ($diffObj->d . ' ' . ($diffObj->d === 1 ? 'day' : 'days')) : 'Joined Today';
+    }
     $tenureStr = implode(', ', $tenureParts);
 }
 

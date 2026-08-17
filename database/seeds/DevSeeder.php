@@ -36,14 +36,20 @@ class DevSeeder
             // 3. Staff
             echo "Seeding Staff...\n";
             $staffPwd = password_hash('Staff@123', PASSWORD_BCRYPT);
+            $joiningDates = [
+                '2022-04-15', '2023-01-10', '2023-08-22', '2024-02-14', '2024-07-01',
+                '2024-11-20', '2025-03-12', '2025-06-18', '2025-09-05', '2023-11-15',
+                '2024-04-01', '2022-09-10'
+            ];
             for ($i = 1; $i <= 10; $i++) {
                 $id = 'STF' . str_pad((string)$i, 3, '0', STR_PAD_LEFT);
                 $fn = $this->firstNames[array_rand($this->firstNames)] . ' ' . $this->lastNames[array_rand($this->lastNames)];
                 $branch_id = rand(1, 4); // BR001 to BR004
                 $status = ($i === 10) ? 'suspended' : 'active';
                 $email = strtolower(str_replace(' ', '.', $fn)) . $i . '@finzo.com';
-                $db->exec("INSERT IGNORE INTO staff (staff_id, full_name, personal_email, phone, branch_id, designation, department, password_hash, status) VALUES 
-                    ('$id', '$fn', '$email', '98765432" . str_pad((string)$i, 2, '0', STR_PAD_LEFT) . "', $branch_id, 'Teller', 'Teller Operations', '$staffPwd', '$status')");
+                $joinDate = $joiningDates[($i - 1) % count($joiningDates)];
+                $db->exec("INSERT IGNORE INTO staff (staff_id, full_name, personal_email, phone, branch_id, designation, department, password_hash, status, date_of_joining) VALUES 
+                    ('$id', '$fn', '$email', '98765432" . str_pad((string)$i, 2, '0', STR_PAD_LEFT) . "', $branch_id, 'Teller', 'Teller Operations', '$staffPwd', '$status', '$joinDate')");
             }
 
             // 4. Users & Accounts & KYC
