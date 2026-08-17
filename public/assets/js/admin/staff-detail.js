@@ -196,6 +196,7 @@
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        modal.style.display = 'flex';
         document.body.classList.add('overflow-hidden');
     }
 
@@ -207,6 +208,7 @@
         if (!modal) return;
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        modal.style.display = 'none';
         document.body.classList.remove('overflow-hidden');
     }
 
@@ -744,6 +746,7 @@
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        modal.style.display = 'flex';
         document.body.classList.add('overflow-hidden');
     }
 
@@ -752,6 +755,7 @@
         if (!modal) return;
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        modal.style.display = 'none';
         document.body.classList.remove('overflow-hidden');
     }
 

@@ -449,40 +449,40 @@ ob_start();
           <div class="lg:col-span-4 space-y-6">
               
               <!-- STAFF GOVERNANCE CONTROL -->
-              <div class="ds-card p-5">
+              <div class="ds-card p-5 relative z-20">
                   <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Staff Governance Actions</h5>
                   <div class="space-y-3">
-                      <button id="deactivate-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal(this.dataset.action || 'deactivate');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all cursor-pointer group" data-action="<?= $isActive ? 'deactivate' : 'reinstate' ?>">
-                          <div class="flex items-center gap-3">
+                      <button id="deactivate-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal(this.dataset.action || 'deactivate');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all cursor-pointer group select-none relative z-30" data-action="<?= $isActive ? 'deactivate' : 'reinstate' ?>">
+                          <div class="flex items-center gap-3 pointer-events-none">
                               <span id="suspend-icon" class="material-symbols-outlined <?= $isActive ? 'text-warning' : 'text-success' ?>" aria-hidden="true"><?= $isActive ? 'block' : 'check_circle' ?></span>
                               <div class="text-left">
                                   <div id="suspend-label" class="text-xs font-black text-text-primary"><?= $isActive ? 'Suspend Staff' : 'Reinstate Staff' ?></div>
                                   <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5"><?= $isActive ? 'Revoke system access' : 'Restore system privileges' ?></div>
                               </div>
                           </div>
-                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
+                          <span class="material-symbols-outlined text-text-secondary text-lg pointer-events-none" aria-hidden="true">chevron_right</span>
                       </button>
 
-                      <button id="reset-password-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('reset');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-info hover:bg-info-bg transition-all cursor-pointer group">
-                          <div class="flex items-center gap-3">
+                      <button id="reset-password-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('reset');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-info hover:bg-info-bg transition-all cursor-pointer group select-none relative z-30">
+                          <div class="flex items-center gap-3 pointer-events-none">
                               <span class="material-symbols-outlined text-info" aria-hidden="true">lock_reset</span>
                               <div class="text-left">
                                   <div class="text-xs font-black text-text-primary">Reset Password</div>
                                   <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">Issue temporary password</div>
                               </div>
                           </div>
-                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
+                          <span class="material-symbols-outlined text-text-secondary text-lg pointer-events-none" aria-hidden="true">chevron_right</span>
                       </button>
 
-                      <button id="delete-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('delete');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-error hover:bg-error-bg transition-all cursor-pointer group">
-                          <div class="flex items-center gap-3">
+                      <button id="delete-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('delete');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-error hover:bg-error-bg transition-all cursor-pointer group select-none relative z-30">
+                          <div class="flex items-center gap-3 pointer-events-none">
                               <span class="material-symbols-outlined text-error" aria-hidden="true">person_remove</span>
                               <div class="text-left">
                                   <div class="text-xs font-black text-error">Delete Account</div>
                                   <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">Soft-delete permanently</div>
                               </div>
                           </div>
-                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
+                          <span class="material-symbols-outlined text-text-secondary text-lg pointer-events-none" aria-hidden="true">chevron_right</span>
                       </button>
                   </div>
               </div>
@@ -864,7 +864,7 @@ ob_start();
       <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-xl shadow-2xl border border-white/10" alt="Document Zoom">
   </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/staff-detail.js"></script>';
+$extraScripts = '<script src="/Finzo/public/assets/js/admin/staff-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
