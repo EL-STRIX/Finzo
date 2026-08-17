@@ -1133,6 +1133,193 @@ ob_start();
           document.body.classList.remove('overflow-hidden');
       };
 
+      // PASSBOOK MODAL CONTROLLER
+      var allStaffTxns = <?= json_encode($transactions ?? []) ?>;
+      var passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+
+      function renderPassbook() {
+          var tbody = document.getElementById('pb-transactions-body');
+          if (!tbody) return;
+
+          var txns = allStaffTxns || [];
+          if (passbookFilter.from || passbookFilter.to) {
+              txns = txns.filter(function(t) {
+                  if (!t.created_at) return true;
+                  var tDate = t.created_at.slice(0, 10);
+                  if (passbookFilter.from && tDate < passbookFilter.from) return false;
+                  if (passbookFilter.to && tDate > passbookFilter.to) return false;
+                  return true;
+              });
+          }
+
+          var periodStr = 'ALL TIME (AS OF ' + new Date().toLocaleDateString('en-GB') + ')';
+          if (passbookFilter.from && passbookFilter.to) {
+              periodStr = passbookFilter.from + ' TO ' + passbookFilter.to;
+          } else if (passbookFilter.from) {
+              periodStr = 'SINCE ' + passbookFilter.from;
+          } else if (passbookFilter.to) {
+              periodStr = 'UP TO ' + passbookFilter.to;
+          }
+          var pGen = document.getElementById('pb-generated-date');
+          if (pGen) pGen.textContent = periodStr;
+
+          var totalCredits = 0;
+          var totalDebits = 0;
+          var totalVolume = 0;
+
+          if (txns.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-black font-bold">No transaction entries found for the selected period.</td></tr>';
+          } else {
+              var html = '';
+              txns.forEach(function(t, idx) {
+                  var isDeposit = (t.type === 'deposit');
+                  var amt = parseFloat(t.amount || 0);
+                  if (isDeposit) totalCredits += amt;
+                  else totalDebits += amt;
+                  totalVolume += amt;
+
+                  var lineNum = String(idx + 1).padStart(2, '0');
+                  var dateStr = t.created_at ? new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A';
+                  var particulars = ((t.customer_name || 'Customer') + ' / ' + (t.txn_id || 'TXN')).toUpperCase();
+                  var debitStr = !isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-';
+                  var creditStr = isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-';
+                  var volStr = amt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                  html += `
+                      <tr class="border-b border-black">
+                          <td class="p-2 border-r border-black text-center font-bold">${lineNum}</td>
+                          <td class="p-2 border-r border-black text-center whitespace-nowrap">${dateStr}</td>
+                          <td class="p-2 border-r border-black uppercase font-bold truncate max-w-[200px]">${particulars}</td>
+                          <td class="p-2 border-r border-black text-right font-mono">${debitStr}</td>
+                          <td class="p-2 border-r border-black text-right font-mono">${creditStr}</td>
+                          <td class="p-2 border-r border-black text-right font-black font-mono">${volStr}</td>
+                          <td class="p-2 text-center font-bold">SYS</td>
+                      </tr>
+                  `;
+              });
+              tbody.innerHTML = html;
+          }
+
+          var elCred = document.getElementById('pb-total-credits');
+          var elDeb = document.getElementById('pb-total-debits');
+          var elBal = document.getElementById('pb-net-balance');
+
+          if (elCred) elCred.textContent = '₹ ' + totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (elDeb) elDeb.textContent = '₹ ' + totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (elBal) elBal.textContent = '₹ ' + totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      window.openPassbookModal = function() {
+          passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+          var fromInput = document.getElementById('pb-filter-from');
+          var toInput = document.getElementById('pb-filter-to');
+          if (fromInput) fromInput.value = '';
+          if (toInput) toInput.value = '';
+
+          renderPassbook();
+
+          var modal = document.getElementById('passbook-modal');
+          if (modal) {
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+              modal.style.display = 'flex';
+              document.body.classList.add('overflow-hidden');
+          }
+      };
+
+      window.closePassbookModal = function() {
+          var modal = document.getElementById('passbook-modal');
+          if (modal) {
+              modal.classList.add('hidden');
+              modal.classList.remove('flex');
+              modal.style.display = 'none';
+              document.body.classList.remove('overflow-hidden');
+          }
+      };
+
+      function printPassbook() {
+          var printArea = document.getElementById('passbook-print-area');
+          if (!printArea) return;
+
+          var printHtml = `
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <title>Staff Passbook - <?= htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8') ?></title>
+                  <style>
+                      @page { size: A4 portrait; margin: 12mm; }
+                      * { box-sizing: border-box; margin: 0; padding: 0; }
+                      body { font-family: "Courier New", Courier, monospace; color: #000; background: #fff; font-size: 11px; }
+                      table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                      th, td { border: 1px solid #000; padding: 5px 6px; }
+                      th { background-color: #f2f2f2; font-weight: 900; text-transform: uppercase; font-size: 10px; }
+                  </style>
+              </head>
+              <body>
+                  <div style="border: 2px solid #000; padding: 14px 16px;">
+                      ${printArea.innerHTML}
+                  </div>
+              </body>
+              </html>
+          `;
+
+          var printFrame = document.getElementById('finzo-staff-inline-print-iframe');
+          if (!printFrame) {
+              printFrame = document.createElement('iframe');
+              printFrame.id = 'finzo-staff-inline-print-iframe';
+              printFrame.style.position = 'fixed';
+              printFrame.style.right = '0';
+              printFrame.style.bottom = '0';
+              printFrame.style.width = '0';
+              printFrame.style.height = '0';
+              printFrame.style.border = '0';
+              document.body.appendChild(printFrame);
+          }
+
+          var doc = printFrame.contentWindow || printFrame.contentDocument.document || printFrame.contentDocument;
+          doc.document.open();
+          doc.document.write(printHtml);
+          doc.document.close();
+
+          setTimeout(function() {
+              printFrame.contentWindow.focus();
+              printFrame.contentWindow.print();
+          }, 350);
+      }
+
+      function setPassbookPreset(preset) {
+          var fromInput = document.getElementById('pb-filter-from');
+          var toInput = document.getElementById('pb-filter-to');
+          var today = new Date();
+          var formatDate = function(d) { return d.toISOString().slice(0, 10); };
+
+          if (preset === 'all') {
+              passbookFilter = { from: null, to: null, label: 'ALL TIME' };
+              if (fromInput) fromInput.value = '';
+              if (toInput) toInput.value = '';
+          } else if (preset === 'month') {
+              var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+              passbookFilter = { from: formatDate(firstDay), to: formatDate(today), label: 'THIS MONTH' };
+              if (fromInput) fromInput.value = passbookFilter.from;
+              if (toInput) toInput.value = passbookFilter.to;
+          } else if (preset === '30') {
+              var d = new Date();
+              d.setDate(d.getDate() - 30);
+              passbookFilter = { from: formatDate(d), to: formatDate(today), label: 'LAST 30 DAYS' };
+              if (fromInput) fromInput.value = passbookFilter.from;
+              if (toInput) toInput.value = passbookFilter.to;
+          } else if (preset === '90') {
+              var d = new Date();
+              d.setDate(d.getDate() - 90);
+              passbookFilter = { from: formatDate(d), to: formatDate(today), label: 'LAST 90 DAYS' };
+              if (fromInput) fromInput.value = passbookFilter.from;
+              if (toInput) toInput.value = passbookFilter.to;
+          }
+
+          renderPassbook();
+      }
+
       document.addEventListener('click', function(e) {
           var suspendBtn = e.target.closest('#deactivate-staff-btn');
           if (suspendBtn) {
@@ -1169,11 +1356,55 @@ ob_start();
               window.closeGovernanceModal();
               return;
           }
+
+          // Passbook Event Delegation
+          var pbOpenBtn = e.target.closest('#open-passbook-modal-table-btn') || e.target.closest('#open-passbook-modal-btn');
+          if (pbOpenBtn) {
+              e.preventDefault();
+              window.openPassbookModal();
+              return;
+          }
+          var pbCloseBtn = e.target.closest('#close-passbook-btn');
+          if (pbCloseBtn) {
+              e.preventDefault();
+              window.closePassbookModal();
+              return;
+          }
+          var pbPrintBtn = e.target.closest('#print-passbook-action');
+          if (pbPrintBtn) {
+              e.preventDefault();
+              printPassbook();
+              return;
+          }
+          var pbFilterBtn = e.target.closest('#pb-apply-filter');
+          if (pbFilterBtn) {
+              e.preventDefault();
+              var fVal = document.getElementById('pb-filter-from')?.value || null;
+              var tVal = document.getElementById('pb-filter-to')?.value || null;
+              passbookFilter = { from: fVal, to: tVal, label: 'CUSTOM' };
+              renderPassbook();
+              return;
+          }
+          var pAll = e.target.closest('#pb-preset-all');
+          if (pAll) { e.preventDefault(); setPassbookPreset('all'); return; }
+          var pMonth = e.target.closest('#pb-preset-month');
+          if (pMonth) { e.preventDefault(); setPassbookPreset('month'); return; }
+          var p30 = e.target.closest('#pb-preset-30');
+          if (p30) { e.preventDefault(); setPassbookPreset('30'); return; }
+          var p90 = e.target.closest('#pb-preset-90');
+          if (p90) { e.preventDefault(); setPassbookPreset('90'); return; }
+
+          var pbModal = document.getElementById('passbook-modal');
+          if (pbModal && e.target === pbModal) {
+              window.closePassbookModal();
+              return;
+          }
       });
 
       document.addEventListener('keydown', function(e) {
           if (e.key === 'Escape') {
               window.closeGovernanceModal();
+              window.closePassbookModal();
           } else if (e.key === 'Enter') {
               var pw = document.getElementById('admin-password');
               var modal = document.getElementById('governance-modal');

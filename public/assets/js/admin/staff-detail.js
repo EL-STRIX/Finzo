@@ -609,6 +609,7 @@
             currentStaff = staff;
             currentStaffTransactions = transactions;
             currentStaffAddress = address;
+            if (window.setAllStaffTxns) window.setAllStaffTxns(transactions);
 
             // 1. Header
             setText('header-staff-name', staff.full_name || 'Staff Member');
