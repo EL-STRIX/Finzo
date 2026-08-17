@@ -312,14 +312,10 @@
         }
     }
 
-    function closeLightbox() {
-        const modal = document.getElementById('lightbox-modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.classList.remove('overflow-hidden');
-        }
-    }
+    window.openLightbox = openLightbox;
+    window.closeLightbox = closeLightbox;
+    window.openGovernanceModal = openGovernanceModal;
+    window.closeGovernanceModal = closeGovernanceModal;
 
     // ==========================================
     //  LOAD STAFF COMPREHENSIVE DOSSIER
@@ -704,39 +700,43 @@
             confirmBtn.className = 'flex-1 py-3 font-bold rounded-xl text-xs uppercase tracking-wider shadow-sm transition-all ' + config.btnClass;
             confirmBtn.textContent = config.btnText;
             confirmBtn.disabled = false;
+            confirmBtn.onclick = executeGovernanceAction;
         }
 
         // Reason Grid for Suspension
         const reasonStep = document.getElementById('reason-step');
-        const customContainer = document.getElementById('custom-reason-container');
+        const reasonContainer = document.getElementById('reason-options') || document.getElementById('reason-grid');
+        const notesInput = document.getElementById('governance-notes');
         if (config.reasons && config.reasons.length > 0 && reasonStep) {
             let html = '';
             config.reasons.forEach((r, idx) => {
                 html += `
-                    <label class="flex items-center gap-2 p-2.5 bg-background rounded-xl border border-border-subtle hover:border-primary cursor-pointer transition-all text-xs">
+                    <label class="flex items-center gap-2.5 p-2.5 bg-background rounded-xl border border-border-subtle hover:border-primary cursor-pointer transition-all text-xs">
                         <input type="radio" name="suspension_reason" value="${r}" ${idx === 0 ? 'checked' : ''} class="text-primary focus:ring-primary">
-                        <span class="font-bold text-text-primary text-[11px]">${r}</span>
+                        <span class="font-bold text-text-primary text-xs">${r}</span>
                     </label>
                 `;
             });
-            document.getElementById('reason-grid').innerHTML = html;
+            if (reasonContainer) {
+                reasonContainer.innerHTML = html;
+            }
             reasonStep.classList.remove('hidden');
 
             document.querySelectorAll('input[name="suspension_reason"]').forEach(radio => {
                 radio.addEventListener('change', function() {
-                    if (this.value === 'Other') {
-                        customContainer.classList.remove('hidden');
-                    } else {
-                        customContainer.classList.add('hidden');
+                    if (notesInput) {
+                        notesInput.placeholder = (this.value === 'Other') ? 'Specify suspension details...' : 'Additional notes / details...';
                     }
                 });
             });
         } else if (reasonStep) {
             reasonStep.classList.add('hidden');
-            if (customContainer) customContainer.classList.add('hidden');
         }
 
-        // Clear password input & error
+        // Reset auth step & password input
+        const authStep = document.getElementById('auth-step');
+        if (authStep) authStep.classList.remove('hidden');
+
         const pwInput = document.getElementById('admin-password');
         if (pwInput) pwInput.value = '';
         const authErr = document.getElementById('auth-error');
@@ -820,7 +820,7 @@
                     if (confirmBtn) {
                         confirmBtn.textContent = 'Close';
                         confirmBtn.disabled = false;
-                        confirmBtn.className = 'flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs uppercase tracking-wider';
+                        confirmBtn.className = 'flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider';
                         confirmBtn.onclick = () => {
                             closeGovernanceModal();
                             loadStaffData();
@@ -829,7 +829,7 @@
                 } else if (currentAction === 'delete') {
                     if (window.showToast) window.showToast('Staff member permanently deleted', 'success');
                     setTimeout(() => {
-                        window.location.href = '/Finzo/admin/staff';
+                        window.location.href = '/Finzo/public/views/admin/admin-staff.php';
                     }, 1000);
                 } else {
                     if (window.showToast) window.showToast(respPayload.message || resp.message || 'Action executed successfully', 'success');
