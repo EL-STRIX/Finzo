@@ -97,7 +97,7 @@ ob_start();
       <!-- TOP NAVIGATION & HEADER -->
       <div class="flex items-center justify-between gap-4 relative z-10">
         <div class="flex items-center gap-4">
-          <a href="/Finzo/admin/staff" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Staff List">
+          <a href="/Finzo/public/views/admin/admin-staff.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Staff List">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
