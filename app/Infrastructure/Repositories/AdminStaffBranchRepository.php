@@ -18,7 +18,16 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
 
     public function findBranchById(int $id)
     {
-        return $this->fetchOne("SELECT id, name, type FROM branches WHERE id = ?", [$id], \App\Domain\Models\Staff::class);
+        $stmt = $this->db->prepare("SELECT * FROM branches WHERE id = ?");
+        $stmt->execute([$id]);
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$res) return null;
+        // Return object-compatible with stdClass / model
+        $obj = new \App\Domain\Models\Branch();
+        foreach ($res as $k => $v) {
+            $obj->$k = $v;
+        }
+        return $obj;
     }
 
     public function findAdminById(int $id)
@@ -48,14 +57,67 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
     public function insertBranch(array $data)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO branches (name, branch_code, state, city, address, description, manager_id, cert_path, type, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'custom', 'active', NOW())
+            INSERT INTO branches (name, branch_code, state, description, manager_id, cert_path, type, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, 'custom', 'active', NOW())
         ");
-        $stmt->execute([
-            $data['branch_name'], $data['branch_code'], $data['state'], $data['city'],
-            $data['address'], $data['description'], $data['manager_id'], $data['cert_path']
-        ]);
-        return $this->db->lastInsertId();
+        $name = $data['name'] ?? ($data['branch_name'] ?? '');
+        $code = $data['branch_code'] ?? '';
+        $state = $data['state'] ?? '';
+        $desc = $data['description'] ?? null;
+        $managerId = !empty($data['manager_id']) ? (int)$data['manager_id'] : null;
+        $certPath = $data['cert_path'] ?? null;
+
+        $stmt->execute([$name, $code, $state, $desc, $managerId, $certPath]);
+        return (int)$this->db->lastInsertId();
+    }
+
+    public function updateBranchRecord(int $id, array $data): bool
+    {
+        if (empty($data)) return false;
+        
+        $fields = [];
+        $values = [];
+        $allowed = ['name', 'state', 'description', 'manager_id', 'cert_path', 'status'];
+        foreach ($allowed as $col) {
+            if (array_key_exists($col, $data)) {
+                $fields[] = "{$col} = ?";
+                $values[] = $data[$col];
+            }
+        }
+        if (empty($fields)) return false;
+
+        $fields[] = "updated_at = NOW()";
+        $values[] = $id;
+        
+        $sql = "UPDATE branches SET " . implode(', ', $fields) . " WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public function getBranchDetailWithStats(int $id): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT b.*,
+                s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
+                (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id AND st.is_deleted = 0) as staff_count,
+                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id) as txn_count
+            FROM branches b
+            LEFT JOIN staff s ON b.manager_id = s.id
+            WHERE b.id = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$row) return null;
+
+        if (!empty($row['manager_name'])) {
+            $parts = explode(' ', $row['manager_name']);
+            $row['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+        } else {
+            $row['manager_initials'] = '??';
+        }
+
+        return $row;
     }
 
     public function updateStaffBranch(int $staffId, int $branchId)
@@ -179,8 +241,8 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
     {
         $stmt = $this->db->prepare("SELECT password_hash FROM admin_users WHERE id = ?");
         $stmt->execute([$adminId]);
-        $res = $stmt->fetch();
-        return $res ? $res['password_hash'] : null;
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $res ? ($res['password_hash'] ?? null) : null;
     }
 
     public function deleteBranchAndUnassignStaff(int $branchId): void
@@ -229,14 +291,17 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             FROM branches b LEFT JOIN staff s ON b.manager_id = s.id WHERE {$where_sql} ORDER BY b.created_at DESC
         ");
         $stmt->execute($params);
-        $branches = $stmt->fetchAll();
+        $branches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $stmt_stats = $this->db->query("
-            SELECT COUNT(*) as total, COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
-                (SELECT COUNT(*) FROM staff WHERE branch_id IS NOT NULL) as total_staff
+            SELECT COUNT(*) as total, 
+                   COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+                   COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive,
+                   (SELECT COUNT(*) FROM staff WHERE branch_id IS NOT NULL AND is_deleted = 0) as total_staff,
+                   (SELECT COUNT(*) FROM transactions WHERE processed_by_staff_id IN (SELECT id FROM staff WHERE branch_id IS NOT NULL)) as total_txns
             FROM branches
         ");
-        $stats = $stmt_stats->fetch();
+        $stats = $stmt_stats->fetch(\PDO::FETCH_ASSOC);
 
         return ['branches' => $branches, 'stats' => $stats];
     }

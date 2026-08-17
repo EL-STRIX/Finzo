@@ -32,7 +32,8 @@ interface AdminStaffBranchRepositoryInterface
     public function getAdminPasswordHash(int $adminId): ?string;
     public function deleteBranchAndUnassignStaff(int $branchId): void;
     public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array;
-    public function exportStaffGenerator(array $filters): \Generator;
     public function getStaffDetailComprehensive(int $staffId): ?array;
+    public function updateBranchRecord(int $id, array $data): bool;
+    public function getBranchDetailWithStats(int $id): ?array;
 }
 
