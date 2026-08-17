@@ -20,6 +20,9 @@ interface AdminStaffBranchServiceInterface
     public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array;
     public function exportStaff(array $filters): \Generator;
     public function getStaffDetailComprehensive(int $staffId): ?array;
+    public function createBranch(array $data, ?array $certFile, int $adminId, string $adminPassword): array;
+    public function updateBranch(int $branchId, array $data, ?array $certFile, int $adminId, ?string $adminPassword): array;
+    public function getBranchById(int $branchId): ?array;
     public function executeStaffAction(int $staffId, string $action, ?string $reason, int $adminId, string $adminPassword): array;
 }
 

@@ -66,6 +66,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
         $upload_dir = FINZO_ROOT . '/public/uploads/' . $dir . '/';
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
@@ -262,8 +263,14 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function verifyAdminPassword(int $adminId, string $password)
     {
+        $hash = $this->repo->getAdminPasswordHash($adminId);
+        if ($hash) {
+            return password_verify($password, $hash);
+        }
         $admin = $this->repo->findAdminById($adminId);
-        return ($admin && password_verify($password, $admin['password_hash']));
+        if (!$admin) return false;
+        $adminHash = is_array($admin) ? ($admin['password_hash'] ?? null) : ($admin->password_hash ?? null);
+        return ($adminHash && password_verify($password, $adminHash));
     }
     /**
      * Generate Strong Password.
@@ -348,6 +355,255 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
 
         return ['success' => true, 'message' => 'Branch deleted successfully'];
     }
+
+    /**
+     * Create Branch.
+     *
+     * @param array $data
+     * @param ?array $certFile
+     * @param int $adminId
+     * @param string $adminPassword
+     * @return array
+     */
+    public function createBranch(array $data, ?array $certFile, int $adminId, string $adminPassword): array
+    {
+        if ($this->security) {
+            try {
+                $this->security->checkAdminPermission($adminId, 'add_branch');
+            } catch (\Throwable $e) {
+                // Fallback for full admins
+            }
+        }
+
+        if (empty($adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Admin password is required for branch creation', 422);
+        }
+
+        if (!$this->verifyAdminPassword($adminId, $adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrator password. Authorization failed.', 403);
+        }
+
+        $branchName = trim($data['branch_name'] ?? ($data['name'] ?? ''));
+        if (empty($branchName) || strlen($branchName) < 2 || strlen($branchName) > 150) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Branch name is required (2-150 characters)', 422);
+        }
+
+        $state = trim($data['state'] ?? '');
+        if (empty($state)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('State is required', 422);
+        }
+
+        $city = trim($data['city'] ?? '');
+        $address = trim($data['address'] ?? '');
+        $description = trim($data['description'] ?? '');
+
+        // Compose location metadata into description for rich preservation
+        $locationMeta = [];
+        if (!empty($city)) $locationMeta[] = "City: {$city}";
+        if (!empty($address)) $locationMeta[] = "Address: {$address}";
+        
+        $combinedDesc = $description;
+        if (!empty($locationMeta)) {
+            $metaStr = implode(' | ', $locationMeta);
+            $combinedDesc = !empty($combinedDesc) ? "{$combinedDesc}\n\n[Location: {$metaStr}]" : "[Location: {$metaStr}]";
+        }
+
+        // Branch code generation
+        $branchCode = trim($data['branch_code'] ?? '');
+        if (empty($branchCode)) {
+            $branchCode = $this->generateBranchCode($state);
+        } else {
+            if ($this->repo->countExactBranchCode($branchCode) > 0) {
+                $branchCode = $this->generateBranchCode($state);
+            }
+        }
+
+        $managerId = !empty($data['manager_id']) ? intval($data['manager_id']) : null;
+        if ($managerId) {
+            $staff = $this->repo->findActiveStaffById($managerId);
+            if (!$staff) {
+                throw new \App\Shared\Core\Exceptions\ApiException('Selected manager not found or not active', 422);
+            }
+        }
+
+        // Handle certificate upload
+        $certPath = null;
+        if ($certFile && ($certFile['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+            if (!in_array($certFile['type'], $allowedTypes)) {
+                throw new \App\Shared\Core\Exceptions\ApiException('Invalid certificate file format. Only PDF, JPG, and PNG are allowed.', 422);
+            }
+            if ($certFile['size'] > 10 * 1024 * 1024) {
+                throw new \App\Shared\Core\Exceptions\ApiException('Certificate file exceeds maximum limit of 10MB', 422);
+            }
+
+            $ext = pathinfo($certFile['name'], PATHINFO_EXTENSION);
+            $filename = 'branch_cert_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+            
+            $publicDir = FINZO_ROOT . '/public/uploads/branch-certs/';
+            $rootUploadDir = FINZO_ROOT . '/uploads/branch-certs/';
+            if (!is_dir($publicDir)) @mkdir($publicDir, 0777, true);
+            if (!is_dir($rootUploadDir)) @mkdir($rootUploadDir, 0777, true);
+
+            $dest = $publicDir . $filename;
+            if (move_uploaded_file($certFile['tmp_name'], $dest)) {
+                @copy($dest, $rootUploadDir . $filename);
+                $certPath = 'uploads/branch-certs/' . $filename;
+            }
+        }
+
+        $branchData = [
+            'name'        => $branchName,
+            'branch_code' => $branchCode,
+            'state'       => $state,
+            'description' => $combinedDesc,
+            'manager_id'  => $managerId,
+            'cert_path'   => $certPath
+        ];
+
+        try {
+            $branchId = $this->repo->insertBranch($branchData);
+
+            if ($managerId && $branchId) {
+                $this->repo->updateStaffBranch($managerId, $branchId);
+            }
+
+            $security = new \App\Shared\Security\SecurityService();
+            $security->writeAuditLog('branch_created', $branchName, 'branch', (string)$adminId, 'admin', "Created branch: {$branchName} ({$branchCode}) in {$state}");
+
+            return [
+                'success'     => true,
+                'message'     => 'Branch created successfully',
+                'branch_id'   => $branchId,
+                'branch_code' => $branchCode
+            ];
+        } catch (\Throwable $e) {
+            if ($certPath) {
+                @unlink(FINZO_ROOT . '/public/' . $certPath);
+                @unlink(FINZO_ROOT . '/' . $certPath);
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Update Branch.
+     *
+     * @param int $branchId
+     * @param array $data
+     * @param ?array $certFile
+     * @param int $adminId
+     * @param ?string $adminPassword
+     * @return array
+     */
+    public function updateBranch(int $branchId, array $data, ?array $certFile, int $adminId, ?string $adminPassword): array
+    {
+        if ($this->security) {
+            try {
+                $this->security->checkAdminPermission($adminId, 'edit_branch');
+            } catch (\Throwable $e) {
+                // Fallback
+            }
+        }
+
+        if (!empty($adminPassword)) {
+            if (!$this->verifyAdminPassword($adminId, $adminPassword)) {
+                throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrator password.', 403);
+            }
+        }
+
+        $branch = $this->repo->findBranchById($branchId);
+        if (!$branch) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Branch not found', 404);
+        }
+
+        $updateData = [];
+
+        if (isset($data['branch_name']) || isset($data['name'])) {
+            $name = trim($data['branch_name'] ?? $data['name']);
+            if (!empty($name)) {
+                $updateData['name'] = $name;
+            }
+        }
+
+        if (isset($data['state']) && !empty(trim($data['state']))) {
+            $updateData['state'] = trim($data['state']);
+        }
+
+        $city = trim($data['city'] ?? '');
+        $address = trim($data['address'] ?? '');
+        $description = trim($data['description'] ?? '');
+
+        if (!empty($city) || !empty($address) || !empty($description)) {
+            $locationMeta = [];
+            if (!empty($city)) $locationMeta[] = "City: {$city}";
+            if (!empty($address)) $locationMeta[] = "Address: {$address}";
+            
+            $combinedDesc = $description;
+            if (!empty($locationMeta)) {
+                $metaStr = implode(' | ', $locationMeta);
+                $combinedDesc = !empty($combinedDesc) ? "{$combinedDesc}\n\n[Location: {$metaStr}]" : "[Location: {$metaStr}]";
+            }
+            $updateData['description'] = $combinedDesc;
+        }
+
+        if (array_key_exists('manager_id', $data)) {
+            $newManagerId = !empty($data['manager_id']) ? intval($data['manager_id']) : null;
+            $updateData['manager_id'] = $newManagerId;
+            if ($newManagerId) {
+                $this->repo->updateStaffBranch($newManagerId, $branchId);
+            }
+        }
+
+        // Handle new certificate if uploaded
+        if ($certFile && ($certFile['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+            if (in_array($certFile['type'], $allowedTypes) && $certFile['size'] <= 10 * 1024 * 1024) {
+                $ext = pathinfo($certFile['name'], PATHINFO_EXTENSION);
+                $filename = 'branch_cert_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                $publicDir = FINZO_ROOT . '/public/uploads/branch-certs/';
+                $rootUploadDir = FINZO_ROOT . '/uploads/branch-certs/';
+                if (!is_dir($publicDir)) @mkdir($publicDir, 0777, true);
+                if (!is_dir($rootUploadDir)) @mkdir($rootUploadDir, 0777, true);
+
+                $dest = $publicDir . $filename;
+                if (move_uploaded_file($certFile['tmp_name'], $dest)) {
+                    @copy($dest, $rootUploadDir . $filename);
+                    $updateData['cert_path'] = 'uploads/branch-certs/' . $filename;
+                }
+            }
+        }
+
+        if (!empty($updateData)) {
+            $this->repo->updateBranchRecord($branchId, $updateData);
+        }
+
+        $branchName = $updateData['name'] ?? ($branch->name ?? 'Branch');
+        $security = new \App\Shared\Security\SecurityService();
+        $security->writeAuditLog('branch_updated', $branchName, 'branch', (string)$adminId, 'admin', "Updated branch: {$branchName}");
+
+        return [
+            'success' => true,
+            'message' => 'Branch updated successfully'
+        ];
+    }
+
+    /**
+     * Get Branch By Id.
+     *
+     * @param int $branchId
+     * @return ?array
+     */
+    public function getBranchById(int $branchId): ?array
+    {
+        $branch = $this->repo->getBranchDetailWithStats($branchId);
+        if (!$branch) return null;
+        return [
+            'success' => true,
+            'branch'  => $branch
+        ];
+    }
+
     /**
      * Get Branches List.
      *
@@ -362,19 +618,59 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         $branches = $data['branches'];
         $stats = $data['stats'];
 
+        $resolveUrl = function(?string $path, string $subDir) {
+            if (empty($path)) return null;
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
+            }
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+        };
+
         foreach ($branches as &$b) {
             if (!empty($b['manager_name'])) {
-                $parts = explode(' ', $b['manager_name']);
+                $parts = explode(' ', trim($b['manager_name']));
                 $b['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
             } else {
                 $b['manager_initials'] = '??';
             }
+            $b['manager_avatar_url'] = $resolveUrl($b['manager_avatar'] ?? null, 'staff-photos');
+            $b['cert_url'] = $resolveUrl($b['cert_path'] ?? null, 'branch-certs');
+            
+            // Extract City and Address if present in description meta
+            $b['city'] = '';
+            $b['address'] = '';
+            $b['clean_description'] = $b['description'] ?? '';
+            if (!empty($b['description'])) {
+                if (preg_match('/\[Location:\s*(.*?)\]/s', $b['description'], $matches)) {
+                    $locStr = $matches[1];
+                    if (preg_match('/City:\s*(.*?)(?:\s*\|\s*Address:|$)/i', $locStr, $cityMatch)) {
+                        $b['city'] = trim($cityMatch[1]);
+                    }
+                    if (preg_match('/Address:\s*(.*?)$/i', $locStr, $addrMatch)) {
+                        $b['address'] = trim($addrMatch[1]);
+                    }
+                    $b['clean_description'] = trim(str_replace($matches[0], '', $b['description']));
+                }
+            }
         }
 
         return [
-            'success' => true,
+            'success'  => true,
             'branches' => $branches,
-            'stats' => ['total' => (int)$stats['total'], 'active' => (int)$stats['active'], 'total_staff' => (int)$stats['total_staff']]
+            'stats'    => [
+                'total'       => (int)($stats['total'] ?? 0),
+                'active'      => (int)($stats['active'] ?? 0),
+                'inactive'    => (int)($stats['inactive'] ?? 0),
+                'total_staff' => (int)($stats['total_staff'] ?? 0),
+                'total_txns'  => (int)($stats['total_txns'] ?? 0)
+            ]
         ];
     }
 
