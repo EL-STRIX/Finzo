@@ -22,14 +22,14 @@ if ($staffId > 0) {
     }
 }
 
-$staff        = $staffData['staff']            ?? [];
-$address      = $staffData['address']          ?? [];
-$performance  = $staffData['performance']      ?? [];
+$staff        = $staffData['staff']             ?? [];
+$address      = $staffData['address']           ?? [];
+$performance  = $staffData['performance']       ?? [];
 $today        = $staffData['today_performance'] ?? [];
-$shifts       = $staffData['shifts']           ?? [];
-$transactions = $staffData['transactions']     ?? [];
-$activities   = $staffData['activities']       ?? [];
-$documents    = $staffData['documents']        ?? [];
+$shifts       = $staffData['shifts']            ?? [];
+$transactions = $staffData['transactions']      ?? [];
+$activities   = $staffData['activities']        ?? [];
+$documents    = $staffData['documents']         ?? [];
 
 // Auth guard — redirect to admin login if not authenticated
 if (empty($staff) && empty(\App\Shared\Security\Auth::user())) {
@@ -38,8 +38,9 @@ if (empty($staff) && empty(\App\Shared\Security\Auth::user())) {
 }
 
 $fullName    = htmlspecialchars($staff['full_name']   ?? 'Staff Member Profile', ENT_QUOTES, 'UTF-8');
-$staffCode   = htmlspecialchars($staff['staff_id']    ?? 'STF---',             ENT_QUOTES, 'UTF-8');
-$designation = htmlspecialchars($staff['designation'] ?? 'Staff',              ENT_QUOTES, 'UTF-8');
+$staffCode   = htmlspecialchars($staff['staff_id']    ?? 'STF---',              ENT_QUOTES, 'UTF-8');
+$designation = htmlspecialchars($staff['designation'] ?? 'Staff',               ENT_QUOTES, 'UTF-8');
+$department  = htmlspecialchars($staff['department']  ?? 'Teller Operations',   ENT_QUOTES, 'UTF-8');
 $status      = $staff['status'] ?? 'active';
 $isActive    = ($status === 'active');
 $initials    = !empty($staff['full_name'])
@@ -47,21 +48,53 @@ $initials    = !empty($staff['full_name'])
     : 'ST';
 $profilePhoto = !empty($staff['profile_photo_url']) ? $staff['profile_photo_url'] : null;
 
-// Age calculation
+// Age & DOB calculation
 $dobStr    = !empty($staff['date_of_birth']) ? date('d M Y', strtotime($staff['date_of_birth'])) : '—';
 $genderStr = htmlspecialchars($staff['gender'] ?? 'Not specified', ENT_QUOTES, 'UTF-8');
+$ageVal    = null;
 if (!empty($staff['date_of_birth'])) {
-    $age = (new \DateTime($staff['date_of_birth']))->diff(new \DateTime('today'))->y;
-    if ($age > 0) {
-        $genderStr .= " ({$age} yrs)";
+    $ageVal = (new \DateTime($staff['date_of_birth']))->diff(new \DateTime('today'))->y;
+    if ($ageVal > 0) {
+        $genderStr .= " ({$ageVal} yrs)";
     }
 }
+
+// Joining date & Tenure
 $joinedDate = !empty($staff['date_of_joining'])
     ? date('d M Y', strtotime($staff['date_of_joining']))
     : (!empty($staff['created_at']) ? date('d M Y', strtotime($staff['created_at'])) : '—');
+
+$tenureStr = '—';
+if (!empty($staff['date_of_joining'])) {
+    $joinDateObj = new \DateTime($staff['date_of_joining']);
+    $diffObj = $joinDateObj->diff(new \DateTime('today'));
+    $tenureParts = [];
+    if ($diffObj->y > 0) $tenureParts[] = $diffObj->y . ' ' . ($diffObj->y === 1 ? 'yr' : 'yrs');
+    if ($diffObj->m > 0) $tenureParts[] = $diffObj->m . ' ' . ($diffObj->m === 1 ? 'mo' : 'mos');
+    if (empty($tenureParts)) $tenureParts[] = $diffObj->d . ' ' . ($diffObj->d === 1 ? 'day' : 'days');
+    $tenureStr = implode(', ', $tenureParts);
+}
+
+// Branch Info
 $branchName = !empty($staff['branch_name'])
     ? htmlspecialchars($staff['branch_name'] . (!empty($staff['branch_code']) ? " ({$staff['branch_code']})" : ''), ENT_QUOTES, 'UTF-8')
     : 'Unassigned';
+$branchCode = htmlspecialchars($staff['branch_code'] ?? '—', ENT_QUOTES, 'UTF-8');
+$branchState = htmlspecialchars($staff['branch_state'] ?? '—', ENT_QUOTES, 'UTF-8');
+
+// Lock & Security Info
+$isLocked = !empty($staff['locked_until']) && (strtotime($staff['locked_until']) > time());
+$lockStr  = $isLocked ? ('Locked until ' . date('d M Y, h:i A', strtotime($staff['locked_until']))) : 'Unlocked / Secure';
+
+$tempPassStatus = $staff['temp_pass_status'] ?? 'none';
+$tempPassLabel  = match($tempPassStatus) {
+    'pending' => 'Pending First Login',
+    'expired' => 'Expired',
+    default   => 'None (Standard Password)'
+};
+
+$createdAt = !empty($staff['created_at']) ? date('d M Y, h:i A', strtotime($staff['created_at'])) : '—';
+$updatedAt = !empty($staff['updated_at']) ? date('d M Y, h:i A', strtotime($staff['updated_at'])) : '—';
 
 ob_start();
 ?>
@@ -95,9 +128,9 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION & HEADER -->
-      <div class="flex items-center justify-between gap-4 relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
         <div class="flex items-center gap-4">
-          <a href="/Finzo/public/views/admin/admin-staff.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Staff List">
+          <a href="/Finzo/public/views/admin/admin-staff.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="Back to Staff List">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
@@ -105,14 +138,30 @@ ob_start();
             <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name"><?= $fullName ?></div>
           </div>
         </div>
+
+        <div class="flex items-center gap-2.5 self-start sm:self-auto">
+          <button id="open-passbook-modal-btn" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm transition-all">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
+            <span>Passbook &amp; Statement</span>
+          </button>
+        </div>
       </div>
 
       <!-- ALERT BANNER FOR SUSPENSION OR LOCK -->
-      <div id="security-alert-banner" class="<?= !$isActive ? '' : 'hidden' ?> rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm <?= !$isActive ? 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300' : '' ?>">
-          <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-0.5" aria-hidden="true">gavel</span>
+      <div id="security-alert-banner" class="<?= (!$isActive || $isLocked) ? '' : 'hidden' ?> rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm <?= !$isActive ? 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300' : 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300' ?>">
+          <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-0.5" aria-hidden="true"><?= !$isActive ? 'gavel' : 'lock' ?></span>
           <div>
-              <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase"><?= !$isActive ? 'Account Suspended' : 'Security Notice' ?></h4>
-              <p id="security-alert-message" class="text-xs sm:text-sm font-bold leading-relaxed"><?= !$isActive ? 'Staff privileges have been revoked under administrative review.' : '' ?></p>
+              <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase"><?= !$isActive ? 'Account Suspended' : 'Account Temporarily Locked' ?></h4>
+              <p id="security-alert-message" class="text-xs sm:text-sm font-bold leading-relaxed">
+                  <?php if (!$isActive): ?>
+                      Staff privileges have been revoked under administrative review.
+                      <?php if (!empty($staff['suspension_reason'])): ?>
+                          Reason: <strong><?= htmlspecialchars($staff['suspension_reason'], ENT_QUOTES, 'UTF-8') ?></strong>
+                      <?php endif; ?>
+                  <?php elseif ($isLocked): ?>
+                      This account is locked due to <?= (int)($staff['failed_attempts'] ?? 0) ?> failed login attempts. Unlocks automatically at <?= htmlspecialchars($staff['locked_until'], ENT_QUOTES, 'UTF-8') ?>.
+                  <?php endif; ?>
+              </p>
           </div>
       </div>
 
@@ -122,11 +171,11 @@ ob_start();
           <!-- LEFT COLUMN (8 cols) -->
           <div class="lg:col-span-8 space-y-6">
               
-              <!-- PROFILE CARD -->
+              <!-- 1. HERO PROFILE CARD -->
               <div class="ds-card p-6 sm:p-8">
                   <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-border-subtle text-center sm:text-left">
                       <div class="relative shrink-0">
-                          <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-surface border border-border-subtle flex items-center justify-center">
+                          <div id="staff-photo-container" class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-md bg-surface border border-border-subtle flex items-center justify-center cursor-pointer transition-transform hover:scale-105" <?= $profilePhoto ? "onclick=\"openLightbox('" . htmlspecialchars($profilePhoto, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
                               <?php if ($profilePhoto): ?>
                                   <img src="<?= htmlspecialchars($profilePhoto, ENT_QUOTES, 'UTF-8') ?>" class="w-full h-full object-cover" alt="<?= $fullName ?>" onerror="this.parentElement.innerHTML='<span class=\'text-3xl sm:text-4xl font-black text-primary font-headline\'><?= $initials ?></span>'">
                               <?php else: ?>
@@ -148,15 +197,23 @@ ob_start();
                                   }
                               ?>
                               <span id="info-role-badge" class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider <?= $roleBadgeClass ?> shadow-sm"><?= $designation ?></span>
+                              <span id="info-dept-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary shadow-sm"><?= $department ?></span>
                               <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 <?= $isActive ? 'bg-success-bg text-success border border-success/20' : 'bg-error-bg text-error border border-error/20' ?> shadow-sm">
                                   <span class="w-2 h-2 rounded-full <?= $isActive ? 'bg-success animate-pulse' : 'bg-error' ?>"></span>
                                   <span id="info-status-text"><?= $isActive ? 'Active Account' : 'Suspended' ?></span>
                               </span>
                           </div>
-                          <p class="text-xs font-bold text-text-secondary flex items-center justify-center sm:justify-start gap-2">
-                              <span class="material-symbols-outlined text-base" aria-hidden="true">calendar_today</span>
-                              <span>Staff Member Since <strong id="info-joined-date" class="text-text-primary font-black"><?= $joinedDate ?></strong></span>
-                          </p>
+                          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs font-bold text-text-secondary">
+                              <span class="flex items-center gap-1.5">
+                                  <span class="material-symbols-outlined text-base" aria-hidden="true">calendar_today</span>
+                                  <span>Joined <strong id="info-joined-date" class="text-text-primary font-black"><?= $joinedDate ?></strong></span>
+                              </span>
+                              <span class="text-border-subtle">•</span>
+                              <span class="flex items-center gap-1.5">
+                                  <span class="material-symbols-outlined text-base" aria-hidden="true">hourglass_top</span>
+                                  <span>Tenure: <strong id="info-tenure" class="text-text-primary font-black"><?= $tenureStr ?></strong></span>
+                              </span>
+                          </div>
                       </div>
                   </div>
 
@@ -197,7 +254,52 @@ ob_start();
                   </div>
               </div>
 
-              <!-- RESIDENTIAL ADDRESS -->
+              <!-- 2. EMPLOYMENT & CORPORATE PROFILE -->
+              <div class="ds-card">
+                  <div class="p-5 border-b border-border-subtle bg-background/50 flex items-center justify-between">
+                      <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
+                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">corporate_fare</span>
+                          <span>Employment &amp; Organizational Profile</span>
+                      </h4>
+                      <span class="text-[10px] font-mono font-bold text-text-secondary uppercase">CODE: <?= $staffCode ?></span>
+                  </div>
+                  <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Designation</label>
+                          <div id="emp-designation" class="text-sm font-bold text-text-primary"><?= $designation ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Department</label>
+                          <div id="emp-department" class="text-sm font-bold text-text-primary"><?= $department ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Branch Code</label>
+                          <div id="emp-branch-code" class="text-sm font-bold font-mono text-text-primary"><?= $branchCode ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Branch State</label>
+                          <div id="emp-branch-state" class="text-sm font-bold text-text-primary"><?= $branchState ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Date of Joining</label>
+                          <div id="emp-joined-date" class="text-xs font-bold text-text-primary"><?= $joinedDate ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Onboarded By</label>
+                          <div id="emp-created-by" class="text-xs font-bold text-text-primary"><?= htmlspecialchars($staff['created_by_name'] ?? 'System', ENT_QUOTES, 'UTF-8') ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Account Created</label>
+                          <div id="emp-created-at" class="text-xs font-bold text-text-primary"><?= $createdAt ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Last Profile Update</label>
+                          <div id="emp-updated-at" class="text-xs font-bold text-text-primary"><?= $updatedAt ?></div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- 3. RESIDENTIAL ADDRESS -->
               <div class="ds-card">
                   <div class="p-5 border-b border-border-subtle bg-background/50">
                       <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
@@ -229,60 +331,17 @@ ob_start();
                   </div>
               </div>
 
-              <!-- SYSTEM AUDIT INFO -->
+              <!-- 4. IDENTITY & KYC DOCUMENTS -->
               <div class="ds-card">
-                  <div class="p-5 border-b border-border-subtle bg-background/50">
-                      <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
-                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">security</span>
-                          <span>System &amp; Security Audit</span>
-                      </h4>
-                  </div>
-                  <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Last Login</label>
-                          <div id="sys-last-login" class="text-xs font-bold text-text-primary"><?= !empty($staff['last_login_at']) ? date('d M Y, h:i A', strtotime($staff['last_login_at'])) : 'Never' ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Login IP</label>
-                          <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-secondary"><?= htmlspecialchars($staff['last_login_ip'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Date of Joining</label>
-                          <div id="sys-joining-date" class="text-xs font-bold text-text-primary"><?= $joinedDate ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Created By</label>
-                          <div id="sys-created-by" class="text-xs font-bold text-text-primary"><?= htmlspecialchars($staff['created_by_name'] ?? 'System', ENT_QUOTES, 'UTF-8') ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Staff ID</label>
-                          <div id="sys-staff-id" class="text-xs font-mono font-bold text-text-secondary"><?= $staffCode ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Total Shifts</label>
-                          <div id="sys-total-shifts" class="text-xs font-bold text-text-primary"><?= (int)($staffData['total_shifts'] ?? count($shifts)) ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Failed Logins</label>
-                          <div id="sys-failed-logins" class="text-xs font-bold text-text-primary"><?= (int)($staff['failed_attempts'] ?? 0) ?></div>
-                      </div>
-                      <div>
-                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Lock Status</label>
-                          <div id="sys-lock-status" class="text-xs font-bold <?= !empty($staff['locked_until']) ? 'text-error' : 'text-success' ?>"><?= !empty($staff['locked_until']) ? 'Locked' : 'Unlocked' ?></div>
-                      </div>
-                  </div>
-              </div>
-
-              <!-- IDENTITY DOCUMENTS -->
-              <div class="ds-card">
-                  <div class="p-5 border-b border-border-subtle bg-background/50">
+                  <div class="p-5 border-b border-border-subtle bg-background/50 flex items-center justify-between">
                       <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
                           <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">badge</span>
-                          <span>Identity Verification Documents</span>
+                          <span>Official Identity Verification Documents</span>
                       </h4>
+                      <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">KYC Record</span>
                   </div>
                   <div class="p-5">
-                      <div class="grid grid-cols-2 gap-5 mb-5">
+                      <div class="grid grid-cols-2 sm:grid-cols-3 gap-5 mb-6">
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Document Type</label>
                               <div id="doc-id-type" class="text-sm font-bold text-text-primary"><?= htmlspecialchars($staff['id_type'] ?? 'Identity Proof', ENT_QUOTES, 'UTF-8') ?></div>
@@ -291,13 +350,24 @@ ob_start();
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Document Number</label>
                               <div id="doc-id-number" class="text-sm font-bold font-mono text-text-primary"><?= htmlspecialchars($staff['id_number'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
                           </div>
+                          <div>
+                              <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Verification Status</label>
+                              <div class="text-xs font-bold text-success flex items-center gap-1 mt-0.5">
+                                  <span class="material-symbols-outlined text-sm" aria-hidden="true">verified</span>
+                                  <span>On File &amp; Verified</span>
+                              </div>
+                          </div>
                       </div>
+
                       <div id="doc-images-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                           <!-- Front Document -->
                           <div>
-                              <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Front of Document</label>
+                              <div class="flex items-center justify-between mb-2">
+                                  <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary block">Front of Document</label>
+                                  <span class="text-[10px] font-bold text-text-secondary">Click to Zoom</span>
+                              </div>
                               <?php $frontUrl = $staff['front_image_url'] ?? null; ?>
-                              <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $frontUrl ? "onclick=\"openLightbox('" . htmlspecialchars($frontUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
+                              <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-md" <?= $frontUrl ? "onclick=\"openLightbox('" . htmlspecialchars($frontUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
                                   <div id="doc-front-placeholder" class="text-center <?= $frontUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
@@ -308,11 +378,15 @@ ob_start();
                                   </div>
                               </div>
                           </div>
+                          
                           <!-- Back Document -->
                           <div>
-                              <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Back of Document</label>
+                              <div class="flex items-center justify-between mb-2">
+                                  <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary block">Back of Document</label>
+                                  <span class="text-[10px] font-bold text-text-secondary">Click to Zoom</span>
+                              </div>
                               <?php $backUrl = $staff['back_image_url'] ?? null; ?>
-                              <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $backUrl ? "onclick=\"openLightbox('" . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
+                              <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-md" <?= $backUrl ? "onclick=\"openLightbox('" . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
                                   <div id="doc-back-placeholder" class="text-center <?= $backUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
@@ -327,6 +401,50 @@ ob_start();
                   </div>
               </div>
 
+              <!-- 5. SYSTEM & SECURITY AUDIT -->
+              <div class="ds-card">
+                  <div class="p-5 border-b border-border-subtle bg-background/50">
+                      <h4 class="font-black text-[10px] uppercase tracking-widest flex items-center gap-2 text-text-secondary">
+                          <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">security</span>
+                          <span>System, Security &amp; Access Controls</span>
+                      </h4>
+                  </div>
+                  <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Last Login</label>
+                          <div id="sys-last-login" class="text-xs font-bold text-text-primary"><?= !empty($staff['last_login_at']) ? date('d M Y, h:i A', strtotime($staff['last_login_at'])) : 'Never' ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Login IP</label>
+                          <div id="sys-last-ip" class="text-xs font-mono font-bold text-text-secondary"><?= htmlspecialchars($staff['last_login_ip'] ?? '—', ENT_QUOTES, 'UTF-8') ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Account Lock Status</label>
+                          <div id="sys-lock-status" class="text-xs font-bold <?= $isLocked ? 'text-error' : 'text-success' ?>"><?= $lockStr ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Failed Login Attempts</label>
+                          <div id="sys-failed-logins" class="text-xs font-bold text-text-primary"><?= (int)($staff['failed_attempts'] ?? 0) ?> attempts</div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Temp Password Status</label>
+                          <div id="sys-temp-pass" class="text-xs font-bold text-text-primary"><?= $tempPassLabel ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Total Shifts Logged</label>
+                          <div id="sys-total-shifts" class="text-xs font-bold text-text-primary"><?= (int)($staffData['total_shifts'] ?? count($shifts)) ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Account Lifecycle</label>
+                          <div id="sys-lifecycle" class="text-xs font-bold <?= !empty($staff['is_deleted']) ? 'text-error' : 'text-success' ?>"><?= !empty($staff['is_deleted']) ? 'Soft-Deleted' : 'Active Ledger' ?></div>
+                      </div>
+                      <div>
+                          <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-1 block">Authorization Role</label>
+                          <div id="sys-auth-role" class="text-xs font-bold text-primary">STAFF_OPERATIONS</div>
+                      </div>
+                  </div>
+              </div>
+
           </div>
 
           <!-- RIGHT COLUMN (4 cols) -->
@@ -336,12 +454,12 @@ ob_start();
               <div class="ds-card p-5">
                   <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Staff Governance Actions</h5>
                   <div class="space-y-3">
-                      <button id="deactivate-staff-btn" type="button" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all group">
+                      <button id="deactivate-staff-btn" type="button" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all group" data-action="<?= $isActive ? 'deactivate' : 'reinstate' ?>">
                           <div class="flex items-center gap-3">
-                              <span id="suspend-icon" class="material-symbols-outlined text-warning" aria-hidden="true">block</span>
+                              <span id="suspend-icon" class="material-symbols-outlined <?= $isActive ? 'text-warning' : 'text-success' ?>" aria-hidden="true"><?= $isActive ? 'block' : 'check_circle' ?></span>
                               <div class="text-left">
-                                  <div id="suspend-label" class="text-xs font-black text-text-primary">Suspend Staff</div>
-                                  <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">Revoke system access</div>
+                                  <div id="suspend-label" class="text-xs font-black text-text-primary"><?= $isActive ? 'Suspend Staff' : 'Reinstate Staff' ?></div>
+                                  <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5"><?= $isActive ? 'Revoke system access' : 'Restore system privileges' ?></div>
                               </div>
                           </div>
                           <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
@@ -373,7 +491,7 @@ ob_start();
 
               <!-- PERFORMANCE OVERVIEW -->
               <div class="ds-card p-5">
-                  <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Performance Overview</h5>
+                  <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Lifetime Financial Performance</h5>
                   <div class="grid grid-cols-2 gap-3">
                       <div class="text-center p-3 bg-background rounded-xl border border-border-subtle">
                           <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Deposits</div>
@@ -396,7 +514,7 @@ ob_start();
 
               <!-- TODAY'S SHIFT SUMMARY -->
               <div class="ds-card p-5">
-                  <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Today's Shift Summary</h5>
+                  <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Today's Shift Operations</h5>
                   <div class="space-y-3">
                       <div class="flex justify-between items-center pb-2.5 border-b border-border-subtle">
                           <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Deposits Processed</span>
@@ -421,7 +539,7 @@ ob_start();
               <!-- RECENT SHIFTS -->
               <div class="ds-card p-5">
                   <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 flex justify-between items-center ml-1">
-                      <span>Recent Shifts</span>
+                      <span>Recent Shifts History</span>
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">schedule</span>
                   </h5>
                   <div id="staff-shift-history" class="space-y-2.5">
@@ -448,10 +566,10 @@ ob_start();
                   <div class="relative z-10">
                       <h5 class="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Audit Compliance</h5>
                       <p class="text-[11px] leading-relaxed text-text-secondary font-bold">
-                          All staff actions, transactions, and credential changes are recorded in the central audit ledger and cryptographically tied to the active administrator session.
+                          All staff actions, customer transactions, and security modifications are recorded in the central audit ledger and cryptographically tied to the active administrator session.
                       </p>
                   </div>
-                  <span class="material-symbols-outlined absolute -right-3 -bottom-3 text-7xl text-border-subtle" aria-hidden="true">verified_user</span>
+                  <span class="material-symbols-outlined absolute -right-3 -bottom-3 text-7xl text-border-subtle opacity-40" aria-hidden="true">verified_user</span>
               </div>
           </div>
       </div>
@@ -465,7 +583,7 @@ ob_start();
               </div>
               <button id="open-passbook-modal-table-btn" type="button" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-all">
                   <span class="material-symbols-outlined text-[16px]" aria-hidden="true">receipt_long</span>
-                  <span>Passbook & Statement</span>
+                  <span>Passbook &amp; Statement</span>
               </button>
           </div>
           <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent overflow-x-auto">
@@ -473,7 +591,7 @@ ob_start();
                   <thead scope="col">
                       <tr>
                           <th scope="col" class="w-[15%]">Receipt / Txn ID</th>
-                          <th scope="col" class="w-[18%]">Date & Time</th>
+                          <th scope="col" class="w-[18%]">Date &amp; Time</th>
                           <th scope="col" class="w-[20%]">Customer</th>
                           <th scope="col" class="w-[17%]">Account No</th>
                           <th scope="col" class="w-[12%] text-center">Type</th>
@@ -511,7 +629,7 @@ ob_start();
       <div class="ds-card overflow-hidden mt-6 relative z-10 shadow-lg">
           <div class="p-5 sm:p-6 border-b border-border-subtle flex justify-between items-center bg-background/50">
               <div>
-                  <h4 class="font-black text-lg text-text-primary tracking-tight">Staff Security & Activity Log</h4>
+                  <h4 class="font-black text-lg text-text-primary tracking-tight">Staff Security &amp; Activity Log</h4>
                   <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Logged events performed by this staff account</p>
               </div>
           </div>
@@ -519,7 +637,7 @@ ob_start();
               <table class="ds-table w-full text-left min-w-[800px]">
                   <thead scope="col">
                       <tr>
-                          <th scope="col" class="w-[20%]">Date & Time</th>
+                          <th scope="col" class="w-[20%]">Date &amp; Time</th>
                           <th scope="col" class="w-[20%]">Action Type</th>
                           <th scope="col" class="w-[42%]">Details</th>
                           <th scope="col" class="w-[18%] text-right">IP Address</th>
@@ -534,7 +652,7 @@ ob_start();
                                   <td class="text-xs font-bold text-text-primary whitespace-nowrap"><?= !empty($a['created_at']) ? date('d M Y, h:i A', strtotime($a['created_at'])) : '—' ?></td>
                                   <td>
                                       <span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary">
-                                          <?= htmlspecialchars($a['action'] ?? 'ACTIVITY', ENT_QUOTES, 'UTF-8') ?>
+                                          <?= htmlspecialchars($a['action_type'] ?? 'ACTIVITY', ENT_QUOTES, 'UTF-8') ?>
                                       </span>
                                   </td>
                                   <td class="text-xs text-text-secondary font-medium"><?= htmlspecialchars($a['details'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
@@ -561,7 +679,7 @@ ob_start();
             <span class="material-symbols-outlined text-xl" aria-hidden="true">receipt_long</span>
           </div>
           <div>
-            <h3 class="text-base font-black font-headline text-text-primary">Staff Transaction Statement & Passbook</h3>
+            <h3 class="text-base font-black font-headline text-text-primary">Staff Transaction Statement &amp; Passbook</h3>
             <p class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Authorized Banking Record</p>
           </div>
         </div>
@@ -578,172 +696,157 @@ ob_start();
       </div>
 
       <!-- Date Range Filter Bar (No Print) -->
-      <div class="px-4 py-3 sm:px-6 bg-surface-subtle border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 no-print">
-        <div class="flex flex-wrap items-center gap-2 text-xs">
-          <span class="font-bold text-text-secondary uppercase tracking-wider text-[10px] mr-1">Statement Period:</span>
-          
-          <div class="flex items-center gap-1.5 bg-surface px-2.5 py-1 rounded-lg border border-border-subtle">
-            <span class="text-[10px] font-bold text-text-secondary uppercase">From:</span>
-            <input type="date" id="pb-filter-from" class="bg-transparent text-xs text-text-primary focus:outline-none cursor-pointer">
-          </div>
-
-          <div class="flex items-center gap-1.5 bg-surface px-2.5 py-1 rounded-lg border border-border-subtle">
-            <span class="text-[10px] font-bold text-text-secondary uppercase">To:</span>
-            <input type="date" id="pb-filter-to" class="bg-transparent text-xs text-text-primary focus:outline-none cursor-pointer">
-          </div>
-
-          <button id="pb-apply-filter" type="button" class="btn btn-secondary px-3 py-1 text-xs font-bold rounded-lg inline-flex items-center gap-1 shadow-sm transition-all">
-            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">filter_alt</span>
-            <span>Filter</span>
-          </button>
+      <div class="p-4 bg-background/50 border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Presets:</span>
+          <button id="pb-preset-all" type="button" class="px-2.5 py-1 bg-surface border border-border-subtle hover:border-primary rounded-lg text-xs font-bold text-text-primary transition-all">All Time</button>
+          <button id="pb-preset-month" type="button" class="px-2.5 py-1 bg-surface border border-border-subtle hover:border-primary rounded-lg text-xs font-bold text-text-primary transition-all">This Month</button>
+          <button id="pb-preset-30" type="button" class="px-2.5 py-1 bg-surface border border-border-subtle hover:border-primary rounded-lg text-xs font-bold text-text-primary transition-all">Last 30 Days</button>
+          <button id="pb-preset-90" type="button" class="px-2.5 py-1 bg-surface border border-border-subtle hover:border-primary rounded-lg text-xs font-bold text-text-primary transition-all">Last 90 Days</button>
         </div>
 
-        <div class="flex items-center gap-1.5 text-[11px]">
-          <button id="pb-preset-all" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">All Time</button>
-          <button id="pb-preset-month" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">This Month</button>
-          <button id="pb-preset-30" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">Last 30 Days</button>
-          <button id="pb-preset-90" type="button" class="px-2.5 py-1 rounded-md bg-surface border border-border-subtle hover:border-primary text-text-secondary hover:text-text-primary font-bold text-[10px] uppercase transition-all">Last 90 Days</button>
+        <div class="flex items-center gap-2">
+          <input type="date" id="pb-filter-from" class="px-2.5 py-1 bg-surface border border-border-subtle rounded-lg text-xs font-mono text-text-primary" />
+          <span class="text-xs text-text-secondary">to</span>
+          <input type="date" id="pb-filter-to" class="px-2.5 py-1 bg-surface border border-border-subtle rounded-lg text-xs font-mono text-text-primary" />
+          <button id="pb-apply-filter" type="button" class="px-3 py-1 bg-primary text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm">Filter</button>
         </div>
       </div>
 
-      <!-- Printable Passbook Paper Area -->
-      <div class="p-4 sm:p-8 overflow-y-auto bg-slate-100 dark:bg-black/40">
-        <div id="passbook-print-area" class="bg-white text-black p-6 sm:p-8 max-w-4xl mx-auto border-2 border-black font-mono shadow-sm">
-          
-          <!-- Bank Header -->
-          <div class="border-b-2 border-black pb-3 mb-4 text-center">
-            <h1 class="text-2xl font-black tracking-wider uppercase text-black font-serif">FINZO FINANCIAL BANKING CORP</h1>
-            <div class="text-xs font-bold uppercase tracking-widest text-black mt-0.5">STAFF TRANSACTION LEDGER & OPERATIONAL PASSBOOK</div>
-            <div class="flex justify-between items-center text-[11px] font-bold text-black border-t border-black pt-2 mt-2.5">
-              <div id="pb-branch-header">BRANCH: MAIN HEADQUARTERS</div>
-              <div>IFSC: FINZ0002026</div>
-              <div>MICR: 400026002</div>
+      <!-- Monochrome Bank Passbook Print Document -->
+      <div class="p-6 sm:p-8 overflow-y-auto flex-1 bg-surface" id="passbook-print-area">
+        
+        <!-- Passbook Bank Header -->
+        <div class="border-2 border-black p-4 mb-6 text-black bg-white">
+          <div class="flex justify-between items-start border-b-2 border-black pb-3 mb-3">
+            <div>
+              <h2 class="text-xl font-black tracking-wider uppercase font-serif">FINZO BANKING CORPORATION</h2>
+              <p class="text-[10px] font-bold tracking-widest uppercase">Staff Member Transaction Passbook &amp; Activity Journal</p>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] font-bold font-mono uppercase" id="pb-branch-header">BRANCH: <?= !empty($staff['branch_name']) ? strtoupper($staff['branch_name']) : 'MAIN HEADQUARTERS' ?></div>
+              <div class="text-[9px] text-gray-700">DATE: <?= date('d/m/Y H:i:s') ?></div>
             </div>
           </div>
 
-          <!-- Staff Particulars Box -->
-          <table class="w-full border-collapse border border-black text-xs mb-4">
-            <tbody>
-              <tr class="border-b border-black">
-                <td class="p-2 border-r border-black font-bold w-1/4 bg-slate-100 text-black">STAFF FULL NAME</td>
-                <td class="p-2 border-r border-black font-black w-1/4 text-black text-sm uppercase" id="pb-full-name">Staff Member</td>
-                <td class="p-2 border-r border-black font-bold w-1/4 bg-slate-100 text-black">STAFF ID</td>
-                <td class="p-2 font-black w-1/4 text-black text-sm" id="pb-staff-id">STF000</td>
-              </tr>
-              <tr class="border-b border-black">
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">DESIGNATION / ROLE</td>
-                <td class="p-2 border-r border-black font-bold text-black uppercase" id="pb-designation">Teller / Operations</td>
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">BRANCH LOCATION</td>
-                <td class="p-2 font-bold text-black uppercase" id="pb-branch">Main Branch</td>
-              </tr>
-              <tr class="border-b border-black">
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">MOBILE NUMBER</td>
-                <td class="p-2 border-r border-black font-bold text-black" id="pb-phone">N/A</td>
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">STATEMENT PERIOD</td>
-                <td class="p-2 font-bold text-black" id="pb-generated-date"><?= date('d-m-Y') ?></td>
-              </tr>
-              <tr>
-                <td class="p-2 border-r border-black font-bold bg-slate-100 text-black">OFFICIAL ADDRESS</td>
-                <td class="p-2 text-black font-bold" colspan="3" id="pb-address">N/A</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Official Passbook Ledger -->
-          <div class="mb-4 overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse border border-black font-mono">
-              <thead>
-                <tr class="border-b-2 border-black bg-slate-100 text-black font-black text-[11px] uppercase">
-                  <th class="p-2 border-r border-black w-10 text-center">LINE</th>
-                  <th class="p-2 border-r border-black w-24 text-center">DATE</th>
-                  <th class="p-2 border-r border-black w-28">RECEIPT / TXN ID</th>
-                  <th class="p-2 border-r border-black">CUSTOMER / PARTICULARS</th>
-                  <th class="p-2 border-r border-black w-28">ACCOUNT NO</th>
-                  <th class="p-2 border-r border-black w-24 text-center">TYPE</th>
-                  <th class="p-2 w-28 text-right">AMOUNT ₹</th>
-                </tr>
-              </thead>
-              <tbody id="pb-transactions-body" class="divide-y divide-black text-[11px] text-black">
-                <tr><td colspan="7" class="p-4 text-center text-black">No transaction entries found for the selected period.</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Bottom Totals Summary Box -->
-          <table class="w-full border-collapse border-2 border-black text-xs mb-4 text-black font-mono">
-            <tbody>
-              <tr class="font-bold">
-                <td class="p-2.5 border-r border-black w-1/4 text-center">
-                  <div class="text-[10px] uppercase">TOTAL DEPOSITS (CR)</div>
-                  <div class="text-sm font-black mt-0.5 text-black" id="pb-total-credits">₹ 0.00</div>
-                </td>
-                <td class="p-2.5 border-r border-black w-1/4 text-center">
-                  <div class="text-[10px] uppercase">TOTAL WITHDRAWALS (DR)</div>
-                  <div class="text-sm font-black mt-0.5 text-black" id="pb-total-debits">₹ 0.00</div>
-                </td>
-                <td class="p-2.5 border-r border-black w-1/4 text-center">
-                  <div class="text-[10px] uppercase">TOTAL TRANSACTIONS</div>
-                  <div class="text-sm font-black mt-0.5 text-black" id="pb-total-txns-count">0</div>
-                </td>
-                <td class="p-2.5 w-1/4 text-center bg-slate-100 font-black">
-                  <div class="text-[10px] uppercase">TOTAL VOLUME PROCESSED</div>
-                  <div class="text-sm font-black mt-0.5 text-black" id="pb-net-balance">₹ 0.00</div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Footer Rules & Notice -->
-          <div class="text-[10px] text-black leading-tight border-t border-black pt-3 font-mono">
-            <p class="font-bold">* Please examine this passbook & ledger statement immediately. Discrepancies, if any, should be reported to the Branch Operations Supervisor within 15 days.</p>
-            <div class="flex justify-between items-center mt-2 text-[9px] font-bold">
-              <span>* COMPUTER GENERATED PASSBOOK & STATEMENT — NO PHYSICAL SIGNATURE REQUIRED</span>
-              <span>PAGE 1 OF 1</span>
+          <!-- Staff Account Particulars -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+              <span class="text-[9px] uppercase tracking-wider block font-bold text-gray-600">Staff Name:</span>
+              <span id="pb-full-name" class="font-black font-mono uppercase"><?= strtoupper($fullName) ?></span>
+            </div>
+            <div>
+              <span class="text-[9px] uppercase tracking-wider block font-bold text-gray-600">Staff ID:</span>
+              <span id="pb-staff-id" class="font-black font-mono uppercase"><?= $staffCode ?></span>
+            </div>
+            <div>
+              <span class="text-[9px] uppercase tracking-wider block font-bold text-gray-600">Designation:</span>
+              <span id="pb-designation" class="font-bold uppercase"><?= $designation ?> (<?= $department ?>)</span>
+            </div>
+            <div>
+              <span class="text-[9px] uppercase tracking-wider block font-bold text-gray-600">Contact:</span>
+              <span id="pb-phone" class="font-mono font-bold"><?= htmlspecialchars($staff['phone'] ?? '—', ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+            <div class="col-span-2 sm:col-span-4">
+              <span class="text-[9px] uppercase tracking-wider block font-bold text-gray-600">Address:</span>
+              <span id="pb-address" class="font-mono text-[11px]"><?= htmlspecialchars(($address['street'] ?? '') . ', ' . ($address['city'] ?? '') . ', ' . ($address['state'] ?? '') . ' - ' . ($address['pincode'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
             </div>
           </div>
-
         </div>
+
+        <!-- Ledger Entries Table -->
+        <div class="border-2 border-black overflow-hidden bg-white text-black mb-6">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-gray-100 border-b-2 border-black font-mono text-[10px] uppercase font-black">
+              <tr>
+                <th class="p-2 border-r border-black w-8 text-center">#</th>
+                <th class="p-2 border-r border-black w-28 text-center">Date &amp; Time</th>
+                <th class="p-2 border-r border-black w-28">Receipt / Ref</th>
+                <th class="p-2 border-r border-black">Particulars / Customer</th>
+                <th class="p-2 border-r border-black w-28">Account No</th>
+                <th class="p-2 border-r border-black w-20 text-center">Type</th>
+                <th class="p-2 text-right w-28">Amount (INR)</th>
+              </tr>
+            </thead>
+            <tbody id="pb-entries-body" class="font-mono text-xs divide-y divide-black">
+              <!-- Dynamically populated via JS/SSR -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary Totals Footer -->
+        <div class="border-2 border-black p-4 text-black bg-white grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+          <div class="p-2 bg-gray-50 border border-black">
+            <div class="text-[9px] uppercase font-bold text-gray-600">Total Deposits (CR):</div>
+            <div id="pb-total-credits" class="text-sm font-black text-black">₹ 0.00</div>
+          </div>
+          <div class="p-2 bg-gray-50 border border-black">
+            <div class="text-[9px] uppercase font-bold text-gray-600">Total Withdrawals (DR):</div>
+            <div id="pb-total-debits" class="text-sm font-black text-black">₹ 0.00</div>
+          </div>
+          <div class="p-2 bg-gray-50 border border-black">
+            <div class="text-[9px] uppercase font-bold text-gray-600">Txn Count:</div>
+            <div id="pb-total-txns-count" class="text-sm font-black text-black">0</div>
+          </div>
+          <div class="p-2 bg-black text-white">
+            <div class="text-[9px] uppercase font-bold text-gray-300">Total Volume:</div>
+            <div id="pb-net-balance" class="text-sm font-black text-white">₹ 0.00</div>
+          </div>
+        </div>
+
+        <!-- Authorization Signatures -->
+        <div class="mt-12 pt-6 border-t-2 border-black flex justify-between items-end text-black text-[10px] uppercase font-mono">
+          <div>
+            <div class="border-t border-black w-48 mb-1"></div>
+            <span>Staff Member Signature</span>
+          </div>
+          <div class="text-center">
+            <div class="w-24 h-24 border border-dashed border-gray-400 rounded-full flex items-center justify-center text-[8px] text-gray-500 mb-1 mx-auto">OFFICIAL BANK SEAL</div>
+            <span>Branch Seal</span>
+          </div>
+          <div class="text-right">
+            <div class="border-t border-black w-48 mb-1 ml-auto"></div>
+            <span>Authorized Officer / Manager</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- GOVERNANCE SECURITY MODAL -->
-  <div id="governance-modal" class="fixed inset-0 z-[2600] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm" role="dialog" aria-modal="true">
-      <div class="bg-surface rounded-3xl border border-border-subtle shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
-          <div id="modal-header" class="p-6 text-center border-b border-border-subtle bg-background/50">
-              <div id="modal-icon-container" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-3 transition-all duration-300">
-                  <span id="modal-icon" class="material-symbols-outlined text-3xl" aria-hidden="true">warning</span>
+  <!-- GOVERNANCE ACTION MODAL -->
+  <div id="governance-modal" class="fixed inset-0 z-[2600] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto" role="dialog" aria-modal="true">
+      <div class="relative w-full max-w-md bg-surface rounded-3xl border border-border-subtle shadow-2xl overflow-hidden flex flex-col my-auto">
+          <!-- Modal Header -->
+          <div class="p-6 border-b border-border-subtle flex items-start gap-4">
+              <div id="modal-icon-container" class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-primary/10 text-primary border border-primary/20">
+                  <span id="modal-icon" class="material-symbols-outlined text-2xl" aria-hidden="true">security</span>
               </div>
-              <h3 id="modal-title" class="font-headline text-xl font-black text-text-primary">Authorize Governance Action</h3>
-              <p id="modal-subtitle" class="text-[10px] text-text-secondary font-bold mt-0.5 uppercase tracking-wider">Administrative Verification Required</p>
+              <div class="flex-1">
+                  <h3 id="modal-title" class="text-base font-black font-headline text-text-primary">Confirm Governance Action</h3>
+                  <p id="modal-subtitle" class="text-xs font-bold text-text-secondary mt-0.5">Authorization Required</p>
+              </div>
           </div>
-          
+
+          <!-- Modal Body -->
           <div class="p-6 space-y-4">
-              <div id="modal-body-text" class="text-xs font-bold text-text-secondary text-center leading-relaxed"></div>
+              <p id="modal-body-text" class="text-xs font-medium text-text-secondary leading-relaxed"></p>
 
-              <!-- Reason Selection Step -->
-              <div id="reason-step" class="hidden space-y-2">
-                  <label class="block text-[10px] font-black uppercase tracking-wider text-text-secondary">Select Primary Reason:</label>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="reason-grid">
-                      <!-- Injected by JS -->
+              <!-- Reason Selection (for suspension) -->
+              <div id="reason-step" class="space-y-2 hidden">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary block">Select Reason</label>
+                  <div id="reason-options" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+                  <div class="mt-2">
+                      <input type="text" id="governance-notes" placeholder="Additional notes / details..." class="w-full px-3.5 py-2.5 bg-background border border-border-subtle rounded-xl text-xs text-text-primary" />
                   </div>
               </div>
 
-              <!-- Custom Notes -->
-              <div id="custom-reason-container" class="hidden">
-                  <label for="governance-notes" class="block text-[10px] font-black uppercase tracking-wider text-text-secondary mb-1">Additional Observations (Optional):</label>
-                  <textarea id="governance-notes" rows="2" placeholder="Explain the governance decision for audit trail..." class="fin-input !rounded-xl text-xs"></textarea>
-              </div>
-
-              <!-- Admin Password Auth Step -->
-              <div id="auth-step" class="pt-3 border-t border-border-subtle">
-                  <label for="admin-password" class="block text-[10px] font-black uppercase tracking-wider text-text-secondary mb-1.5">Confirm Identity (Admin Password):</label>
-                  <div class="relative">
-                      <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary text-lg" aria-hidden="true">lock</span>
-                      <input type="password" id="admin-password" placeholder="••••••••" class="fin-input !pl-11 !py-2.5 !rounded-xl text-sm">
-                  </div>
-                  <p id="auth-error" class="text-[10px] font-bold text-error uppercase tracking-wider mt-1.5 hidden"></p>
+              <!-- Admin Password Verification -->
+              <div id="auth-step" class="space-y-2">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary block">Admin Password Confirmation</label>
+                  <input type="password" id="admin-password" placeholder="Enter your administrator password" class="w-full px-3.5 py-2.5 bg-background border border-border-subtle rounded-xl text-xs text-text-primary focus:border-primary" />
+                  <div id="auth-error" class="text-xs font-bold text-error hidden"></div>
               </div>
           </div>
 

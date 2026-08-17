@@ -430,6 +430,8 @@
                 }
             }
 
+            setText('info-dept-badge', staff.department || 'Teller Operations');
+
             // Status Badge on Profile Card
             const statusBadge = document.getElementById('info-status-badge');
             const statusText = document.getElementById('info-status-text');
@@ -442,6 +444,23 @@
             }
 
             setText('info-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
+
+            // Tenure Calculation
+            if (staff.date_of_joining) {
+                const joinDate = new Date(staff.date_of_joining);
+                const now = new Date();
+                let yrs = now.getFullYear() - joinDate.getFullYear();
+                let mos = now.getMonth() - joinDate.getMonth();
+                if (mos < 0) { yrs--; mos += 12; }
+                const tenureParts = [];
+                if (yrs > 0) tenureParts.push(`${yrs} ${yrs === 1 ? 'yr' : 'yrs'}`);
+                if (mos > 0) tenureParts.push(`${mos} ${mos === 1 ? 'mo' : 'mos'}`);
+                if (tenureParts.length === 0) tenureParts.push('Just joined');
+                setText('info-tenure', tenureParts.join(', '));
+            } else {
+                setText('info-tenure', '—');
+            }
+
             setText('info-email', staff.email || 'N/A');
             setText('info-phone', staff.phone || 'N/A');
 
@@ -467,6 +486,16 @@
             setText('info-emergency', emergencyStr);
             setText('info-branch', staff.branch_name ? `${staff.branch_name} (${staff.branch_code || 'BR'})` : 'Unassigned');
 
+            // Employment & Corporate Profile Card
+            setText('emp-designation', staff.designation || 'Staff');
+            setText('emp-department', staff.department || 'Teller Operations');
+            setText('emp-branch-code', staff.branch_code || '—');
+            setText('emp-branch-state', staff.branch_state || '—');
+            setText('emp-joined-date', fmtDate(staff.date_of_joining || staff.created_at));
+            setText('emp-created-by', staff.created_by_name || 'System');
+            setText('emp-created-at', fmtDate(staff.created_at));
+            setText('emp-updated-at', fmtDate(staff.updated_at));
+
             // 4. Address
             setText('addr-street', address.street || '—');
             setText('addr-city', address.city || '—');
@@ -481,11 +510,19 @@
             setText('sys-created-by', staff.created_by_name || 'System');
             setText('sys-staff-id', staff.staff_id || '—');
             setText('sys-total-shifts', String(totalShifts || 0));
-            setText('sys-failed-logins', String(staff.failed_attempts || 0));
+            setText('sys-failed-logins', `${staff.failed_attempts || 0} attempts`);
+
+            const tempPassMap = {
+                'pending': 'Pending First Login',
+                'expired': 'Expired',
+                'none': 'None (Standard Password)'
+            };
+            setText('sys-temp-pass', tempPassMap[staff.temp_pass_status] || 'None (Standard Password)');
+            setText('sys-lifecycle', staff.is_deleted ? 'Soft-Deleted' : 'Active Ledger');
             
             const lockEl = document.getElementById('sys-lock-status');
             if (lockEl) {
-                lockEl.textContent = isLocked ? 'Locked' : 'Unlocked';
+                lockEl.textContent = isLocked ? `Locked until ${fmtDate(staff.locked_until)}` : 'Unlocked / Secure';
                 lockEl.className = isLocked ? 'text-xs font-black text-error' : 'text-xs font-bold text-success';
             }
 

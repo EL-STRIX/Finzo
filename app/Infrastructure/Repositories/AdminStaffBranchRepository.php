@@ -505,6 +505,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
                    s.gender, s.date_of_birth, s.emergency_contact_name, s.emergency_contact_phone,
                    s.date_of_joining, s.created_by, s.failed_attempts, s.locked_until,
                    s.id_type, s.id_number, s.front_image, s.back_image,
+                   s.temp_pass_status, s.updated_at, s.is_deleted, s.deleted_at,
                    b.id as branch_id, b.name as branch_name, b.branch_code, b.state as branch_state,
                    COALESCE(ca.full_name, cs.full_name, s.created_by, 'System') as created_by_name
             FROM staff s
@@ -596,21 +597,40 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             'deposit_count' => 0, 'withdrawal_count' => 0
         ];
 
-        // Shift History (from transactions or shifts)
+        // Shift History — use dedicated staff_shifts table; fall back to transaction-based dates
         $shiftStmt = $this->db->prepare("
-            SELECT DATE(created_at) as shift_date, MIN(created_at) as login_time, MAX(created_at) as logout_time
-            FROM transactions
-            WHERE processed_by_staff_id = ?
-            GROUP BY shift_date
-            ORDER BY shift_date DESC
-            LIMIT 5
+            SELECT ss.shift_date, ss.clock_in as login_time, ss.clock_out as logout_time, ss.status as shift_status, ss.notes
+            FROM staff_shifts ss
+            WHERE ss.staff_id = ?
+            ORDER BY ss.shift_date DESC
+            LIMIT 10
         ");
-        $shiftStmt->execute([$staffId]);
+        $shiftStmt->execute([$staff['staff_id']]);
         $shifts = $shiftStmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $shiftCountStmt = $this->db->prepare("SELECT COUNT(DISTINCT DATE(created_at)) FROM transactions WHERE processed_by_staff_id = ?");
-        $shiftCountStmt->execute([$staffId]);
+        // If no dedicated shifts, derive from transaction activity
+        if (empty($shifts)) {
+            $shiftStmt = $this->db->prepare("
+                SELECT DATE(created_at) as shift_date, MIN(created_at) as login_time, MAX(created_at) as logout_time,
+                       'completed' as shift_status, NULL as notes
+                FROM transactions
+                WHERE processed_by_staff_id = ?
+                GROUP BY shift_date
+                ORDER BY shift_date DESC
+                LIMIT 10
+            ");
+            $shiftStmt->execute([$staffId]);
+            $shifts = $shiftStmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        $shiftCountStmt = $this->db->prepare("SELECT COUNT(*) FROM staff_shifts WHERE staff_id = ?");
+        $shiftCountStmt->execute([$staff['staff_id']]);
         $totalShifts = (int)$shiftCountStmt->fetchColumn();
+        if ($totalShifts === 0) {
+            $txnShiftStmt = $this->db->prepare("SELECT COUNT(DISTINCT DATE(created_at)) FROM transactions WHERE processed_by_staff_id = ?");
+            $txnShiftStmt->execute([$staffId]);
+            $totalShifts = (int)$txnShiftStmt->fetchColumn();
+        }
 
         // Recent Transactions
         $txnStmt = $this->db->prepare("
