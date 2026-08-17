@@ -74,7 +74,7 @@
             const data = await res.json();
             
             if (!res.ok) {
-                if (res.status === 401) {
+                if (res.status === 401 && !endpoint.includes('/auth/')) {
                     if (data.redirect) {
                         window.location.href = data.redirect;
                         return data;

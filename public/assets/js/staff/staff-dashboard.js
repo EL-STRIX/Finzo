@@ -28,7 +28,7 @@ $(document).ready(async function () {
             tbody.empty();
 
             if (!txns || txns.length === 0) {
-                tbody.php(`<tr><td colspan="6" class="text-center py-10 font-bold text-slate-400 text-sm">No transactions processed today.</td></tr>`);
+                tbody.html(`<tr><td colspan="6" class="text-center py-10 font-bold text-slate-400 text-sm">No transactions processed today.</td></tr>`);
                 return;
             }
 

@@ -35,7 +35,7 @@ $(document).ready(async function() {
 
         async function renderTransactions() {
             const tbody = $('#transaction-table-body');
-            tbody.php('<tr><td colspan="8" class="text-center py-10 font-bold text-slate-400 text-sm">Loading transactions...</td></tr>');
+            tbody.html('<tr><td colspan="8" class="text-center py-10 font-bold text-slate-400 text-sm">Loading transactions...</td></tr>');
 
             try {
                 let from_date = currentFilters.from_date;
@@ -128,7 +128,7 @@ $(document).ready(async function() {
                 renderPagination(res.current_page, res.pages, res.total);
 
             } catch (err) {
-                tbody.php('<tr><td colspan="8" class="text-center py-10 text-red-500 font-bold text-sm">Error loading data. Please refresh.</td></tr>');
+                tbody.html('<tr><td colspan="8" class="text-center py-10 text-red-500 font-bold text-sm">Error loading data. Please refresh.</td></tr>');
             }
         }
 
@@ -220,8 +220,8 @@ $(document).ready(async function() {
 
         async function printAllTransactions() {
             const btn = $('#print-all-btn');
-            const originalHtml = btn.php();
-            btn.prop('disabled', true).php('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
+            const originalHtml = btn.html();
+            btn.prop('disabled', true).html('<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span class="hidden sm:inline">Loading...</span>');
 
             try {
                 let from_date = currentFilters.from_date;
@@ -253,7 +253,7 @@ $(document).ready(async function() {
                 });
 
                 const res = await api.get('/staff/history.php?' + query.toString());
-                btn.prop('disabled', false).php(originalHtml);
+                btn.prop('disabled', false).html(originalHtml);
 
                 if (!res.success || !res.transactions || res.transactions.length === 0) {
                     alert('No transactions to print with the current filters.');
@@ -326,6 +326,6 @@ $(document).ready(async function() {
 
             } catch (err) {
                 alert('Error generating report.');
-                btn.prop('disabled', false).php(originalHtml);
+                btn.prop('disabled', false).html(originalHtml);
             }
         }
