@@ -76,19 +76,68 @@ ob_start();
         </div>
     </div>
 
-    <!-- SEARCH & TABLE CARD -->
-    <div class="ds-card relative z-20">
-        <div class="p-4 sm:p-6 border-b border-border-subtle dark:border-white/10 bg-background dark:bg-surface flex flex-col sm:flex-row gap-4 justify-between items-center">
-            <div class="relative w-full sm:max-w-md fin-input-wrapper">
-                <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">search</span>
-                <input type="text" id="admin-branch-finder" name="branch_query" placeholder="Search by branch name, branch code, or state..." 
-                    autocomplete="off" class="fin-input has-icon-left bg-surface dark:bg-surface-elevated text-text-primary dark:text-white border-border-subtle dark:border-white/10">
+    <!-- FILTERS & TABLE CARD -->
+    <div class="ds-card ds-card-dropdown-fix relative z-20 overflow-visible">
+        <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end border-b border-border-subtle dark:border-white/10 bg-background/60 dark:bg-surface rounded-t-2xl">
+            
+            <!-- Search Input (Span 6 cols on lg) -->
+            <div class="lg:col-span-6 w-full">
+                <label for="admin-branch-finder" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Search Branches</label>
+                <div class="fin-input-wrapper">
+                    <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">search</span>
+                    <input type="text" id="admin-branch-finder" name="branch_query" placeholder="Search by branch name, code, city, state..." 
+                        autocomplete="off" class="fin-input has-icon-left bg-surface dark:bg-surface-elevated text-text-primary dark:text-white border-border-subtle dark:border-white/10 w-full">
+                </div>
             </div>
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-                <button type="button" id="btn-refresh-branches" class="btn btn-secondary btn-sm flex items-center gap-1.5" title="Refresh Table">
-                    <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span> Refresh
-                </button>
+
+            <!-- Filter 1: Status Dropdown (Span 3 cols on lg) -->
+            <div class="lg:col-span-3 w-full relative z-30">
+                <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Operational Status</label>
+                <div class="finzo-dropdown w-full" id="status-filter-dropdown">
+                    <input type="hidden" id="filter-branch-status" value="all">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full cursor-pointer bg-surface dark:bg-surface-elevated text-text-primary dark:text-white border-border-subtle dark:border-white/10" id="status-filter-trigger">
+                        <div class="flex items-center gap-2 truncate">
+                            <span class="material-symbols-outlined text-lg text-text-secondary dark:text-slate-400" aria-hidden="true">toggle_on</span>
+                            <span class="dropdown-label font-bold text-sm text-text-primary dark:text-white truncate" id="status-filter-label">All Statuses</span>
+                        </div>
+                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary dark:text-slate-400 shrink-0" aria-hidden="true">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu !z-[3000] !w-full bg-surface dark:bg-surface-elevated border border-border-subtle dark:border-white/10 text-text-primary dark:text-white shadow-2xl" id="status-filter-menu">
+                        <div class="finzo-dropdown-option is-selected hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold" data-value="all">All Statuses</div>
+                        <div class="finzo-dropdown-option hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold flex items-center gap-2" data-value="active">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active Branches
+                        </div>
+                        <div class="finzo-dropdown-option hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold flex items-center gap-2" data-value="inactive">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span> Inactive Branches
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Filter 2: Branch Type Dropdown (Span 3 cols on lg) -->
+            <div class="lg:col-span-3 w-full relative z-20">
+                <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Branch Type</label>
+                <div class="finzo-dropdown w-full" id="type-filter-dropdown">
+                    <input type="hidden" id="filter-branch-type" value="all">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full cursor-pointer bg-surface dark:bg-surface-elevated text-text-primary dark:text-white border-border-subtle dark:border-white/10" id="type-filter-trigger">
+                        <div class="flex items-center gap-2 truncate">
+                            <span class="material-symbols-outlined text-lg text-text-secondary dark:text-slate-400" aria-hidden="true">category</span>
+                            <span class="dropdown-label font-bold text-sm text-text-primary dark:text-white truncate" id="type-filter-label">All Branch Types</span>
+                        </div>
+                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary dark:text-slate-400 shrink-0" aria-hidden="true">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu !z-[3000] !w-full bg-surface dark:bg-surface-elevated border border-border-subtle dark:border-white/10 text-text-primary dark:text-white shadow-2xl" id="type-filter-menu">
+                        <div class="finzo-dropdown-option is-selected hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold" data-value="all">All Branch Types</div>
+                        <div class="finzo-dropdown-option hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold flex items-center gap-2" data-value="system">
+                            <span class="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-mono text-[10px]">SYSTEM</span> Head Office / System Hub
+                        </div>
+                        <div class="finzo-dropdown-option hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer py-2.5 px-3.5 text-xs font-bold flex items-center gap-2" data-value="custom">
+                            <span class="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-mono text-[10px]">CUSTOM</span> Regional / Custom Branch
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">

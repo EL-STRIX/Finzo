@@ -38,8 +38,19 @@
         const searchInput = document.getElementById('admin-branch-finder');
         const query = searchInput ? searchInput.value.trim() : '';
 
+        const statusInput = document.getElementById('filter-branch-status');
+        const status = statusInput ? statusInput.value : 'all';
+
+        const typeInput = document.getElementById('filter-branch-type');
+        const type = typeInput ? typeInput.value : 'all';
+
         try {
-            const url = query ? `/branches?search=${encodeURIComponent(query)}` : '/branches';
+            const params = new URLSearchParams();
+            if (query) params.append('search', query);
+            if (status && status !== 'all') params.append('status', status);
+            if (type && type !== 'all') params.append('type', type);
+
+            const url = params.toString() ? `/branches?${params.toString()}` : '/branches';
             const response = await window.api.get(url);
             if (response.success || response.status === 'success') {
                 const data = response.data || response;
@@ -52,7 +63,7 @@
         } catch (error) {
             console.error('Failed to load branches:', error);
             if (tbody) {
-                tbody.innerHTML = '<tr><td colspan="9" class="py-12 text-center text-error font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl mb-2">error</span>Failed to load branch records. Please refresh.</div></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="py-12 text-center text-red-600 dark:text-red-400 font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl mb-2">error</span>Failed to load branch records. Please try again.</div></td></tr>';
             }
         } finally {
             if (tbody) tbody.style.opacity = '1';
@@ -249,7 +260,53 @@
      * Setup custom dropdowns interaction
      */
     function setupDropdowns() {
-        // State dropdown
+        // Helper function for dropdown wiring
+        function bindGenericDropdown(dropdownId, triggerId, labelId, inputId, onSelect) {
+            const dropdown = document.getElementById(dropdownId);
+            const trigger = document.getElementById(triggerId);
+            const label = document.getElementById(labelId);
+            const input = document.getElementById(inputId);
+
+            if (!dropdown || !trigger) return;
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.finzo-dropdown.open').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('open');
+                });
+                dropdown.classList.toggle('open');
+            });
+
+            dropdown.addEventListener('click', (e) => {
+                const opt = e.target.closest('.finzo-dropdown-option');
+                if (opt) {
+                    const val = opt.getAttribute('data-value');
+                    const text = opt.getAttribute('data-name') || opt.textContent.trim();
+                    if (input) input.value = val !== null ? val : '';
+                    if (label) label.textContent = text;
+
+                    dropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                    opt.classList.add('is-selected');
+
+                    dropdown.classList.remove('open');
+                    if (typeof onSelect === 'function') {
+                        onSelect(val, text);
+                    }
+                }
+            });
+        }
+
+        // Operational Status Filter
+        bindGenericDropdown('status-filter-dropdown', 'status-filter-trigger', 'status-filter-label', 'filter-branch-status', () => {
+            loadBranches();
+        });
+
+        // Branch Type Filter
+        bindGenericDropdown('type-filter-dropdown', 'type-filter-trigger', 'type-filter-label', 'filter-branch-type', () => {
+            loadBranches();
+        });
+
+        // State dropdown (modal)
         const stateDropdown = document.getElementById('branch-state-dropdown');
         const stateTrigger = document.getElementById('state-dropdown-trigger');
         const stateLabel = document.getElementById('state-dropdown-label');
@@ -258,7 +315,6 @@
         if (stateDropdown && stateTrigger) {
             stateTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // Close others
                 document.querySelectorAll('.finzo-dropdown.open').forEach(d => {
                     if (d !== stateDropdown) d.classList.remove('open');
                 });
@@ -273,7 +329,6 @@
                     stateLabel.textContent = val || 'Select State / UT';
                     stateDropdown.classList.remove('open');
 
-                    // If creating new branch, update auto branch code
                     if (!isEditMode && val) {
                         updateBranchCode(val);
                     }
@@ -281,7 +336,7 @@
             });
         }
 
-        // Manager dropdown
+        // Manager dropdown (modal)
         const mgrDropdown = document.getElementById('manager-dropdown');
         const mgrTrigger = document.getElementById('manager-dropdown-trigger');
         const mgrLabel = document.getElementById('manager-dropdown-label');
