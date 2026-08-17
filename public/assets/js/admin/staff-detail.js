@@ -221,7 +221,7 @@
             icon: 'lock_reset',
             color: 'indigo',
             btnText: 'Confirm Reset',
-            btnClass: 'bg-primary',
+            btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white font-black',
             reasons: []
         },
         deactivate: {
@@ -229,9 +229,9 @@
             subtitle: 'Revoke system permissions',
             body: 'You are about to suspend <strong class="text-text-primary" id="deactivate-target-name">...</strong>. This will revoke branch operations and system access immediately.',
             icon: 'block',
-            color: 'rose',
+            color: 'amber',
             btnText: 'Confirm Suspension',
-            btnClass: 'bg-warning text-white',
+            btnClass: 'bg-amber-600 hover:bg-amber-700 text-white font-black',
             reasons: [
                 'Unauthorized Operations',
                 'Cash / Financial Discrepancy',
@@ -249,7 +249,7 @@
             icon: 'check_circle',
             color: 'emerald',
             btnText: 'Confirm Reinstatement',
-            btnClass: 'bg-success text-white',
+            btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white font-black',
             reasons: []
         },
         delete: {
@@ -259,7 +259,7 @@
             icon: 'person_remove',
             color: 'rose',
             btnText: 'Confirm Permanent Deletion',
-            btnClass: 'bg-error text-white',
+            btnClass: 'bg-rose-600 hover:bg-rose-700 text-white font-black',
             reasons: []
         }
     };

@@ -850,8 +850,8 @@ ob_start();
 
           <!-- Footer Actions -->
           <div class="p-6 pt-0 flex gap-3">
-              <button type="button" id="abort-governance-btn" class="flex-1 py-3 bg-surface hover:bg-surface-hover text-text-secondary font-bold rounded-xl text-xs uppercase tracking-wider transition-all border border-border-subtle">Cancel</button>
-              <button type="button" id="confirm-governance-btn" class="flex-1 py-3 bg-primary text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all">Confirm</button>
+              <button type="button" id="abort-governance-btn" class="flex-1 py-3 bg-surface hover:bg-surface-hover text-text-primary font-bold rounded-xl text-xs uppercase tracking-wider transition-all border border-border-subtle cursor-pointer">Cancel</button>
+              <button type="button" id="confirm-governance-btn" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">Confirm</button>
           </div>
       </div>
   </div>
@@ -876,7 +876,7 @@ ob_start();
               body: 'You are about to issue an emergency password reset for <strong class="text-text-primary">' + staffName + '</strong>. A secure temporary password will be generated.',
               icon: 'lock_reset',
               btnText: 'Confirm Reset',
-              btnClass: 'bg-primary text-white',
+              btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white font-black',
               reasons: []
           },
           deactivate: {
@@ -885,7 +885,7 @@ ob_start();
               body: 'You are about to suspend <strong class="text-text-primary">' + staffName + '</strong>. This will revoke branch operations and system access immediately.',
               icon: 'block',
               btnText: 'Confirm Suspension',
-              btnClass: 'bg-warning text-white',
+              btnClass: 'bg-amber-600 hover:bg-amber-700 text-white font-black',
               reasons: [
                   'Unauthorized Operations',
                   'Cash / Financial Discrepancy',
@@ -902,7 +902,7 @@ ob_start();
               body: 'You are about to reinstate <strong class="text-text-primary">' + staffName + '</strong>. This will restore branch login access and active status.',
               icon: 'check_circle',
               btnText: 'Confirm Reinstatement',
-              btnClass: 'bg-success text-white',
+              btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white font-black',
               reasons: []
           },
           delete: {
@@ -911,7 +911,7 @@ ob_start();
               body: 'You are about to <span class="text-error font-black uppercase underline">PERMANENTLY SOFT-DELETE</span> <strong class="text-text-primary">' + staffName + '</strong>. This action will archive the staff account from active lists.',
               icon: 'person_remove',
               btnText: 'Confirm Permanent Deletion',
-              btnClass: 'bg-error text-white',
+              btnClass: 'bg-rose-600 hover:bg-rose-700 text-white font-black',
               reasons: []
           }
       };
