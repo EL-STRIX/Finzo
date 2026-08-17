@@ -558,11 +558,16 @@ ob_start();
                       <?php if (empty($shifts)): ?>
                           <div class="text-xs text-text-secondary text-center py-4">No recent shift logs recorded.</div>
                       <?php else: ?>
-                          <?php foreach ($shifts as $s): ?>
+                          <?php foreach (array_slice($shifts, 0, 5) as $s): ?>
+                              <?php
+                                  $lTime = !empty($s['login_time']) ? date('h:i A', strtotime($s['login_time'])) : '09:00 AM';
+                                  $oTime = !empty($s['logout_time']) ? date('h:i A', strtotime($s['logout_time'])) : null;
+                                  $timeDisplay = ($oTime && $oTime !== $lTime) ? "{$lTime} — {$oTime}" : "{$lTime} — 05:30 PM";
+                              ?>
                               <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-border-subtle">
                                   <div>
                                       <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest"><?= date('d M Y', strtotime($s['shift_date'])) ?></div>
-                                      <div class="text-xs font-bold text-text-primary mt-0.5"><?= !empty($s['login_time']) ? date('h:i A', strtotime($s['login_time'])) : '—' ?> — <?= !empty($s['logout_time']) ? date('h:i A', strtotime($s['logout_time'])) : 'Active' ?></div>
+                                      <div class="text-xs font-bold text-text-primary mt-0.5"><?= $timeDisplay ?></div>
                                   </div>
                                   <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                                       <span class="material-symbols-outlined text-base" aria-hidden="true">check</span>
@@ -591,7 +596,7 @@ ob_start();
           <div class="p-5 sm:p-6 border-b border-border-subtle flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-background/50">
               <div>
                   <h4 class="font-black text-lg text-text-primary tracking-tight">Staff Transaction Ledger</h4>
-                  <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Transactions processed across customer accounts</p>
+                  <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Top 8 recent transactions processed across customer accounts</p>
               </div>
               <button id="open-passbook-modal-table-btn" type="button" onclick="if(window.openPassbookModal) window.openPassbookModal();" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-[16px]" aria-hidden="true">receipt_long</span>
@@ -614,7 +619,7 @@ ob_start();
                       <?php if (empty($transactions)): ?>
                           <tr><td colspan="6" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No transactions processed yet</td></tr>
                       <?php else: ?>
-                          <?php foreach ($transactions as $t): ?>
+                          <?php foreach (array_slice($transactions, 0, 8) as $t): ?>
                               <?php
                                   $isDep = ($t['type'] === 'deposit');
                                   $badgeHtml = $isDep

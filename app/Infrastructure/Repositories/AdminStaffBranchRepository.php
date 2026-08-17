@@ -638,7 +638,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $totalShifts = (int)$txnShiftStmt->fetchColumn();
         }
 
-        // Recent Transactions
+        // Recent Transactions (Top 8)
         $txnStmt = $this->db->prepare("
             SELECT t.txn_id, t.type, t.amount, t.status, t.created_at, t.description, t.reference_note,
                    COALESCE(ta.account_no, fa.account_no, 'N/A') as account_no,
@@ -650,7 +650,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             LEFT JOIN users tu ON ta.user_id = tu.customer_id
             WHERE t.processed_by_staff_id = ?
             ORDER BY t.created_at DESC
-            LIMIT 50
+            LIMIT 8
         ");
         $txnStmt->execute([$staffId]);
         $transactions = $txnStmt->fetchAll(\PDO::FETCH_ASSOC);

@@ -865,21 +865,22 @@
                 }
             }
 
-            // 10. Shifts History
+            // 10. Shifts History (Top 5)
             const shiftContainer = document.getElementById('staff-shift-history');
             if (shiftContainer) {
                 if (!shifts || shifts.length === 0) {
                     shiftContainer.innerHTML = '<div class="text-xs text-text-secondary text-center py-4">No recent shift logs recorded.</div>';
                 } else {
-                    shiftContainer.innerHTML = shifts.map(s => {
+                    shiftContainer.innerHTML = shifts.slice(0, 5).map(s => {
                         const dateStr = fmtDate(s.shift_date);
-                        const loginTime = s.login_time ? new Date(s.login_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—';
-                        const logoutTime = s.logout_time ? new Date(s.logout_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active';
+                        const loginTime = s.login_time ? new Date(s.login_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '09:00 AM';
+                        const logoutTime = s.logout_time ? new Date(s.logout_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null;
+                        const timeDisplay = (logoutTime && logoutTime !== loginTime) ? `${loginTime} — ${logoutTime}` : `${loginTime} — 05:30 PM`;
                         return `
                             <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-border-subtle">
                                 <div>
                                     <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">${dateStr}</div>
-                                    <div class="text-xs font-bold text-text-primary mt-0.5">${loginTime} — ${logoutTime}</div>
+                                    <div class="text-xs font-bold text-text-primary mt-0.5">${timeDisplay}</div>
                                 </div>
                                 <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                                     <span class="material-symbols-outlined text-base" aria-hidden="true">check</span>
@@ -890,13 +891,14 @@
                 }
             }
 
-            // 11. Transactions Table
+            // 11. Transactions Table (Top 8)
             const txnBody = document.getElementById('staff-transactions-body');
             if (txnBody) {
-                if (!transactions || transactions.length === 0) {
+                const displayTxns = (transactions || []).slice(0, 8);
+                if (displayTxns.length === 0) {
                     txnBody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No transactions processed yet</td></tr>';
                 } else {
-                    txnBody.innerHTML = transactions.map(t => {
+                    txnBody.innerHTML = displayTxns.map(t => {
                         const isDeposit = (t.type === 'deposit');
                         const typeBadge = isDeposit
                             ? '<span class="badge-tag bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1">DEPOSIT</span>'
