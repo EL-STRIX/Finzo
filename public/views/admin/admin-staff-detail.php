@@ -668,10 +668,23 @@ ob_start();
                           <tr><td colspan="4" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No audit activities logged</td></tr>
                       <?php else: ?>
                           <?php foreach ($activities as $a): ?>
+                              <?php
+                                  $actType = strtolower($a['action_type'] ?? 'activity');
+                                  $badgeStyle = match(true) {
+                                      str_contains($actType, 'login') => 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+                                      str_contains($actType, 'logout') => 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20',
+                                      str_contains($actType, 'password') => 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
+                                      str_contains($actType, 'profile') || str_contains($actType, 'update') => 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+                                      str_contains($actType, 'lock') => 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+                                      str_contains($actType, 'shift') || str_contains($actType, 'reconciliation') => 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20',
+                                      str_contains($actType, 'suspend') => 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
+                                      default => 'bg-surface border-border-subtle text-text-secondary'
+                                  };
+                              ?>
                               <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0">
                                   <td class="text-xs font-bold text-text-primary whitespace-nowrap"><?= !empty($a['created_at']) ? date('d M Y, h:i A', strtotime($a['created_at'])) : '—' ?></td>
                                   <td>
-                                      <span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary">
+                                      <span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-black uppercase tracking-wider border <?= $badgeStyle ?>">
                                           <?= htmlspecialchars($a['action_type'] ?? 'ACTIVITY', ENT_QUOTES, 'UTF-8') ?>
                                       </span>
                                   </td>

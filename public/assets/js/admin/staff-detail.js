@@ -933,20 +933,33 @@
                 }
             }
 
-            // 12. Recent Activities Table
+            // 12. Recent Activities Table (Security, Logins, Password & Shifts)
             const actBody = document.getElementById('staff-activities-body');
             if (actBody) {
                 if (!activities || activities.length === 0) {
                     actBody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">No audit activities logged</td></tr>';
                 } else {
+                    const getBadgeCls = (type) => {
+                        const t = (type || '').toLowerCase();
+                        if (t.includes('login')) return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+                        if (t.includes('logout')) return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20';
+                        if (t.includes('password')) return 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20';
+                        if (t.includes('profile') || t.includes('update')) return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+                        if (t.includes('lock')) return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+                        if (t.includes('shift') || t.includes('reconciliation')) return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20';
+                        if (t.includes('suspend')) return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+                        return 'bg-surface border-border-subtle text-text-secondary';
+                    };
+
                     actBody.innerHTML = activities.map(a => {
                         const dateStr = a.created_at ? new Date(a.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+                        const badgeCls = getBadgeCls(a.action_type);
                         return `
                             <tr class="hover:bg-surface-hover transition-colors border-b border-border-subtle last:border-0">
                                 <td class="text-xs font-bold text-text-primary whitespace-nowrap">${dateStr}</td>
-                                <td><span class="px-2 py-0.5 bg-surface-subtle border border-border-subtle rounded-md text-[10px] font-black uppercase text-text-secondary">${a.action_type || 'EVENT'}</span></td>
+                                <td><span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-black uppercase tracking-wider border ${badgeCls}">${a.action_type || 'EVENT'}</span></td>
                                 <td class="text-xs text-text-secondary truncate max-w-sm" title="${a.details || ''}">${a.details || '—'}</td>
-                                <td class="text-right text-xs font-mono text-text-secondary">${a.ip_address || '—'}</td>
+                                <td class="text-right text-xs font-mono font-bold text-text-secondary">${a.ip_address || '—'}</td>
                             </tr>
                         `;
                     }).join('');

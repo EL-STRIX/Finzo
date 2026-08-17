@@ -655,13 +655,16 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $txnStmt->execute([$staffId]);
         $transactions = $txnStmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // Recent Audit Activities
+        // Recent Staff Security & Activity Logs (Logins, Logouts, Security Operations, Shifts, Governance)
         $actStmt = $this->db->prepare("
             SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at
             FROM audit_log
             WHERE (actor_id = ? OR actor_id = ? OR (entity_id IN (?, ?) AND entity_type = 'staff'))
+              AND action_type NOT LIKE 'transaction_%'
+              AND action_type NOT LIKE 'TRANSACTION_%'
+              AND action_type NOT IN ('customer_cash_deposit', 'customer_cash_withdrawal')
             ORDER BY created_at DESC
-            LIMIT 20
+            LIMIT 10
         ");
         $actStmt->execute([(string)$staffId, $staff['staff_id'], (string)$staffId, $staff['staff_id']]);
         $activities = $actStmt->fetchAll(\PDO::FETCH_ASSOC);

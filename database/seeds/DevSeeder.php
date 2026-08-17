@@ -168,18 +168,23 @@ class DevSeeder
                         }
                     }
 
-                    // Shift Audit Logs
-                    $staffActions = [
-                        ['type' => 'shift_clock_in', 'desc' => 'Staff clocked in for daily counter operations', 'hours_ago' => 18],
-                        ['type' => 'terminal_lock', 'desc' => 'Counter terminal locked securely for shift break', 'hours_ago' => 12],
-                        ['type' => 'ledger_reconciliation', 'desc' => 'Shift cash drawer reconciled and verified', 'hours_ago' => 19]
+                    // Staff Security & Activity Logs (Logins, Logouts, Password Changes, Security Actions)
+                    $staffSecurityEvents = [
+                        ['type' => 'login_success', 'desc' => 'Staff authenticated into teller workstation terminal', 'hours_ago' => 2],
+                        ['type' => 'terminal_unlock', 'desc' => 'Counter terminal unlocked via biometric / PIN validation', 'hours_ago' => 4],
+                        ['type' => 'terminal_lock', 'desc' => 'Counter terminal locked securely for shift break', 'hours_ago' => 5],
+                        ['type' => 'profile_update', 'desc' => 'Contact details and branch emergency info updated', 'hours_ago' => 10],
+                        ['type' => 'shift_clock_in', 'desc' => 'Staff clocked in for daily counter operations', 'hours_ago' => 11],
+                        ['type' => 'password_change', 'desc' => 'Security credential / password updated successfully', 'hours_ago' => 24],
+                        ['type' => 'session_logout', 'desc' => 'Staff closed teller session and logged out securely', 'hours_ago' => 26],
+                        ['type' => 'ledger_reconciliation', 'desc' => 'Shift cash drawer reconciled and verified', 'hours_ago' => 27]
                     ];
-                    foreach ($staffActions as $idx => $sa) {
+                    foreach ($staffSecurityEvents as $idx => $sa) {
                         $evt = 'EVT-STF-' . time() . rand(1000, 9999) . $stf['id'] . $idx;
                         $tTime = date('Y-m-d H:i:s', strtotime("-{$sa['hours_ago']} hours"));
                         $ipAddr = '192.168.1.' . (50 + (int)$stf['id']);
                         $db->exec("INSERT IGNORE INTO audit_log (event_id, module, action_type, actor_id, actor_role, entity_id, entity_type, status, details, ip_address, created_at) VALUES 
-                            ('$evt', 'staff', '{$sa['type']}', '{$stf['staff_id']}', 'staff', '{$stf['staff_id']}', 'staff', 'success', '{$sa['desc']}', '$ipAddr', '$tTime')");
+                            ('$evt', 'staff_security', '{$sa['type']}', '{$stf['staff_id']}', 'staff', '{$stf['staff_id']}', 'staff', 'success', '{$sa['desc']}', '$ipAddr', '$tTime')");
                     }
                 }
             }
