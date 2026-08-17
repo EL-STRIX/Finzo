@@ -172,7 +172,7 @@
         pcHtml += `<div class="flex items-center gap-1.5">`;
         for (let i = 1; i <= totalPages; i++) {
             if (i <= 3 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" onclick="window.LockedAccounts.goPageTo(${i})">${i}</button>`;
+                pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-black transition-all ${i === currentPage ? 'bg-primary text-text-inverse shadow-sm' : 'bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover hover:border-border-strong cursor-pointer'}" onclick="window.LockedAccounts.goPageTo(${i})">${i}</button>`;
             } else if (i === 4 || i === totalPages - 1) {
                 pcHtml += `<span class="px-2 opacity-50">...</span>`;
             }

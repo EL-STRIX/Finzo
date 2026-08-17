@@ -175,14 +175,14 @@ ob_start();
         <div class="p-4 sm:p-6 bg-background/50 border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full rounded-b-2xl">
           <div id="pagination-counter" class="text-xs text-text-secondary font-bold uppercase tracking-wider">Showing 0-0 of 0 staff</div>
           <div class="flex items-center gap-2">
-            <button id="prev-page" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface border border-border-subtle text-text-secondary transition-all hover:bg-surface-hover hover:text-text-primary disabled:opacity-40 disabled:cursor-not-allowed">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+            <button id="prev-page" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface border border-border-subtle text-text-primary transition-all hover:bg-surface-hover hover:border-border-strong hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shadow-sm" aria-label="Previous Page">
+              <span class="material-symbols-outlined text-lg pointer-events-none" aria-hidden="true">chevron_left</span>
             </button>
-            <div id="page-numbers" class="flex gap-1.5">
+            <div id="page-numbers" class="flex items-center gap-1.5">
               <!-- Dynamically Generated -->
             </div>
-            <button id="next-page" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface border border-border-subtle text-text-secondary transition-all hover:bg-surface-hover hover:text-text-primary disabled:opacity-40 disabled:cursor-not-allowed">
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
+            <button id="next-page" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface border border-border-subtle text-text-primary transition-all hover:bg-surface-hover hover:border-border-strong hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shadow-sm" aria-label="Next Page">
+              <span class="material-symbols-outlined text-lg pointer-events-none" aria-hidden="true">chevron_right</span>
             </button>
           </div>
         </div>

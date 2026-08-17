@@ -179,9 +179,9 @@
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                     const isActive = (i === currentPage);
-                    html += `<button class="page-num w-9 h-9 flex items-center justify-center rounded-xl text-xs font-bold transition-all ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-surface border border-border-subtle text-text-secondary hover:bg-surface-hover hover:text-text-primary'}" data-page="${i}">${i}</button>`;
+                    html += `<button class="page-num w-9 h-9 flex items-center justify-center rounded-xl text-xs font-black transition-all ${isActive ? 'bg-primary text-text-inverse shadow-md font-black' : 'bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover hover:border-border-strong cursor-pointer'}" data-page="${i}">${i}</button>`;
                 } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += `<span class="w-9 h-9 flex items-center justify-center text-text-secondary text-xs">...</span>`;
+                    html += `<span class="w-9 h-9 flex items-center justify-center text-text-secondary text-xs font-bold">...</span>`;
                 }
             }
             numbersContainer.innerHTML = html;

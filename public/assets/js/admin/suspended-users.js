@@ -134,7 +134,7 @@
                 if (i === 6) pcHtml += '<span class="px-2 opacity-50">...</span>'; 
                 continue; 
             }
-            pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" onclick="window.SuspendedUsers.goPageTo(${i})">${i}</button>`;
+            pcHtml += `<button class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-black transition-all ${i === currentPage ? 'bg-primary text-text-inverse shadow-sm' : 'bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover hover:border-border-strong cursor-pointer'}" onclick="window.SuspendedUsers.goPageTo(${i})">${i}</button>`;
         }
         pcHtml += `</div>`;
         pcHtml += `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.SuspendedUsers.goPage(1)">Next →</button>`;

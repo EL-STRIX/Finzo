@@ -212,7 +212,7 @@
                     if (i === 4) html += '<span class="px-2 opacity-50">...</span>';
                     continue;
                 }
-                const activeClass = i === currentPage ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-primary cursor-pointer';
+                const activeClass = i === currentPage ? 'bg-primary text-text-inverse font-black shadow-sm' : 'bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover hover:border-border-strong cursor-pointer';
                 html += `<span data-page="${i}" class="w-8 h-8 flex items-center justify-center ${activeClass} rounded-lg text-xs font-bold transition-all">${i}</span>`;
             }
             pagNumbers.innerHTML = html;
