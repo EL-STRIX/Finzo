@@ -268,24 +268,38 @@
      * Setup custom dropdowns interaction
      */
     function setupDropdowns() {
-        // Helper function for dropdown wiring
-        function bindGenericDropdown(dropdownId, triggerId, labelId, inputId, onSelect) {
+        // Universal helper for finzo dropdowns
+        function bindDropdown(dropdownId, onSelect) {
             const dropdown = document.getElementById(dropdownId);
-            const trigger = document.getElementById(triggerId);
-            const label = document.getElementById(labelId);
-            const input = document.getElementById(inputId);
+            if (!dropdown) return;
+            const trigger = dropdown.querySelector('.finzo-dropdown-trigger');
+            const menu = dropdown.querySelector('.finzo-dropdown-menu');
+            const label = dropdown.querySelector('.dropdown-label');
+            const input = dropdown.querySelector('input[type="hidden"]');
 
-            if (!dropdown || !trigger) return;
+            if (!trigger || !menu) return;
 
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                document.querySelectorAll('.finzo-dropdown.open').forEach(d => {
-                    if (d !== dropdown) d.classList.remove('open');
+                const isOpen = dropdown.classList.contains('is-open') || dropdown.classList.contains('open') || menu.classList.contains('is-open') || menu.classList.contains('open');
+
+                // Close all dropdowns
+                document.querySelectorAll('.finzo-dropdown').forEach(d => {
+                    d.classList.remove('is-open', 'open');
+                    d.querySelector('.finzo-dropdown-trigger')?.classList.remove('is-open', 'open');
+                    d.querySelector('.finzo-dropdown-trigger')?.setAttribute('aria-expanded', 'false');
+                    d.querySelector('.finzo-dropdown-menu')?.classList.remove('is-open', 'open');
                 });
-                dropdown.classList.toggle('open');
+
+                if (!isOpen) {
+                    dropdown.classList.add('is-open', 'open');
+                    trigger.classList.add('is-open', 'open');
+                    trigger.setAttribute('aria-expanded', 'true');
+                    menu.classList.add('is-open', 'open');
+                }
             });
 
-            dropdown.addEventListener('click', (e) => {
+            menu.addEventListener('click', (e) => {
                 const opt = e.target.closest('.finzo-dropdown-option');
                 if (opt) {
                     const val = opt.getAttribute('data-value');
@@ -293,87 +307,49 @@
                     if (input) input.value = val !== null ? val : '';
                     if (label) label.textContent = text;
 
-                    dropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                    menu.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
                     opt.classList.add('is-selected');
 
-                    dropdown.classList.remove('open');
+                    dropdown.classList.remove('is-open', 'open');
+                    trigger.classList.remove('is-open', 'open');
+                    trigger.setAttribute('aria-expanded', 'false');
+                    menu.classList.remove('is-open', 'open');
+
                     if (typeof onSelect === 'function') {
-                        onSelect(val, text);
+                        onSelect(val, text, opt);
                     }
                 }
             });
         }
 
         // Operational Status Filter
-        bindGenericDropdown('status-filter-dropdown', 'status-filter-trigger', 'status-filter-label', 'filter-branch-status', () => {
+        bindDropdown('status-filter-dropdown', () => {
             loadBranches();
         });
 
         // Branch Type Filter
-        bindGenericDropdown('type-filter-dropdown', 'type-filter-trigger', 'type-filter-label', 'filter-branch-type', () => {
+        bindDropdown('type-filter-dropdown', () => {
             loadBranches();
         });
 
         // State dropdown (modal)
-        const stateDropdown = document.getElementById('branch-state-dropdown');
-        const stateTrigger = document.getElementById('state-dropdown-trigger');
-        const stateLabel = document.getElementById('state-dropdown-label');
-        const stateInput = document.getElementById('branch-state');
-
-        if (stateDropdown && stateTrigger) {
-            stateTrigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.finzo-dropdown.open').forEach(d => {
-                    if (d !== stateDropdown) d.classList.remove('open');
-                });
-                stateDropdown.classList.toggle('open');
-            });
-
-            stateDropdown.addEventListener('click', (e) => {
-                const opt = e.target.closest('.finzo-dropdown-option');
-                if (opt) {
-                    const val = opt.getAttribute('data-value');
-                    stateInput.value = val;
-                    stateLabel.textContent = val || 'Select State / UT';
-                    stateDropdown.classList.remove('open');
-
-                    if (!isEditMode && val) {
-                        updateBranchCode(val);
-                    }
-                }
-            });
-        }
+        bindDropdown('branch-state-dropdown', (val) => {
+            if (!isEditMode && val) {
+                updateBranchCode(val);
+            }
+        });
 
         // Manager dropdown (modal)
-        const mgrDropdown = document.getElementById('manager-dropdown');
-        const mgrTrigger = document.getElementById('manager-dropdown-trigger');
-        const mgrLabel = document.getElementById('manager-dropdown-label');
-        const mgrInput = document.getElementById('manager-id');
-
-        if (mgrDropdown && mgrTrigger) {
-            mgrTrigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.finzo-dropdown.open').forEach(d => {
-                    if (d !== mgrDropdown) d.classList.remove('open');
-                });
-                mgrDropdown.classList.toggle('open');
-            });
-
-            mgrDropdown.addEventListener('click', (e) => {
-                const opt = e.target.closest('.finzo-dropdown-option');
-                if (opt) {
-                    const val = opt.getAttribute('data-value');
-                    const name = opt.getAttribute('data-name');
-                    mgrInput.value = val || '';
-                    mgrLabel.textContent = name || 'Select Staff Member (Optional)';
-                    mgrDropdown.classList.remove('open');
-                }
-            });
-        }
+        bindDropdown('manager-dropdown');
 
         // Close dropdowns on outside click
         document.addEventListener('click', () => {
-            document.querySelectorAll('.finzo-dropdown.open').forEach(d => d.classList.remove('open'));
+            document.querySelectorAll('.finzo-dropdown').forEach(d => {
+                d.classList.remove('is-open', 'open');
+                d.querySelector('.finzo-dropdown-trigger')?.classList.remove('is-open', 'open');
+                d.querySelector('.finzo-dropdown-trigger')?.setAttribute('aria-expanded', 'false');
+                d.querySelector('.finzo-dropdown-menu')?.classList.remove('is-open', 'open');
+            });
         });
     }
 

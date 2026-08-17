@@ -532,7 +532,8 @@ select option {
     transform: rotate(180deg);
 }
 
-.finzo-dropdown.is-open {
+.finzo-dropdown.is-open,
+.finzo-dropdown.open {
     z-index: 1000 !important;
 }
 
@@ -562,8 +563,13 @@ select option {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
 }
 
-.finzo-dropdown-menu.is-open {
-    display: block;
+.finzo-dropdown-menu.is-open,
+.finzo-dropdown-menu.open,
+.finzo-dropdown.is-open .finzo-dropdown-menu,
+.finzo-dropdown.open .finzo-dropdown-menu {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     animation: dropdown-enter 0.2s ease forwards;
 }
 
