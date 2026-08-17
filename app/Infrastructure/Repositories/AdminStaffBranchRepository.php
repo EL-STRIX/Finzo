@@ -252,12 +252,14 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $stmt = $this->db->prepare("UPDATE staff SET branch_id = NULL WHERE branch_id = ?");
             $stmt->execute([$branchId]);
 
-            $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
+            $stmt = $this->db->prepare("DELETE FROM branches WHERE id = ?");
             $stmt->execute([$branchId]);
             $this->db->commit();
         } catch (\PDOException $e) {
             $this->db->rollBack();
-            throw $e;
+            // If foreign key constraint prevents hard delete, fallback to status = 'inactive'
+            $stmt = $this->db->prepare("UPDATE branches SET status = 'inactive' WHERE id = ?");
+            $stmt->execute([$branchId]);
         }
     }
 

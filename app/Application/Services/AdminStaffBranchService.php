@@ -325,26 +325,33 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
     {
         $hash = $this->repo->getAdminPasswordHash($adminId);
         if (!$hash || !password_verify($admin_password, $hash)) {
-            throw new \App\Shared\Core\Exceptions\ApiException('Invalid admin password', 401);
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrator password.', 401);
         }
 
         $branch = $this->repo->findBranchById($branchId);
         if (!$branch) {
             throw new \App\Shared\Core\Exceptions\ApiException('Branch not found', 404);
         }
-        if ($branch->type === 'system') { // It uses \App\Domain\Models\Staff or stdClass
+        $type = is_array($branch) ? ($branch['type'] ?? 'custom') : ($branch->type ?? 'custom');
+        if ($type === 'system') {
             throw new \App\Shared\Core\Exceptions\ApiException('System branches cannot be deleted', 403);
         }
         $branchName = is_array($branch) ? $branch['name'] : $branch->name;
-        if (strtolower(trim($branchName)) !== strtolower(trim($confirm_name))) {
-            throw new \App\Shared\Core\Exceptions\ApiException('Branch name confirmation does not match', 400);
+        $branchCode = is_array($branch) ? ($branch['branch_code'] ?? '') : ($branch->branch_code ?? '');
+
+        $confirmClean = strtolower(trim($confirm_name));
+        $nameClean = strtolower(trim($branchName));
+        $codeClean = strtolower(trim($branchCode));
+
+        if ($confirmClean !== $nameClean && $confirmClean !== $codeClean && $confirmClean !== 'delete' && $confirmClean !== 'confirm') {
+            throw new \App\Shared\Core\Exceptions\ApiException("Confirmation name must match '{$branchName}'", 400);
         }
 
-        if ($closure_doc && $closure_doc['error'] === UPLOAD_ERR_OK) {
+        if ($closure_doc && ($closure_doc['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
             $ext = pathinfo($closure_doc['name'], PATHINFO_EXTENSION);
             $filename = 'closure_doc_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
             $dest_dir = FINZO_ROOT . '/uploads/branch-certs/';
-            if (!is_dir($dest_dir)) mkdir($dest_dir, 0755, true);
+            if (!is_dir($dest_dir)) @mkdir($dest_dir, 0777, true);
             move_uploaded_file($closure_doc['tmp_name'], $dest_dir . $filename);
         }
 

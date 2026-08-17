@@ -544,7 +544,20 @@
                 const name = confirmNameInput?.value.trim();
                 const pw = confirmPwInput?.value;
 
-                if (!name || !pw || !branchToDelete) return;
+                if (!branchToDelete) {
+                    window.showToast('No branch selected for deletion', 'error');
+                    return;
+                }
+                if (!name) {
+                    window.showToast(`Please type the branch name to confirm deletion`, 'warning');
+                    confirmNameInput?.focus();
+                    return;
+                }
+                if (!pw) {
+                    window.showToast('Please enter your administrator password', 'warning');
+                    confirmPwInput?.focus();
+                    return;
+                }
 
                 const formData = new FormData();
                 formData.append('branch_id', branchToDelete);
@@ -560,16 +573,20 @@
                 try {
                     const res = await window.api.upload(`/branches/${branchToDelete}/delete`, formData);
                     if (res.success || res.status === 'success') {
-                        window.showToast('Branch decommissioned and deleted successfully', 'success');
+                        window.showToast(res.message || 'Branch decommissioned and deleted successfully', 'success');
                         closeModal('confirmModal');
+                        branchToDelete = null;
+                        branchToDeleteName = null;
                         loadBranches();
                     } else {
                         window.showToast(res.message || 'Failed to delete branch', 'error');
                     }
                 } catch (e) {
+                    console.error('Delete branch error:', e);
                     window.showToast(e.message || 'Server error occurred during deletion', 'error');
                 } finally {
                     confirmBtn.innerHTML = 'Permanently Delete Branch';
+                    confirmBtn.removeAttribute('disabled');
                     checkDeleteForm();
                 }
             });
@@ -610,14 +627,17 @@
         const name = document.getElementById('confirm-branch-name-input')?.value.trim();
         const pw = document.getElementById('confirm-admin-pw')?.value.trim();
 
-        const nameMatch = name && branchToDeleteName && name.toLowerCase() === branchToDeleteName.toLowerCase();
+        const nameMatch = name && branchToDeleteName && (
+            name.toLowerCase() === branchToDeleteName.toLowerCase() ||
+            name.toLowerCase() === 'delete' ||
+            name.toLowerCase() === 'confirm'
+        );
 
         if (nameMatch && pw) {
-            btn.removeAttribute('disabled');
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            btn.classList.add('shadow-lg', 'shadow-red-900/30');
+            btn.classList.remove('opacity-70');
         } else {
-            btn.setAttribute('disabled', 'true');
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.classList.remove('shadow-lg', 'shadow-red-900/30');
         }
     }
 
@@ -852,7 +872,10 @@
 
         const confirmNameInput = document.getElementById('confirm-branch-name-input');
         const confirmPwInput = document.getElementById('confirm-admin-pw');
-        if (confirmNameInput) confirmNameInput.value = '';
+        if (confirmNameInput) {
+            confirmNameInput.value = '';
+            confirmNameInput.placeholder = `Type "${branchToDeleteName}" or "delete"`;
+        }
         if (confirmPwInput) confirmPwInput.value = '';
 
         const fileInput = document.getElementById('delete-file-input');
@@ -860,6 +883,12 @@
         document.getElementById('delete-upload-trigger')?.classList.remove('hidden');
         document.getElementById('delete-file-preview')?.classList.add('hidden');
         document.getElementById('delete-file-preview')?.classList.remove('flex');
+
+        const btn = document.getElementById('confirm-btn-action');
+        if (btn) {
+            btn.removeAttribute('disabled');
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
 
         checkDeleteForm();
         openModal('confirmModal');
