@@ -195,15 +195,23 @@
         const menu = document.getElementById('manager-dropdown-menu');
         if (!menu) return;
 
+        // If we already have staff cached, render immediately
+        if (staffList && staffList.length > 0) {
+            renderManagerDropdown(staffList, selectedManagerId);
+        }
+
         try {
             const response = await window.api.get('/staff', { per_page: 100 });
-            if (response.success || response.staff) {
-                staffList = response.staff || [];
+            if (response) {
+                const payload = response.data || response;
+                staffList = payload.staff || response.staff || payload.data || (Array.isArray(payload) ? payload : []);
                 renderManagerDropdown(staffList, selectedManagerId);
             }
         } catch (error) {
             console.error('Failed to load staff list:', error);
-            menu.innerHTML = '<div class="p-3 text-center text-xs text-text-secondary font-bold">Failed to load staff members.</div>';
+            if (!staffList || staffList.length === 0) {
+                menu.innerHTML = '<div class="p-3 text-center text-xs text-text-secondary font-bold">Failed to load staff members.</div>';
+            }
         }
     }
 
@@ -211,16 +219,26 @@
         const menu = document.getElementById('manager-dropdown-menu');
         if (!menu) return;
 
-        if (!staff.length) {
-            menu.innerHTML = '<div class="p-4 text-center text-xs opacity-50 font-bold">No available staff members found.</div>';
+        if (!staff || !staff.length) {
+            menu.innerHTML = `
+                <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors" data-value="" data-name="Select Staff Member (Optional)">
+                    <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-surface-dark flex items-center justify-center font-bold text-xs text-text-secondary dark:text-slate-400">—</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-text-secondary dark:text-slate-400">None (Unassigned)</div>
+                    </div>
+                </div>
+            `;
             return;
         }
 
         let html = `
-            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors border-b border-border-subtle dark:border-white/10" data-value="" data-name="Select Staff Member (Optional)">
-                <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-surface-dark flex items-center justify-center font-bold text-xs text-text-secondary dark:text-slate-400">—</div>
+            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors border-b border-border-subtle dark:border-white/10 ${!selectedManagerId ? 'is-selected bg-amber-500/10 text-amber-500 font-bold' : ''}" data-value="" data-name="Select Staff Member (Optional)">
+                <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-white/5 flex items-center justify-center font-bold text-xs text-text-secondary dark:text-slate-400 shrink-0 border border-border-subtle dark:border-white/10">
+                    <span class="material-symbols-outlined text-[15px] opacity-60">person_off</span>
+                </div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold text-text-secondary dark:text-slate-400">None (Unassigned)</div>
+                    <div class="text-xs font-bold text-text-primary dark:text-white">None (Unassigned)</div>
+                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">Leave branch head unassigned</div>
                 </div>
             </div>
         `;
@@ -228,12 +246,18 @@
         html += staff.map(s => {
             const isSelected = selectedManagerId && String(s.id) === String(selectedManagerId);
             const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
+            const photoUrl = s.profile_photo_url || resolveUrl(s.profile_photo, 'staff-photos');
+            const designation = s.designation || s.role || 'Staff Member';
+            const staffId = s.staff_id || ('STF' + String(s.id).padStart(3, '0'));
+
             return `
-            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors ${isSelected ? 'bg-primary-50/50 dark:bg-primary/20' : ''}" data-value="${s.id}" data-name="${escapeHtml(s.full_name)}" data-id="${escapeHtml(s.staff_id)}">
-                <div class="w-7 h-7 rounded-full bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 flex items-center justify-center font-bold text-xs uppercase shrink-0 border border-primary-100 dark:border-primary/30">${initial}</div>
+            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors ${isSelected ? 'is-selected bg-amber-500/15 text-amber-500 font-bold' : ''}" data-value="${s.id}" data-name="${escapeHtml(s.full_name)} (${escapeHtml(staffId)})" data-id="${escapeHtml(staffId)}">
+                <div class="w-7 h-7 rounded-full bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs uppercase shrink-0 border border-amber-500/25 dark:border-amber-500/25 overflow-hidden">
+                    ${photoUrl ? `<img src="${photoUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">` : initial}
+                </div>
                 <div class="flex-1 min-w-0">
                     <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(s.full_name)}</div>
-                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium truncate">${escapeHtml(s.staff_id)} &bull; ${escapeHtml(s.designation || 'Staff')}</div>
+                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium truncate">${escapeHtml(staffId)} &bull; ${escapeHtml(designation)}</div>
                 </div>
             </div>`;
         }).join('');
@@ -992,6 +1016,7 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
         loadBranches();
+        loadStaffOptions();
         setupDropdowns();
         bindEvents();
     });
