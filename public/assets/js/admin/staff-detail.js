@@ -201,15 +201,279 @@
     }
 
     /**
-     * Close Passbook Modal
+     * Dedicated Pure Black & White Vintage Bank Passbook Printing via Isolated Frame
      */
-    function closePassbookModal() {
-        const modal = document.getElementById('passbook-modal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        modal.style.display = 'none';
-        document.body.classList.remove('overflow-hidden');
+    function printPassbookDocument() {
+        if (!currentStaff) return;
+
+        const staff = currentStaff;
+        const addr = currentStaffAddress || {};
+        const transactions = getFilteredPassbookTransactions();
+
+        const fullName = (staff.full_name || 'Staff Member').toUpperCase();
+        const staffId = staff.staff_id || 'STF---';
+        const designation = (staff.designation || 'Staff') + (staff.department ? ' (' + staff.department + ')' : '');
+        const branchName = staff.branch_name ? staff.branch_name.toUpperCase() : 'MAIN BRANCH, MUMBAI';
+        const phone = staff.phone || 'N/A';
+        const addressParts = [addr.street, addr.city, addr.state, addr.pincode, addr.country || 'India'].filter(Boolean);
+        const address = addressParts.length > 0 ? addressParts.join(', ') : 'Not on file';
+
+        let totalCredits = 0;
+        let totalDebits = 0;
+        let totalVolume = 0;
+
+        let rowsHtml = '';
+        if (transactions && transactions.length > 0) {
+            transactions.forEach((txn, i) => {
+                const isDeposit = (txn.type || '').toLowerCase() === 'deposit';
+                const amt = parseFloat(txn.amount || 0);
+
+                if (isDeposit) totalCredits += amt;
+                else totalDebits += amt;
+                totalVolume += amt;
+
+                const dateStr = txn.created_at ? new Date(txn.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A';
+                const debitDisplay = !isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const creditDisplay = isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const volumeDisplay = amt.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                const particulars = (txn.customer_name ? txn.customer_name.toUpperCase() : 'WALK-IN CUSTOMER') + (txn.txn_id ? ' / ' + txn.txn_id : '');
+
+                rowsHtml += `
+                    <tr>
+                        <td style="text-align: center;">${String(i + 1).padStart(2, '0')}</td>
+                        <td style="text-align: center; white-space: nowrap;">${dateStr}</td>
+                        <td style="text-transform: uppercase;">${particulars}</td>
+                        <td style="text-align: right;">${debitDisplay}</td>
+                        <td style="text-align: right;">${creditDisplay}</td>
+                        <td style="text-align: right; font-weight: bold;">${volumeDisplay}</td>
+                        <td style="text-align: center;">SYS</td>
+                    </tr>
+                `;
+            });
+        } else {
+            rowsHtml = '<tr><td colspan="7" style="text-align: center; padding: 15px;">No transactions recorded for this period.</td></tr>';
+        }
+
+        const periodFormatted = document.getElementById('pb-generated-date')?.textContent || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        const printHtml = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Staff Passbook - ${fullName} - ${staffId}</title>
+                <style>
+                    @page {
+                        size: A4 portrait;
+                        margin: 12mm;
+                    }
+                    * {
+                        box-sizing: border-box;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    body {
+                        font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
+                        color: #000000;
+                        background: #ffffff;
+                        padding: 0;
+                        font-size: 11px;
+                        line-height: 1.3;
+                    }
+                    .passbook-container {
+                        width: 100%;
+                        border: 2px solid #000000;
+                        padding: 14px 16px;
+                    }
+                    .bank-header {
+                        text-align: center;
+                        border-bottom: 2px solid #000000;
+                        padding-bottom: 8px;
+                        margin-bottom: 10px;
+                    }
+                    .bank-title {
+                        font-size: 20px;
+                        font-weight: 900;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        font-family: Georgia, serif;
+                    }
+                    .bank-sub {
+                        font-size: 11px;
+                        font-weight: bold;
+                        letter-spacing: 1px;
+                        margin-top: 2px;
+                    }
+                    .bank-meta {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 10px;
+                        font-weight: bold;
+                        border-top: 1px solid #000000;
+                        padding-top: 6px;
+                        margin-top: 6px;
+                    }
+                    .table-grid {
+                        width: 100%;
+                        border-collapse: collapse;
+                        border: 1px solid #000000;
+                        margin-bottom: 10px;
+                        font-size: 10.5px;
+                    }
+                    .table-grid td, .table-grid th {
+                        border: 1px solid #000000;
+                        padding: 4px 6px;
+                    }
+                    .table-grid th {
+                        background-color: #f2f2f2;
+                        font-weight: 900;
+                        text-transform: uppercase;
+                        font-size: 10px;
+                    }
+                    .lbl {
+                        font-weight: bold;
+                        background-color: #f8f8f8;
+                        width: 25%;
+                    }
+                    .val {
+                        font-weight: bold;
+                        width: 25%;
+                    }
+                    .summary-box {
+                        width: 100%;
+                        border-collapse: collapse;
+                        border: 2px solid #000000;
+                        margin-bottom: 10px;
+                        font-size: 10.5px;
+                        text-align: center;
+                    }
+                    .summary-box td {
+                        border: 1px solid #000000;
+                        padding: 6px 8px;
+                    }
+                    .summary-title {
+                        font-size: 9.5px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+                    .summary-amt {
+                        font-size: 13px;
+                        font-weight: 900;
+                        margin-top: 2px;
+                    }
+                    .footer-notice {
+                        border-top: 1px solid #000000;
+                        padding-top: 6px;
+                        font-size: 9.5px;
+                        line-height: 1.35;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="passbook-container">
+                    <div class="bank-header">
+                        <div class="bank-title">FINZO BANK</div>
+                        <div class="bank-sub">STAFF OPERATION &amp; TRANSACTION PASSBOOK</div>
+                        <div class="bank-meta">
+                            <div>BRANCH: ${branchName}</div>
+                            <div>IFSC: FINZ0002026</div>
+                            <div>MICR: 400026002</div>
+                        </div>
+                    </div>
+
+                    <table class="table-grid">
+                        <tr>
+                            <td class="lbl">STAFF MEMBER</td>
+                            <td class="val" style="font-size: 12px; font-weight: 900;">${fullName}</td>
+                            <td class="lbl">STAFF ID</td>
+                            <td class="val" style="font-size: 12px;">${staffId}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">DESIGNATION</td>
+                            <td class="val">${designation}</td>
+                            <td class="lbl">BRANCH</td>
+                            <td class="val">${branchName}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">MOBILE NUMBER</td>
+                            <td class="val">${phone}</td>
+                            <td class="lbl">STATEMENT PERIOD</td>
+                            <td class="val">${periodFormatted}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">ADDRESS</td>
+                            <td class="val" colspan="3">${address}</td>
+                        </tr>
+                    </table>
+
+                    <table class="table-grid">
+                        <thead>
+                            <tr>
+                                <th style="width: 32px; text-align: center;">LINE</th>
+                                <th style="width: 75px; text-align: center;">DATE</th>
+                                <th style="text-align: left;">PARTICULARS / DETAILS</th>
+                                <th style="width: 95px; text-align: right;">WITHDRAWAL (DR) ₹</th>
+                                <th style="width: 95px; text-align: right;">DEPOSIT (CR) ₹</th>
+                                <th style="width: 100px; text-align: right;">VOLUME / BAL ₹</th>
+                                <th style="width: 35px; text-align: center;">INIT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+
+                    <table class="summary-box">
+                        <tr>
+                            <td style="width: 33.33%;">
+                                <div class="summary-title">TOTAL WITHDRAWALS (DR)</div>
+                                <div class="summary-amt">₹ ${totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </td>
+                            <td style="width: 33.33%;">
+                                <div class="summary-title">TOTAL DEPOSITS (CR)</div>
+                                <div class="summary-amt">₹ ${totalCredits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </td>
+                            <td style="width: 33.34%; background-color: #f2f2f2;">
+                                <div class="summary-title">TOTAL PROCESSED VOLUME</div>
+                                <div class="summary-amt">₹ ${totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="footer-notice">
+                        <div>* Please examine this passbook immediately. Discrepancies, if any, should be reported within 15 days.</div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 4px; font-weight: bold;">
+                            <span>* COMPUTER GENERATED PASSBOOK — NO PHYSICAL SIGNATURE REQUIRED</span>
+                            <span>PAGE 1 OF 1</span>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        let printFrame = document.getElementById('finzo-staff-print-iframe');
+        if (!printFrame) {
+            printFrame = document.createElement('iframe');
+            printFrame.id = 'finzo-staff-print-iframe';
+            printFrame.style.position = 'fixed';
+            printFrame.style.right = '0';
+            printFrame.style.bottom = '0';
+            printFrame.style.width = '0';
+            printFrame.style.height = '0';
+            printFrame.style.border = '0';
+            document.body.appendChild(printFrame);
+        }
+
+        const frameDoc = printFrame.contentWindow || printFrame.contentDocument.document || printFrame.contentDocument;
+        frameDoc.document.open();
+        frameDoc.document.write(printHtml);
+        frameDoc.document.close();
+
+        setTimeout(() => {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+        }, 350);
     }
 
     // Modal Configs for Governance Actions
@@ -894,9 +1158,7 @@
         // Print Passbook Action
         const printAction = document.getElementById('print-passbook-action');
         if (printAction) {
-            printAction.addEventListener('click', () => {
-                window.print();
-            });
+            printAction.addEventListener('click', printPassbookDocument);
         }
 
         // Passbook Date Filter Presets

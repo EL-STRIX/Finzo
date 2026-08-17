@@ -62,14 +62,16 @@ class DevSeeder
                 $is_deleted = ($i === 29 || $i === 30) ? 1 : 0;
                 if ($is_deleted) $status = 'active'; // logically deleted but active
                 
-                $db->exec("INSERT INTO users (customer_id, full_name, email, phone, password_hash, status, is_deleted, dob, gender, occupation, city) VALUES 
+                $db->exec("INSERT IGNORE INTO users (customer_id, full_name, email, phone, password_hash, status, is_deleted, dob, gender, occupation, city) VALUES 
                 ('$cid', '$fn', '$email', '$phone', '$userPwd', '$status', $is_deleted, '1990-01-01', 'Male', 'Engineer', 'Mumbai')");
                     
                 if ($status === 'active' && !$is_deleted) {
                     $accNo = 'FNZ000' . str_pad((string)$i, 6, '0', STR_PAD_LEFT);
                     $bal = rand(1000, 500000);
-                    $db->exec("INSERT IGNORE INTO accounts (account_no, user_id, account_type, balance, txn_pin_hash, daily_limit, status, opened_date) VALUES 
-                        ('$accNo', '$cid', 'savings', $bal, '$pinHash', 50000, 'active', '2025-01-01')");
+                    try {
+                        $db->exec("INSERT IGNORE INTO accounts (account_no, user_id, account_type, balance, txn_pin_hash, daily_limit, status, opened_date) VALUES 
+                            ('$accNo', '$cid', 'savings', $bal, '$pinHash', 50000, 'active', '2025-01-01')");
+                    } catch (\Throwable $e) {}
                 }
                 
                 if ($status === 'under_review') {
@@ -119,9 +121,12 @@ class DevSeeder
                 }
             }
 
-            // 5b. Staff Shifts
-            echo "Seeding Staff Shifts...\n";
+            // 5b. Staff Shifts & Processed Transactions
+            echo "Seeding Staff Shifts & Transactions...\n";
             if (!empty($staffRows)) {
+                $accStmt = $db->query("SELECT id FROM accounts WHERE status = 'active' LIMIT 10");
+                $activeAccIds = $accStmt->fetchAll(PDO::FETCH_COLUMN);
+
                 foreach ($staffRows as $stf) {
                     for ($d = 0; $d < 5; $d++) {
                         $shiftDate = date('Y-m-d', strtotime("-$d days"));
@@ -130,6 +135,21 @@ class DevSeeder
                         $shiftStatus = ($d === 0) ? 'active' : 'completed';
                         $db->exec("INSERT IGNORE INTO staff_shifts (staff_id, shift_date, clock_in, clock_out, status, notes) VALUES 
                             ('{$stf['staff_id']}', '$shiftDate', '$clockIn', $clockOut, '$shiftStatus', 'Standard Teller Shift')");
+                    }
+
+                    // Seed 5-8 transactions per staff member
+                    if (!empty($activeAccIds)) {
+                        for ($t = 1; $t <= 6; $t++) {
+                            $txnId = 'TXN' . strtoupper(substr(md5($stf['id'] . '-' . $t . '-' . time()), 0, 10));
+                            $accId = $activeAccIds[array_rand($activeAccIds)];
+                            $type = ($t % 2 === 0) ? 'deposit' : 'withdrawal';
+                            $amt = rand(1500, 45000);
+                            $createdTime = date('Y-m-d H:i:s', strtotime("-" . ($t * 3) . " hours"));
+                            $desc = ($type === 'deposit') ? "Counter Cash Deposit / Staff " . $stf['staff_id'] : "Counter Cash Withdrawal / Staff " . $stf['staff_id'];
+                            
+                            $db->exec("INSERT IGNORE INTO transactions (txn_id, from_account_id, to_account_id, type, amount, status, processed_by_staff_id, description, created_at) VALUES 
+                                ('$txnId', " . ($type === 'withdrawal' ? $accId : 'NULL') . ", " . ($type === 'deposit' ? $accId : 'NULL') . ", '$type', $amt, 'completed', {$stf['id']}, '$desc', '$createdTime')");
+                        }
                     }
                 }
             }
@@ -147,10 +167,21 @@ class DevSeeder
             }
 
             if (!empty($staffRows)) {
+                $staffActions = [
+                    ['type' => 'shift_clock_in', 'desc' => 'Staff clocked in for daily counter operations'],
+                    ['type' => 'customer_cash_deposit', 'desc' => 'Processed counter cash deposit across verified customer account'],
+                    ['type' => 'customer_cash_withdrawal', 'desc' => 'Authorized customer cash withdrawal with signature verification'],
+                    ['type' => 'terminal_lock', 'desc' => 'Counter terminal locked securely for shift break'],
+                    ['type' => 'ledger_reconciliation', 'desc' => 'Shift cash drawer reconciled and verified']
+                ];
+
                 foreach ($staffRows as $stf) {
-                    $evt = 'EVT-STF-' . time() . rand(1000, 9999) . $stf['id'];
-                    $db->exec("INSERT IGNORE INTO audit_log (event_id, module, action_type, actor_id, actor_role, entity_id, entity_type, status, details) VALUES 
-                        ('$evt', 'staff', 'shift_clock_in', '{$stf['staff_id']}', 'staff', '{$stf['staff_id']}', 'staff', 'success', 'Staff clocked in for daily shift')");
+                    foreach ($staffActions as $idx => $sa) {
+                        $evt = 'EVT-STF-' . time() . rand(1000, 9999) . $stf['id'] . $idx;
+                        $tTime = date('Y-m-d H:i:s', strtotime("-" . ($idx * 4 + 1) . " hours"));
+                        $db->exec("INSERT IGNORE INTO audit_log (event_id, module, action_type, actor_id, actor_role, entity_id, entity_type, status, details, ip_address, created_at) VALUES 
+                            ('$evt', 'staff', '{$sa['type']}', '{$stf['staff_id']}', 'staff', '{$stf['staff_id']}', 'staff', 'success', '{$sa['desc']}', '127.0.0.1', '$tTime')");
+                    }
                 }
             }
 
