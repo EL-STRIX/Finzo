@@ -348,18 +348,18 @@
 
             // 1. Header
             setText('header-staff-name', staff.full_name || 'Staff Member');
-            const statusBadge = document.getElementById('header-status-badge');
-            if (statusBadge) {
+            const headerStatusBadge = document.getElementById('header-status-badge');
+            if (headerStatusBadge) {
                 const isActive = (staff.status === 'active');
-                statusBadge.className = isActive 
+                headerStatusBadge.className = isActive 
                     ? 'flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 shadow-sm'
                     : 'flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 shadow-sm';
                 
-                const dot = statusBadge.querySelector('.status-dot');
+                const dot = headerStatusBadge.querySelector('.status-dot');
                 if (dot) {
                     dot.className = isActive ? 'status-dot w-2 h-2 rounded-full bg-emerald-500 animate-pulse' : 'status-dot w-2 h-2 rounded-full bg-rose-500';
                 }
-                const label = statusBadge.querySelector('.status-label');
+                const label = headerStatusBadge.querySelector('.status-label');
                 if (label) {
                     label.className = isActive ? 'status-label text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400' : 'status-label text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400';
                     label.textContent = isActive ? 'ACTIVE ACCOUNT' : 'SUSPENDED';
@@ -431,11 +431,11 @@
             setText('info-dept-badge', staff.department || 'Teller Operations');
 
             // Status Badge on Profile Card
-            const statusBadge = document.getElementById('info-status-badge');
+            const infoStatusBadge = document.getElementById('info-status-badge');
             const statusText = document.getElementById('info-status-text');
             const isActive = (staff.status === 'active');
-            if (statusBadge && statusText) {
-                statusBadge.className = isActive 
+            if (infoStatusBadge && statusText) {
+                infoStatusBadge.className = isActive 
                     ? 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-success-bg text-success border border-success/20 shadow-sm'
                     : 'px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-error-bg text-error border border-error/20 shadow-sm';
                 statusText.textContent = isActive ? 'Active Account' : 'Suspended';
