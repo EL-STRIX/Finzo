@@ -63,13 +63,6 @@
 
             <!-- Right Side: Auth Component Container -->
             <div class="auth-right-area">
-                <!-- Language Selector -->
-                <div class="auth-lang-selector" aria-label="Select Language">
-                    <span class="material-symbols-outlined text-[16px]">language</span>
-                    <span>EN</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                </div>
-                
                 <div class="auth-card-container">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
