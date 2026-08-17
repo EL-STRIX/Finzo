@@ -1040,7 +1040,8 @@ ob_start();
                   return;
               }
 
-              if (apiAction === 'reset_password' && data.temp_password) {
+              var tempPassword = data.temp_password || (data.data && data.data.temp_password) || (data.payload && data.payload.temp_password) || '';
+              if (apiAction === 'reset_password') {
                   var bodyText = document.getElementById('modal-body-text');
                   var titleEl = document.getElementById('modal-title');
                   var subEl = document.getElementById('modal-subtitle');
@@ -1057,7 +1058,7 @@ ob_start();
                       bodyText.innerHTML = `
                           <div class="p-4 bg-background border border-border-subtle rounded-2xl text-center space-y-3">
                               <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Temporary One-Time Password</div>
-                              <div class="text-2xl font-black font-mono text-indigo-500 tracking-widest select-all py-2 bg-surface rounded-xl border border-indigo-500/20 shadow-inner">${data.temp_password}</div>
+                              <div class="text-2xl font-black font-mono text-indigo-500 tracking-widest select-all py-2 bg-surface rounded-xl border border-indigo-500/20 shadow-inner">${tempPassword || 'Generated Successfully'}</div>
                               <div class="text-[10px] font-bold text-success uppercase tracking-wider">Valid for initial login • Copy securely</div>
                           </div>
                       `;

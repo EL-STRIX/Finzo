@@ -805,13 +805,13 @@
 
             if (resp.success || resp.status === 200 || respPayload.success) {
                 if (currentAction === 'reset') {
-                    const tempPass = respPayload.temp_password || resp.temp_password || '—';
+                    const tempPass = respPayload.temp_password || resp.temp_password || (resp.data && resp.data.temp_password) || (respPayload.data && respPayload.data.temp_password) || '—';
                     const bodyText = document.getElementById('modal-body-text');
                     if (bodyText) {
                         bodyText.innerHTML = `
                             <div class="p-5 bg-background border border-border-subtle rounded-2xl text-center space-y-2">
                                 <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Temporary One-Time Password</div>
-                                <div class="text-2xl font-black font-mono text-primary tracking-widest selection:bg-primary selection:text-white py-1">${tempPass}</div>
+                                <div class="text-2xl font-black font-mono text-indigo-500 tracking-widest select-all py-2 bg-surface rounded-xl border border-indigo-500/20 shadow-inner">${tempPass}</div>
                                 <div class="text-[10px] font-bold text-success uppercase tracking-wider">Generated Successfully • Valid for 24 Hours</div>
                             </div>
                         `;
@@ -824,7 +824,7 @@
                     if (confirmBtn) {
                         confirmBtn.textContent = 'Close';
                         confirmBtn.disabled = false;
-                        confirmBtn.className = 'flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider';
+                        confirmBtn.className = 'flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider cursor-pointer';
                         confirmBtn.onclick = () => {
                             closeGovernanceModal();
                             loadStaffData();
