@@ -970,6 +970,102 @@ ob_start();
           document.body.classList.add('overflow-hidden');
       };
 
+      async function executeAction() {
+          var pwInput = document.getElementById('admin-password');
+          var authErr = document.getElementById('auth-error');
+          var confirmBtn = document.getElementById('confirm-governance-btn');
+          var password = (pwInput ? pwInput.value : '').trim();
+
+          if (!password) {
+              if (authErr) {
+                  authErr.textContent = 'Admin password is required to authorize this action';
+                  authErr.classList.remove('hidden');
+              }
+              if (pwInput) pwInput.focus();
+              return;
+          }
+
+          var apiAction = '';
+          var reason = null;
+
+          if (activeAction === 'deactivate') {
+              apiAction = 'suspend';
+              var checkedReason = document.querySelector('input[name="suspension_reason"]:checked');
+              var rVal = checkedReason ? checkedReason.value : 'Administrative Review';
+              var notes = (document.getElementById('governance-notes') ? document.getElementById('governance-notes').value : '').trim();
+              reason = (rVal === 'Other' && notes) ? notes : rVal;
+          } else if (activeAction === 'reinstate') {
+              apiAction = 'reinstate';
+          } else if (activeAction === 'reset') {
+              apiAction = 'reset_password';
+          } else if (activeAction === 'delete') {
+              apiAction = 'delete';
+          }
+
+          if (confirmBtn) {
+              confirmBtn.disabled = true;
+              confirmBtn.textContent = 'Authorizing...';
+          }
+
+          try {
+              var csrf = window.csrfToken || (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '') || '';
+              var targetStaffId = staffObj.id || <?= json_encode($staffId) ?>;
+              
+              var res = await fetch('/Finzo/public/api/v1/staff/' + targetStaffId, {
+                  method: 'PATCH',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-Token': csrf,
+                      'Accept': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      staff_id: targetStaffId,
+                      action: apiAction,
+                      password: password,
+                      reason: reason
+                  })
+              });
+
+              var data = await res.json();
+
+              if (!res.ok || (!data.success && data.status !== 200)) {
+                  if (authErr) {
+                      authErr.textContent = data.message || 'Authorization failed. Please verify your password.';
+                      authErr.classList.remove('hidden');
+                  }
+                  if (confirmBtn) {
+                      confirmBtn.disabled = false;
+                      confirmBtn.textContent = 'Retry';
+                  }
+                  return;
+              }
+
+              if (apiAction === 'reset_password' && data.temp_password) {
+                  alert('Password Reset Successful!\n\nTemporary Password: ' + data.temp_password + '\n\nPlease share this securely with the staff member.');
+                  window.location.reload();
+              } else if (apiAction === 'delete') {
+                  alert('Staff account has been permanently archived.');
+                  window.location.href = '/Finzo/public/views/admin/admin-staff.php';
+              } else {
+                  if (window.showToast) {
+                      window.showToast(data.message || 'Action executed successfully', 'success');
+                  }
+                  window.closeGovernanceModal();
+                  window.location.reload();
+              }
+
+          } catch (err) {
+              if (authErr) {
+                  authErr.textContent = err.message || 'Network error executing action';
+                  authErr.classList.remove('hidden');
+              }
+              if (confirmBtn) {
+                  confirmBtn.disabled = false;
+                  confirmBtn.textContent = 'Retry';
+              }
+          }
+      }
+
       window.closeGovernanceModal = function() {
           var modal = document.getElementById('governance-modal');
           if (!modal) return;
@@ -1004,6 +1100,12 @@ ob_start();
               window.closeGovernanceModal();
               return;
           }
+          var confirmGovBtn = e.target.closest('#confirm-governance-btn');
+          if (confirmGovBtn) {
+              e.preventDefault();
+              executeAction();
+              return;
+          }
           var govModal = document.getElementById('governance-modal');
           if (govModal && e.target === govModal) {
               window.closeGovernanceModal();
@@ -1014,6 +1116,13 @@ ob_start();
       document.addEventListener('keydown', function(e) {
           if (e.key === 'Escape') {
               window.closeGovernanceModal();
+          } else if (e.key === 'Enter') {
+              var pw = document.getElementById('admin-password');
+              var modal = document.getElementById('governance-modal');
+              if (modal && !modal.classList.contains('hidden') && document.activeElement === pw) {
+                  e.preventDefault();
+                  executeAction();
+              }
           }
       });
   })();
