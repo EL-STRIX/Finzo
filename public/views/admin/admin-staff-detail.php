@@ -128,7 +128,7 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION & HEADER -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+      <div class="flex items-center justify-between gap-4 relative z-10">
         <div class="flex items-center gap-4">
           <a href="/Finzo/public/views/admin/admin-staff.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="Back to Staff List">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
@@ -137,13 +137,6 @@ ob_start();
             <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">STAFF PROFILE &amp; DOSSIER</div>
             <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name"><?= $fullName ?></div>
           </div>
-        </div>
-
-        <div class="flex items-center gap-2.5 self-start sm:self-auto">
-          <button id="open-passbook-modal-btn" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm transition-all">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
-            <span>Passbook &amp; Statement</span>
-          </button>
         </div>
       </div>
 
@@ -197,7 +190,6 @@ ob_start();
                                   }
                               ?>
                               <span id="info-role-badge" class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider <?= $roleBadgeClass ?> shadow-sm"><?= $designation ?></span>
-                              <span id="info-dept-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle text-text-secondary shadow-sm"><?= $department ?></span>
                               <span id="info-status-badge" class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 <?= $isActive ? 'bg-success-bg text-success border border-success/20' : 'bg-error-bg text-error border border-error/20' ?> shadow-sm">
                                   <span class="w-2 h-2 rounded-full <?= $isActive ? 'bg-success animate-pulse' : 'bg-error' ?>"></span>
                                   <span id="info-status-text"><?= $isActive ? 'Active Account' : 'Suspended' ?></span>
