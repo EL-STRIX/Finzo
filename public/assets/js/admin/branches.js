@@ -929,7 +929,7 @@
     }
 
     window.showBranchStaff = async function(branchId, branchName) {
-        document.getElementById('staff-modal-title').textContent = branchName + ' — Staff Roster';
+        document.getElementById('staff-modal-title').textContent = (branchName || 'Branch') + ' — Staff Roster';
         document.getElementById('staff-modal-subtitle').textContent = 'Loading staff members...';
 
         closeModal('viewBranchModal');
@@ -938,14 +938,15 @@
         const tbody = document.getElementById('branch-ds-table-body');
         const noStaff = document.getElementById('no-staff-error');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-text-secondary"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl animate-spin mb-2">refresh</span>Loading staff roster...</div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-text-secondary dark:text-slate-400 font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl animate-spin mb-2">refresh</span>Loading staff roster...</div></td></tr>';
         }
         if (noStaff) noStaff.classList.add('hidden');
 
         try {
-            const response = await window.api.get(`/staff?branch_id=${branchId}&per_page=50`);
-            if (response.success || response.staff) {
-                const staff = response.staff || [];
+            const response = await window.api.get('/staff', { branch_id: branchId, per_page: 100 });
+            if (response) {
+                const payload = response.data || response;
+                const staff = payload.staff || response.staff || payload.data || (Array.isArray(payload) ? payload : []);
                 document.getElementById('staff-modal-subtitle').textContent = `${staff.length} ACTIVE STAFF ${staff.length === 1 ? 'MEMBER' : 'MEMBERS'} ASSIGNED`;
 
                 if (staff.length === 0) {
@@ -955,17 +956,17 @@
                     if (noStaff) noStaff.classList.add('hidden');
                     tbody.innerHTML = staff.map(s => {
                         const statusBadge = s.status === 'active' 
-                            ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ACTIVE</span>'
-                            : '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
+                            ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                            : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
                         const photoUrl = s.profile_photo_url || resolveUrl(s.profile_photo, 'staff-photos');
                         const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
 
                         return `
                         <tr class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
-                            <td class="px-6 py-4 font-mono text-xs font-bold text-primary dark:text-amber-400">${escapeHtml(s.staff_id)}</td>
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-primary dark:text-amber-400 whitespace-nowrap">${escapeHtml(s.staff_id)}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
+                                    <div class="w-8 h-8 rounded-full bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-amber-500/25 dark:border-amber-500/25">
                                         ${photoUrl ? `<img src="${photoUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">` : initial}
                                     </div>
                                     <div class="min-w-0">
@@ -983,7 +984,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px]" target="_blank">
-                                    View Staff
+                                    View Profile
                                 </a>
                             </td>
                         </tr>`;
