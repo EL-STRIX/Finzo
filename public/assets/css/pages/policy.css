@@ -1,143 +1,203 @@
-*{
+:root {
+    --color-surface-main: #ffffff;
+    --color-surface-subtle: #f8fafc;
+    --color-surface-hover: #f1f5f9;
+    --color-border-subtle: #e2e8f0;
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    --color-text-disabled: #94a3b8;
+    --color-primary: #1d4ed8;
+    --color-primary-light: #93c5fd;
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
 }
 
-body{
+body {
     background: #f1f5f9;
     color: #1e293b;
     line-height: 1.8;
 }
 
-a{
+a {
     text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.policy-page, .terms-page{
+.policy-page, .terms-page {
     width: 100%;
-    padding: 60px 20px;
+    padding: 50px 20px 80px;
 }
 
-.policy-container, .terms-container{
+.policy-container, .terms-container {
     max-width: 1100px;
     margin: auto;
-    background: var(--color-surface-main);
-    border-radius: 18px;
+    background: #ffffff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 45px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-.policy-header, .terms-header{
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    padding: 60px 50px;
-    color: var(--color-surface-main);
+.policy-header, .terms-header {
+    background: linear-gradient(135deg, #0b192c 0%, #1e293b 100%);
+    padding: 55px 50px 48px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.policy-header h1, .terms-header h1{
-    font-size: 42px;
+.policy-header a, .terms-header a {
+    color: #93c5fd;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.policy-header a:hover, .terms-header a:hover {
+    color: #ffffff;
+    transform: translateX(-3px);
+}
+
+.policy-header h1, .terms-header h1 {
+    font-size: 38px;
     margin-bottom: 12px;
-    font-weight: 700;
+    font-weight: 800;
+    color: #ffffff !important;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
 }
 
-.policy-header p, .terms-header p{
-    color: var(--color-surface-hover);
-    font-size: 16px;
+.policy-header p, .terms-header p {
+    color: #cbd5e1 !important;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
-.policy-content, .terms-content{
+.policy-content, .terms-content {
     padding: 50px;
+    background: #ffffff;
 }
 
-.intro-text{
+.intro-text {
     font-size: 17px;
     color: #475569;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
+    line-height: 1.75;
 }
 
-.policy-section, .terms-section{
+.policy-section, .terms-section {
     margin-bottom: 45px;
 }
 
-.policy-section h2, .terms-section h2{
-    font-size: 28px;
+.policy-section h2, .terms-section h2 {
+    font-size: 26px;
     color: #0f172a;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
-.policy-section h3, .terms-section h3{
-    font-size: 20px;
+.policy-section h3, .terms-section h3 {
+    font-size: 19px;
     color: #1e293b;
-    margin-top: 25px;
+    margin-top: 24px;
     margin-bottom: 12px;
+    font-weight: 600;
 }
 
-.policy-section p, .terms-section p{
+.policy-section p, .terms-section p {
     color: #475569;
     margin-bottom: 16px;
     font-size: 16px;
+    line-height: 1.75;
 }
 
-.policy-section ul, .terms-section ul{
-    margin-top: 15px;
-    padding-left: 25px;
+.policy-section ul, .terms-section ul {
+    margin-top: 14px;
+    margin-bottom: 18px;
+    padding-left: 24px;
 }
 
-.policy-section ul li, .terms-section ul li{
+.policy-section ul li, .terms-section ul li {
     margin-bottom: 12px;
     color: #334155;
     font-size: 16px;
+    line-height: 1.65;
 }
 
-.policy-divider, .terms-divider{
+.policy-section ul li strong, .terms-section ul li strong {
+    color: #0f172a;
+}
+
+.policy-divider, .terms-divider {
     width: 100%;
     height: 1px;
-    background: var(--color-border-subtle);
-    margin: 40px 0;
+    background: #e2e8f0;
+    margin: 36px 0;
 }
 
-.contact-box{
-    background: var(--color-surface-subtle);
-    border: 1px solid var(--color-border-subtle);
+.contact-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 25px;
+    padding: 24px 28px;
     margin-top: 20px;
 }
 
-.contact-box p{
-    margin-bottom: 10px;
+.contact-box p {
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 15px;
 }
 
-.highlight{
+.contact-box p:last-child {
+    margin-bottom: 0;
+}
+
+.highlight {
     color: #2563eb;
     font-weight: 600;
 }
 
-.policy-footer, .terms-footer{
-    border-top: 1px solid var(--color-border-subtle);
-    padding: 25px 50px;
-    background: var(--color-surface-subtle);
+.policy-footer, .terms-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 24px 50px;
+    background: #f8fafc;
     text-align: center;
-    color: var(--color-text-disabled);
+    color: #64748b;
     font-size: 14px;
+    font-weight: 500;
 }
 
-@media(max-width: 768px){
-    .policy-header, .terms-header{
-        padding: 45px 25px;
+@media (max-width: 768px) {
+    .policy-page, .terms-page {
+        padding: 30px 14px 60px;
     }
-    .policy-header h1, .terms-header h1{
-        font-size: 32px;
+    .policy-header, .terms-header {
+        padding: 40px 24px 32px;
     }
-    .policy-content, .terms-content{
-        padding: 30px 22px;
+    .policy-header h1, .terms-header h1 {
+        font-size: 28px;
     }
-    .policy-section h2, .terms-section h2{
-        font-size: 24px;
+    .policy-content, .terms-content {
+        padding: 30px 20px;
     }
-    .policy-section h3, .terms-section h3{
-        font-size: 18px;
+    .policy-section h2, .terms-section h2 {
+        font-size: 22px;
+    }
+    .policy-section h3, .terms-section h3 {
+        font-size: 17px;
+    }
+    .policy-footer, .terms-footer {
+        padding: 20px 24px;
     }
 }
