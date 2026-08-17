@@ -2,19 +2,23 @@
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Dossier';
 
-// SSR data loading — only when bootstrapped via the router (FINZO_ROOT is defined).
-// When accessed directly the page will load data client-side via JavaScript.
+// Bootstrap early so SSR always runs (even on direct file access).
+// The layout guard `if (!defined('FINZO_ROOT'))` prevents double-loading.
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 4) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+
+// SSR data loading — comprehensive staff dossier
+$staffId = intval($_GET['id'] ?? 0);
 $staffData = null;
-if (defined('FINZO_ROOT')) {
-    $staffId = intval($_GET['id'] ?? 0);
-    if ($staffId > 0) {
-        try {
-            $container = \App\Shared\Core\Container::getInstance();
-            $service = $container->get(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class);
-            $staffData = $service->getStaffDetailComprehensive($staffId);
-        } catch (\Throwable $e) {
-            $staffData = null;
-        }
+if ($staffId > 0) {
+    try {
+        $container = \App\Shared\Core\Container::getInstance();
+        $service = $container->get(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class);
+        $staffData = $service->getStaffDetailComprehensive($staffId);
+    } catch (\Throwable $e) {
+        $staffData = null;
     }
 }
 
@@ -27,7 +31,13 @@ $transactions = $staffData['transactions']     ?? [];
 $activities   = $staffData['activities']       ?? [];
 $documents    = $staffData['documents']        ?? [];
 
-$fullName    = htmlspecialchars($staff['full_name']   ?? 'Loading Profile...', ENT_QUOTES, 'UTF-8');
+// Auth guard — redirect to admin login if not authenticated
+if (empty($staff) && empty(\App\Shared\Security\Auth::user())) {
+    header('Location: /Finzo/public/views/auth/admin-login.php');
+    exit;
+}
+
+$fullName    = htmlspecialchars($staff['full_name']   ?? 'Staff Member Profile', ENT_QUOTES, 'UTF-8');
 $staffCode   = htmlspecialchars($staff['staff_id']    ?? 'STF---',             ENT_QUOTES, 'UTF-8');
 $designation = htmlspecialchars($staff['designation'] ?? 'Staff',              ENT_QUOTES, 'UTF-8');
 $status      = $staff['status'] ?? 'active';
@@ -286,8 +296,8 @@ ob_start();
                           <!-- Front Document -->
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Front of Document</label>
+                              <?php $frontUrl = $staff['front_image_url'] ?? null; ?>
                               <div id="doc-front-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $frontUrl ? "onclick=\"openLightbox('" . htmlspecialchars($frontUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
-                                  <?php $frontUrl = $staff['front_image_url'] ?? null; ?>
                                   <div id="doc-front-placeholder" class="text-center <?= $frontUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
@@ -301,8 +311,8 @@ ob_start();
                           <!-- Back Document -->
                           <div>
                               <label class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2 block">Back of Document</label>
+                              <?php $backUrl = $staff['back_image_url'] ?? null; ?>
                               <div id="doc-back-wrapper" class="relative group rounded-2xl overflow-hidden bg-background border border-border-subtle flex items-center justify-center aspect-[16/10] cursor-pointer transition-all hover:border-primary hover:shadow-sm" <?= $backUrl ? "onclick=\"openLightbox('" . htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') . "')\"" : '' ?>>
-                                  <?php $backUrl = $staff['back_image_url'] ?? null; ?>
                                   <div id="doc-back-placeholder" class="text-center <?= $backUrl ? 'hidden' : '' ?>">
                                       <span class="material-symbols-outlined text-4xl text-text-secondary" aria-hidden="true">image</span>
                                       <p class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">No document uploaded</p>
