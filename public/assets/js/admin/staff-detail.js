@@ -5,15 +5,15 @@
 
 (function() {
     let staffId = null;
-    let currentStaff = {};
-    let currentStaffTransactions = [];
-    let currentStaffAddress = {};
+    let currentStaff = window.__INITIAL_STAFF__ || {};
+    let currentStaffTransactions = window.__INITIAL_TRANSACTIONS__ || [];
+    let currentStaffAddress = window.__INITIAL_ADDRESS__ || {};
     let currentAction = '';
     let passbookFilter = { from: null, to: null, label: 'ALL TIME' };
 
     function init() {
         const urlParams = new URLSearchParams(window.location.search);
-        staffId = urlParams.get('id');
+        staffId = urlParams.get('id') || (currentStaff ? currentStaff.id : null);
         
         if (!staffId) {
             const pathParts = window.location.pathname.split('/');
@@ -23,13 +23,11 @@
             }
         }
 
-        if (!staffId) {
-            if (window.showToast) window.showToast('Staff ID parameter is required', 'error');
-            return;
-        }
-
-        loadStaffData();
         bindEvents();
+
+        if (staffId) {
+            loadStaffData();
+        }
     }
 
     function getFilteredPassbookTransactions() {
@@ -316,6 +314,8 @@
     window.closeLightbox = closeLightbox;
     window.openGovernanceModal = openGovernanceModal;
     window.closeGovernanceModal = closeGovernanceModal;
+    window.openPassbookModal = openPassbookModal;
+    window.closePassbookModal = closePassbookModal;
 
     // ==========================================
     //  LOAD STAFF COMPREHENSIVE DOSSIER

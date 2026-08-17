@@ -67,7 +67,7 @@ ob_start();
             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
               <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt</span>
             </div>
-            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TRANSACTIONS TODAY</div>
+            <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2 pt-4 ">TRANSACTIONS TODAY</div>
             <div id="stat-transactions-today" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
           </div>
         </div>

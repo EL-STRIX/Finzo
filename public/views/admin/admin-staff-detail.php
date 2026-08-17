@@ -98,6 +98,12 @@ $updatedAt = !empty($staff['updated_at']) ? date('d M Y, h:i A', strtotime($staf
 
 ob_start();
 ?>
+<script>
+  window.__INITIAL_STAFF__ = <?= json_encode($staff ?? new \stdClass()) ?>;
+  window.__INITIAL_ADDRESS__ = <?= json_encode($address ?? new \stdClass()) ?>;
+  window.__INITIAL_TRANSACTIONS__ = <?= json_encode($transactions ?? []) ?>;
+</script>
+
   <style>
     @media print {
       body * {
@@ -446,7 +452,7 @@ ob_start();
               <div class="ds-card p-5">
                   <h5 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-4 ml-1">Staff Governance Actions</h5>
                   <div class="space-y-3">
-                      <button id="deactivate-staff-btn" type="button" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all group" data-action="<?= $isActive ? 'deactivate' : 'reinstate' ?>">
+                      <button id="deactivate-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal(this.dataset.action || 'deactivate');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-warning hover:bg-warning-bg transition-all cursor-pointer group" data-action="<?= $isActive ? 'deactivate' : 'reinstate' ?>">
                           <div class="flex items-center gap-3">
                               <span id="suspend-icon" class="material-symbols-outlined <?= $isActive ? 'text-warning' : 'text-success' ?>" aria-hidden="true"><?= $isActive ? 'block' : 'check_circle' ?></span>
                               <div class="text-left">
@@ -457,7 +463,7 @@ ob_start();
                           <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
                       </button>
 
-                      <button id="reset-password-btn" type="button" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-info hover:bg-info-bg transition-all group">
+                      <button id="reset-password-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('reset');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-info hover:bg-info-bg transition-all cursor-pointer group">
                           <div class="flex items-center gap-3">
                               <span class="material-symbols-outlined text-info" aria-hidden="true">lock_reset</span>
                               <div class="text-left">
@@ -468,7 +474,7 @@ ob_start();
                           <span class="material-symbols-outlined text-text-secondary text-lg" aria-hidden="true">chevron_right</span>
                       </button>
 
-                      <button id="delete-staff-btn" type="button" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-error hover:bg-error-bg transition-all group">
+                      <button id="delete-staff-btn" type="button" onclick="if(window.openGovernanceModal) window.openGovernanceModal('delete');" class="w-full flex items-center justify-between p-3.5 bg-background rounded-xl border border-border-subtle hover:border-error hover:bg-error-bg transition-all cursor-pointer group">
                           <div class="flex items-center gap-3">
                               <span class="material-symbols-outlined text-error" aria-hidden="true">person_remove</span>
                               <div class="text-left">
@@ -573,7 +579,7 @@ ob_start();
                   <h4 class="font-black text-lg text-text-primary tracking-tight">Staff Transaction Ledger</h4>
                   <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Transactions processed across customer accounts</p>
               </div>
-              <button id="open-passbook-modal-table-btn" type="button" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-all">
+              <button id="open-passbook-modal-table-btn" type="button" onclick="if(window.openPassbookModal) window.openPassbookModal();" class="btn btn-secondary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-[16px]" aria-hidden="true">receipt_long</span>
                   <span>Passbook &amp; Statement</span>
               </button>
