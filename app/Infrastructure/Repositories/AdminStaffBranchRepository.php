@@ -653,11 +653,11 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $actStmt = $this->db->prepare("
             SELECT id, action_type, entity_id, entity_type, details, ip_address, created_at
             FROM audit_log
-            WHERE actor_id = ? AND actor_role = 'staff'
+            WHERE (actor_id = ? OR actor_id = ? OR (entity_id IN (?, ?) AND entity_type = 'staff'))
             ORDER BY created_at DESC
             LIMIT 20
         ");
-        $actStmt->execute([(string)$staffId]);
+        $actStmt->execute([(string)$staffId, $staff['staff_id'], (string)$staffId, $staff['staff_id']]);
         $activities = $actStmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $address = [
