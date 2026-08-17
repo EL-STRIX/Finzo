@@ -661,12 +661,23 @@
         openModal('addBranchModal');
     }
 
-    function showEditModal(id) {
-        const branch = currentBranches.find(b => String(b.id) === String(id));
-        if (!branch) return;
+    async function showEditModal(branchOrId) {
+        let branch = typeof branchOrId === 'object' ? branchOrId : currentBranches.find(b => String(b.id) === String(branchOrId));
+        if (!branch && branchOrId) {
+            try {
+                const res = await window.api.get(`/branches/${branchOrId}`);
+                if (res && (res.branch || res.data)) branch = res.branch || res.data;
+            } catch (e) {
+                console.error('Error fetching branch:', e);
+            }
+        }
+        if (!branch) {
+            window.showToast('Branch details not found', 'error');
+            return;
+        }
 
         isEditMode = true;
-        currentEditId = id;
+        currentEditId = branch.id;
 
         document.getElementById('modal-branch-heading').textContent = 'Edit Branch: ' + branch.name;
         document.getElementById('modal-branch-subheading').textContent = 'Update branch parameters, manager assignment, and location data';
@@ -726,7 +737,21 @@
         openModal('addBranchModal');
     }
 
-    function showViewModal(branch) {
+    async function showViewModal(branchOrId) {
+        let branch = typeof branchOrId === 'object' ? branchOrId : currentBranches.find(b => String(b.id) === String(branchOrId));
+        if (!branch && branchOrId) {
+            try {
+                const res = await window.api.get(`/branches/${branchOrId}`);
+                if (res && (res.branch || res.data)) branch = res.branch || res.data;
+            } catch (e) {
+                console.error('Error fetching branch:', e);
+            }
+        }
+        if (!branch) {
+            window.showToast('Branch details not found', 'error');
+            return;
+        }
+
         document.getElementById('view-branch-title').textContent = branch.name;
 
         const badgesContainer = document.getElementById('view-branch-badges');
@@ -817,11 +842,16 @@
         }
 
         branchToDelete = id;
-        branchToDeleteName = name;
+        branchToDeleteName = name || (branch ? branch.name : '');
+        const branchCode = code || (branch ? branch.branch_code : '');
 
-        document.getElementById('target-branch-name').textContent = `${name} (${code})`;
-        document.getElementById('confirm-branch-name-input').value = '';
-        document.getElementById('confirm-admin-pw').value = '';
+        const targetNameEl = document.getElementById('target-branch-name');
+        if (targetNameEl) targetNameEl.textContent = `${branchToDeleteName} (${branchCode})`;
+
+        const confirmNameInput = document.getElementById('confirm-branch-name-input');
+        const confirmPwInput = document.getElementById('confirm-admin-pw');
+        if (confirmNameInput) confirmNameInput.value = '';
+        if (confirmPwInput) confirmPwInput.value = '';
 
         const fileInput = document.getElementById('delete-file-input');
         if (fileInput) fileInput.value = '';
@@ -920,6 +950,13 @@
             document.body.classList.remove('overflow-hidden');
         }
     }
+
+    // Expose helpers globally
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.showViewModal = showViewModal;
+    window.showEditModal = showEditModal;
+    window.showDeleteModal = showDeleteModal;
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
