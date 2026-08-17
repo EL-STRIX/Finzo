@@ -178,7 +178,7 @@
                             <label class="fin-checkbox-wrapper">
                                 <input type="checkbox" id="agree-terms" name="terms" class="fin-checkbox-input" required />
                                 <span class="fin-checkbox-label">
-                                    I agree to Finzo Banking's <a href="#" class="font-semibold text-primary hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-primary hover:underline">Privacy Policy</a>.
+                                    I agree to Finzo Banking's <a href="/Finzo/public/views/components/terms-of-service.html" target="_blank" class="font-semibold text-primary hover:underline">Terms of Service</a> and <a href="/Finzo/public/views/components/privacy-policy.html" target="_blank" class="font-semibold text-primary hover:underline">Privacy Policy</a>.
                                 </span>
                             </label>
                             <span class="fin-error-text" role="alert">

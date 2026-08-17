@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Data Protection Charter | Finzo Banking Management System</title>
+
+    <link rel="stylesheet" href="/Finzo/public/assets/css/pages/policy.css" />
+
+    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+</head>
+<body>
+
+    <div class="policy-page">
+
+        <div class="policy-container">
+
+            <!-- Header -->
+            <div class="policy-header">
+                <div style="margin-bottom: 15px;">
+                    <a href="/Finzo/public/index.html" style="color: #93c5fd; font-size: 14px; font-weight: 600; display: inline-flex; items-center; gap: 6px;">
+                        &larr; Back to Finzo Banking
+                    </a>
+                </div>
+                <h1>Data Protection & Governance</h1>
+                <p>
+                    Finzo Banking Management System • Enterprise Security & Privacy Governance
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="policy-content">
+
+                <p class="intro-text">
+                    Finzo Banking Management System (“Finzo”) adheres to rigorous enterprise-grade data protection principles. This Charter outlines how we safeguard financial records, uphold regulatory data compliance, and protect our customers against unauthorized data access.
+                </p>
+
+                <div class="policy-divider"></div>
+
+                <!-- Section 1 -->
+                <div class="policy-section">
+                    <h2>1. Core Data Protection Principles</h2>
+                    <ul>
+                        <li><strong>Data Minimization:</strong> We only collect, process, and retain information strictly necessary for executing lawful banking services and verifying customer identities.</li>
+                        <li><strong>Cryptographic Security:</strong> All customer data at rest is encrypted using AES-256 standards; data in transit is protected via TLS 1.3 encryption.</li>
+                        <li><strong>Strict Purpose Limitation:</strong> Financial data is processed exclusively for account maintenance, fraud prevention, regulatory compliance, and transaction settlement.</li>
+                        <li><strong>Zero Data Monetization:</strong> We never sell, monetize, or trade customer transaction history or personal identifiers to third-party commercial data brokers.</li>
+                    </ul>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="policy-section">
+                    <h2>2. Access Control & Segregation of Duties</h2>
+                    <p>
+                        Finzo enforces strict Role-Based Access Control (RBAC) and the Principle of Least Privilege across all administrative and staff endpoints:
+                    </p>
+                    <ul>
+                        <li>Staff access to customer profiles requires active duty verification and is subject to automated audit logging.</li>
+                        <li>Database queries are parameterized through PDO prepared statements, preventing SQL injection and unauthorized data leakage.</li>
+                        <li>Administrative privileges are strictly partitioned from financial settlement and user credential storage.</li>
+                    </ul>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="policy-section">
+                    <h2>3. Data Subject Rights</h2>
+                    <p>
+                        In accordance with applicable privacy frameworks (including GDPR principles), customers retain comprehensive rights concerning their stored information:
+                    </p>
+                    <ul>
+                        <li><strong>Right to Access:</strong> Review complete profile information and request comprehensive transaction history exports at any time from your dashboard.</li>
+                        <li><strong>Right to Rectification:</strong> Request correction of obsolete or inaccurate personal details.</li>
+                        <li><strong>Right to Restrict Processing:</strong> Request temporary restriction of account activity during dispute resolution.</li>
+                        <li><strong>Data Retention & Audit Trails:</strong> Banking records are retained in compliance with statutory financial retention laws and securely archived against alteration.</li>
+                    </ul>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="policy-section">
+                    <h2>4. Incident Response & Breach Notification</h2>
+                    <p>
+                        Finzo operates 24/7 automated telemetry and intrusion detection systems. In the event of a verified data incident impacting customer records, our incident response protocol mandates prompt customer notification and regulatory reporting in compliance with statutory deadlines.
+                    </p>
+                </div>
+
+                <!-- Section 5 -->
+                <div class="policy-section">
+                    <h2>5. Data Protection Officer (DPO)</h2>
+                    <div class="contact-box">
+                        <p><strong>Office:</strong> <span class="highlight">Data Protection & Privacy Governance</span></p>
+                        <p><strong>Direct Email:</strong> <span class="highlight">dpo@finzo.com</span></p>
+                        <p><strong>General Inquiries:</strong> <span class="highlight">privacy@finzo.com</span></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="policy-footer">
+                &copy; 2026 Finzo Banking Management System. All Rights Reserved.
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
