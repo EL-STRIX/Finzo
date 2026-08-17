@@ -783,8 +783,9 @@
             const avatarUrl = branch.manager_avatar_url || resolveUrl(branch.manager_avatar, 'staff-photos');
             const initial = branch.manager_initials || branch.manager_name.charAt(0).toUpperCase();
 
+            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-black text-lg shrink-0 border border-amber-500/25 dark:border-amber-500/25 overflow-hidden';
             if (avatarUrl) {
-                avatarEl.innerHTML = `<img src="${avatarUrl}?v=${Date.now()}" class="w-full h-full rounded-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">`;
+                avatarEl.innerHTML = `<img src="${avatarUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">`;
             } else {
                 avatarEl.innerHTML = initial;
             }
@@ -793,7 +794,8 @@
             linkEl.classList.remove('hidden');
             linkEl.href = `/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(branch.manager_staff_id || branch.manager_name)}`;
         } else {
-            avatarEl.innerHTML = '??';
+            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-surface-subtle dark:bg-white/5 text-text-secondary dark:text-slate-400 font-black text-lg shrink-0 border border-border-subtle dark:border-white/10';
+            avatarEl.innerHTML = '<span class="material-symbols-outlined text-xl opacity-60">person_off</span>';
             nameEl.textContent = 'Unassigned';
             emailEl.textContent = 'No manager assigned';
             linkEl.classList.add('hidden');

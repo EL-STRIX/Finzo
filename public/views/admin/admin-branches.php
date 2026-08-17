@@ -429,7 +429,7 @@ ob_start();
                     <div class="p-5 bg-surface-subtle dark:bg-surface-dark border border-border-subtle dark:border-white/5 rounded-2xl">
                         <label class="block text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 mb-3">Branch Manager</label>
                         <div class="flex items-center gap-4">
-                            <div id="view-manager-avatar" class="w-12 h-12 rounded-full flex items-center justify-center bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-black text-lg shrink-0 border border-primary-100 dark:border-primary/30">??</div>
+                            <div id="view-manager-avatar" class="w-12 h-12 rounded-full flex items-center justify-center bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-black text-lg shrink-0 border border-amber-500/25 dark:border-amber-500/25">??</div>
                             <div class="min-w-0">
                                 <div id="view-manager-name" class="font-black text-sm text-text-primary dark:text-white truncate">Unassigned</div>
                                 <div id="view-manager-email" class="text-[10px] text-text-secondary dark:text-slate-400 font-bold tracking-widest uppercase truncate">No Manager Assigned</div>
@@ -441,12 +441,12 @@ ob_start();
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-primary-50 dark:bg-primary/15 p-4 rounded-xl text-center border border-primary-100 dark:border-primary/25">
-                            <div id="view-staff-count" class="text-2xl font-black text-primary dark:text-primary-300 tracking-tight font-display">0</div>
+                        <div class="bg-amber-500/10 dark:bg-amber-500/10 p-4 rounded-xl text-center border border-amber-500/20 dark:border-amber-500/20">
+                            <div id="view-staff-count" class="text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight font-display">0</div>
                             <div class="text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest mt-1">Assigned Staff</div>
                         </div>
-                        <div class="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl text-center border border-emerald-200 dark:border-emerald-800/30">
-                            <div id="view-txn-count" class="text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight font-display">0</div>
+                        <div class="bg-emerald-500/10 dark:bg-emerald-500/10 p-4 rounded-xl text-center border border-emerald-500/20 dark:border-emerald-500/20">
+                            <div id="view-txn-count" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight font-display">0</div>
                             <div class="text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest mt-1">Total Transactions</div>
                         </div>
                     </div>
@@ -476,7 +476,7 @@ ob_start();
 
             <div class="p-6 border-t border-border-subtle dark:border-white/10 flex gap-3 justify-end bg-surface dark:bg-surface-elevated shrink-0">
                 <button type="button" id="view-btn-edit" class="btn btn-secondary px-6">Edit Branch Info</button>
-                <button type="button" id="view-btn-staff" class="btn btn-primary px-6">View Staff List</button>
+                <button type="button" id="view-btn-staff" class="btn !bg-amber-600 hover:!bg-amber-500 active:!bg-amber-700 !text-white font-bold px-6 shadow-md shadow-amber-900/20 border-0">View Staff List</button>
             </div>
         </div>
     </div>
