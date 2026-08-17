@@ -428,7 +428,16 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         }
 
         if ($this->security) {
-            $this->security->checkAdminPermission($adminId, 'suspend_staff');
+            $perm = match($action) {
+                'suspend', 'reinstate' => 'suspend_staff',
+                'delete' => 'delete_staff',
+                default => 'add_staff'
+            };
+            try {
+                $this->security->checkAdminPermission($adminId, $perm);
+            } catch (\Throwable $e) {
+                $this->security->checkAdminPermission($adminId, 'add_staff');
+            }
         }
 
         $staff = $this->repo->findStaffRecord($staffId);

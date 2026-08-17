@@ -125,7 +125,8 @@ class AdminStaffController
         $reason = $this->security->cleanInput($input['reason'] ?? $_POST['reason'] ?? '');
         $password = $input['password'] ?? $_POST['password'] ?? '';
 
-        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+        $admin = \App\Shared\Security\Auth::user();
+        $adminId = intval($admin['id'] ?? ($_SESSION['admin_id'] ?? ($_SESSION['user_id'] ?? 0)));
 
         return $this->service->executeStaffAction($staffId, $action, $reason, $adminId, $password);
     }

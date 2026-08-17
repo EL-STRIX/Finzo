@@ -1041,8 +1041,39 @@ ob_start();
               }
 
               if (apiAction === 'reset_password' && data.temp_password) {
-                  alert('Password Reset Successful!\n\nTemporary Password: ' + data.temp_password + '\n\nPlease share this securely with the staff member.');
-                  window.location.reload();
+                  var bodyText = document.getElementById('modal-body-text');
+                  var titleEl = document.getElementById('modal-title');
+                  var subEl = document.getElementById('modal-subtitle');
+                  var iconEl = document.getElementById('modal-icon');
+                  var authStep = document.getElementById('auth-step');
+                  var reasonStep = document.getElementById('reason-step');
+                  var abortBtn = document.getElementById('abort-governance-btn');
+
+                  if (titleEl) titleEl.textContent = 'Password Reset Complete';
+                  if (subEl) subEl.textContent = 'Temporary Credential Issued';
+                  if (iconEl) iconEl.textContent = 'key';
+
+                  if (bodyText) {
+                      bodyText.innerHTML = `
+                          <div class="p-4 bg-background border border-border-subtle rounded-2xl text-center space-y-3">
+                              <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Temporary One-Time Password</div>
+                              <div class="text-2xl font-black font-mono text-indigo-500 tracking-widest select-all py-2 bg-surface rounded-xl border border-indigo-500/20 shadow-inner">${data.temp_password}</div>
+                              <div class="text-[10px] font-bold text-success uppercase tracking-wider">Valid for initial login • Copy securely</div>
+                          </div>
+                      `;
+                  }
+                  if (authStep) authStep.classList.add('hidden');
+                  if (reasonStep) reasonStep.classList.add('hidden');
+                  if (abortBtn) abortBtn.classList.add('hidden');
+                  if (confirmBtn) {
+                      confirmBtn.textContent = 'Done';
+                      confirmBtn.disabled = false;
+                      confirmBtn.className = 'flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer';
+                      confirmBtn.onclick = function() {
+                          window.closeGovernanceModal();
+                          window.location.reload();
+                      };
+                  }
               } else if (apiAction === 'delete') {
                   alert('Staff account has been permanently archived.');
                   window.location.href = '/Finzo/public/views/admin/admin-staff.php';
