@@ -144,14 +144,14 @@ ob_start();
             <table class="ds-table w-full min-w-[1000px] text-left">
                 <thead scope="col" class="bg-surface-subtle dark:bg-surface-elevated/70 border-b border-border-subtle dark:border-white/10">
                     <tr>
-                        <th class="w-[5%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">#</th>
-                        <th class="w-[20%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH</th>
-                        <th class="w-[13%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH ID</th>
+                        <th class="w-[4%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">#</th>
+                        <th class="w-[22%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH</th>
+                        <th class="w-[14%] whitespace-nowrap py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH ID</th>
                         <th class="w-[14%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STATE</th>
                         <th class="w-[18%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">MANAGER</th>
                         <th class="w-[7%] py-3.5 px-4 text-center text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STAFF</th>
-                        <th class="w-[8%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">TYPE</th>
-                        <th class="w-[7%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STATUS</th>
+                        <th class="w-[9%] py-3.5 px-4 text-center text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">TYPE</th>
+                        <th class="w-[9%] py-3.5 px-4 text-center text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STATUS</th>
                         <th class="w-[8%] py-3.5 px-4 text-right text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">ACTIONS</th>
                     </tr>
                 </thead>

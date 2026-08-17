@@ -90,51 +90,59 @@
         tbody.innerHTML = branches.map((b, i) => {
             const isSystem = b.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/40">SYSTEM</span>'
-                : '<span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/40">CUSTOM</span>';
+                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
+                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
             
             const countStr = String(i + 1).padStart(2, '0');
             const isActive = b.status === 'active';
             const statusBadge = isActive 
-                ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ACTIVE</span>'
-                : '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
+                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
 
+            const hasManager = b.manager_name && b.manager_name.trim().length > 0;
             const managerAvatarUrl = b.manager_avatar_url || resolveUrl(b.manager_avatar, 'staff-photos');
-            const managerInitial = b.manager_initials || (b.manager_name ? b.manager_name.charAt(0).toUpperCase() : '??');
+            const managerInitial = b.manager_initials || (hasManager ? b.manager_name.charAt(0).toUpperCase() : '??');
             
             return `
             <tr data-id="${b.id}" class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
-                <td class="font-bold opacity-40 text-xs text-text-primary dark:text-slate-400 px-4 py-3.5">${countStr}</td>
-                <td class="px-4 py-3.5">
+                <td class="font-bold opacity-40 text-xs text-text-primary dark:text-slate-400 px-4 py-4">${countStr}</td>
+                <td class="px-4 py-4">
                     <div class="font-bold text-sm text-text-primary dark:text-white branch-name-text">${escapeHtml(b.name)}</div>
                     <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">${escapeHtml(b.city || b.state || 'Local Branch')}</div>
                 </td>
-                <td class="px-4 py-3.5 text-xs font-bold font-mono text-primary dark:text-amber-400">${escapeHtml(b.branch_code || 'N/A')}</td>
-                <td class="px-4 py-3.5 text-xs font-medium text-text-primary dark:text-slate-300">${escapeHtml(b.state || 'N/A')}</td>
-                <td class="px-4 py-3.5">
+                <td class="px-4 py-4 text-xs font-bold font-mono text-primary dark:text-amber-400 whitespace-nowrap">${escapeHtml(b.branch_code || 'N/A')}</td>
+                <td class="px-4 py-4 text-xs font-medium text-text-primary dark:text-slate-300">${escapeHtml(b.state || 'N/A')}</td>
+                <td class="px-4 py-4">
+                    ${hasManager ? `
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 text-[10px] bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
+                        <div class="w-7 h-7 text-[10px] bg-primary-50 dark:bg-primary/20 text-primary dark:text-amber-400 font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
                             ${managerAvatarUrl ? `<img src="${managerAvatarUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${managerInitial}'">` : managerInitial}
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(b.manager_name || 'Unassigned')}</div>
+                            <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(b.manager_name)}</div>
                             ${b.manager_staff_id ? `<div class="text-[10px] text-text-secondary dark:text-slate-400 font-mono font-medium">${escapeHtml(b.manager_staff_id)}</div>` : ''}
                         </div>
-                    </div>
+                    </div>` : `
+                    <div class="flex items-center gap-2 text-text-secondary dark:text-slate-400">
+                        <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-white/5 border border-border-subtle dark:border-white/10 flex items-center justify-center text-xs shrink-0">
+                            <span class="material-symbols-outlined text-[15px] opacity-60">person_off</span>
+                        </div>
+                        <span class="text-xs font-semibold opacity-75">Unassigned</span>
+                    </div>`}
                 </td>
-                <td class="px-4 py-3.5 text-center font-bold text-xs text-text-primary dark:text-slate-200">${b.staff_count || 0}</td>
-                <td class="px-4 py-3.5">${typeBadge}</td>
-                <td class="px-4 py-3.5">${statusBadge}</td>
-                <td class="px-4 py-3.5 text-right">
-                    <div class="flex justify-end gap-1">
-                        <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-lg text-text-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors action-view" data-id="${b.id}" title="View Details">
+                <td class="px-4 py-4 text-center font-bold text-xs text-text-primary dark:text-slate-200">${b.staff_count || 0}</td>
+                <td class="px-4 py-4 text-center">${typeBadge}</td>
+                <td class="px-4 py-4 text-center">${statusBadge}</td>
+                <td class="px-4 py-4 text-right">
+                    <div class="flex justify-end items-center gap-1.5">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 transition-colors action-view" data-id="${b.id}" title="View Details">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
                         </button>
-                        <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-lg text-text-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15 transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
-                        <button type="button" class="p-2 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg text-text-secondary dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
                         </button>` : ''}
                     </div>
@@ -648,6 +656,12 @@
         document.getElementById('modal-branch-subheading').textContent = 'Fill in all details to register a new Finzo branch';
         document.getElementById('submit-branch-btn').textContent = 'Create Branch';
 
+        // Show admin verification in creation mode
+        document.getElementById('section-admin-verification')?.classList.remove('hidden');
+        document.getElementById('admin-confirm-pw')?.setAttribute('required', 'true');
+        const pwInput = document.getElementById('admin-confirm-pw');
+        if (pwInput) pwInput.value = '';
+
         // Reset state dropdown
         document.getElementById('branch-state').value = '';
         document.getElementById('state-dropdown-label').textContent = 'Select State / UT';
@@ -681,6 +695,12 @@
         document.getElementById('modal-branch-heading').textContent = 'Edit Branch: ' + branch.name;
         document.getElementById('modal-branch-subheading').textContent = 'Update branch parameters, manager assignment, and location data';
         document.getElementById('submit-branch-btn').textContent = 'Update Branch';
+
+        // Make admin password optional in edit mode
+        document.getElementById('section-admin-verification')?.classList.add('hidden');
+        document.getElementById('admin-confirm-pw')?.removeAttribute('required');
+        const pwInput = document.getElementById('admin-confirm-pw');
+        if (pwInput) pwInput.value = '';
 
         // Populate fields
         document.getElementById('add-branch-name').value = branch.name || '';
@@ -737,13 +757,13 @@
         if (badgesContainer) {
             const isSystem = branch.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 text-[9px] font-black rounded uppercase tracking-widest font-mono">SYSTEM</span>'
-                : '<span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 text-[9px] font-black rounded uppercase tracking-widest font-mono">CUSTOM</span>';
+                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
+                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
             
             const isActive = branch.status === 'active';
             const statusBadge = isActive
-                ? '<span class="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-[9px] font-black rounded uppercase tracking-widest">ACTIVE</span>'
-                : '<span class="px-2 py-0.5 bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40 text-[9px] font-black rounded uppercase tracking-widest">INACTIVE</span>';
+                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
 
             badgesContainer.innerHTML = `${typeBadge} ${statusBadge}`;
         }
