@@ -503,16 +503,26 @@
                 const formData = new FormData(addBranchForm);
 
                 try {
+                    const savedEditId = isEditMode ? currentEditId : null;
                     const endpoint = isEditMode ? `/branches/${currentEditId}` : '/branches';
                     if (isEditMode) formData.append('branch_id', currentEditId);
 
                     const response = await window.api.upload(endpoint, formData);
 
                     if (response.success || response.status === 'success') {
-                        window.showToast(response.message || 'Branch saved successfully!', 'success');
+                        window.showToast(response.message || 'Branch updated successfully!', 'success');
                         closeModal('addBranchModal');
                         addBranchForm.reset();
-                        loadBranches();
+                        isEditMode = false;
+                        currentEditId = null;
+
+                        await loadBranches();
+
+                        // If the view modal is currently open, refresh its content with the updated branch
+                        const viewModal = document.getElementById('viewBranchModal');
+                        if (viewModal && !viewModal.classList.contains('hidden') && savedEditId) {
+                            showViewModal(savedEditId);
+                        }
                     } else {
                         window.showToast(response.message || 'Failed to save branch.', 'error');
                         if (response.errors) window.api.showFieldErrors(response.errors);
@@ -521,7 +531,7 @@
                     console.error('Branch submit error:', err);
                     window.showToast(err.message || 'Server error occurred while saving branch', 'error');
                 } finally {
-                    window.api.setButtonLoading(submitBtn, false, isEditMode ? 'Update Branch' : 'Create Branch');
+                    window.api.setButtonLoading(submitBtn, false, 'Save Branch');
                 }
             });
         }
