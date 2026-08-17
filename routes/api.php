@@ -93,7 +93,12 @@ $router->patch('/api/v1/admin/settings', [AdminSettingsController::class, 'updat
 $router->post('/api/v1/admin/settings/backup', [AdminSettingsController::class, 'triggerBackup'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff/{id}/photo', [AdminStaffController::class, 'uploadStaffPhoto'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/branches', [AdminBranchController::class, 'getBranches'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/branches', [AdminBranchController::class, 'createBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/branches/generate-code', [AdminBranchController::class, 'generateCode'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/branches/departments', [AdminBranchController::class, 'departments'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/branches/{id}', [AdminBranchController::class, 'getBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/branches/{id}', [AdminBranchController::class, 'updateBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->put('/api/v1/branches/{id}', [AdminBranchController::class, 'updateBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/branches/{id}/delete', [AdminBranchController::class, 'deleteBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\AdminLoanController;
