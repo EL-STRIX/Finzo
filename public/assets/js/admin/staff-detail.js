@@ -376,14 +376,21 @@
 
             if (alertBanner && alertIcon && alertTitle && alertMsg) {
                 if (staff.status === 'suspended') {
-                    alertBanner.className = 'rounded-2xl p-4 sm:p-5 flex items-start gap-4 border border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300';
+                    let rText = staff.suspension_reason || 'Administrative Review';
+                    const m = rText.match(/Reason:\s*(.*)$/i);
+                    if (m) rText = m[1].trim();
+
+                    const sDate = staff.suspended_at ? fmtDate(staff.suspended_at) : '';
+                    alertBanner.classList.remove('hidden');
+                    alertBanner.className = 'rounded-2xl p-4 sm:p-5 flex items-start gap-4 border border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300 shadow-sm';
                     alertIcon.textContent = 'gavel';
-                    alertTitle.textContent = 'Account Suspended';
-                    alertMsg.innerHTML = `Staff privileges have been revoked. Suspension details: <strong>${staff.suspension_reason || 'Administrative Review'}</strong> (${staff.suspended_by_name || 'Administrator'}).`;
+                    alertTitle.textContent = 'ACCOUNT SUSPENDED';
+                    alertMsg.innerHTML = `Reason: <span class="font-black text-rose-600 dark:text-rose-400">${rText}</span><span class="text-xs font-medium text-text-secondary block mt-0.5">Staff terminal privileges and transaction processing rights are currently revoked.</span>`;
                 } else if (isLocked) {
-                    alertBanner.className = 'rounded-2xl p-4 sm:p-5 flex items-start gap-4 border border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300';
+                    alertBanner.classList.remove('hidden');
+                    alertBanner.className = 'rounded-2xl p-4 sm:p-5 flex items-start gap-4 border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 shadow-sm';
                     alertIcon.textContent = 'lock';
-                    alertTitle.textContent = 'Account Temporarily Locked';
+                    alertTitle.textContent = 'ACCOUNT TEMPORARILY LOCKED';
                     alertMsg.innerHTML = `This account is locked due to ${staff.failed_attempts || 0} failed login attempts. Unlocks automatically at ${staff.locked_until}.`;
                 } else {
                     alertBanner.classList.add('hidden');

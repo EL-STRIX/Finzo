@@ -147,16 +147,30 @@ ob_start();
       </div>
 
       <!-- ALERT BANNER FOR SUSPENSION OR LOCK -->
-      <div id="security-alert-banner" class="<?= (!$isActive || $isLocked) ? '' : 'hidden' ?> rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm <?= !$isActive ? 'border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300' : 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300' ?>">
-          <span id="security-alert-icon" class="material-symbols-outlined text-3xl shrink-0 mt-0.5" aria-hidden="true"><?= !$isActive ? 'gavel' : 'lock' ?></span>
-          <div>
-              <h4 id="security-alert-title" class="text-sm sm:text-base font-black tracking-tight mb-1 uppercase"><?= !$isActive ? 'Account Suspended' : 'Account Temporarily Locked' ?></h4>
-              <p id="security-alert-message" class="text-xs sm:text-sm font-bold leading-relaxed">
+      <?php 
+          $suspReason = !empty($staff['suspension_reason']) ? $staff['suspension_reason'] : 'Administrative Review';
+          if (preg_match('/Reason:\s*(.*)$/i', $suspReason, $m)) {
+              $suspReason = trim($m[1]);
+          }
+          $suspDate = !empty($staff['suspended_at']) ? date('d M Y, h:i A', strtotime($staff['suspended_at'])) : '';
+      ?>
+      <div id="security-alert-banner" class="<?= (!$isActive || $isLocked) ? '' : 'hidden' ?> rounded-2xl p-4 sm:p-5 flex items-start gap-4 border shadow-sm <?= !$isActive ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300' : 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300' ?>">
+          <div class="w-10 h-10 rounded-xl <?= !$isActive ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400' : 'bg-amber-500/20 text-amber-600 dark:text-amber-400' ?> flex items-center justify-center shrink-0 mt-0.5">
+              <span id="security-alert-icon" class="material-symbols-outlined text-2xl" aria-hidden="true"><?= !$isActive ? 'gavel' : 'lock' ?></span>
+          </div>
+          <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                  <h4 id="security-alert-title" class="text-xs font-black tracking-widest uppercase <?= !$isActive ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400' ?>">
+                      <?= !$isActive ? 'ACCOUNT SUSPENDED' : 'ACCOUNT TEMPORARILY LOCKED' ?>
+                  </h4>
+                  <?php if (!$isActive && $suspDate): ?>
+                      <span class="text-[10px] font-bold text-text-secondary">• <?= $suspDate ?></span>
+                  <?php endif; ?>
+              </div>
+              <p id="security-alert-message" class="text-sm font-bold text-text-primary mt-1">
                   <?php if (!$isActive): ?>
-                      Staff privileges have been revoked under administrative review.
-                      <?php if (!empty($staff['suspension_reason'])): ?>
-                          Reason: <strong><?= htmlspecialchars($staff['suspension_reason'], ENT_QUOTES, 'UTF-8') ?></strong>
-                      <?php endif; ?>
+                      Reason: <span class="font-black text-rose-600 dark:text-rose-400"><?= htmlspecialchars($suspReason, ENT_QUOTES, 'UTF-8') ?></span>
+                      <span class="text-xs font-medium text-text-secondary block mt-0.5">Staff terminal privileges and transaction processing rights are currently revoked.</span>
                   <?php elseif ($isLocked): ?>
                       This account is locked due to <?= (int)($staff['failed_attempts'] ?? 0) ?> failed login attempts. Unlocks automatically at <?= htmlspecialchars($staff['locked_until'], ENT_QUOTES, 'UTF-8') ?>.
                   <?php endif; ?>

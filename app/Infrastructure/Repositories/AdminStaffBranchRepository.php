@@ -538,13 +538,19 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $auditStmt = $this->db->prepare("
                 SELECT details, actor_id, actor_role, created_at
                 FROM audit_log
-                WHERE entity_id = ? AND entity_type = 'staff' AND action_type = 'staff_suspended'
+                WHERE (entity_id IN (?, ?) OR actor_id IN (?, ?)) AND action_type = 'staff_suspended'
                 ORDER BY created_at DESC LIMIT 1
             ");
-            $auditStmt->execute([$staff['staff_id']]);
+            $auditStmt->execute([$staff['staff_id'], (string)$staffId, $staff['staff_id'], (string)$staffId]);
             $suspensionLog = $auditStmt->fetch(\PDO::FETCH_ASSOC);
             if ($suspensionLog) {
-                $staff['suspension_reason'] = $suspensionLog['details'];
+                $details = $suspensionLog['details'] ?? '';
+                if (preg_match('/Reason:\s*(.*)$/i', $details, $matches)) {
+                    $staff['suspension_reason'] = trim($matches[1]);
+                } else {
+                    $staff['suspension_reason'] = !empty($details) ? $details : 'Administrative Review';
+                }
+                $staff['suspended_at'] = $suspensionLog['created_at'];
                 $staff['suspended_by_name'] = 'Administrator (ID: ' . $suspensionLog['actor_id'] . ')';
             }
         }
