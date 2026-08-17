@@ -863,6 +863,161 @@ ob_start();
       </button>
       <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-xl shadow-2xl border border-white/10" alt="Document Zoom">
   </div>
+
+  <script>
+  (function() {
+      var staffObj = window.__INITIAL_STAFF__ || {};
+      var staffName = <?= json_encode($fullName) ?> || staffObj.full_name || 'Staff Member';
+
+      var govConfigs = {
+          reset: {
+              title: 'Reset Staff Password',
+              subtitle: 'Security protocol override',
+              body: 'You are about to issue an emergency password reset for <strong class="text-text-primary">' + staffName + '</strong>. A secure temporary password will be generated.',
+              icon: 'lock_reset',
+              btnText: 'Confirm Reset',
+              btnClass: 'bg-primary text-white',
+              reasons: []
+          },
+          deactivate: {
+              title: 'Suspend Staff Account',
+              subtitle: 'Revoke system permissions',
+              body: 'You are about to suspend <strong class="text-text-primary">' + staffName + '</strong>. This will revoke branch operations and system access immediately.',
+              icon: 'block',
+              btnText: 'Confirm Suspension',
+              btnClass: 'bg-warning text-white',
+              reasons: [
+                  'Unauthorized Operations',
+                  'Cash / Financial Discrepancy',
+                  'Policy Violation / Misconduct',
+                  'Performance & Compliance Review',
+                  'Voluntary Leave / Resignation',
+                  'Security Breach Suspected',
+                  'Other'
+              ]
+          },
+          reinstate: {
+              title: 'Reinstate Staff Account',
+              subtitle: 'Restore operational privileges',
+              body: 'You are about to reinstate <strong class="text-text-primary">' + staffName + '</strong>. This will restore branch login access and active status.',
+              icon: 'check_circle',
+              btnText: 'Confirm Reinstatement',
+              btnClass: 'bg-success text-white',
+              reasons: []
+          },
+          delete: {
+              title: 'Delete Staff Account',
+              subtitle: 'Permanent soft deletion',
+              body: 'You are about to <span class="text-error font-black uppercase underline">PERMANENTLY SOFT-DELETE</span> <strong class="text-text-primary">' + staffName + '</strong>. This action will archive the staff account from active lists.',
+              icon: 'person_remove',
+              btnText: 'Confirm Permanent Deletion',
+              btnClass: 'bg-error text-white',
+              reasons: []
+          }
+      };
+
+      var activeAction = '';
+
+      window.openGovernanceModal = function(action) {
+          activeAction = action;
+          var config = govConfigs[action];
+          if (!config) return;
+
+          var modal = document.getElementById('governance-modal');
+          if (!modal) return;
+
+          var titleEl = document.getElementById('modal-title');
+          var subEl = document.getElementById('modal-subtitle');
+          var iconEl = document.getElementById('modal-icon');
+          var bodyEl = document.getElementById('modal-body-text');
+          var confirmBtn = document.getElementById('confirm-governance-btn');
+          var reasonStep = document.getElementById('reason-step');
+          var reasonOptions = document.getElementById('reason-options');
+          var pwInput = document.getElementById('admin-password');
+          var authErr = document.getElementById('auth-error');
+
+          if (titleEl) titleEl.textContent = config.title;
+          if (subEl) subEl.textContent = config.subtitle;
+          if (iconEl) iconEl.textContent = config.icon;
+          if (bodyEl) bodyEl.innerHTML = config.body;
+
+          if (confirmBtn) {
+              confirmBtn.className = 'flex-1 py-3 font-bold rounded-xl text-xs uppercase tracking-wider shadow-sm transition-all ' + config.btnClass;
+              confirmBtn.textContent = config.btnText;
+              confirmBtn.disabled = false;
+          }
+
+          if (config.reasons && config.reasons.length > 0 && reasonStep) {
+              var rHtml = '';
+              config.reasons.forEach(function(r, idx) {
+                  rHtml += '<label class="flex items-center gap-2.5 p-2.5 bg-background rounded-xl border border-border-subtle hover:border-primary cursor-pointer transition-all text-xs">' +
+                           '<input type="radio" name="suspension_reason" value="' + r + '" ' + (idx === 0 ? 'checked' : '') + ' class="text-primary focus:ring-primary">' +
+                           '<span class="font-bold text-text-primary text-xs">' + r + '</span>' +
+                           '</label>';
+              });
+              if (reasonOptions) reasonOptions.innerHTML = rHtml;
+              reasonStep.classList.remove('hidden');
+          } else if (reasonStep) {
+              reasonStep.classList.add('hidden');
+          }
+
+          if (pwInput) pwInput.value = '';
+          if (authErr) authErr.classList.add('hidden');
+
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          modal.style.display = 'flex';
+          document.body.classList.add('overflow-hidden');
+      };
+
+      window.closeGovernanceModal = function() {
+          var modal = document.getElementById('governance-modal');
+          if (!modal) return;
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          modal.style.display = 'none';
+          document.body.classList.remove('overflow-hidden');
+      };
+
+      document.addEventListener('click', function(e) {
+          var suspendBtn = e.target.closest('#deactivate-staff-btn');
+          if (suspendBtn) {
+              e.preventDefault();
+              window.openGovernanceModal(suspendBtn.dataset.action || 'deactivate');
+              return;
+          }
+          var resetBtn = e.target.closest('#reset-password-btn');
+          if (resetBtn) {
+              e.preventDefault();
+              window.openGovernanceModal('reset');
+              return;
+          }
+          var deleteBtn = e.target.closest('#delete-staff-btn');
+          if (deleteBtn) {
+              e.preventDefault();
+              window.openGovernanceModal('delete');
+              return;
+          }
+          var abortBtn = e.target.closest('#abort-governance-btn');
+          if (abortBtn) {
+              e.preventDefault();
+              window.closeGovernanceModal();
+              return;
+          }
+          var govModal = document.getElementById('governance-modal');
+          if (govModal && e.target === govModal) {
+              window.closeGovernanceModal();
+              return;
+          }
+      });
+
+      document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+              window.closeGovernanceModal();
+          }
+      });
+  })();
+  </script>
 <?php
 $extraScripts = '<script src="/Finzo/public/assets/js/admin/staff-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
