@@ -5,7 +5,7 @@ $pageTitle = 'Finzo Admin — Staff Dossier';
 // Bootstrap early so SSR always runs (even on direct file access).
 // The layout guard `if (!defined('FINZO_ROOT'))` prevents double-loading.
 if (!defined('FINZO_ROOT')) {
-    require_once dirname(__DIR__, 4) . '/bootstrap/app.php';
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 }
 \App\Shared\Security\SessionManager::start();
 
